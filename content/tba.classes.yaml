@@ -1,0 +1,30 @@
+# Phase 9.1 architectural scaffold (see stdlib.areas.yaml).
+#
+# The four Diku classes. `granted_skills` names spells/skills that live in the
+# deferred magic system (D-04); they are carried as data now so the class
+# tables survive conversion.
+classes:
+  warrior:
+    name: Warrior
+    description: A master of arms, trained with every weapon and heavy armour.
+    hp_dice: 1d10
+    prime_attribute: str
+    granted_skills: [kick, bash, rescue]
+  thief:
+    name: Thief
+    description: A shadow, skilled at stealth, locks and the art of the backstab.
+    hp_dice: 1d6
+    prime_attribute: dex
+    granted_skills: [sneak, hide, pick_lock, backstab]
+  cleric:
+    name: Cleric
+    description: A servant of the gods, granted healing and protection.
+    hp_dice: 1d8
+    prime_attribute: wis
+    granted_skills: [cure_light, bless, armor]
+  magic_user:
+    name: Magic-User
+    description: A scholar of the arcane, fragile but devastating.
+    hp_dice: 1d4
+    prime_attribute: int
+    granted_skills: [magic_missile, detect_magic, fireball]

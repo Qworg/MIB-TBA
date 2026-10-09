@@ -1,0 +1,19 @@
+# Phase 9.1 architectural scaffold (see stdlib.areas.yaml).
+#
+# Diku mob stats layered on `stdlib.npcs`; keys must name a real npc id.
+# `hp` is a dice expression, the source format (TBA-E26).
+npc_stats:
+  tba_cityguard:
+    hp: 3d8+20
+    level: 5
+    hitroll: 2
+    damroll: 3
+    armor_class: 20
+    thaco: 15
+    alignment: 350
+    gold: 12
+    experience: 220
+    default_position: standing
+    behaviour:
+    - sentinel
+    - helper

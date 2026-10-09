@@ -1,0 +1,19 @@
+[package]
+name = "mib-tba"
+description = "The Builder Academy (CircleMUD/tbaMUD) game pack: native round-based combat, Diku zone resets, 18 wear positions and tba.* pack sections."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+mib-protocol.workspace = true
+mib-core.workspace = true
+mib-stdlib.workspace = true
+mib-content.workspace = true
+bevy.workspace = true
+serde.workspace = true
+smol_str.workspace = true
+
+[lints]
+workspace = true

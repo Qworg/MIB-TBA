@@ -1,0 +1,10 @@
+# Phase 9.1 architectural scaffold (see stdlib.areas.yaml).
+items:
+  tba_brass_key:
+    name: a brass key
+    description: A small brass key, green with age.
+    value: 5
+  tba_torch:
+    name: a torch
+    description: A pitch-soaked torch on a wooden haft.
+    value: 2

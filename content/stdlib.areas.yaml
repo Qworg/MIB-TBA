@@ -1,0 +1,6 @@
+# Phase 9.1 architectural scaffold. A three-room Midgaard slice that exercises
+# every `tba.*` section and its cross-references into `stdlib.*`. The Phase 10
+# converter replaces this file with the real converted world.
+areas:
+  tba:
+    name: The Builder Academy

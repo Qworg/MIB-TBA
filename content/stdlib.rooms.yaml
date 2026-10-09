@@ -1,0 +1,50 @@
+# Phase 9.1 architectural scaffold (see stdlib.areas.yaml).
+#
+# Room ids are dotted `area.room` by convention; `area` carries the real AreaId.
+# Exits are declared per-direction and never auto-reversed, so every back-exit
+# is written out explicitly.
+rooms:
+  tba.temple:
+    area: tba
+    name: The Temple of Midgaard
+    description: |-
+      You are standing in the temple of Midgaard. The marble floor is polished
+      to a mirror shine, and the air smells of incense. A great altar stands to
+      the north, and the street lies south.
+    exits:
+      south:
+        to: tba.market
+    tags:
+    - start_room
+    - safe
+  tba.market:
+    area: tba
+    name: Market Square
+    description: |-
+      The market square of Midgaard is paved in worn cobblestones. Merchants'
+      stalls line the edges, and the temple rises to the north. A narrow
+      armory door is set into the eastern wall.
+    exits:
+      north:
+        to: tba.temple
+      east:
+        to: tba.armory
+        door:
+          closed: true
+          pickable: true
+          key: tba_brass_key
+          name: armory door
+  tba.armory:
+    area: tba
+    name: The Armory
+    description: |-
+      Racks of spears and shields line the walls of the armory. A heavy door
+      leads back out to the market square to the west.
+    exits:
+      west:
+        to: tba.market
+        door:
+          closed: true
+          pickable: true
+          key: tba_brass_key
+          name: armory door

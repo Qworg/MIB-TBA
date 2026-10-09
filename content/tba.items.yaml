@@ -1,0 +1,18 @@
+# Phase 9.1 architectural scaffold (see stdlib.areas.yaml).
+#
+# The 24 Diku item types and 18 wear positions layered on `stdlib.items`;
+# keys must name a real item id.
+items:
+  tba_brass_key:
+    kind: key
+    values: [0, 0, 0, 0]
+    weight: 1
+    cost: 5
+    rent: 0
+  tba_torch:
+    kind: light
+    slots: [hold]
+    values: [0, 0, 0, 0]
+    weight: 1
+    cost: 5
+    rent: 0

@@ -1,0 +1,26 @@
+# Phase 9.1 architectural scaffold (see stdlib.areas.yaml).
+#
+# A zone is an imperative reset program, not a spawn table: `give_item` and
+# `equip_item` act on the mob placed by the preceding `place_mob`, and are
+# skipped when that placement did not happen. The interpreter that executes
+# this lands in Phase 9.2 (TBA-E07); until then the data is carried and
+# validated but never run.
+zones:
+  30:
+    name: Midgaard
+    bot: 3000
+    top: 3099
+    lifespan_mins: 15
+    reset_mode: always
+    commands:
+    - type: place_mob
+      mob: tba_cityguard
+      room: tba.market
+      max_in_world: 1
+    - type: give_item
+      item: tba_torch
+      max_in_world: 1
+    - type: door_state
+      room: tba.market
+      exit: east
+      state: closed
