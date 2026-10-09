@@ -1,0 +1,3 @@
+# Rust build artifacts — this game builds against a sibling MIB checkout, and
+# its own target dir is never committed.
+/target
