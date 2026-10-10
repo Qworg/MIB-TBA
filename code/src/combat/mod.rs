@@ -29,7 +29,8 @@ pub use init::{
 };
 pub use model::{
     BASE_ATTRIBUTE, EVIL_ALIGNMENT, GOOD_ALIGNMENT, SaveType, TbaAlignment, TbaAttackDice,
-    TbaAttributes, TbaCombatant, TbaGold, TbaProgress, TbaSaves, WieldedWeapon,
+    TbaAttributes, TbaCombatant, TbaGold, TbaHidden, TbaProgress, TbaSaves, TbaSneaking,
+    WieldedWeapon,
 };
 pub use progression::{
     BASE_MOVE, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, TbaRng, derive_vitals, level_for_xp,

@@ -35,6 +35,7 @@ pub mod items;
 pub mod module;
 pub mod party;
 pub mod shops;
+pub mod skills;
 pub mod socials;
 pub mod spells;
 pub mod zones;
@@ -48,14 +49,14 @@ pub mod prelude {
         BASE_ATTRIBUTE, BASE_MOVE, EVIL_ALIGNMENT, GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID,
         GOLD_ITEM_NAME, GOOD_ALIGNMENT, KillReward, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, NpcDefeated,
         ROUND_SECONDS, SaveType, TbaAlignment, TbaAttackDice, TbaAttackerMemory, TbaAttributes,
-        TbaCombatant, TbaGold, TbaNpcBase, TbaProgress, TbaRng, TbaRound, TbaRoundClock, TbaSaves,
-        TbaSpawnHome, WieldedWeapon, alignment_after_kill, alignment_for, apply_death_penalty,
-        auto_engage_system, award_kill_rewards, combat_dice, credit_gold_pickups, default_class,
-        derive_vitals, engages, fallback_combatant, grant_kill, handle_combat_commands,
-        helper_system, level_for_xp, mag_savingthrow, npc_combatant_from_stats,
-        npc_combatant_system, player_combatant_system, pursuit_system, resolve_class_key,
-        resolve_rounds, reward_for, run_due_round, saving_throws, weapon_dice, xp_threshold,
-        xp_to_advance,
+        TbaCombatant, TbaGold, TbaHidden, TbaNpcBase, TbaProgress, TbaRng, TbaRound, TbaRoundClock,
+        TbaSaves, TbaSneaking, TbaSpawnHome, WieldedWeapon, alignment_after_kill, alignment_for,
+        apply_death_penalty, auto_engage_system, award_kill_rewards, combat_dice,
+        credit_gold_pickups, default_class, derive_vitals, engages, fallback_combatant, grant_kill,
+        handle_combat_commands, helper_system, level_for_xp, mag_savingthrow,
+        npc_combatant_from_stats, npc_combatant_system, player_combatant_system, pursuit_system,
+        resolve_class_key, resolve_rounds, reward_for, run_due_round, saving_throws, weapon_dice,
+        xp_threshold, xp_to_advance,
     };
     pub use crate::content::{
         AffectDef, AffectLocation, Attribute, DoorReset, ItemAffectFlag, ItemExtraFlag, LevelBonus,
@@ -82,6 +83,10 @@ pub mod prelude {
         follow_system, handle_party_commands, parse_party_line,
     };
     pub use crate::shops::{ShopCommand, handle_shop_commands, parse_shop_line};
+    pub use crate::skills::{
+        SkillCommand, backstab_mult, consider_message, handle_skill_commands, parse_skill_line,
+        skill_min_level, skill_succeeds,
+    };
     pub use crate::socials::{
         SocialCommand, SocialNames, gate_reason, handle_social_commands, parse_social_line,
         substitute,

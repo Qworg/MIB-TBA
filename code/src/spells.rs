@@ -39,7 +39,9 @@ use smol_str::SmolStr;
 
 use crate::combat::commands::{broadcast, deny, entity_name, find_target_in_room, text};
 use crate::combat::rewards::{NpcDefeated, alignment_for, reward_for};
-use crate::combat::{SaveType, TbaCombatant, TbaProgress, TbaRng, default_class, mag_savingthrow};
+use crate::combat::{
+    SaveType, TbaCombatant, TbaHidden, TbaProgress, TbaRng, default_class, mag_savingthrow,
+};
 use crate::content::{AffectDef, Position, SaveEffect, SpellDef, SpellKind, SpellTarget};
 use crate::module::TbaContent;
 
@@ -453,6 +455,11 @@ pub fn handle_cast_command(
             && let Ok(mut caster) = combatants.get_mut(session)
         {
             caster.mana = (caster.mana - cost as i32).max(0);
+        }
+        // A hostile cast is an attack: it breaks stealth, as Circle's
+        // `damage()` -> `appear()` does (`tbamud/src/fight.c:70-84`).
+        if is_hostile(spell) {
+            commands.entity(session).remove::<TbaHidden>();
         }
         let actor_name = entity_name(session, &players, &npcs);
         output.write(text(session, format!("You cast {spell_name}.")));

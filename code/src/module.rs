@@ -57,6 +57,9 @@ pub struct TbaContent {
     pub items: BTreeMap<ItemId, TbaItemDef>,
     /// `tba.classes` — keyed by class id.
     pub classes: BTreeMap<SmolStr, TbaClassDef>,
+    /// `tba.classes.skill_levels` — class -> skill -> minimum level
+    /// (`init_spell_levels()`, `tbamud/src/class.c:1652-1664`).
+    pub skill_levels: BTreeMap<SmolStr, BTreeMap<SmolStr, u32>>,
     /// `tba.spells` — keyed by the snake_case spell id.
     pub spells: BTreeMap<SmolStr, SpellDef>,
     /// `tba.shops` — keyed by the shopkeeper `stdlib.npcs` id (TBA-E17).
@@ -95,6 +98,9 @@ impl MibModule for TbaModule {
         let classes = section_defs::<TbaClassesSection>(packs)
             .map(|defs| defs.classes.clone())
             .unwrap_or_default();
+        let skill_levels = section_defs::<TbaClassesSection>(packs)
+            .map(|defs| defs.skill_levels.clone())
+            .unwrap_or_default();
         let spells = section_defs::<SpellsSection>(packs)
             .map(|defs| defs.spells.clone())
             .unwrap_or_default();
@@ -113,6 +119,7 @@ impl MibModule for TbaModule {
             npc_stats,
             items,
             classes,
+            skill_levels,
             spells,
             shops,
             socials,
@@ -180,6 +187,7 @@ impl Plugin for TbaPlugin {
             (
                 crate::combat::player_combatant_system,
                 crate::combat::handle_combat_commands,
+                crate::skills::handle_skill_commands,
                 crate::spells::handle_cast_command,
                 crate::shops::handle_shop_commands,
                 crate::socials::handle_social_commands,

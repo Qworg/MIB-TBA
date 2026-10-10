@@ -588,9 +588,9 @@ impl PackSection for TbaItemsSection {
 // tba.classes — the four Diku classes (TBA-E18 / E19)
 // ---------------------------------------------------------------------------
 
-/// One character class. `granted_skills` names spells/skills, which live in the
-/// deferred magic system (D-04); they are carried as data now so the class
-/// tables survive conversion.
+/// One character class. `granted_skills` names spells/skills; a class may cast
+/// the spells it names (`crate::spells`) and use the class skills it names
+/// (`crate::skills`, issue #25).
 ///
 /// The progression tables are transcribed verbatim from CircleMUD/tbaMUD's
 /// `src/class.c` — [`thaco`](https://github.com/tbamud/tbamud) for
@@ -628,10 +628,21 @@ pub struct TbaClassDef {
 }
 
 /// `tba.classes` — keyed by the class id (e.g. `warrior`).
+///
+/// `skill_levels` is CircleMUD's `init_spell_levels()`
+/// (`tbamud/src/class.c:1652-1664`): the minimum level at which each class may
+/// use a **skill** (it is the same `spell_info[].min_level[]` table that
+/// `tba.spells` carries per spell, but the converter-authored spell catalog
+/// only holds true spells). It is kept at the file level, not on each class,
+/// because Circle registers it from a separate function — `spell_level(skill,
+/// class, level)` — rather than in the class table itself. A skill named in a
+/// class's `granted_skills` with no entry here is usable from level 1.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct TbaClassesFile {
     pub classes: BTreeMap<SmolStr, TbaClassDef>,
+    #[serde(default)]
+    pub skill_levels: BTreeMap<SmolStr, BTreeMap<SmolStr, u32>>,
 }
 
 /// `tba.classes`.
@@ -672,6 +683,31 @@ impl PackSection for TbaClassesSection {
                     format!("classes.{class_id}.thaco_table"),
                     "thaco_table must start with the level-0 sentinel (100) and define level 1",
                 );
+            }
+        }
+        // A skill level is only meaningful for a skill the class actually
+        // learns; a stray key would silently never gate anything.
+        for (class_id, levels) in &defs.skill_levels {
+            let Some(class) = defs.classes.get(class_id) else {
+                ctx.error_at(
+                    format!("skill_levels.{class_id}"),
+                    "class is not defined in `classes`",
+                );
+                continue;
+            };
+            for (skill, level) in levels {
+                if *level < 1 {
+                    ctx.error_at(
+                        format!("skill_levels.{class_id}.{skill}"),
+                        "skill level must be at least 1",
+                    );
+                }
+                if !class.granted_skills.iter().any(|granted| granted == skill) {
+                    ctx.error_at(
+                        format!("skill_levels.{class_id}.{skill}"),
+                        format!("`{skill}` is not in `{class_id}`'s granted_skills"),
+                    );
+                }
             }
         }
     }

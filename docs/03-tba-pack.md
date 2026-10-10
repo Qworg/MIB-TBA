@@ -353,6 +353,24 @@ Register player command: `cast '<spell name>' [target]`.
 3. Check target: validate target in room.
 4. Execute spell effect (healing, damage, buff) and deduct mana.
 
+### 8.3 Skills & Class Abilities (issue #25)
+Each class's `granted_skills` also names the Circle **skills** it learns, and
+`tba.classes.skill_levels` carries `init_spell_levels()`'s
+(`tbamud/src/class.c:1652-1664`) minimum level per class:
+
+- Warrior: `kick` (1), `rescue` (3), `bash` (12).
+- Thief: `sneak` (1), `pick_lock` (2), `backstab` (3), `hide` (5).
+
+`mib_tba::skills` serves the commands `backstab`, `kick`, `bash`, `rescue`,
+`assist [ally]`, `consider`, `sneak` and `hide`, each parsed from
+`PlayerInput::RawLine` and gated on the class skill and its minimum level.
+`assist` and `consider` are universal (`do_assist`/`do_consider` have no class
+gate). `sneak`/`hide` set the runtime-only `TbaSneaking`/`TbaHidden` components,
+which suppress `auto_engage_system` aggro. Lockpicking is the stdlib `pick`
+command (`handle_pick`); no `pick`/`pick_lock` verb is added. See
+`docs/runbook.md` §6/§8 for the system wiring and the remaining limits
+(`look`/`who` do not yet respect `TbaHidden`, and there is no practice system).
+
 ---
 
 ## 9. TBA-E17 — Shops & Economy (D-02)

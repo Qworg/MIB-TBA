@@ -10,32 +10,32 @@
     {
       "kind": "combat_skill",
       "name": "assist",
-      "reason": "Circle combat skill with no engine implementation (non-goal)"
+      "reason": "Circle class ability `assist`; implemented as tba pack gameplay (issue #25), not lost by conversion"
     },
     {
       "kind": "combat_skill",
       "name": "backstab",
-      "reason": "Circle combat skill with no engine implementation (non-goal)"
+      "reason": "Circle class ability `backstab`; implemented as tba pack gameplay (issue #25), not lost by conversion"
     },
     {
       "kind": "combat_skill",
       "name": "bash",
-      "reason": "Circle combat skill with no engine implementation (non-goal)"
+      "reason": "Circle class ability `bash`; implemented as tba pack gameplay (issue #25), not lost by conversion"
     },
     {
       "kind": "combat_skill",
       "name": "consider",
-      "reason": "Circle combat skill with no engine implementation (non-goal)"
+      "reason": "Circle class ability `consider`; implemented as tba pack gameplay (issue #25), not lost by conversion"
     },
     {
       "kind": "combat_skill",
       "name": "kick",
-      "reason": "Circle combat skill with no engine implementation (non-goal)"
+      "reason": "Circle class ability `kick`; implemented as tba pack gameplay (issue #25), not lost by conversion"
     },
     {
       "kind": "combat_skill",
       "name": "rescue",
-      "reason": "Circle combat skill with no engine implementation (non-goal)"
+      "reason": "Circle class ability `rescue`; implemented as tba pack gameplay (issue #25), not lost by conversion"
     },
     {
       "kind": "no_source_field",

@@ -250,9 +250,9 @@ reason the item count is one higher than the source object count.
 |---|---|---|
 | `zone_reset_system` | `FixedUpdate` | Ages zones; runs the `M/O/G/E/P/D/R` interpreter when `lifespan_mins` elapses. `when_desert` checks player occupancy by room `num` in `[bot, top]`. |
 | `tick_item_timers`, `apply_night_darkness` | `FixedUpdate` (after `maintain_room_occupants`) | The shared `TbaObjectClock` ages item timers and advances the MUD calendar (75 real s/hour, 35-day months, 17-month years). `apply_night_darkness` mirrors Circle's `room_is_dark` onto authored `outdoor` rooms' runtime `RoomState.flags[Dark]`; authored `dark` rooms are never touched. The clock is runtime-only (a restart begins at year 0/day 0/hour 0). |
-| `auto_engage_system`, `npc_combatant_system`, `helper_system`, `pursuit_system` | `FixedUpdate` (after `maintain_room_occupants`) | Room-local aggro; alignment ±350 gating; Memory/Sentinel/StayZone/Helper. |
+| `auto_engage_system`, `npc_combatant_system`, `helper_system`, `pursuit_system` | `FixedUpdate` (after `maintain_room_occupants`) | Room-local aggro; alignment ±350 gating; Memory/Sentinel/StayZone/Helper. A player carrying `TbaHidden` or `TbaSneaking` is skipped (`CAN_SEE`-style stealth; see §8). |
 | `resolve_rounds`, `tick_buffs` | `TbaRound` (every 3 s on the frame clock) | Combat rounds. Deliberately **not** on `tick_hz`, so combat never forces the engine tick rate. |
-| `handle_combat_commands`, `handle_equipment_commands`, `handle_cast_command`, `handle_shop_commands`, `handle_social_commands`, `handle_time_command`, `handle_party_commands`, `recompute_equipment_affects`, `sync_wielded_weapon` | `Update`, `BridgeSet::Game`, after `route_commands` | Genre commands. `cast`/`list`/`buy`/`sell`/`value`, `social <name>`/`socials`, `time`, and `group`/`gtell`(`;`)/`follow`/`unfollow` have no fixed `Command` variant and are parsed from `PlayerInput::RawLine`, declared in `stdlib.verbs.yaml` so the stdlib router claims them. `social` resolves `$n`/`$N`/`$e`/`$E`/`$m`/`$M`/`$s`/`$S` (and `$t`/`$p`/case switches) against the actor/target and broadcasts the room and victim lines. |
+| `handle_combat_commands`, `handle_skill_commands`, `handle_equipment_commands`, `handle_cast_command`, `handle_shop_commands`, `handle_social_commands`, `handle_time_command`, `handle_party_commands`, `recompute_equipment_affects`, `sync_wielded_weapon` | `Update`, `BridgeSet::Game`, after `route_commands` | Genre commands. `cast`/`list`/`buy`/`sell`/`value`, `social <name>`/`socials`, `time`, `group`/`gtell`(`;`)/`follow`/`unfollow`, and the issue #25 skills `backstab`/`kick`/`bash`/`rescue`/`assist`/`consider`/`sneak`/`hide` have no fixed `Command` variant and are parsed from `PlayerInput::RawLine`, declared in `stdlib.verbs.yaml` so the stdlib router claims them. `social` resolves `$n`/`$N`/`$e`/`$E`/`$m`/`$M`/`$s`/`$S` (and `$t`/`$p`/case switches) against the actor/target and broadcasts the room and victim lines. `mib_tba::skills` gates each ability on `tba.classes` `granted_skills` + `skill_levels`, and `sneak`/`hide` set the runtime-only `TbaSneaking`/`TbaHidden`. |
 | `follow_system` | `FixedUpdate` (after `maintain_room_occupants`) | Drags a follower into the leader's new room only when the follower was standing in the leader's previous room, so a follower who wandered off is never teleported. |
 | `apply_death_penalty` | `Update`, `.before(handle_player_death)` | 25% of current-level XP (floored); converts `TbaGold` to a carried `tba_gold` item so the stdlib corpse sweep lands it in the corpse. |
 | `player_combatant_system` | `Update`, `BridgeSet::Game` | On `CharacterCreated`, inserts `TbaProgress` + `derive_vitals` from `tba.classes`. |
@@ -312,9 +312,36 @@ These are recorded, not silent:
 - The stdlib `look` darkness check reads `Room::tags` rather than
   `Room::effective_flags`, so a night-written `RoomState.flags[Dark]` override
   persists and is the runtime authority but is not yet what `look` consults.
-- **Combat skills** (`backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`)
-  and **`MOB_SPEC` special procedures** are explicit non-goals, listed in the
-  report's `global_drops`.
+- **Combat skills** are implemented as pack gameplay (issue #25):
+  `backstab` (thief, level 3, piercing weapon), `kick` (warrior, level 1),
+  `bash` (warrior, level 12), `rescue` (warrior, level 3), `assist` and
+  `consider` (universal), `sneak` (thief, level 1) and `hide` (thief, level 5).
+  The per-class minimum levels are `tba.classes.skill_levels` (transcribed from
+  `init_spell_levels()`, `tbamud/src/class.c:1652-1664`). The remaining honest
+  limits:
+
+  - **Lockpicking** is the stdlib `pick` command
+    ([`mib_stdlib::doors::handle_pick`]). No `pick`/`pick_lock` verb is added;
+    the thief's `pick_lock` skill is carried for the class table, but the
+    stdlib handler is a W4.3 stub that always yields and does not yet read the
+    class skill. Changing that is an engine-side task — no engine change here.
+  - **Stealth is runtime-only.** `TbaHidden`/`TbaSneaking` are never persisted
+    (MIB does not persist Circle's affect-flag bitvector). They suppress
+    `auto_engage_system` aggro, and `TbaHidden` is cleared by `attack`, by the
+    offensive skills and by a hostile `cast` (Circle's `appear()`). Circle
+    gates only `AFF_HIDE` on `CAN_SEE`, so the `sneak` aggro gate is a pack
+    extension.
+  - The stdlib `look`/`who` renderers cannot be made to respect `TbaHidden`
+    without an engine change, so a hidden player is still listed there, and
+    room-target resolution does not yet hide them from other actors.
+  - MIB has no `practice` system, so a granted skill is treated as fully
+    learned; Circle's DEX `dex_app_skill` bonus and the 1%-failure
+    `rand_number(1, 101)` quirk are not modelled.
+  - `kick`/`bash` deduct `SKILL_MOVE_COST` (10) movement and refuse at zero.
+    This tbaMUD revision's `do_kick`/`do_bash` no longer contains the `GET_MOVE`
+    check; the pack reinstates the classic Circle cost.
+- **`MOB_SPEC` special procedures** are a non-goal (#15); the flag is a named
+  `mob_flag` drop in the report.
 - The converter's drop report lists every unmapped source flag and field, with
   its disposition documented in `docs/05-converter.md` §8.
 
@@ -327,7 +354,7 @@ These are recorded, not silent:
 | Build fails in MIB code | The sibling `../MIB` checkout is mid-change; build MIB or pin a `git` dep. |
 | `validate-packs` names a field path | A content reference is dangling (e.g. `rooms.X.exits.north.door.key`). Fix the content or the converter rule. |
 | No spawn point / `RoomIndex.start` is `None` | No room is tagged `start_room`. Regenerate with `--start-room <vnum>` (default 3001). |
-| `cast`/`list`/`buy`/`sell`/`value`/`social`/`socials`/`time`/`group`/`gtell`/`follow`/`unfollow` rejected as unknown | The verb is not declared in `content/stdlib.verbs.yaml`; declare it there (effect-free). |
+| `cast`/`list`/`buy`/`sell`/`value`/`social`/`socials`/`time`/`group`/`gtell`/`follow`/`unfollow`/`backstab`/`kick`/`bash`/`rescue`/`assist`/`consider`/`sneak`/`hide` rejected as unknown | The verb is not declared in `content/stdlib.verbs.yaml`; declare it there (effect-free). |
 | Equipment lost across restart | The item has no stable `SaveId`, so it cannot be relinked; check the warning log. |
 | `run` fails before the world loads | Engine config (database, AI provider). Use `validate-packs` to separate content from infrastructure. |
 

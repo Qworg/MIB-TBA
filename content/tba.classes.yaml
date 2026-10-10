@@ -1,8 +1,10 @@
 # Phase 9.1 architectural scaffold (see stdlib.areas.yaml).
 #
-# The four Diku classes. `granted_skills` names spells/skills that live in the
-# deferred magic system (D-04); they are carried as data now so the class
-# tables survive conversion.
+# The four Diku classes. `granted_skills` names the spells and skills a class
+# learns: the spells live in `tba.spells` (D-04), the skills are implemented as
+# pack gameplay in `mib_tba::skills` (GitHub issue #25). `skill_levels` below
+# carries Circle's `init_spell_levels()` minimum level per class and skill
+# (`src/class.c:1652-1664`); a granted skill with no entry is usable at level 1.
 #
 # `xp_table` and `thaco_table` are transcribed verbatim from tbaMUD's
 # `src/class.c`: `level_exp` and `thaco` respectively. Both keep the source's
@@ -78,3 +80,19 @@ classes:
     thaco_table: [100, 20, 20, 20, 19, 19, 19, 18, 18, 18, 17, 17, 17, 16, 16,
                   16, 15, 15, 15, 14, 14, 14, 13, 13, 13, 12, 12, 12, 11, 11,
                   11, 10, 10, 10, 9]
+
+# CircleMUD `init_spell_levels()` for skills (`src/class.c:1652-1664`): the
+# minimum level a class may use each skill. The thieves learn sneak (1),
+# pick lock (2), backstab (3) and hide (5); the warriors learn kick (1),
+# rescue (3) and bash (12). `track` (thief 6 / warrior 9) is not modelled: no
+# `track` verb is declared for this pack.
+skill_levels:
+  warrior:
+    kick: 1
+    rescue: 3
+    bash: 12
+  thief:
+    sneak: 1
+    pick_lock: 2
+    backstab: 3
+    hide: 5

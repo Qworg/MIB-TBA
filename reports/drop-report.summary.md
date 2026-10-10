@@ -56,12 +56,12 @@
 
 ## Global permanent drops
 
-- `combat_skill` / `assist`: Circle combat skill with no engine implementation (non-goal)
-- `combat_skill` / `backstab`: Circle combat skill with no engine implementation (non-goal)
-- `combat_skill` / `bash`: Circle combat skill with no engine implementation (non-goal)
-- `combat_skill` / `consider`: Circle combat skill with no engine implementation (non-goal)
-- `combat_skill` / `kick`: Circle combat skill with no engine implementation (non-goal)
-- `combat_skill` / `rescue`: Circle combat skill with no engine implementation (non-goal)
+- `combat_skill` / `assist`: Circle class ability `assist`; implemented as tba pack gameplay (issue #25), not lost by conversion
+- `combat_skill` / `backstab`: Circle class ability `backstab`; implemented as tba pack gameplay (issue #25), not lost by conversion
+- `combat_skill` / `bash`: Circle class ability `bash`; implemented as tba pack gameplay (issue #25), not lost by conversion
+- `combat_skill` / `consider`: Circle class ability `consider`; implemented as tba pack gameplay (issue #25), not lost by conversion
+- `combat_skill` / `kick`: Circle class ability `kick`; implemented as tba pack gameplay (issue #25), not lost by conversion
+- `combat_skill` / `rescue`: Circle class ability `rescue`; implemented as tba pack gameplay (issue #25), not lost by conversion
 - `no_source_field` / `room coord`: tbaMUD `struct room_data` has no coordinates; `RoomDef::coord` is always `None`
 - `out_of_scope` / `lib/misc/socials`: legacy old-format social file; `CONFIG_NEW_SOCIALS` is YES, so the run-time reads `lib/misc/socials.new` (issue #17)
 - `out_of_scope` / `lib/text/help`: legacy `help.hlp` database; the generated command catalog plus the converted `lib/text` and `lib/misc/messages` topics supersede it (issue #18)

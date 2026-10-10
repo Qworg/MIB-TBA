@@ -11,6 +11,10 @@
 # - `time` — the in-world clock report (`mib_tba::clock`).
 # - `group`, `gtell` (and `;`), `follow`, `unfollow` — the party system
 #   (`mib_tba::party`).
+# - `backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`, `sneak`, `hide`
+#   — the Circle class abilities and stealth state (`mib_tba::skills`, issue
+#   #25). `pick`/`pick_lock` are deliberately **not** here: the stdlib door
+#   handler already claims `pick` for lockpicking.
 #
 # The stdlib router would otherwise reject the verbs as unknown before the
 # genre systems (`mib_tba::spells`, `mib_tba::shops`, `mib_tba::socials`,
@@ -54,4 +58,28 @@ verbs:
     effects: []
   unfollow:
     description: Stop following.
+    effects: []
+  backstab:
+    description: Strike an unwary opponent from hiding with a piercing weapon.
+    effects: []
+  kick:
+    description: Kick an opponent for damage; costs movement.
+    effects: []
+  bash:
+    description: Bash an opponent to the ground; costs movement.
+    effects: []
+  rescue:
+    description: Pull an ally's attacker onto yourself.
+    effects: []
+  assist:
+    description: Join an ally's fight.
+    effects: []
+  consider:
+    description: Judge how dangerous an opponent is.
+    effects: []
+  sneak:
+    description: Move silently for a while.
+    effects: []
+  hide:
+    description: Hide from sight.
     effects: []

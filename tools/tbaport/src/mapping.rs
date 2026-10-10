@@ -386,8 +386,11 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
 /// Whole-world features with no schema home, recorded once per report.
 ///
 /// These are permanent, named drops: a room coordinate Field has no tbaMUD
-/// source, and the Circle combat skills have no engine implementation. They
-/// are listed here rather than repeated on every record.
+/// source, and the Circle combat skills are **not** a schema loss at all —
+/// they are class rules implemented as pack gameplay in `mib_tba::skills`
+/// (GitHub issue #25). They stay in the report so the class table's skill
+/// vocabulary remains traceable, but the reason names the pack implementation
+/// rather than a "non-goal".
 fn global_drops() -> Vec<GlobalDrop> {
     let mut drops = vec![GlobalDrop {
         kind: "no_source_field".to_owned(),
@@ -400,7 +403,10 @@ fn global_drops() -> Vec<GlobalDrop> {
         drops.push(GlobalDrop {
             kind: "combat_skill".to_owned(),
             name: skill.to_owned(),
-            reason: "Circle combat skill with no engine implementation (non-goal)".to_owned(),
+            reason: format!(
+                "Circle class ability `{skill}`; implemented as tba pack gameplay \
+                 (issue #25), not lost by conversion"
+            ),
         });
     }
     drops.push(GlobalDrop {

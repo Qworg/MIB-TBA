@@ -20,7 +20,7 @@ use mib_stdlib::prelude::{Exits, Location, Npc, OnlinePlayers, Player, Session, 
 use crate::content::Position;
 
 use super::ai::TbaAttackerMemory;
-use super::model::TbaCombatant;
+use super::model::{TbaCombatant, TbaHidden};
 use super::progression::TbaRng;
 
 /// One line of room/actor text.
@@ -162,6 +162,9 @@ pub fn handle_combat_commands(
                     combatant.target = Some(target_entity);
                     combatant.position = Position::Fighting;
                 }
+                // Attacking breaks stealth (Circle's `appear()`,
+                // `tbamud/src/fight.c:70-84`).
+                commands.entity(session).remove::<TbaHidden>();
                 // A MEMORY mob records who hit it (doc §5).
                 if let Ok(mut memory) = memories.get_mut(target_entity) {
                     memory.0.insert(session);

@@ -286,10 +286,13 @@ dangling destination and is recorded as `dangling_exit` instead.
 
 `MOB_ISNPC` and `MOB_NOTDEADYET` are loader bookkeeping and are not reported.
 
-The following Circle **combat skills** occur in the source class tables but have
-no engine implementation. They are recorded once in the report's `global_drops`
-(`combat_skill`) and are an explicit non-goal: `backstab`, `kick`, `bash`,
-`rescue`, `assist`, `consider`.
+The following Circle **combat skills** occur in the source class tables. They
+have no schema field (they are class rules, not world data), but they are
+**implemented as pack gameplay** in `mib_tba::skills` (GitHub issue #25). They
+are recorded once in the report's `global_drops` (`combat_skill`) so the class
+vocabulary stays traceable, with a reason that names the implementation rather
+than a non-goal: `backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`.
+The per-class minimum levels live in `tba.classes.skill_levels`.
 
 ### 3.3 Items
 
@@ -481,7 +484,7 @@ before writing, so the report is deterministic. Schema `2`:
     { "kind": "no_source_field", "name": "room coord",
       "reason": "tbaMUD `struct room_data` has no coordinates; `RoomDef::coord` is always `None`" },
     { "kind": "combat_skill", "name": "backstab",
-      "reason": "Circle combat skill with no engine implementation (non-goal)" }
+      "reason": "Circle class ability `backstab`; implemented as tba pack gameplay (issue #25), not lost by conversion" }
   ],
   "totals": {
     "zones": 189, "rooms": 12700, "npcs": 3705, "items": 4765,
@@ -526,7 +529,8 @@ before writing, so the report is deterministic. Schema `2`:
 Finding kinds:
 
 - `global_drops[].kind`: `no_source_field` (a whole-world absence, e.g. room
-  coordinates), `combat_skill` (the explicit combat-skill non-goals),
+  coordinates), `combat_skill` (a Circle class ability with no schema field,
+  implemented as pack gameplay in `mib_tba::skills`, issue #25),
   `out_of_scope` (the legacy `lib/misc/socials` and `lib/text/help` files),
   `social_code` (a `$`-code `perform_act` cannot resolve), `duplicate_social`.
 - `deferred.section`: `triggers`, `trigger_variables`. Quests are no longer
@@ -683,7 +687,10 @@ drops by reason.
   field and are named (`mob_aff`, `mob_espec`, `mob_sex`, `npc_keywords`).
 - **`MOB_SPEC` special procedures** are a non-goal (`mob_flag`), pending #15.
 - **Combat skills** `backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`
-  have no implementation (the explicit `global_drops` non-goal list).
+  are class rules with no world-content field, so they stay in the
+  `global_drops` list (`combat_skill`) — but they are **implemented** as pack
+  gameplay in `mib_tba::skills` (issue #25), and the reason string says so. See
+  `docs/runbook.md` §6/§8 for the commands and their remaining limits.
 - **Item action descriptions and object `E` descriptions** (`stdlib.items` has
   no field). The keyword list and `ITEM_*`/`AFF_*` flags are now modelled.
 - **`APPLY_CLASS/LEVEL/AGE/CHAR_WEIGHT/CHAR_HEIGHT/GOLD/EXP`** have no
