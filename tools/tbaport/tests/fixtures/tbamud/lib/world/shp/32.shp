@@ -1,0 +1,49 @@
+CircleMUD v3.0 Shop File~
+#3200~
+3200
+9999
+-1
+1.15
+0.5
+5
+-1
+%s No such item.~
+%s You don't have that.~
+%s I don't buy such items.~
+%s Too expensive for me!~
+%s You can't afford it!~
+%s That'll be %d coins.~
+%s You'll get %d coins.~
+0
+0
+3200
+0
+3201
+-1
+0
+28
+0
+0
+#3201~
+-1
+1.0
+0.5
+-1
+%s No such item.~
+%s You don't have that.~
+%s I don't buy such items.~
+%s Too expensive for me!~
+%s You can't afford it!~
+%s That'll be %d coins.~
+%s You'll get %d coins.~
+0
+0
+9999
+0
+3201
+-1
+0
+28
+0
+0
+$~

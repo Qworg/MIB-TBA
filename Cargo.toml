@@ -16,7 +16,7 @@
 
 [workspace]
 resolver = "2"
-members = ["code"]
+members = ["code", "tools/tbaport"]
 
 [workspace.package]
 version = "0.1.0"
@@ -29,6 +29,8 @@ license = "MIT"
 mib-protocol = { path = "../MIB/crates/mib-protocol" }
 mib-core = { path = "../MIB/crates/mib-core" }
 mib-content = { path = "../MIB/crates/mib-content" }
+mib-persist = { path = "../MIB/crates/mib-persist" }
+mib-host = { path = "../MIB/crates/mib-host" }
 # `packs/stdlib` is the genre-agnostic MUD base layer. It ships with the engine,
 # not with any one game, which is why this game depends on it rather than
 # carrying its own copy.

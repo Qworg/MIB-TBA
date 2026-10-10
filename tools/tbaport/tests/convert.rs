@@ -1,0 +1,418 @@
+//! End-to-end conversion tests: fixture round-trip, determinism, and a
+//! room/NPC/object count assertion for zone 30 (Midgaard) against the real
+//! tbaMUD source when it is checked out.
+
+#![allow(clippy::expect_used, clippy::unwrap_used)]
+
+use std::path::{Path, PathBuf};
+
+use mib_stdlib::content::{AreasFile, ItemId, ItemsFile, NpcId, NpcsFile, RoomId, RoomsFile};
+use mib_tba::content::{ShopsFile, TbaItemKind, TbaItemsFile, TbaNpcStatsFile, ZonesFile};
+use tbaport::{ConvertOptions, DEFAULT_START_ROOM, convert, emit::render};
+
+fn fixture_root() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/tbamud")
+}
+
+/// The sibling tbaMUD checkout, or `None` when it is not present.
+fn real_tbamud() -> Option<PathBuf> {
+    let candidate = std::env::var("TBAMUD_SOURCE")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| PathBuf::from("/home/qworg/Development/tbamud"));
+    candidate
+        .join("lib/world/zon/30.zon")
+        .is_file()
+        .then_some(candidate)
+}
+
+fn count_records(path: &Path) -> usize {
+    let Ok(text) = std::fs::read_to_string(path) else {
+        return 0;
+    };
+    // A record header is a whole line `#<digits>`. Loose `#`-prefix matching
+    // would also count room names/descriptions that begin with `#`.
+    text.lines()
+        .filter(|line| {
+            line.strip_prefix('#')
+                .is_some_and(|rest| !rest.is_empty() && rest.chars().all(|c| c.is_ascii_digit()))
+        })
+        .count()
+}
+
+#[test]
+fn fixture_bundle_is_schema_exact_and_deterministic() {
+    let options = ConvertOptions {
+        source_root: fixture_root(),
+        only: Some(30),
+        start_room: Some(DEFAULT_START_ROOM),
+    };
+
+    let first = convert(&options).expect("fixture converts");
+    assert_eq!(first.report.totals.rooms, 3);
+    assert_eq!(first.report.totals.npcs, 2);
+    assert_eq!(first.report.totals.items, 2);
+    assert_eq!(first.report.totals.zone_commands, 7);
+    assert_eq!(first.report.totals.dangling, 0);
+    assert_eq!(first.report.totals.deferred, 4);
+
+    // Every emitted file parses back into its real type and re-serialises to
+    // exactly the bytes that were written (modulo the provenance header).
+    let rendered = render(&first.bundle).expect("renders");
+    for (name, yaml) in &rendered {
+        let body = yaml
+            .split_once('\n')
+            .map(|(_, rest)| rest)
+            .expect("header line");
+        match *name {
+            "stdlib.areas.yaml" => roundtrip::<AreasFile>(body),
+            "stdlib.rooms.yaml" => roundtrip::<RoomsFile>(body),
+            "stdlib.npcs.yaml" => roundtrip::<NpcsFile>(body),
+            "stdlib.items.yaml" => roundtrip::<ItemsFile>(body),
+            "tba.zones.yaml" => roundtrip::<ZonesFile>(body),
+            "tba.npc_stats.yaml" => roundtrip::<TbaNpcStatsFile>(body),
+            "tba.items.yaml" => roundtrip::<TbaItemsFile>(body),
+            "tba.shops.yaml" => roundtrip::<ShopsFile>(body),
+            other => panic!("unexpected emitted file {other}"),
+        }
+    }
+
+    // Two runs over the same source are byte-identical, YAML and report.
+    let second = convert(&options).expect("fixture converts again");
+    let first_yaml = render(&first.bundle).unwrap();
+    let second_yaml = render(&second.bundle).unwrap();
+    assert_eq!(first_yaml, second_yaml, "YAML must be byte-identical");
+    assert_eq!(
+        serde_json::to_string(&first.report).unwrap(),
+        serde_json::to_string(&second.report).unwrap(),
+        "drop report must be byte-identical"
+    );
+}
+
+#[test]
+fn fixture_content_maps_the_expected_fields() {
+    let options = ConvertOptions {
+        source_root: fixture_root(),
+        only: Some(30),
+        start_room: Some(DEFAULT_START_ROOM),
+    };
+    let conversion = convert(&options).expect("fixture converts");
+
+    let guard = conversion
+        .bundle
+        .npc_stats
+        .npc_stats
+        .get(&NpcId::from("tba_npc_3000"))
+        .expect("guard stats");
+    assert_eq!(guard.hp.to_string(), "3d8+20");
+    assert_eq!(guard.hitroll, 20 - 3);
+    assert_eq!(guard.thaco, 20);
+    assert_eq!(guard.armor_class, 20);
+    assert_eq!(guard.gold, 20);
+    assert_eq!(guard.experience, 100);
+
+    let sword = conversion
+        .bundle
+        .tba_items
+        .items
+        .get(&ItemId::from("tba_item_3000"))
+        .expect("sword def");
+    assert_eq!(sword.affects.len(), 2);
+    assert_eq!(sword.cost, 50);
+    // `a` == ITEM_WEAR_TAKE only; TAKE is not a slot.
+    assert!(sword.slots.is_empty());
+
+    let bag = conversion
+        .bundle
+        .items
+        .items
+        .get(&ItemId::from("tba_item_3001"))
+        .expect("bag def");
+    assert_eq!(bag.container.as_ref().map(|c| c.capacity), Some(50));
+
+    let zone = conversion.bundle.zones.zones.get(&30).expect("zone 30");
+    assert_eq!(zone.name, "Fixture Zone");
+    assert_eq!(zone.commands.len(), 7);
+
+    let shop = conversion
+        .bundle
+        .shops
+        .shops
+        .get(&NpcId::from("tba_npc_3000"))
+        .expect("fixture shop");
+    assert_eq!(shop.produce, vec![ItemId::from("tba_item_3000")]);
+    assert_eq!(shop.buy_multiplier, 1.15);
+    assert_eq!(shop.sell_multiplier, 0.15);
+    assert_eq!(
+        shop.buy_kinds,
+        vec![
+            TbaItemKind::Scroll,
+            TbaItemKind::Wand,
+            TbaItemKind::Staff,
+            TbaItemKind::Potion
+        ]
+    );
+}
+
+/// TBA-E09's gold prototype is a genre rule, not a source object, so the
+/// converter must add it to every converted world.
+#[test]
+fn gold_prototype_is_always_emitted() {
+    let conversion = convert(&ConvertOptions {
+        source_root: fixture_root(),
+        only: Some(30),
+        start_room: Some(DEFAULT_START_ROOM),
+    })
+    .expect("fixture converts");
+
+    let id = ItemId::from("tba_gold");
+    let item = conversion
+        .bundle
+        .items
+        .items
+        .get(&id)
+        .expect("gold is in stdlib.items");
+    assert_eq!(item.name, "a pile of gold coins");
+    assert_eq!(item.value, Some(1));
+
+    let tba = conversion
+        .bundle
+        .tba_items
+        .items
+        .get(&id)
+        .expect("gold is in tba.items");
+    assert_eq!(tba.kind, TbaItemKind::Money);
+
+    // It survives render + reparse like every other item.
+    let rendered = render(&conversion.bundle).expect("renders");
+    let (_, yaml) = rendered
+        .iter()
+        .find(|(name, _)| *name == "stdlib.items.yaml")
+        .expect("stdlib items file");
+    let body = yaml.split_once('\n').map(|(_, rest)| rest).expect("header");
+    let parsed: ItemsFile = serde_yaml::from_str(body).expect("reparses");
+    assert!(
+        parsed.items.contains_key(&id),
+        "gold survives the round-trip"
+    );
+}
+
+#[test]
+fn dangling_references_are_dropped_and_reported() {
+    // Zone 31's fixture deliberately names a missing door key (item 9999), a
+    // missing exit destination (room 9998) and missing reset targets.
+    let options = ConvertOptions {
+        source_root: fixture_root(),
+        only: Some(31),
+        start_room: None,
+    };
+    let conversion = convert(&options).expect("zone 31 converts");
+
+    // The door survives, but its key is gone; the missing destination exit is
+    // removed entirely.
+    let room = conversion
+        .bundle
+        .rooms
+        .rooms
+        .get(&RoomId::from("tba.3100"))
+        .expect("test room");
+    assert_eq!(room.exits.len(), 1, "the dangling east exit is dropped");
+    let north = room.exits.get("north").expect("north exit");
+    assert_eq!(north.to, RoomId::from("tba.3101"));
+    let door = north.door.as_ref().expect("north is a door");
+    assert!(
+        door.key.is_none(),
+        "a dangling door key must not reach YAML"
+    );
+
+    // The two dangling resets are dropped; the valid door reset is kept.
+    let zone = conversion.bundle.zones.zones.get(&31).expect("zone 31");
+    assert_eq!(zone.commands.len(), 1);
+
+    let kinds: Vec<&str> = conversion.report.zones[0]
+        .dangling
+        .iter()
+        .map(|entry| entry.kind.as_str())
+        .collect();
+    assert!(kinds.contains(&"dangling_door_key"), "kinds: {kinds:?}");
+    assert!(kinds.contains(&"dangling_exit"), "kinds: {kinds:?}");
+    assert!(kinds.contains(&"dangling_reset_item"), "kinds: {kinds:?}");
+    assert!(kinds.contains(&"dangling_reset_mob"), "kinds: {kinds:?}");
+
+    // No emitted section names any of the missing ids.
+    let yaml = render(&conversion.bundle).unwrap();
+    for (_, body) in &yaml {
+        assert!(!body.contains("tba_item_9999"), "dangling item id leaked");
+        assert!(!body.contains("tba_npc_9999"), "dangling npc id leaked");
+        assert!(!body.contains("tba.9998"), "dangling room id leaked");
+    }
+}
+
+#[test]
+fn shop_references_are_dropped_and_reported() {
+    // Zone 32's fixture has an existing keeper (3200) whose shop names a
+    // missing produce item (9999), and a second shop whose keeper (9999) was
+    // never converted.
+    let conversion = convert(&ConvertOptions {
+        source_root: fixture_root(),
+        only: Some(32),
+        start_room: None,
+    })
+    .expect("zone 32 converts");
+
+    assert_eq!(
+        conversion.bundle.shops.shops.len(),
+        1,
+        "only the valid-keeper shop survives"
+    );
+    let shop = conversion
+        .bundle
+        .shops
+        .shops
+        .get(&NpcId::from("tba_npc_3200"))
+        .expect("keeper 3200");
+    assert_eq!(
+        shop.produce,
+        vec![ItemId::from("tba_item_3200")],
+        "the missing produce id is dropped"
+    );
+
+    let kinds: Vec<&str> = conversion.report.zones[0]
+        .dangling
+        .iter()
+        .map(|entry| entry.kind.as_str())
+        .collect();
+    assert!(kinds.contains(&"dangling_shop_produce"), "kinds: {kinds:?}");
+    assert!(kinds.contains(&"dangling_shop_keeper"), "kinds: {kinds:?}");
+
+    let yaml = render(&conversion.bundle).unwrap();
+    let (_, shops_yaml) = yaml
+        .iter()
+        .find(|(name, _)| *name == "tba.shops.yaml")
+        .expect("shops file");
+    assert!(
+        !shops_yaml.contains("tba_item_9999"),
+        "dangling produce leaked"
+    );
+    assert!(
+        !shops_yaml.contains("tba_npc_9999"),
+        "dangling keeper leaked"
+    );
+}
+
+#[test]
+fn zone_30_counts_match_the_real_source() {
+    let Some(root) = real_tbamud() else {
+        eprintln!("skipping: tbaMUD source not checked out (set TBAMUD_SOURCE)");
+        return;
+    };
+    let options = ConvertOptions {
+        source_root: root.clone(),
+        only: Some(30),
+        start_room: Some(DEFAULT_START_ROOM),
+    };
+    let conversion = convert(&options).expect("zone 30 converts");
+
+    let world = root.join("lib/world");
+    assert_eq!(
+        conversion.report.totals.rooms,
+        count_records(&world.join("wld/30.wld")),
+        "room count must match 30.wld"
+    );
+    assert_eq!(
+        conversion.report.totals.npcs,
+        count_records(&world.join("mob/30.mob")),
+        "npc count must match 30.mob"
+    );
+    assert_eq!(
+        conversion.report.totals.items,
+        count_records(&world.join("obj/30.obj")),
+        "item count must match 30.obj"
+    );
+
+    // Midgaard's known totals, pinned so a silent parse regression is loud.
+    assert_eq!(conversion.report.totals.rooms, 58);
+    assert_eq!(conversion.report.totals.npcs, 46);
+    assert_eq!(conversion.report.totals.items, 63);
+
+    // The default start room (3001) lives in Midgaard and must be tagged.
+    assert_eq!(conversion.report.start_room, Some(DEFAULT_START_ROOM));
+    let temple = conversion
+        .bundle
+        .rooms
+        .rooms
+        .get(&RoomId::from("tba.3001"))
+        .expect("Temple of Midgaard");
+    assert!(
+        temple
+            .tags
+            .contains(&mib_stdlib::content::RoomTag::StartRoom)
+    );
+}
+
+/// `--start-room` defaults to 3001 (Circle's `CONFIG_MORTAL_START`): the room
+/// that vnum names is tagged `start_room`, exactly once, so new characters
+/// have a spawn point. An absent vnum is a no-op recorded as `None`.
+#[test]
+fn default_start_room_is_tagged_once() {
+    use mib_stdlib::content::RoomTag;
+
+    assert_eq!(DEFAULT_START_ROOM, 3001, "Circle's CONFIG_MORTAL_START");
+
+    // The fixture's zone 30 has a room 3001.
+    let conversion = convert(&ConvertOptions {
+        source_root: fixture_root(),
+        only: Some(30),
+        start_room: Some(DEFAULT_START_ROOM),
+    })
+    .expect("fixture converts");
+    assert_eq!(conversion.report.start_room, Some(3001));
+    assert!(
+        conversion
+            .bundle
+            .rooms
+            .rooms
+            .get(&RoomId::from("tba.3001"))
+            .expect("room 3001")
+            .tags
+            .contains(&RoomTag::StartRoom)
+    );
+    assert_eq!(
+        conversion
+            .bundle
+            .rooms
+            .rooms
+            .values()
+            .filter(|room| room.tags.contains(&RoomTag::StartRoom))
+            .count(),
+        1,
+        "exactly one room is tagged"
+    );
+
+    // A requested room the converted selection does not contain is a clean
+    // no-op, reported as `None` rather than a hard failure.
+    let absent = convert(&ConvertOptions {
+        source_root: fixture_root(),
+        only: Some(31),
+        start_room: Some(DEFAULT_START_ROOM),
+    })
+    .expect("zone 31 converts despite the absent start room");
+    assert_eq!(absent.report.start_room, None);
+    assert!(
+        absent
+            .bundle
+            .rooms
+            .rooms
+            .values()
+            .all(|room| !room.tags.contains(&RoomTag::StartRoom)),
+        "no room is tagged when the requested start room is absent"
+    );
+}
+
+fn roundtrip<T>(body: &str)
+where
+    T: serde::Serialize + serde::de::DeserializeOwned,
+{
+    let parsed: T = serde_yaml::from_str(body).expect("emitted YAML deserialises");
+    let again = serde_yaml::to_string(&parsed).expect("re-serialises");
+    assert_eq!(body, again, "round-trip must be byte-stable");
+}
