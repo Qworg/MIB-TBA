@@ -81,8 +81,19 @@ fn death_penalty_gold_moves_into_the_corpse() {
         .id();
 
     // The real composition orders `apply_death_penalty` before the stdlib
-    // corpse pass; `.chain()` is that same edge for this isolated app.
-    app.add_systems(Update, (apply_death_penalty, handle_player_death).chain());
+    // corpse pass, and the gold-pickup pass after it. `.chain()` is those same
+    // edges for this isolated app: wiring `credit_gold_pickups` here proves the
+    // freshly dropped pile is swept into the corpse rather than credited
+    // straight back into the purse.
+    app.add_systems(
+        Update,
+        (
+            apply_death_penalty,
+            handle_player_death,
+            credit_gold_pickups,
+        )
+            .chain(),
+    );
 
     app.world_mut().write_message(PlayerDefeated { player });
     app.update();
@@ -124,4 +135,77 @@ fn death_penalty_gold_moves_into_the_corpse() {
 
     // 3. The player respawned at the sanctuary.
     assert_eq!(app.world().get::<Location>(player).unwrap().room, start);
+}
+
+/// The entity that should issue the `get` this frame.
+#[derive(Resource)]
+struct GoldGetter(Entity);
+
+#[allow(clippy::too_many_arguments)]
+fn get_gold(
+    getter: Res<GoldGetter>,
+    players: Query<(&Player, &Location)>,
+    items: ItemQuery<'_, '_>,
+    containers: ContainerQuery<'_, '_>,
+    mut commands: Commands,
+    mut events: MessageWriter<QuestEvent>,
+    mut output: MessageWriter<OutputEvent>,
+) {
+    handle_get(
+        getter.0,
+        "gold",
+        None,
+        &players,
+        &items,
+        &containers,
+        &mut commands,
+        &mut events,
+        &mut output,
+    );
+}
+
+#[test]
+fn getting_a_gold_item_credits_the_purse_and_removes_the_item() {
+    let mut app = App::new();
+    app.add_message::<OutputEvent>();
+    app.add_message::<QuestEvent>();
+
+    let room = app.world_mut().spawn_empty().id();
+    let player = app
+        .world_mut()
+        .spawn((
+            Player {
+                account_id: 3,
+                name: "Hero".into(),
+            },
+            Location { room },
+            TbaGold(5),
+        ))
+        .id();
+    // A pile on the floor of the player's room, exactly what `get` picks up.
+    let pile = app
+        .world_mut()
+        .spawn((
+            Item {
+                def_id: ItemId::from(GOLD_ITEM_ID),
+                name: GOLD_ITEM_NAME.to_owned(),
+                description: GOLD_ITEM_DESCRIPTION.to_owned(),
+                value: Some(37),
+                tags: Vec::new(),
+            },
+            Location { room },
+        ))
+        .id();
+    app.insert_resource(GoldGetter(player));
+    // The real composition orders the pickup pass after `route_commands`; here
+    // `get_gold` plays that role and `credit_gold_pickups` follows it.
+    app.add_systems(Update, (get_gold, credit_gold_pickups).chain());
+
+    app.update();
+
+    assert_eq!(app.world().get::<TbaGold>(player).unwrap().0, 42);
+    assert!(
+        app.world().get_entity(pile).is_err(),
+        "the pile is consumed"
+    );
 }

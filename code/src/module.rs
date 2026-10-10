@@ -19,19 +19,20 @@ use mib_content::prelude::{MibModule, PackAsset, SectionRegistry, section_defs};
 use mib_core::prelude::*;
 use mib_persist::prelude::DocKind;
 use mib_stdlib::prelude::{
-    CharacterCreated, ItemId, NpcId, PlayerDefeated, SaveRegistry, attach_pending_holders,
+    CharacterCreated, ItemId, NpcId, PlayerDefeated, SaveRegistry, SaveSet, attach_pending_holders,
     handle_player_death, maintain_room_occupants, route_commands,
 };
 use smol_str::SmolStr;
 
 use crate::combat::{
-    NpcDefeated, TbaCombatant, TbaGold, TbaProgress, TbaRng, TbaRound, TbaRoundClock,
+    NpcDefeated, TbaAlignment, TbaCombatant, TbaGold, TbaProgress, TbaRng, TbaRound, TbaRoundClock,
 };
 use crate::content::{
     ShopDef, ShopsSection, SpellDef, SpellsSection, TbaClassDef, TbaClassesSection, TbaItemDef,
     TbaItemsSection, TbaNpcStats, TbaNpcStatsSection, ZoneDef, ZonesSection,
 };
 use crate::equipment::TbaEquipmentSave;
+use crate::items::TbaObjectClock;
 use crate::zones::ZoneTracker;
 
 /// Module id; matches `[code] module = "tba"` in `packs/tba/pack.toml`.
@@ -132,6 +133,7 @@ impl Plugin for TbaPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<TbaRng>();
         app.init_resource::<TbaRoundClock>();
+        app.init_resource::<TbaObjectClock>();
         app.init_schedule(TbaRound);
 
         // Each component owner owns its schema (the classic-rpg idiom): the
@@ -142,8 +144,12 @@ impl Plugin for TbaPlugin {
             let mut registry = app.world_mut().resource_mut::<SaveRegistry>();
             registry.register::<TbaProgress>("TbaProgress", DocKind::Player);
             registry.register::<TbaCombatant>("TbaCombatant", DocKind::Player);
+            registry.register::<TbaAlignment>("TbaAlignment", DocKind::Player);
             registry.register::<TbaGold>("TbaGold", DocKind::Player);
             registry.register::<TbaEquipmentSave>("TbaEquipment", DocKind::Player);
+            // Item timers are item-scoped; `DocKind::Item` is already writable
+            // because the stdlib registers `Item` under it.
+            crate::items::register(&mut registry);
         }
 
         // Register the messages the gameplay reads so a bare `TbaPlugin`
@@ -168,6 +174,7 @@ impl Plugin for TbaPlugin {
                 crate::shops::handle_shop_commands,
                 crate::equipment::handle_equipment_commands,
                 crate::equipment::recompute_equipment_affects,
+                crate::equipment::recompute_npc_equipment_affects,
                 crate::equipment::sync_wielded_weapon,
             )
                 .chain()
@@ -186,6 +193,19 @@ impl Plugin for TbaPlugin {
             crate::combat::apply_death_penalty
                 .in_set(BridgeSet::Game)
                 .before(handle_player_death),
+        );
+
+        // Gold pickups: a `tba_gold` pile a player carries becomes purse gold
+        // and the pile is consumed. It must run after `route_commands` (so a
+        // `get` this frame is visible) and after `handle_player_death` (so the
+        // death penalty's own carried pile has already been swept into the
+        // corpse — crediting it back would undo the penalty).
+        app.add_systems(
+            Update,
+            crate::combat::credit_gold_pickups
+                .in_set(BridgeSet::Game)
+                .after(route_commands)
+                .after(handle_player_death),
         );
 
         // Equipment relink: once the stdlib has applied the player bundle and
@@ -217,20 +237,25 @@ impl Plugin for TbaPlugin {
             crate::combat::award_kill_rewards.after(crate::combat::run_due_round),
         );
 
-        // World simulation on the fixed tick: reset zones (spawn NPCs), give
-        // each NPC its vitals, then run room-local aggro. Ordered after the
-        // stdlib spatial index so `RoomOccupants` is current.
+        // World simulation on the fixed tick: reset zones (spawn NPCs), attach
+        // and age object timers, give each NPC its vitals, then run room-local
+        // aggro. Ordered after the stdlib spatial index so `RoomOccupants` is
+        // current, and before the save pipeline so a timer that changed this
+        // tick is persisted with the tick that changed it.
         app.add_systems(
             FixedUpdate,
             (
                 crate::zones::zone_reset_system,
+                crate::items::attach_item_timers,
+                crate::items::tick_item_timers,
                 crate::combat::npc_combatant_system,
                 crate::combat::auto_engage_system,
                 crate::combat::helper_system,
                 crate::combat::pursuit_system,
             )
                 .chain()
-                .after(maintain_room_occupants),
+                .after(maintain_room_occupants)
+                .before(SaveSet),
         );
     }
 }
@@ -281,8 +306,10 @@ mod tests {
         let registered = registry.registered();
         assert!(registered.contains(&"TbaProgress"), "{registered:?}");
         assert!(registered.contains(&"TbaCombatant"), "{registered:?}");
+        assert!(registered.contains(&"TbaAlignment"), "{registered:?}");
         assert!(registered.contains(&"TbaGold"), "{registered:?}");
         assert!(registered.contains(&"TbaEquipment"), "{registered:?}");
+        assert!(registered.contains(&"TbaItemTimer"), "{registered:?}");
         assert!(
             registry.kinds().contains(&DocKind::Player),
             "player-scoped docs must be writable"

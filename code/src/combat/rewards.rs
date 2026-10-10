@@ -19,7 +19,7 @@ use mib_stdlib::prelude::{NpcKey, Player};
 use crate::content::TbaClassDef;
 use crate::module::TbaContent;
 
-use super::model::{TbaGold, TbaProgress};
+use super::model::{TbaAlignment, TbaGold, TbaProgress};
 use super::progression::level_for_xp;
 
 /// A defeated NPC, with the reward data the killer is owed.
@@ -36,6 +36,12 @@ pub struct NpcDefeated {
     pub experience: u64,
     /// Gold the prototype yields (`tba.npc_stats.gold`), or 0.
     pub gold: u32,
+    /// The victim's moral alignment (`tba.npc_stats.alignment`), or 0.
+    ///
+    /// Carried on the message because the killer's alignment shift (Circle's
+    /// `change_alignment`) reads the victim's alignment, and the victim is
+    /// despawned in the same frame.
+    pub alignment: i32,
 }
 
 /// What one kill changed for a character.
@@ -94,6 +100,32 @@ pub fn reward_for(content: &TbaContent, npc: &NpcKey) -> (u64, u32) {
         .unwrap_or((0, 0))
 }
 
+/// The moral alignment an NPC prototype carries, or `0` (neutral) when it has
+/// no `tba.npc_stats` entry.
+pub fn alignment_for(content: &TbaContent, npc: &NpcKey) -> i32 {
+    content
+        .npc_stats
+        .get(&npc.0)
+        .map(|stats| stats.alignment)
+        .unwrap_or(0)
+}
+
+/// Circle's alignment shift on a kill (`tbamud/src/fight.c:264`,
+/// `change_alignment`):
+///
+/// ```text
+/// GET_ALIGNMENT(killer) += (-GET_ALIGNMENT(victim) - GET_ALIGNMENT(killer)) / 16
+/// ```
+///
+/// i.e. the killer moves one sixteenth of the way toward the *opposite* of the
+/// victim's alignment. Integer division truncates toward zero exactly as C
+/// does. A neutral killer defeating a neutral victim therefore stays at `0`,
+/// while a good victim (positive) drags the killer negative and an evil victim
+/// (negative) drags the killer positive.
+pub fn alignment_after_kill(killer: i32, victim: i32) -> i32 {
+    killer + (-victim - killer) / 16
+}
+
 /// `Update`, after the round runner: award every NPC defeated this frame.
 ///
 /// Melee kills are emitted by `resolve_rounds` on the `TbaRound` schedule, and
@@ -101,17 +133,24 @@ pub fn reward_for(content: &TbaContent, npc: &NpcKey) -> (u64, u32) {
 /// this system, which the plugin orders after `run_due_round`.
 pub fn award_kill_rewards(
     mut defeated: MessageReader<NpcDefeated>,
-    mut players: Query<(&mut TbaProgress, &mut TbaGold), With<Player>>,
+    mut players: Query<(&mut TbaProgress, &mut TbaGold, Option<&mut TbaAlignment>), With<Player>>,
     content: Option<Res<TbaContent>>,
     mut output: MessageWriter<OutputEvent>,
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
     for event in defeated.read() {
-        let Ok((mut progress, mut gold)) = players.get_mut(event.killer) else {
+        let Ok((mut progress, mut gold, mut alignment)) = players.get_mut(event.killer) else {
             // An NPC (or an uninitialised entity) killed it — no reward to pay.
             continue;
         };
+        // Circle shifts alignment alongside the XP/gold grant
+        // (`tbamud/src/fight.c:350`, `change_alignment`). A killer that has no
+        // `TbaAlignment` (a bare test fixture) simply skips the shift; player
+        // init always inserts one.
+        if let Some(alignment) = alignment.as_deref_mut() {
+            alignment.0 = alignment_after_kill(alignment.0, event.alignment);
+        }
         let class = content.classes.get(&progress.class);
         let reward = grant_kill(
             &mut progress,
@@ -244,5 +283,64 @@ mod tests {
             (42, 9)
         );
         assert_eq!(reward_for(&content, &NpcKey(NpcId::from("absent"))), (0, 0));
+    }
+
+    #[test]
+    fn alignment_for_reads_npc_stats_and_defaults_neutral() {
+        use crate::content::TbaNpcStats;
+        use mib_stdlib::prelude::NpcId;
+        let content = TbaContent {
+            npc_stats: std::collections::BTreeMap::from([(
+                NpcId::from("angel"),
+                TbaNpcStats {
+                    hp: Dice::constant(10),
+                    level: 1,
+                    hitroll: 0,
+                    damroll: 0,
+                    armor_class: 100,
+                    thaco: 20,
+                    alignment: 900,
+                    gold: 0,
+                    experience: 0,
+                    default_position: crate::content::Position::Standing,
+                    behaviour: Vec::new(),
+                },
+            )]),
+            ..TbaContent::default()
+        };
+        assert_eq!(alignment_for(&content, &NpcKey(NpcId::from("angel"))), 900);
+        assert_eq!(alignment_for(&content, &NpcKey(NpcId::from("absent"))), 0);
+    }
+
+    #[test]
+    fn alignment_after_kill_is_circles_one_sixteenth_rule() {
+        // A neutral killer defeating a good victim moves negative; the source
+        // truncates integer division toward zero (`-1000 / 16 == -62`).
+        assert_eq!(alignment_after_kill(0, 1000), -62);
+        // An evil victim drags the killer positive.
+        assert_eq!(alignment_after_kill(0, -1000), 62);
+        // A neutral killer defeating a neutral victim is unchanged.
+        assert_eq!(alignment_after_kill(0, 0), 0);
+        // Repeated good kills keep marching evil and converge to within the
+        // truncation window of the target (integer division stalls once the
+        // remaining distance is under 16).
+        let mut killer = 0;
+        let mut previous = 0;
+        for _ in 0..256 {
+            previous = killer;
+            killer = alignment_after_kill(killer, 1000);
+        }
+        assert!(killer <= previous, "never turns back toward good");
+        assert!(
+            (-1000 - killer).abs() <= 16,
+            "converges on the opposite of the victim, got {killer}"
+        );
+    }
+
+    #[test]
+    fn alignment_round_trips_through_serde() {
+        let json = serde_json::to_string(&TbaAlignment(-437)).expect("serialize");
+        let back: TbaAlignment = serde_json::from_str(&json).expect("deserialize");
+        assert_eq!(back, TbaAlignment(-437));
     }
 }

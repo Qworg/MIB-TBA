@@ -22,7 +22,8 @@ use mib_stdlib::prelude::{
     spawn_item_in_room, spawn_npc_from_content,
 };
 
-use crate::content::{DoorReset, ResetMode, ZoneCommand, ZoneDef};
+use crate::content::{DoorReset, ResetMode, WearSlot, ZoneCommand, ZoneDef};
+use crate::equipment::TbaEquipment;
 
 /// Per-zone reset age, keyed in the same order as [`TbaContent::zones`].
 ///
@@ -144,16 +145,21 @@ fn execute_zone(world: &mut World, def: &ZoneDef) {
                 }
             }
             ZoneCommand::EquipItem {
-                item, max_in_world, ..
+                item,
+                slot,
+                max_in_world,
             } => {
-                // The 18-slot equipment model (TBA-E28) lands in the next
-                // phase; until it does the item is carried so the reset's
-                // referential effect is still visible.
+                // An `E` reset equips the mob placed by the preceding `M`, the
+                // way Circle's `reset_zone` does (`db.c`): the item is spawned
+                // carried (a normal, saveable entity that is not swept away)
+                // and recorded in the mob's runtime `TbaEquipment` map. The
+                // affect recompute and `WieldedWeapon` sync then pick it up.
                 let Some(mob_entity) = last_mob else { continue };
                 if under_limit(*max_in_world, || live_item_count(world, item))
                     && let Some(def) = find_item_def(world, item)
                 {
-                    spawn_item_carried_by_entity(world, mob_entity, item, &def);
+                    let item_entity = spawn_item_carried_by_entity(world, mob_entity, item, &def);
+                    equip_mob_item(world, mob_entity, *slot, item_entity);
                 }
             }
             ZoneCommand::PutItem {
@@ -185,6 +191,20 @@ fn execute_zone(world: &mut World, def: &ZoneDef) {
 /// count must be below the limit.
 fn under_limit(max_in_world: u32, count: impl FnOnce() -> usize) -> bool {
     max_in_world == 0 || count() < max_in_world as usize
+}
+
+/// Record `item_entity` in `mob`'s runtime worn map at `slot`, creating the
+/// [`TbaEquipment`] component on first equip. The item stays `CarriedBy(mob)`
+/// so it remains a normal entity the save pipeline and the stdlib sweeps can
+/// see; the map is the authoritative "worn" overlay.
+fn equip_mob_item(world: &mut World, mob: Entity, slot: WearSlot, item_entity: Entity) {
+    if let Some(mut equipment) = world.get_mut::<TbaEquipment>(mob) {
+        equipment.slots.insert(slot, item_entity);
+        return;
+    }
+    let mut slots = std::collections::HashMap::new();
+    slots.insert(slot, item_entity);
+    world.entity_mut(mob).insert(TbaEquipment { slots });
 }
 
 /// Live NPC instances of `mob` (a despawned NPC is no longer an entity).

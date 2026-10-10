@@ -24,11 +24,15 @@ pub const GOOD_ALIGNMENT: i32 = 350;
 
 /// A combatant's moral alignment on Circle's `-1000..=1000` scale.
 ///
-/// It is runtime state derived from content (a class or a later alignment
-/// system); alignment-conditional aggro (`AggrEvil`/`AggrGood`/`AggrNeutral`,
-/// [`crate::content::NpcBehaviour`]) reads it. A missing component is treated
-/// as neutral (`0`).
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Component)]
+/// It is play state: a fresh character starts neutral (`0`) and every kill
+/// shifts it toward the opposite of the victim's alignment (Circle's
+/// `change_alignment`). Alignment-conditional aggro (`AggrEvil`/`AggrGood`/
+/// `AggrNeutral`, [`crate::content::NpcBehaviour`]) reads it. Registered with
+/// the stdlib [`SaveRegistry`](mib_stdlib::prelude::SaveRegistry) under
+/// [`DocKind::Player`](mib_persist::prelude::DocKind::Player), so a character's
+/// moral standing survives a restart. A missing component is treated as
+/// neutral (`0`).
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Component, Serialize, Deserialize)]
 pub struct TbaAlignment(pub i32);
 
 /// Coins carried by a player.

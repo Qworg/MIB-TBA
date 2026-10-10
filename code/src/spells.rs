@@ -32,7 +32,7 @@ use mib_stdlib::prelude::{Location, Npc, NpcKey, Player, PlayerDefeated, Session
 use smol_str::SmolStr;
 
 use crate::combat::commands::{broadcast, deny, entity_name, find_target_in_room, text};
-use crate::combat::rewards::{NpcDefeated, reward_for};
+use crate::combat::rewards::{NpcDefeated, alignment_for, reward_for};
 use crate::combat::{TbaCombatant, TbaProgress, TbaRng, default_class};
 use crate::content::{AffectDef, Position, SpellDef, SpellKind, SpellTarget};
 use crate::module::TbaContent;
@@ -500,11 +500,17 @@ pub fn handle_cast_command(
                         .ok()
                         .map(|key| reward_for(content, key))
                         .unwrap_or((0, 0));
+                    let alignment = keys
+                        .get(target)
+                        .ok()
+                        .map(|key| alignment_for(content, key))
+                        .unwrap_or(0);
                     npc_defeated.write(NpcDefeated {
                         victim: target,
                         killer: session,
                         experience,
                         gold,
+                        alignment,
                     });
                     commands.entity(target).despawn();
                 }

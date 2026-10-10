@@ -44,7 +44,9 @@ use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{CarriedBy, Item, ItemId, Player, SaveId, Session, SessionState};
 use serde::{Deserialize, Serialize};
 
-use crate::combat::{TbaCombatant, TbaProgress, WieldedWeapon, default_class, derive_vitals};
+use crate::combat::{
+    TbaCombatant, TbaNpcBase, TbaProgress, WieldedWeapon, default_class, derive_vitals,
+};
 use crate::content::{AffectDef, AffectLocation, TbaItemDef, TbaItemKind, WearSlot};
 use crate::module::TbaContent;
 use crate::spells::TbaBuffs;
@@ -654,18 +656,57 @@ pub fn recompute_equipment_affects(
     }
 }
 
+/// Rebuild every equipped NPC's [`TbaCombatant`] from its captured
+/// [`TbaNpcBase`] plus worn-item affects.
+///
+/// The NPC analogue of [`recompute_equipment_affects`]: it exists separately
+/// because an NPC's base is rolled once from `tba.npc_stats` (see
+/// [`TbaNpcBase`]) rather than derived from a class/level, so it cannot reuse
+/// [`derive_vitals`]. The same no-stacking rule applies — the base is the
+/// captured block, never the current one — and the `PartialEq` guard keeps an
+/// unchanged NPC from being marked dirty. NPCs without [`TbaEquipment`] are
+/// skipped, so the cost is bounded by the number of equipped mobs, not by the
+/// whole world. `Without<Player>` keeps the player path (class/level based) and
+/// this one disjoint.
+#[allow(clippy::type_complexity)] // one ECS view per optional NPC component.
+pub fn recompute_npc_equipment_affects(
+    content: Option<Res<TbaContent>>,
+    npcs: Query<(Entity, &TbaNpcBase, &TbaEquipment, &mut TbaCombatant), Without<Player>>,
+    items: Query<&Item>,
+) {
+    let empty = TbaContent::default();
+    let content = content.as_deref().unwrap_or(&empty);
+    for (_npc, base, equipment, mut combatant) in npcs {
+        let worn: Vec<&TbaItemDef> = equipment
+            .slots
+            .values()
+            .filter_map(|item_entity| {
+                let prototype = items.get(*item_entity).ok()?;
+                content.items.get(&prototype.def_id)
+            })
+            .collect();
+        let next = recompute_combatant_full(&combatant, base.0.clone(), worn, std::iter::empty());
+        if *combatant != next {
+            *combatant = next;
+        }
+    }
+}
+
 /// Keep [`WieldedWeapon`] present exactly when the [`WearSlot::Wield`] holds a
 /// `tba.items` weapon. Any other occupant (or an empty hand, or a missing
 /// prototype) removes it.
+///
+/// Covers players and NPCs alike: [`WieldedWeapon`] is the same combat seam
+/// for both, and a zone-reset `E` can put a weapon in a mob's hand.
 pub fn sync_wielded_weapon(
     content: Option<Res<TbaContent>>,
-    players: Query<(Entity, &TbaEquipment, Option<&WieldedWeapon>), With<Player>>,
+    combatants: Query<(Entity, &TbaEquipment, Option<&WieldedWeapon>)>,
     items: Query<&Item>,
     mut commands: Commands,
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
-    for (player, equipment, wielded) in &players {
+    for (entity, equipment, wielded) in &combatants {
         let desired: Option<ItemId> = equipment.worn(WearSlot::Wield).and_then(|item_entity| {
             let prototype = items.get(item_entity).ok()?;
             let def = content.items.get(&prototype.def_id)?;
@@ -674,10 +715,10 @@ pub fn sync_wielded_weapon(
         match (desired, wielded) {
             (Some(id), Some(current)) if current.0 == id => {}
             (Some(id), _) => {
-                commands.entity(player).insert(WieldedWeapon(id));
+                commands.entity(entity).insert(WieldedWeapon(id));
             }
             (None, Some(_)) => {
-                commands.entity(player).remove::<WieldedWeapon>();
+                commands.entity(entity).remove::<WieldedWeapon>();
             }
             (None, None) => {}
         }

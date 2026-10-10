@@ -19,6 +19,19 @@ use super::ai::TbaSpawnHome;
 use super::model::{TbaAlignment, TbaCombatant, TbaGold, TbaProgress};
 use super::progression::{BASE_MOVE, NAKED_ARMOR_CLASS, TbaRng, derive_vitals};
 
+/// An NPC's unaffected base vitals, captured when its [`TbaCombatant`] is
+/// first derived.
+///
+/// Unlike a player's deterministic [`derive_vitals`], an NPC's HP is rolled
+/// from `tba.npc_stats.hp`, so the base cannot be regenerated every frame
+/// without re-rolling it. This component keeps the rolled block so
+/// [`recompute_npc_equipment_affects`](crate::equipment::recompute_npc_equipment_affects)
+/// can rebuild `base + worn-item affects` without stacking and without a new
+/// roll. Runtime-only: NPC vitals are not persisted (only players are), so the
+/// base is always recomputed on spawn.
+#[derive(Debug, Clone, Component)]
+pub struct TbaNpcBase(pub TbaCombatant);
+
 /// The class used when `tba.classes` has no matching entry at all.
 ///
 /// It carries the real Warrior profile from tbaMUD's `src/class.c` (d10 hit
@@ -163,7 +176,11 @@ pub fn npc_combatant_system(
         });
 
         let mut entity_commands = commands.entity(entity);
-        entity_commands.insert((combatant, super::ai::TbaAttackerMemory::default()));
+        entity_commands.insert((
+            combatant.clone(),
+            TbaNpcBase(combatant),
+            super::ai::TbaAttackerMemory::default(),
+        ));
         if let Some(home) = home {
             entity_commands.insert(home);
         }

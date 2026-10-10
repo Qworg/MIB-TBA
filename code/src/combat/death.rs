@@ -17,7 +17,7 @@
 //! place before that pass runs.
 
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{CarriedBy, Item, ItemId, PlayerDefeated};
+use mib_stdlib::prelude::{CarriedBy, Item, ItemId, Player, PlayerDefeated};
 
 use crate::content::TbaClassDef;
 use crate::module::TbaContent;
@@ -94,6 +94,39 @@ pub fn apply_death_penalty(
                 ),
             });
         }
+    }
+}
+
+/// `BridgeSet::Game`: fold every `tba_gold` pile a player carries into
+/// [`TbaGold`] and despawn the pile.
+///
+/// A gold pile is a real item (the death penalty spawns one, and content can
+/// hand one out); picking it up with `get` puts it in the player's inventory.
+/// This system turns that carried pile back into purse gold. It runs after the
+/// stdlib `route_commands` (so a `get` issued this frame is visible) and after
+/// `handle_player_death` (so the death penalty's own carried pile has already
+/// been swept into the corpse — crediting it back would undo the penalty).
+///
+/// Only a pile directly `CarriedBy` a player is credited. A pile nested inside
+/// a container the player carries is deliberately deferred: the player must
+/// `get gold from <container>` first, which makes it directly carried. That is
+/// the same surface the stdlib `get` command exposes and avoids a recursive
+/// container walk on every frame. An NPC-carried pile is left untouched.
+pub fn credit_gold_pickups(
+    items: Query<(Entity, &Item, &CarriedBy)>,
+    mut players: Query<&mut TbaGold, With<Player>>,
+    mut commands: Commands,
+) {
+    for (entity, item, carried) in &items {
+        if item.def_id != ItemId::from(GOLD_ITEM_ID) {
+            continue;
+        }
+        let Ok(mut gold) = players.get_mut(carried.0) else {
+            // An NPC (or a container) holds it — no purse to credit.
+            continue;
+        };
+        gold.0 = gold.0.saturating_add(item.value.unwrap_or(0));
+        commands.entity(entity).despawn();
     }
 }
 
@@ -277,5 +310,116 @@ mod tests {
             .count();
         assert_eq!(count, 0, "an empty purse drops nothing");
         assert_eq!(progress(&app, player).xp, 0);
+    }
+
+    /// A bare app with just the gold-pickup pass.
+    fn credit_app() -> App {
+        let mut app = App::new();
+        app.add_systems(Update, credit_gold_pickups);
+        app
+    }
+
+    fn spawn_purse_holder(app: &mut App, name: &str, gold: u32) -> Entity {
+        app.world_mut()
+            .spawn((
+                Player {
+                    account_id: 1,
+                    name: name.to_owned(),
+                },
+                TbaGold(gold),
+            ))
+            .id()
+    }
+
+    fn spawn_pile(app: &mut App, holder: Entity, amount: u32) -> Entity {
+        app.world_mut()
+            .spawn((
+                Item {
+                    def_id: ItemId::from(GOLD_ITEM_ID),
+                    name: GOLD_ITEM_NAME.to_owned(),
+                    description: GOLD_ITEM_DESCRIPTION.to_owned(),
+                    value: Some(amount),
+                    tags: Vec::new(),
+                },
+                CarriedBy(holder),
+            ))
+            .id()
+    }
+
+    #[test]
+    fn carried_gold_is_credited_and_the_pile_despawns() {
+        let mut app = credit_app();
+        let player = spawn_purse_holder(&mut app, "Hero", 5);
+        let pile = spawn_pile(&mut app, player, 37);
+
+        app.update();
+
+        assert_eq!(app.world().get::<TbaGold>(player).unwrap().0, 42);
+        assert!(
+            app.world().get_entity(pile).is_err(),
+            "the pile is consumed"
+        );
+    }
+
+    #[test]
+    fn two_piles_credit_together() {
+        let mut app = credit_app();
+        let player = spawn_purse_holder(&mut app, "Hero", 0);
+        spawn_pile(&mut app, player, 10);
+        spawn_pile(&mut app, player, 32);
+
+        app.update();
+
+        assert_eq!(app.world().get::<TbaGold>(player).unwrap().0, 42);
+        assert_eq!(
+            app.world_mut()
+                .query::<&Item>()
+                .iter(app.world())
+                .filter(|item| item.def_id == ItemId::from(GOLD_ITEM_ID))
+                .count(),
+            0,
+            "both piles are consumed"
+        );
+    }
+
+    #[test]
+    fn npc_carried_gold_is_not_credited() {
+        let mut app = credit_app();
+        let player = spawn_purse_holder(&mut app, "Hero", 0);
+        // An NPC is just a non-`Player` holder here.
+        let npc = app.world_mut().spawn_empty().id();
+        let pile = spawn_pile(&mut app, npc, 99);
+
+        app.update();
+
+        assert_eq!(app.world().get::<TbaGold>(player).unwrap().0, 0);
+        assert!(
+            app.world().get_entity(pile).is_ok(),
+            "an NPC-carried pile is left for the NPC"
+        );
+    }
+
+    #[test]
+    fn non_gold_carried_items_are_untouched() {
+        let mut app = credit_app();
+        let player = spawn_purse_holder(&mut app, "Hero", 0);
+        let sword = app
+            .world_mut()
+            .spawn((
+                Item {
+                    def_id: ItemId::from("a_sword"),
+                    name: "a sword".to_owned(),
+                    description: String::new(),
+                    value: Some(50),
+                    tags: Vec::new(),
+                },
+                CarriedBy(player),
+            ))
+            .id();
+
+        app.update();
+
+        assert_eq!(app.world().get::<TbaGold>(player).unwrap().0, 0);
+        assert!(app.world().get_entity(sword).is_ok());
     }
 }

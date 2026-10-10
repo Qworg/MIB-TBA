@@ -753,3 +753,96 @@ fn experience_can_be_regained_after_death_without_deleveling() {
     assert_eq!(progress.xp, 275, "XP is regained after death");
     assert_eq!(progress.level, 2);
 }
+
+/// `reward_content` with the goblin's moral alignment overridden.
+fn aligned_reward_content(alignment: i32) -> TbaContent {
+    let mut content = reward_content(0, 0);
+    content
+        .npc_stats
+        .get_mut(&NpcId::from("goblin"))
+        .expect("goblin stats")
+        .alignment = alignment;
+    content
+}
+
+#[test]
+fn killing_a_good_mob_moves_the_killer_evil() {
+    let mut app = test_app(aligned_reward_content(1000));
+    let room = spawn_room(app.world_mut());
+    let player = spawn_player(app.world_mut(), room, 0);
+    app.world_mut()
+        .entity_mut(player)
+        .insert((TbaProgress::new(SmolStr::new("warrior")), TbaGold(0)));
+
+    kill_goblin(&mut app, player, room);
+
+    assert_eq!(
+        app.world().get::<TbaAlignment>(player).unwrap().0,
+        -62,
+        "Circle moves the killer 1/16 of the way toward -victim"
+    );
+}
+
+#[test]
+fn killing_an_evil_mob_moves_the_killer_good() {
+    let mut app = test_app(aligned_reward_content(-1000));
+    let room = spawn_room(app.world_mut());
+    let player = spawn_player(app.world_mut(), room, 0);
+    app.world_mut()
+        .entity_mut(player)
+        .insert((TbaProgress::new(SmolStr::new("warrior")), TbaGold(0)));
+
+    kill_goblin(&mut app, player, room);
+
+    assert_eq!(app.world().get::<TbaAlignment>(player).unwrap().0, 62);
+}
+
+#[test]
+fn killing_a_neutral_mob_leaves_a_neutral_killer_unchanged() {
+    let mut app = test_app(aligned_reward_content(0));
+    let room = spawn_room(app.world_mut());
+    let player = spawn_player(app.world_mut(), room, 0);
+    app.world_mut()
+        .entity_mut(player)
+        .insert((TbaProgress::new(SmolStr::new("warrior")), TbaGold(0)));
+
+    kill_goblin(&mut app, player, room);
+
+    assert_eq!(app.world().get::<TbaAlignment>(player).unwrap().0, 0);
+}
+
+#[test]
+fn the_updated_alignment_is_what_aggro_reads() {
+    // A demon that hates evil joins the world from the start; after enough
+    // good kills the hero's alignment crosses `EVIL_ALIGNMENT` and the demon
+    // engages. This proves the reward pass writes the component the aggro
+    // check reads, not a copy.
+    let mut content = aligned_reward_content(1000);
+    content
+        .npc_stats
+        .insert(NpcId::from("demon"), stats(vec![NpcBehaviour::AggrEvil]));
+    let mut app = test_app(content);
+    let room = spawn_room(app.world_mut());
+    let player = spawn_player(app.world_mut(), room, 0);
+    app.world_mut()
+        .entity_mut(player)
+        .insert((TbaProgress::new(SmolStr::new("warrior")), TbaGold(0)));
+    let demon = spawn_npc(app.world_mut(), room, "demon");
+
+    // Neutral at first: the evil-hater ignores the hero.
+    run_fixed(&mut app);
+    assert_eq!(target_of(&app, demon), None);
+
+    // Seven +1000 kills take alignment from 0 to -361 (< -350).
+    for _ in 0..7 {
+        kill_goblin(&mut app, player, room);
+    }
+    assert_eq!(app.world().get::<TbaAlignment>(player).unwrap().0, -361);
+
+    run_fixed(&mut app);
+    assert_eq!(
+        target_of(&app, demon),
+        Some(player),
+        "the demon now hates the hero's updated alignment"
+    );
+}

@@ -23,7 +23,7 @@ use crate::module::TbaContent;
 
 use super::model::{TbaCombatant, WieldedWeapon};
 use super::progression::TbaRng;
-use super::rewards::{NpcDefeated, reward_for};
+use super::rewards::{NpcDefeated, alignment_for, reward_for};
 
 /// Unarmed damage. An equipped weapon's `tba.items` dice replace this through
 /// [`weapon_dice`] once the equipment pass sets [`WieldedWeapon`].
@@ -133,16 +133,19 @@ pub fn resolve_rounds(
         } else if npcs.get(victim).is_ok() {
             // The reward data is read here, before the despawn applies, so the
             // consumer never races the dropped entity.
-            let (experience, gold) = keys
-                .get(victim)
-                .ok()
+            let key = keys.get(victim).ok();
+            let (experience, gold) = key
                 .and_then(|key| content.map(|content| reward_for(content, key)))
                 .unwrap_or((0, 0));
+            let alignment = key
+                .and_then(|key| content.map(|content| alignment_for(content, key)))
+                .unwrap_or(0);
             npc_defeated.write(NpcDefeated {
                 victim,
                 killer,
                 experience,
                 gold,
+                alignment,
             });
             commands.entity(victim).despawn();
         }
