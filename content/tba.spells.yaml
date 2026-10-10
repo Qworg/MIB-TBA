@@ -1,4 +1,4 @@
-# Circle / tbaMUD spell catalog (TBA-E18, doc §8.2).
+# Circle / tbaMUD spell catalog (TBA-E18, doc §8.2; GitHub issue #7).
 #
 # Hand-authored from the sibling tbaMUD checkout at
 # /home/qworg/Development/tbamud:
@@ -6,511 +6,782 @@
 #   - the spell ids and `NUM_SPELLS` come from `src/spells.h:39-127`
 #     (`SPELL_RESERVED_DBC` 0 .. `SPELL_DARKNESS` 54; `SPELL_DG_AFFECT` 298 is a
 #     framework-only script affect and is deliberately absent here).
-#   - every entry's `mana`, target type, `min_position` and routine come from
-#     the `mag_assign_spells()` table in `src/spell_parser.c:733-919`
+#   - `name`, `target`, `min_position` and the routine come from the
+#     `mag_assign_spells()` table in `src/spell_parser.c:733-919`
 #     (`spello(SPELL_X, "name", mana_max, mana_min, mana_change, minpos,
 #     targets, violent, routines, wear_off_msg)`).
-#   - damage and healing dice come from `mag_damage()` in `src/magic.c:195-289`
-#     and `mag_points()` in `src/magic.c:801-822`; buff affects come from
-#     `mag_affects()` in `src/magic.c:314-556`.
-#   - each buff-carrying spell's `duration` (in combat rounds) is the
-#     `af[].duration` that `mag_affects()` assigns, with the `magic.c` line
-#     cited beside it. A spell with no source duration falls back to the
-#     documented `DEFAULT_SPELL_DURATION` (6) in `code/src/content.rs`.
+#   - the mana triple is exactly `spello()`'s `mana_max`, `mana_min` and
+#     `mana_change`; the cost is `mag_manacost()` (`src/spell_parser.c:58-62`)
+#     -> `MAX(mana_max - mana_change * (level - min_level[class]), mana_min)`.
+#   - `min_level` is `init_spell_levels()` (`src/class.c:1589-1665`), the level
+#     at which each class first learns the spell; a class absent from the map
+#     pays `mana_max`.
+#   - damage and healing dice come from `mag_damage()` (`src/magic.c:195-301`)
+#     and `mag_points()` (`src/magic.c:801-826`); `level_bonus` is the
+#     source's per-level term (`earthquake`'s `+ level`,
+#     `cure light`/`cure critic`'s `+ level / 4`). Dice are the magic-user
+#     branch (the 8-sided variant); the source's class-dependent 6-sided
+#     branch is not modelled.
+#   - buff/debuff affects come from `mag_affects()` (`src/magic.c:303-553`);
+#     each affect's `duration` is the source `af[].duration` (or the
+#     `duration_bonus`/`duration` pair for the level-scaled ones, e.g.
+#     `strength`'s `(level / 2) + 4`).
+#   - `save` is the outcome of `mag_savingthrow()` (`src/magic.c:36-53`):
+#     `half` is `dam /= 2` (`magic.c:291`), `negate` is the source's
+#     `CONFIG_NOEFFECT; return` branch (`magic.c:355`, `:376`, `:447`). `cast`
+#     always rolls `SAVING_SPELL` (`call_magic`, `spell_parser.c:205-222`).
 #
-# `mana` is Circle's `mana_min` — the settled cost after the source's
-# `mana_max - mana_change * (level - min_level)` reduction bottoms out. The
-# source triple is recoverable from `spell_parser.c` above; this phase charges
-# the flat floor because `cast` does not level-scale mana.
-#
-# Dice are the magic-user branch of `mag_damage()` (the 8-sided variant); the
-# source's level term (`earthquake`'s `+ level`, `cure light`'s `+ level/4`)
-# and `energy drain`'s level-<=2 instant kill are not representable in a fixed
-# `Dice`, so the level-independent part is used and noted on the entry.
-#
-# Note: tbaMUD's `src/spells.h` does not define a `cure serious` spell (the
-# cleric line here is `cure blind`, `cure critic`, `cure light`, `curse`), so
-# there is no `cure_serious` entry; the task's illustrative list names one from
-# stock CircleMUD 3.1, not from this checkout's `NUM_SPELLS` table.
-#
-# `kind` maps to what the genre handler can actually do:
-#   damage -> `Damage`, heal -> `Heal`, an applied affect -> `Buff`,
-#   divination -> `Detect`, anything whose Circle routine is not modelled
-#   (flags, summons, object/room manipulation, group logic) -> `Utility`.
-# Nothing here invents an effect: a `Utility` spell spends its mana and reports
-# that nothing happens yet.
+# `kind` maps to what the engine can actually do:
+#   damage -> `Damage`, heal -> `Heal`, a self/ally affect -> `Buff`, a
+#   hostile affect -> `Debuff`, a divination -> `Detect`. A spell whose Circle
+#   routine the engine cannot express is `kind: utility` and MUST carry an
+#   `unsupported:` reason; the cast spends its mana and reports that reason
+#   rather than silently doing nothing. Nothing here invents an effect.
 spells:
-  # src/spell_parser.c:741-742, routines MAG_SUMMONS (not modelled).
+  # src/spell_parser.c:741-742, MAG_SUMMONS.
   animate_dead:
     name: animate dead
-    mana: 10
+    mana_min: 10
+    mana_max: 35
+    mana_change: 3
     kind: utility
+    unsupported: 'MAG_SUMMONS animate-dead (magic.c:736-800) spawns a zombie from a corpse; the engine has no mob-spawn-from-corpse model'
     target: none
     min_position: standing
 
-  # src/spell_parser.c:744-745, magic.c:333-336 (APPLY_AC -20, dur 24).
+  # src/spell_parser.c:744-745, MAG_AFFECTS, magic.c:333-339.
   armor:
     name: armor
-    mana: 15
+    mana_min: 15
+    mana_max: 30
+    mana_change: 3
     kind: buff
     affect:
       location: armor_class
       modifier: -20
     duration: 24
+    min_level:
+      magic_user: 4
+      cleric: 1
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:747-749, magic.c:341-348 (APPLY_HITROLL +2 and
-  # APPLY_SAVING_SPELL -1, both 6 rounds; the catalog carries the hitroll).
+  # src/spell_parser.c:747-748, MAG_AFFECTS | MAG_ALTER_OBJS, magic.c:341-352.
   bless:
     name: bless
-    mana: 5
+    mana_min: 5
+    mana_max: 35
+    mana_change: 3
     kind: buff
     affect:
       location: hitroll
       modifier: 2
     duration: 6
+    min_level:
+      cleric: 5
     target: victim
     min_position: standing
 
-  # src/spell_parser.c:751-752, MAG_AFFECTS (AFF_BLIND bit, not modelled).
+  # src/spell_parser.c:751-752, MAG_AFFECTS, magic.c:354-372.
   blindness:
     name: blindness
-    mana: 25
-    kind: utility
+    mana_min: 25
+    mana_max: 35
+    mana_change: 1
+    kind: debuff
+    affect:
+      location: hitroll
+      modifier: -4
+    duration: 2
+    save: negate
+    min_level:
+      magic_user: 9
+      cleric: 6
     target: victim
     min_position: standing
 
-  # src/spell_parser.c:755-756, magic.c:210 (3d8+3 for a magic user).
+  # src/spell_parser.c:755-756, MAG_DAMAGE, magic.c:212-217.
   burning_hands:
     name: burning hands
-    mana: 10
+    mana_min: 10
+    mana_max: 30
+    mana_change: 3
     kind: damage
     dice: 3d8+3
+    save: half
+    min_level:
+      magic_user: 5
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:758-759, magic.c:268 (7d8+7).
+  # src/spell_parser.c:758-759, MAG_DAMAGE, magic.c:266-269.
   call_lightning:
     name: call lightning
-    mana: 25
+    mana_min: 25
+    mana_max: 40
+    mana_change: 3
     kind: damage
     dice: 7d8+7
+    save: half
+    min_level:
+      cleric: 15
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:761-763, MAG_MANUAL (charm flag, not modelled).
+  # src/spell_parser.c:761-762, MAG_MANUAL.
   charm:
     name: charm person
-    mana: 50
+    mana_min: 50
+    mana_max: 75
+    mana_change: 2
     kind: utility
+    unsupported: 'spell_charm (spells.c:251-297) sets AFF_CHARM and a follower; the engine has no charm/follower model'
+    min_level:
+      magic_user: 16
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:765-766, magic.c:206 (1d8+1) plus magic.c:323 STR -1.
-  # `mag_affects` gives the drain 4 rounds on a failed save (1 on a success,
-  # `magic.c:322-328`); saving throws are issue #7, so the unsaved 4 is used.
+  # src/spell_parser.c:765-766, MAG_DAMAGE | MAG_AFFECTS, magic.c:205-211, 322-331.
   chill_touch:
     name: chill touch
-    mana: 10
+    mana_min: 10
+    mana_max: 30
+    mana_change: 3
     kind: damage
     dice: 1d8+1
     affect:
       location: str
       modifier: -1
     duration: 4
+    save: half
+    min_level:
+      magic_user: 3
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:769-770, MAG_SUMMONS (not modelled).
+  # src/spell_parser.c:769-770, MAG_SUMMONS.
   clone:
     name: clone
-    mana: 65
+    mana_min: 65
+    mana_max: 80
+    mana_change: 5
     kind: utility
+    unsupported: 'MAG_SUMMONS clone (magic.c:717-735) spawns a charmed copy; the engine has no summon model'
+    min_level:
+      magic_user: 30
     target: none
     min_position: standing
 
-  # src/spell_parser.c:772-773, magic.c:227 (9d8+9).
+  # src/spell_parser.c:772-773, MAG_DAMAGE, magic.c:230-235.
   color_spray:
     name: color spray
-    mana: 15
+    mana_min: 15
+    mana_max: 30
+    mana_change: 3
     kind: damage
     dice: 9d8+9
+    save: half
+    min_level:
+      magic_user: 11
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:775-776, MAG_MANUAL (weather state, not modelled).
+  # src/spell_parser.c:775-776, MAG_MANUAL.
   control_weather:
     name: control weather
-    mana: 25
+    mana_min: 25
+    mana_max: 75
+    mana_change: 5
     kind: utility
+    unsupported: 'the control-weather MAG_MANUAL routine (spell_parser.c:773-774) changes the weather; the engine has no weather model'
+    min_level:
+      cleric: 17
     target: room
     min_position: standing
 
-  # src/spell_parser.c:778-779, MAG_CREATIONS (not modelled).
+  # src/spell_parser.c:778-779, MAG_CREATIONS.
   create_food:
     name: create food
-    mana: 5
+    mana_min: 5
+    mana_max: 30
+    mana_change: 4
     kind: utility
+    unsupported: 'MAG_CREATIONS (magic.c:942-968) creates object vnum 10; the engine has no runtime object creation'
+    min_level:
+      cleric: 2
     target: none
     min_position: standing
 
-  # src/spell_parser.c:781-782, MAG_MANUAL (fills a drink container).
+  # src/spell_parser.c:781-782, MAG_MANUAL.
   create_water:
     name: create water
-    mana: 5
+    mana_min: 5
+    mana_max: 30
+    mana_change: 4
     kind: utility
+    unsupported: 'spell_create_water (spells.c:29-55) fills a drink container; the engine has no drink-container model'
+    min_level:
+      cleric: 2
     target: none
     min_position: standing
 
-  # src/spell_parser.c:784-785, MAG_UNAFFECTS (AFF_BLIND removal).
+  # src/spell_parser.c:784-785, MAG_UNAFFECTS.
   cure_blind:
     name: cure blind
-    mana: 5
+    mana_min: 5
+    mana_max: 30
+    mana_change: 2
     kind: utility
+    unsupported: 'MAG_UNAFFECTS (magic.c:828-873) removes the AFF_BLIND flag; the engine models blindness as a stat debuff, not the flag'
+    min_level:
+      cleric: 4
     target: victim
     min_position: standing
 
-  # src/spell_parser.c:787-788, magic.c:812 (3d8+3 + level/4).
+  # src/spell_parser.c:787-788, MAG_POINTS, magic.c:814-817.
   cure_critic:
     name: cure critic
-    mana: 10
+    mana_min: 10
+    mana_max: 30
+    mana_change: 2
     kind: heal
     dice: 3d8+3
+    level_bonus:
+      per_level: 1
+      divisor: 4
+    min_level:
+      cleric: 9
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:790-791, magic.c:808 (1d8+1 + level/4).
+  # src/spell_parser.c:790-791, MAG_POINTS, magic.c:810-813.
   cure_light:
     name: cure light
-    mana: 10
+    mana_min: 10
+    mana_max: 30
+    mana_change: 2
     kind: heal
     dice: 1d8+1
+    level_bonus:
+      per_level: 1
+      divisor: 4
+    min_level:
+      cleric: 1
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:793-795, MAG_AFFECTS + MAG_ALTER_OBJS (AFF_CURSE).
+  # src/spell_parser.c:793-794, MAG_AFFECTS | MAG_ALTER_OBJS, magic.c:374-394.
   curse:
     name: curse
-    mana: 50
-    kind: utility
+    mana_min: 50
+    mana_max: 80
+    mana_change: 2
+    kind: debuff
+    affect:
+      location: hitroll
+      modifier: -1
+    duration: 1
+    duration_bonus:
+      per_level: 1
+      divisor: 2
+    save: negate
+    min_level:
+      magic_user: 14
     target: victim
     min_position: standing
 
-  # src/spell_parser.c:797-798, MAG_ROOMS (room light level, not modelled).
+  # src/spell_parser.c:797-798, MAG_ROOMS.
   darkness:
     name: darkness
-    mana: 5
+    mana_min: 5
+    mana_max: 30
+    mana_change: 4
     kind: utility
+    unsupported: 'MAG_ROOMS (magic.c:972-1010) sets the ROOM_DARK flag; the engine has no per-room light model'
+    min_level:
+      cleric: 12
     target: room
     min_position: standing
 
-  # src/spell_parser.c:800-801, MAG_AFFECTS (AFF_DETECT_ALIGN).
+  # src/spell_parser.c:800-801, MAG_AFFECTS, magic.c:396-415.
   detect_align:
     name: detect alignment
-    mana: 10
+    mana_min: 10
+    mana_max: 20
+    mana_change: 2
     kind: detect
+    min_level:
+      cleric: 4
     target: self
     min_position: standing
 
-  # src/spell_parser.c:803-805, MAG_AFFECTS (AFF_DETECT_INVIS). Id matches the
-  # `detect_invis` name the class skills and the task's spell list use.
+  # src/spell_parser.c:803-804, MAG_AFFECTS, magic.c:396-415.
   detect_invis:
     name: detect invisibility
-    mana: 10
+    mana_min: 10
+    mana_max: 20
+    mana_change: 2
     kind: detect
+    min_level:
+      magic_user: 2
+      cleric: 6
     target: self
     min_position: standing
 
-  # src/spell_parser.c:807-809, MAG_AFFECTS (AFF_DETECT_MAGIC).
+  # src/spell_parser.c:807-808, MAG_AFFECTS, magic.c:396-415.
   detect_magic:
     name: detect magic
-    mana: 10
+    mana_min: 10
+    mana_max: 20
+    mana_change: 2
     kind: detect
+    min_level:
+      magic_user: 2
     target: self
     min_position: standing
 
-  # src/spell_parser.c:811-813, MAG_MANUAL (AFF_DETECT_POISON).
+  # src/spell_parser.c:811-812, MAG_MANUAL, spells.c:421-448.
   detect_poison:
     name: detect poison
-    mana: 5
+    mana_min: 5
+    mana_max: 15
+    mana_change: 1
     kind: detect
-    target: victim
+    min_level:
+      magic_user: 10
+      cleric: 3
+    target: self
     min_position: standing
 
-  # src/spell_parser.c:815-816, magic.c:238 (6d8+6).
+  # src/spell_parser.c:815-816, MAG_DAMAGE, magic.c:244-253.
   dispel_evil:
     name: dispel evil
-    mana: 25
+    mana_min: 25
+    mana_max: 40
+    mana_change: 3
     kind: damage
     dice: 6d8+6
+    save: half
+    min_level:
+      cleric: 14
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:818-819, magic.c:247 (6d8+6).
+  # src/spell_parser.c:818-819, MAG_DAMAGE, magic.c:254-265.
   dispel_good:
     name: dispel good
-    mana: 25
+    mana_min: 25
+    mana_max: 40
+    mana_change: 3
     kind: damage
     dice: 6d8+6
+    save: half
+    min_level:
+      cleric: 14
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:821-822, magic.c:281 (2d8 + level; level term dropped).
+  # src/spell_parser.c:821-822, MAG_AREAS, magic.c:282-284.
   earthquake:
     name: earthquake
-    mana: 25
+    mana_min: 25
+    mana_max: 40
+    mana_change: 3
     kind: damage
     dice: 2d8
+    level_bonus:
+      per_level: 1
+    save: half
+    min_level:
+      cleric: 12
     target: room
     min_position: fighting
 
-  # src/spell_parser.c:824-825, MAG_MANUAL (object enchantment, not modelled).
+  # src/spell_parser.c:824-825, MAG_MANUAL.
   enchant_weapon:
     name: enchant weapon
-    mana: 100
+    mana_min: 100
+    mana_max: 150
+    mana_change: 10
     kind: utility
+    unsupported: 'spell_enchant_weapon (spells.c:387-419) rewrites weapon values; the engine has no runtime item enchantment'
+    min_level:
+      magic_user: 26
     target: none
     min_position: standing
 
-  # src/spell_parser.c:827-828, magic.c:274 (1d10 for level > 2; the level-<=2
-  # 100-damage branch is not modelled).
+  # src/spell_parser.c:827-828, MAG_DAMAGE | MAG_MANUAL, magic.c:274-281.
+  # Note: the level<=2 instant kill is not modelled.
   energy_drain:
     name: energy drain
-    mana: 25
+    mana_min: 25
+    mana_max: 40
+    mana_change: 1
     kind: damage
     dice: 1d10
+    save: half
+    min_level:
+      magic_user: 13
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:833-834, magic.c:232 (11d8+11).
+  # src/spell_parser.c:833-834, MAG_DAMAGE, magic.c:236-243.
   fireball:
     name: fireball
-    mana: 30
+    mana_min: 30
+    mana_max: 40
+    mana_change: 2
     kind: damage
     dice: 11d8+11
+    save: half
+    min_level:
+      magic_user: 15
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:836-837, MAG_AFFECTS (AFF_FLYING).
+  # src/spell_parser.c:836-837, MAG_AFFECTS.
   fly:
     name: fly
-    mana: 20
+    mana_min: 20
+    mana_max: 40
+    mana_change: 2
     kind: utility
+    unsupported: 'mag_affects sets AFF_FLYING (magic.c:417-422); the engine has no movement-mode affect'
+    min_level:
+      magic_user: 22
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:830-831, MAG_GROUPS -> SPELL_ARMOR on each group member.
+  # src/spell_parser.c:830-831, MAG_GROUPS.
   group_armor:
     name: group armor
-    mana: 30
+    mana_min: 30
+    mana_max: 50
+    mana_change: 2
     kind: utility
+    unsupported: 'MAG_GROUPS (magic.c:576-597) affects every group member; the engine has no group model'
+    min_level:
+      cleric: 9
     target: room
     min_position: standing
 
-  # src/spell_parser.c:839-840, MAG_GROUPS -> SPELL_HEAL on each group member.
+  # src/spell_parser.c:839-840, MAG_GROUPS.
   group_heal:
     name: group heal
-    mana: 60
+    mana_min: 60
+    mana_max: 80
+    mana_change: 5
     kind: utility
+    unsupported: 'MAG_GROUPS (magic.c:576-597) affects every group member; the engine has no group model'
+    min_level:
+      cleric: 22
     target: room
     min_position: standing
 
-  # src/spell_parser.c:906-907 is word of recall; group recall (spells.h:90,
-  # SPELL_GROUP_RECALL 49) is defined but left `!UNUSED!` by the source, so it
-  # carries the framework default cost of 0.
+  # spells.h (no spello entry).
   group_recall:
     name: group recall
-    mana: 0
+    mana_min: 0
+    mana_max: 0
+    mana_change: 0
     kind: utility
+    unsupported: 'MAG_GROUPS group recall (magic.c:576-597) recalls a party; the engine has no group or transport model'
     target: room
     min_position: standing
 
-  # src/spell_parser.c:842-843, magic.c:271 (8d8+8).
+  # src/spell_parser.c:842-843, MAG_DAMAGE, magic.c:270-273.
   harm:
     name: harm
-    mana: 45
+    mana_min: 45
+    mana_max: 75
+    mana_change: 3
     kind: damage
     dice: 8d8+8
+    save: half
+    min_level:
+      cleric: 19
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:845-846, magic.c:816 (100 + 3d8).
+  # src/spell_parser.c:845-846, MAG_POINTS | MAG_UNAFFECTS, magic.c:818-821.
   heal:
     name: heal
-    mana: 40
+    mana_min: 40
+    mana_max: 60
+    mana_change: 3
     kind: heal
     dice: 3d8+100
+    min_level:
+      cleric: 16
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:848-849, MAG_AFFECTS (AFF_INFRAVISION).
-  infravision:
-    name: infravision
-    mana: 10
+  # src/spell_parser.c:909-910, MAG_MANUAL.
+  identify:
+    name: identify
+    mana_min: 25
+    mana_max: 50
+    mana_change: 5
     kind: utility
-    target: self
-    min_position: standing
-
-  # src/spell_parser.c:852-854, MAG_AFFECTS (AFF_INVISIBLE, plus APPLY_AC -40).
-  invisibility:
-    name: invisibility
-    mana: 25
-    kind: utility
-    target: victim
-    min_position: standing
-
-  # src/spell_parser.c:856-857, magic.c:220 (7d8+7).
-  lightning_bolt:
-    name: lightning bolt
-    mana: 15
-    kind: damage
-    dice: 7d8+7
-    target: victim
-    min_position: fighting
-
-  # src/spell_parser.c:859-860, MAG_MANUAL (world object search).
-  locate_object:
-    name: locate object
-    mana: 20
-    kind: utility
+    unsupported: 'spell_identify (spells.c:299-385) reveals object values; the engine has no item-identification model'
+    min_level:
+      magic_user: 20
+      cleric: 11
     target: none
     min_position: standing
 
-  # src/spell_parser.c:862-863, magic.c:202 (1d8+1).
+  # src/spell_parser.c:848-849, MAG_AFFECTS, magic.c:424-430.
+  infravision:
+    name: infravision
+    mana_min: 10
+    mana_max: 25
+    mana_change: 1
+    kind: detect
+    min_level:
+      magic_user: 3
+      cleric: 7
+    target: self
+    min_position: standing
+
+  # src/spell_parser.c:852-853, MAG_AFFECTS | MAG_ALTER_OBJS.
+  invisibility:
+    name: invisibility
+    mana_min: 25
+    mana_max: 35
+    mana_change: 1
+    kind: utility
+    unsupported: 'mag_affects sets AFF_INVISIBLE (magic.c:432-443); the engine has no visibility/stealth model'
+    min_level:
+      magic_user: 4
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:856-857, MAG_DAMAGE, magic.c:224-229.
+  lightning_bolt:
+    name: lightning bolt
+    mana_min: 15
+    mana_max: 30
+    mana_change: 1
+    kind: damage
+    dice: 7d8+7
+    save: half
+    min_level:
+      magic_user: 9
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:859-860, MAG_MANUAL.
+  locate_object:
+    name: locate object
+    mana_min: 20
+    mana_max: 25
+    mana_change: 1
+    kind: utility
+    unsupported: 'spell_locate_object (spells.c:214-249) searches the world object list; the engine has no world item search'
+    min_level:
+      magic_user: 6
+    target: none
+    min_position: standing
+
+  # src/spell_parser.c:862-863, MAG_DAMAGE, magic.c:205-211.
   magic_missile:
     name: magic missile
-    mana: 10
+    mana_min: 10
+    mana_max: 25
+    mana_change: 3
     kind: damage
     dice: 1d8+1
+    save: half
+    min_level:
+      magic_user: 1
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:865-867, MAG_AFFECTS (AFF_POISON, APPLY_STR -2).
+  # src/spell_parser.c:865-866, MAG_AFFECTS | MAG_ALTER_OBJS, magic.c:445-457.
   poison:
     name: poison
-    mana: 20
-    kind: utility
+    mana_min: 20
+    mana_max: 50
+    mana_change: 3
+    kind: debuff
+    affect:
+      location: str
+      modifier: -2
+    duration: 0
+    duration_bonus:
+      per_level: 1
+    save: negate
+    min_level:
+      magic_user: 14
+      cleric: 8
     target: victim
     min_position: standing
 
-  # src/spell_parser.c:869-871, MAG_AFFECTS (AFF_PROTECT_EVIL).
+  # src/spell_parser.c:869-870, MAG_AFFECTS.
   protection_from_evil:
     name: protection from evil
-    mana: 10
+    mana_min: 10
+    mana_max: 40
+    mana_change: 3
     kind: utility
+    unsupported: 'mag_affects sets AFF_PROTECT_EVIL (magic.c:459-464); the engine has no alignment-gated protection model'
+    min_level:
+      cleric: 8
     target: self
     min_position: standing
 
-  # src/spell_parser.c:873-875, MAG_UNAFFECTS + MAG_ALTER_OBJS.
+  # src/spell_parser.c:873-874, MAG_UNAFFECTS | MAG_ALTER_OBJS.
   remove_curse:
     name: remove curse
-    mana: 25
+    mana_min: 25
+    mana_max: 45
+    mana_change: 5
     kind: utility
+    unsupported: 'MAG_UNAFFECTS (magic.c:828-873) removes the AFF_CURSE flag; the engine models curse as a stat debuff, not the flag'
+    min_level:
+      cleric: 26
     target: victim
     min_position: standing
 
-  # src/spell_parser.c:877-879, MAG_UNAFFECTS (AFF_POISON removal).
+  # src/spell_parser.c:877-878, MAG_UNAFFECTS | MAG_ALTER_OBJS.
   remove_poison:
     name: remove poison
-    mana: 8
+    mana_min: 8
+    mana_max: 40
+    mana_change: 4
     kind: utility
+    unsupported: 'MAG_UNAFFECTS (magic.c:828-873) removes the AFF_POISON flag; the engine models poison as a stat debuff, not the flag'
+    min_level:
+      cleric: 10
     target: victim
     min_position: standing
 
-  # src/spell_parser.c:881-882, MAG_AFFECTS (AFF_SANCTUARY).
+  # src/spell_parser.c:881-882, MAG_AFFECTS.
   sanctuary:
     name: sanctuary
-    mana: 85
+    mana_min: 85
+    mana_max: 110
+    mana_change: 5
     kind: utility
+    unsupported: 'mag_affects sets AFF_SANCTUARY (magic.c:466-473), a damage-reduction flag; the engine has no damage-reduction affect'
+    min_level:
+      cleric: 15
     target: victim
     min_position: standing
 
-  # src/spell_parser.c:884-886, MAG_AFFECTS (AFF_SENSE_LIFE).
+  # src/spell_parser.c:884-885, MAG_AFFECTS, magic.c:505-510.
   sense_life:
     name: sense life
-    mana: 10
+    mana_min: 10
+    mana_max: 20
+    mana_change: 2
     kind: detect
+    min_level:
+      cleric: 18
     target: self
     min_position: standing
 
-  # src/spell_parser.c:888-889, magic.c:215 (5d8+5).
+  # src/spell_parser.c:888-889, MAG_DAMAGE, magic.c:218-223.
   shocking_grasp:
     name: shocking grasp
-    mana: 15
+    mana_min: 15
+    mana_max: 30
+    mana_change: 3
     kind: damage
     dice: 5d8+5
+    save: half
+    min_level:
+      magic_user: 7
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:891-892, MAG_AFFECTS (AFF_SLEEP, sets POS_SLEEPING).
+  # src/spell_parser.c:891-892, MAG_AFFECTS.
   sleep:
     name: sleep
-    mana: 25
+    mana_min: 25
+    mana_max: 40
+    mana_change: 5
     kind: utility
+    unsupported: 'mag_affects sets AFF_SLEEP and forces POS_SLEEPING (magic.c:475-491); the engine has no sleep affect'
+    min_level:
+      magic_user: 8
     target: victim
     min_position: standing
 
-  # src/spell_parser.c:894-896, MAG_AFFECTS (APPLY_STR +1, dur level/2 + 4).
-  # The source duration scales with the caster's level (`magic.c:498`); the
-  # static catalog carries the level-1 floor (4) until a level-scaled pass.
+  # src/spell_parser.c:894-895, MAG_AFFECTS, magic.c:493-503.
   strength:
     name: strength
-    mana: 30
+    mana_min: 30
+    mana_max: 35
+    mana_change: 1
     kind: buff
     affect:
       location: str
       modifier: 1
     duration: 4
+    duration_bonus:
+      per_level: 1
+      divisor: 2
+    min_level:
+      magic_user: 6
     target: victim
     min_position: standing
 
-  # src/spell_parser.c:897-898, MAG_MANUAL (world summon).
+  # src/spell_parser.c:897-898, MAG_MANUAL.
   summon:
     name: summon
-    mana: 50
+    mana_min: 50
+    mana_max: 75
+    mana_change: 3
     kind: utility
+    unsupported: 'spell_summon (spells.c:107-212) pulls a world character into the room; the engine has no cross-room transport'
+    min_level:
+      cleric: 10
     target: victim
     min_position: standing
 
-  # src/spell_parser.c:900-901, MAG_MANUAL. (spells.h:82, SPELL_VENTRILOQUATE
-  # 41 is likewise defined but left `!UNUSED!`; it was never assigned a
-  # `spello` entry, so it carries the framework default cost of 0.)
-  ventriloquate:
-    name: ventriloquate
-    mana: 0
-    kind: utility
-    target: none
-    min_position: standing
-
-  # src/spell_parser.c:903-904, MAG_AFFECTS (AFF_WATERWALK).
-  waterwalk:
-    name: waterwalk
-    mana: 20
-    kind: utility
-    target: victim
-    min_position: standing
-
-  # src/spell_parser.c:906-907, MAG_MANUAL (recall to the temple).
-  word_of_recall:
-    name: word of recall
-    mana: 10
-    kind: utility
-    target: victim
-    min_position: fighting
-
-  # src/spell_parser.c:909-910, MAG_MANUAL (object identification).
-  identify:
-    name: identify
-    mana: 25
-    kind: utility
-    target: none
-    min_position: standing
-
-  # src/spell_parser.c:900-901, MAG_MANUAL (random room teleport).
+  # src/spell_parser.c:900-901, MAG_MANUAL.
   teleport:
     name: teleport
-    mana: 50
+    mana_min: 50
+    mana_max: 75
+    mana_change: 3
     kind: utility
+    unsupported: 'spell_teleport (spells.c:77-105) moves the target to a random room; the engine has no random-room transport'
     target: victim
     min_position: standing
+
+  # spells.h (no spello entry).
+  ventriloquate:
+    name: ventriloquate
+    mana_min: 0
+    mana_max: 0
+    mana_change: 0
+    kind: utility
+    unsupported: 'spells.h:82 defines SPELL_VENTRILOQUATE but mag_assign_spells never assigns it (spell_parser.c:733-919), so the source itself leaves it unimplemented'
+    target: none
+    min_position: standing
+
+  # src/spell_parser.c:903-904, MAG_AFFECTS.
+  waterwalk:
+    name: waterwalk
+    mana_min: 20
+    mana_max: 40
+    mana_change: 2
+    kind: utility
+    unsupported: 'mag_affects sets AFF_WATERWALK (magic.c:512-517); the engine has no movement-mode affect'
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:906-907, MAG_MANUAL.
+  word_of_recall:
+    name: word of recall
+    mana_min: 10
+    mana_max: 20
+    mana_change: 2
+    kind: utility
+    unsupported: 'spell_recall (spells.c:57-75) teleports to the recall room; the engine has no recall-room transport'
+    min_level:
+      cleric: 12
+    target: victim
+    min_position: fighting

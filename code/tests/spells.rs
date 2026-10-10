@@ -50,6 +50,9 @@ fn mage() -> TbaClassDef {
             "bless",
             "detect_magic",
             "blink",
+            "scaling",
+            "hex",
+            "fizzle",
         ]
         .into_iter()
         .map(SmolStr::new)
@@ -73,68 +76,70 @@ fn warrior() -> TbaClassDef {
     }
 }
 
-fn damage(name: &str, mana: u32, dice: Dice) -> SpellDef {
+/// A neutral spell block the other fixtures tweak. The synthetic `mana_min ==
+/// mana_max` makes the cost flat, so the pre-#7 assertions keep their meaning;
+/// the level-scaling tests use a spell with a real triple.
+fn base(name: &str, mana: u32) -> SpellDef {
     SpellDef {
         name: name.to_owned(),
-        mana,
-        kind: SpellKind::Damage,
-        dice: Some(dice),
+        mana_min: mana,
+        mana_max: mana,
+        mana_change: 0,
+        kind: SpellKind::Detect,
+        dice: None,
+        level_bonus: LevelBonus::default(),
         affect: None,
         duration: DEFAULT_BUFF_ROUNDS,
+        duration_bonus: LevelBonus::default(),
         target: SpellTarget::Victim,
+        min_position: Position::Standing,
+        save: SaveEffect::None,
+        min_level: BTreeMap::new(),
+        unsupported: None,
+    }
+}
+
+fn damage(name: &str, mana: u32, dice: Dice) -> SpellDef {
+    SpellDef {
+        kind: SpellKind::Damage,
+        dice: Some(dice),
         min_position: Position::Fighting,
+        ..base(name, mana)
     }
 }
 
 fn heal(name: &str, mana: u32, dice: Dice) -> SpellDef {
     SpellDef {
-        name: name.to_owned(),
-        mana,
         kind: SpellKind::Heal,
         dice: Some(dice),
-        affect: None,
-        duration: DEFAULT_BUFF_ROUNDS,
-        target: SpellTarget::Victim,
         min_position: Position::Fighting,
+        ..base(name, mana)
     }
 }
 
 fn buff(name: &str, mana: u32, affect: AffectDef, duration: u32) -> SpellDef {
     SpellDef {
-        name: name.to_owned(),
-        mana,
         kind: SpellKind::Buff,
-        dice: None,
         affect: Some(affect),
         duration,
-        target: SpellTarget::Victim,
-        min_position: Position::Standing,
+        ..base(name, mana)
     }
 }
 
 fn detect(name: &str, mana: u32) -> SpellDef {
     SpellDef {
-        name: name.to_owned(),
-        mana,
         kind: SpellKind::Detect,
-        dice: None,
-        affect: None,
-        duration: DEFAULT_BUFF_ROUNDS,
         target: SpellTarget::Caster,
-        min_position: Position::Standing,
+        ..base(name, mana)
     }
 }
 
-fn utility(name: &str, mana: u32) -> SpellDef {
+fn utility(name: &str, mana: u32, reason: &str) -> SpellDef {
     SpellDef {
-        name: name.to_owned(),
-        mana,
         kind: SpellKind::Utility,
-        dice: None,
-        affect: None,
-        duration: DEFAULT_BUFF_ROUNDS,
         target: SpellTarget::Caster,
-        min_position: Position::Standing,
+        unsupported: Some(reason.to_owned()),
+        ..base(name, mana)
     }
 }
 
@@ -188,7 +193,42 @@ fn content() -> TbaContent {
             ),
         ),
         (SmolStr::new("detect_magic"), detect("detect magic", 10)),
-        (SmolStr::new("blink"), utility("blink", 5)),
+        (
+            SmolStr::new("blink"),
+            utility("blink", 5, "the blink routine is not modelled"),
+        ),
+        // A flat-rolling damage spell whose roll scales with the caster level
+        // (Circle's `earthquake`, `magic.c:281`).
+        (
+            SmolStr::new("scaling"),
+            SpellDef {
+                level_bonus: LevelBonus {
+                    per_level: 1,
+                    divisor: 1,
+                },
+                ..damage("scaling", 0, Dice::constant(0))
+            },
+        ),
+        // A hostile affect with a save that negates it (Circle's `blindness`,
+        // `magic.c:353-370`).
+        (
+            SmolStr::new("hex"),
+            SpellDef {
+                kind: SpellKind::Debuff,
+                affect: Some(AffectDef {
+                    location: AffectLocation::Hitroll,
+                    modifier: -4,
+                }),
+                duration: 2,
+                save: SaveEffect::Negate,
+                ..base("hex", 0)
+            },
+        ),
+        // A utility spell whose Circle routine the engine cannot express.
+        (
+            SmolStr::new("fizzle"),
+            utility("fizzle", 5, "the fizzle routine is not modelled"),
+        ),
     ]);
     let classes = BTreeMap::from([
         (SmolStr::new("mage"), mage()),
@@ -270,6 +310,26 @@ fn spawn_npc(app: &mut App, room: Entity, id: &str, hp: i32) -> Entity {
             combatant,
         ))
         .id()
+}
+
+/// Set the caster level the `cast` handler reads for mana/damage scaling.
+fn set_level(app: &mut App, entity: Entity, level: u32) {
+    app.world_mut()
+        .get_mut::<TbaProgress>(entity)
+        .unwrap()
+        .level = level;
+}
+
+/// Force a save outcome: a large negative `SAVING_SPELL` modifier makes the
+/// `MAX(1, save)` floor win (save succeeds), a large positive one makes the
+/// roll lose (save fails). With the `0xC0FFEE` app seed the first save roll is
+/// 33, so both directions are deterministic.
+fn set_spell_save(app: &mut App, entity: Entity, modifier: i32) {
+    app.world_mut()
+        .get_mut::<TbaCombatant>(entity)
+        .unwrap()
+        .saves
+        .spell = modifier;
 }
 
 fn cast(app: &mut App, session: Entity, line: &str) {
@@ -637,9 +697,266 @@ fn detect_and_utility_spells_spend_mana_and_report() {
         "{messages:?}"
     );
     assert!(
-        messages
-            .iter()
-            .any(|line| line.contains("blink") && line.contains("nothing happens")),
+        messages.iter().any(
+            |line| line.contains("blink") && line.contains("the blink routine is not modelled")
+        ),
         "{messages:?}"
     );
+}
+
+// ---------------------------------------------------------------------------
+// Mana scaling (issue #7)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn mana_cost_scales_with_level_and_clamps_to_the_source_band() {
+    // magic_missile's real triple (content/tba.spells.yaml,
+    // spell_parser.c:877-878): 25 at level 1, -3 per level, floor 10.
+    let spell = SpellDef {
+        mana_min: 10,
+        mana_max: 25,
+        mana_change: 3,
+        min_level: BTreeMap::from([(SmolStr::new("mage"), 1)]),
+        ..base("magic missile", 0)
+    };
+    assert_eq!(mana_cost(&spell, "mage", 1), 25, "mana_max at min level");
+    assert_eq!(mana_cost(&spell, "mage", 5), 13, "25 - 3*4");
+    assert_eq!(mana_cost(&spell, "mage", 6), 10, "reaches the floor");
+    assert_eq!(mana_cost(&spell, "mage", 30), 10, "clamps at mana_min");
+
+    // A caster below the class min level is impossible in Circle, but the
+    // pack's flat `granted_skills` gate allows it; it must pay `mana_max`.
+    let later = SpellDef {
+        min_level: BTreeMap::from([(SmolStr::new("mage"), 15)]),
+        ..spell.clone()
+    };
+    assert_eq!(mana_cost(&later, "mage", 1), 25, "clamps at mana_max");
+    assert_eq!(mana_cost(&later, "mage", 15), 25);
+    assert_eq!(mana_cost(&later, "mage", 21), 10);
+}
+
+#[test]
+fn a_cast_spends_the_level_scaled_cost() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+    spawn_npc(&mut app, room, "goblin", 100);
+    // Synthetic magic_missile is flat (10). Give the level-3 caster a real
+    // 25 -> 10 triple so the handler demonstrably charges the scaled value.
+    {
+        let mut content = app.world_mut().resource_mut::<TbaContent>();
+        let spell = content.spells.get_mut("magic_missile").unwrap();
+        spell.mana_min = 10;
+        spell.mana_max = 25;
+        spell.mana_change = 3;
+        spell.min_level = BTreeMap::from([(SmolStr::new("mage"), 1)]);
+    }
+    set_level(&mut app, player, 3);
+
+    cast(&mut app, player, "cast 'magic missile' goblin");
+    run_game(&mut app);
+
+    // 25 - 3*(3-1) = 19.
+    assert_eq!(combatant_of(&app, player).mana, 50 - 19);
+}
+
+// ---------------------------------------------------------------------------
+// Damage/heal level scaling (issue #7)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn damage_scales_with_caster_level() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+    let goblin = spawn_npc(&mut app, room, "goblin", 100);
+    set_level(&mut app, player, 5);
+
+    // `scaling` is a constant 0 roll plus `+ level` (earthquake's term).
+    cast(&mut app, player, "cast 'scaling' goblin");
+    run_game(&mut app);
+
+    assert_eq!(combatant_of(&app, goblin).hp, 95, "0 + level 5");
+}
+
+#[test]
+fn heal_scales_with_caster_level() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+    {
+        let mut vitals = app.world_mut().get_mut::<TbaCombatant>(player).unwrap();
+        vitals.hp = 1;
+        vitals.max_hp = 200;
+    }
+    // A heal with a `+ level / 4` term (cure light/critic, magic.c:805-812).
+    {
+        let mut content = app.world_mut().resource_mut::<TbaContent>();
+        let spell = content.spells.get_mut("cure_light").unwrap();
+        spell.dice = Some(Dice::constant(0));
+        spell.level_bonus = LevelBonus {
+            per_level: 1,
+            divisor: 4,
+        };
+    }
+    set_level(&mut app, player, 9);
+
+    cast(&mut app, player, "cast 'cure light'");
+    run_game(&mut app);
+
+    assert_eq!(combatant_of(&app, player).hp, 1 + 9 / 4, "0 + 9/4 = 2");
+}
+
+// ---------------------------------------------------------------------------
+// Saving throws (issue #7)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn a_successful_save_halves_damage_but_a_failed_save_does_not() {
+    // Force save success: the `-1000` modifier floors the throw at 1, below
+    // the seed's roll of 33.
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+    let goblin = spawn_npc(&mut app, room, "goblin", 100);
+    {
+        let mut content = app.world_mut().resource_mut::<TbaContent>();
+        let spell = content.spells.get_mut("magic_missile").unwrap();
+        spell.dice = Some(Dice::constant(10));
+        spell.save = SaveEffect::Half;
+    }
+    set_spell_save(&mut app, goblin, -1000);
+
+    cast(&mut app, player, "cast 'magic missile' goblin");
+    run_game(&mut app);
+
+    assert_eq!(combatant_of(&app, goblin).hp, 95, "10 halved to 5");
+    assert!(
+        drain_text(&mut app)
+            .iter()
+            .any(|line| line.contains("resist")),
+        "the victim is told it resisted"
+    );
+
+    // Force save failure: `+1000` beats any roll, so full damage.
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+    let goblin = spawn_npc(&mut app, room, "goblin", 100);
+    {
+        let mut content = app.world_mut().resource_mut::<TbaContent>();
+        let spell = content.spells.get_mut("magic_missile").unwrap();
+        spell.dice = Some(Dice::constant(10));
+        spell.save = SaveEffect::Half;
+    }
+    set_spell_save(&mut app, goblin, 1000);
+
+    cast(&mut app, player, "cast 'magic missile' goblin");
+    run_game(&mut app);
+
+    assert_eq!(combatant_of(&app, goblin).hp, 90, "no save, full 10");
+    assert!(
+        !drain_text(&mut app)
+            .iter()
+            .any(|line| line.contains("resist")),
+        "nothing resisted"
+    );
+}
+
+#[test]
+fn a_successful_save_negates_a_debuff() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+    let goblin = spawn_npc(&mut app, room, "goblin", 100);
+    set_spell_save(&mut app, goblin, -1000);
+
+    cast(&mut app, player, "cast 'hex' goblin");
+    run_game(&mut app);
+
+    assert!(
+        app.world().get::<TbaBuffs>(goblin).is_none(),
+        "a negated debuff installs no affect"
+    );
+
+    // The same cast without the save lands the affect.
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+    let goblin = spawn_npc(&mut app, room, "goblin", 100);
+    set_spell_save(&mut app, goblin, 1000);
+
+    cast(&mut app, player, "cast 'hex' goblin");
+    run_game(&mut app);
+
+    let buffs = app.world().get::<TbaBuffs>(goblin).unwrap();
+    assert_eq!(buffs.buffs.len(), 1, "the hex landed");
+}
+
+// ---------------------------------------------------------------------------
+// Unsupported spells (issue #7)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn an_unsupported_spell_spends_mana_and_reports_its_reason() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+
+    cast(&mut app, player, "cast 'fizzle'");
+    run_game(&mut app);
+
+    assert_eq!(combatant_of(&app, player).mana, 45, "the 5 mana was spent");
+    let messages = drain_text(&mut app);
+    assert!(
+        messages
+            .iter()
+            .any(|line| line.contains("fizzle")
+                && line.contains("the fizzle routine is not modelled")),
+        "{messages:?}"
+    );
+}
+
+#[test]
+fn save_type_index_and_tables_match_the_source() {
+    // magic_user SPELL level 1 is 60 (class.c, mage SAVING_SPELL row); the
+    // modifier from the affect block shifts it.
+    assert_eq!(saving_throws("magic_user", SaveType::Spell, 1), 60);
+    assert_eq!(saving_throws("cleric", SaveType::Spell, 1), 75);
+    assert_eq!(saving_throws("thief", SaveType::Spell, 1), 75);
+    assert_eq!(saving_throws("warrior", SaveType::Spell, 1), 85);
+    // An unknown class (an NPC) uses the warrior table.
+    assert_eq!(saving_throws("goblin", SaveType::Spell, 1), 85);
+}
+
+#[test]
+fn mag_savingthrow_honours_the_roll_and_the_modifier() {
+    // Seed 0xC0FFEE's first 0..99 roll is 33: a low total saves, a high one
+    // does not, and the `MAX(1, save)` floor keeps a huge negative modifier
+    // from making the throw worse.
+    let saves = TbaSaves {
+        spell: -1000,
+        ..TbaSaves::default()
+    };
+    let mut rng = TbaRng::from_seed(0xC0FFEE);
+    assert!(mag_savingthrow(
+        &mut rng,
+        "warrior",
+        1,
+        &saves,
+        SaveType::Spell
+    ));
+
+    let saves = TbaSaves {
+        spell: 1000,
+        ..TbaSaves::default()
+    };
+    let mut rng = TbaRng::from_seed(0xC0FFEE);
+    assert!(!mag_savingthrow(
+        &mut rng,
+        "warrior",
+        1,
+        &saves,
+        SaveType::Spell
+    ));
 }

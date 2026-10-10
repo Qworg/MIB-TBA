@@ -579,12 +579,71 @@ pub enum SpellKind {
     /// A spell that installs [`SpellDef::affect`] for a number of combat
     /// rounds.
     Buff,
+    /// A hostile affect: a [`SpellDef::affect`] installed on a victim.
+    /// Circle's `MAG_AFFECTS` curses (`blindness`, `curse`, `poison`). A
+    /// `Debuff` requires an explicit victim and usually carries a save.
+    Debuff,
     /// A divination: emits the message the data supports; no combat effect.
     Detect,
     /// A spell whose Circle routine is not modelled yet. It is castable (mana
-    /// is spent) and reports that nothing happens rather than inventing an
-    /// effect.
+    /// is spent) and reports its [`SpellDef::unsupported`] reason rather than
+    /// inventing an effect.
     Utility,
+}
+
+/// A damage/heal roll's per-level term, Circle's `+ level` (`earthquake`,
+/// `tbamud/src/magic.c:281`) and `+ level / 4` (`cure light`/`cure critic`,
+/// `tbamud/src/magic.c:801-822`).
+///
+/// The bonus is `per_level * level / divisor` with C integer truncation
+/// toward zero. The neutral value (`per_level` 0) adds nothing.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct LevelBonus {
+    /// The amount added per caster level.
+    #[serde(default)]
+    pub per_level: i32,
+    /// The divisor applied after multiplying by the level (at least 1).
+    #[serde(default = "default_level_divisor")]
+    pub divisor: u32,
+}
+
+/// The serde default for [`LevelBonus::divisor`]: no division.
+fn default_level_divisor() -> u32 {
+    1
+}
+
+impl Default for LevelBonus {
+    fn default() -> Self {
+        Self {
+            per_level: 0,
+            divisor: default_level_divisor(),
+        }
+    }
+}
+
+impl LevelBonus {
+    /// The bonus for `level`, truncated the way Circle's C integer division
+    /// does. A zero divisor is treated as 1 rather than panicking.
+    pub fn bonus(&self, level: u32) -> i32 {
+        let divisor = i32::try_from(self.divisor.max(1)).unwrap_or(i32::MAX);
+        self.per_level.saturating_mul(level as i32) / divisor
+    }
+}
+
+/// What a successful saving throw does to a spell, Circle's `mag_savingthrow`
+/// branches (`tbamud/src/magic.c:36-53`).
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SaveEffect {
+    /// No save (`mag_affects` spells such as `armor`/`bless`).
+    #[default]
+    None,
+    /// A save halves the damage (`dam /= 2`, `tbamud/src/magic.c:290`).
+    Half,
+    /// A save negates the spell (`send_to_char(ch, CONFIG_NOEFFECT); return`,
+    /// `tbamud/src/magic.c:375` and friends).
+    Negate,
 }
 
 /// Who a spell is aimed at, folded down from Circle's `TAR_*` target bits.
@@ -622,25 +681,36 @@ fn default_spell_duration() -> u32 {
 
 /// One spell, from tbaMUD's `spell_info[]`.
 ///
-/// Circle stores a level-scaled mana cost (`mana_max` at the level the spell
-/// is learned, falling by `mana_change` per level to `mana_min`); this phase
-/// carries the settled floor as a flat [`mana`](Self::mana). The source triple
-/// is cited in `content/tba.spells.yaml` so a level-scaled pass can restore it.
+/// Circle stores a level-scaled mana cost: `mana_max` at the level the caster's
+/// class first learns the spell, falling by `mana_change` per level to the
+/// floor `mana_min` (`mag_manacost`, `tbamud/src/spell_parser.c:58-62`). The
+/// three numbers are the `spello()` arguments (`tbamud/src/spell_parser.c:676`)
+/// and [`min_level`](Self::min_level) is the per-class learning level from
+/// `init_spell_levels()` (`tbamud/src/class.c:1589-1665`).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct SpellDef {
     /// Display name, for example `magic missile`.
     pub name: String,
-    /// Flat mana cost, Circle's `mana_min`.
-    pub mana: u32,
+    /// The settled floor of the mana cost, Circle's `mana_min`.
+    pub mana_min: u32,
+    /// The cost at the level the class first learns the spell, Circle's
+    /// `mana_max`.
+    pub mana_max: u32,
+    /// The reduction per level, Circle's `mana_change`.
+    pub mana_change: u32,
     pub kind: SpellKind,
     /// Damage/heal roll. Required for [`SpellKind::Damage`] and
     /// [`SpellKind::Heal`]; also applied alongside a `Damage` spell's affect
     /// (for example `chill touch`'s strength drain).
     #[serde(default)]
     pub dice: Option<Dice>,
-    /// Affect installed for [`SpellKind::Buff`], or carried alongside a
-    /// damage roll.
+    /// The per-level damage/heal term, e.g. `earthquake`'s `+ level` or
+    /// `cure light`'s `+ level / 4`. Defaults to no term.
+    #[serde(default)]
+    pub level_bonus: LevelBonus,
+    /// Affect installed for [`SpellKind::Buff`]/[`SpellKind::Debuff`], or
+    /// carried alongside a damage roll.
     #[serde(default)]
     pub affect: Option<AffectDef>,
     /// Combat rounds the affect lasts (Circle's `af[].duration` from
@@ -649,12 +719,35 @@ pub struct SpellDef {
     /// for a spell whose source carries no pulse count.
     #[serde(default = "default_spell_duration")]
     pub duration: u32,
+    /// A per-caster-level term added to [`duration`](Self::duration), for the
+    /// source affects whose pulse count grows with level (`strength`'s
+    /// `(GET_LEVEL(ch) / 2) + 4`, `curse`'s `1 + (GET_LEVEL(ch) / 2)`, and
+    /// `poison`'s `GET_LEVEL(ch)`, `tbamud/src/magic.c:380-500`). Defaults to
+    /// no term.
+    #[serde(default)]
+    pub duration_bonus: LevelBonus,
     pub target: SpellTarget,
     /// Circle's minimum caster position (usually `standing`; combat spells are
     /// `fighting`). The caster must be at least this high on the [`Position`]
     /// ladder.
     #[serde(default)]
     pub min_position: Position,
+    /// What a successful save does ([`SaveEffect::None`] for a spell the
+    /// source never rolls a save for). `cast` always uses `SAVING_SPELL`.
+    #[serde(default)]
+    pub save: SaveEffect,
+    /// The level at which each class first learns the spell, Circle's
+    /// `spell_info[].min_level[]` (`init_spell_levels`, `tbamud/src/class.c`).
+    /// Keyed by the `tba.classes` id. A class absent from the map pays
+    /// `mana_max` (the level-1 fallback), which is the documented behaviour for
+    /// a class the source never assigned the spell to.
+    #[serde(default)]
+    pub min_level: BTreeMap<SmolStr, u32>,
+    /// The Circle routine this spell needs but the engine cannot express, with
+    /// the reason. [`SpellKind::Utility`] spells must carry one; the cast
+    /// spends mana and reports it.
+    #[serde(default)]
+    pub unsupported: Option<String>,
 }
 
 /// `tba.spells` — keyed by the snake_case spell id (for example
@@ -694,6 +787,20 @@ fn spell_issues(spell_id: &SmolStr, spell: &SpellDef) -> Vec<(String, String)> {
             "spell name must not be empty".to_owned(),
         ));
     }
+    if spell.mana_min > spell.mana_max {
+        issues.push((
+            format!("spells.{spell_id}.mana_min"),
+            "mana_min must not exceed mana_max".to_owned(),
+        ));
+    }
+    for (class, level) in &spell.min_level {
+        if *level == 0 {
+            issues.push((
+                format!("spells.{spell_id}.min_level.{class}"),
+                "a spell level must be at least 1 (class.c:1589)".to_owned(),
+            ));
+        }
+    }
     match spell.kind {
         SpellKind::Damage | SpellKind::Heal => {
             if spell.dice.is_none() {
@@ -703,15 +810,37 @@ fn spell_issues(spell_id: &SmolStr, spell: &SpellDef) -> Vec<(String, String)> {
                 ));
             }
         }
-        SpellKind::Buff => {
+        SpellKind::Buff | SpellKind::Debuff => {
             if spell.affect.is_none() {
                 issues.push((
                     format!("spells.{spell_id}.affect"),
-                    "a buff spell must define its apply affect".to_owned(),
+                    "a buff or debuff spell must define its apply affect".to_owned(),
                 ));
             }
         }
-        SpellKind::Detect | SpellKind::Utility => {}
+        SpellKind::Detect => {}
+        SpellKind::Utility => {
+            if spell
+                .unsupported
+                .as_deref()
+                .map(str::trim)
+                .unwrap_or("")
+                .is_empty()
+            {
+                issues.push((
+                    format!("spells.{spell_id}.unsupported"),
+                    "a utility spell must carry an `unsupported` reason (issue #7)".to_owned(),
+                ));
+            }
+        }
+    }
+    // Only an unmodelled `Utility` routine may claim to be unsupported; a
+    // modelled kind with a reason would hide a working effect.
+    if spell.kind != SpellKind::Utility && spell.unsupported.is_some() {
+        issues.push((
+            format!("spells.{spell_id}.unsupported"),
+            "only a utility spell may carry an `unsupported` reason".to_owned(),
+        ));
     }
     issues
 }
@@ -899,13 +1028,20 @@ mod tests {
     fn spell(kind: SpellKind) -> SpellDef {
         SpellDef {
             name: "test spell".to_owned(),
-            mana: 1,
+            mana_min: 1,
+            mana_max: 1,
+            mana_change: 0,
             kind,
             dice: None,
+            level_bonus: LevelBonus::default(),
             affect: None,
             duration: DEFAULT_SPELL_DURATION,
+            duration_bonus: LevelBonus::default(),
             target: SpellTarget::Victim,
             min_position: Position::Standing,
+            save: SaveEffect::None,
+            min_level: BTreeMap::new(),
+            unsupported: None,
         }
     }
 
@@ -938,9 +1074,46 @@ mod tests {
 
         let mut unnamed = spell(SpellKind::Utility);
         unnamed.name = "   ".to_owned();
+        unnamed.unsupported = Some("not modelled".to_owned());
         let issues = spell_issues(&id, &unnamed);
         assert_eq!(issues.len(), 1, "{issues:?}");
         assert_eq!(issues[0].0, "spells.test_spell.name");
+    }
+
+    #[test]
+    fn utility_spells_must_carry_an_unsupported_reason() {
+        let id = SmolStr::new("test_spell");
+        let utility = spell(SpellKind::Utility);
+        let issues = spell_issues(&id, &utility);
+        assert_eq!(issues.len(), 1, "{issues:?}");
+        assert_eq!(issues[0].0, "spells.test_spell.unsupported");
+
+        let mut reasoned = utility.clone();
+        reasoned.unsupported = Some("MAG_SUMMONS is not modelled".to_owned());
+        assert!(spell_issues(&id, &reasoned).is_empty());
+
+        // A modelled kind must not pretend to be unsupported.
+        let mut liar = spell(SpellKind::Detect);
+        liar.unsupported = Some("nope".to_owned());
+        let issues = spell_issues(&id, &liar);
+        assert_eq!(issues.len(), 1, "{issues:?}");
+        assert_eq!(issues[0].0, "spells.test_spell.unsupported");
+    }
+
+    #[test]
+    fn level_bonus_truncates_like_the_c_source() {
+        assert_eq!(LevelBonus::default().bonus(100), 0);
+        let earthquake = LevelBonus {
+            per_level: 1,
+            divisor: 1,
+        };
+        assert_eq!(earthquake.bonus(7), 7);
+        let cure = LevelBonus {
+            per_level: 1,
+            divisor: 4,
+        };
+        assert_eq!(cure.bonus(7), 1, "7 / 4 truncates to 1");
+        assert_eq!(cure.bonus(0), 0);
     }
 
     fn shop() -> ShopDef {

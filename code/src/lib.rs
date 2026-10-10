@@ -40,21 +40,21 @@ pub mod prelude {
     pub use crate::combat::{
         BASE_ATTRIBUTE, BASE_MOVE, EVIL_ALIGNMENT, GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID,
         GOLD_ITEM_NAME, GOOD_ALIGNMENT, KillReward, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, NpcDefeated,
-        ROUND_SECONDS, TbaAlignment, TbaAttackerMemory, TbaAttributes, TbaCombatant, TbaGold,
-        TbaNpcBase, TbaProgress, TbaRng, TbaRound, TbaRoundClock, TbaSaves, TbaSpawnHome,
+        ROUND_SECONDS, SaveType, TbaAlignment, TbaAttackerMemory, TbaAttributes, TbaCombatant,
+        TbaGold, TbaNpcBase, TbaProgress, TbaRng, TbaRound, TbaRoundClock, TbaSaves, TbaSpawnHome,
         WieldedWeapon, alignment_after_kill, alignment_for, apply_death_penalty,
         auto_engage_system, award_kill_rewards, credit_gold_pickups, default_class, derive_vitals,
         engages, fallback_combatant, grant_kill, handle_combat_commands, helper_system,
-        level_for_xp, npc_combatant_from_stats, npc_combatant_system, player_combatant_system,
-        pursuit_system, resolve_class_key, resolve_rounds, reward_for, run_due_round, weapon_dice,
-        xp_threshold, xp_to_advance,
+        level_for_xp, mag_savingthrow, npc_combatant_from_stats, npc_combatant_system,
+        player_combatant_system, pursuit_system, resolve_class_key, resolve_rounds, reward_for,
+        run_due_round, saving_throws, weapon_dice, xp_threshold, xp_to_advance,
     };
     pub use crate::content::{
-        AffectDef, AffectLocation, Attribute, DoorReset, NpcBehaviour, Position, ResetMode,
-        SpellDef, SpellKind, SpellTarget, SpellsFile, SpellsSection, TbaClassDef, TbaClassesFile,
-        TbaClassesSection, TbaItemDef, TbaItemKind, TbaItemsFile, TbaItemsSection, TbaNpcStats,
-        TbaNpcStatsFile, TbaNpcStatsSection, WearSlot, ZoneCommand, ZoneDef, ZonesFile,
-        ZonesSection, register,
+        AffectDef, AffectLocation, Attribute, DoorReset, LevelBonus, NpcBehaviour, Position,
+        ResetMode, SaveEffect, SpellDef, SpellKind, SpellTarget, SpellsFile, SpellsSection,
+        TbaClassDef, TbaClassesFile, TbaClassesSection, TbaItemDef, TbaItemKind, TbaItemsFile,
+        TbaItemsSection, TbaNpcStats, TbaNpcStatsFile, TbaNpcStatsSection, WearSlot, ZoneCommand,
+        ZoneDef, ZonesFile, ZonesSection, register,
     };
     pub use crate::content::{ShopDef, ShopsFile, ShopsSection};
     pub use crate::equipment::{
@@ -69,7 +69,7 @@ pub mod prelude {
     pub use crate::module::{MODULE_NAME, TbaContent, TbaModule, TbaPlugin};
     pub use crate::shops::{ShopCommand, handle_shop_commands, parse_shop_line};
     pub use crate::spells::{
-        ActiveBuff, DEFAULT_BUFF_ROUNDS, TbaBuffs, handle_cast_command, tick_buffs,
+        ActiveBuff, DEFAULT_BUFF_ROUNDS, TbaBuffs, handle_cast_command, mana_cost, tick_buffs,
     };
     pub use crate::zones::{ZoneState, ZoneTracker, zone_reset_system};
 }

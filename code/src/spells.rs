@@ -39,8 +39,8 @@ use smol_str::SmolStr;
 
 use crate::combat::commands::{broadcast, deny, entity_name, find_target_in_room, text};
 use crate::combat::rewards::{NpcDefeated, alignment_for, reward_for};
-use crate::combat::{TbaCombatant, TbaProgress, TbaRng, default_class};
-use crate::content::{AffectDef, Position, SpellDef, SpellKind, SpellTarget};
+use crate::combat::{SaveType, TbaCombatant, TbaProgress, TbaRng, default_class, mag_savingthrow};
+use crate::content::{AffectDef, Position, SaveEffect, SpellDef, SpellKind, SpellTarget};
 use crate::module::TbaContent;
 
 /// Combat rounds a cast buff lasts when the spell carries no source pulse
@@ -189,11 +189,70 @@ fn split_unquoted<'a>(
     None
 }
 
-/// Whether a spell is aimed aggressively (Circle's `violent` flag, folded to
-/// the `Damage` kind): a hostile spell needs an explicit victim and cannot be
-/// aimed at the caster.
+/// Whether a spell is aimed aggressively: a hostile spell needs an explicit
+/// victim and cannot be aimed at the caster.
+///
+/// Circle decides this from the `violent` column plus `TAR_NOT_SELF`; the
+/// engine folds both into the `Damage`/`Debuff` kinds (the spells whose Circle
+/// routine only ever lands on someone else).
 fn is_hostile(spell: &SpellDef) -> bool {
-    spell.kind == SpellKind::Damage
+    matches!(spell.kind, SpellKind::Damage | SpellKind::Debuff)
+}
+
+/// Circle's `mag_manacost` (`tbamud/src/spell_parser.c:58-62`):
+///
+/// ```text
+/// MAX(mana_max - mana_change * (GET_LEVEL(ch) - min_level[class]), mana_min)
+/// ```
+///
+/// `min_level` is the caster class's `spell_info[].min_level[]` value from
+/// `init_spell_levels()` (`tbamud/src/class.c:1589-1665`); a class absent from
+/// [`SpellDef::min_level`] pays the whole `mana_max` (treated as level 1).
+///
+/// The source only calls this once `do_cast` has confirmed
+/// `GET_LEVEL(ch) >= min_level[class]`, so the subtraction never goes negative
+/// there. This engine's class gate is a flat `granted_skills` list, so a
+/// below-min-level caster is possible; the result is clamped to the
+/// `[mana_min, mana_max]` band so such a caster pays `mana_max`, not more.
+/// Either way the result is never below `mana_min` (the source's own floor).
+pub fn mana_cost(spell: &SpellDef, class: &str, level: u32) -> u32 {
+    let min_level = spell.min_level.get(class).copied().unwrap_or(1).max(1);
+    let level = i64::from(level.max(1));
+    let raw =
+        i64::from(spell.mana_max) - i64::from(spell.mana_change) * (level - i64::from(min_level));
+    raw.max(i64::from(spell.mana_min))
+        .min(i64::from(spell.mana_max)) as u32
+}
+
+/// The `(class, level)` a saving throw is rolled against.
+///
+/// A player uses its [`TbaProgress`]; an NPC uses `warrior`, exactly as
+/// `mag_savingthrow`'s `IS_NPC(ch)` branch does (`tbamud/src/magic.c:38-41`),
+/// with the level from its `tba.npc_stats` record. An entity with neither falls
+/// back to a level-1 warrior.
+fn victim_class_level(
+    target: Entity,
+    content: &TbaContent,
+    progress: &Query<&TbaProgress>,
+    keys: &Query<&NpcKey>,
+) -> (SmolStr, u32) {
+    if let Ok(progress) = progress.get(target) {
+        return (progress.class.clone(), progress.level.max(1));
+    }
+    if let Ok(key) = keys.get(target)
+        && let Some(stats) = content.npc_stats.get(&key.0)
+    {
+        return (SmolStr::new("warrior"), stats.level.max(1));
+    }
+    (SmolStr::new("warrior"), 1)
+}
+
+/// The pulse count an affect is installed for: the spell's static
+/// [`SpellDef::duration`] plus its per-level [`SpellDef::duration_bonus`], at
+/// least one round so a level-1 caster never installs an inert affect.
+fn affect_rounds(spell: &SpellDef, level: u32) -> u32 {
+    let rounds = i64::from(spell.duration) + i64::from(spell.duration_bonus.bonus(level));
+    rounds.max(1) as u32
 }
 
 /// Install (or refresh) a buff affect on `target`, lasting `rounds`.
@@ -277,10 +336,12 @@ pub fn handle_cast_command(
         };
         let spell_name = spell.name.clone();
 
-        let Ok(progress) = progress.get(session) else {
+        let Ok(caster_progress) = progress.get(session) else {
             deny(&mut output, session, "You have no spellcasting knowledge.");
             continue;
         };
+        let caster_class = caster_progress.class.clone();
+        let caster_level = caster_progress.level.max(1);
         let Ok(caster) = combatants.get(session) else {
             deny(&mut output, session, "You have no combat state.");
             continue;
@@ -305,7 +366,7 @@ pub fn handle_cast_command(
         // ids, so a mismatch is denied by name.
         let class = content
             .classes
-            .get(&progress.class)
+            .get(&caster_class)
             .cloned()
             .unwrap_or_else(default_class);
         let known = class
@@ -321,7 +382,9 @@ pub fn handle_cast_command(
             continue;
         }
 
-        if mana < spell.mana as i32 {
+        // Level-scaled cost (`mag_manacost`, spell_parser.c:58-62).
+        let cost = mana_cost(spell, &caster_class, caster_level);
+        if mana < cost as i32 {
             deny(
                 &mut output,
                 session,
@@ -386,10 +449,10 @@ pub fn handle_cast_command(
         };
 
         // Every check passed: spend the mana once and announce the casting.
-        if spell.mana > 0
+        if cost > 0
             && let Ok(mut caster) = combatants.get_mut(session)
         {
-            caster.mana = (caster.mana - spell.mana as i32).max(0);
+            caster.mana = (caster.mana - cost as i32).max(0);
         }
         let actor_name = entity_name(session, &players, &npcs);
         output.write(text(session, format!("You cast {spell_name}.")));
@@ -408,12 +471,62 @@ pub fn handle_cast_command(
             let target_name = entity_name(target, &players, &npcs);
             let mut lethal = false;
 
+            // Circle rolls the saving throw, then halves or negates. A `cast`
+            // always resolves `SAVING_SPELL` (`call_magic`,
+            // spell_parser.c:205-222) against the victim's class/level base
+            // plus the `TbaSaves` affect modifiers.
+            let saved = if spell.save == SaveEffect::None {
+                false
+            } else {
+                let (victim_class, victim_level) =
+                    victim_class_level(target, content, &progress, &keys);
+                let victim_saves = combatants
+                    .get(target)
+                    .map(|combatant| combatant.saves)
+                    .unwrap_or_default();
+                mag_savingthrow(
+                    &mut rng,
+                    &victim_class,
+                    victim_level,
+                    &victim_saves,
+                    SaveType::Spell,
+                )
+            };
+            if saved && spell.save == SaveEffect::Negate {
+                if players.get(target).is_ok() {
+                    output.write(text(target, format!("You resist the {spell_name}.")));
+                }
+                if target != session {
+                    output.write(text(
+                        session,
+                        format!("{target_name} resists your {spell_name}."),
+                    ));
+                }
+                if let Some(room) = room {
+                    broadcast(
+                        &players,
+                        room,
+                        session,
+                        &mut output,
+                        &format!("{target_name} resists {actor_name}'s {spell_name}."),
+                    );
+                }
+                continue;
+            }
+
             match spell.kind {
                 SpellKind::Damage => {
                     let Some(dice) = spell.dice else {
                         continue;
                     };
-                    let damage = rng.roll(&dice).max(0);
+                    let rolled = rng.roll(&dice).max(0) + spell.level_bonus.bonus(caster_level);
+                    // A successful save halves the damage (`dam /= 2`,
+                    // magic.c:291).
+                    let damage = if saved && spell.save == SaveEffect::Half {
+                        rolled / 2
+                    } else {
+                        rolled
+                    };
                     if let Ok(mut victim) = combatants.get_mut(target) {
                         if !victim.is_alive() {
                             continue;
@@ -423,6 +536,26 @@ pub fn handle_cast_command(
                             victim.position = Position::Dead;
                             victim.target = None;
                             lethal = true;
+                        }
+                    }
+                    if saved && spell.save == SaveEffect::Half {
+                        if players.get(target).is_ok() {
+                            output.write(text(target, format!("You resist the {spell_name}.")));
+                        }
+                        output.write(text(
+                            session,
+                            format!("{target_name} partially resists your {spell_name}."),
+                        ));
+                        if let Some(room) = room {
+                            broadcast(
+                                &players,
+                                room,
+                                session,
+                                &mut output,
+                                &format!(
+                                    "{target_name} partially resists {actor_name}'s {spell_name}."
+                                ),
+                            );
                         }
                     }
                     output.write(text(
@@ -443,7 +576,8 @@ pub fn handle_cast_command(
                     let Some(dice) = spell.dice else {
                         continue;
                     };
-                    let amount = rng.roll(&dice).max(0);
+                    let amount =
+                        (rng.roll(&dice).max(0) + spell.level_bonus.bonus(caster_level)).max(0);
                     if let Ok(mut combatant) = combatants.get_mut(target) {
                         if !combatant.is_alive() {
                             continue;
@@ -465,18 +599,20 @@ pub fn handle_cast_command(
                         }
                     }
                 }
-                SpellKind::Buff => {
+                SpellKind::Buff | SpellKind::Debuff => {
                     let Some(affect) = &spell.affect else {
                         continue;
                     };
-                    add_buff(
-                        target,
-                        affect.clone(),
-                        spell.duration,
-                        &mut buffs,
-                        &mut commands,
-                    );
-                    if target == session {
+                    let rounds = affect_rounds(spell, caster_level);
+                    add_buff(target, affect.clone(), rounds, &mut buffs, &mut commands);
+                    if spell.kind == SpellKind::Debuff {
+                        if target != session {
+                            output.write(text(
+                                session,
+                                format!("{target_name} is afflicted by {spell_name}."),
+                            ));
+                        }
+                    } else if target == session {
                         output.write(text(session, format!("You feel the {spell_name} settle.")));
                     } else if players.get(target).is_ok() {
                         output.write(text(
@@ -492,26 +628,32 @@ pub fn handle_cast_command(
                     ));
                 }
                 SpellKind::Utility => {
+                    // Issue #7: an unmodelled Circle routine is explicit, never
+                    // a silent no-op. The mana was already spent above.
+                    let reason = spell
+                        .unsupported
+                        .as_deref()
+                        .unwrap_or("the Circle routine is not modelled");
                     output.write(text(
                         session,
-                        format!("You cast {spell_name}, but nothing happens yet."),
+                        format!("You cast {spell_name}, but {reason}."),
                     ));
                 }
             }
 
-            // A damage spell may also carry an affect (`chill touch`). Apply it
-            // through the same buff store. `Buff` already ran above.
+            // A damage spell may also carry an affect (`chill touch`); a save
+            // shortens the source's duration (`af[0].duration = 1` on a save,
+            // magic.c:322-331). `Buff`/`Debuff` already ran above.
             if let Some(affect) = &spell.affect
-                && spell.kind != SpellKind::Buff
+                && matches!(spell.kind, SpellKind::Damage)
                 && !lethal
             {
-                add_buff(
-                    target,
-                    affect.clone(),
-                    spell.duration,
-                    &mut buffs,
-                    &mut commands,
-                );
+                let rounds = if saved && spell.save == SaveEffect::Half {
+                    affect_rounds(spell, caster_level).min(1)
+                } else {
+                    affect_rounds(spell, caster_level)
+                };
+                add_buff(target, affect.clone(), rounds, &mut buffs, &mut commands);
             }
 
             if lethal {

@@ -157,11 +157,55 @@ fn strength_to_hit(strength: i32) -> i32 {
     STR_TO_HIT[index]
 }
 
+/// The five Circle saving-throw categories (`SAVING_*`, `tbamud/src/spells.h:152-156`),
+/// in the source's numeric order.
+///
+/// `cast` always resolves `SAVING_SPELL` (`call_magic` maps `CAST_SPELL` to
+/// it, `tbamud/src/spell_parser.c:205-222`); the other four exist because the
+/// same `apply_saving_throw[]` block feeds wands, staves and scrolls.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SaveType {
+    /// `SAVING_PARA`.
+    Para,
+    /// `SAVING_ROD`.
+    Rod,
+    /// `SAVING_PETRI`.
+    Petri,
+    /// `SAVING_BREATH`.
+    Breath,
+    /// `SAVING_SPELL`.
+    Spell,
+}
+
+impl SaveType {
+    /// Every category, in `SAVING_*` order.
+    pub const ALL: [SaveType; 5] = [
+        SaveType::Para,
+        SaveType::Rod,
+        SaveType::Petri,
+        SaveType::Breath,
+        SaveType::Spell,
+    ];
+
+    /// The source's numeric value (`SAVING_PARA` 0 .. `SAVING_SPELL` 4).
+    pub const fn index(self) -> usize {
+        match self {
+            SaveType::Para => 0,
+            SaveType::Rod => 1,
+            SaveType::Petri => 2,
+            SaveType::Breath => 3,
+            SaveType::Spell => 4,
+        }
+    }
+}
+
 /// Affect-applied saving-throw modifiers, Circle's `apply_saving_throw[]`.
 ///
 /// These start at zero ("neutral") and accumulate the `save_*` item/buff
-/// affects; the class/level base throw lives in `saving_throws()`
-/// (`tbamud/src/class.c`) and is applied when a save is actually rolled.
+/// affects; the class/level base throw lives in [`saving_throws`](super::saves::saving_throws)
+/// (`tbamud/src/class.c:160`) and is applied when a save is actually rolled.
+/// A negative modifier makes a save *better*, exactly as the source comment at
+/// `tbamud/src/magic.c:30-34` warns.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TbaSaves {
     pub para: i32,
@@ -169,6 +213,19 @@ pub struct TbaSaves {
     pub petri: i32,
     pub breath: i32,
     pub spell: i32,
+}
+
+impl TbaSaves {
+    /// The modifier for one category, indexed like `apply_saving_throw[]`.
+    pub const fn get(&self, save: SaveType) -> i32 {
+        match save {
+            SaveType::Para => self.para,
+            SaveType::Rod => self.rod,
+            SaveType::Petri => self.petri,
+            SaveType::Breath => self.breath,
+            SaveType::Spell => self.spell,
+        }
+    }
 }
 
 /// Vitals and CircleMUD combat statistics for any combatant (player or NPC).

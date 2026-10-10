@@ -23,8 +23,8 @@ use mib_stdlib::prelude::{
     ContentRegistry, ItemId, Modules, NpcId, RoomId, RoomIndex, StdlibModule, StdlibPlugin,
 };
 use mib_tba::prelude::{
-    ShopDef, ShopsSection, SpellKind, SpellTarget, SpellsSection, TbaClassesSection, TbaContent,
-    TbaItemsSection, TbaModule, TbaNpcStatsSection, TbaPlugin, ZonesSection,
+    SaveEffect, ShopDef, ShopsSection, SpellKind, SpellTarget, SpellsSection, TbaClassesSection,
+    TbaContent, TbaItemsSection, TbaModule, TbaNpcStatsSection, TbaPlugin, ZonesSection,
 };
 
 /// Exact counts from the full tbaMUD conversion now in `content/` (Phase 10).
@@ -324,14 +324,22 @@ fn tba_spell_catalog_is_the_circle_catalog() {
 
     let missile = spells.spells.get("magic_missile").expect("magic_missile");
     assert_eq!(missile.name, "magic missile");
-    assert_eq!(missile.mana, 10, "spell_parser.c mana_min");
+    assert_eq!((missile.mana_min, missile.mana_max), (10, 25));
+    assert_eq!(missile.mana_change, 3, "spell_parser.c:877-878");
+    assert_eq!(
+        missile.min_level.get("magic_user"),
+        Some(&1),
+        "class.c:1592 magic-user learns it at level 1"
+    );
     assert_eq!(missile.kind, SpellKind::Damage);
+    assert_eq!(missile.save, SaveEffect::Half, "magic.c:290 dam /= 2");
     assert_eq!(missile.target, SpellTarget::Victim);
     assert_eq!(missile.dice.expect("damage dice").to_string(), "1d8+1");
 
     let heal = spells.spells.get("cure_light").expect("cure_light");
     assert_eq!(heal.kind, SpellKind::Heal);
-    assert_eq!(heal.mana, 10);
+    assert_eq!(heal.mana_min, 10);
+    assert_eq!(heal.level_bonus.bonus(7), 1, "+ level / 4, magic.c:808");
 
     let armor = spells.spells.get("armor").expect("armor");
     assert_eq!(armor.kind, SpellKind::Buff);
@@ -351,12 +359,47 @@ fn tba_spell_catalog_is_the_circle_catalog() {
     let strength = spells.spells.get("strength").expect("strength");
     assert_eq!(
         strength.duration, 4,
-        "magic.c:498 strength level-1 floor (level/2 + 4)"
+        "magic.c:498 strength floor (level/2 + 4)"
     );
+    assert_eq!(strength.duration_bonus.bonus(6), 3, "strength + level/2");
+
+    let poison = spells.spells.get("poison").expect("poison");
+    assert_eq!(poison.kind, SpellKind::Debuff);
+    assert_eq!(poison.save, SaveEffect::Negate, "magic.c:446");
+    assert_eq!(poison.duration_bonus.bonus(9), 9, "poison duration = level");
 
     let detect = spells.spells.get("detect_invis").expect("detect_invis");
     assert_eq!(detect.kind, SpellKind::Detect);
     assert_eq!(detect.target, SpellTarget::Caster);
+
+    // Issue #7: no `Utility` no-op may stay silent. Every catalog entry is
+    // either a modelled kind or a `Utility` carrying an `unsupported` reason.
+    let mut implemented = 0;
+    let mut flagged = 0;
+    for (id, spell) in &spells.spells {
+        match spell.kind {
+            SpellKind::Utility => {
+                assert!(
+                    spell
+                        .unsupported
+                        .as_deref()
+                        .is_some_and(|reason| !reason.trim().is_empty()),
+                    "utility spell `{id}` must carry an `unsupported` reason"
+                );
+                flagged += 1;
+            }
+            _ => {
+                assert!(
+                    spell.unsupported.is_none(),
+                    "modelled spell `{id}` must not claim to be unsupported"
+                );
+                implemented += 1;
+            }
+        }
+    }
+    assert_eq!(flagged, 26, "the re-scoped Circle routines");
+    assert_eq!(implemented, 28, "damage/heal/buff/debuff/detect spells");
+    assert_eq!(implemented + flagged, TBA_SPELLS);
 
     // Every `granted_skills` name that is a spell must resolve in the catalog;
     // the fighter/thief entries (kick, bash, sneak, ...) are skills, not
@@ -460,7 +503,7 @@ fn spell_missing_dice_names_the_field_path() {
     .expect("write manifest");
     std::fs::write(
         dir.join("content/tba.spells.yaml"),
-        "spells:\n  fireball:\n    name: fireball\n    mana: 30\n    kind: damage\n    target: victim\n",
+        "spells:\n  fireball:\n    name: fireball\n    mana_min: 30\n    mana_max: 40\n    mana_change: 2\n    kind: damage\n    target: victim\n",
     )
     .expect("write spells");
 

@@ -13,6 +13,7 @@ pub mod model;
 pub mod progression;
 pub mod rewards;
 pub mod round;
+pub mod saves;
 pub mod systems;
 
 pub use ai::{
@@ -27,8 +28,8 @@ pub use init::{
     player_combatant_system, resolve_class_key,
 };
 pub use model::{
-    BASE_ATTRIBUTE, EVIL_ALIGNMENT, GOOD_ALIGNMENT, TbaAlignment, TbaAttributes, TbaCombatant,
-    TbaGold, TbaProgress, TbaSaves, WieldedWeapon,
+    BASE_ATTRIBUTE, EVIL_ALIGNMENT, GOOD_ALIGNMENT, SaveType, TbaAlignment, TbaAttributes,
+    TbaCombatant, TbaGold, TbaProgress, TbaSaves, WieldedWeapon,
 };
 pub use progression::{
     BASE_MOVE, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, TbaRng, derive_vitals, level_for_xp,
@@ -39,4 +40,5 @@ pub use rewards::{
     reward_for,
 };
 pub use round::{ROUND_SECONDS, TbaRound, TbaRoundClock, run_due_round};
+pub use saves::{mag_savingthrow, saving_throws};
 pub use systems::{resolve_rounds, weapon_dice};
