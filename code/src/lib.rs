@@ -27,15 +27,42 @@
 //! interpreter, room-local aggro and Circle combat round attach to
 //! [`TbaPlugin`] in later phases.
 
+pub mod combat;
 pub mod content;
+pub mod equipment;
 pub mod module;
+pub mod shops;
+pub mod spells;
+pub mod zones;
 
 pub mod prelude {
+    pub use crate::combat::{
+        BASE_MOVE, EVIL_ALIGNMENT, GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID, GOLD_ITEM_NAME,
+        GOOD_ALIGNMENT, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, ROUND_SECONDS, TbaAlignment,
+        TbaAttackerMemory, TbaCombatant, TbaGold, TbaProgress, TbaRng, TbaRound, TbaRoundClock,
+        TbaSpawnHome, WieldedWeapon, apply_death_penalty, auto_engage_system, default_class,
+        derive_vitals, engages, fallback_combatant, handle_combat_commands, helper_system,
+        level_for_xp, npc_combatant_from_stats, npc_combatant_system, player_combatant_system,
+        pursuit_system, resolve_class_key, resolve_rounds, run_due_round, weapon_dice,
+        xp_threshold, xp_to_advance,
+    };
     pub use crate::content::{
         AffectDef, AffectLocation, Attribute, DoorReset, NpcBehaviour, Position, ResetMode,
-        TbaClassDef, TbaClassesFile, TbaClassesSection, TbaItemDef, TbaItemKind, TbaItemsFile,
-        TbaItemsSection, TbaNpcStats, TbaNpcStatsFile, TbaNpcStatsSection, WearSlot, ZoneCommand,
-        ZoneDef, ZonesFile, ZonesSection, register,
+        SpellDef, SpellKind, SpellTarget, SpellsFile, SpellsSection, TbaClassDef, TbaClassesFile,
+        TbaClassesSection, TbaItemDef, TbaItemKind, TbaItemsFile, TbaItemsSection, TbaNpcStats,
+        TbaNpcStatsFile, TbaNpcStatsSection, WearSlot, ZoneCommand, ZoneDef, ZonesFile,
+        ZonesSection, register,
+    };
+    pub use crate::content::{ShopDef, ShopsFile, ShopsSection};
+    pub use crate::equipment::{
+        TbaEquipment, TbaEquipmentSave, choose_slot, handle_equipment_commands,
+        recompute_combatant, recompute_combatant_full, recompute_equipment_affects, relink_slots,
+        restore_equipment_from_save, sync_wielded_weapon,
     };
     pub use crate::module::{MODULE_NAME, TbaContent, TbaModule, TbaPlugin};
+    pub use crate::shops::{ShopCommand, handle_shop_commands, parse_shop_line};
+    pub use crate::spells::{
+        ActiveBuff, DEFAULT_BUFF_ROUNDS, TbaBuffs, handle_cast_command, tick_buffs,
+    };
+    pub use crate::zones::{ZoneState, ZoneTracker, zone_reset_system};
 }

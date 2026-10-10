@@ -1,6 +1,6 @@
 //! The `tba.*` pack sections — CircleMUD / tbaMUD domain data.
 //!
-//! Four sections, all owned by `mib-tba` (the `[code] module = "tba"` half of
+//! Six sections, all owned by `mib-tba` (the `[code] module = "tba"` half of
 //! `packs/tba/`):
 //!
 //! - [`ZonesSection`] (`tba.zones`) — the stateful zone-reset programs (TBA-E07)
@@ -8,6 +8,10 @@
 //! - [`TbaItemsSection`] (`tba.items`) — 24 item types, 18 wear positions,
 //!   affect blocks (TBA-E28)
 //! - [`TbaClassesSection`] (`tba.classes`) — the four Diku classes (TBA-E18/E19)
+//! - [`SpellsSection`] (`tba.spells`) — Circle's spell catalog, read by the
+//!   `cast` command (TBA-E18)
+//! - [`ShopsSection`] (`tba.shops`) — shopkeeper trade terms, read by the
+//!   `list`/`buy`/`sell`/`value` commands (TBA-E17)
 //!
 //! Everything here is genre data layered on top of `stdlib.*`: rooms, NPC
 //! prototypes and item prototypes come from `stdlib.rooms` / `stdlib.npcs` /
@@ -468,6 +472,12 @@ impl PackSection for TbaItemsSection {
 /// One character class. `granted_skills` names spells/skills, which live in the
 /// deferred magic system (D-04); they are carried as data now so the class
 /// tables survive conversion.
+///
+/// The progression tables are transcribed verbatim from CircleMUD/tbaMUD's
+/// `src/class.c` — [`thaco`](https://github.com/tbamud/tbamud) for
+/// `thaco_table` and `level_exp` for `xp_table`. Both are indexed by level and
+/// keep the source's level-0 sentinel at index 0 (`100` THAC0 and `0` XP
+/// respectively), so `table[L]` is level `L`'s value.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct TbaClassDef {
@@ -476,6 +486,19 @@ pub struct TbaClassDef {
     pub description: String,
     /// Hit points gained per level, e.g. `1d10` for a warrior.
     pub hp_dice: Dice,
+    /// Mana gained per level for a casting class; `None` for a non-caster.
+    #[serde(default)]
+    pub mana_dice: Option<Dice>,
+    /// Total XP required to reach each level, exactly `level_exp` from
+    /// `src/class.c`. Index 0 is the level-0 sentinel (`0`); index `L` is the
+    /// total XP for level `L`, up to the table's last (immortal) entry.
+    #[serde(default)]
+    pub xp_table: Vec<u64>,
+    /// THAC0 at each level, exactly the `thaco` chart from `src/class.c`.
+    /// Index 0 is the level-0 sentinel (`100`); index `L` is the THAC0 at
+    /// level `L`, up to the table's last (implementor) entry.
+    #[serde(default)]
+    pub thaco_table: Vec<i32>,
     /// Prime attribute; `None` for a class with no attribute requirement.
     #[serde(default)]
     pub prime_attribute: Option<Attribute>,
@@ -516,8 +539,278 @@ impl PackSection for TbaClassesSection {
                     );
                 }
             }
+            // Both tables are authoritative game rules, not optional tuning:
+            // an empty or sentinel-less table would silently fall back to a
+            // placeholder instead of Circle's progression.
+            if class.xp_table.len() < 2 || class.xp_table.first() != Some(&0) {
+                ctx.error_at(
+                    format!("classes.{class_id}.xp_table"),
+                    "xp_table must start with the level-0 sentinel (0) and define level 1",
+                );
+            }
+            if class.thaco_table.len() < 2 || class.thaco_table.first() != Some(&100) {
+                ctx.error_at(
+                    format!("classes.{class_id}.thaco_table"),
+                    "thaco_table must start with the level-0 sentinel (100) and define level 1",
+                );
+            }
         }
     }
+}
+
+// ---------------------------------------------------------------------------
+// tba.spells — Circle's spell catalog (TBA-E18)
+// ---------------------------------------------------------------------------
+
+/// What a spell does when cast.
+///
+/// Data-only: the `cast` handler in [`crate::spells`] implements each kind
+/// generically from the spell's [`dice`](SpellDef::dice) and
+/// [`affect`](SpellDef::affect), so the catalog can carry spells whose Circle
+/// routine is not modelled yet as [`SpellKind::Utility`].
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SpellKind {
+    /// A hostile spell that rolls [`SpellDef::dice`] against its victim.
+    Damage,
+    /// A restorative spell that rolls [`SpellDef::dice`] up to the target's
+    /// maximum hit points.
+    Heal,
+    /// A spell that installs [`SpellDef::affect`] for a number of combat
+    /// rounds.
+    Buff,
+    /// A divination: emits the message the data supports; no combat effect.
+    Detect,
+    /// A spell whose Circle routine is not modelled yet. It is castable (mana
+    /// is spent) and reports that nothing happens rather than inventing an
+    /// effect.
+    Utility,
+}
+
+/// Who a spell is aimed at, folded down from Circle's `TAR_*` target bits.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SpellTarget {
+    /// The caster (`TAR_SELF_ONLY`).
+    ///
+    /// Rust reserves `Self` as an enum variant name, so the Rust name is
+    /// `Caster` while the authored/serde name stays `self`.
+    #[serde(rename = "self")]
+    Caster,
+    /// Another character in the room (`TAR_CHAR_ROOM`, or `TAR_CHAR_WORLD`
+    /// which this phase resolves in the caster's room only).
+    Victim,
+    /// The caster's room (`TAR_IGNORE` area spells such as `earthquake`).
+    Room,
+    /// No character target (`TAR_IGNORE`, or object-only target bits).
+    None,
+}
+
+/// One spell, from tbaMUD's `spell_info[]`.
+///
+/// Circle stores a level-scaled mana cost (`mana_max` at the level the spell
+/// is learned, falling by `mana_change` per level to `mana_min`); this phase
+/// carries the settled floor as a flat [`mana`](Self::mana). The source triple
+/// is cited in `content/tba.spells.yaml` so a level-scaled pass can restore it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SpellDef {
+    /// Display name, for example `magic missile`.
+    pub name: String,
+    /// Flat mana cost, Circle's `mana_min`.
+    pub mana: u32,
+    pub kind: SpellKind,
+    /// Damage/heal roll. Required for [`SpellKind::Damage`] and
+    /// [`SpellKind::Heal`]; also applied alongside a `Damage` spell's affect
+    /// (for example `chill touch`'s strength drain).
+    #[serde(default)]
+    pub dice: Option<Dice>,
+    /// Affect installed for [`SpellKind::Buff`], or carried alongside a
+    /// damage roll.
+    #[serde(default)]
+    pub affect: Option<AffectDef>,
+    pub target: SpellTarget,
+    /// Circle's minimum caster position (usually `standing`; combat spells are
+    /// `fighting`). The caster must be at least this high on the [`Position`]
+    /// ladder.
+    #[serde(default)]
+    pub min_position: Position,
+}
+
+/// `tba.spells` — keyed by the snake_case spell id (for example
+/// `magic_missile`), which is the name [`TbaClassDef::granted_skills`] uses.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SpellsFile {
+    pub spells: BTreeMap<SmolStr, SpellDef>,
+}
+
+/// `tba.spells`.
+pub struct SpellsSection;
+
+impl PackSection for SpellsSection {
+    const ID: &'static str = "tba.spells";
+    type Defs = SpellsFile;
+
+    fn validate(defs: &Self::Defs, ctx: &mut ValidationCtx<'_>) {
+        for (spell_id, spell) in &defs.spells {
+            for (field, message) in spell_issues(spell_id, spell) {
+                ctx.error_at(field, message);
+            }
+        }
+    }
+}
+
+/// Structural validation for one spell, independent of the ECS.
+///
+/// Returns `(field, message)` pairs so both [`SpellsSection::validate`] and its
+/// unit test exercise the same rules. A `Damage`/`Heal` spell without dice or
+/// a `Buff` without an affect would otherwise silently do nothing on cast.
+fn spell_issues(spell_id: &SmolStr, spell: &SpellDef) -> Vec<(String, String)> {
+    let mut issues = Vec::new();
+    if spell.name.trim().is_empty() {
+        issues.push((
+            format!("spells.{spell_id}.name"),
+            "spell name must not be empty".to_owned(),
+        ));
+    }
+    match spell.kind {
+        SpellKind::Damage | SpellKind::Heal => {
+            if spell.dice.is_none() {
+                issues.push((
+                    format!("spells.{spell_id}.dice"),
+                    "a damage or heal spell must define its dice roll".to_owned(),
+                ));
+            }
+        }
+        SpellKind::Buff => {
+            if spell.affect.is_none() {
+                issues.push((
+                    format!("spells.{spell_id}.affect"),
+                    "a buff spell must define its apply affect".to_owned(),
+                ));
+            }
+        }
+        SpellKind::Detect | SpellKind::Utility => {}
+    }
+    issues
+}
+
+// ---------------------------------------------------------------------------
+// tba.shops — CircleMUD shopkeeper economy (TBA-E17)
+// ---------------------------------------------------------------------------
+
+/// One shopkeeper's trade terms, from a `.shp` record.
+///
+/// Circle stores a shop as the keeper mob, the item prototypes it produces,
+/// the item **types** it will buy, and a `profit_buy`/`profit_sell` pair
+/// applied to an object's `cost` (`src/shop.c`, `shopping_buy` and
+/// `shopping_sell`):
+///
+/// ```text
+/// buy price  = round(cost * profit_buy)
+/// sell price = round(cost * profit_sell)
+/// ```
+///
+/// `messages` carries Circle's seven `read_shop_message` strings in source
+/// order (message 0..6: no-such-item, player-lacks-item, do-not-buy,
+/// keeper-lacks-cash, player-lacks-cash, buy, sell), kept verbatim including
+/// their `%s`/`%d` specifiers so a later pass can render them.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ShopDef {
+    /// Circle's `profit_buy` (`SHOP_BUYPROFIT`): the multiplier applied to an
+    /// item's `cost` when a player buys it. Always positive.
+    pub buy_multiplier: f32,
+    /// Circle's `profit_sell` (`SHOP_SELLPROFIT`): the multiplier applied to
+    /// an item's `cost` when a player sells it. `0.0` means the keeper pays
+    /// nothing; negative values are rejected.
+    pub sell_multiplier: f32,
+    /// The `ITEM_*` types the shop will purchase (`SHOP_BUYTYPE`).
+    #[serde(default)]
+    pub buy_kinds: Vec<TbaItemKind>,
+    /// The `stdlib.items` prototypes the shop stocks (`SHOP_PRODUCT`).
+    #[serde(default)]
+    pub produce: Vec<ItemId>,
+    /// Circle's seven shop messages, when the source carries them.
+    #[serde(default)]
+    pub messages: Vec<String>,
+}
+
+/// `tba.shops` — keyed by the shopkeeper's `stdlib.npcs` id.
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ShopsFile {
+    pub shops: BTreeMap<NpcId, ShopDef>,
+}
+
+/// `tba.shops`.
+pub struct ShopsSection;
+
+impl PackSection for ShopsSection {
+    const ID: &'static str = "tba.shops";
+    type Defs = ShopsFile;
+
+    fn validate(defs: &Self::Defs, ctx: &mut ValidationCtx<'_>) {
+        let npcs = npc_ids(ctx);
+        let items = item_ids(ctx);
+        for (npc_id, shop) in &defs.shops {
+            for (field, message) in shop_issues(npc_id, shop, &npcs, &items) {
+                ctx.error_at(field, message);
+            }
+        }
+    }
+}
+
+/// Structural validation for one shop, independent of the ECS.
+///
+/// Returns `(field, message)` pairs so both [`ShopsSection::validate`] and its
+/// unit test exercise the same rules. A shop whose keeper is not an NPC, whose
+/// multipliers are nonsensical, or whose stock names an item that does not
+/// exist would otherwise load and misbehave at trade time.
+fn shop_issues(
+    npc_id: &NpcId,
+    shop: &ShopDef,
+    npcs: &BTreeSet<NpcId>,
+    items: &BTreeSet<ItemId>,
+) -> Vec<(String, String)> {
+    let mut issues = Vec::new();
+    let field = format!("shops.{npc_id}");
+    if !npcs.contains(npc_id) {
+        issues.push((
+            field.clone(),
+            format!("unknown npc `{npc_id}` (shopkeeper must be a stdlib.npcs entry)"),
+        ));
+    }
+    // A multiplier must be finite and on the right side of zero; `<=` (not a
+    // negated `>`) plus an explicit finiteness check also rejects NaN.
+    if !shop.buy_multiplier.is_finite() || shop.buy_multiplier <= 0.0 {
+        issues.push((
+            format!("{field}.buy_multiplier"),
+            format!(
+                "buy_multiplier must be positive, got {}",
+                shop.buy_multiplier
+            ),
+        ));
+    }
+    if !shop.sell_multiplier.is_finite() || shop.sell_multiplier < 0.0 {
+        issues.push((
+            format!("{field}.sell_multiplier"),
+            format!(
+                "sell_multiplier must not be negative, got {}",
+                shop.sell_multiplier
+            ),
+        ));
+    }
+    for (index, item) in shop.produce.iter().enumerate() {
+        if !items.contains(item) {
+            issues.push((
+                format!("{field}.produce[{index}]"),
+                format!("unknown item `{item}` (not defined in stdlib.items)"),
+            ));
+        }
+    }
+    issues
 }
 
 // ---------------------------------------------------------------------------
@@ -530,6 +823,8 @@ pub fn register(registry: &mut SectionRegistry) {
     registry.register::<TbaNpcStatsSection>();
     registry.register::<TbaItemsSection>();
     registry.register::<TbaClassesSection>();
+    registry.register::<SpellsSection>();
+    registry.register::<ShopsSection>();
 }
 
 // ---------------------------------------------------------------------------
@@ -572,5 +867,105 @@ fn require_item(ctx: &mut ValidationCtx<'_>, field: &str, id: &ItemId, items: &B
 fn require_room(ctx: &mut ValidationCtx<'_>, field: &str, id: &RoomId, rooms: &BTreeSet<RoomId>) {
     if !rooms.contains(id) {
         ctx.error_at(field.to_owned(), format!("unknown room `{id}`"));
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #![allow(clippy::expect_used, clippy::unwrap_used)]
+
+    use super::*;
+
+    fn spell(kind: SpellKind) -> SpellDef {
+        SpellDef {
+            name: "test spell".to_owned(),
+            mana: 1,
+            kind,
+            dice: None,
+            affect: None,
+            target: SpellTarget::Victim,
+            min_position: Position::Standing,
+        }
+    }
+
+    #[test]
+    fn damage_and_heal_spells_must_define_dice() {
+        let id = SmolStr::new("test_spell");
+        let issues = spell_issues(&id, &spell(SpellKind::Damage));
+        assert_eq!(issues.len(), 1, "{issues:?}");
+        assert_eq!(issues[0].0, "spells.test_spell.dice");
+        assert_eq!(spell_issues(&id, &spell(SpellKind::Heal)).len(), 1);
+
+        let mut with_dice = spell(SpellKind::Damage);
+        with_dice.dice = Some(Dice::new(1, 6, 0));
+        assert!(spell_issues(&id, &with_dice).is_empty());
+    }
+
+    #[test]
+    fn buff_spells_must_define_an_affect_and_names_must_not_be_empty() {
+        let id = SmolStr::new("test_spell");
+        let issues = spell_issues(&id, &spell(SpellKind::Buff));
+        assert_eq!(issues.len(), 1, "{issues:?}");
+        assert_eq!(issues[0].0, "spells.test_spell.affect");
+
+        let mut buff = spell(SpellKind::Buff);
+        buff.affect = Some(AffectDef {
+            location: AffectLocation::ArmorClass,
+            modifier: -10,
+        });
+        assert!(spell_issues(&id, &buff).is_empty());
+
+        let mut unnamed = spell(SpellKind::Utility);
+        unnamed.name = "   ".to_owned();
+        let issues = spell_issues(&id, &unnamed);
+        assert_eq!(issues.len(), 1, "{issues:?}");
+        assert_eq!(issues[0].0, "spells.test_spell.name");
+    }
+
+    fn shop() -> ShopDef {
+        ShopDef {
+            buy_multiplier: 1.15,
+            sell_multiplier: 0.5,
+            buy_kinds: vec![TbaItemKind::Weapon],
+            produce: vec![ItemId::from("sword")],
+            messages: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn shop_validation_checks_keeper_multipliers_and_stock() {
+        let npc = NpcId::from("tba_npc_3000");
+        let npcs = BTreeSet::from([npc.clone()]);
+        let items = BTreeSet::from([ItemId::from("sword")]);
+        assert!(shop_issues(&npc, &shop(), &npcs, &items).is_empty());
+
+        // An unknown keeper names the shop key itself.
+        let stranger = NpcId::from("tba_npc_9999");
+        let issues = shop_issues(&stranger, &shop(), &npcs, &items);
+        assert_eq!(issues.len(), 1, "{issues:?}");
+        assert_eq!(issues[0].0, "shops.tba_npc_9999");
+
+        // A non-positive / negative / NaN multiplier is rejected.
+        let mut bad_buy = shop();
+        bad_buy.buy_multiplier = 0.0;
+        assert_eq!(shop_issues(&npc, &bad_buy, &npcs, &items).len(), 1);
+        bad_buy.buy_multiplier = f32::NAN;
+        assert_eq!(shop_issues(&npc, &bad_buy, &npcs, &items).len(), 1);
+
+        let mut bad_sell = shop();
+        bad_sell.sell_multiplier = -0.1;
+        let issues = shop_issues(&npc, &bad_sell, &npcs, &items);
+        assert_eq!(issues.len(), 1, "{issues:?}");
+        assert_eq!(issues[0].0, "shops.tba_npc_3000.sell_multiplier");
+        // Zero is a valid "pays nothing" multiplier.
+        bad_sell.sell_multiplier = 0.0;
+        assert!(shop_issues(&npc, &bad_sell, &npcs, &items).is_empty());
+
+        // Unknown stock is reported at its exact index.
+        let mut bad_stock = shop();
+        bad_stock.produce = vec![ItemId::from("sword"), ItemId::from("ghost")];
+        let issues = shop_issues(&npc, &bad_stock, &npcs, &items);
+        assert_eq!(issues.len(), 1, "{issues:?}");
+        assert_eq!(issues[0].0, "shops.tba_npc_3000.produce[1]");
     }
 }

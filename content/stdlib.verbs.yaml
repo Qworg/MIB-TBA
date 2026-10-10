@@ -1,0 +1,31 @@
+# Pack verbs owned by `stdlib.verbs` but claimed here.
+#
+# These are genre commands with an argument grammar the fixed command parser
+# does not model:
+#
+# - `cast '<spell>' [target]` — no `Command` variant.
+# - `list`, `buy <item>`, `sell <item>`, `value <item>` — CircleMUD shop
+#   commands; the fixed parser stops at the movement/combat grammar.
+#
+# The stdlib router would otherwise reject the verbs as unknown before the
+# genre systems (`mib_tba::spells::handle_cast_command` and
+# `mib_tba::shops::handle_shop_commands`) can see the raw line. Declaring them
+# here (with no DSL effects) makes the router claim each as a known pack verb
+# and leave the work to those systems, which run after the router in
+# `BridgeSet::Game`.
+verbs:
+  cast:
+    description: Cast a spell you know.
+    effects: []
+  list:
+    description: List what the shopkeeper here has for sale.
+    effects: []
+  buy:
+    description: Buy an item from the shopkeeper here.
+    effects: []
+  sell:
+    description: Sell an item to the shopkeeper here.
+    effects: []
+  value:
+    description: Ask what the shopkeeper here would pay for an item.
+    effects: []

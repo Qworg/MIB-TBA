@@ -1,0 +1,503 @@
+# Circle / tbaMUD spell catalog (TBA-E18, doc §8.2).
+#
+# Hand-authored from the sibling tbaMUD checkout at
+# /home/qworg/Development/tbamud:
+#
+#   - the spell ids and `NUM_SPELLS` come from `src/spells.h:39-127`
+#     (`SPELL_RESERVED_DBC` 0 .. `SPELL_DARKNESS` 54; `SPELL_DG_AFFECT` 298 is a
+#     framework-only script affect and is deliberately absent here).
+#   - every entry's `mana`, target type, `min_position` and routine come from
+#     the `mag_assign_spells()` table in `src/spell_parser.c:733-919`
+#     (`spello(SPELL_X, "name", mana_max, mana_min, mana_change, minpos,
+#     targets, violent, routines, wear_off_msg)`).
+#   - damage and healing dice come from `mag_damage()` in `src/magic.c:195-289`
+#     and `mag_points()` in `src/magic.c:801-822`; buff affects come from
+#     `mag_affects()` in `src/magic.c:314-556`.
+#
+# `mana` is Circle's `mana_min` — the settled cost after the source's
+# `mana_max - mana_change * (level - min_level)` reduction bottoms out. The
+# source triple is recoverable from `spell_parser.c` above; this phase charges
+# the flat floor because `cast` does not level-scale mana.
+#
+# Dice are the magic-user branch of `mag_damage()` (the 8-sided variant); the
+# source's level term (`earthquake`'s `+ level`, `cure light`'s `+ level/4`)
+# and `energy drain`'s level-<=2 instant kill are not representable in a fixed
+# `Dice`, so the level-independent part is used and noted on the entry.
+#
+# Note: tbaMUD's `src/spells.h` does not define a `cure serious` spell (the
+# cleric line here is `cure blind`, `cure critic`, `cure light`, `curse`), so
+# there is no `cure_serious` entry; the task's illustrative list names one from
+# stock CircleMUD 3.1, not from this checkout's `NUM_SPELLS` table.
+#
+# `kind` maps to what the genre handler can actually do:
+#   damage -> `Damage`, heal -> `Heal`, an applied affect -> `Buff`,
+#   divination -> `Detect`, anything whose Circle routine is not modelled
+#   (flags, summons, object/room manipulation, group logic) -> `Utility`.
+# Nothing here invents an effect: a `Utility` spell spends its mana and reports
+# that nothing happens yet.
+spells:
+  # src/spell_parser.c:741-742, routines MAG_SUMMONS (not modelled).
+  animate_dead:
+    name: animate dead
+    mana: 10
+    kind: utility
+    target: none
+    min_position: standing
+
+  # src/spell_parser.c:744-745, spells.c magic.c:333 (APPLY_AC -20, dur 24).
+  armor:
+    name: armor
+    mana: 15
+    kind: buff
+    affect:
+      location: armor_class
+      modifier: -20
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:747-749, spells.c magic.c:359 (APPLY_HITROLL +2).
+  bless:
+    name: bless
+    mana: 5
+    kind: buff
+    affect:
+      location: hitroll
+      modifier: 2
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:751-752, MAG_AFFECTS (AFF_BLIND bit, not modelled).
+  blindness:
+    name: blindness
+    mana: 25
+    kind: utility
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:755-756, magic.c:210 (3d8+3 for a magic user).
+  burning_hands:
+    name: burning hands
+    mana: 10
+    kind: damage
+    dice: 3d8+3
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:758-759, magic.c:268 (7d8+7).
+  call_lightning:
+    name: call lightning
+    mana: 25
+    kind: damage
+    dice: 7d8+7
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:761-763, MAG_MANUAL (charm flag, not modelled).
+  charm:
+    name: charm person
+    mana: 50
+    kind: utility
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:765-766, magic.c:206 (1d8+1) plus magic.c:330 STR -1.
+  chill_touch:
+    name: chill touch
+    mana: 10
+    kind: damage
+    dice: 1d8+1
+    affect:
+      location: str
+      modifier: -1
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:769-770, MAG_SUMMONS (not modelled).
+  clone:
+    name: clone
+    mana: 65
+    kind: utility
+    target: none
+    min_position: standing
+
+  # src/spell_parser.c:772-773, magic.c:227 (9d8+9).
+  color_spray:
+    name: color spray
+    mana: 15
+    kind: damage
+    dice: 9d8+9
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:775-776, MAG_MANUAL (weather state, not modelled).
+  control_weather:
+    name: control weather
+    mana: 25
+    kind: utility
+    target: room
+    min_position: standing
+
+  # src/spell_parser.c:778-779, MAG_CREATIONS (not modelled).
+  create_food:
+    name: create food
+    mana: 5
+    kind: utility
+    target: none
+    min_position: standing
+
+  # src/spell_parser.c:781-782, MAG_MANUAL (fills a drink container).
+  create_water:
+    name: create water
+    mana: 5
+    kind: utility
+    target: none
+    min_position: standing
+
+  # src/spell_parser.c:784-785, MAG_UNAFFECTS (AFF_BLIND removal).
+  cure_blind:
+    name: cure blind
+    mana: 5
+    kind: utility
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:787-788, magic.c:812 (3d8+3 + level/4).
+  cure_critic:
+    name: cure critic
+    mana: 10
+    kind: heal
+    dice: 3d8+3
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:790-791, magic.c:808 (1d8+1 + level/4).
+  cure_light:
+    name: cure light
+    mana: 10
+    kind: heal
+    dice: 1d8+1
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:793-795, MAG_AFFECTS + MAG_ALTER_OBJS (AFF_CURSE).
+  curse:
+    name: curse
+    mana: 50
+    kind: utility
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:797-798, MAG_ROOMS (room light level, not modelled).
+  darkness:
+    name: darkness
+    mana: 5
+    kind: utility
+    target: room
+    min_position: standing
+
+  # src/spell_parser.c:800-801, MAG_AFFECTS (AFF_DETECT_ALIGN).
+  detect_align:
+    name: detect alignment
+    mana: 10
+    kind: detect
+    target: self
+    min_position: standing
+
+  # src/spell_parser.c:803-805, MAG_AFFECTS (AFF_DETECT_INVIS). Id matches the
+  # `detect_invis` name the class skills and the task's spell list use.
+  detect_invis:
+    name: detect invisibility
+    mana: 10
+    kind: detect
+    target: self
+    min_position: standing
+
+  # src/spell_parser.c:807-809, MAG_AFFECTS (AFF_DETECT_MAGIC).
+  detect_magic:
+    name: detect magic
+    mana: 10
+    kind: detect
+    target: self
+    min_position: standing
+
+  # src/spell_parser.c:811-813, MAG_MANUAL (AFF_DETECT_POISON).
+  detect_poison:
+    name: detect poison
+    mana: 5
+    kind: detect
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:815-816, magic.c:238 (6d8+6).
+  dispel_evil:
+    name: dispel evil
+    mana: 25
+    kind: damage
+    dice: 6d8+6
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:818-819, magic.c:247 (6d8+6).
+  dispel_good:
+    name: dispel good
+    mana: 25
+    kind: damage
+    dice: 6d8+6
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:821-822, magic.c:281 (2d8 + level; level term dropped).
+  earthquake:
+    name: earthquake
+    mana: 25
+    kind: damage
+    dice: 2d8
+    target: room
+    min_position: fighting
+
+  # src/spell_parser.c:824-825, MAG_MANUAL (object enchantment, not modelled).
+  enchant_weapon:
+    name: enchant weapon
+    mana: 100
+    kind: utility
+    target: none
+    min_position: standing
+
+  # src/spell_parser.c:827-828, magic.c:274 (1d10 for level > 2; the level-<=2
+  # 100-damage branch is not modelled).
+  energy_drain:
+    name: energy drain
+    mana: 25
+    kind: damage
+    dice: 1d10
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:833-834, magic.c:232 (11d8+11).
+  fireball:
+    name: fireball
+    mana: 30
+    kind: damage
+    dice: 11d8+11
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:836-837, MAG_AFFECTS (AFF_FLYING).
+  fly:
+    name: fly
+    mana: 20
+    kind: utility
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:830-831, MAG_GROUPS -> SPELL_ARMOR on each group member.
+  group_armor:
+    name: group armor
+    mana: 30
+    kind: utility
+    target: room
+    min_position: standing
+
+  # src/spell_parser.c:839-840, MAG_GROUPS -> SPELL_HEAL on each group member.
+  group_heal:
+    name: group heal
+    mana: 60
+    kind: utility
+    target: room
+    min_position: standing
+
+  # src/spell_parser.c:906-907 is word of recall; group recall (spells.h:90,
+  # SPELL_GROUP_RECALL 49) is defined but left `!UNUSED!` by the source, so it
+  # carries the framework default cost of 0.
+  group_recall:
+    name: group recall
+    mana: 0
+    kind: utility
+    target: room
+    min_position: standing
+
+  # src/spell_parser.c:842-843, magic.c:271 (8d8+8).
+  harm:
+    name: harm
+    mana: 45
+    kind: damage
+    dice: 8d8+8
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:845-846, magic.c:816 (100 + 3d8).
+  heal:
+    name: heal
+    mana: 40
+    kind: heal
+    dice: 3d8+100
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:848-849, MAG_AFFECTS (AFF_INFRAVISION).
+  infravision:
+    name: infravision
+    mana: 10
+    kind: utility
+    target: self
+    min_position: standing
+
+  # src/spell_parser.c:852-854, MAG_AFFECTS (AFF_INVISIBLE, plus APPLY_AC -40).
+  invisibility:
+    name: invisibility
+    mana: 25
+    kind: utility
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:856-857, magic.c:220 (7d8+7).
+  lightning_bolt:
+    name: lightning bolt
+    mana: 15
+    kind: damage
+    dice: 7d8+7
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:859-860, MAG_MANUAL (world object search).
+  locate_object:
+    name: locate object
+    mana: 20
+    kind: utility
+    target: none
+    min_position: standing
+
+  # src/spell_parser.c:862-863, magic.c:202 (1d8+1).
+  magic_missile:
+    name: magic missile
+    mana: 10
+    kind: damage
+    dice: 1d8+1
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:865-867, MAG_AFFECTS (AFF_POISON, APPLY_STR -2).
+  poison:
+    name: poison
+    mana: 20
+    kind: utility
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:869-871, MAG_AFFECTS (AFF_PROTECT_EVIL).
+  protection_from_evil:
+    name: protection from evil
+    mana: 10
+    kind: utility
+    target: self
+    min_position: standing
+
+  # src/spell_parser.c:873-875, MAG_UNAFFECTS + MAG_ALTER_OBJS.
+  remove_curse:
+    name: remove curse
+    mana: 25
+    kind: utility
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:877-879, MAG_UNAFFECTS (AFF_POISON removal).
+  remove_poison:
+    name: remove poison
+    mana: 8
+    kind: utility
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:881-882, MAG_AFFECTS (AFF_SANCTUARY).
+  sanctuary:
+    name: sanctuary
+    mana: 85
+    kind: utility
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:884-886, MAG_AFFECTS (AFF_SENSE_LIFE).
+  sense_life:
+    name: sense life
+    mana: 10
+    kind: detect
+    target: self
+    min_position: standing
+
+  # src/spell_parser.c:888-889, magic.c:215 (5d8+5).
+  shocking_grasp:
+    name: shocking grasp
+    mana: 15
+    kind: damage
+    dice: 5d8+5
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:891-892, MAG_AFFECTS (AFF_SLEEP, sets POS_SLEEPING).
+  sleep:
+    name: sleep
+    mana: 25
+    kind: utility
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:894-896, MAG_AFFECTS (APPLY_STR +1, dur level/2 + 4).
+  strength:
+    name: strength
+    mana: 30
+    kind: buff
+    affect:
+      location: str
+      modifier: 1
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:897-898, MAG_MANUAL (world summon).
+  summon:
+    name: summon
+    mana: 50
+    kind: utility
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:900-901, MAG_MANUAL. (spells.h:82, SPELL_VENTRILOQUATE
+  # 41 is likewise defined but left `!UNUSED!`; it was never assigned a
+  # `spello` entry, so it carries the framework default cost of 0.)
+  ventriloquate:
+    name: ventriloquate
+    mana: 0
+    kind: utility
+    target: none
+    min_position: standing
+
+  # src/spell_parser.c:903-904, MAG_AFFECTS (AFF_WATERWALK).
+  waterwalk:
+    name: waterwalk
+    mana: 20
+    kind: utility
+    target: victim
+    min_position: standing
+
+  # src/spell_parser.c:906-907, MAG_MANUAL (recall to the temple).
+  word_of_recall:
+    name: word of recall
+    mana: 10
+    kind: utility
+    target: victim
+    min_position: fighting
+
+  # src/spell_parser.c:909-910, MAG_MANUAL (object identification).
+  identify:
+    name: identify
+    mana: 25
+    kind: utility
+    target: none
+    min_position: standing
+
+  # src/spell_parser.c:900-901, MAG_MANUAL (random room teleport).
+  teleport:
+    name: teleport
+    mana: 50
+    kind: utility
+    target: victim
+    min_position: standing

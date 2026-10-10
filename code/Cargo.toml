@@ -11,9 +11,15 @@ mib-protocol.workspace = true
 mib-core.workspace = true
 mib-stdlib.workspace = true
 mib-content.workspace = true
+mib-persist.workspace = true
+mib-host.workspace = true
 bevy.workspace = true
 serde.workspace = true
 smol_str.workspace = true
+tracing = "0.1"
 
 [lints]
 workspace = true
+
+[dev-dependencies]
+serde_json = "1"

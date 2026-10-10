@@ -3,6 +3,11 @@
 # The four Diku classes. `granted_skills` names spells/skills that live in the
 # deferred magic system (D-04); they are carried as data now so the class
 # tables survive conversion.
+#
+# `xp_table` and `thaco_table` are transcribed verbatim from tbaMUD's
+# `src/class.c`: `level_exp` and `thaco` respectively. Both keep the source's
+# level-0 sentinel at index 0 (`0` XP / `100` THAC0), so index L is level L.
+# Do not approximate these numbers.
 classes:
   warrior:
     name: Warrior
@@ -10,21 +15,66 @@ classes:
     hp_dice: 1d10
     prime_attribute: str
     granted_skills: [kick, bash, rescue]
+    # class.c: level_exp(CLASS_WARRIOR, level).
+    xp_table: [0, 1, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000,
+               500000, 750000, 1000000, 1250000, 1500000, 1850000, 2200000,
+               2550000, 2900000, 3250000, 3600000, 3900000, 4200000, 4500000,
+               4800000, 5150000, 5500000, 5950000, 6400000, 6850000, 7400000,
+               8000000]
+    # class.c: thaco(CLASS_WARRIOR, level).
+    thaco_table: [100, 20, 19, 18, 17, 16, 15, 14, 14, 13, 12, 11, 10, 9, 8,
+                  7, 6, 5, 4, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
   thief:
     name: Thief
-    description: A shadow, skilled at stealth, locks and the art of the backstab.
+    description: A shadow, skilled at stealth, locks and the backstab.
     hp_dice: 1d6
     prime_attribute: dex
     granted_skills: [sneak, hide, pick_lock, backstab]
+    # class.c: level_exp(CLASS_THIEF, level).
+    xp_table: [0, 1, 1250, 2500, 5000, 10000, 20000, 40000, 70000, 110000,
+               160000, 220000, 440000, 660000, 880000, 1100000, 1500000,
+               2000000, 2500000, 3000000, 3500000, 3650000, 3800000, 4100000,
+               4400000, 4700000, 5100000, 5500000, 5900000, 6300000, 6650000,
+               7000000]
+    # class.c: thaco(CLASS_THIEF, level).
+    thaco_table: [100, 20, 20, 19, 19, 18, 18, 17, 17, 16, 16, 15, 15, 14, 14,
+                  13, 13, 12, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5,
+                  5, 4, 4]
   cleric:
     name: Cleric
     description: A servant of the gods, granted healing and protection.
     hp_dice: 1d8
+    # class.c: `advance_level` grants a caster `rand_number(level, 1.5*level)`
+    # capped at 10 mana per level; `1d10` is that range as a die.
+    mana_dice: 1d10
     prime_attribute: wis
     granted_skills: [cure_light, bless, armor]
+    # class.c: level_exp(CLASS_CLERIC, level).
+    xp_table: [0, 1, 1500, 3000, 6000, 13000, 27500, 55000, 110000, 225000,
+               450000, 675000, 900000, 1125000, 1350000, 1575000, 1800000,
+               2100000, 2400000, 2700000, 3000000, 3250000, 3500000, 3800000,
+               4100000, 4400000, 4800000, 5200000, 5600000, 6000000, 6400000,
+               7000000]
+    # class.c: thaco(CLASS_CLERIC, level).
+    thaco_table: [100, 20, 20, 20, 18, 18, 18, 16, 16, 16, 14, 14, 14, 12, 12,
+                  12, 10, 10, 10, 8, 8, 8, 6, 6, 6, 4, 4, 4, 2, 2, 2, 1, 1, 1,
+                  1]
   magic_user:
     name: Magic-User
     description: A scholar of the arcane, fragile but devastating.
     hp_dice: 1d4
+    # class.c: `advance_level` grants a caster `rand_number(level, 1.5*level)`
+    # capped at 10 mana per level; `1d10` is that range as a die.
+    mana_dice: 1d10
     prime_attribute: int
     granted_skills: [magic_missile, detect_magic, fireball]
+    # class.c: level_exp(CLASS_MAGIC_USER, level).
+    xp_table: [0, 1, 2500, 5000, 10000, 20000, 40000, 60000, 90000, 135000,
+               250000, 375000, 750000, 1125000, 1500000, 1875000, 2250000,
+               2625000, 3000000, 3375000, 3750000, 4000000, 4300000, 4600000,
+               4900000, 5200000, 5500000, 5950000, 6400000, 6850000, 7400000,
+               8000000]
+    # class.c: thaco(CLASS_MAGIC_USER, level).
+    thaco_table: [100, 20, 20, 20, 19, 19, 19, 18, 18, 18, 17, 17, 17, 16, 16,
+                  16, 15, 15, 15, 14, 14, 14, 13, 13, 13, 12, 12, 12, 11, 11,
+                  11, 10, 10, 10, 9]
