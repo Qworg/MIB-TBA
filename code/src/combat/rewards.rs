@@ -14,10 +14,11 @@
 //! which regenerates the base block from the new level.
 
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{NpcKey, Player};
+use mib_stdlib::prelude::{Location, NpcKey, Player, Session, SessionState};
 
 use crate::content::TbaClassDef;
 use crate::module::TbaContent;
+use crate::party::TbaParties;
 
 use super::model::{TbaAlignment, TbaGold, TbaProgress};
 use super::progression::level_for_xp;
@@ -131,52 +132,107 @@ pub fn alignment_after_kill(killer: i32, victim: i32) -> i32 {
 /// Melee kills are emitted by `resolve_rounds` on the `TbaRound` schedule, and
 /// spell kills by `handle_cast_command` in `BridgeSet::Game`; both land before
 /// this system, which the plugin orders after `run_due_round`.
+///
+/// ## Party split (issue #20)
+///
+/// When the killer is in a [`TbaParties`] group, the NPC's experience is
+/// shared among the killer and the group members **present in the killer's
+/// room** (and online); gold stays with the killer. The rule is the pack's
+/// documented simple one: `share = max(1, experience / n)` where `n` is the
+/// number of present members, so a solo killer still receives the full
+/// prototype reward and a group of `n` divides it evenly with a truncated
+/// remainder (Circle also truncates: `base = MAX(1, tot_gain / tot_members)`,
+/// `group_gain`, `tbamud/src/fight.c:353`). A zero-experience prototype awards
+/// zero shares. Alignment shifts for every member that receives a share,
+/// matching Circle's per-member `change_alignment` in `perform_group_gain`.
+#[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn award_kill_rewards(
     mut defeated: MessageReader<NpcDefeated>,
     mut players: Query<(&mut TbaProgress, &mut TbaGold, Option<&mut TbaAlignment>), With<Player>>,
+    locations: Query<&Location>,
+    sessions: Query<&Session>,
+    parties: Option<Res<TbaParties>>,
     content: Option<Res<TbaContent>>,
     mut output: MessageWriter<OutputEvent>,
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
     for event in defeated.read() {
-        let Ok((mut progress, mut gold, mut alignment)) = players.get_mut(event.killer) else {
-            // An NPC (or an uninitialised entity) killed it — no reward to pay.
-            continue;
+        let mut recipients = vec![event.killer];
+        if let (Some(parties), Some(room)) = (
+            parties.as_deref(),
+            locations
+                .get(event.killer)
+                .ok()
+                .map(|location| location.room),
+        ) && let Some(members) = parties.members_of(event.killer)
+        {
+            for member in members {
+                if member == event.killer || recipients.contains(&member) {
+                    continue;
+                }
+                let present = locations.get(member).ok().map(|l| l.room) == Some(room);
+                let online = sessions
+                    .get(member)
+                    .map(|session| session.state == SessionState::Playing)
+                    .unwrap_or(false);
+                if players.contains(member) && present && online {
+                    recipients.push(member);
+                }
+            }
+        }
+        let count = recipients.len().max(1) as u64;
+        let share = if event.experience == 0 {
+            0
+        } else {
+            (event.experience / count).max(1)
         };
-        // Circle shifts alignment alongside the XP/gold grant
-        // (`tbamud/src/fight.c:350`, `change_alignment`). A killer that has no
-        // `TbaAlignment` (a bare test fixture) simply skips the shift; player
-        // init always inserts one.
-        if let Some(alignment) = alignment.as_deref_mut() {
-            alignment.0 = alignment_after_kill(alignment.0, event.alignment);
-        }
-        let class = content.classes.get(&progress.class);
-        let reward = grant_kill(
-            &mut progress,
-            &mut gold,
-            event.experience,
-            event.gold,
-            class,
-        );
+        let grouped = recipients.len() > 1;
 
-        if reward.experience > 0 {
-            output.write(system_message(
-                event.killer,
-                format!("You receive {} experience.", reward.experience),
-            ));
-        }
-        if reward.gold > 0 {
-            output.write(system_message(
-                event.killer,
-                format!("You receive {} gold coins.", reward.gold),
-            ));
-        }
-        if reward.leveled_up() {
-            output.write(system_message(
-                event.killer,
-                format!("You have reached level {}!", reward.level),
-            ));
+        for recipient in &recipients {
+            let Ok((mut progress, mut gold, mut alignment)) = players.get_mut(*recipient) else {
+                // An NPC (or an uninitialised entity) killed it — no reward to
+                // pay.
+                continue;
+            };
+            // Circle shifts alignment alongside the XP/gold grant
+            // (`tbamud/src/fight.c:350`, `change_alignment`). A killer that has
+            // no `TbaAlignment` (a bare test fixture) simply skips the shift;
+            // player init always inserts one.
+            if let Some(alignment) = alignment.as_deref_mut() {
+                alignment.0 = alignment_after_kill(alignment.0, event.alignment);
+            }
+            let gold_reward = if *recipient == event.killer {
+                event.gold
+            } else {
+                0
+            };
+            let class = content.classes.get(&progress.class);
+            let reward = grant_kill(&mut progress, &mut gold, share, gold_reward, class);
+
+            if reward.experience > 0 {
+                let message = if grouped {
+                    format!(
+                        "You receive your share of experience -- {} points.",
+                        reward.experience
+                    )
+                } else {
+                    format!("You receive {} experience.", reward.experience)
+                };
+                output.write(system_message(*recipient, message));
+            }
+            if reward.gold > 0 {
+                output.write(system_message(
+                    *recipient,
+                    format!("You receive {} gold coins.", reward.gold),
+                ));
+            }
+            if reward.leveled_up() {
+                output.write(system_message(
+                    *recipient,
+                    format!("You have reached level {}!", reward.level),
+                ));
+            }
         }
     }
 }

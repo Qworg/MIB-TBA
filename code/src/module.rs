@@ -34,6 +34,7 @@ use crate::content::{
 };
 use crate::equipment::TbaEquipmentSave;
 use crate::items::TbaObjectClock;
+use crate::party::TbaParties;
 use crate::zones::ZoneTracker;
 
 /// Module id; matches `[code] module = "tba"` in `packs/tba/pack.toml`.
@@ -141,6 +142,7 @@ impl Plugin for TbaPlugin {
         app.init_resource::<TbaRng>();
         app.init_resource::<TbaRoundClock>();
         app.init_resource::<TbaObjectClock>();
+        app.init_resource::<TbaParties>();
         app.init_schedule(TbaRound);
 
         // Each component owner owns its schema (the classic-rpg idiom): the
@@ -181,6 +183,8 @@ impl Plugin for TbaPlugin {
                 crate::spells::handle_cast_command,
                 crate::shops::handle_shop_commands,
                 crate::socials::handle_social_commands,
+                crate::clock::handle_time_command,
+                crate::party::handle_party_commands,
                 crate::equipment::handle_equipment_commands,
                 crate::equipment::recompute_equipment_affects,
                 crate::equipment::recompute_npc_equipment_affects,
@@ -257,10 +261,13 @@ impl Plugin for TbaPlugin {
                 crate::zones::zone_reset_system,
                 crate::items::attach_item_timers,
                 crate::items::tick_item_timers,
+                crate::clock::apply_night_darkness,
                 crate::combat::npc_combatant_system,
                 crate::combat::auto_engage_system,
                 crate::combat::helper_system,
                 crate::combat::pursuit_system,
+                crate::party::follow_system,
+                crate::party::cleanup_parties_on_logout,
             )
                 .chain()
                 .after(maintain_room_occupants)
@@ -324,6 +331,16 @@ mod tests {
         assert!(
             registry.kinds().contains(&DocKind::Player),
             "player-scoped docs must be writable"
+        );
+    }
+
+    #[test]
+    fn tba_plugin_installs_the_party_resource() {
+        let mut app = App::new();
+        app.add_plugins(TbaPlugin);
+        assert!(
+            app.world().get_resource::<TbaParties>().is_some(),
+            "the party resource is installed by the plugin"
         );
     }
 

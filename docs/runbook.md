@@ -96,6 +96,28 @@ cargo run -p mib-tba -- validate-packs
 Exit code is non-zero on any load or validation error. This is the CI gate to
 run after any content or schema change.
 
+### Offline operator subcommands
+
+`mib-tba` also mirrors the engine's offline surface as thin wrappers over
+`mib_host`, so a MIB-TBA deployment is migrated, backed up and restored with the
+game binary. None of these start the bridge, telnet, gateway or AI provider:
+
+```text
+mib-tba migrate
+mib-tba snapshot --now
+mib-tba backup run | list | prune [--dry-run]
+mib-tba restore-test [ID] [--from DIR] [--boot]
+mib-tba wal-sync | wal-status
+mib-tba restore-base [ID] [--from DIR] --into DIR [--to-time TS] [--to-lsn LSN]
+```
+
+`--config`/`--packs` stay global (they may appear before or after the command).
+The semantics and failure modes are the engine's `mib-host` surface (D-35);
+`restore-test --boot` and `[persist.backup] verify_boot` still fail loudly as
+unimplemented rather than silently skipping the check. `restore-test` and
+`restore-base` take the manifest id positionally (or as `--id`, the
+`mib-server` spelling).
+
 ---
 
 ## 4. Run the game server
@@ -227,15 +249,18 @@ reason the item count is one higher than the source object count.
 | System | Schedule | Notes |
 |---|---|---|
 | `zone_reset_system` | `FixedUpdate` | Ages zones; runs the `M/O/G/E/P/D/R` interpreter when `lifespan_mins` elapses. `when_desert` checks player occupancy by room `num` in `[bot, top]`. |
+| `tick_item_timers`, `apply_night_darkness` | `FixedUpdate` (after `maintain_room_occupants`) | The shared `TbaObjectClock` ages item timers and advances the MUD calendar (75 real s/hour, 35-day months, 17-month years). `apply_night_darkness` mirrors Circle's `room_is_dark` onto authored `outdoor` rooms' runtime `RoomState.flags[Dark]`; authored `dark` rooms are never touched. The clock is runtime-only (a restart begins at year 0/day 0/hour 0). |
 | `auto_engage_system`, `npc_combatant_system`, `helper_system`, `pursuit_system` | `FixedUpdate` (after `maintain_room_occupants`) | Room-local aggro; alignment ±350 gating; Memory/Sentinel/StayZone/Helper. |
 | `resolve_rounds`, `tick_buffs` | `TbaRound` (every 3 s on the frame clock) | Combat rounds. Deliberately **not** on `tick_hz`, so combat never forces the engine tick rate. |
-| `handle_combat_commands`, `handle_equipment_commands`, `handle_cast_command`, `handle_shop_commands`, `handle_social_commands`, `recompute_equipment_affects`, `sync_wielded_weapon` | `Update`, `BridgeSet::Game`, after `route_commands` | Genre commands. `cast`/`list`/`buy`/`sell`/`value` and `social <name>`/`socials` have no fixed `Command` variant and are parsed from `PlayerInput::RawLine`, declared in `stdlib.verbs.yaml` so the stdlib router claims them. `social` resolves `$n`/`$N`/`$e`/`$E`/`$m`/`$M`/`$s`/`$S` (and `$t`/`$p`/case switches) against the actor/target and broadcasts the room and victim lines. |
+| `handle_combat_commands`, `handle_equipment_commands`, `handle_cast_command`, `handle_shop_commands`, `handle_social_commands`, `handle_time_command`, `handle_party_commands`, `recompute_equipment_affects`, `sync_wielded_weapon` | `Update`, `BridgeSet::Game`, after `route_commands` | Genre commands. `cast`/`list`/`buy`/`sell`/`value`, `social <name>`/`socials`, `time`, and `group`/`gtell`(`;`)/`follow`/`unfollow` have no fixed `Command` variant and are parsed from `PlayerInput::RawLine`, declared in `stdlib.verbs.yaml` so the stdlib router claims them. `social` resolves `$n`/`$N`/`$e`/`$E`/`$m`/`$M`/`$s`/`$S` (and `$t`/`$p`/case switches) against the actor/target and broadcasts the room and victim lines. |
+| `follow_system` | `FixedUpdate` (after `maintain_room_occupants`) | Drags a follower into the leader's new room only when the follower was standing in the leader's previous room, so a follower who wandered off is never teleported. |
 | `apply_death_penalty` | `Update`, `.before(handle_player_death)` | 25% of current-level XP (floored); converts `TbaGold` to a carried `tba_gold` item so the stdlib corpse sweep lands it in the corpse. |
 | `player_combatant_system` | `Update`, `BridgeSet::Game` | On `CharacterCreated`, inserts `TbaProgress` + `derive_vitals` from `tba.classes`. |
 
 Persistent player state (`SaveRegistry`, `DocKind::Player`): `TbaProgress`,
 `TbaCombatant`, `TbaGold`, `TbaEquipmentSave` (equipment is relinked to live item
-entities on restore). Buffs are transient.
+entities on restore). Buffs are transient. Parties and the follow state are
+runtime-only resources/components; they do not survive a restart.
 
 Progression uses Circle's real tables: per-class `xp_table` / `thaco_table` in
 `content/tba.classes.yaml`, transcribed from `tbamud/src/class.c`
@@ -278,6 +303,15 @@ These are recorded, not silent:
 - **Affect locations with no combatant field** (the six attributes and the five
   saves) are carried on items and persisted, but not applied.
 - **Multi-room pursuit** is a single adjacent step, not a pathfinder.
+- **Weather** (pressure, sky, the `SUN_RISE`/`SUN_SET` phases) is out of scope;
+  only the binary day/night predicate that `apply_night_darkness` needs is
+  modelled. The clock itself is runtime-only (Circle persists MUD time to a
+  `time` file; MIB has no generic resource-persistence slot for it).
+- **Mail and the friends list** are MIB engine features (D-06/D-07), separate
+  from the Circle group model, and are out of scope for the party work.
+- The stdlib `look` darkness check reads `Room::tags` rather than
+  `Room::effective_flags`, so a night-written `RoomState.flags[Dark]` override
+  persists and is the runtime authority but is not yet what `look` consults.
 - **Combat skills** (`backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`)
   and **`MOB_SPEC` special procedures** are explicit non-goals, listed in the
   report's `global_drops`.
@@ -293,7 +327,7 @@ These are recorded, not silent:
 | Build fails in MIB code | The sibling `../MIB` checkout is mid-change; build MIB or pin a `git` dep. |
 | `validate-packs` names a field path | A content reference is dangling (e.g. `rooms.X.exits.north.door.key`). Fix the content or the converter rule. |
 | No spawn point / `RoomIndex.start` is `None` | No room is tagged `start_room`. Regenerate with `--start-room <vnum>` (default 3001). |
-| `cast`/`list`/`buy`/`sell`/`value`/`social`/`socials` rejected as unknown | The verb is not declared in `content/stdlib.verbs.yaml`. |
+| `cast`/`list`/`buy`/`sell`/`value`/`social`/`socials`/`time`/`group`/`gtell`/`follow`/`unfollow` rejected as unknown | The verb is not declared in `content/stdlib.verbs.yaml`; declare it there (effect-free). |
 | Equipment lost across restart | The item has no stable `SaveId`, so it cannot be relinked; check the warning log. |
 | `run` fails before the world loads | Engine config (database, AI provider). Use `validate-packs` to separate content from infrastructure. |
 

@@ -27,17 +27,23 @@
 //! interpreter, room-local aggro and Circle combat round attach to
 //! [`TbaPlugin`] in later phases.
 
+pub mod clock;
 pub mod combat;
 pub mod content;
 pub mod equipment;
 pub mod items;
 pub mod module;
+pub mod party;
 pub mod shops;
 pub mod socials;
 pub mod spells;
 pub mod zones;
 
 pub mod prelude {
+    pub use crate::clock::{
+        MONTH_NAMES, WEEKDAYS, apply_night_darkness, handle_time_command, ordinal_suffix,
+        time_report,
+    };
     pub use crate::combat::{
         BASE_ATTRIBUTE, BASE_MOVE, EVIL_ALIGNMENT, GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID,
         GOLD_ITEM_NAME, GOOD_ALIGNMENT, KillReward, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, NpcDefeated,
@@ -71,6 +77,10 @@ pub mod prelude {
         MUD_HOUR_SECONDS, TbaItemTimer, TbaObjectClock, attach_item_timers, tick_item_timers,
     };
     pub use crate::module::{MODULE_NAME, TbaContent, TbaModule, TbaPlugin};
+    pub use crate::party::{
+        LeaveOutcome, PartyCommand, TbaFollowing, TbaParties, TbaParty, cleanup_parties_on_logout,
+        follow_system, handle_party_commands, parse_party_line,
+    };
     pub use crate::shops::{ShopCommand, handle_shop_commands, parse_shop_line};
     pub use crate::socials::{
         SocialCommand, SocialNames, gate_reason, handle_social_commands, parse_social_line,

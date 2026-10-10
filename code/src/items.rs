@@ -54,14 +54,32 @@ pub struct TbaItemTimer {
 /// A resource rather than a plain per-tick counter so a long frame (or a test)
 /// can bank fractional time; [`due_hours`](Self::due_hours) reports how many
 /// whole hours have elapsed and keeps the remainder.
-#[derive(Resource, Debug, Default)]
+///
+/// The clock is also the game's **in-world calendar** (issue #19): the same
+/// resource that ages object timers carries the Circle `time_info` fields, so
+/// there is exactly one MUD clock, not a timer clock plus a calendar clock.
+/// The cadence is Circle's: 75 real seconds per MUD hour (`SECS_PER_MUD_HOUR`,
+/// `tbamud/src/utils.h:193`), 24 hours per day, 35 days per month and 17 months
+/// per year (`mud_time_passed`, `tbamud/src/utils.c:505`).
+///
+/// Persistence: the clock is **runtime-only**. Circle writes the elapsed MUD
+/// seconds to a `time` file on every boot/shutdown (`save_mud_time`,
+/// `tbamud/src/db.c:880`); MIB has no generic resource-persistence slot for a
+/// global clock, and item timers persist per item, not as a world time. A
+/// restart therefore begins a fresh year 0, day 0, hour 0. Persisting it is a
+/// named follow-up, not a silent omission.
+#[derive(Resource, Debug, Default, Clone, PartialEq)]
 pub struct TbaObjectClock {
     /// Seconds accumulated since the last whole MUD hour.
     pub accumulator: f32,
-    /// Circle's `time_info.hours` (0..=23), advanced as whole MUD hours pass.
-    /// Shop opening hours ([`ShopHours`](crate::content::ShopHours)) are
-    /// checked against it.
+    /// Circle's `time_info.hours` (0..=23).
     pub hour_of_day: u32,
+    /// Circle's `time_info.day`, 0..=34 (35-day months).
+    pub day: u32,
+    /// Circle's `time_info.month`, 0..=16 (17-month years).
+    pub month: u32,
+    /// Circle's `time_info.year`, unbounded.
+    pub year: u32,
 }
 
 impl TbaObjectClock {
@@ -81,6 +99,28 @@ impl TbaObjectClock {
         // `hours` is bounded by the delta the caller feeds; a huge delta is
         // clamped rather than saturating the timer arithmetic below.
         hours.min(u32::MAX as f32) as u32
+    }
+
+    /// Advance the calendar by `hours` whole MUD hours, carrying into days,
+    /// months and years exactly as Circle's `mud_time_passed` does for
+    /// continuous time. A huge `hours` value is carried correctly rather than
+    /// wrapping the hour without touching the day.
+    pub fn advance(&mut self, hours: u32) {
+        let hour_total = self.hour_of_day + hours;
+        self.hour_of_day = hour_total % 24;
+        let day_total = self.day + hour_total / 24;
+        self.day = day_total % 35;
+        let month_total = self.month + day_total / 35;
+        self.month = month_total % 17;
+        self.year += month_total / 17;
+    }
+
+    /// Circle's night predicate: `SUN_DARK` is set for hours `<= 4` and `>= 22`
+    /// (`reset_time`/`weather_and_time`, `tbamud/src/db.c:847`,
+    /// `tbamud/src/weather.c:44`). Hours 5 and 21 are the dawn/dusk `SUN_RISE`
+    /// and `SUN_SET` transitions and do **not** count as night.
+    pub fn is_night(&self) -> bool {
+        self.hour_of_day <= 4 || self.hour_of_day >= 22
     }
 }
 
@@ -134,9 +174,9 @@ pub fn tick_item_timers(
     if hours == 0 {
         return;
     }
-    // Advance the MUD hour-of-day alongside the object timers, so shop
-    // opening hours have a clock without a second time resource.
-    clock.hour_of_day = (clock.hour_of_day + hours) % 24;
+    // Advance the whole MUD calendar alongside the object timers, so shop
+    // opening hours and the day/night predicate share the timer clock.
+    clock.advance(hours);
     for (entity, mut timer) in &mut timers {
         timer.remaining = timer.remaining.saturating_sub(hours);
         if timer.remaining == 0 {
@@ -210,6 +250,51 @@ mod tests {
         // A bad delta is ignored.
         assert_eq!(clock.due_hours(f32::NAN), 0);
         assert_eq!(clock.due_hours(-1.0), 0);
+    }
+
+    #[test]
+    fn clock_advances_hours_days_months_and_years() {
+        let mut clock = TbaObjectClock::default();
+        clock.advance(5);
+        assert_eq!((clock.hour_of_day, clock.day), (5, 0));
+        // 24 hours is one day.
+        clock.advance(24);
+        assert_eq!((clock.hour_of_day, clock.day), (5, 1));
+        // 35 days is one month.
+        clock.advance(24 * 35);
+        assert_eq!((clock.day, clock.month), (1, 1));
+        // 17 months is one year.
+        clock.advance(24 * 35 * 17);
+        assert_eq!((clock.day, clock.month, clock.year), (1, 1, 1));
+        // The calendar wraps exactly like Circle's `mud_time_passed`.
+        let mut full = TbaObjectClock::default();
+        full.advance(24 * 35 * 17);
+        assert_eq!(
+            (full.hour_of_day, full.day, full.month, full.year),
+            (0, 0, 0, 1)
+        );
+        // A jump larger than a year carries through every field.
+        let mut jump = TbaObjectClock::default();
+        jump.advance(24 * 35 * 17 * 2 + 24 * 35 * 3 + 24 * 4 + 7);
+        assert_eq!(
+            (jump.hour_of_day, jump.day, jump.month, jump.year),
+            (7, 4, 3, 2)
+        );
+    }
+
+    #[test]
+    fn is_night_matches_circles_sun_dark_window() {
+        let mut clock = TbaObjectClock::default();
+        for hour in 0..24 {
+            clock.hour_of_day = hour;
+            let expected = hour <= 4 || hour >= 22;
+            assert_eq!(clock.is_night(), expected, "hour {hour}");
+        }
+        // The dawn/dusk transition hours are not night.
+        clock.hour_of_day = 5;
+        assert!(!clock.is_night());
+        clock.hour_of_day = 21;
+        assert!(!clock.is_night());
     }
 
     #[test]
