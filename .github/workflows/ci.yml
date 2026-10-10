@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "feat/**"]
+  pull_request:
+    branches: [main]
+
+# The game builds against a sibling MIB checkout (path deps), and the converter
+# tests read a sibling tbaMUD checkout. This workflow lays all three out as
+# siblings of the checked-out repo and points the converter at the source.
+env:
+  CARGO_TERM_COLOR: always
+  TBAMUD_SOURCE: ${{ github.workspace }}/tbamud
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MIB-TBA
+        uses: actions/checkout@v4
+        with:
+          path: MIB-TBA
+
+      - name: Checkout the MIB engine (sibling path dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: Qworg/MIB
+          path: MIB
+          # A PAT is only needed if the engine is private; the default token
+          # suffices for a public repository.
+          token: ${{ secrets.MIB_CHECKOUT_TOKEN || github.token }}
+
+      - name: Checkout tbaMUD (converter source)
+        uses: actions/checkout@v4
+        with:
+          repository: tbamud/tbamud
+          path: tbamud
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            MIB-TBA/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('MIB-TBA/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
+
+      - name: Format
+        working-directory: MIB-TBA
+        run: cargo fmt --all -- --check
+
+      - name: Clippy
+        working-directory: MIB-TBA
+        run: |
+          cargo clippy -p mib-tba --lib --tests -- -D warnings
+          cargo clippy -p tbaport --all-targets -- -D warnings
+
+      - name: Test the pack
+        working-directory: MIB-TBA
+        run: cargo test -p mib-tba
+
+      - name: Test the converter (full-conversion validation)
+        working-directory: MIB-TBA
+        run: cargo test -p tbaport
+
+      - name: Validate the shipped pack offline
+        working-directory: MIB-TBA
+        run: cargo run -q -p mib-tba -- validate-packs
