@@ -24,7 +24,9 @@ use mib_stdlib::prelude::{
 };
 use smol_str::SmolStr;
 
-use crate::combat::{TbaCombatant, TbaGold, TbaProgress, TbaRng, TbaRound, TbaRoundClock};
+use crate::combat::{
+    NpcDefeated, TbaCombatant, TbaGold, TbaProgress, TbaRng, TbaRound, TbaRoundClock,
+};
 use crate::content::{
     ShopDef, ShopsSection, SpellDef, SpellsSection, TbaClassDef, TbaClassesSection, TbaItemDef,
     TbaItemsSection, TbaNpcStats, TbaNpcStatsSection, ZoneDef, ZonesSection,
@@ -148,6 +150,7 @@ impl Plugin for TbaPlugin {
         // composition (tests) never starves; `add_message` is idempotent.
         app.add_message::<CharacterCreated>();
         app.add_message::<PlayerDefeated>();
+        app.add_message::<NpcDefeated>();
         app.add_message::<CommandReceived>();
         app.add_message::<OutputEvent>();
 
@@ -204,6 +207,15 @@ impl Plugin for TbaPlugin {
             (crate::spells::tick_buffs, crate::combat::resolve_rounds).chain(),
         );
         app.add_systems(Update, crate::combat::run_due_round.after(BridgeSet::Game));
+
+        // Kill rewards: read every `NpcDefeated` produced this frame — melee
+        // kills from the round schedule above, spell kills from the command
+        // chain — and grant XP/gold plus any level-up. This runs after
+        // `run_due_round` so a melee kill is paid in the same frame.
+        app.add_systems(
+            Update,
+            crate::combat::award_kill_rewards.after(crate::combat::run_due_round),
+        );
 
         // World simulation on the fixed tick: reset zones (spawn NPCs), give
         // each NPC its vitals, then run room-local aggro. Ordered after the

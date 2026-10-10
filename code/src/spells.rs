@@ -28,10 +28,11 @@
 
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
-use mib_stdlib::prelude::{Location, Npc, Player, PlayerDefeated, Session, SessionState};
+use mib_stdlib::prelude::{Location, Npc, NpcKey, Player, PlayerDefeated, Session, SessionState};
 use smol_str::SmolStr;
 
 use crate::combat::commands::{broadcast, deny, entity_name, find_target_in_room, text};
+use crate::combat::rewards::{NpcDefeated, reward_for};
 use crate::combat::{TbaCombatant, TbaProgress, TbaRng, default_class};
 use crate::content::{AffectDef, Position, SpellDef, SpellKind, SpellTarget};
 use crate::module::TbaContent;
@@ -225,7 +226,9 @@ pub fn handle_cast_command(
     progress: Query<&TbaProgress>,
     mut buffs: Query<&mut TbaBuffs>,
     mut rng: ResMut<TbaRng>,
+    keys: Query<&NpcKey>,
     mut defeated: MessageWriter<PlayerDefeated>,
+    mut npc_defeated: MessageWriter<NpcDefeated>,
     mut commands: Commands,
     mut output: MessageWriter<OutputEvent>,
 ) {
@@ -492,6 +495,17 @@ pub fn handle_cast_command(
                 if players.get(target).is_ok() {
                     defeated.write(PlayerDefeated { player: target });
                 } else if npcs.get(target).is_ok() {
+                    let (experience, gold) = keys
+                        .get(target)
+                        .ok()
+                        .map(|key| reward_for(content, key))
+                        .unwrap_or((0, 0));
+                    npc_defeated.write(NpcDefeated {
+                        victim: target,
+                        killer: session,
+                        experience,
+                        gold,
+                    });
                     commands.entity(target).despawn();
                 }
             }

@@ -11,6 +11,7 @@ pub mod death;
 pub mod init;
 pub mod model;
 pub mod progression;
+pub mod rewards;
 pub mod round;
 pub mod systems;
 
@@ -30,5 +31,6 @@ pub use progression::{
     BASE_MOVE, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, TbaRng, derive_vitals, level_for_xp,
     xp_threshold, xp_to_advance,
 };
+pub use rewards::{KillReward, NpcDefeated, award_kill_rewards, grant_kill, reward_for};
 pub use round::{ROUND_SECONDS, TbaRound, TbaRoundClock, run_due_round};
 pub use systems::{resolve_rounds, weapon_dice};

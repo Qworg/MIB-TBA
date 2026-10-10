@@ -96,6 +96,34 @@ fn content() -> TbaContent {
     content_with(&[])
 }
 
+/// A warrior whose Circle XP table levels at 100 / 300 / 600.
+fn reward_warrior() -> TbaClassDef {
+    TbaClassDef {
+        name: "Warrior".to_owned(),
+        description: String::new(),
+        hp_dice: Dice::new(1, 10, 0),
+        mana_dice: None,
+        xp_table: vec![0, 1, 100, 300, 600],
+        thaco_table: vec![100, 20, 20, 19, 18],
+        prime_attribute: None,
+        starting_items: Vec::new(),
+        granted_skills: Vec::new(),
+    }
+}
+
+/// Content where `goblin` yields the given reward and `warrior` uses the
+/// reward table above.
+fn reward_content(experience: u32, gold: u32) -> TbaContent {
+    let mut goblin = stats(Vec::new());
+    goblin.experience = experience;
+    goblin.gold = gold;
+    TbaContent {
+        classes: BTreeMap::from([(SmolStr::new("warrior"), reward_warrior())]),
+        npc_stats: BTreeMap::from([(NpcId::from("goblin"), goblin)]),
+        ..TbaContent::default()
+    }
+}
+
 /// The TBA systems wired as `TbaPlugin` wires them, on a bare app.
 fn test_app(content: TbaContent) -> App {
     let mut app = App::new();
@@ -105,11 +133,18 @@ fn test_app(content: TbaContent) -> App {
     app.insert_resource(Time::<Fixed>::from_hz(10.0));
     app.add_message::<OutputEvent>();
     app.add_message::<PlayerDefeated>();
+    app.add_message::<NpcDefeated>();
     app.add_message::<CommandReceived>();
     app.add_message::<CharacterCreated>();
     app.add_systems(
         Update,
-        (player_combatant_system, handle_combat_commands).chain(),
+        (
+            player_combatant_system,
+            handle_combat_commands,
+            award_kill_rewards,
+            apply_death_penalty,
+        )
+            .chain(),
     );
     app.add_systems(
         FixedUpdate,
@@ -643,4 +678,78 @@ fn sentinel_holds_its_room_while_a_plain_mob_follows() {
         "an ordinary mob follows one room"
     );
     assert_eq!(target_of(&app, wolf), Some(player));
+}
+
+// ---------------------------------------------------------------------------
+// Kill rewards (issue #2)
+// ---------------------------------------------------------------------------
+
+/// Spawn a 1-HP goblin, point the (always-hit, hard-hitting) player at it, and
+/// run one round plus the award pass.
+fn kill_goblin(app: &mut App, player: Entity, room: Entity) {
+    let npc = spawn_npc(app.world_mut(), room, "goblin");
+    app.world_mut().entity_mut(npc).insert(combatant(1, 20, 0));
+    {
+        let mut attacker = app.world_mut().get_mut::<TbaCombatant>(player).unwrap();
+        attacker.thaco = 0;
+        attacker.damroll = 5;
+        attacker.target = Some(npc);
+    }
+    run_round(app);
+    run_game(app);
+    assert!(
+        app.world().get::<NpcKey>(npc).is_none(),
+        "the goblin is despawned by the killing round"
+    );
+}
+
+#[test]
+fn killing_an_npc_awards_experience_gold_and_levels() {
+    let mut app = test_app(reward_content(100, 7));
+    let room = spawn_room(app.world_mut());
+    let player = spawn_player(app.world_mut(), room, 0);
+    app.world_mut()
+        .entity_mut(player)
+        .insert((TbaProgress::new(SmolStr::new("warrior")), TbaGold(0)));
+
+    kill_goblin(&mut app, player, room);
+
+    let progress = app.world().get::<TbaProgress>(player).unwrap();
+    assert_eq!(progress.xp, 100, "the prototype's experience is granted");
+    assert_eq!(progress.level, 2, "100 XP is the level-2 threshold");
+    assert_eq!(
+        app.world().get::<TbaGold>(player).unwrap().0,
+        7,
+        "the prototype's gold is granted"
+    );
+}
+
+#[test]
+fn experience_can_be_regained_after_death_without_deleveling() {
+    let mut app = test_app(reward_content(100, 0));
+    let room = spawn_room(app.world_mut());
+    let player = spawn_player(app.world_mut(), room, 0);
+    app.world_mut()
+        .entity_mut(player)
+        .insert((TbaProgress::new(SmolStr::new("warrior")), TbaGold(0)));
+
+    // Two kills: level 2 at 100 XP, then 200 XP (still level 2).
+    kill_goblin(&mut app, player, room);
+    kill_goblin(&mut app, player, room);
+    assert_eq!(app.world().get::<TbaProgress>(player).unwrap().level, 2);
+
+    // Die: lose 25% of the XP earned within the level, stay level 2.
+    app.world_mut()
+        .resource_mut::<Messages<PlayerDefeated>>()
+        .write(PlayerDefeated { player });
+    run_game(&mut app);
+    let after_death = app.world().get::<TbaProgress>(player).unwrap().clone();
+    assert_eq!(after_death.level, 2, "death never de-levels");
+    assert_eq!(after_death.xp, 175, "25% of the 100 XP above the threshold");
+
+    // Kill again: the lost XP is regained.
+    kill_goblin(&mut app, player, room);
+    let progress = app.world().get::<TbaProgress>(player).unwrap();
+    assert_eq!(progress.xp, 275, "XP is regained after death");
+    assert_eq!(progress.level, 2);
 }

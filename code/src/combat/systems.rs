@@ -16,13 +16,14 @@
 //! observes to repopulate the world.
 
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{Npc, Player, PlayerDefeated};
+use mib_stdlib::prelude::{Npc, NpcKey, Player, PlayerDefeated};
 
 use crate::content::{Position, TbaItemKind};
 use crate::module::TbaContent;
 
 use super::model::{TbaCombatant, WieldedWeapon};
 use super::progression::TbaRng;
+use super::rewards::{NpcDefeated, reward_for};
 
 /// Unarmed damage. An equipped weapon's `tba.items` dice replace this through
 /// [`weapon_dice`] once the equipment pass sets [`WieldedWeapon`].
@@ -62,7 +63,7 @@ pub fn weapon_dice(wielded: Option<&WieldedWeapon>, content: Option<&TbaContent>
 /// Two phases over one [`ParamSet`]: read every attacker/target pair and roll
 /// the swing, then apply the queued damage. Splitting the phases avoids
 /// aliasing `TbaCombatant` while a target is also an attacker.
-#[allow(clippy::type_complexity)] // two aliasing ECS views of `TbaCombatant`.
+#[allow(clippy::type_complexity, clippy::too_many_arguments)] // ECS system params.
 pub fn resolve_rounds(
     mut rng: ResMut<TbaRng>,
     content: Option<Res<TbaContent>>,
@@ -72,11 +73,13 @@ pub fn resolve_rounds(
     )>,
     players: Query<(), With<Player>>,
     npcs: Query<(), With<Npc>>,
+    keys: Query<&NpcKey>,
     mut defeated: MessageWriter<PlayerDefeated>,
+    mut npc_defeated: MessageWriter<NpcDefeated>,
     mut commands: Commands,
 ) {
     let content = content.as_deref();
-    let mut damage_queue: Vec<(Entity, i32)> = Vec::new();
+    let mut damage_queue: Vec<(Entity, Entity, i32)> = Vec::new();
     {
         let read = combatants.p0();
         let intents: Vec<(Entity, Entity, Dice)> = read
@@ -101,14 +104,14 @@ pub fn resolve_rounds(
                 continue;
             }
             let damage = (rng.roll(&weapon) + att.damroll).max(1);
-            damage_queue.push((target, damage));
+            damage_queue.push((attacker, target, damage));
         }
     }
 
-    let mut defeated_entities: Vec<Entity> = Vec::new();
+    let mut defeated_entities: Vec<(Entity, Entity)> = Vec::new();
     {
         let mut write = combatants.p1();
-        for (target, damage) in damage_queue {
+        for (attacker, target, damage) in damage_queue {
             let Ok(mut combatant) = write.get_mut(target) else {
                 continue;
             };
@@ -119,16 +122,29 @@ pub fn resolve_rounds(
             if combatant.hp == 0 {
                 combatant.position = Position::Dead;
                 combatant.target = None;
-                defeated_entities.push(target);
+                defeated_entities.push((target, attacker));
             }
         }
     }
 
-    for entity in defeated_entities {
-        if players.get(entity).is_ok() {
-            defeated.write(PlayerDefeated { player: entity });
-        } else if npcs.get(entity).is_ok() {
-            commands.entity(entity).despawn();
+    for (victim, killer) in defeated_entities {
+        if players.get(victim).is_ok() {
+            defeated.write(PlayerDefeated { player: victim });
+        } else if npcs.get(victim).is_ok() {
+            // The reward data is read here, before the despawn applies, so the
+            // consumer never races the dropped entity.
+            let (experience, gold) = keys
+                .get(victim)
+                .ok()
+                .and_then(|key| content.map(|content| reward_for(content, key)))
+                .unwrap_or((0, 0));
+            npc_defeated.write(NpcDefeated {
+                victim,
+                killer,
+                experience,
+                gold,
+            });
+            commands.entity(victim).despawn();
         }
     }
 }

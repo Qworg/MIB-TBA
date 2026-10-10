@@ -196,6 +196,7 @@ fn test_app() -> App {
     app.add_message::<OutputEvent>();
     app.add_message::<CommandReceived>();
     app.add_message::<PlayerDefeated>();
+    app.add_message::<NpcDefeated>();
     app.add_systems(
         Update,
         (handle_cast_command, recompute_equipment_affects).chain(),

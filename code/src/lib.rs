@@ -38,13 +38,13 @@ pub mod zones;
 pub mod prelude {
     pub use crate::combat::{
         BASE_MOVE, EVIL_ALIGNMENT, GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID, GOLD_ITEM_NAME,
-        GOOD_ALIGNMENT, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, ROUND_SECONDS, TbaAlignment,
-        TbaAttackerMemory, TbaCombatant, TbaGold, TbaProgress, TbaRng, TbaRound, TbaRoundClock,
-        TbaSpawnHome, WieldedWeapon, apply_death_penalty, auto_engage_system, default_class,
-        derive_vitals, engages, fallback_combatant, handle_combat_commands, helper_system,
-        level_for_xp, npc_combatant_from_stats, npc_combatant_system, player_combatant_system,
-        pursuit_system, resolve_class_key, resolve_rounds, run_due_round, weapon_dice,
-        xp_threshold, xp_to_advance,
+        GOOD_ALIGNMENT, KillReward, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, NpcDefeated, ROUND_SECONDS,
+        TbaAlignment, TbaAttackerMemory, TbaCombatant, TbaGold, TbaProgress, TbaRng, TbaRound,
+        TbaRoundClock, TbaSpawnHome, WieldedWeapon, apply_death_penalty, auto_engage_system,
+        award_kill_rewards, default_class, derive_vitals, engages, fallback_combatant, grant_kill,
+        handle_combat_commands, helper_system, level_for_xp, npc_combatant_from_stats,
+        npc_combatant_system, player_combatant_system, pursuit_system, resolve_class_key,
+        resolve_rounds, reward_for, run_due_round, weapon_dice, xp_threshold, xp_to_advance,
     };
     pub use crate::content::{
         AffectDef, AffectLocation, Attribute, DoorReset, NpcBehaviour, Position, ResetMode,
