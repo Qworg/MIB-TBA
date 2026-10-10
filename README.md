@@ -28,7 +28,7 @@ content/             the world and the tba.* sections
   tba.classes.yaml   ┘
 code/                the `mib-tba` crate (the pack's code half)
 Cargo.toml           this game's own workspace
-docs/                port planning: docs/implplan.md
+docs/                the port specification: docs/03-tba-pack.md
 ```
 
 ## Building
@@ -69,15 +69,21 @@ game needs one of:
   own server, which matches "the operator chooses the game"; or
 - an engine-side mechanism for selecting a game without a rebuild.
 
-That choice is open; see `docs/implplan.md`.
+This repository takes the first option: it ships its own server binary that
+composes MIB's reusable `mib_host::ServerBuilder` with `StdlibModule +
+TbaModule`, so the operator picks the game by running that binary rather than
+by rebuilding the engine. See `docs/03-tba-pack.md` §2.
 
 ## Status
 
 - **Phase 9.1 — pack skeleton and `tba.*` data models.** Done: `TbaModule`, the
   four `tba.*` sections, the `TbaContent` resource, and a three-room scaffold
   world.
-- Remaining phases — zone reset interpreter, Circle combat, aggro, the converter
-  — are planned in [`docs/implplan.md`](docs/implplan.md).
+- Remaining phases — zone reset interpreter, Circle combat, aggro, equipment,
+  progression, and the tbaMUD converter — are specified in
+  [`docs/03-tba-pack.md`](docs/03-tba-pack.md). The converter is built in
+  parallel; the scaffold content is swapped for converted content once it is
+  complete.
 
 TBA is an **independent game**, not a layer on `classic-rpg`: it depends on
 `mib-stdlib` only. Circle round-based combat is not classic-rpg's 3×3 tactical
