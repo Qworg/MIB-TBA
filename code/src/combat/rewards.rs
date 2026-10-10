@@ -274,6 +274,7 @@ mod tests {
                     experience: 42,
                     default_position: crate::content::Position::Standing,
                     behaviour: Vec::new(),
+                    damage: None,
                 },
             )]),
             ..TbaContent::default()
@@ -304,6 +305,7 @@ mod tests {
                     experience: 0,
                     default_position: crate::content::Position::Standing,
                     behaviour: Vec::new(),
+                    damage: None,
                 },
             )]),
             ..TbaContent::default()

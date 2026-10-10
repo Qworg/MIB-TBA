@@ -14,16 +14,17 @@ use mib_stdlib::content::{
 };
 use mib_tba::combat::{GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID, GOLD_ITEM_NAME};
 use mib_tba::content::{
-    AffectDef, AffectLocation, DoorReset, NpcBehaviour, Position, ResetMode, ShopDef, TbaItemDef,
-    TbaItemKind, TbaNpcStats, WearSlot, ZoneCommand, ZoneDef,
+    AffectDef, AffectLocation, DoorReset, ItemAffectFlag, ItemExtraFlag, NpcBehaviour, Position,
+    ResetMode, ShopDef, ShopHours, ShopTrade, TbaItemDef, TbaItemKind, TbaNpcStats, WearSlot,
+    ZoneCommand, ZoneCommandKind, ZoneDef,
 };
 
 use crate::emit::OutputBundle;
 use crate::error::{ConvertError, Result};
 use crate::ids;
 use crate::report::{
-    CommandFlag, DanglingRef, DeferredEntry, DropReport, REPORT_SCHEMA, SourceFiles, Totals,
-    UnmappedFlag, ZoneReport,
+    CommandFlag, DanglingRef, DeferredEntry, DropReport, GlobalDrop, REPORT_SCHEMA, SourceFiles,
+    Totals, UnmappedFlag, ZoneReport,
 };
 use crate::source::{
     deferred::{DeferredRecord, scan_quests, scan_triggers},
@@ -122,7 +123,9 @@ const AFF_FLAG_NAMES: [&str; 23] = [
     "CHARM",
 ];
 
-/// Object extra-flag names (`structs.h:412`).
+/// Object extra-flag names. Kept as the ordered source table so the emitted
+/// [`ItemExtraFlag`] order matches `structs.h:412`.
+#[allow(dead_code)]
 const ITEM_EXTRA_NAMES: [&str; 18] = [
     "GLOW",
     "HUM",
@@ -312,7 +315,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
 
         let zone_def = map_zone(&source.zone, &room_ids, &npc_ids, &item_ids, &mut zr);
         bundle.zones.zones.insert(source.number, zone_def);
-        map_shops(source, &npc_ids, &item_ids, &mut bundle, &mut zr);
+        map_shops(source, &npc_ids, &item_ids, &room_ids, &mut bundle, &mut zr);
 
         zr.rooms = source.rooms.len();
         zr.npcs = source.mobs.len();
@@ -361,12 +364,36 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         },
         only: options.only,
         start_room,
+        global_drops: global_drops(),
         totals: Totals::default(),
         zones,
     };
     report.finalise();
 
     Ok(Conversion { bundle, report })
+}
+
+/// Whole-world features with no schema home, recorded once per report.
+///
+/// These are permanent, named drops: a room coordinate Field has no tbaMUD
+/// source, and the Circle combat skills have no engine implementation. They
+/// are listed here rather than repeated on every record.
+fn global_drops() -> Vec<GlobalDrop> {
+    let mut drops = vec![GlobalDrop {
+        kind: "no_source_field".to_owned(),
+        name: "room coord".to_owned(),
+        reason: "tbaMUD `struct room_data` has no coordinates; `RoomDef::coord` is \
+                     always `None`"
+            .to_owned(),
+    }];
+    for skill in ["assist", "backstab", "bash", "consider", "kick", "rescue"] {
+        drops.push(GlobalDrop {
+            kind: "combat_skill".to_owned(),
+            name: skill.to_owned(),
+            reason: "Circle combat skill with no engine implementation (non-goal)".to_owned(),
+        });
+    }
+    drops
 }
 
 /// Insert the fixed `tba_gold` prototype (TBA-E09) into both item sections.
@@ -396,6 +423,9 @@ fn insert_gold_prototype(bundle: &mut OutputBundle) {
             slots: Vec::new(),
             values: [0; 4],
             affects: Vec::new(),
+            keywords: Vec::new(),
+            extra_flags: Vec::new(),
+            affect_flags: Vec::new(),
             weight: 1,
             cost: 1,
             rent: 0,
@@ -622,6 +652,8 @@ fn map_room(
         })
         .collect();
 
+    add_trigger_attachments(zr, "world", &object, &raw.trigger_vnums);
+
     RoomDef {
         area: ids::area_id(zr.number),
         name: raw.name.clone(),
@@ -668,12 +700,19 @@ fn map_room_flags(flags: [u64; 4], object: &str, zr: &mut ZoneReport) -> Vec<Roo
     if bit(f0, 10) {
         tags.push(RoomTag::Godroom);
     }
-    // Bits with a target: 0..10 above. Everything else is recorded.
+    // Bits with a target: 0..10 above. Everything else is a permanent drop:
+    // `RoomTag` has no corresponding variant.
     let mapped = [0u32, 2, 3, 4, 5, 8, 9, 10];
     for (index, name) in ROOM_FLAG_NAMES.iter().enumerate() {
         let index = index as u32;
         if bit(f0, index) && !mapped.contains(&index) {
-            push_unmapped(zr, object, "room_flag", name, "");
+            push_unmapped(
+                zr,
+                object,
+                "room_flag",
+                name,
+                "permanent drop: RoomDef/RoomTag has no matching flag",
+            );
         }
     }
     tags.sort();
@@ -751,47 +790,76 @@ fn map_npc(raw: &RawMob, zr: &mut ZoneReport) -> (NpcDef, TbaNpcStats) {
     if bit(f0, 4) {
         behaviour.push(NpcBehaviour::Aware);
     }
+    if bit(f0, 13) {
+        behaviour.push(NpcBehaviour::NoCharm);
+    }
+    if bit(f0, 14) {
+        behaviour.push(NpcBehaviour::NoSummon);
+    }
+    if bit(f0, 15) {
+        behaviour.push(NpcBehaviour::NoSleep);
+    }
+    if bit(f0, 16) {
+        behaviour.push(NpcBehaviour::NoBash);
+    }
+    if bit(f0, 17) {
+        behaviour.push(NpcBehaviour::NoBlind);
+    }
+    if bit(f0, 18) {
+        behaviour.push(NpcBehaviour::NoKill);
+    }
 
-    // Flags with no target field. MOB_ISNPC (3) and MOB_NOTDEADYET (19) are
-    // runtime bookkeeping the loader sets itself and are not reported.
-    let mapped: [u32; 11] = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-    for (index, name) in MOB_FLAG_NAMES.iter().enumerate() {
-        let index = index as u32;
-        if bit(f0, index) && !mapped.contains(&index) && index != 3 && index != 19 {
-            push_unmapped(zr, &object, "mob_flag", name, "");
-        }
+    // Every meaningful `MOB_*` flag now has a home in `behaviour`. `MOB_SPEC`
+    // (0) is a special procedure, which is a documented non-goal (#15);
+    // `MOB_ISNPC` (3) and `MOB_NOTDEADYET` (19) are loader bookkeeping the
+    // loader sets itself and are not reported.
+    if bit(f0, 0) {
+        push_unmapped(
+            zr,
+            &object,
+            "mob_flag",
+            MOB_FLAG_NAMES[0],
+            "special procedures are a non-goal (see #15)",
+        );
     }
 
     for (index, name) in AFF_FLAG_NAMES.iter().enumerate() {
         if bit(raw.aff_flags[0], index as u32) {
-            push_unmapped(zr, &object, "mob_aff", name, "");
+            push_unmapped(
+                zr,
+                &object,
+                "mob_aff",
+                name,
+                "permanent drop: TbaNpcStats has no affect-flag field",
+            );
         }
     }
 
     for espec in &raw.especs {
-        push_unmapped(zr, &object, "mob_espec", espec.trim(), "");
+        push_unmapped(
+            zr,
+            &object,
+            "mob_espec",
+            espec.trim(),
+            "permanent drop: enhanced-mob e-specs have no target field",
+        );
     }
-    push_unmapped(
-        zr,
-        &object,
-        "mob_damage_dice",
-        &raw.damage.to_string(),
-        "TbaNpcStats carries damroll but not attack dice",
-    );
     push_unmapped(
         zr,
         &object,
         "mob_sex",
         &raw.sex.to_string(),
-        "TbaNpcStats has no sex field",
+        "permanent drop: TbaNpcStats has no sex field",
     );
     push_unmapped(
         zr,
         &object,
         "npc_keywords",
         &raw.name,
-        "stdlib.npcs has no keyword list",
+        "permanent drop: stdlib.npcs has no keyword list",
     );
+
+    add_trigger_attachments(zr, "mob", &object, &raw.trigger_vnums);
 
     // MOB_AWARE (bit 4) is already mapped above.
 
@@ -816,6 +884,7 @@ fn map_npc(raw: &RawMob, zr: &mut ZoneReport) -> (NpcDef, TbaNpcStats) {
         experience: raw.experience,
         default_position: map_position(raw.default_position, &object, zr),
         behaviour,
+        damage: Some(raw.damage),
     };
 
     (npc, stats)
@@ -844,43 +913,28 @@ fn map_position(value: i32, object: &str, zr: &mut ZoneReport) -> Position {
 // ---------------------------------------------------------------------------
 
 fn map_item(raw: &RawObj, zr: &mut ZoneReport) -> (ItemDef, TbaItemDef) {
-    use crate::source::tokens::bit;
     let object = format!("item tba_item_{}", raw.vnum);
 
     let kind = map_item_kind(raw.obj_type, &object, zr);
     let slots = map_wear_slots(raw.wear_flags[0]);
     let affects = map_applies(raw, &object, zr);
+    let extra_flags = map_item_extra_flags(raw.extra_flags[0]);
+    let affect_flags = map_item_affect_flags(raw.affect_flags[0], &object, zr);
+    let keywords = raw
+        .name
+        .split_whitespace()
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
 
-    for (index, name) in ITEM_EXTRA_NAMES.iter().enumerate() {
-        if bit(raw.extra_flags[0], index as u32) {
-            push_unmapped(zr, &object, "item_extra_flag", name, "");
-        }
-    }
-    for (index, name) in AFF_FLAG_NAMES.iter().enumerate() {
-        if bit(raw.affect_flags[0], index as u32) {
-            push_unmapped(
-                zr,
-                &object,
-                "item_affect_flag",
-                name,
-                "AFF_* affect-flags have no target field yet",
-            );
-        }
-    }
-    push_unmapped(
-        zr,
-        &object,
-        "item_keywords",
-        &raw.name,
-        "stdlib.items has no keyword list",
-    );
+    // Extra flags, affect flags and the keyword list now have `tba.items`
+    // fields. The action description and the `E` blocks still have no target.
     if !raw.action_description.trim().is_empty() {
         push_unmapped(
             zr,
             &object,
             "item_action_description",
             &raw.action_description,
-            "stdlib.items has no action description",
+            "permanent drop: stdlib.items has no action description",
         );
     }
     if !raw.extra_descriptions.is_empty() {
@@ -889,9 +943,11 @@ fn map_item(raw: &RawObj, zr: &mut ZoneReport) -> (ItemDef, TbaItemDef) {
             &object,
             "item_extra_descriptions",
             &raw.extra_descriptions.len().to_string(),
-            "stdlib.items has no extra descriptions field",
+            "permanent drop: stdlib.items has no extra-description field",
         );
     }
+
+    add_trigger_attachments(zr, "object", &object, &raw.trigger_vnums);
 
     let cost = raw.cost.max(0) as u32;
     let item = ItemDef {
@@ -917,6 +973,9 @@ fn map_item(raw: &RawObj, zr: &mut ZoneReport) -> (ItemDef, TbaItemDef) {
         slots,
         values: raw.values,
         affects,
+        keywords,
+        extra_flags,
+        affect_flags,
         weight: raw.weight.max(0) as u32,
         cost,
         rent: raw.rent.max(0) as u32,
@@ -962,6 +1021,85 @@ fn map_item_kind(value: i32, object: &str, zr: &mut ZoneReport) -> TbaItemKind {
             TbaItemKind::Undefined
         }
     }
+}
+
+/// Decode the source `GET_OBJ_EXTRA` bits into the modelled [`ItemExtraFlag`]
+/// order. The bit index is the `ITEM_EXTRA_NAMES` order (`structs.h:412`).
+fn map_item_extra_flags(flags: u64) -> Vec<ItemExtraFlag> {
+    use crate::source::tokens::bit;
+    const FLAGS: [ItemExtraFlag; 18] = [
+        ItemExtraFlag::Glow,
+        ItemExtraFlag::Hum,
+        ItemExtraFlag::NoRent,
+        ItemExtraFlag::NoDonate,
+        ItemExtraFlag::NoInvis,
+        ItemExtraFlag::Invisible,
+        ItemExtraFlag::Magic,
+        ItemExtraFlag::NoDrop,
+        ItemExtraFlag::Bless,
+        ItemExtraFlag::AntiGood,
+        ItemExtraFlag::AntiEvil,
+        ItemExtraFlag::AntiNeutral,
+        ItemExtraFlag::AntiMagicUser,
+        ItemExtraFlag::AntiCleric,
+        ItemExtraFlag::AntiThief,
+        ItemExtraFlag::AntiWarrior,
+        ItemExtraFlag::NoSell,
+        ItemExtraFlag::Quest,
+    ];
+    FLAGS
+        .into_iter()
+        .enumerate()
+        .filter(|(index, _)| bit(flags, *index as u32))
+        .map(|(_, flag)| flag)
+        .collect()
+}
+
+/// Decode the source `GET_OBJ_AFFECT` bits into the modelled
+/// [`ItemAffectFlag`] order. The three placeholder bits (`DONTUSE`, `UNUSED`,
+/// `FREE`) have no enum variant and are reported.
+fn map_item_affect_flags(flags: u64, object: &str, zr: &mut ZoneReport) -> Vec<ItemAffectFlag> {
+    use crate::source::tokens::bit;
+    let mut out = Vec::new();
+    for (index, name) in AFF_FLAG_NAMES.iter().enumerate() {
+        if !bit(flags, index as u32) {
+            continue;
+        }
+        let flag = match index {
+            1 => ItemAffectFlag::Blind,
+            2 => ItemAffectFlag::Invisible,
+            3 => ItemAffectFlag::DetectAlign,
+            4 => ItemAffectFlag::DetectInvis,
+            5 => ItemAffectFlag::DetectMagic,
+            6 => ItemAffectFlag::SenseLife,
+            7 => ItemAffectFlag::Waterwalk,
+            8 => ItemAffectFlag::Sanctuary,
+            10 => ItemAffectFlag::Curse,
+            11 => ItemAffectFlag::Infravision,
+            12 => ItemAffectFlag::Poison,
+            13 => ItemAffectFlag::ProtectEvil,
+            14 => ItemAffectFlag::ProtectGood,
+            15 => ItemAffectFlag::Sleep,
+            16 => ItemAffectFlag::NoTrack,
+            17 => ItemAffectFlag::Flying,
+            18 => ItemAffectFlag::Scuba,
+            19 => ItemAffectFlag::Sneak,
+            20 => ItemAffectFlag::Hide,
+            22 => ItemAffectFlag::Charm,
+            _ => {
+                push_unmapped(
+                    zr,
+                    object,
+                    "item_affect_flag",
+                    name,
+                    "permanent drop: placeholder AFF_* bit has no enum variant",
+                );
+                continue;
+            }
+        };
+        out.push(flag);
+    }
+    out
 }
 
 fn map_item_tags(obj_type: i32) -> Vec<ItemTag> {
@@ -1054,7 +1192,10 @@ fn map_applies(raw: &RawObj, object: &str, zr: &mut ZoneReport) -> Vec<AffectDef
                 object,
                 "affect_location",
                 name,
-                &format!("modifier {}", apply.modifier),
+                &format!(
+                    "modifier {}; permanent drop: AffectLocation has no such variant",
+                    apply.modifier
+                ),
             );
         }
     }
@@ -1088,6 +1229,14 @@ fn map_apply_location(value: i32) -> Option<AffectLocation> {
 // Zone resets
 // ---------------------------------------------------------------------------
 
+/// Wrap a mapped command body with Circle's source `if_flag`.
+fn zone_command(if_flag: i32, command: ZoneCommandKind) -> ZoneCommand {
+    ZoneCommand {
+        if_flag: if_flag != 0,
+        command,
+    }
+}
+
 fn map_zone(
     raw: &RawZone,
     rooms: &BTreeSet<RoomId>,
@@ -1118,11 +1267,14 @@ fn map_zone(
                 if !(mob_ok && room_ok) {
                     continue;
                 }
-                commands.push(ZoneCommand::PlaceMob {
-                    mob,
-                    room,
-                    max_in_world: command.arg2.max(0) as u32,
-                });
+                commands.push(zone_command(
+                    command.if_flag,
+                    ZoneCommandKind::PlaceMob {
+                        mob,
+                        room,
+                        max_in_world: command.arg2.max(0) as u32,
+                    },
+                ));
             }
             'O' => {
                 if command.arg3 <= 0 || command.arg3 == 65535 {
@@ -1142,21 +1294,27 @@ fn map_zone(
                 if !(item_ok && room_ok) {
                     continue;
                 }
-                commands.push(ZoneCommand::DropItem {
-                    item,
-                    room,
-                    max_in_world: command.arg2.max(0) as u32,
-                });
+                commands.push(zone_command(
+                    command.if_flag,
+                    ZoneCommandKind::DropItem {
+                        item,
+                        room,
+                        max_in_world: command.arg2.max(0) as u32,
+                    },
+                ));
             }
             'G' => {
                 let item = ids::item_id(command.arg1);
                 if !check_item(&from, &item, items, zr, "dangling_reset_item") {
                     continue;
                 }
-                commands.push(ZoneCommand::GiveItem {
-                    item,
-                    max_in_world: command.arg2.max(0) as u32,
-                });
+                commands.push(zone_command(
+                    command.if_flag,
+                    ZoneCommandKind::GiveItem {
+                        item,
+                        max_in_world: command.arg2.max(0) as u32,
+                    },
+                ));
             }
             'E' => {
                 let slot = match map_wear_slot(command.arg3) {
@@ -1176,11 +1334,14 @@ fn map_zone(
                 if !check_item(&from, &item, items, zr, "dangling_reset_item") {
                     continue;
                 }
-                commands.push(ZoneCommand::EquipItem {
-                    item,
-                    slot,
-                    max_in_world: command.arg2.max(0) as u32,
-                });
+                commands.push(zone_command(
+                    command.if_flag,
+                    ZoneCommandKind::EquipItem {
+                        item,
+                        slot,
+                        max_in_world: command.arg2.max(0) as u32,
+                    },
+                ));
             }
             'P' => {
                 let item = ids::item_id(command.arg1);
@@ -1191,11 +1352,14 @@ fn map_zone(
                 if !(item_ok && container_ok) {
                     continue;
                 }
-                commands.push(ZoneCommand::PutItem {
-                    item,
-                    container,
-                    max_in_world: command.arg2.max(0) as u32,
-                });
+                commands.push(zone_command(
+                    command.if_flag,
+                    ZoneCommandKind::PutItem {
+                        item,
+                        container,
+                        max_in_world: command.arg2.max(0) as u32,
+                    },
+                ));
             }
             'D' => {
                 if !(0..10).contains(&command.arg2) {
@@ -1227,11 +1391,14 @@ fn map_zone(
                 if !check(&from, &room, rooms, "dangling_reset_room", "room", zr) {
                     continue;
                 }
-                commands.push(ZoneCommand::DoorState {
-                    room,
-                    exit: DIRS[command.arg2 as usize].to_owned(),
-                    state,
-                });
+                commands.push(zone_command(
+                    command.if_flag,
+                    ZoneCommandKind::DoorState {
+                        room,
+                        exit: DIRS[command.arg2 as usize].to_owned(),
+                        state,
+                    },
+                ));
             }
             'R' => {
                 let room = ids::room_id(command.arg1);
@@ -1241,7 +1408,10 @@ fn map_zone(
                 if !(room_ok && item_ok) {
                     continue;
                 }
-                commands.push(ZoneCommand::RemoveItem { room, item });
+                commands.push(zone_command(
+                    command.if_flag,
+                    ZoneCommandKind::RemoveItem { room, item },
+                ));
             }
             'T' => {
                 let attach = match command.arg1 {
@@ -1290,7 +1460,7 @@ fn map_zone(
                 &format!("zone {}", raw.number),
                 "zone_flag",
                 name,
-                "ZoneDef has no zone-flags field",
+                "permanent drop: ZoneDef has no zone-flags field",
             );
         }
     }
@@ -1389,6 +1559,7 @@ fn map_shops(
     source: &ZoneSource,
     npc_ids: &BTreeSet<NpcId>,
     item_ids: &BTreeSet<ItemId>,
+    room_ids: &BTreeSet<RoomId>,
     bundle: &mut OutputBundle,
     zr: &mut ZoneReport,
 ) {
@@ -1430,11 +1601,25 @@ fn map_shops(
             }
         }
 
+        // `SHOP_ROOM`: an empty list means the keeper trades wherever it
+        // stands. A listed vnum with no converted room cannot be represented
+        // (it would fail `tba.shops` validation), so it is dropped and named.
+        let mut rooms = Vec::with_capacity(raw.rooms.len());
+        for vnum in &raw.rooms {
+            let room = ids::room_id(*vnum);
+            if room_ids.contains(&room) {
+                rooms.push(room);
+            } else {
+                push_dangling(zr, "dangling_shop_room", &label, room.as_ref());
+            }
+        }
+
         let buy_kinds = raw
             .buy_types
             .iter()
             .map(|entry| map_item_kind(entry.kind, &label, zr))
             .collect();
+        let trade_with = map_shop_trade_with(raw.trade_with, &label, zr);
 
         for word in raw.buy_words() {
             push_unmapped(
@@ -1442,16 +1627,7 @@ fn map_shops(
                 &label,
                 "shop_buy_word",
                 word,
-                "tba.shops has no per-type buy keyword",
-            );
-        }
-        if !raw.rooms.is_empty() {
-            push_unmapped(
-                zr,
-                &label,
-                "shop_room_restriction",
-                &format!("{:?}", raw.rooms),
-                "a shop here acts wherever its keeper stands",
+                "permanent drop: tba.shops has no per-type buy keyword",
             );
         }
         if raw.broke_temper != 0 {
@@ -1460,7 +1636,7 @@ fn map_shops(
                 &label,
                 "shop_broke_temper",
                 &raw.broke_temper.to_string(),
-                "no keeper-temper reaction is modelled",
+                "permanent drop: no keeper-temper reaction is modelled",
             );
         }
         if raw.bitvector != 0 {
@@ -1469,25 +1645,7 @@ fn map_shops(
                 &label,
                 "shop_bitvector",
                 &raw.bitvector.to_string(),
-                "SHOP_* bitvector has no target field",
-            );
-        }
-        if raw.trade_with != 0 {
-            push_unmapped(
-                zr,
-                &label,
-                "shop_trade_with",
-                &raw.trade_with.to_string(),
-                "trade-with class/alignment bits have no target field",
-            );
-        }
-        if (raw.open1, raw.close1, raw.open2, raw.close2) != (0, 28, 0, 0) {
-            push_unmapped(
-                zr,
-                &label,
-                "shop_hours",
-                &format!("{}/{}/{}/{}", raw.open1, raw.close1, raw.open2, raw.close2),
-                "a shop here is always open",
+                "permanent drop: SHOP_* bitvector has no target field",
             );
         }
         if raw.record != raw.keeper {
@@ -1507,10 +1665,48 @@ fn map_shops(
                 sell_multiplier: raw.profit_sell,
                 buy_kinds,
                 produce,
+                rooms,
+                trade_with,
+                hours: ShopHours {
+                    open1: raw.open1.max(0) as u32,
+                    close1: raw.close1.max(0) as u32,
+                    open2: raw.open2.max(0) as u32,
+                    close2: raw.close2.max(0) as u32,
+                },
                 messages: raw.messages.clone(),
             },
         );
     }
+}
+
+/// Decode the `SHOP_TRADE_WITH` bits (`shop.h:78`) into the modelled
+/// [`ShopTrade`] order. An unknown high bit is reported.
+fn map_shop_trade_with(bits: i32, label: &str, zr: &mut ZoneReport) -> Vec<ShopTrade> {
+    const TRADES: [ShopTrade; 7] = [
+        ShopTrade::Good,
+        ShopTrade::Evil,
+        ShopTrade::Neutral,
+        ShopTrade::MagicUser,
+        ShopTrade::Cleric,
+        ShopTrade::Thief,
+        ShopTrade::Warrior,
+    ];
+    let mut out = Vec::new();
+    for (index, trade) in TRADES.into_iter().enumerate() {
+        if bits & (1 << index) != 0 {
+            out.push(trade);
+        }
+    }
+    if bits & !0x7f != 0 {
+        push_unmapped(
+            zr,
+            label,
+            "shop_trade_with",
+            &bits.to_string(),
+            "permanent drop: SHOP_TRADE_WITH bits above bit 6 are not modelled",
+        );
+    }
+    out
 }
 
 // ---------------------------------------------------------------------------
@@ -1526,6 +1722,24 @@ fn add_deferred(zr: &mut ZoneReport, section: &str, records: &[DeferredRecord], 
             detail: record.detail.clone(),
             reason: reason.to_owned(),
         });
+    }
+}
+
+/// Record the `T <vnum>` trigger attachments that follow a `.wld`/`.mob`/`.obj`
+/// record. They are part of the deferred DG layer (#15) and would otherwise be
+/// a silent drop.
+fn add_trigger_attachments(zr: &mut ZoneReport, attach: &str, owner: &str, vnums: &[i32]) {
+    for vnum in vnums {
+        add_deferred(
+            zr,
+            "triggers",
+            &[DeferredRecord {
+                vnum: *vnum,
+                attach: attach.to_owned(),
+                detail: format!("{owner} attachment"),
+            }],
+            "DG scripts are deferred (doc §10)",
+        );
     }
 }
 
@@ -1587,5 +1801,81 @@ fn join_persona(long: &str, detailed: &str) -> String {
         (false, true) => long.trim_end().to_owned(),
         (true, false) => detailed.trim_end().to_owned(),
         (false, false) => format!("{}\n\n{}", long.trim_end(), detailed.trim_end()),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #![allow(clippy::expect_used, clippy::unwrap_used)]
+
+    use super::*;
+
+    fn zone_report() -> ZoneReport {
+        ZoneReport {
+            number: 1,
+            name: String::new(),
+            bot: 0,
+            top: 0,
+            area: String::new(),
+            rooms: 0,
+            npcs: 0,
+            items: 0,
+            commands: 0,
+            source_files: SourceFiles::default(),
+            deferred: Vec::new(),
+            dangling: Vec::new(),
+            unmapped: Vec::new(),
+            command_flags: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn item_extra_flags_map_to_their_enum_order() {
+        // ITEM_GLOW | ITEM_HUM | ITEM_NODROP = bits 0, 1, 7.
+        let flags = map_item_extra_flags((1 << 0) | (1 << 1) | (1 << 7));
+        assert_eq!(
+            flags,
+            vec![
+                ItemExtraFlag::Glow,
+                ItemExtraFlag::Hum,
+                ItemExtraFlag::NoDrop
+            ]
+        );
+        assert!(map_item_extra_flags(0).is_empty());
+    }
+
+    #[test]
+    fn item_affect_flags_map_and_report_placeholders() {
+        let mut zr = zone_report();
+        // AFF_INVISIBLE (bit 2) | AFF_FLYING (bit 17).
+        let flags = map_item_affect_flags((1 << 2) | (1 << 17), "item tba_item_1", &mut zr);
+        assert_eq!(
+            flags,
+            vec![ItemAffectFlag::Invisible, ItemAffectFlag::Flying]
+        );
+        assert!(zr.unmapped.is_empty());
+
+        // AFF_DONTUSE (bit 0) is a placeholder and is reported.
+        let mut zr = zone_report();
+        let flags = map_item_affect_flags(1 << 0, "item tba_item_1", &mut zr);
+        assert!(flags.is_empty());
+        assert_eq!(zr.unmapped.len(), 1);
+        assert_eq!(zr.unmapped[0].kind, "item_affect_flag");
+    }
+
+    #[test]
+    fn shop_trade_with_bits_map_and_report_unknown_bits() {
+        let mut zr = zone_report();
+        // TRADE_NOGOOD | TRADE_NOEVIL = bits 0, 1.
+        let trades = map_shop_trade_with(0b000_0011, "shop tba_npc_1", &mut zr);
+        assert_eq!(trades, vec![ShopTrade::Good, ShopTrade::Evil]);
+        assert!(zr.unmapped.is_empty());
+
+        // Bit 7 is not a `SHOP_TRADE_WITH` bit and is reported.
+        let mut zr = zone_report();
+        let trades = map_shop_trade_with(1 << 7, "shop tba_npc_1", &mut zr);
+        assert!(trades.is_empty());
+        assert_eq!(zr.unmapped.len(), 1);
+        assert_eq!(zr.unmapped[0].kind, "shop_trade_with");
     }
 }

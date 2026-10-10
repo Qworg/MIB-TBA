@@ -163,6 +163,15 @@ fn tba_pack_loads_and_validates_with_the_expected_sections() {
         weaponsmith.produce.first(),
         Some(&ItemId::from("tba_item_3020"))
     );
+    // The weaponsmith's source room restriction and default hours survive
+    // the conversion and are carried on `tba.shops`.
+    assert_eq!(weaponsmith.rooms, vec![RoomId::from("tba.3011")]);
+    assert_eq!(
+        weaponsmith.hours,
+        mib_tba::prelude::ShopHours::default(),
+        "0/28/0/0 is the always-open default"
+    );
+    assert!(weaponsmith.trade_with.is_empty());
 
     // The world itself lives in the `stdlib.*` sections this pack ships.
     let rooms = tba
@@ -184,7 +193,7 @@ fn tba_pack_loads_and_validates_with_the_expected_sections() {
 /// a 12,700-room pack is still readable.
 #[test]
 fn zone_30_is_northern_midgaard() {
-    use mib_tba::prelude::ZoneCommand;
+    use mib_tba::prelude::ZoneCommandKind;
 
     let assets =
         load_packs(&[engine_pack("stdlib"), this_pack()], &registry()).expect("tba pack loads");
@@ -205,10 +214,15 @@ fn zone_30_is_northern_midgaard() {
     assert_eq!(zone.commands.len(), ZONE_30_COMMANDS);
     // The full 30.zon reset program, by command kind. A silent mapping
     // regression would shrink one of these buckets.
-    let kinds = |pred: fn(&ZoneCommand) -> bool| zone.commands.iter().filter(|c| pred(c)).count();
-    assert_eq!(kinds(|c| matches!(c, ZoneCommand::PlaceMob { .. })), 57);
-    assert_eq!(kinds(|c| matches!(c, ZoneCommand::GiveItem { .. })), 62);
-    assert_eq!(kinds(|c| matches!(c, ZoneCommand::EquipItem { .. })), 24);
+    let kinds = |pred: fn(&ZoneCommandKind) -> bool| {
+        zone.commands.iter().filter(|c| pred(&c.command)).count()
+    };
+    assert_eq!(kinds(|c| matches!(c, ZoneCommandKind::PlaceMob { .. })), 57);
+    assert_eq!(kinds(|c| matches!(c, ZoneCommandKind::GiveItem { .. })), 62);
+    assert_eq!(
+        kinds(|c| matches!(c, ZoneCommandKind::EquipItem { .. })),
+        24
+    );
 
     let areas = tba
         .section::<mib_stdlib::prelude::AreasSection>()
@@ -271,6 +285,11 @@ fn zone_30_is_northern_midgaard() {
     assert_eq!(guard.hp.to_string(), "2d2+100");
     assert_eq!(guard.level, 10);
     assert_eq!(guard.gold, 100);
+    assert_eq!(
+        guard.damage.expect("the mob's attack dice").to_string(),
+        "1d2+1",
+        "npc_stats carries the source damage dice (#11/#12)"
+    );
 }
 
 /// True when a converted `tba_npc_<vnum>` / `tba_item_<vnum>` id names a vnum

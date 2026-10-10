@@ -45,7 +45,7 @@ fn loaded_content(dir: &Path) -> LoadedContent {
     .expect("write manifest");
     std::fs::write(
         dir.join("content/stdlib.npcs.yaml"),
-        "npcs:\n  test_mob:\n    name: a test mob\n    persona: A test mob.\n    dialogue: null\n    tags: []\n    behaviors:\n      sentinel: false\n      scavenger: false\n      wander: false\n      wimpy: false\n",
+        "npcs:\n  test_mob:\n    name: a test mob\n    persona: A test mob.\n    dialogue: null\n    tags: []\n    behaviors:\n      sentinel: false\n      scavenger: false\n      wander: false\n      wimpy: false\n  other_mob:\n    name: another test mob\n    persona: Another test mob.\n    dialogue: null\n    tags: []\n    behaviors:\n      sentinel: false\n      scavenger: false\n      wander: false\n      wimpy: false\n",
     )
     .expect("write npcs");
     std::fs::write(
@@ -71,6 +71,7 @@ fn npc_stats() -> TbaNpcStats {
         experience: 0,
         default_position: Position::Standing,
         behaviour: Vec::new(),
+        damage: None,
     }
 }
 
@@ -91,6 +92,9 @@ fn sword_def() -> TbaItemDef {
                 modifier: -5,
             },
         ],
+        keywords: Vec::new(),
+        extra_flags: Vec::new(),
+        affect_flags: Vec::new(),
         weight: 0,
         cost: 0,
         rent: 0,
@@ -112,16 +116,16 @@ fn content() -> TbaContent {
                 lifespan_mins: 1,
                 reset_mode: ResetMode::Always,
                 commands: vec![
-                    ZoneCommand::PlaceMob {
+                    ZoneCommand::always(ZoneCommandKind::PlaceMob {
                         mob: NpcId::from("test_mob"),
                         room: RoomId::from("test_room"),
                         max_in_world: 0,
-                    },
-                    ZoneCommand::EquipItem {
+                    }),
+                    ZoneCommand::always(ZoneCommandKind::EquipItem {
                         item: ItemId::from("test_sword"),
                         slot: WearSlot::Wield,
                         max_in_world: 0,
-                    },
+                    }),
                 ],
             },
         )]),
@@ -275,7 +279,7 @@ fn an_unequipped_mob_keeps_its_unmodified_vitals() {
         .get_mut(&5)
         .expect("zone 5")
         .commands
-        .retain(|command| !matches!(command, ZoneCommand::EquipItem { .. }));
+        .retain(|command| !matches!(command.command, ZoneCommandKind::EquipItem { .. }));
     app.insert_resource(content.clone());
     let mut tracker = ZoneTracker::from_zones(&content.zones);
     tracker.zones[0].age_mins = 100.0;
@@ -309,6 +313,143 @@ fn a_second_reset_does_not_stack_affects() {
         assert_eq!(vitals.damroll, 6, "each mob is base 2 + one sword's +4");
         assert_eq!(vitals.armor_class, 45);
     }
+
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+/// A zone for the `if_flag` tests: a successful unlimited placement, then a
+/// capped placement that fails, then a conditional placement that should be
+/// skipped because its predecessor failed.
+fn flag_content(other_if_flag: bool) -> TbaContent {
+    TbaContent {
+        npc_stats: BTreeMap::from([
+            (NpcId::from("test_mob"), npc_stats()),
+            (NpcId::from("other_mob"), npc_stats()),
+        ]),
+        zones: BTreeMap::from([(
+            5,
+            ZoneDef {
+                name: "Flag Zone".into(),
+                bot: 1,
+                top: 99,
+                lifespan_mins: 1,
+                reset_mode: ResetMode::Always,
+                commands: vec![
+                    ZoneCommand::always(ZoneCommandKind::PlaceMob {
+                        mob: NpcId::from("test_mob"),
+                        room: RoomId::from("test_room"),
+                        max_in_world: 0,
+                    }),
+                    // The mob already exists, so a cap of 1 fails.
+                    ZoneCommand::always(ZoneCommandKind::PlaceMob {
+                        mob: NpcId::from("test_mob"),
+                        room: RoomId::from("test_room"),
+                        max_in_world: 1,
+                    }),
+                    ZoneCommand {
+                        if_flag: other_if_flag,
+                        command: ZoneCommandKind::PlaceMob {
+                            mob: NpcId::from("other_mob"),
+                            room: RoomId::from("test_room"),
+                            max_in_world: 0,
+                        },
+                    },
+                ],
+            },
+        )]),
+        ..TbaContent::default()
+    }
+}
+
+fn flag_app(dir: &Path, other_if_flag: bool) -> App {
+    let mut app = App::new();
+    let content = flag_content(other_if_flag);
+    app.insert_resource(content.clone());
+    app.insert_resource(loaded_content(dir));
+    app.insert_resource(Time::<Fixed>::from_hz(10.0));
+    app.insert_resource(TbaRng::from_seed(7));
+    app.init_resource::<TbaObjectClock>();
+    let room = app.world_mut().spawn_empty().id();
+    app.insert_resource(RoomIndex {
+        map: HashMap::from([(RoomId::from("test_room"), room)]),
+        ..Default::default()
+    });
+    let mut tracker = ZoneTracker::from_zones(&content.zones);
+    tracker.zones[0].age_mins = 100.0;
+    app.insert_resource(tracker);
+    app.add_systems(FixedUpdate, zone_reset_system);
+    app
+}
+
+fn npc_count(app: &mut App, id: &str) -> usize {
+    app.world_mut()
+        .query::<&NpcKey>()
+        .iter(app.world())
+        .filter(|key| key.0 == NpcId::from(id))
+        .count()
+}
+
+#[test]
+fn if_flag_command_is_skipped_when_its_predecessor_failed() {
+    let dir = temp_dir("if-flag");
+    let mut app = flag_app(&dir, true);
+    run_fixed(&mut app);
+
+    assert_eq!(npc_count(&mut app, "test_mob"), 1, "first placement ran");
+    assert_eq!(
+        npc_count(&mut app, "other_mob"),
+        0,
+        "the if_flag command is skipped after a failure"
+    );
+
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn if_flag_command_runs_when_its_predecessor_succeeded() {
+    // Control: the same program with `if_flag: false` places the second mob,
+    // proving the skip above is the flag and not the cap.
+    let dir = temp_dir("if-flag-control");
+    let mut app = flag_app(&dir, false);
+    run_fixed(&mut app);
+
+    assert_eq!(npc_count(&mut app, "test_mob"), 1);
+    assert_eq!(
+        npc_count(&mut app, "other_mob"),
+        1,
+        "an unflagged command runs regardless"
+    );
+
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn npc_attack_dice_come_from_the_stat_block() {
+    let dir = temp_dir("attack-dice");
+    let mut app = test_app(&dir);
+    {
+        let mut content = app.world_mut().resource_mut::<TbaContent>();
+        content
+            .npc_stats
+            .get_mut(&NpcId::from("test_mob"))
+            .expect("stats")
+            .damage = Some(Dice::new(3, 7, 2));
+    }
+    run_fixed(&mut app);
+
+    let npc = only_npc(&mut app);
+    let attack = app
+        .world()
+        .get::<TbaAttackDice>(npc)
+        .expect("npc_stats.damage becomes TbaAttackDice");
+    assert_eq!(attack.0, Dice::new(3, 7, 2));
+
+    let content = app.world().resource::<TbaContent>();
+    assert_eq!(
+        combat_dice(None, Some(content), Some(attack)),
+        Dice::new(3, 7, 2),
+        "combat reads the mob's own damage dice"
+    );
 
     let _ = std::fs::remove_dir_all(&dir);
 }

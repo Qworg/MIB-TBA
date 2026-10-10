@@ -5,9 +5,10 @@
 //! engine loads. `serde_yaml` writes `BTreeMap` keys in their natural
 //! (deterministic) order, so converting the same source twice is byte-identical.
 
+use std::collections::BTreeMap;
 use std::path::Path;
 
-use mib_stdlib::content::{AreasFile, ItemsFile, NpcsFile, RoomsFile};
+use mib_stdlib::content::{AreasFile, ItemsFile, NpcsFile, RoomDef, RoomId, RoomsFile};
 use mib_tba::content::{ShopsFile, TbaItemsFile, TbaNpcStatsFile, ZonesFile};
 
 use crate::error::{ConvertError, Result};
@@ -71,43 +72,90 @@ fn write_file(dir: &Path, name: &str, contents: &str) -> Result<()> {
     std::fs::write(&path, contents).map_err(|source| ConvertError::Io { path, source })
 }
 
+/// One `stdlib.rooms.<zone>.yaml` shard per converted area (TBA-E01).
+///
+/// The engine discovers `stdlib.rooms.*.yaml` and merges them in
+/// lexicographical path order, so sharding does not change the loaded room
+/// set. Each shard is a complete `RoomsFile`; the zone number is the suffix of
+/// the room's `tba_<zone>` area id, and shards are emitted in ascending zone
+/// order so the staging directory is deterministic.
+fn room_shards(rooms: &RoomsFile) -> Result<Vec<(String, String)>> {
+    let mut by_zone: BTreeMap<u32, BTreeMap<RoomId, RoomDef>> = BTreeMap::new();
+    let mut fallback: BTreeMap<String, BTreeMap<RoomId, RoomDef>> = BTreeMap::new();
+    for (id, def) in &rooms.rooms {
+        match def
+            .area
+            .as_ref()
+            .strip_prefix("tba_")
+            .and_then(|zone| zone.parse::<u32>().ok())
+        {
+            Some(zone) => {
+                by_zone
+                    .entry(zone)
+                    .or_default()
+                    .insert(id.clone(), def.clone());
+            }
+            // Defensive: an area id that is not `tba_<number>` still gets a
+            // deterministic shard rather than being dropped.
+            None => {
+                fallback
+                    .entry(def.area.to_string())
+                    .or_default()
+                    .insert(id.clone(), def.clone());
+            }
+        }
+    }
+
+    let mut files = Vec::with_capacity(by_zone.len() + fallback.len());
+    for (zone, rooms) in by_zone {
+        files.push((
+            format!("stdlib.rooms.{zone}.yaml"),
+            dump(&RoomsFile { rooms })?,
+        ));
+    }
+    for (area, rooms) in fallback {
+        let suffix = area.replace(['/', '\\', ' '], "_");
+        files.push((
+            format!("stdlib.rooms.{suffix}.yaml"),
+            dump(&RoomsFile { rooms })?,
+        ));
+    }
+    Ok(files)
+}
+
+/// Every section file for a bundle, in deterministic order.
+fn section_files(bundle: &OutputBundle) -> Result<Vec<(String, String)>> {
+    let mut files = vec![
+        ("stdlib.areas.yaml".to_owned(), dump(&bundle.areas)?),
+        ("stdlib.npcs.yaml".to_owned(), dump(&bundle.npcs)?),
+        ("stdlib.items.yaml".to_owned(), dump(&bundle.items)?),
+        ("tba.zones.yaml".to_owned(), dump(&bundle.zones)?),
+        ("tba.npc_stats.yaml".to_owned(), dump(&bundle.npc_stats)?),
+        ("tba.items.yaml".to_owned(), dump(&bundle.tba_items)?),
+        ("tba.shops.yaml".to_owned(), dump(&bundle.shops)?),
+    ];
+    files.extend(room_shards(&bundle.rooms)?);
+    Ok(files)
+}
+
 /// Write each section file into `dir`, returning the file names written in
 /// order.
-pub fn write_bundle(dir: &Path, bundle: &OutputBundle) -> Result<Vec<&'static str>> {
+pub fn write_bundle(dir: &Path, bundle: &OutputBundle) -> Result<Vec<String>> {
     std::fs::create_dir_all(dir).map_err(|source| ConvertError::Io {
         path: dir.to_path_buf(),
         source,
     })?;
 
-    let files: [(&'static str, String); 8] = [
-        ("stdlib.areas.yaml", dump(&bundle.areas)?),
-        ("stdlib.rooms.yaml", dump(&bundle.rooms)?),
-        ("stdlib.npcs.yaml", dump(&bundle.npcs)?),
-        ("stdlib.items.yaml", dump(&bundle.items)?),
-        ("tba.zones.yaml", dump(&bundle.zones)?),
-        ("tba.npc_stats.yaml", dump(&bundle.npc_stats)?),
-        ("tba.items.yaml", dump(&bundle.tba_items)?),
-        ("tba.shops.yaml", dump(&bundle.shops)?),
-    ];
-
+    let files = section_files(bundle)?;
     let mut written = Vec::with_capacity(files.len());
     for (name, contents) in files {
-        write_file(dir, name, &contents)?;
+        write_file(dir, &name, &contents)?;
         written.push(name);
     }
     Ok(written)
 }
 
 /// Serialise a bundle in memory (used by tests and `--validate-only`).
-pub fn render(bundle: &OutputBundle) -> Result<Vec<(&'static str, String)>> {
-    Ok(vec![
-        ("stdlib.areas.yaml", dump(&bundle.areas)?),
-        ("stdlib.rooms.yaml", dump(&bundle.rooms)?),
-        ("stdlib.npcs.yaml", dump(&bundle.npcs)?),
-        ("stdlib.items.yaml", dump(&bundle.items)?),
-        ("tba.zones.yaml", dump(&bundle.zones)?),
-        ("tba.npc_stats.yaml", dump(&bundle.npc_stats)?),
-        ("tba.items.yaml", dump(&bundle.tba_items)?),
-        ("tba.shops.yaml", dump(&bundle.shops)?),
-    ])
+pub fn render(bundle: &OutputBundle) -> Result<Vec<(String, String)>> {
+    section_files(bundle)
 }

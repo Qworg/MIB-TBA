@@ -57,15 +57,29 @@ fn fixture_bundle_is_schema_exact_and_deterministic() {
 
     // Every emitted file parses back into its real type and re-serialises to
     // exactly the bytes that were written (modulo the provenance header).
+    // Rooms are sharded one file per zone (TBA-E01); every shard is a real
+    // `RoomsFile`.
     let rendered = render(&first.bundle).expect("renders");
+    let mut room_shards = 0;
     for (name, yaml) in &rendered {
         let body = yaml
             .split_once('\n')
             .map(|(_, rest)| rest)
             .expect("header line");
-        match *name {
+        if let Some(zone) = name
+            .strip_prefix("stdlib.rooms.")
+            .and_then(|rest| rest.strip_suffix(".yaml"))
+        {
+            assert!(
+                zone.parse::<u32>().is_ok(),
+                "room shard `{name}` names a zone number"
+            );
+            roundtrip::<RoomsFile>(body);
+            room_shards += 1;
+            continue;
+        }
+        match name.as_str() {
             "stdlib.areas.yaml" => roundtrip::<AreasFile>(body),
-            "stdlib.rooms.yaml" => roundtrip::<RoomsFile>(body),
             "stdlib.npcs.yaml" => roundtrip::<NpcsFile>(body),
             "stdlib.items.yaml" => roundtrip::<ItemsFile>(body),
             "tba.zones.yaml" => roundtrip::<ZonesFile>(body),
@@ -75,6 +89,7 @@ fn fixture_bundle_is_schema_exact_and_deterministic() {
             other => panic!("unexpected emitted file {other}"),
         }
     }
+    assert!(room_shards >= 1, "rooms are sharded by zone");
 
     // Two runs over the same source are byte-identical, YAML and report.
     let second = convert(&options).expect("fixture converts again");
@@ -109,6 +124,11 @@ fn fixture_content_maps_the_expected_fields() {
     assert_eq!(guard.armor_class, 20);
     assert_eq!(guard.gold, 20);
     assert_eq!(guard.experience, 100);
+    assert_eq!(
+        guard.damage,
+        Some(mib_core::prelude::Dice::new(2, 6, 3)),
+        "the source damage dice are carried"
+    );
 
     let sword = conversion
         .bundle
@@ -118,6 +138,11 @@ fn fixture_content_maps_the_expected_fields() {
         .expect("sword def");
     assert_eq!(sword.affects.len(), 2);
     assert_eq!(sword.cost, 50);
+    assert_eq!(
+        sword.keywords,
+        vec!["sword".to_owned(), "long".to_owned()],
+        "the source keyword list is preserved"
+    );
     // `a` == ITEM_WEAR_TAKE only; TAKE is not a slot.
     assert!(sword.slots.is_empty());
 
@@ -142,6 +167,21 @@ fn fixture_content_maps_the_expected_fields() {
     assert_eq!(shop.produce, vec![ItemId::from("tba_item_3000")]);
     assert_eq!(shop.buy_multiplier, 1.15);
     assert_eq!(shop.sell_multiplier, 0.15);
+    assert_eq!(
+        shop.rooms,
+        vec![RoomId::from("tba.3001")],
+        "the source room restriction is carried"
+    );
+    assert_eq!(
+        shop.trade_with,
+        vec![mib_tba::content::ShopTrade::Evil],
+        "trade_with bit 1 is TRADE_NOEVIL"
+    );
+    assert_eq!(
+        shop.hours,
+        mib_tba::content::ShopHours::default(),
+        "0/28/0/0 is always open"
+    );
     assert_eq!(
         shop.buy_kinds,
         vec![

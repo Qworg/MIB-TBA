@@ -49,13 +49,23 @@ pub struct TbaGold(pub u32);
 
 /// The melee weapon a combatant currently wields.
 ///
-/// This is the **narrow damage seam** for the deferred 15-slot equipment pass
-/// (TBA-E28): when the future `TbaEquipment` system sets this component,
-/// [`resolve_rounds`](crate::combat::resolve_rounds) reads the item's
-/// `tba.items` weapon dice instead of the unarmed default. Nothing in this
-/// phase inserts it, so combat degrades to unarmed.
+/// This is the **narrow damage seam** for the equipment pass (TBA-E28): when
+/// [`sync_wielded_weapon`](crate::equipment::sync_wielded_weapon) sets this
+/// component, [`resolve_rounds`](crate::combat::resolve_rounds) reads the
+/// item's `tba.items` weapon dice instead of the unarmed default. A missing
+/// component falls through to [`TbaAttackDice`] (NPCs) then unarmed.
 #[derive(Debug, Clone, Component)]
 pub struct WieldedWeapon(pub ItemId);
+
+/// An NPC's natural melee damage dice, from `tba.npc_stats.damage`.
+///
+/// Circle mobs deal the source record's `#d#+#` rather than an unarmed roll.
+/// [`npc_combatant_system`](crate::combat::npc_combatant_system) attaches this
+/// from the prototype; [`resolve_rounds`](crate::combat::resolve_rounds)
+/// prefers a wielded weapon, then these dice, then `1d4`. Runtime-only: the
+/// prototype lives in `tba.npc_stats` and is not persisted for NPCs.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Component)]
+pub struct TbaAttackDice(pub Dice);
 
 /// A character's Diku class and experience (TBA-E18/E19).
 ///

@@ -144,11 +144,11 @@ machine-readable drop report. It depends on the schema crates (`mib-stdlib`,
 schemas by hand.
 
 ```sh
-# Full world, staged (never writes content/ directly):
+# Full world, staged (never writes content/ directly), with the committed report:
 cargo run -p tbaport -- convert \
   --source /home/qworg/Development/tbamud \
   --out target/tbaport/content \
-  --report target/tbaport/drop-report.json
+  --report reports/drop-report.json
 
 # A single zone (fast iteration), or a parse-only report:
 cargo run -p tbaport -- convert --source ../tbamud --out target/tbaport/z30 --only 30
@@ -157,6 +157,12 @@ cargo run -p tbaport -- convert --source ../tbamud --validate-only
 # Pick the room new characters spawn in (Circle CONFIG_MORTAL_START):
 cargo run -p tbaport -- convert --source ../tbamud --out target/tbaport/content --start-room 3001
 ```
+
+The committed drop report lives at **`reports/drop-report.json`** with a
+human-readable **`reports/drop-report.summary.md`** beside it (the same run
+writes both). Both are deterministic and diffable: every vector is sorted, and
+the summary groups the surviving drops by reason. `docs/05-converter.md` §8 is
+the narrative disposition table.
 
 CLI:
 
@@ -188,7 +194,7 @@ must replace the converted files and preserve the hand-authored ones.
 | Converted (regenerate) | Hand-authored (preserve) |
 |---|---|
 | `stdlib.areas.yaml` | `tba.classes.yaml` |
-| `stdlib.rooms.yaml` | `tba.spells.yaml` |
+| `stdlib.rooms.<zone>.yaml` (one shard per zone) | `tba.spells.yaml` |
 | `stdlib.npcs.yaml` | `stdlib.verbs.yaml` |
 | `stdlib.items.yaml` | |
 | `tba.zones.yaml` | |
@@ -198,8 +204,11 @@ must replace the converted files and preserve the hand-authored ones.
 
 Procedure:
 
-1. Convert to a staging dir with the desired `--start-room`.
-2. Copy the eight converted files over `content/`.
+1. Convert to a staging dir with the desired `--start-room` (and
+   `--report reports/drop-report.json` to refresh the committed report).
+2. Remove the old `content/stdlib.rooms.yaml` and copy the converted files over
+   `content/` (the room shards **replace** the single file; keeping both would
+   make the engine report a duplicate key).
 3. Leave the three hand-authored files untouched.
 4. Update the pinned counts in `code/tests/pack.rs` if the world changed.
 5. Run: `cargo test -p tbaport && cargo test -p mib-tba && cargo run -p mib-tba -- validate-packs`.
@@ -248,15 +257,20 @@ No TBA-specific environment variables exist. The pack's tunables are content
 These are recorded, not silent:
 
 - **DG triggers (TBA-E20)** are not ported — the spec itself defers them. Every
-  trigger is itemised in `target/tbaport/drop-report.json` for a later phase.
+  trigger is itemised in [`reports/drop-report.json`](../reports/drop-report.json)
+  (and grouped in [`reports/drop-report.summary.md`](../reports/drop-report.summary.md))
+  for a later phase.
 - **30 of 54 spells** are `Utility`: they cost mana and report "nothing happens
   yet"; their Circle routines (flags, summons, object/room, group, debuffs) are
   not modelled. Buffs are transient (not persisted) with a fixed round duration.
 - **Affect locations with no combatant field** (the six attributes and the five
   saves) are carried on items and persisted, but not applied.
 - **Multi-room pursuit** is a single adjacent step, not a pathfinder.
-- **Wimpy/Aware** NPC flags and the full shop message set are carried/ignored.
-- The converter's drop report lists every unmapped source flag and field.
+- **Combat skills** (`backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`)
+  and **`MOB_SPEC` special procedures** are explicit non-goals, listed in the
+  report's `global_drops`.
+- The converter's drop report lists every unmapped source flag and field, with
+  its disposition documented in `docs/05-converter.md` §8.
 
 ---
 

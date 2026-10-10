@@ -26,7 +26,7 @@ use mib_stdlib::prelude::{Npc, NpcKey, Player, PlayerDefeated};
 use crate::content::{Position, TbaItemKind};
 use crate::module::TbaContent;
 
-use super::model::{TbaCombatant, WieldedWeapon};
+use super::model::{TbaAttackDice, TbaCombatant, WieldedWeapon};
 use super::progression::TbaRng;
 use super::rewards::{NpcDefeated, alignment_for, reward_for};
 
@@ -37,10 +37,10 @@ const UNARMED: Dice = Dice::new(1, 4, 0);
 /// The damage dice for one swing: the wielded weapon's `tba.items` values
 /// `[count, sides, bonus]` when it is a real weapon prototype, else unarmed.
 ///
-/// This is the whole equipment seam for this phase: the future
-/// `TbaEquipment` system only has to insert [`WieldedWeapon`]; a missing
-/// component, an unknown item, a non-weapon kind, or a malformed dice triple
-/// all degrade to `1d4` rather than failing the round.
+/// This is the weapon half of the damage seam: [`combat_dice`] layers an NPC's
+/// natural attack dice underneath it. A missing [`WieldedWeapon`], an unknown
+/// item, a non-weapon kind, or a malformed dice triple all degrade to `1d4`
+/// rather than failing the round.
 pub fn weapon_dice(wielded: Option<&WieldedWeapon>, content: Option<&TbaContent>) -> Dice {
     let Some(WieldedWeapon(item_id)) = wielded else {
         return UNARMED;
@@ -63,6 +63,23 @@ pub fn weapon_dice(wielded: Option<&WieldedWeapon>, content: Option<&TbaContent>
     Dice::new(count as u32, sides as u32, bonus)
 }
 
+/// The damage dice for one swing, in priority order: a wielded weapon, then an
+/// NPC's natural attack dice (`tba.npc_stats.damage`), then unarmed.
+///
+/// This is the whole damage seam for a round. [`weapon_dice`] resolves the
+/// weapon half; an NPC with no weapon falls through to [`TbaAttackDice`].
+pub fn combat_dice(
+    wielded: Option<&WieldedWeapon>,
+    content: Option<&TbaContent>,
+    npc_attack: Option<&TbaAttackDice>,
+) -> Dice {
+    let weapon = weapon_dice(wielded, content);
+    if weapon != UNARMED {
+        return weapon;
+    }
+    npc_attack.map_or(UNARMED, |attack| attack.0)
+}
+
 /// Resolve one melee round for every living combatant with a target.
 ///
 /// Two phases over one [`ParamSet`]: read every attacker/target pair and roll
@@ -73,7 +90,12 @@ pub fn resolve_rounds(
     mut rng: ResMut<TbaRng>,
     content: Option<Res<TbaContent>>,
     mut combatants: ParamSet<(
-        Query<(Entity, &TbaCombatant, Option<&WieldedWeapon>)>,
+        Query<(
+            Entity,
+            &TbaCombatant,
+            Option<&WieldedWeapon>,
+            Option<&TbaAttackDice>,
+        )>,
         Query<&mut TbaCombatant>,
     )>,
     players: Query<(), With<Player>>,
@@ -89,16 +111,17 @@ pub fn resolve_rounds(
         let read = combatants.p0();
         let intents: Vec<(Entity, Entity, Dice)> = read
             .iter()
-            .filter(|(_, combatant, _)| combatant.is_alive())
-            .filter_map(|(entity, combatant, wielded)| {
+            .filter(|(_, combatant, _, _)| combatant.is_alive())
+            .filter_map(|(entity, combatant, wielded, npc_attack)| {
                 combatant
                     .target
-                    .map(|target| (entity, target, weapon_dice(wielded, content)))
+                    .map(|target| (entity, target, combat_dice(wielded, content, npc_attack)))
             })
             .collect();
 
         for (attacker, target, weapon) in intents {
-            let (Ok((_, att, _)), Ok((_, def, _))) = (read.get(attacker), read.get(target)) else {
+            let (Ok((_, att, _, _)), Ok((_, def, _, _))) = (read.get(attacker), read.get(target))
+            else {
                 continue;
             };
             if !att.is_alive() || !def.is_alive() {
@@ -174,6 +197,9 @@ mod tests {
             slots: Vec::new(),
             values,
             affects: Vec::new(),
+            keywords: Vec::new(),
+            extra_flags: Vec::new(),
+            affect_flags: Vec::new(),
             weight: 0,
             cost: 0,
             rent: 0,
@@ -227,6 +253,46 @@ mod tests {
         assert_eq!(
             weapon_dice(Some(&WieldedWeapon(id)), Some(&content)),
             UNARMED
+        );
+    }
+
+    #[test]
+    fn combat_dice_prefers_weapon_then_npc_attack_then_unarmed() {
+        // Unarmed when nothing is set.
+        assert_eq!(combat_dice(None, None, None), UNARMED);
+
+        // A mob's natural dice replace unarmed.
+        let bite = TbaAttackDice(Dice::new(2, 8, 4));
+        assert_eq!(combat_dice(None, None, Some(&bite)), Dice::new(2, 8, 4));
+
+        // A wielded weapon wins over the natural attack.
+        let id = ItemId::from("sword");
+        let mut items = BTreeMap::new();
+        items.insert(id.clone(), item(TbaItemKind::Weapon, [0, 3, 5, 1]));
+        let content = TbaContent {
+            items,
+            ..TbaContent::default()
+        };
+        assert_eq!(
+            combat_dice(
+                Some(&WieldedWeapon(id.clone())),
+                Some(&content),
+                Some(&bite)
+            ),
+            Dice::new(3, 5, 1)
+        );
+
+        // A malformed weapon falls through to the natural attack.
+        let broken = ItemId::from("broken");
+        let mut items = BTreeMap::new();
+        items.insert(broken.clone(), item(TbaItemKind::Weapon, [0, 0, 6, 1]));
+        let content = TbaContent {
+            items,
+            ..TbaContent::default()
+        };
+        assert_eq!(
+            combat_dice(Some(&WieldedWeapon(broken)), Some(&content), Some(&bite)),
+            Dice::new(2, 8, 4)
         );
     }
 }

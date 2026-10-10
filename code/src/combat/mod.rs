@@ -28,8 +28,8 @@ pub use init::{
     player_combatant_system, resolve_class_key,
 };
 pub use model::{
-    BASE_ATTRIBUTE, EVIL_ALIGNMENT, GOOD_ALIGNMENT, SaveType, TbaAlignment, TbaAttributes,
-    TbaCombatant, TbaGold, TbaProgress, TbaSaves, WieldedWeapon,
+    BASE_ATTRIBUTE, EVIL_ALIGNMENT, GOOD_ALIGNMENT, SaveType, TbaAlignment, TbaAttackDice,
+    TbaAttributes, TbaCombatant, TbaGold, TbaProgress, TbaSaves, WieldedWeapon,
 };
 pub use progression::{
     BASE_MOVE, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, TbaRng, derive_vitals, level_for_xp,
@@ -41,4 +41,4 @@ pub use rewards::{
 };
 pub use round::{ROUND_SECONDS, TbaRound, TbaRoundClock, run_due_round};
 pub use saves::{mag_savingthrow, saving_throws};
-pub use systems::{resolve_rounds, weapon_dice};
+pub use systems::{combat_dice, resolve_rounds, weapon_dice};

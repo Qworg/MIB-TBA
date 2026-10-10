@@ -16,7 +16,9 @@ use crate::content::{Position, TbaClassDef, TbaNpcStats};
 use crate::module::TbaContent;
 
 use super::ai::TbaSpawnHome;
-use super::model::{TbaAlignment, TbaAttributes, TbaCombatant, TbaGold, TbaProgress, TbaSaves};
+use super::model::{
+    TbaAlignment, TbaAttackDice, TbaAttributes, TbaCombatant, TbaGold, TbaProgress, TbaSaves,
+};
 use super::progression::{BASE_MOVE, NAKED_ARMOR_CLASS, TbaRng, derive_vitals};
 
 /// An NPC's unaffected base vitals, captured when its [`TbaCombatant`] is
@@ -164,10 +166,15 @@ pub fn npc_combatant_system(
     let content = content.as_deref().unwrap_or(&empty);
 
     for (entity, key, location) in &npcs {
-        let combatant = match content.npc_stats.get(&key.0) {
+        let stats = content.npc_stats.get(&key.0);
+        let combatant = match stats {
             Some(stats) => npc_combatant_from_stats(stats, &mut rng),
             None => fallback_combatant(),
         };
+        // Circle mobs deal their source `damage` dice. The component is only
+        // inserted when the prototype carries one, so an old record without a
+        // `damage` field keeps the unarmed fallback.
+        let attack = stats.and_then(|stats| stats.damage).map(TbaAttackDice);
         let home = location.map(|location| TbaSpawnHome {
             room: location.room,
             zone: rooms.get(location.room).ok().and_then(|room| {
@@ -185,6 +192,9 @@ pub fn npc_combatant_system(
             TbaNpcBase(combatant),
             super::ai::TbaAttackerMemory::default(),
         ));
+        if let Some(attack) = attack {
+            entity_commands.insert(attack);
+        }
         if let Some(home) = home {
             entity_commands.insert(home);
         }
@@ -328,6 +338,7 @@ mod tests {
             experience: 0,
             default_position: Position::Standing,
             behaviour: vec![crate::content::NpcBehaviour::Aggressive],
+            damage: None,
         };
         let mut rng = TbaRng::from_seed(1);
         let combatant = npc_combatant_from_stats(&stats, &mut rng);
@@ -353,6 +364,7 @@ mod tests {
             experience: 0,
             default_position: Position::Standing,
             behaviour: Vec::new(),
+            damage: None,
         };
         let mut rng = TbaRng::from_seed(1);
         let combatant = npc_combatant_from_stats(&stats, &mut rng);

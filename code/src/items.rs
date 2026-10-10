@@ -58,6 +58,10 @@ pub struct TbaItemTimer {
 pub struct TbaObjectClock {
     /// Seconds accumulated since the last whole MUD hour.
     pub accumulator: f32,
+    /// Circle's `time_info.hours` (0..=23), advanced as whole MUD hours pass.
+    /// Shop opening hours ([`ShopHours`](crate::content::ShopHours)) are
+    /// checked against it.
+    pub hour_of_day: u32,
 }
 
 impl TbaObjectClock {
@@ -130,6 +134,9 @@ pub fn tick_item_timers(
     if hours == 0 {
         return;
     }
+    // Advance the MUD hour-of-day alongside the object timers, so shop
+    // opening hours have a clock without a second time resource.
+    clock.hour_of_day = (clock.hour_of_day + hours) % 24;
     for (entity, mut timer) in &mut timers {
         timer.remaining = timer.remaining.saturating_sub(hours);
         if timer.remaining == 0 {
@@ -161,6 +168,9 @@ mod tests {
             slots: Vec::new(),
             values: [0; 4],
             affects: Vec::new(),
+            keywords: Vec::new(),
+            extra_flags: Vec::new(),
+            affect_flags: Vec::new(),
             weight: 0,
             cost: 0,
             rent: 0,

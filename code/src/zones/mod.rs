@@ -22,7 +22,7 @@ use mib_stdlib::prelude::{
     spawn_item_in_room, spawn_npc_from_content,
 };
 
-use crate::content::{DoorReset, ResetMode, WearSlot, ZoneCommand, ZoneDef};
+use crate::content::{DoorReset, ResetMode, WearSlot, ZoneCommandKind, ZoneDef};
 use crate::equipment::TbaEquipment;
 
 /// Per-zone reset age, keyed in the same order as [`TbaContent::zones`].
@@ -109,80 +109,122 @@ fn zone_occupied(world: &mut World, def: &ZoneDef) -> bool {
     })
 }
 
-/// Run one zone's commands in order, threading the last placed mob.
+/// Run one zone's commands in order, threading the last placed mob and
+/// Circle's `last_cmd` success flag.
+///
+/// `if_flag` is the source's per-command conditional execution
+/// (`reset_zone`, `db.c:2868`): a flagged command runs only when the command
+/// before it succeeded. A skipped command leaves `last_succeeded` untouched,
+/// exactly as Circle's `continue` leaves `last_cmd` untouched. `last_succeeded`
+/// starts `false` because Circle's `last_cmd` starts `0`, so a leading
+/// `if_flag` command is skipped.
 fn execute_zone(world: &mut World, def: &ZoneDef) {
     let mut last_mob: Option<Entity> = None;
+    let mut last_succeeded = false;
     for command in &def.commands {
-        match command {
-            ZoneCommand::PlaceMob {
-                mob,
-                room,
-                max_in_world,
-            } => {
-                last_mob = if under_limit(*max_in_world, || live_npc_count(world, mob)) {
-                    spawn_npc_from_content(world, room, mob)
-                } else {
-                    None
-                };
-            }
-            ZoneCommand::DropItem {
-                item,
-                room,
-                max_in_world,
-            } => {
-                if under_limit(*max_in_world, || live_item_count(world, item))
-                    && let Some(def) = find_item_def(world, item)
-                {
+        if command.if_flag && !last_succeeded {
+            continue;
+        }
+        if let Some(succeeded) = execute_command(world, &command.command, &mut last_mob) {
+            last_succeeded = succeeded;
+        }
+    }
+}
+
+/// Run one command body, returning its Circle `last_cmd` outcome.
+///
+/// `None` means Circle left `last_cmd` unchanged (a disabled `G`/`E`/`P` whose
+/// mob or container did not exist), so the caller preserves the previous
+/// success state for the next `if_flag` check.
+fn execute_command(
+    world: &mut World,
+    command: &ZoneCommandKind,
+    last_mob: &mut Option<Entity>,
+) -> Option<bool> {
+    match command {
+        ZoneCommandKind::PlaceMob {
+            mob,
+            room,
+            max_in_world,
+        } => {
+            let succeeded = under_limit(*max_in_world, || live_npc_count(world, mob));
+            *last_mob = if succeeded {
+                spawn_npc_from_content(world, room, mob)
+            } else {
+                None
+            };
+            Some(succeeded)
+        }
+        ZoneCommandKind::DropItem {
+            item,
+            room,
+            max_in_world,
+        } => {
+            let spawned = under_limit(*max_in_world, || live_item_count(world, item))
+                && if let Some(def) = find_item_def(world, item) {
                     spawn_item_in_room(world, room, item, &def);
-                }
-            }
-            ZoneCommand::GiveItem { item, max_in_world } => {
-                let Some(mob_entity) = last_mob else { continue };
-                if under_limit(*max_in_world, || live_item_count(world, item))
-                    && let Some(def) = find_item_def(world, item)
-                {
+                    true
+                } else {
+                    false
+                };
+            Some(spawned)
+        }
+        ZoneCommandKind::GiveItem { item, max_in_world } => {
+            let mob_entity = (*last_mob)?;
+            let succeeded = under_limit(*max_in_world, || live_item_count(world, item))
+                && if let Some(def) = find_item_def(world, item) {
                     spawn_item_carried_by_entity(world, mob_entity, item, &def);
-                }
-            }
-            ZoneCommand::EquipItem {
-                item,
-                slot,
-                max_in_world,
-            } => {
-                // An `E` reset equips the mob placed by the preceding `M`, the
-                // way Circle's `reset_zone` does (`db.c`): the item is spawned
-                // carried (a normal, saveable entity that is not swept away)
-                // and recorded in the mob's runtime `TbaEquipment` map. The
-                // affect recompute and `WieldedWeapon` sync then pick it up.
-                let Some(mob_entity) = last_mob else { continue };
-                if under_limit(*max_in_world, || live_item_count(world, item))
-                    && let Some(def) = find_item_def(world, item)
-                {
+                    true
+                } else {
+                    false
+                };
+            Some(succeeded)
+        }
+        ZoneCommandKind::EquipItem {
+            item,
+            slot,
+            max_in_world,
+        } => {
+            // An `E` reset equips the mob placed by the preceding `M`, the
+            // way Circle's `reset_zone` does (`db.c`): the item is spawned
+            // carried (a normal, saveable entity that is not swept away)
+            // and recorded in the mob's runtime `TbaEquipment` map. The
+            // affect recompute and `WieldedWeapon` sync then pick it up.
+            let mob_entity = (*last_mob)?;
+            let succeeded = under_limit(*max_in_world, || live_item_count(world, item))
+                && if let Some(def) = find_item_def(world, item) {
                     let item_entity = spawn_item_carried_by_entity(world, mob_entity, item, &def);
                     equip_mob_item(world, mob_entity, *slot, item_entity);
-                }
-            }
-            ZoneCommand::PutItem {
-                item,
-                container,
-                max_in_world,
-            } => {
-                if !under_limit(*max_in_world, || live_item_count(world, item)) {
-                    continue;
-                }
-                let Some(container_entity) = find_container_entity(world, container) else {
-                    continue;
+                    true
+                } else {
+                    false
                 };
-                if let Some(def) = find_item_def(world, item) {
-                    spawn_item_in_container(world, container_entity, item, &def);
-                }
+            Some(succeeded)
+        }
+        ZoneCommandKind::PutItem {
+            item,
+            container,
+            max_in_world,
+        } => {
+            if !under_limit(*max_in_world, || live_item_count(world, item)) {
+                return Some(false);
             }
-            ZoneCommand::DoorState { room, exit, state } => {
-                set_door_state(world, room, exit, *state);
-            }
-            ZoneCommand::RemoveItem { room, item } => {
-                remove_item_from_room(world, room, item);
-            }
+            let container_entity = find_container_entity(world, container)?;
+            let spawned = if let Some(def) = find_item_def(world, item) {
+                spawn_item_in_container(world, container_entity, item, &def);
+                true
+            } else {
+                false
+            };
+            Some(spawned)
+        }
+        ZoneCommandKind::DoorState { room, exit, state } => {
+            set_door_state(world, room, exit, *state);
+            Some(true)
+        }
+        ZoneCommandKind::RemoveItem { room, item } => {
+            remove_item_from_room(world, room, item);
+            Some(true)
         }
     }
 }

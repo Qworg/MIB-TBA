@@ -5,6 +5,13 @@ shops:
     sell_multiplier: 0.5
     buy_kinds: []
     produce: []
+    rooms: []
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -26,6 +33,14 @@ shops:
     - tba_item_30401
     - tba_item_29505
     - tba_item_5448
+    rooms:
+    - tba.268
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -50,6 +65,14 @@ shops:
     - tba_item_30905
     - tba_item_31607
     - tba_item_5000
+    rooms:
+    - tba.281
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -74,6 +97,14 @@ shops:
     - tba_item_125
     - tba_item_127
     - tba_item_28736
+    rooms:
+    - tba.144
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -94,6 +125,14 @@ shops:
     - tba_item_10410
     - tba_item_10412
     - tba_item_10413
+    rooms:
+    - tba.10419
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -115,6 +154,14 @@ shops:
     - tba_item_10418
     - tba_item_10419
     - tba_item_10420
+    rooms:
+    - tba.10421
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -140,6 +187,14 @@ shops:
     - tba_item_10424
     - tba_item_10425
     - tba_item_10426
+    rooms:
+    - tba.10422
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -161,6 +216,14 @@ shops:
     - tba_item_10408
     - tba_item_10409
     - tba_item_10404
+    rooms:
+    - tba.10409
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -181,6 +244,14 @@ shops:
     - tba_item_163
     - tba_item_25761
     - tba_item_108
+    rooms:
+    - tba.234
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -198,6 +269,14 @@ shops:
     - tba_item_10628
     - tba_item_10629
     - tba_item_10630
+    rooms:
+    - tba.10637
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -211,6 +290,14 @@ shops:
     sell_multiplier: 0.5
     buy_kinds: []
     produce: []
+    rooms:
+    - tba.10605
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -226,6 +313,14 @@ shops:
     produce:
     - tba_item_10613
     - tba_item_10614
+    rooms:
+    - tba.10634
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -244,6 +339,14 @@ shops:
     - tba_item_10618
     - tba_item_10620
     - tba_item_10621
+    rooms:
+    - tba.10632
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -260,6 +363,14 @@ shops:
     - tba_item_10636
     - tba_item_10637
     - tba_item_10638
+    rooms:
+    - tba.10638
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -278,6 +389,14 @@ shops:
     - tba_item_10633
     - tba_item_10634
     - tba_item_10639
+    rooms:
+    - tba.10639
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -302,6 +421,14 @@ shops:
     - tba_item_25744
     - tba_item_5433
     - tba_item_28100
+    rooms:
+    - tba.149
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -333,6 +460,14 @@ shops:
     - tba_item_10747
     - tba_item_10748
     - tba_item_10749
+    rooms:
+    - tba.10732
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -360,6 +495,14 @@ shops:
     - tba_item_10729
     - tba_item_10731
     - tba_item_10730
+    rooms:
+    - tba.10733
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -384,6 +527,14 @@ shops:
     - tba_item_28738
     - tba_item_142
     - tba_item_385
+    rooms:
+    - tba.145
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -406,6 +557,14 @@ shops:
     - tba_item_179
     - tba_item_165
     - tba_item_308
+    rooms:
+    - tba.225
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -430,6 +589,14 @@ shops:
     - tba_item_183
     - tba_item_184
     - tba_item_26103
+    rooms:
+    - tba.277
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -451,6 +618,14 @@ shops:
     - tba_item_11711
     - tba_item_11712
     - tba_item_11713
+    rooms:
+    - tba.11704
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s So sorry, but I don''t have that item!'
     - '%s But, er, you don''t have one of those!'
@@ -469,6 +644,14 @@ shops:
     - tba_item_11715
     - tba_item_11717
     - tba_item_11719
+    rooms:
+    - tba.11706
+    trade_with: []
+    hours:
+      open1: 3
+      close1: 25
+      open2: 0
+      close2: 0
     messages:
     - '%s Shorry, I don''t hab dat...'
     - '%s You don''t *hic* hab one a doz'
@@ -489,6 +672,14 @@ shops:
     - tba_item_11723
     - tba_item_11724
     - tba_item_11725
+    rooms:
+    - tba.11751
+    trade_with: []
+    hours:
+      open1: 7
+      close1: 18
+      open2: 22
+      close2: 28
     messages:
     - '%s Look at my display, do you see one of those there? No? I thought so.'
     - '%s I do not see one of those on you.'
@@ -502,6 +693,13 @@ shops:
     sell_multiplier: 1.0
     buy_kinds: []
     produce: []
+    rooms: []
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -515,6 +713,13 @@ shops:
     sell_multiplier: 1.0
     buy_kinds: []
     produce: []
+    rooms: []
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -537,6 +742,14 @@ shops:
     - tba_item_3024
     - tba_item_3025
     - tba_item_12008
+    rooms:
+    - tba.12006
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s We are out of that item right now.'
     - '%s You don''t have that.  Stop wasting my time!'
@@ -552,6 +765,14 @@ shops:
     produce:
     - tba_item_12006
     - tba_item_12007
+    rooms:
+    - tba.12032
+    trade_with: []
+    hours:
+      open1: 7
+      close1: 13
+      open2: 14
+      close2: 19
     messages:
     - '%s I don''t have anything like that.  Sorry.'
     - '%s I don''t think you have that.'
@@ -565,6 +786,19 @@ shops:
     sell_multiplier: 0.3
     buy_kinds: []
     produce: []
+    rooms:
+    - tba.12003
+    - tba.12004
+    - tba.12008
+    - tba.12015
+    - tba.12022
+    - tba.12023
+    trade_with: []
+    hours:
+      open1: 9
+      close1: 17
+      open2: 18
+      close2: 22
     messages:
     - '%s We don''t sell that.'
     - '%s I don''t think you have that.'
@@ -580,6 +814,14 @@ shops:
     - wand
     produce:
     - tba_item_1300
+    rooms:
+    - tba.1204
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s werw'
     - '%s sdfsdfsd'
@@ -601,6 +843,16 @@ shops:
     - tba_item_3053
     - tba_item_3054
     - tba_item_12030
+    rooms:
+    - tba.12042
+    trade_with:
+    - thief
+    - warrior
+    hours:
+      open1: 8
+      close1: 18
+      open2: 0
+      close2: 0
     messages:
     - '%s We don''t carry that item.'
     - '%s You don''t have that.'
@@ -621,6 +873,14 @@ shops:
     - tba_item_3011
     - tba_item_12006
     - tba_item_12007
+    rooms:
+    - tba.12062
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s We don''t have that item in stock right now.'
     - '%s I don''t think you have that item.'
@@ -640,6 +900,14 @@ shops:
     - tba_item_3033
     - tba_item_3036
     - tba_item_12003
+    rooms:
+    - tba.12063
+    trade_with: []
+    hours:
+      open1: 6
+      close1: 20
+      open2: 0
+      close2: 0
     messages:
     - '%s We don''t have that item on stock.'
     - '%s I don''t think you have that.'
@@ -656,6 +924,13 @@ shops:
     - armor
     - wand
     produce: []
+    rooms: []
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -676,6 +951,14 @@ shops:
     - tba_item_27190
     - tba_item_27217
     - tba_item_27200
+    rooms:
+    - tba.264
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -692,6 +975,14 @@ shops:
     - tba_item_12568
     - tba_item_12511
     - tba_item_12501
+    rooms:
+    - tba.12568
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s A what?'
     - '%s I don''t buy, only sell.'
@@ -708,6 +999,14 @@ shops:
     - tba_item_12562
     - tba_item_12509
     - tba_item_12510
+    rooms:
+    - tba.12562
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s I''m not interested!'
@@ -724,6 +1023,14 @@ shops:
     - tba_item_12567
     - tba_item_12503
     - tba_item_12508
+    rooms:
+    - tba.12567
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -739,6 +1046,14 @@ shops:
     produce:
     - tba_item_12569
     - tba_item_12570
+    rooms:
+    - tba.12569
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -758,6 +1073,14 @@ shops:
     - tba_item_1308
     - tba_item_1309
     - tba_item_1310
+    rooms:
+    - tba.1300
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -780,6 +1103,14 @@ shops:
     - tba_item_28324
     - tba_item_28719
     - tba_item_30707
+    rooms:
+    - tba.142
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -799,6 +1130,14 @@ shops:
     produce:
     - tba_item_14016
     - tba_item_14017
+    rooms:
+    - tba.14084
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s Don''t have that in my spell book..yet.'
     - '%s Got to see it before I''ll buy it.'
@@ -817,6 +1156,14 @@ shops:
     produce:
     - tba_item_14018
     - tba_item_14019
+    rooms:
+    - tba.14085
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I sell water, only water.'
     - '%s You may think you have that, but you don''t.'
@@ -837,6 +1184,15 @@ shops:
     produce:
     - tba_item_14020
     - tba_item_14021
+    rooms:
+    - tba.14082
+    trade_with:
+    - thief
+    hours:
+      open1: 1
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s If you run across one let me no, but I don''t have it right now.'
     - '%s I don''t by dreams.'
@@ -855,6 +1211,15 @@ shops:
     produce:
     - tba_item_14022
     - tba_item_14023
+    rooms:
+    - tba.14079
+    trade_with:
+    - magic_user
+    hours:
+      open1: 0
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s Go somewhere else ya bum, I aint got tat.'
     - '%s Get a brain, you don''t got tat.'
@@ -878,6 +1243,14 @@ shops:
     - tba_item_14030
     - tba_item_14031
     - tba_item_14031
+    rooms:
+    - tba.14081
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s You see that here? Go somewhere else.'
     - '%s You blind? I don''t by things in your imagination.'
@@ -897,6 +1270,14 @@ shops:
     - tba_item_14033
     - tba_item_14034
     - tba_item_14035
+    rooms:
+    - tba.14080
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s Go somewhere else will ya? We only got food and drink here.'
     - '%s I''m only buying thinks you got, not stuff you aint.'
@@ -918,6 +1299,15 @@ shops:
     - tba_item_14037
     - tba_item_14038
     - tba_item_14039
+    rooms:
+    - tba.14083
+    trade_with:
+    - thief
+    hours:
+      open1: 1
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s I Do not have that My Child. Pray and It will come.'
     - '%s I fear you do not carry such an item with you..you must have more faith...then will the gods reward you.'
@@ -942,6 +1332,14 @@ shops:
     - tba_item_150
     - tba_item_151
     - tba_item_148
+    rooms:
+    - tba.147
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -962,6 +1360,16 @@ shops:
     - tba_item_15012
     - tba_item_3050
     - tba_item_3052
+    rooms:
+    - tba.15052
+    trade_with:
+    - magic_user
+    - thief
+    hours:
+      open1: 2
+      close1: 8
+      open2: 20
+      close2: 28
     messages:
     - '%s But I have no such thing for sale.'
     - '%s But you do not have this item.'
@@ -977,6 +1385,14 @@ shops:
     produce:
     - tba_item_15019
     - tba_item_15020
+    rooms:
+    - tba.15005
+    trade_with: []
+    hours:
+      open1: 6
+      close1: 23
+      open2: 0
+      close2: 0
     messages:
     - '%s Je suis tres desole, mais je n''ai pas ca.'
     - '%s Mais, je n''achete pas!'
@@ -1005,6 +1421,14 @@ shops:
     - tba_item_129
     - tba_item_119
     - tba_item_105
+    rooms:
+    - tba.238
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1036,6 +1460,14 @@ shops:
     - tba_item_713
     - tba_item_714
     - tba_item_715
+    rooms:
+    - tba.1627
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1062,6 +1494,14 @@ shops:
     - tba_item_17501
     - tba_item_17502
     - tba_item_17506
+    rooms:
+    - tba.17502
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Your eyes fool you child. I have that item not.'
     - '%s You have that item not, child.'
@@ -1083,6 +1523,14 @@ shops:
     - tba_item_31542
     - tba_item_31620
     - tba_item_351
+    rooms:
+    - tba.221
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1128,6 +1576,14 @@ shops:
     - tba_item_104
     - tba_item_138
     - tba_item_139
+    rooms:
+    - tba.150
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1144,6 +1600,14 @@ shops:
     - tba_item_25757
     - tba_item_25752
     - tba_item_25750
+    rooms:
+    - tba.361
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1162,6 +1626,14 @@ shops:
     - tba_item_29105
     - tba_item_12027
     - tba_item_2545
+    rooms:
+    - tba.351
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1182,6 +1654,14 @@ shops:
     - tba_item_27520
     - tba_item_27131
     - tba_item_27132
+    rooms:
+    - tba.280
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1205,6 +1685,14 @@ shops:
     - tba_item_14034
     - tba_item_315
     - tba_item_180
+    rooms:
+    - tba.278
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1231,6 +1719,14 @@ shops:
     - tba_item_20021
     - tba_item_20022
     - tba_item_20023
+    rooms:
+    - tba.20040
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1250,6 +1746,14 @@ shops:
     - tba_item_20119
     - tba_item_20197
     - tba_item_20115
+    rooms:
+    - tba.20150
+    trade_with: []
+    hours:
+      open1: 7
+      close1: 19
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t sell that!'
     - '%s I can''t buy something which you haven''t got!'
@@ -1267,6 +1771,15 @@ shops:
     - tba_item_3050
     - tba_item_3051
     - tba_item_3053
+    rooms:
+    - tba.23229
+    trade_with:
+    - evil
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1286,6 +1799,14 @@ shops:
     - tba_item_23205
     - tba_item_23206
     - tba_item_23207
+    rooms:
+    - tba.23274
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''u stock that item.'
     - '%s You don''t seem to have that.'
@@ -1303,6 +1824,14 @@ shops:
     - tba_item_23209
     - tba_item_23210
     - tba_item_23211
+    rooms:
+    - tba.23280
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1323,6 +1852,14 @@ shops:
     - tba_item_23215
     - tba_item_23216
     - tba_item_23217
+    rooms:
+    - tba.23240
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1340,6 +1877,14 @@ shops:
     - tba_item_23219
     - tba_item_23220
     - tba_item_23221
+    rooms:
+    - tba.23257
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1363,6 +1908,14 @@ shops:
     - tba_item_23407
     - tba_item_23408
     - tba_item_23409
+    rooms:
+    - tba.23423
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1385,6 +1938,14 @@ shops:
     - tba_item_23427
     - tba_item_23428
     - tba_item_23429
+    rooms:
+    - tba.23471
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1399,6 +1960,14 @@ shops:
     buy_kinds: []
     produce:
     - tba_item_23601
+    rooms:
+    - tba.23604
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1412,6 +1981,15 @@ shops:
     sell_multiplier: 0.9
     buy_kinds: []
     produce: []
+    rooms:
+    - tba.23605
+    - tba.23604
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s My master doesn''t make those.'
     - '%s You don''t seem to have that.'
@@ -1425,6 +2003,14 @@ shops:
     sell_multiplier: 0.8
     buy_kinds: []
     produce: []
+    rooms:
+    - tba.23606
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1439,6 +2025,15 @@ shops:
     buy_kinds:
     - treasure
     produce: []
+    rooms:
+    - tba.23612
+    trade_with:
+    - evil
+    hours:
+      open1: 8
+      close1: 20
+      open2: 0
+      close2: 0
     messages:
     - '%s That is not one of the items I manufacture.'
     - '%s You don''t seem to have that.'
@@ -1453,6 +2048,15 @@ shops:
     buy_kinds:
     - treasure
     produce: []
+    rooms:
+    - tba.23615
+    trade_with:
+    - evil
+    hours:
+      open1: 8
+      close1: 20
+      open2: 0
+      close2: 0
     messages:
     - '%s WHAT DID YOU SAY ?!?'
     - '%s SORRY, DIDN''T HEAR YOU. CAN YOU REPEAT THAT ?'
@@ -1470,6 +2074,15 @@ shops:
     - treasure
     - other
     produce: []
+    rooms:
+    - tba.23616
+    trade_with:
+    - evil
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1500,6 +2113,14 @@ shops:
     - tba_item_23911
     - tba_item_23912
     - tba_item_23913
+    rooms:
+    - tba.23900
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 23
+      open2: 0
+      close2: 0
     messages:
     - '%s I can''t find any of that, perhaps you would want something else?'
     - '%s You don''t have one of them, wanna buy one?'
@@ -1524,6 +2145,14 @@ shops:
     - tba_item_24014
     - tba_item_24022
     - tba_item_24018
+    rooms:
+    - tba.24012
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s You seeing things boy?'
     - '%s You stupid or what?'
@@ -1550,6 +2179,14 @@ shops:
     - tba_item_24020
     - tba_item_24021
     - tba_item_24025
+    rooms:
+    - tba.24031
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I''m out of that.'
     - '%s Look again you idiot'
@@ -1563,6 +2200,17 @@ shops:
     sell_multiplier: 0.2
     buy_kinds: []
     produce: []
+    rooms:
+    - tba.24029
+    trade_with:
+    - good
+    - evil
+    - neutral
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1583,6 +2231,14 @@ shops:
     - tba_item_24123
     - tba_item_24124
     - tba_item_24125
+    rooms:
+    - tba.24121
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I''m sorry, but I don''t have that right now!'
     - '%s I don''t want to buy anything from you.'
@@ -1599,6 +2255,14 @@ shops:
     - tba_item_24217
     - tba_item_24218
     - tba_item_24219
+    rooms:
+    - tba.24223
+    trade_with: []
+    hours:
+      open1: 6
+      close1: 22
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t have that!.'
     - '%s I see no such thing.'
@@ -1619,6 +2283,14 @@ shops:
     - tba_item_24213
     - tba_item_24214
     - tba_item_24215
+    rooms:
+    - tba.24224
+    trade_with: []
+    hours:
+      open1: 6
+      close1: 22
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t have that!.'
     - '%s I see no such thing.'
@@ -1643,6 +2315,14 @@ shops:
     - tba_item_24202
     - tba_item_24201
     - tba_item_24200
+    rooms:
+    - tba.24231
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t have that!.'
     - '%s I see no such thing.'
@@ -1659,6 +2339,14 @@ shops:
     - tba_item_24295
     - tba_item_24296
     - tba_item_24297
+    rooms:
+    - tba.24238
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t have that!.'
     - '%s I see no such thing.'
@@ -1681,6 +2369,14 @@ shops:
     - tba_item_24201
     - tba_item_24202
     - tba_item_24203
+    rooms:
+    - tba.24276
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t have that!.'
     - '%s I see no such thing.'
@@ -1699,6 +2395,14 @@ shops:
     - tba_item_24308
     - tba_item_24309
     - tba_item_24310
+    rooms:
+    - tba.24361
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, but I don''t have any!'
     - '%s Used food? No thanks!'
@@ -1716,6 +2420,14 @@ shops:
     - tba_item_24302
     - tba_item_24303
     - tba_item_24305
+    rooms:
+    - tba.24399
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s What you see is what I''ve got!'
     - '%s I don''t buy stuff!'
@@ -1731,6 +2443,14 @@ shops:
     - weapon
     produce:
     - tba_item_24306
+    rooms:
+    - tba.24392
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I only sell ski passes wink!'
     - '%s I don''t buy stuff!'
@@ -1756,6 +2476,14 @@ shops:
     - tba_item_24806
     - tba_item_7211
     - tba_item_6000
+    rooms:
+    - tba.24811
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t have that weapon.'
     - '%s Sorry, you don''t seem to have that...'
@@ -1781,6 +2509,14 @@ shops:
     - tba_item_6002
     - tba_item_24807
     - tba_item_24808
+    rooms:
+    - tba.24810
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t have that armor.'
     - '%s Sorry, you don''t seem to have that.'
@@ -1805,6 +2541,14 @@ shops:
     - tba_item_24810
     - tba_item_24811
     - tba_item_24812
+    rooms:
+    - tba.24814
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s To bad, I don''t seem to have that item.'
     - '%s Sorry, I don''t buy something you don''t have.'
@@ -1829,6 +2573,14 @@ shops:
     - tba_item_24816
     - tba_item_24817
     - tba_item_7208
+    rooms:
+    - tba.24813
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I''m unfortunatly out of that for the moment.'
     - '%s You don''t seem to be a honest man, maybe I should call the guards?'
@@ -1851,6 +2603,14 @@ shops:
     - tba_item_24818
     - tba_item_24819
     - tba_item_24820
+    rooms:
+    - tba.24816
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s It''s very noisy in here, what did you say you wanted to buy?'
     - '%s You don''t seem to be a honest man, maybe I should call the guards?'
@@ -1876,6 +2636,14 @@ shops:
     - tba_item_3002
     - tba_item_3003
     - tba_item_3004
+    rooms:
+    - tba.24914
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -1897,6 +2665,17 @@ shops:
     - tba_item_3010
     - tba_item_3100
     - tba_item_3101
+    rooms:
+    - tba.2518
+    trade_with:
+    - cleric
+    - thief
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that in storage, try LIST!'
     - '%s You can''t sell what you don''t HAVE!'
@@ -1917,6 +2696,17 @@ shops:
     - tba_item_3050
     - tba_item_3051
     - tba_item_3053
+    rooms:
+    - tba.2519
+    trade_with:
+    - cleric
+    - thief
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Say again?'
     - '%s You don''t have that, try INVENTORY!'
@@ -1936,6 +2726,14 @@ shops:
     - tba_item_25108
     - tba_item_25101
     - tba_item_25104
+    rooms:
+    - tba.25123
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s We don''t sell that, filthy human!'
     - '%s You don''t have one, human!'
@@ -1954,6 +2752,14 @@ shops:
     - tba_item_25608
     - tba_item_25609
     - tba_item_25610
+    rooms:
+    - tba.25639
+    trade_with: []
+    hours:
+      open1: 8
+      close1: 22
+      open2: 0
+      close2: 0
     messages:
     - '%s We didn''t grow any of those this year.'
     - '%s You don''t have that!'
@@ -1970,6 +2776,14 @@ shops:
     - tba_item_25619
     - tba_item_25620
     - tba_item_25621
+    rooms:
+    - tba.25634
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Could you repeat that please?'
     - '%s I don''t buy!'
@@ -1990,6 +2804,14 @@ shops:
     - tba_item_25752
     - tba_item_25753
     - tba_item_25757
+    rooms:
+    - tba.25735
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, but like, I haven''t got exactly that item.'
     - '%s Maybe if you had one of those...'
@@ -2007,6 +2829,14 @@ shops:
     - tba_item_25709
     - tba_item_25710
     - tba_item_25711
+    rooms:
+    - tba.25716
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s What did you say you wanted to buy?'
     - '%s I don''t buy!'
@@ -2027,6 +2857,14 @@ shops:
     - tba_item_25731
     - tba_item_25732
     - tba_item_25733
+    rooms:
+    - tba.25762
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s I don''t buy!'
@@ -2046,6 +2884,14 @@ shops:
     - tba_item_25723
     - tba_item_25724
     - tba_item_25725
+    rooms:
+    - tba.25763
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s I don''t buy!'
@@ -2065,6 +2911,14 @@ shops:
     - tba_item_25742
     - tba_item_25743
     - tba_item_25744
+    rooms:
+    - tba.25700
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t have that -- try list!'
     - '%s Sorry, I don''t buy armor from outsiders.'
@@ -2083,6 +2937,14 @@ shops:
     - tba_item_25761
     - tba_item_25762
     - tba_item_25763
+    rooms:
+    - tba.25710
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s You don''t seem to have that.'
@@ -2099,6 +2961,14 @@ shops:
     produce:
     - tba_item_25734
     - tba_item_25736
+    rooms:
+    - tba.25733
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I haven''t got that kind of boots!'
     - '%s You don''t carry those boots!'
@@ -2115,6 +2985,14 @@ shops:
     produce:
     - tba_item_25765
     - tba_item_25779
+    rooms:
+    - tba.25709
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, that isn''t on my list of things I can sell.'
     - '%s Sorry, I don''t buy from outsiders.'
@@ -2128,6 +3006,17 @@ shops:
     sell_multiplier: 0.5
     buy_kinds: []
     produce: []
+    rooms:
+    - tba.25720
+    trade_with:
+    - magic_user
+    - cleric
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -2146,6 +3035,14 @@ shops:
     - tba_item_25767
     - tba_item_25768
     - tba_item_25769
+    rooms:
+    - tba.25786
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Thorry, I don''t thell those.'
     - '%s Sorry, Ducky, I don''t buy those.!'
@@ -2165,6 +3062,14 @@ shops:
     - tba_item_25751
     - tba_item_25752
     - tba_item_25790
+    rooms:
+    - tba.25717
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s You don''t seem to have that.'
@@ -2181,6 +3086,17 @@ shops:
     produce:
     - tba_item_25770
     - tba_item_25771
+    rooms:
+    - tba.25767
+    trade_with:
+    - neutral
+    - cleric
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Nope.'
     - '%s Nope.'
@@ -2198,6 +3114,14 @@ shops:
     - tba_item_25703
     - tba_item_25712
     - tba_item_25713
+    rooms:
+    - tba.25732
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s No such - try list!'
     - '%s No buying, buddy.'
@@ -2213,6 +3137,17 @@ shops:
     produce:
     - tba_item_25713
     - tba_item_25714
+    rooms:
+    - tba.25724
+    trade_with:
+    - magic_user
+    - cleric
+    - thief
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s It''s very noisy in here, what did you say you wanted to buy?'
     - '%s I don''t buy!'
@@ -2229,6 +3164,15 @@ shops:
     - tba_item_25701
     - tba_item_25738
     - tba_item_25739
+    rooms:
+    - tba.25731
+    - tba.25715
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s I don''t buy!'
@@ -2244,6 +3188,17 @@ shops:
     produce:
     - tba_item_25700
     - tba_item_25737
+    rooms:
+    - tba.25719
+    trade_with:
+    - magic_user
+    - cleric
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s I don''t buy!'
@@ -2260,6 +3215,14 @@ shops:
     produce:
     - tba_item_25704
     - tba_item_25764
+    rooms:
+    - tba.25789
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry pal, I have not got that kind of drink.'
     - '%s Okay, but let me see it first.'
@@ -2277,6 +3240,14 @@ shops:
     - tba_item_25772
     - tba_item_25773
     - tba_item_25774
+    rooms:
+    - tba.25753
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, can''t.'
     - '%s Sorry, can''t.'
@@ -2293,6 +3264,14 @@ shops:
     - tba_item_25787
     - tba_item_25788
     - tba_item_25789
+    rooms:
+    - tba.25734
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -2316,6 +3295,14 @@ shops:
     - tba_item_26113
     - tba_item_26114
     - tba_item_26115
+    rooms:
+    - tba.26129
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s We don''t that on tap, sorry!'
     - '%s Check your possessions, you don''t have that.'
@@ -2373,6 +3360,14 @@ shops:
     - tba_item_2741
     - tba_item_2763
     - tba_item_2764
+    rooms:
+    - tba.2707
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s We don''t have any of that here.'
     - '%s You know, its easier to sell something if you actually have it.'
@@ -2393,6 +3388,14 @@ shops:
     - tba_item_27124
     - tba_item_27125
     - tba_item_27122
+    rooms:
+    - tba.27148
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s You''ll have to make that yourself, never heard of it.'
     - '%s You don''t seem to have one.'
@@ -2414,6 +3417,15 @@ shops:
     - tba_item_27117
     - tba_item_27116
     - tba_item_27115
+    rooms:
+    - tba.27121
+    trade_with:
+    - good
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I never palmed that thing, try list.'
     - '%s That seems to be absent from your belongings.'
@@ -2428,6 +3440,14 @@ shops:
     buy_kinds: []
     produce:
     - tba_item_27207
+    rooms:
+    - tba.27281
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t sell any of those!'
     - '%s Nothing is refundable, have a nice day.'
@@ -2449,6 +3469,14 @@ shops:
     - tba_item_27158
     - tba_item_27157
     - tba_item_27156
+    rooms:
+    - tba.27259
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s None of those available.'
     - '%s You seem to lack one of those yourself.'
@@ -2467,6 +3495,14 @@ shops:
     - tba_item_27192
     - tba_item_27191
     - tba_item_27180
+    rooms:
+    - tba.27234
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t carry that.'
     - '%s Even if you had one of those, I doubt I would want it.'
@@ -2483,6 +3519,14 @@ shops:
     - tba_item_27132
     - tba_item_27131
     - tba_item_27130
+    rooms:
+    - tba.27153
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Yo! Um, we don''t sell that.'
     - '%s We don''t buy, and you have none. I see a problem there.'
@@ -2501,6 +3545,14 @@ shops:
     produce:
     - tba_item_27209
     - tba_item_27224
+    rooms:
+    - tba.27112
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I offer no such thing! Try list.'
     - '%s You lack the item in question.'
@@ -2516,6 +3568,14 @@ shops:
     produce:
     - tba_item_27133
     - tba_item_27217
+    rooms:
+    - tba.27150
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s None of those here! Try list.'
     - '%s I don''t buy!'
@@ -2535,6 +3595,14 @@ shops:
     - tba_item_27165
     - tba_item_27164
     - tba_item_27163
+    rooms:
+    - tba.27147
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t carry that.'
     - '%s Hm. Smoke another one and check your inventory.'
@@ -2553,6 +3621,14 @@ shops:
     - tba_item_27141
     - tba_item_27140
     - tba_item_27139
+    rooms:
+    - tba.27146
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I do not forge that weapon, try list.'
     - '%s You seem fresh out of those.'
@@ -2576,6 +3652,14 @@ shops:
     - tba_item_27136
     - tba_item_27135
     - tba_item_27134
+    rooms:
+    - tba.27282
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t carry those in stock. Try list.'
     - '%s My eyesight is poor, but I can''t see as you have one.'
@@ -2593,6 +3677,14 @@ shops:
     - tba_item_27177
     - tba_item_27176
     - tba_item_27175
+    rooms:
+    - tba.27142
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Don''t got none, don''t want none!'
     - '%s You don''t seem to have one of those.'
@@ -2613,6 +3705,14 @@ shops:
     - tba_item_3002
     - tba_item_3003
     - tba_item_3004
+    rooms:
+    - tba.27459
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 28
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -2634,6 +3734,14 @@ shops:
     - tba_item_27419
     - tba_item_27420
     - tba_item_27421
+    rooms:
+    - tba.27444
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 28
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -2662,6 +3770,14 @@ shops:
     - tba_item_27415
     - tba_item_27416
     - tba_item_27417
+    rooms:
+    - tba.27445
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 28
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -2680,6 +3796,15 @@ shops:
     - treasure
     - staff
     produce: []
+    rooms:
+    - tba.27431
+    trade_with:
+    - thief
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 28
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -2709,6 +3834,14 @@ shops:
     - tba_item_3103
     - tba_item_3060
     - tba_item_3061
+    rooms:
+    - tba.27440
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 28
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -2726,6 +3859,14 @@ shops:
     - tba_item_3009
     - tba_item_3010
     - tba_item_3011
+    rooms:
+    - tba.27434
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 28
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -2750,6 +3891,14 @@ shops:
     - tba_item_3054
     - tba_item_3053
     - tba_item_3055
+    rooms:
+    - tba.27435
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 28
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -2768,6 +3917,16 @@ shops:
     - tba_item_3003
     - tba_item_3004
     - tba_item_3000
+    rooms:
+    - tba.27458
+    - tba.27459
+    - tba.27472
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 28
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -2784,6 +3943,14 @@ shops:
     produce:
     - tba_item_350
     - tba_item_352
+    rooms:
+    - tba.27581
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Terribly sorry, I don''t have one of those, but I have a poem about one.  Would you like to hear it?'
     - '%s Don''t you know Goethe knows all?  Sell me something you have.'
@@ -2801,6 +3968,14 @@ shops:
     produce:
     - tba_item_4103
     - tba_item_6106
+    rooms:
+    - tba.27513
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I beg your pardon sir, but I do not seem to have that right now.'
     - '%s I see no such item on your person kind sir.'
@@ -2823,6 +3998,14 @@ shops:
     - tba_item_351
     - tba_item_353
     - tba_item_354
+    rooms:
+    - tba.27568
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t have that item...better try again sometime later.'
     - '%s I might be old, but I''m not stupid.  You don''t have that item.'
@@ -2839,6 +4022,14 @@ shops:
     - tba_item_300
     - tba_item_301
     - tba_item_302
+    rooms:
+    - tba.27583
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Oops, I forgot to order more, please don''t tell Sam.'
     - '%s I might be from Indiana, but you can''t put a cow in my lap!'
@@ -2865,6 +4056,14 @@ shops:
     - tba_item_27507
     - tba_item_27514
     - tba_item_27529
+    rooms:
+    - tba.27597
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, but that item hasn''t been unloaded from the trucks yet.'
     - '%s Like, stop wasting my time with things you don''t have!'
@@ -2881,6 +4080,14 @@ shops:
     - tba_item_27516
     - tba_item_27521
     - tba_item_310
+    rooms:
+    - tba.27507
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t have that right now.'
     - '%s What the hell''s wrong with you, boy...you blind?!'
@@ -2904,6 +4111,14 @@ shops:
     - tba_item_321
     - tba_item_323
     - tba_item_325
+    rooms:
+    - tba.27517
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s What are you, blind?  Can''t you see I don''t have that right now?!'
     - '%s Do you think I''m blind!?  Get out of here, you con artist!'
@@ -2925,6 +4140,14 @@ shops:
     - tba_item_27523
     - tba_item_27524
     - tba_item_27525
+    rooms:
+    - tba.27518
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Yrros, ew era tuo fo taht thgir won.'
     - '%s Ouy tog ot eb gniddik, ouy t''nod evah taht meti.'
@@ -2941,6 +4164,14 @@ shops:
     produce:
     - tba_item_3061
     - tba_item_361
+    rooms:
+    - tba.27501
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t have that!  Try list!'
     - '%s Show me one and I''ll buy it!  You don''t have one!'
@@ -2969,6 +4200,14 @@ shops:
     - tba_item_381
     - tba_item_385
     - tba_item_386
+    rooms:
+    - tba.27567
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage -- try list!'
     - '%s You don''t seem to have that.'
@@ -2986,6 +4225,14 @@ shops:
     - tba_item_26114
     - tba_item_27531
     - tba_item_30821
+    rooms:
+    - tba.27512
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t have that -- try list!'
     - '%s I don''t buy!'
@@ -3014,6 +4261,14 @@ shops:
     produce:
     - tba_item_27711
     - tba_item_27712
+    rooms:
+    - tba.27705
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -3048,6 +4303,14 @@ shops:
     - tba_item_27740
     - tba_item_27742
     - tba_item_27732
+    rooms:
+    - tba.27721
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -3065,6 +4328,14 @@ shops:
     produce:
     - tba_item_27709
     - tba_item_27747
+    rooms:
+    - tba.27707
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -3101,6 +4372,15 @@ shops:
     - tba_item_27731
     - tba_item_27737
     - tba_item_27744
+    rooms:
+    - tba.27744
+    - tba.27716
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -3124,6 +4404,14 @@ shops:
     - tba_item_27754
     - tba_item_27756
     - tba_item_27750
+    rooms:
+    - tba.27758
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -3143,6 +4431,15 @@ shops:
     - tba_item_27943
     - tba_item_27988
     - tba_item_351
+    rooms:
+    - tba.27943
+    trade_with:
+    - thief
+    hours:
+      open1: 8
+      close1: 20
+      open2: 8
+      close2: 20
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -3161,6 +4458,16 @@ shops:
     - tba_item_3308
     - tba_item_27971
     - tba_item_27985
+    rooms:
+    - tba.27971
+    trade_with:
+    - evil
+    - thief
+    hours:
+      open1: 6
+      close1: 18
+      open2: 6
+      close2: 18
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -3181,6 +4488,14 @@ shops:
     - tba_item_27905
     - tba_item_27908
     - tba_item_27915
+    rooms:
+    - tba.27998
+    trade_with: []
+    hours:
+      open1: 8
+      close1: 20
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -3198,6 +4513,14 @@ shops:
     - tba_item_2803
     - tba_item_2804
     - tba_item_2805
+    rooms:
+    - tba.2803
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -3216,6 +4539,14 @@ shops:
     - tba_item_28115
     - tba_item_28116
     - tba_item_28117
+    rooms:
+    - tba.28106
+    trade_with: []
+    hours:
+      open1: 8
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s Ummm, I don''t have such things here.'
     - '%s Hmm, do you have such a thing?'
@@ -3233,6 +4564,15 @@ shops:
     - tba_item_28713
     - tba_item_28721
     - tba_item_28722
+    rooms:
+    - tba.28728
+    trade_with:
+    - evil
+    hours:
+      open1: 5
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I haven''t got exactly that item.'
     - '%s Even if you had that, I wouldn''t want it.'
@@ -3257,6 +4597,15 @@ shops:
     - tba_item_28730
     - tba_item_321
     - tba_item_324
+    rooms:
+    - tba.28719
+    trade_with:
+    - evil
+    hours:
+      open1: 5
+      close1: 18
+      open2: 0
+      close2: 0
     messages:
     - '%s Nope. Don''t make that here.'
     - '%s Maybe I''d buy it, but you don''t have it.'
@@ -3275,6 +4624,15 @@ shops:
     - tba_item_28749
     - tba_item_323
     - tba_item_342
+    rooms:
+    - tba.28714
+    trade_with:
+    - evil
+    hours:
+      open1: 5
+      close1: 18
+      open2: 0
+      close2: 0
     messages:
     - '%s I haven''t made any of those lately.'
     - '%s I think I could live without one of those.'
@@ -3311,6 +4669,14 @@ shops:
     - tba_item_337
     - tba_item_332
     - tba_item_331
+    rooms:
+    - tba.28720
+    trade_with: []
+    hours:
+      open1: 9
+      close1: 17
+      open2: 0
+      close2: 0
     messages:
     - '%s Don''t have one. Get lost!'
     - '%s Take a look in your pack again, Sherlock!'
@@ -3330,6 +4696,15 @@ shops:
     - tba_item_28754
     - tba_item_28753
     - tba_item_351
+    rooms:
+    - tba.28730
+    trade_with:
+    - evil
+    hours:
+      open1: 5
+      close1: 12
+      open2: 13
+      close2: 18
     messages:
     - '%s I don''t see that here. Do you?'
     - '%s Well, my friend, perhaps you hallucinate?'
@@ -3350,6 +4725,15 @@ shops:
     - tba_item_371
     - tba_item_376
     - tba_item_381
+    rooms:
+    - tba.28729
+    trade_with:
+    - evil
+    hours:
+      open1: 6
+      close1: 22
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry...don''t have that.'
     - '%s I don''t buy anything.'
@@ -3365,6 +4749,15 @@ shops:
     produce:
     - tba_item_310
     - tba_item_28789
+    rooms:
+    - tba.28731
+    trade_with:
+    - evil
+    hours:
+      open1: 3
+      close1: 16
+      open2: 0
+      close2: 0
     messages:
     - '%s I know not the recipe for that.'
     - '%s Sorry, I don''t buy from outsiders.'
@@ -3387,6 +4780,15 @@ shops:
     - tba_item_28757
     - tba_item_352
     - tba_item_350
+    rooms:
+    - tba.28724
+    trade_with:
+    - evil
+    hours:
+      open1: 5
+      close1: 19
+      open2: 0
+      close2: 0
     messages:
     - '%s The goblins must have stolen that.'
     - '%s Sorry, you don''t have that to sell.'
@@ -3403,6 +4805,14 @@ shops:
     - tba_item_28917
     - tba_item_28918
     - tba_item_28919
+    rooms:
+    - tba.28920
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 24
+      open2: 1
+      close2: 24
     messages:
     - '%s Say again, friend?'
     - '%s Thanks, but no thanks.'
@@ -3419,6 +4829,14 @@ shops:
     - tba_item_28917
     - tba_item_28918
     - tba_item_28919
+    rooms:
+    - tba.28928
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t know how to make one of those!'
     - '%s We don''t *buy* drinks...we sell ''em!'
@@ -3437,6 +4855,14 @@ shops:
     - potion
     - scroll
     produce: []
+    rooms:
+    - tba.28927
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 24
+      open2: 1
+      close2: 24
     messages:
     - '%s Don''t have one, but I think I might be able to find one...'
     - '%s You have one?  Really?  Let me see!'
@@ -3453,6 +4879,14 @@ shops:
     - tba_item_28917
     - tba_item_28918
     - tba_item_28919
+    rooms:
+    - tba.28921
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t know how to make one of those!'
     - '%s We don''t *buy* drinks...we sell ''em!'
@@ -3469,6 +4903,14 @@ shops:
     - tba_item_28917
     - tba_item_28918
     - tba_item_28919
+    rooms:
+    - tba.28913
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t know how to make one of those!'
     - '%s We don''t *buy* drinks...we sell ''em!'
@@ -3485,6 +4927,14 @@ shops:
     - tba_item_29009
     - tba_item_29010
     - tba_item_29011
+    rooms:
+    - tba.29018
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t seem to have anything like that.  Sorry.'
     - '%s I''m sorry, I don''t purchase goods.'
@@ -3503,6 +4953,14 @@ shops:
     - tba_item_29209
     - tba_item_352
     - tba_item_350
+    rooms:
+    - tba.29247
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s I can''t find that...it must be out of print!'
     - '%s I don''t buy.'
@@ -3519,6 +4977,14 @@ shops:
     - tba_item_29248
     - tba_item_29249
     - tba_item_29250
+    rooms:
+    - tba.29246
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s How do you mix one of those?'
     - '%s I don''t buy.'
@@ -3539,6 +5005,14 @@ shops:
     - tba_item_29243
     - tba_item_29244
     - tba_item_29245
+    rooms:
+    - tba.29243
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s We don''t have any of those, Sugar.'
     - '%s Are you sure you have one, handsome?'
@@ -3557,6 +5031,14 @@ shops:
     - tba_item_29220
     - tba_item_29221
     - tba_item_29222
+    rooms:
+    - tba.29254
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s I''ve never heard of that...what species is it?'
     - '%s I don''t buy.'
@@ -3579,6 +5061,14 @@ shops:
     - tba_item_29212
     - tba_item_29213
     - tba_item_29210
+    rooms:
+    - tba.29239
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t know if we have those...take a look around!'
     - '%s Is this a joke?  I don''t see one.'
@@ -3597,6 +5087,14 @@ shops:
     - tba_item_29240
     - tba_item_29241
     - tba_item_29242
+    rooms:
+    - tba.29352
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 24
+      open2: 0
+      close2: 24
     messages:
     - '%s I didn''t grow any of those this season, sorry.'
     - '%s I don''t buy.'
@@ -3613,6 +5111,14 @@ shops:
     - tba_item_29248
     - tba_item_29249
     - tba_item_29250
+    rooms:
+    - tba.29265
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s How do you mix one of those?'
     - '%s I don''t buy.'
@@ -3630,6 +5136,14 @@ shops:
     - tba_item_29406
     - tba_item_29407
     - tba_item_29408
+    rooms:
+    - tba.29441
+    trade_with: []
+    hours:
+      open1: 8
+      close1: 17
+      open2: 0
+      close2: 0
     messages:
     - '%s I haven''t made any of those lately, but I''ll consider it.'
     - '%s I don''t buy used leather.  Try a pawnshop.'
@@ -3647,6 +5161,14 @@ shops:
     - tba_item_29409
     - tba_item_29410
     - tba_item_29411
+    rooms:
+    - tba.29436
+    trade_with: []
+    hours:
+      open1: 8
+      close1: 17
+      open2: 8
+      close2: 17
     messages:
     - '%s I don''t have any of those!'
     - '%s Are you sure you have one of those?'
@@ -3663,6 +5185,14 @@ shops:
     - tba_item_29412
     - tba_item_29413
     - tba_item_29414
+    rooms:
+    - tba.29435
+    trade_with: []
+    hours:
+      open1: 7
+      close1: 18
+      open2: 7
+      close2: 18
     messages:
     - '%s Whah kind of ammynal iz dat?'
     - '%s I sells meats.  I no buyz meats.'
@@ -3679,6 +5209,14 @@ shops:
     - tba_item_29419
     - tba_item_29420
     - tba_item_29421
+    rooms:
+    - tba.29452
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t have that on tap, putz!'
     - '%s I only buy from the distributor, dwick!'
@@ -3696,6 +5234,14 @@ shops:
     - tba_item_29416
     - tba_item_29417
     - tba_item_29418
+    rooms:
+    - tba.29450
+    trade_with: []
+    hours:
+      open1: 8
+      close1: 17
+      open2: 8
+      close2: 17
     messages:
     - '%s I don''t have that.'
     - '%s You don''t have that.'
@@ -3712,6 +5258,14 @@ shops:
     - tba_item_29600
     - tba_item_29602
     - tba_item_29603
+    rooms:
+    - tba.29608
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s I''m sorry *BEEP* but I do not have that item.'
     - '%s Please do not stuff that in my *BEEP* coin slot.'
@@ -3734,6 +5288,15 @@ shops:
     - tba_item_3052
     - tba_item_3053
     - tba_item_3054
+    rooms:
+    - tba.3033
+    trade_with:
+    - evil
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I haven''t got exactly that item.'
     - '%s You don''t seem to have that.'
@@ -3750,6 +5313,14 @@ shops:
     - tba_item_3009
     - tba_item_3010
     - tba_item_3011
+    rooms:
+    - tba.3009
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s I don''t buy!'
@@ -3771,6 +5342,14 @@ shops:
     - tba_item_3032
     - tba_item_3033
     - tba_item_3036
+    rooms:
+    - tba.3010
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s You don''t seem to have that.'
@@ -3791,6 +5370,14 @@ shops:
     - tba_item_3023
     - tba_item_3024
     - tba_item_3025
+    rooms:
+    - tba.3011
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I haven''t got that kind of a weapon!'
     - '%s You don''t carry that weapon!'
@@ -3820,6 +5407,14 @@ shops:
     - tba_item_3081
     - tba_item_3085
     - tba_item_3086
+    rooms:
+    - tba.3020
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s You don''t seem to have that.'
@@ -3836,6 +5431,14 @@ shops:
     produce:
     - tba_item_3060
     - tba_item_3061
+    rooms:
+    - tba.3049
+    trade_with: []
+    hours:
+      open1: 6
+      close1: 22
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry pal, I have not got that kind of ship.'
     - '%s Ok, but let me see it first.'
@@ -3849,6 +5452,15 @@ shops:
     sell_multiplier: 0.5
     buy_kinds: []
     produce: []
+    rooms:
+    - tba.3050
+    trade_with:
+    - good
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, you aren''t on my list of people I can sell to.'
     - '%s Sorry, I don''t buy from outsiders.'
@@ -3865,6 +5477,14 @@ shops:
     - tba_item_3102
     - tba_item_3103
     - tba_item_3104
+    rooms:
+    - tba.3058
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t have that -- try list!'
     - '%s Sorry, I don''t buy waters from outsiders.'
@@ -3879,6 +5499,14 @@ shops:
     buy_kinds: []
     produce:
     - tba_item_3006
+    rooms:
+    - tba.3000
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -3895,6 +5523,14 @@ shops:
     - tba_item_30135
     - tba_item_30136
     - tba_item_30140
+    rooms:
+    - tba.30104
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s I''m sorry but I could not find that particular item.'
     - '%s Please do not stuff that in my coin slot.'
@@ -3913,6 +5549,14 @@ shops:
     - tba_item_30141
     - tba_item_30152
     - tba_item_30151
+    rooms:
+    - tba.30245
+    trade_with: []
+    hours:
+      open1: 5
+      close1: 12
+      open2: 13
+      close2: 22
     messages:
     - '%s I can''t find that...it must be out of stock.'
     - '%s I don''t buy from people.'
@@ -3928,6 +5572,14 @@ shops:
     produce:
     - tba_item_30140
     - tba_item_30141
+    rooms:
+    - tba.30169
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s I''m sorry, I can nae help you there.'
     - '%s Are you sure you have one of those?'
@@ -3944,6 +5596,14 @@ shops:
     - tba_item_30116
     - tba_item_30126
     - tba_item_30111
+    rooms:
+    - tba.30141
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s I''ve never heard of that...what is it?'
     - '%s I don''t see the goods, neighbour.'
@@ -3960,6 +5620,14 @@ shops:
     - tba_item_30137
     - tba_item_30138
     - tba_item_30139
+    rooms:
+    - tba.30166
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 24
+      open2: 0
+      close2: 0
     messages:
     - '%s How do you mix one of those?'
     - '%s I don''t buy.'
@@ -3978,6 +5646,14 @@ shops:
     - tba_item_3002
     - tba_item_3003
     - tba_item_3004
+    rooms:
+    - tba.3007
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s It''s very noisy in here, what did you say you wanted to buy?'
     - '%s I don''t buy!'
@@ -3993,6 +5669,17 @@ shops:
     produce:
     - tba_item_3002
     - tba_item_3003
+    rooms:
+    - tba.3018
+    trade_with:
+    - cleric
+    - thief
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s I don''t buy!'
@@ -4008,6 +5695,17 @@ shops:
     produce:
     - tba_item_3002
     - tba_item_3004
+    rooms:
+    - tba.3003
+    trade_with:
+    - magic_user
+    - thief
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s I don''t buy!'
@@ -4023,6 +5721,17 @@ shops:
     produce:
     - tba_item_3003
     - tba_item_3004
+    rooms:
+    - tba.3028
+    trade_with:
+    - magic_user
+    - cleric
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s I don''t buy!'
@@ -4039,6 +5748,17 @@ shops:
     - tba_item_3002
     - tba_item_3003
     - tba_item_3004
+    rooms:
+    - tba.3022
+    trade_with:
+    - magic_user
+    - cleric
+    - thief
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s I don''t buy!'
@@ -4054,6 +5774,14 @@ shops:
     produce:
     - tba_item_3004
     - tba_item_3003
+    rooms:
+    - tba.3048
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s It''s very noisy in here, what did you say you wanted to buy?'
     - '%s I don''t buy!'
@@ -4068,6 +5796,14 @@ shops:
     buy_kinds: []
     produce:
     - tba_item_29105
+    rooms:
+    - tba.30846
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4083,6 +5819,14 @@ shops:
     produce:
     - tba_item_30818
     - tba_item_30819
+    rooms:
+    - tba.30845
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4098,6 +5842,14 @@ shops:
     produce:
     - tba_item_30816
     - tba_item_30817
+    rooms:
+    - tba.30842
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4113,6 +5865,14 @@ shops:
     produce:
     - tba_item_30820
     - tba_item_30821
+    rooms:
+    - tba.30854
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You dpn''t seem to have that.'
@@ -4131,6 +5891,14 @@ shops:
     - tba_item_332
     - tba_item_339
     - tba_item_376
+    rooms:
+    - tba.30852
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4148,6 +5916,14 @@ shops:
     - tba_item_371
     - tba_item_376
     - tba_item_381
+    rooms:
+    - tba.30849
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4164,6 +5940,14 @@ shops:
     - tba_item_3100
     - tba_item_3101
     - tba_item_3102
+    rooms:
+    - tba.3106
+    trade_with: []
+    hours:
+      open1: 6
+      close1: 22
+      open2: 23
+      close2: 24
     messages:
     - '%s I haven''t got such a drink.'
     - '%s I see no such thing.'
@@ -4181,6 +5965,14 @@ shops:
     produce:
     - tba_item_31530
     - tba_item_31531
+    rooms:
+    - tba.31504
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4201,6 +5993,14 @@ shops:
     - tba_item_31550
     - tba_item_31551
     - tba_item_31552
+    rooms:
+    - tba.31507
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4219,6 +6019,14 @@ shops:
     - tba_item_31540
     - tba_item_31541
     - tba_item_31542
+    rooms:
+    - tba.31516
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4237,6 +6045,14 @@ shops:
     - tba_item_31537
     - tba_item_31536
     - tba_item_31535
+    rooms:
+    - tba.31518
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4254,6 +6070,14 @@ shops:
     - tba_item_12001
     - tba_item_370
     - tba_item_31315
+    rooms:
+    - tba.31521
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4272,6 +6096,15 @@ shops:
     - tba_item_31544
     - tba_item_31545
     - tba_item_320
+    rooms:
+    - tba.31526
+    trade_with:
+    - good
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4290,6 +6123,14 @@ shops:
     produce:
     - tba_item_31553
     - tba_item_31554
+    rooms:
+    - tba.31527
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4305,6 +6146,14 @@ shops:
     produce:
     - tba_item_31570
     - tba_item_31571
+    rooms:
+    - tba.31530
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4321,6 +6170,14 @@ shops:
     - tba_item_31576
     - tba_item_31577
     - tba_item_31586
+    rooms:
+    - tba.31531
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4337,6 +6194,14 @@ shops:
     - tba_item_31573
     - tba_item_31574
     - tba_item_31575
+    rooms:
+    - tba.31532
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4352,6 +6217,14 @@ shops:
     produce:
     - tba_item_31585
     - tba_item_31566
+    rooms:
+    - tba.31533
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4368,6 +6241,14 @@ shops:
     - tba_item_31587
     - tba_item_31588
     - tba_item_31589
+    rooms:
+    - tba.31534
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4384,6 +6265,14 @@ shops:
     - tba_item_31590
     - tba_item_31591
     - tba_item_31592
+    rooms:
+    - tba.31535
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4401,6 +6290,14 @@ shops:
     - tba_item_31582
     - tba_item_31583
     - tba_item_31584
+    rooms:
+    - tba.31536
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4417,6 +6314,14 @@ shops:
     - tba_item_31578
     - tba_item_31579
     - tba_item_31580
+    rooms:
+    - tba.31537
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4433,6 +6338,14 @@ shops:
     produce:
     - tba_item_31597
     - tba_item_31596
+    rooms:
+    - tba.31538
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4450,6 +6363,14 @@ shops:
     - tba_item_31595
     - tba_item_31594
     - tba_item_31593
+    rooms:
+    - tba.31539
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4465,6 +6386,14 @@ shops:
     produce:
     - tba_item_381
     - tba_item_386
+    rooms:
+    - tba.31541
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4481,6 +6410,14 @@ shops:
     - tba_item_31613
     - tba_item_31615
     - tba_item_31614
+    rooms:
+    - tba.31542
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4496,6 +6433,14 @@ shops:
     produce:
     - tba_item_31612
     - tba_item_31611
+    rooms:
+    - tba.31543
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4511,6 +6456,14 @@ shops:
     produce:
     - tba_item_31610
     - tba_item_31609
+    rooms:
+    - tba.31544
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4526,6 +6479,14 @@ shops:
     produce:
     - tba_item_31608
     - tba_item_31607
+    rooms:
+    - tba.31545
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4542,6 +6503,14 @@ shops:
     - tba_item_31606
     - tba_item_31605
     - tba_item_31604
+    rooms:
+    - tba.31546
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4559,6 +6528,14 @@ shops:
     produce:
     - tba_item_31524
     - tba_item_31598
+    rooms:
+    - tba.31547
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4575,6 +6552,14 @@ shops:
     - tba_item_31618
     - tba_item_31617
     - tba_item_31616
+    rooms:
+    - tba.31548
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4588,6 +6573,14 @@ shops:
     sell_multiplier: 0.8
     buy_kinds: []
     produce: []
+    rooms:
+    - tba.31549
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4601,6 +6594,14 @@ shops:
     sell_multiplier: 0.8
     buy_kinds: []
     produce: []
+    rooms:
+    - tba.31550
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4616,6 +6617,14 @@ shops:
     produce:
     - tba_item_375
     - tba_item_31315
+    rooms:
+    - tba.31551
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4630,6 +6639,14 @@ shops:
     buy_kinds: []
     produce:
     - tba_item_31599
+    rooms:
+    - tba.31552
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4646,6 +6663,14 @@ shops:
     - tba_item_31621
     - tba_item_31620
     - tba_item_31619
+    rooms:
+    - tba.31553
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4663,6 +6688,14 @@ shops:
     - tba_item_31564
     - tba_item_31565
     - tba_item_31566
+    rooms:
+    - tba.31561
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4679,6 +6712,14 @@ shops:
     - tba_item_31567
     - tba_item_31568
     - tba_item_31569
+    rooms:
+    - tba.31559
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4697,6 +6738,14 @@ shops:
     - tba_item_31556
     - tba_item_350
     - tba_item_352
+    rooms:
+    - tba.31557
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4714,6 +6763,14 @@ shops:
     - tba_item_31561
     - tba_item_31562
     - tba_item_31563
+    rooms:
+    - tba.31556
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4728,6 +6785,14 @@ shops:
     buy_kinds: []
     produce:
     - tba_item_31557
+    rooms:
+    - tba.31564
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4745,6 +6810,14 @@ shops:
     - tba_item_31519
     - tba_item_31558
     - tba_item_31559
+    rooms:
+    - tba.31572
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4760,6 +6833,17 @@ shops:
     produce:
     - tba_item_31665
     - tba_item_31666
+    rooms:
+    - tba.31663
+    trade_with:
+    - magic_user
+    - cleric
+    - thief
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4776,6 +6860,17 @@ shops:
     - tba_item_31652
     - tba_item_31653
     - tba_item_31654
+    rooms:
+    - tba.31654
+    trade_with:
+    - magic_user
+    - thief
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4793,6 +6888,17 @@ shops:
     - tba_item_31625
     - tba_item_31624
     - tba_item_31622
+    rooms:
+    - tba.31607
+    trade_with:
+    - cleric
+    - thief
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4809,6 +6915,17 @@ shops:
     - tba_item_31631
     - tba_item_31632
     - tba_item_31633
+    rooms:
+    - tba.31625
+    trade_with:
+    - magic_user
+    - cleric
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4824,6 +6941,17 @@ shops:
     produce:
     - tba_item_31636
     - tba_item_31637
+    rooms:
+    - tba.31622
+    trade_with:
+    - magic_user
+    - cleric
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4838,6 +6966,14 @@ shops:
     buy_kinds: []
     produce:
     - tba_item_31638
+    rooms:
+    - tba.31629
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4854,6 +6990,14 @@ shops:
     - tba_item_31639
     - tba_item_31640
     - tba_item_31641
+    rooms:
+    - tba.31631
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4870,6 +7014,17 @@ shops:
     - tba_item_31623
     - tba_item_31626
     - tba_item_31627
+    rooms:
+    - tba.31610
+    trade_with:
+    - cleric
+    - thief
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4887,6 +7042,17 @@ shops:
     - tba_item_31620
     - tba_item_31621
     - tba_item_31619
+    rooms:
+    - tba.31605
+    trade_with:
+    - cleric
+    - thief
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4903,6 +7069,17 @@ shops:
     - tba_item_31628
     - tba_item_31629
     - tba_item_31630
+    rooms:
+    - tba.31606
+    trade_with:
+    - cleric
+    - thief
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4919,6 +7096,17 @@ shops:
     - tba_item_31642
     - tba_item_31643
     - tba_item_31644
+    rooms:
+    - tba.31630
+    trade_with:
+    - magic_user
+    - cleric
+    - thief
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4935,6 +7123,17 @@ shops:
     - tba_item_31648
     - tba_item_31649
     - tba_item_31650
+    rooms:
+    - tba.31642
+    trade_with:
+    - magic_user
+    - cleric
+    - thief
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4951,6 +7150,17 @@ shops:
     - tba_item_31645
     - tba_item_31646
     - tba_item_31647
+    rooms:
+    - tba.31640
+    trade_with:
+    - magic_user
+    - cleric
+    - thief
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4967,6 +7177,17 @@ shops:
     - tba_item_31659
     - tba_item_31660
     - tba_item_31661
+    rooms:
+    - tba.31651
+    trade_with:
+    - magic_user
+    - thief
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4983,6 +7204,17 @@ shops:
     - tba_item_31656
     - tba_item_31657
     - tba_item_31658
+    rooms:
+    - tba.31652
+    trade_with:
+    - magic_user
+    - thief
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -4998,6 +7230,17 @@ shops:
     produce:
     - tba_item_31651
     - tba_item_31655
+    rooms:
+    - tba.31653
+    trade_with:
+    - magic_user
+    - thief
+    - warrior
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5014,6 +7257,16 @@ shops:
     - tba_item_31662
     - tba_item_31663
     - tba_item_31664
+    rooms:
+    - tba.31660
+    trade_with:
+    - magic_user
+    - thief
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5029,6 +7282,14 @@ shops:
     - other
     produce:
     - tba_item_301
+    rooms:
+    - tba.31734
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5046,6 +7307,14 @@ shops:
     - tba_item_31722
     - tba_item_31723
     - tba_item_31724
+    rooms:
+    - tba.31718
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5064,6 +7333,14 @@ shops:
     - tba_item_31727
     - tba_item_31728
     - tba_item_31729
+    rooms:
+    - tba.31725
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5080,6 +7357,14 @@ shops:
     - tba_item_32514
     - tba_item_32515
     - tba_item_32516
+    rooms:
+    - tba.32503
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5093,6 +7378,14 @@ shops:
     sell_multiplier: 0.5
     buy_kinds: []
     produce: []
+    rooms:
+    - tba.32577
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 0
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5107,6 +7400,14 @@ shops:
     buy_kinds: []
     produce:
     - tba_item_3050
+    rooms:
+    - tba.32512
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5123,6 +7424,14 @@ shops:
     - tba_item_32525
     - tba_item_32506
     - tba_item_32570
+    rooms:
+    - tba.32544
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5138,6 +7447,14 @@ shops:
     produce:
     - tba_item_32527
     - tba_item_32528
+    rooms:
+    - tba.32517
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5154,6 +7471,14 @@ shops:
     - tba_item_32559
     - tba_item_32560
     - tba_item_32561
+    rooms:
+    - tba.32504
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5170,6 +7495,15 @@ shops:
     - tba_item_32562
     - tba_item_32563
     - tba_item_32564
+    rooms:
+    - tba.32531
+    - tba.32519
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5186,6 +7520,14 @@ shops:
     - tba_item_32565
     - tba_item_32566
     - tba_item_32567
+    rooms:
+    - tba.32522
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5200,6 +7542,14 @@ shops:
     buy_kinds: []
     produce:
     - tba_item_32570
+    rooms:
+    - tba.32529
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5217,6 +7567,14 @@ shops:
     - tba_item_3037
     - tba_item_3038
     - tba_item_3039
+    rooms:
+    - tba.3345
+    trade_with: []
+    hours:
+      open1: 8
+      close1: 22
+      open2: 0
+      close2: 0
     messages:
     - '%s Could you repeat that please?'
     - '%s I don''t buy!'
@@ -5235,6 +7593,14 @@ shops:
     - tba_item_3308
     - tba_item_3309
     - tba_item_3310
+    rooms:
+    - tba.3350
+    trade_with: []
+    hours:
+      open1: 8
+      close1: 22
+      open2: 0
+      close2: 0
     messages:
     - '%s We didn''t grow any of those this year.'
     - '%s You don''t have that!'
@@ -5251,6 +7617,14 @@ shops:
     - tba_item_3319
     - tba_item_3320
     - tba_item_3321
+    rooms:
+    - tba.3357
+    trade_with: []
+    hours:
+      open1: 11
+      close1: 18
+      open2: 20
+      close2: 22
     messages:
     - '%s I don''t know how to make one of those!'
     - '%s We don''t *buy* drinks... we sell ''em!'
@@ -5267,6 +7641,113 @@ shops:
     - tba_item_3952
     - tba_item_3951
     - tba_item_3983
+    rooms:
+    - tba.3900
+    - tba.3901
+    - tba.3902
+    - tba.3903
+    - tba.3904
+    - tba.3905
+    - tba.3906
+    - tba.3907
+    - tba.3908
+    - tba.3909
+    - tba.3910
+    - tba.3911
+    - tba.3912
+    - tba.3913
+    - tba.3914
+    - tba.3915
+    - tba.3916
+    - tba.3917
+    - tba.3918
+    - tba.3919
+    - tba.3920
+    - tba.3921
+    - tba.3922
+    - tba.3923
+    - tba.3924
+    - tba.3925
+    - tba.3926
+    - tba.3927
+    - tba.3928
+    - tba.3929
+    - tba.3930
+    - tba.3931
+    - tba.3932
+    - tba.3933
+    - tba.3934
+    - tba.3935
+    - tba.3936
+    - tba.3937
+    - tba.3938
+    - tba.3939
+    - tba.3940
+    - tba.3941
+    - tba.3942
+    - tba.3944
+    - tba.3943
+    - tba.3945
+    - tba.3946
+    - tba.3947
+    - tba.3948
+    - tba.3949
+    - tba.3950
+    - tba.3951
+    - tba.3952
+    - tba.3953
+    - tba.3954
+    - tba.3955
+    - tba.3956
+    - tba.3957
+    - tba.3958
+    - tba.3959
+    - tba.3960
+    - tba.3961
+    - tba.3962
+    - tba.3963
+    - tba.3964
+    - tba.3965
+    - tba.3966
+    - tba.3967
+    - tba.3968
+    - tba.3969
+    - tba.3970
+    - tba.3971
+    - tba.3972
+    - tba.3973
+    - tba.3974
+    - tba.3975
+    - tba.3976
+    - tba.3977
+    - tba.3978
+    - tba.3979
+    - tba.3980
+    - tba.3981
+    - tba.3982
+    - tba.3983
+    - tba.3984
+    - tba.3985
+    - tba.3986
+    - tba.3987
+    - tba.3988
+    - tba.3989
+    - tba.3990
+    - tba.3991
+    - tba.3992
+    - tba.3993
+    - tba.3994
+    - tba.3995
+    - tba.3996
+    - tba.3997
+    - tba.3998
+    - tba.3999
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t have me none o'' dat!'
     - '%s You don''t got none o'' dat!'
@@ -5290,6 +7771,14 @@ shops:
     - tba_item_3994
     - tba_item_3995
     - tba_item_3927
+    rooms:
+    - tba.3957
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5311,6 +7800,14 @@ shops:
     - tba_item_3935
     - tba_item_3936
     - tba_item_3937
+    rooms:
+    - tba.3966
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5326,6 +7823,14 @@ shops:
     produce:
     - tba_item_3921
     - tba_item_3922
+    rooms:
+    - tba.3940
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5345,6 +7850,14 @@ shops:
     - tba_item_3957
     - tba_item_3984
     - tba_item_3956
+    rooms:
+    - tba.3972
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5362,6 +7875,14 @@ shops:
     - tba_item_4312
     - tba_item_4313
     - tba_item_4316
+    rooms:
+    - tba.4385
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Our hunters don''t kill that.'
     - '%s You ain''t got that item.'
@@ -5378,6 +7899,14 @@ shops:
     - tba_item_4314
     - tba_item_4315
     - tba_item_4317
+    rooms:
+    - tba.4386
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t make that.'
     - '%s You don''t have that.'
@@ -5394,6 +7923,14 @@ shops:
     - tba_item_4318
     - tba_item_4319
     - tba_item_4320
+    rooms:
+    - tba.4387
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s That''s not in stock.'
     - '%s You don''t have that.'
@@ -5411,6 +7948,14 @@ shops:
     - tba_item_401
     - tba_item_409
     - tba_item_410
+    rooms:
+    - tba.449
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5427,6 +7972,14 @@ shops:
     - tba_item_407
     - tba_item_416
     - tba_item_417
+    rooms:
+    - tba.453
+    trade_with: []
+    hours:
+      open1: 7
+      close1: 22
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5445,6 +7998,15 @@ shops:
     - tba_item_418
     - tba_item_419
     - tba_item_420
+    rooms:
+    - tba.481
+    trade_with:
+    - thief
+    hours:
+      open1: 7
+      close1: 12
+      open2: 13
+      close2: 22
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5462,6 +8024,14 @@ shops:
     - tba_item_5467
     - tba_item_5468
     - tba_item_5469
+    rooms:
+    - tba.5402
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t know how to make one of those!'
     - '%s I don''t *buy* drinks... we sell ''em!'
@@ -5481,6 +8051,14 @@ shops:
     - tba_item_5443
     - tba_item_5445
     - tba_item_5491
+    rooms:
+    - tba.5535
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s I don''t buy!'
@@ -5505,6 +8083,14 @@ shops:
     - tba_item_5437
     - tba_item_5438
     - tba_item_5439
+    rooms:
+    - tba.5528
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s You don''t seem to have that.'
@@ -5528,6 +8114,14 @@ shops:
     - tba_item_5453
     - tba_item_5454
     - tba_item_5455
+    rooms:
+    - tba.5514
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I haven''t got exactly that item.'
     - '%s You don''t seem to have that.'
@@ -5546,6 +8140,14 @@ shops:
     - tba_item_5458
     - tba_item_5459
     - tba_item_5460
+    rooms:
+    - tba.5515
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I''ve never heard of that... what kind of vegetable is it?'
     - '%s I don''t buy.'
@@ -5563,6 +8165,14 @@ shops:
     - tba_item_5461
     - tba_item_5462
     - tba_item_5463
+    rooms:
+    - tba.5522
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I didn''t kill any of those this season, sorry.'
     - '%s I don''t buy that.'
@@ -5584,6 +8194,16 @@ shops:
     - tba_item_5419
     - tba_item_5420
     - tba_item_5421
+    rooms:
+    - tba.5529
+    trade_with:
+    - magic_user
+    - thief
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Haven''t got that on storage - try list!'
     - '%s You don''t seem to have that.'
@@ -5610,6 +8230,14 @@ shops:
     - tba_item_5412
     - tba_item_5413
     - tba_item_5414
+    rooms:
+    - tba.5536
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I haven''t got that kind of a weapon'
     - '%s You don''t carry that weapon'
@@ -5626,6 +8254,14 @@ shops:
     produce:
     - tba_item_5464
     - tba_item_5465
+    rooms:
+    - tba.5432
+    trade_with: []
+    hours:
+      open1: 6
+      close1: 12
+      open2: 13
+      close2: 20
     messages:
     - '%s Sorry buddy, I don''t sell that.'
     - '%s Why don''t you sell something you own?'
@@ -5643,6 +8279,65 @@ shops:
     - staff
     - treasure
     produce: []
+    rooms:
+    - tba.5403
+    - tba.5404
+    - tba.5405
+    - tba.5406
+    - tba.5407
+    - tba.5408
+    - tba.5409
+    - tba.5410
+    - tba.5414
+    - tba.5415
+    - tba.5416
+    - tba.5417
+    - tba.5418
+    - tba.5419
+    - tba.5420
+    - tba.5421
+    - tba.5422
+    - tba.5424
+    - tba.5425
+    - tba.5426
+    - tba.5427
+    - tba.5428
+    - tba.5429
+    - tba.5430
+    - tba.5434
+    - tba.5435
+    - tba.5436
+    - tba.5437
+    - tba.5438
+    - tba.5439
+    - tba.5440
+    - tba.5441
+    - tba.5442
+    - tba.5444
+    - tba.5445
+    - tba.5446
+    - tba.5447
+    - tba.5448
+    - tba.5449
+    - tba.5450
+    - tba.5451
+    - tba.5452
+    - tba.5453
+    - tba.5454
+    - tba.5455
+    - tba.5456
+    - tba.5460
+    - tba.5461
+    - tba.5462
+    - tba.5463
+    - tba.5464
+    trade_with:
+    - magic_user
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Don''t have one, but I think I might be able to find one...'
     - '%s You have one?  Really?  Let me see!'
@@ -5659,6 +8354,14 @@ shops:
     produce:
     - tba_item_3060
     - tba_item_3061
+    rooms:
+    - tba.5542
+    trade_with: []
+    hours:
+      open1: 6
+      close1: 22
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry pal, I have not got that kind of ship.'
     - '%s Ok, but let me see it first.'
@@ -5677,6 +8380,14 @@ shops:
     - tba_item_5487
     - tba_item_5488
     - tba_item_5489
+    rooms:
+    - tba.5544
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Havn''t got that in storage, try LIST!'
     - '%s You can''t sell what you dont HAVE!'
@@ -5696,6 +8407,14 @@ shops:
     - tba_item_5472
     - tba_item_5473
     - tba_item_5474
+    rooms:
+    - tba.5523
+    trade_with: []
+    hours:
+      open1: 7
+      close1: 17
+      open2: 0
+      close2: 0
     messages:
     - '%s We don''t have any of those, Sugar.'
     - '%s Are you sure you have one, handsome?'
@@ -5718,6 +8437,14 @@ shops:
     - tba_item_5480
     - tba_item_5481
     - tba_item_5482
+    rooms:
+    - tba.5524
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 12
+      open2: 13
+      close2: 20
     messages:
     - '%s Sorry buddy, I don''t sell that.'
     - '%s Why don''t you sell something you own?'
@@ -5734,6 +8461,14 @@ shops:
     - tba_item_5475
     - tba_item_5476
     - tba_item_5477
+    rooms:
+    - tba.5538
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s It''s very noisy in here, what did you say you wanted to buy?'
     - '%s I don''t buy!'
@@ -5760,6 +8495,14 @@ shops:
     - tba_item_5431
     - tba_item_5432
     - tba_item_5433
+    rooms:
+    - tba.5537
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Havn''t got that in storage, try LIST!'
     - '%s You can''t sell what you dont HAVE!'
@@ -5776,6 +8519,14 @@ shops:
     produce:
     - tba_item_55522
     - tba_item_55542
+    rooms:
+    - tba.55603
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5793,6 +8544,14 @@ shops:
     - tba_item_55541
     - tba_item_55532
     - tba_item_55531
+    rooms:
+    - tba.55605
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5807,6 +8566,14 @@ shops:
     buy_kinds: []
     produce:
     - tba_item_55568
+    rooms:
+    - tba.55606
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5824,6 +8591,14 @@ shops:
     - tba_item_5708
     - tba_item_5798
     - tba_item_5730
+    rooms:
+    - tba.5713
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Feck off, i don''t have that!'
     - '%s You don''t have that feckin'' item.'
@@ -5844,6 +8619,14 @@ shops:
     - tba_item_639
     - tba_item_640
     - tba_item_641
+    rooms:
+    - tba.634
+    trade_with: []
+    hours:
+      open1: 7
+      close1: 22
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t serve that.'
     - '%s You don''t seem to have that.'
@@ -5872,6 +8655,14 @@ shops:
     - tba_item_602
     - tba_item_617
     - tba_item_634
+    rooms:
+    - tba.635
+    trade_with: []
+    hours:
+      open1: 7
+      close1: 22
+      open2: 0
+      close2: 0
     messages:
     - '%s oh you know what would be a little better?'
     - '%s You don''t seem to have that.'
@@ -5892,6 +8683,14 @@ shops:
     - tba_item_6510
     - tba_item_6512
     - tba_item_6517
+    rooms:
+    - tba.6516
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s We don''t have any in storage, sorry!'
     - '%s Check your possessions, you don''t have that.'
@@ -5915,6 +8714,14 @@ shops:
     - tba_item_6521
     - tba_item_6522
     - tba_item_6523
+    rooms:
+    - tba.6535
+    trade_with: []
+    hours:
+      open1: 6
+      close1: 18
+      open2: 20
+      close2: 28
     messages:
     - '%s Haven''t got that on storage!'
     - '%s You don''t seem to have that!'
@@ -5934,6 +8741,14 @@ shops:
     - tba_item_7521
     - tba_item_7522
     - tba_item_7520
+    rooms:
+    - tba.7522
+    trade_with: []
+    hours:
+      open1: 1
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5952,6 +8767,14 @@ shops:
     produce:
     - tba_item_7587
     - tba_item_7588
+    rooms:
+    - tba.7588
+    trade_with: []
+    hours:
+      open1: 6
+      close1: 23
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -5971,6 +8794,14 @@ shops:
     - tba_item_7508
     - tba_item_7509
     - tba_item_7510
+    rooms:
+    - tba.7589
+    trade_with: []
+    hours:
+      open1: 7
+      close1: 23
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I only stock the best food in town.'
     - '%s You don''t seem to have that.'
@@ -5991,6 +8822,14 @@ shops:
     - tba_item_7590
     - tba_item_7537
     - tba_item_7506
+    rooms:
+    - tba.7590
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -6010,6 +8849,14 @@ shops:
     - tba_item_7806
     - tba_item_7807
     - tba_item_7808
+    rooms:
+    - tba.7820
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -6027,6 +8874,14 @@ shops:
     - tba_item_7810
     - tba_item_7811
     - tba_item_7812
+    rooms:
+    - tba.7822
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -6044,6 +8899,14 @@ shops:
     - tba_item_9615
     - tba_item_9606
     - tba_item_9604
+    rooms:
+    - tba.9600
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s I don''t carry that, fool!'
     - '%s You don''t have that. Check your inventory.'
@@ -6061,6 +8924,14 @@ shops:
     - tba_item_92
     - tba_item_97
     - tba_item_90
+    rooms:
+    - tba.99
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'
@@ -6075,6 +8946,14 @@ shops:
     buy_kinds: []
     produce:
     - tba_item_82
+    rooms:
+    - tba.100
+    trade_with: []
+    hours:
+      open1: 0
+      close1: 28
+      open2: 0
+      close2: 0
     messages:
     - '%s Sorry, I don''t stock that item.'
     - '%s You don''t seem to have that.'

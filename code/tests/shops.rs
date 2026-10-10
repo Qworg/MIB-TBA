@@ -36,6 +36,9 @@ fn tba_item(kind: TbaItemKind, cost: u32) -> TbaItemDef {
         slots: Vec::new(),
         values: [0; 4],
         affects: Vec::new(),
+        keywords: Vec::new(),
+        extra_flags: Vec::new(),
+        affect_flags: Vec::new(),
         weight: 1,
         cost,
         rent: 0,
@@ -58,6 +61,9 @@ fn content() -> TbaContent {
             // Buys weapons and armour only; the gem is deliberately unwanted.
             buy_kinds: vec![TbaItemKind::Weapon, TbaItemKind::Armor],
             produce: vec![ItemId::from(SWORD), ItemId::from(VEST)],
+            rooms: Vec::new(),
+            trade_with: Vec::new(),
+            hours: ShopHours::default(),
             messages: Vec::new(),
         },
     )]);
@@ -364,4 +370,87 @@ fn commands_outside_a_shop_are_denied() {
     );
     assert_eq!(gold_of(&app, player), 100);
     assert!(carried_ids(&mut app, player).is_empty());
+}
+
+#[test]
+fn closed_shop_refuses_trade_and_names_the_close() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, 100);
+    spawn_shopkeeper(&mut app, room);
+    {
+        let mut content = app.world_mut().resource_mut::<TbaContent>();
+        let shop = content
+            .shops
+            .get_mut(&NpcId::from(SHOPKEEPER))
+            .expect("shop is installed");
+        shop.hours = ShopHours {
+            open1: 9,
+            close1: 17,
+            open2: 0,
+            close2: 0,
+        };
+    }
+    app.insert_resource(TbaObjectClock {
+        accumulator: 0.0,
+        hour_of_day: 20,
+    });
+
+    command(&mut app, player, "buy a long sword");
+    run(&mut app);
+
+    assert_eq!(gold_of(&app, player), 100, "no trade after hours");
+    assert!(carried_ids(&mut app, player).is_empty());
+    assert!(
+        text(&mut app).contains("come back tomorrow"),
+        "closed reply"
+    );
+}
+
+#[test]
+fn room_restriction_refuses_trade() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, 100);
+    spawn_shopkeeper(&mut app, room);
+    {
+        let mut content = app.world_mut().resource_mut::<TbaContent>();
+        let shop = content
+            .shops
+            .get_mut(&NpcId::from(SHOPKEEPER))
+            .expect("shop is installed");
+        // The player's (empty) room cannot match a restricted vnum.
+        shop.rooms = vec![RoomId::from("tba.9999")];
+    }
+
+    command(&mut app, player, "list");
+    run(&mut app);
+
+    assert!(text(&mut app).contains("There is no shop here."));
+}
+
+#[test]
+fn trade_restriction_refuses_a_refused_class() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, 100);
+    app.world_mut()
+        .entity_mut(player)
+        .insert(TbaProgress::new("warrior"));
+    spawn_shopkeeper(&mut app, room);
+    {
+        let mut content = app.world_mut().resource_mut::<TbaContent>();
+        let shop = content
+            .shops
+            .get_mut(&NpcId::from(SHOPKEEPER))
+            .expect("shop is installed");
+        shop.trade_with = vec![ShopTrade::Warrior];
+    }
+
+    command(&mut app, player, "buy a long sword");
+    run(&mut app);
+
+    assert_eq!(gold_of(&app, player), 100, "refused class cannot buy");
+    let shown = text(&mut app);
+    assert!(shown.contains("We don't serve your kind here!"), "{shown}");
 }

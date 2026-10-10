@@ -66,6 +66,7 @@ fn stats(behaviour: Vec<NpcBehaviour>) -> TbaNpcStats {
         experience: 0,
         default_position: Position::Standing,
         behaviour,
+        damage: None,
     }
 }
 

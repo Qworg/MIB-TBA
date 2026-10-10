@@ -28,10 +28,12 @@ the running server and links only the schema crates (`mib-stdlib`, `mib-tba`,
    `wld/<N>.wld` is emitted under zone `N`; the bounds are used only to place
    `M` resets and to describe the zone. A room outside the bounds is never
    dropped.
-4. **Zones are programs.** `M/O/G/E/P/D/R` map 1:1 onto `ZoneCommand` variants
-   in source order. `if_flag` has no field in `ZoneCommand`; command order is
-   preserved and every command's `if_flag` is recorded in the drop report
-   (`zones[].command_flags[]`) so the interpreter semantics are not lost.
+4. **Zones are programs.** `M/O/G/E/P/D/R` map 1:1 onto `ZoneCommandKind`
+   variants in source order. Each command is wrapped in `ZoneCommand`, which
+   carries Circle's per-command `if_flag`; the interpreter honours it (a
+   flagged command runs only when the command before it succeeded,
+   `reset_zone`/`db.c:2868`). The raw flag is still recorded in the drop report
+   (`zones[].command_flags[]`).
 5. **`P` uses the container prototype named by `arg3`**, matching
    `reset_zone`'s `get_obj_num(ZCMD.arg3)`.
 6. **`stdlib.npcs`** gets name + persona (long description + detailed
@@ -45,13 +47,21 @@ the running server and links only the schema crates (`mib-stdlib`, `mib-tba`,
    `tba.shops` (see §3.6).
 9. **Determinism.** Zones are iterated in ascending numeric order and every
    section is a `BTreeMap`; converting the same source twice is byte-identical.
+   Rooms are sharded one file per zone (TBA-E01, §6) and the committed drop
+   report is emitted with the same command, so it stays diffable.
 10. **Dangling references are dropped, never emitted.** Every reference the
     converter writes is resolved against the converted id set first. An exit to
     a missing room is removed; a door whose key names a missing item keeps the
     door but loses the key; a zone reset (`M/O/G/E/P/D/R`) that names a missing
-    mob, item, container or room is removed. Each case is recorded in the drop
+    mob, item, container or room is removed; a shop's produce/room/keeper that
+    names a missing record is removed. Each case is recorded in the drop
     report, so a partial (`--only Z`) or a source world with genuinely broken
     references still emits a pack the engine can load.
+11. **Every drop is named.** A source field is either mapped to a schema field
+    or listed in the report with a reason. `global_drops` carries a feature
+    that has no per-record home (room coordinates, the combat-skill non-goals);
+    `unmapped` carries a per-record drop; `dangling` carries a reference that
+    resolved to nothing.
 
 `unsafe_code` is denied; `unwrap_used`/`expect_used` are denied in library code
 (tests may allow them).
@@ -199,18 +209,33 @@ The `.trg` reader consumes the arg list and script body so the next record's
 | owning `.wld` file number | `RoomDef::area` = `tba_<zone>`; key = `tba.<vnum>` |
 | `vnum` | `RoomDef::num` |
 | room flag `ROOM_DARK` (0) | `RoomTag::Dark` |
+| `ROOM_DEATH` (1) | **permanent drop** (no `RoomTag`; `room_flag`) |
 | `ROOM_NOMOB` (2) | `RoomTag::NoMob` |
 | `ROOM_INDOORS` (3) | **absence** → `RoomTag::Outdoor` |
 | `ROOM_PEACEFUL` (4) | `RoomTag::Peaceful` |
 | `ROOM_SOUNDPROOF` (5) | `RoomTag::Soundproof` |
+| `ROOM_NOTRACK` (6) | **permanent drop** (no `RoomTag`) |
+| `ROOM_NOMAGIC` (7) | **permanent drop** (no `RoomTag`) |
 | `ROOM_TUNNEL` (8) | `RoomTag::Tunnel` |
 | `ROOM_PRIVATE` (9) | `RoomTag::Private` |
 | `ROOM_GODROOM` (10) | `RoomTag::Godroom` |
-| `DEATH`(1), `NOTRACK`(6), `NOMAGIC`(7), `HOUSE`+, internal bits | unmapped → report |
+| `ROOM_HOUSE` (11) .. `ROOM_WORLDMAP` (16) | **permanent drop** (house/OLC/map internals) |
 | `sector` 0..9 | `Sector::{Inside,City,Field,Forest,Hills,Mountain,WaterSwim,WaterNoSwim,Flying,Underwater}` |
 | `D` blocks | `BTreeMap<SmolStr, ExitDef>` keyed by `dirs[]` |
 | `E` blocks | `RoomDef::extra_descriptions` (keywords split on whitespace) |
 | `T` lines | deferred trigger metadata |
+| `coord` | **permanent drop, recorded once** in `global_drops` |
+
+Every source flag either maps to a `RoomTag` or produces a permanent-drop
+`unmapped` entry (`room_flag`). `RoomDef::coord` is always `None` because
+tbaMUD's `struct room_data` carries no coordinates; the absence is recorded
+once in the report's `global_drops` (`no_source_field` / `room coord`).
+
+A `D` block whose `to_room` is `NOWHERE` (`-1`/`0`/`65535`) is a
+**description-only exit**. `ExitDef::to` is non-optional, so it cannot be
+emitted: the exit is dropped and recorded as `exit_description_only` with its
+direction and source description. A real vnum that was not converted is a
+dangling destination and is recorded as `dangling_exit` instead.
 
 `ExitDef`:
 
@@ -238,16 +263,25 @@ The `.trg` reader consumes the arg list and script body so the next record's
 | `ac` field | `armor_class = 10 * ac` |
 | hp dice | `hp: Dice` |
 | damage dice bonus | `damroll` |
-| damage dice | unmapped → report (no attack-dice field) |
+| damage dice | `damage: Dice`; `npc_combatant_system` attaches it as `TbaAttackDice`, used by `resolve_rounds` |
 | `alignment` | `alignment` |
 | `gold` | `gold` |
 | `experience` | `experience` |
 | default position | `default_position: Position` |
 | `—` | `thaco = 20` (monsters use a flat 20; see `fight.c:829`) |
-| `MOB_SPEC`, `NOCHARM`, `NOSUMMON`, `NOSLEEP`, `NOBASH`, `NOBLIND`, `NOKILL` | unmapped → report |
-| `AFF_*`, e-specs, sex, keyword list | unmapped → report |
+| `MOB_NOCHARM`/`NO_SUMMON`/`NOSLEEP`/`NOBASH`/`NOBLIND`/`NOKILL` | `TbaNpcStats::behaviour` (`NpcBehaviour::No*`) |
+| `MOB_SPEC` | **permanent drop** (`mob_flag`): special procedures are a non-goal (#15) |
+| `AFF_*` on the mob | **permanent drop** (`mob_aff`): no affect-flag field |
+| e-specs | **permanent drop** (`mob_espec`): no target field |
+| sex | **permanent drop** (`mob_sex`): `TbaNpcStats` has no sex field |
+| keyword list | **permanent drop** (`npc_keywords`): `stdlib.npcs` has no keyword list |
 
 `MOB_ISNPC` and `MOB_NOTDEADYET` are loader bookkeeping and are not reported.
+
+The following Circle **combat skills** occur in the source class tables but have
+no engine implementation. They are recorded once in the report's `global_drops`
+(`combat_skill`) and are an explicit non-goal: `backstab`, `kick`, `bash`,
+`rescue`, `assist`, `consider`.
 
 ### 3.3 Items
 
@@ -264,9 +298,12 @@ The `.trg` reader consumes the arg list and script body so the next record's
 | `A` blocks | `TbaItemDef::affects` (`APPLY_*` → `AffectLocation`) |
 | `weight/cost/rent/level` | `weight/cost/rent/min_level` |
 | `timer` | `timer` (`0` → `None`) |
-| `AFF_*` affect-flags | unmapped → report (no target field yet) |
-| extra flags, `APPLY_CLASS/LEVEL/AGE/WEIGHT/HEIGHT/GOLD/EXP` | unmapped → report |
-| keyword list, action description, `E` blocks | unmapped → report |
+| keyword list | `TbaItemDef::keywords` |
+| `ITEM_*` extra flags | `TbaItemDef::extra_flags` (`ItemExtraFlag`) |
+| `AFF_*` affect-flags | `TbaItemDef::affect_flags` (`ItemAffectFlag`); the `DONTUSE`/`UNUSED`/`FREE` placeholder bits are **permanent drops** |
+| action description | **permanent drop** (`item_action_description`): `stdlib.items` has no action description |
+| `E` extra descriptions | **permanent drop** (`item_extra_descriptions`): `stdlib.items` has no extra-description field |
+| `APPLY_CLASS/LEVEL/AGE/CHAR_WEIGHT/CHAR_HEIGHT/GOLD/EXP` | **permanent drop** (`affect_location`): no `AffectLocation` variant, and no runtime consumer |
 
 `APPLY_*` → `AffectLocation`: `1..6` → Str/Dex/Int/Wis/Con/Cha, `12` →
 MaxMana, `13` → MaxHp, `14` → MaxMove, `17` → ArmorClass, `18` → Hitroll,
@@ -274,7 +311,7 @@ MaxMana, `13` → MaxHp, `14` → MaxMove, `17` → ArmorClass, `18` → Hitroll
 
 ### 3.4 Zone resets
 
-| Code | `ZoneCommand` | Fields |
+| Code | `ZoneCommandKind` | Fields |
 |---|---|---|
 | `M` | `PlaceMob` | `mob=tba_npc_<a1>`, `max_in_world=a2`, `room=tba.<a3>` |
 | `O` | `DropItem` | `item=tba_item_<a1>`, `max_in_world=a2`, `room=tba.<a3>`; `a3` = nowhere → dropped |
@@ -286,6 +323,10 @@ MaxMana, `13` → MaxHp, `14` → MaxMove, `17` → ArmorClass, `18` → Hitroll
 | `T`/`V` | — | deferred (trigger / trigger variable) |
 | `*` | — | skipped (comment) |
 
+Each mapped command is wrapped in `ZoneCommand { if_flag, command }`. The
+`if_flag` comes from the source's first command number and is honoured by the
+interpreter (a flagged command is skipped when the previous command failed).
+
 `ResetMode`: `0` → `Never`, `1` → `WhenDesert`, `2` → `Always`. Zone flag
 words are recorded as unmapped because `ZoneDef` has no flags field.
 
@@ -294,25 +335,59 @@ words are recorded as unmapped because `ZoneDef` has no flags field.
 One `stdlib.areas` entry per converted zone: id `tba_<zone>`, name from the
 `.zon` name line (e.g. `Northern Midgaard`).
 
+### 3.6 Shops
+
+One `tba.shops` entry per converted shopkeeper, keyed by the keeper's
+`stdlib.npcs` id (`SHOP_KEEPER`, `shop.c:1203`), because that is what Circle's
+`shop_keeper` matches against. The record's `#vnum` label is only a shop id.
+
+| Source (`.shp`) | `tba.shops` |
+|---|---|
+| `profit_buy` | `buy_multiplier` (a non-positive value drops the shop) |
+| `profit_sell` | `sell_multiplier` |
+| trade-type list | `buy_kinds` (`TbaItemKind`) |
+| produce list | `produce` (`stdlib.items` ids; a missing item is dangling) |
+| room list | `rooms` (`stdlib.rooms` ids; a missing room is dangling) |
+| `trade_with` bits | `trade_with` (`ShopTrade::Good/Evil/Neutral/MagicUser/Cleric/Thief/Warrior`) |
+| `open1/close1/open2/close2` | `hours: ShopHours` |
+| seven messages | `messages`, kept verbatim with `%s`/`%d` |
+| per-type buy word | **permanent drop** (`shop_buy_word`) |
+| `broke_temper` | **permanent drop** (`shop_broke_temper`): no temper reaction |
+| `bitvector` | **permanent drop** (`shop_bitvector`): `SHOP_*` flags |
+| `#vnum` ≠ keeper | **unmapped** (`shop_record`): the keeper vnum is the key |
+| keeper `-1`, duplicate keeper, missing produce/room, non-positive `profit_buy` | **dangling** / **unmapped** as named |
+
+The runtime enforces `hours` (`is_open`, `shop.c:140`), `rooms` (`ok_shop_room`,
+`shop.c:939`), and `trade_with` (`is_ok_char`, `shop.c:108`), and renders
+`messages[0..6]` for the deny/buy/sell replies.
+
 ---
 
 ## 4. Drop-report schema
 
 `serde_json`, pretty-printed, terminated by a newline. Every vector is sorted
-before writing, so the report is deterministic. Schema `1`:
+before writing, so the report is deterministic. Schema `2`:
 
 ```jsonc
 {
-  "schema": 1,
+  "schema": 2,
   "tool": "tbaport 0.1.0",
   "source": "/home/qworg/Development/tbamud",
   "out": "target/tbaport/content",
   "mode": "full",              // or "only"
   "only": null,                // or the zone number
+  "global_drops": [
+    { "kind": "no_source_field", "name": "room coord",
+      "reason": "tbaMUD `struct room_data` has no coordinates; `RoomDef::coord` is always `None`" },
+    { "kind": "combat_skill", "name": "backstab",
+      "reason": "Circle combat skill with no engine implementation (non-goal)" }
+  ],
   "totals": {
     "zones": 189, "rooms": 12700, "npcs": 3705, "items": 4765,
-    "zone_commands": 18513, "deferred": 1797,
-    "dangling": 3, "unmapped": 32258
+    "zone_commands": 18513, "deferred": 3161,
+    "dangling": 14, "unmapped": 17578, "global_drops": 7,
+    "unmapped_by_kind": { "room_flag": 1726, "mob_sex": 3705, ... },
+    "dangling_by_kind": { "dangling_door_key": 3, ... }
   },
   "zones": [
     {
@@ -320,29 +395,23 @@ before writing, so the report is deterministic. Schema `1`:
       "name": "Northern Midgaard",
       "bot": 3000, "top": 3099,
       "area": "tba_30",
-      "rooms": 58, "npcs": 46, "items": 63, "commands": 166,
+      "rooms": 58, "npcs": 46, "items": 63, "commands": 169,
       "source_files": { "wld": true, "mob": true, "obj": true,
                         "zon": true, "shp": true, "trg": true, "qst": false },
       "deferred": [
-        { "section": "shops", "vnum": 3000, "attach": "npc",
-          "detail": "shopkeeper", "reason": "shops are deferred (doc §9)" },
         { "section": "triggers", "vnum": 3000, "attach": "mob",
           "detail": "Fixture Trigger", "reason": "DG scripts are deferred (doc §10)" }
       ],
       "dangling": [
         { "kind": "dangling_door_key",
           "from": "room tba.3040 exit west door.key",
-          "target": "tba_item_3112" },
-        { "kind": "dangling_exit", "from": "room tba.3002 exit down",
-          "target": "tba.7026" },
-        { "kind": "dangling_reset_item", "from": "zone 30 command 35 (G)",
-          "target": "tba_item_3102" }
+          "target": "tba_item_3112" }
       ],
       "unmapped": [
         { "object": "npc tba_npc_3000", "kind": "mob_flag",
-          "name": "NOCHARM", "detail": "" },
+          "name": "SPEC", "detail": "special procedures are a non-goal (see #15)" },
         { "object": "item tba_item_3000", "kind": "affect_location",
-          "name": "AGE", "detail": "modifier 5" }
+          "name": "AGE", "detail": "modifier 5; permanent drop: AffectLocation has no such variant" }
       ],
       "command_flags": [
         { "index": 0, "code": "R", "if_flag": 0 },
@@ -355,26 +424,30 @@ before writing, so the report is deterministic. Schema `1`:
 
 Finding kinds:
 
+- `global_drops[].kind`: `no_source_field` (a whole-world absence, e.g. room
+  coordinates), `combat_skill` (the explicit combat-skill non-goals).
 - `deferred.section`: `triggers`, `trigger_variables`, `quests`.
 - `dangling.kind`: `dangling_door_key`, `dangling_exit`, `dangling_reset_mob`,
   `dangling_reset_item`, `dangling_reset_container`, `dangling_reset_room`,
-  `dangling_shop_keeper`, `duplicate_shop_keeper`, `dangling_shop_produce`,
-  plus the defensive `dangling_npc_stats_key` / `dangling_item_stats_key`.
+  `dangling_shop_keeper`, `dangling_shop_produce`, `dangling_shop_room`,
+  `duplicate_shop_keeper`, plus the defensive `dangling_npc_stats_key` /
+  `dangling_item_stats_key`.
   A dangling reference is **not** in the emitted YAML; the report is the only
   record of it.
 - `unmapped.kind`: `room_flag`, `mob_flag`, `mob_aff`, `mob_espec`,
-  `mob_damage_dice`, `mob_sex`, `npc_keywords`, `position`, `sector`,
-  `exit_direction`, `exit_description_only`, `item_extra_flag`,
-  `item_affect_flag`, `item_keywords`, `item_action_description`,
+  `mob_sex`, `npc_keywords`, `position`, `sector`, `exit_direction`,
+  `exit_description_only`, `item_affect_flag`, `item_action_description`,
   `item_extra_descriptions`, `item_type`, `affect_location`, `zone_flag`,
-  `zone_command_dropped`, `reset_mode`, `shop_buy_word`,
-  `shop_room_restriction`, `shop_broke_temper`, `shop_bitvector`,
-  `shop_trade_with`, `shop_hours`, `shop_record`, `shop_profit_buy`.
+  `zone_command_dropped`, `reset_mode`, `shop_buy_word`, `shop_broke_temper`,
+  `shop_bitvector`, `shop_record`, `shop_profit_buy`.
 
-`command_flags` is the carrier for the Circle `if_flag`, which the real
-`ZoneCommand` type deliberately does not model: one entry per parsed command,
-in source order, keyed by its index in the reset program (`T`/`V` and comments
-included in the index space but not in `commands`).
+`command_flags` remains the raw carrier for the Circle `if_flag`: one entry per
+parsed command, in source order, keyed by its index in the reset program
+(`T`/`V` and comments included in the index space but not in `commands`).
+
+`DropReport::write` also emits a Markdown summary beside the JSON
+(`reports/drop-report.summary.md`), grouping every `unmapped` and `dangling`
+entry by reason and listing the global drops.
 
 ---
 
@@ -416,19 +489,22 @@ output cannot drift from the schema the engine loads.
 ## 6. CLI
 
 ```text
-tbaport convert --source DIR [--out DIR] [--report FILE] [--only ZONE] [--validate-only]
+tbaport convert --source DIR [--out DIR] [--report FILE] [--only ZONE] [--start-room VNUM] [--validate-only]
 
   --source DIR       tbaMUD checkout root (must contain lib/world)
   --out DIR          staging output directory [default: target/tbaport/content]
   --report FILE      drop-report path [default: target/tbaport/drop-report.json]
   --only ZONE        convert a single zone
+  --start-room VNUM  tag this room vnum as `start_room` [default: 3001]
   --validate-only    parse/map and write the report, but emit no YAML
 ```
 
-Files written: `stdlib.areas.yaml`, `stdlib.rooms.yaml`, `stdlib.npcs.yaml`,
-`stdlib.items.yaml`, `tba.zones.yaml`, `tba.npc_stats.yaml`, `tba.items.yaml`.
-`tba.classes.yaml` is **not** converter output: the four Diku classes live in
-`class.c`, not in world files, and stay hand-authored.
+Files written: `stdlib.areas.yaml`, `stdlib.rooms.<zone>.yaml` (one shard per
+zone, TBA-E01), `stdlib.npcs.yaml`, `stdlib.items.yaml`, `tba.zones.yaml`,
+`tba.npc_stats.yaml`, `tba.items.yaml`, `tba.shops.yaml`, plus the report and
+its Markdown summary. `tba.classes.yaml` is **not** converter output: the four
+Diku classes live in `class.c`, not in world files, and stay hand-authored. A
+committed report lives at `reports/drop-report.json` (§8/runbook).
 
 Each YAML file is prefixed with a fixed provenance comment. Library entry point:
 
@@ -453,8 +529,9 @@ conversion.report.write(Path::new("target/tbaport/drop-report.json"))?;
 | Objects | `tests/parse.rs` | 13-field flags, holds terminator for the caller, affects, container capacity |
 | Zones | `tests/parse.rs` | header/bounds/reset mode, comment skipping, command order, `if_flag`, `E` wear position |
 | Deferred | `tests/parse.rs` | one shop, one trigger (attach `mob`), one quest (questmaster) |
-| Schema exactness | `tests/convert.rs` | every emitted file deserialises into its real type and re-serialises to the exact bytes written (header aside) |
+| Schema exactness | `tests/convert.rs` | every emitted file (including each room shard) deserialises into its real type and re-serialises to the exact bytes written (header aside) |
 | Determinism | `tests/convert.rs` | two in-process conversions produce byte-identical YAML **and** byte-identical JSON report |
+| Sharding | `tests/convert.rs` | rooms are emitted as `stdlib.rooms.<zone>.yaml` shards; the engine merges them back to the full `RoomsFile` |
 | Real counts | `tests/convert.rs` | `--only 30` totals equal a strict `#<digits>` scan of `30.wld`/`30.mob`/`30.obj`, and are pinned at 58/46/63 |
 | Registry validation | `tests/validate_pack.rs` | the **full 189-zone** conversion loads through the real `stdlib + tba` registry and `validate_all` returns no issues |
 | Full-world determinism | manual | `convert` twice into different dirs; `diff -r` the YAML trees; reports differ only in the `out` field |
@@ -467,22 +544,37 @@ against the sibling checkout when present (`TBAMUD_SOURCE` or
 
 ## 8. Known gaps (all recorded in the drop report)
 
-- **Zone `if_flag` has no `ZoneCommand` field.** Order is preserved and the raw
-  flag is carried in `command_flags`.
-- **`AFF_*` affect-flags on objects** (glow, hum, invisibility, anti-class
-  bits) have no target field. They are named in the report.
-- **Item extra flags** (`ITEM_GLOW` … `ITEM_QUEST`) likewise.
-- **NPC/item keyword lists** have no `stdlib` field; `name` alone is emitted.
-- **NPC sex and attack dice**; `TbaNpcStats` carries neither.
-- **Item action descriptions and object extra descriptions.**
-- **Room `D`-block general descriptions** (description-only exits).
-- **`APPLY_CLASS/LEVEL/AGE/CHAR_WEIGHT/CHAR_HEIGHT/GOLD/EXP`** have no
-  `AffectLocation`.
-- **Zone flags** (`CLOSED`, `NO_IMMORT`, `QUEST`, `GRID`, …) have no field.
-- **Shops** are emitted as `tba.shops`; the source's keeper temper, trade-with
-  bits, room restriction, opening hours, buy words and any non-positive
-  `profit_buy` have no target field and are reported as `unmapped`.
-- **DG triggers and quests** remain deferred wholesale.
+Every gap below is a **named permanent drop**: it appears in
+`reports/drop-report.json` as a `global_drops` / `unmapped` / `dangling` /
+`deferred` entry, and `reports/drop-report.summary.md` groups the surviving
+drops by reason.
 
-None of these is silently discarded: each produces a `deferred`, `dangling` or
-`unmapped` entry.
+- **Room coordinates.** tbaMUD's `struct room_data` has no coordinate field, so
+  `RoomDef::coord` is always `None` (`global_drops`: `no_source_field` / `room
+  coord`).
+- **Room flags without a `RoomTag`.** `ROOM_DEATH`, `ROOM_NOTRACK`,
+  `ROOM_NOMAGIC`, `ROOM_HOUSE`+, and the OLC/BFS/worldmap internals
+  (`room_flag`).
+- **Description-only exits.** An exit whose destination is `NOWHERE` has no
+  `ExitDef::to` and is dropped (`exit_description_only`) with its direction and
+  description.
+- **NPC attack dice** are now modelled (`tba.npc_stats.damage` +
+  `TbaAttackDice`). **NPC affect-flags, e-specs, sex and keyword lists** have no
+  field and are named (`mob_aff`, `mob_espec`, `mob_sex`, `npc_keywords`).
+- **`MOB_SPEC` special procedures** are a non-goal (`mob_flag`), pending #15.
+- **Combat skills** `backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`
+  have no implementation (the explicit `global_drops` non-goal list).
+- **Item action descriptions and object `E` descriptions** (`stdlib.items` has
+  no field). The keyword list and `ITEM_*`/`AFF_*` flags are now modelled.
+- **`APPLY_CLASS/LEVEL/AGE/CHAR_WEIGHT/CHAR_HEIGHT/GOLD/EXP`** have no
+  `AffectLocation` variant (`affect_location`).
+- **Zone flags** (`CLOSED`, `NO_IMMORT`, `QUEST`, `GRID`, …) have no `ZoneDef`
+  field (`zone_flag`).
+- **Shops**: the keeper temper (`broke_temper`), the `SHOP_*` bitvector, the
+  per-type buy word and a differing `#vnum` are named drops; the keeper `-1`,
+  duplicate keeper, missing produce/room and a non-positive `profit_buy` drop
+  the shop (`dangling` / `shop_profit_buy`). Opening hours, room restrictions
+  and `trade_with` are now modelled and enforced.
+- **DG triggers and quests** remain deferred wholesale (`deferred`).
+
+None of these is silently discarded.

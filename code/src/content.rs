@@ -146,6 +146,19 @@ pub enum NpcBehaviour {
     Wimpy,
     /// Cannot be backstabbed.
     Aware,
+    /// Cannot be charmed (`MOB_NOCHARM`).
+    NoCharm,
+    /// Cannot be summoned (`MOB_NOSUMMON`).
+    NoSummon,
+    /// Cannot be put to sleep (`MOB_NOSLEEP`).
+    NoSleep,
+    /// Cannot be bashed (`MOB_NOBASH`).
+    NoBash,
+    /// Cannot be blinded (`MOB_NOBLIND`).
+    NoBlind,
+    /// Kills a character outright instead of reducing them to 0 HP
+    /// (`MOB_NOKILL`).
+    NoKill,
 }
 
 // ---------------------------------------------------------------------------
@@ -179,7 +192,7 @@ pub enum DoorReset {
 /// and are skipped when that placement did not happen.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
-pub enum ZoneCommand {
+pub enum ZoneCommandKind {
     /// `M` — place a mob in a room, up to `max_in_world` copies world-wide.
     PlaceMob {
         mob: NpcId,
@@ -223,6 +236,36 @@ pub enum ZoneCommand {
     },
     /// `R` — remove an item from a room.
     RemoveItem { room: RoomId, item: ItemId },
+}
+
+/// A reset command plus Circle's per-command `if_flag`.
+///
+/// `if_flag` mirrors `ZCMD.if_flag` in `reset_zone` (`db.c`): a command whose
+/// flag is set runs only when the command before it succeeded (`last_cmd` in
+/// C). A plain command (`if_flag: false`) always runs. The flag is folded into
+/// a wrapper rather than repeated on every variant so a reset program stays a
+/// single homogeneous `Vec`.
+///
+/// The wrapper is `#[serde(flatten)]`, so the emitted YAML keeps the
+/// `type: <variant>` shape and gains an `if_flag` key alongside it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ZoneCommand {
+    /// Circle's `if_flag`: run only when the previous command succeeded.
+    #[serde(default)]
+    pub if_flag: bool,
+    /// The command body.
+    #[serde(flatten)]
+    pub command: ZoneCommandKind,
+}
+
+impl ZoneCommand {
+    /// A command that always runs (`if_flag: false`).
+    pub fn always(command: ZoneCommandKind) -> Self {
+        Self {
+            if_flag: false,
+            command,
+        }
+    }
 }
 
 /// One zone: bounds, reset cadence, and its reset program.
@@ -279,28 +322,28 @@ impl PackSection for ZonesSection {
 
             for (index, command) in zone.commands.iter().enumerate() {
                 let field = format!("zones.{vnum}.commands[{index}]");
-                match command {
-                    ZoneCommand::PlaceMob { mob, room, .. } => {
+                match &command.command {
+                    ZoneCommandKind::PlaceMob { mob, room, .. } => {
                         require_npc(ctx, &format!("{field}.mob"), mob, &npcs);
                         require_room(ctx, &format!("{field}.room"), room, &rooms);
                     }
-                    ZoneCommand::DropItem { item, room, .. } => {
+                    ZoneCommandKind::DropItem { item, room, .. } => {
                         require_item(ctx, &format!("{field}.item"), item, &items);
                         require_room(ctx, &format!("{field}.room"), room, &rooms);
                     }
-                    ZoneCommand::GiveItem { item, .. } => {
+                    ZoneCommandKind::GiveItem { item, .. } => {
                         require_item(ctx, &format!("{field}.item"), item, &items);
                     }
-                    ZoneCommand::EquipItem { item, .. } => {
+                    ZoneCommandKind::EquipItem { item, .. } => {
                         require_item(ctx, &format!("{field}.item"), item, &items);
                     }
-                    ZoneCommand::PutItem {
+                    ZoneCommandKind::PutItem {
                         item, container, ..
                     } => {
                         require_item(ctx, &format!("{field}.item"), item, &items);
                         require_item(ctx, &format!("{field}.container"), container, &items);
                     }
-                    ZoneCommand::DoorState { room, exit, .. } => {
+                    ZoneCommandKind::DoorState { room, exit, .. } => {
                         require_room(ctx, &format!("{field}.room"), room, &rooms);
                         if ExitKey::from_word(exit).is_none() {
                             ctx.error_at(
@@ -309,7 +352,7 @@ impl PackSection for ZonesSection {
                             );
                         }
                     }
-                    ZoneCommand::RemoveItem { room, item } => {
+                    ZoneCommandKind::RemoveItem { room, item } => {
                         require_room(ctx, &format!("{field}.room"), room, &rooms);
                         require_item(ctx, &format!("{field}.item"), item, &items);
                     }
@@ -350,6 +393,12 @@ pub struct TbaNpcStats {
     pub default_position: Position,
     #[serde(default)]
     pub behaviour: Vec<NpcBehaviour>,
+    /// The source `.mob` damage dice (`#d#+#`). Circle NPCs deal this instead
+    /// of an unarmed roll; [`npc_combatant_from_stats`] carries it into the
+    /// runtime [`TbaAttackDice`](crate::combat::TbaAttackDice). `None` falls
+    /// back to unarmed damage.
+    #[serde(default)]
+    pub damage: Option<Dice>,
 }
 
 /// `tba.npc_stats` — keyed by the `stdlib.npcs` id it describes.
@@ -413,10 +462,78 @@ pub enum TbaItemKind {
     Fountain,
 }
 
+/// Object extra flags (`ITEM_*` in `structs.h:412`).
+///
+/// These are the source's `GET_OBJ_EXTRA` bits. They are carried as data even
+/// where the engine does not yet act on them, so a later drop/sell/decay pass
+/// can honour them without a re-conversion.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ItemExtraFlag {
+    Glow,
+    Hum,
+    NoRent,
+    NoDonate,
+    NoInvis,
+    Invisible,
+    Magic,
+    NoDrop,
+    Bless,
+    AntiGood,
+    AntiEvil,
+    AntiNeutral,
+    AntiMagicUser,
+    AntiCleric,
+    AntiThief,
+    AntiWarrior,
+    NoSell,
+    Quest,
+}
+
+/// Object affect flags (`AFF_*` in `structs.h:272`), the source's
+/// `GET_OBJ_AFFECT` bits. The loader's affect flags shift every bit up by one
+/// (`AFF_DONTUSE == 0`); the three placeholder bits (`DONTUSE`, `UNUSED`,
+/// `FREE`) are not modelled and are reported instead.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ItemAffectFlag {
+    Blind,
+    Invisible,
+    DetectAlign,
+    DetectInvis,
+    DetectMagic,
+    SenseLife,
+    Waterwalk,
+    Sanctuary,
+    Curse,
+    Infravision,
+    Poison,
+    ProtectEvil,
+    ProtectGood,
+    Sleep,
+    NoTrack,
+    Flying,
+    Scuba,
+    Sneak,
+    Hide,
+    Charm,
+}
+
 /// Diku item data layered on top of `stdlib.items`.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct TbaItemDef {
+    /// The source `.obj` keyword list (the first string of the record).
+    /// `stdlib.items` carries only a display `name`; the keywords are what a
+    /// player may type to target the item, so they are preserved here.
+    #[serde(default)]
+    pub keywords: Vec<String>,
+    /// The source `GET_OBJ_EXTRA` bits (`ITEM_*`).
+    #[serde(default)]
+    pub extra_flags: Vec<ItemExtraFlag>,
+    /// The source `GET_OBJ_AFFECT` bits (`AFF_*`).
+    #[serde(default)]
+    pub affect_flags: Vec<ItemAffectFlag>,
     pub kind: TbaItemKind,
     /// Wear positions this item occupies. Empty means not wearable.
     #[serde(default)]
@@ -849,6 +966,58 @@ fn spell_issues(spell_id: &SmolStr, spell: &SpellDef) -> Vec<(String, String)> {
 // tba.shops — CircleMUD shopkeeper economy (TBA-E17)
 // ---------------------------------------------------------------------------
 
+/// The seven `SHOP_TRADE_WITH` bits (`shop.h:78`): each names a class or
+/// alignment the keeper refuses to serve (`is_ok_char`, `shop.c:108`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ShopTrade {
+    Good,
+    Evil,
+    Neutral,
+    MagicUser,
+    Cleric,
+    Thief,
+    Warrior,
+}
+
+/// Circle's shop opening hours (`SHOP_OPEN1/CLOSE1/OPEN2/CLOSE2`), in MUD
+/// hours 0..=23. A shop may open twice a day; the default (`0/28/0/0`) means
+/// "always open", the source convention for an unset schedule.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ShopHours {
+    pub open1: u32,
+    pub close1: u32,
+    pub open2: u32,
+    pub close2: u32,
+}
+
+impl Default for ShopHours {
+    fn default() -> Self {
+        Self {
+            open1: 0,
+            close1: 28,
+            open2: 0,
+            close2: 0,
+        }
+    }
+}
+
+impl ShopHours {
+    /// Whether the shop is open at `hour`, exactly Circle's `is_open`
+    /// (`shop.c:140-160`): closed before the first opening, and closed during
+    /// the gap between the first close and the second opening.
+    pub fn is_open(&self, hour: u32) -> bool {
+        if self.open1 > hour {
+            return false;
+        }
+        if self.close1 < hour && (self.open2 > hour || self.close2 < hour) {
+            return false;
+        }
+        true
+    }
+}
+
 /// One shopkeeper's trade terms, from a `.shp` record.
 ///
 /// Circle stores a shop as the keeper mob, the item prototypes it produces,
@@ -881,6 +1050,16 @@ pub struct ShopDef {
     /// The `stdlib.items` prototypes the shop stocks (`SHOP_PRODUCT`).
     #[serde(default)]
     pub produce: Vec<ItemId>,
+    /// The rooms the shop operates in (`SHOP_ROOM`), in source order. Empty
+    /// means the keeper acts wherever it stands.
+    #[serde(default)]
+    pub rooms: Vec<RoomId>,
+    /// The classes/alignments the keeper refuses to serve (`SHOP_TRADE_WITH`).
+    #[serde(default)]
+    pub trade_with: Vec<ShopTrade>,
+    /// The keeper's opening hours. Defaults to always open.
+    #[serde(default)]
+    pub hours: ShopHours,
     /// Circle's seven shop messages, when the source carries them.
     #[serde(default)]
     pub messages: Vec<String>,
@@ -903,8 +1082,9 @@ impl PackSection for ShopsSection {
     fn validate(defs: &Self::Defs, ctx: &mut ValidationCtx<'_>) {
         let npcs = npc_ids(ctx);
         let items = item_ids(ctx);
+        let rooms = room_ids(ctx);
         for (npc_id, shop) in &defs.shops {
-            for (field, message) in shop_issues(npc_id, shop, &npcs, &items) {
+            for (field, message) in shop_issues(npc_id, shop, &npcs, &items, &rooms) {
                 ctx.error_at(field, message);
             }
         }
@@ -922,6 +1102,7 @@ fn shop_issues(
     shop: &ShopDef,
     npcs: &BTreeSet<NpcId>,
     items: &BTreeSet<ItemId>,
+    rooms: &BTreeSet<RoomId>,
 ) -> Vec<(String, String)> {
     let mut issues = Vec::new();
     let field = format!("shops.{npc_id}");
@@ -956,6 +1137,14 @@ fn shop_issues(
             issues.push((
                 format!("{field}.produce[{index}]"),
                 format!("unknown item `{item}` (not defined in stdlib.items)"),
+            ));
+        }
+    }
+    for (index, room) in shop.rooms.iter().enumerate() {
+        if !rooms.contains(room) {
+            issues.push((
+                format!("{field}.rooms[{index}]"),
+                format!("unknown room `{room}` (not defined in stdlib.rooms)"),
             ));
         }
     }
@@ -1122,6 +1311,9 @@ mod tests {
             sell_multiplier: 0.5,
             buy_kinds: vec![TbaItemKind::Weapon],
             produce: vec![ItemId::from("sword")],
+            rooms: Vec::new(),
+            trade_with: Vec::new(),
+            hours: ShopHours::default(),
             messages: Vec::new(),
         }
     }
@@ -1131,35 +1323,76 @@ mod tests {
         let npc = NpcId::from("tba_npc_3000");
         let npcs = BTreeSet::from([npc.clone()]);
         let items = BTreeSet::from([ItemId::from("sword")]);
-        assert!(shop_issues(&npc, &shop(), &npcs, &items).is_empty());
+        let rooms = BTreeSet::from([RoomId::from("tba.3001")]);
+        assert!(shop_issues(&npc, &shop(), &npcs, &items, &rooms).is_empty());
 
         // An unknown keeper names the shop key itself.
         let stranger = NpcId::from("tba_npc_9999");
-        let issues = shop_issues(&stranger, &shop(), &npcs, &items);
+        let issues = shop_issues(&stranger, &shop(), &npcs, &items, &rooms);
         assert_eq!(issues.len(), 1, "{issues:?}");
         assert_eq!(issues[0].0, "shops.tba_npc_9999");
 
         // A non-positive / negative / NaN multiplier is rejected.
         let mut bad_buy = shop();
         bad_buy.buy_multiplier = 0.0;
-        assert_eq!(shop_issues(&npc, &bad_buy, &npcs, &items).len(), 1);
+        assert_eq!(shop_issues(&npc, &bad_buy, &npcs, &items, &rooms).len(), 1);
         bad_buy.buy_multiplier = f32::NAN;
-        assert_eq!(shop_issues(&npc, &bad_buy, &npcs, &items).len(), 1);
+        assert_eq!(shop_issues(&npc, &bad_buy, &npcs, &items, &rooms).len(), 1);
 
         let mut bad_sell = shop();
         bad_sell.sell_multiplier = -0.1;
-        let issues = shop_issues(&npc, &bad_sell, &npcs, &items);
+        let issues = shop_issues(&npc, &bad_sell, &npcs, &items, &rooms);
         assert_eq!(issues.len(), 1, "{issues:?}");
         assert_eq!(issues[0].0, "shops.tba_npc_3000.sell_multiplier");
         // Zero is a valid "pays nothing" multiplier.
         bad_sell.sell_multiplier = 0.0;
-        assert!(shop_issues(&npc, &bad_sell, &npcs, &items).is_empty());
+        assert!(shop_issues(&npc, &bad_sell, &npcs, &items, &rooms).is_empty());
 
         // Unknown stock is reported at its exact index.
         let mut bad_stock = shop();
         bad_stock.produce = vec![ItemId::from("sword"), ItemId::from("ghost")];
-        let issues = shop_issues(&npc, &bad_stock, &npcs, &items);
+        let issues = shop_issues(&npc, &bad_stock, &npcs, &items, &rooms);
         assert_eq!(issues.len(), 1, "{issues:?}");
         assert_eq!(issues[0].0, "shops.tba_npc_3000.produce[1]");
+
+        // Unknown room restrictions are reported at their exact index.
+        let mut bad_rooms = shop();
+        bad_rooms.rooms = vec![RoomId::from("tba.3001"), RoomId::from("tba.9999")];
+        let issues = shop_issues(&npc, &bad_rooms, &npcs, &items, &rooms);
+        assert_eq!(issues.len(), 1, "{issues:?}");
+        assert_eq!(issues[0].0, "shops.tba_npc_3000.rooms[1]");
+    }
+
+    #[test]
+    fn shop_hours_match_circles_is_open() {
+        // The source default is always open.
+        assert!(ShopHours::default().is_open(0));
+        assert!(ShopHours::default().is_open(23));
+
+        // Open 9..17, closed evening and overnight.
+        let daytime = ShopHours {
+            open1: 9,
+            close1: 17,
+            open2: 0,
+            close2: 0,
+        };
+        assert!(!daytime.is_open(8), "before the first opening");
+        assert!(daytime.is_open(9));
+        assert!(daytime.is_open(17), "close hour is inclusive");
+        assert!(!daytime.is_open(18), "after the first close");
+        assert!(!daytime.is_open(23), "closed for the day");
+
+        // A lunch-close shop reopens in the afternoon.
+        let lunch = ShopHours {
+            open1: 8,
+            close1: 12,
+            open2: 14,
+            close2: 20,
+        };
+        assert!(lunch.is_open(8));
+        assert!(!lunch.is_open(13), "between the two shifts");
+        assert!(lunch.is_open(14));
+        assert!(lunch.is_open(20));
+        assert!(!lunch.is_open(21));
     }
 }
