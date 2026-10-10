@@ -8,7 +8,7 @@
 //! The room vnum also rides in [`mib_stdlib::content::RoomDef::num`] so the
 //! zone `[bot, top]` bounds can still be recovered.
 
-use mib_stdlib::content::{AreaId, ItemId, NpcId, RoomId};
+use mib_stdlib::content::{AreaId, ItemId, NpcId, QuestId, RoomId};
 
 /// `tba.<vnum>`
 pub fn room_id(vnum: i32) -> RoomId {
@@ -23,6 +23,11 @@ pub fn npc_id(vnum: i32) -> NpcId {
 /// `tba_item_<vnum>`
 pub fn item_id(vnum: i32) -> ItemId {
     ItemId::from(format!("tba_item_{vnum}"))
+}
+
+/// `tba_quest_<vnum>`
+pub fn quest_id(vnum: i32) -> QuestId {
+    QuestId::from(format!("tba_quest_{vnum}"))
 }
 
 /// `tba_<zone>`

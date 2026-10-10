@@ -6,12 +6,15 @@
 # - `cast '<spell>' [target]` — no `Command` variant.
 # - `list`, `buy <item>`, `sell <item>`, `value <item>` — CircleMUD shop
 #   commands; the fixed parser stops at the movement/combat grammar.
+# - `social <name> [target] [body part]` and `socials` — CircleMUD social
+#   emotes; the open-ended social name cannot be a fixed `Command` variant.
 #
 # The stdlib router would otherwise reject the verbs as unknown before the
-# genre systems (`mib_tba::spells::handle_cast_command` and
-# `mib_tba::shops::handle_shop_commands`) can see the raw line. Declaring them
-# here (with no DSL effects) makes the router claim each as a known pack verb
-# and leave the work to those systems, which run after the router in
+# genre systems (`mib_tba::spells::handle_cast_command`,
+# `mib_tba::shops::handle_shop_commands` and
+# `mib_tba::socials::handle_social_commands`) can see the raw line. Declaring
+# them here (with no DSL effects) makes the router claim each as a known pack
+# verb and leave the work to those systems, which run after the router in
 # `BridgeSet::Game`.
 verbs:
   cast:
@@ -28,4 +31,10 @@ verbs:
     effects: []
   value:
     description: Ask what the shopkeeper here would pay for an item.
+    effects: []
+  social:
+    description: Perform a social emote, optionally at a target.
+    effects: []
+  socials:
+    description: List the social emotes available to you.
     effects: []

@@ -1,6 +1,6 @@
 //! The `tba.*` pack sections — CircleMUD / tbaMUD domain data.
 //!
-//! Six sections, all owned by `mib-tba` (the `[code] module = "tba"` half of
+//! Seven sections, all owned by `mib-tba` (the `[code] module = "tba"` half of
 //! `packs/tba/`):
 //!
 //! - [`ZonesSection`] (`tba.zones`) — the stateful zone-reset programs (TBA-E07)
@@ -12,6 +12,8 @@
 //!   `cast` command (TBA-E18)
 //! - [`ShopsSection`] (`tba.shops`) — shopkeeper trade terms, read by the
 //!   `list`/`buy`/`sell`/`value` commands (TBA-E17)
+//! - [`SocialsSection`] (`tba.socials`) — Circle's 491 social emotes, read by
+//!   the `social`/`socials` commands (issue #17)
 //!
 //! Everything here is genre data layered on top of `stdlib.*`: rooms, NPC
 //! prototypes and item prototypes come from `stdlib.rooms` / `stdlib.npcs` /
@@ -1152,6 +1154,149 @@ fn shop_issues(
 }
 
 // ---------------------------------------------------------------------------
+// tba.socials — CircleMUD social emotes (issue #17)
+// ---------------------------------------------------------------------------
+
+/// One Circle social from `lib/misc/socials.new` (the active file: the source
+/// checkout has `use_new_socials = YES`, `config.c:271`).
+///
+/// Every string keeps the source's `$`-codes verbatim; the runtime
+/// ([`crate::socials`]) substitutes them against the actor, the target and the
+/// optional body part/object. A source string written as `#` (Circle's NULL) is
+/// `None`.
+///
+/// The map key in [`SocialsFile`] is the social word (Circle's `command`), so it
+/// is not repeated on the struct — the same shape as `tba.shops` keying on the
+/// keeper id.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SocialDef {
+    /// Circle's `sort_as`: the command-list sort key (usually the same word).
+    #[serde(default)]
+    pub sort_as: SmolStr,
+    /// Circle's `hide`: when set, a room that cannot see the actor does not see
+    /// the action (`act(..., hide, ...)`).
+    #[serde(default)]
+    pub hide: bool,
+    /// Circle's `min_char_position`: the actor's minimum [`Position`] (the
+    /// numeric `POS_*` value; `-1` disables the gate).
+    #[serde(default)]
+    pub min_char_position: i32,
+    /// Circle's `min_victim_position`: the target's minimum [`Position`]
+    /// (`-1` disables the gate).
+    #[serde(default)]
+    pub min_victim_position: i32,
+    /// Circle's `min_level_char`: the actor's minimum level.
+    #[serde(default)]
+    pub min_level_char: i32,
+    /// No argument: shown to the actor.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub char_no_arg: Option<String>,
+    /// No argument: shown to the room.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub others_no_arg: Option<String>,
+    /// A target was found: shown to the actor.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub char_found: Option<String>,
+    /// A target was found: shown to the room.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub others_found: Option<String>,
+    /// A target was found: shown to the target.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub vict_found: Option<String>,
+    /// No target was found: shown to the actor.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not_found: Option<String>,
+    /// The target was the actor: shown to the actor.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub char_auto: Option<String>,
+    /// The target was the actor: shown to the room.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub others_auto: Option<String>,
+    /// A body part was named: shown to the actor.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub char_body_found: Option<String>,
+    /// A body part was named: shown to the room.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub others_body_found: Option<String>,
+    /// A body part was named: shown to the target.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub vict_body_found: Option<String>,
+    /// An object was targeted: shown to the actor.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub char_obj_found: Option<String>,
+    /// An object was targeted: shown to the room.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub others_obj_found: Option<String>,
+}
+
+impl SocialDef {
+    /// True when the social carries no message at all (an inert entry). The
+    /// validator rejects these rather than shipping a command that does
+    /// nothing.
+    pub fn is_empty(&self) -> bool {
+        self.message_strings()
+            .iter()
+            .all(|message| message.is_none())
+    }
+
+    /// Every message string, in source order.
+    pub fn message_strings(&self) -> [Option<&String>; 13] {
+        [
+            self.char_no_arg.as_ref(),
+            self.others_no_arg.as_ref(),
+            self.char_found.as_ref(),
+            self.others_found.as_ref(),
+            self.vict_found.as_ref(),
+            self.not_found.as_ref(),
+            self.char_auto.as_ref(),
+            self.others_auto.as_ref(),
+            self.char_body_found.as_ref(),
+            self.others_body_found.as_ref(),
+            self.vict_body_found.as_ref(),
+            self.char_obj_found.as_ref(),
+            self.others_obj_found.as_ref(),
+        ]
+    }
+}
+
+/// `tba.socials` — keyed by the social word.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SocialsFile {
+    pub socials: BTreeMap<SmolStr, SocialDef>,
+}
+
+/// `tba.socials`.
+pub struct SocialsSection;
+
+impl PackSection for SocialsSection {
+    const ID: &'static str = "tba.socials";
+    type Defs = SocialsFile;
+
+    fn validate(defs: &Self::Defs, ctx: &mut ValidationCtx<'_>) {
+        for (name, social) in &defs.socials {
+            let field = format!("socials.{name}");
+            if name.trim().is_empty() {
+                ctx.error_at(field.clone(), "social name must not be empty");
+            }
+            if social.is_empty() {
+                ctx.error_at(
+                    field.clone(),
+                    "social carries no message strings and could never render",
+                );
+            }
+            if social.sort_as.trim().is_empty() {
+                ctx.error_at(
+                    format!("{field}.sort_as"),
+                    "sort_as must not be empty (defaults to the social name)",
+                );
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Registration
 // ---------------------------------------------------------------------------
 
@@ -1163,6 +1308,7 @@ pub fn register(registry: &mut SectionRegistry) {
     registry.register::<TbaClassesSection>();
     registry.register::<SpellsSection>();
     registry.register::<ShopsSection>();
+    registry.register::<SocialsSection>();
 }
 
 // ---------------------------------------------------------------------------

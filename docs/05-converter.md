@@ -40,11 +40,13 @@ the running server and links only the schema crates (`mib-stdlib`, `mib-tba`,
    description); **`tba.npc_stats`** carries the Diku numbers and AI flags.
 7. **`stdlib.items`** gets name + description + container/tags; **`tba.items`**
    carries kind, slots, values, affects and the economy fields.
-8. **DG triggers (`.trg`) and quests (`.qst`) are deferred** (doc §10/§9).
-   No sections are emitted for them; each record is written to the drop report
-   with vnum and attachment point so a later phase can rebuild it. **Shops
-   (`.shp`)** are no longer deferred: they are parsed and emitted as
-   `tba.shops` (see §3.6).
+8. **DG triggers (`.trg`) are deferred** (doc §10). No section is emitted for
+them; each record is written to the drop report with vnum and attachment point
+so a later phase can rebuild it. **Shops (`.shp`)** are parsed and emitted as
+`tba.shops` (see §3.6); **quests (`.qst`)** are parsed and emitted as
+`stdlib.quests` (see §3.7); **`lib/text`, `lib/misc/messages`** become
+`stdlib.help` topics (see §3.8) and **`lib/misc/socials.new`** becomes
+`tba.socials` (see §3.9).
 9. **Determinism.** Zones are iterated in ascending numeric order and every
    section is a `BTreeMap`; converting the same source twice is byte-identical.
    Rooms are sharded one file per zone (TBA-E01, §6) and the committed drop
@@ -184,17 +186,23 @@ S | $
 `renum_zone_table` (`db.c:1623`) confirms the argument roles. `reset_mode`:
 `0` never, `1` when deserted, `2` always.
 
-### 2.6 Deferred readers and the shop reader
+### 2.6 Deferred readers and the world-global readers
 
 | File | C source | Header scanned | Attachment |
 | --- | --- | --- | --- |
 | `.trg` | `parse_trigger` (`dg_db_scripts.c:30`) | `#vnum`, name, `<attach> <flags> <narg>`, arg list, body | `0` mob, `1` object, `2` world |
 | `.qst` | `parse_quest` (`quest.c:129`) | `#vnum`, five strings, three numeric lines, `S` | questmaster vnum from line 1 |
+| `lib/misc/socials.new` | `boot_social_messages` (`db.c:195`), `save_socials` (`aedit.c:341`) | `~<command> <sort_as> <hide> <min_char_pos> <min_victim_pos> <min_level>`, thirteen message lines | command word |
+| `lib/text/*` | `MOTD_FILE`/`NEWS_FILE`/… (`db.h:90`) | raw prose | file name |
+| `lib/misc/messages` | `load_messages` (`msgedit.c:97`) | `*` name comment, `M`, type, twelve messages | attack type |
 
 The `.trg` reader consumes the arg list and script body so the next record's
-`#` is read at the right level. The `.shp` reader (`source/shop.rs`, mirroring
-`boot_the_shops` in `shop.c:1203`) is a full record parser, not a scanner: see
-§3.6 for the grammar and its mapping into `tba.shops`.
+`#` is read at the right level. The `.qst`, `.shp`, `socials.new` and `messages`
+readers (`source/quest.rs`, `source/shop.rs`, `source/social.rs`,
+`source/text.rs`) are full record parsers, not scanners: see §3.6–§3.9 for the
+grammars and their mappings. `CONFIG_NEW_SOCIALS` is `YES` in the source
+(`config.c:271`), so `socials.new` is the active social table and the legacy
+`lib/misc/socials` is recorded as a permanent drop rather than parsed.
 
 ---
 
@@ -363,6 +371,99 @@ The runtime enforces `hours` (`is_open`, `shop.c:140`), `rooms` (`ok_shop_room`,
 
 ---
 
+### 3.7 Quests (`stdlib.quests`)
+
+One `stdlib.quests` entry per non-empty `.qst` record, keyed `tba_quest_<vnum>`.
+The source world has exactly one (vnum 100, "Kill the Mice!"); the other seven
+`.qst` files are empty (`$~`).
+
+| Source (`.qst`) | `stdlib.quests` |
+|---|---|
+| `name` | `QuestDef::name` |
+| `info` (else `desc`) | `QuestDef::description` |
+| `questmaster` | `QuestDef::giver` = `tba_npc_<vnum>` (a missing giver drops the quest, `dangling_quest_giver`) |
+| `type` 0 `AQ_OBJ_FIND` | `QuestStepDef::Collect { item: tba_item_<target>, count: quantity }` |
+| `type` 1 `AQ_ROOM_FIND` | `QuestStepDef::Visit { room: tba.<target> }` |
+| `type` 3 `AQ_MOB_KILL` | `QuestStepDef::Kill { npc: tba_npc_<target>, count: quantity }` |
+| `type` 2/4/5/6 (`MOB_FIND`/`MOB_SAVE`/`OBJ_RETURN`/`ROOM_CLEAR`) | **unmapped** (`quest_objective`): no `QuestStepDef` variant; the quest is dropped |
+| `exp_reward` | `RewardSpec::xp` |
+| `obj_reward` (a real item) | `RewardSpec::items` |
+| `obj_reward` that resolves to no item (including the source's `65535`) | **dangling** (`dangling_quest_reward_item`) |
+| `quantity` (`values[6]`) | the collect/kill `count` (minimum 1) |
+| `gold_reward` | **permanent drop** (`quest_gold_reward`): `RewardSpec` has no gold field |
+| `desc`/`done`/`quit` | **permanent drop** (`quest_text`): `QuestDef` has one description field |
+| `flags` bit 0 (`AQ_REPEATABLE`) | **permanent drop** (`quest_flag`) |
+| `prereq`/`prev_quest`/`next_quest` (≠ `-1`) | **permanent drop** (`quest_link`) |
+| `points`/`penalty`/`minlevel`/`maxlevel`/`time`/`returnmob` | **permanent drop** (`quest_condition`) |
+
+A step reference that names no converted object/room/NPC is a `dangling_*`
+entry and drops the whole quest, because a quest missing its objective would
+change the world rather than omit a field.
+
+### 3.8 Help topics (`stdlib.help`)
+
+The eleven `lib/text/` files and `lib/misc/messages` have no MIB home, so they
+become authored `stdlib.help` topics.
+
+| Source | Topic id | Audience |
+|---|---|---|
+| `lib/text/motd` | `motd` | public |
+| `lib/text/imotd` | `imotd` | staff |
+| `lib/text/news` | `news` | public |
+| `lib/text/credits` | `credits` | public |
+| `lib/text/handbook` | `handbook` | staff |
+| `lib/text/policies` | `policies` | public |
+| `lib/text/background` | `background` | public |
+| `lib/text/info` | `info` | public |
+| `lib/text/wizlist` | `wizlist` | staff |
+| `lib/text/greetings` | `greetings` | public |
+| `lib/text/immlist` | `immlist` | staff |
+| `lib/misc/messages` attack type `N` | `combat-message-N` | public |
+
+**Colour.** The text files carry Circle `@`-codes (`@RHELP COLORCODES@n`).
+`HelpTopicDef` prose reaches the client through `sanitize_prose`
+(`packs/stdlib/code/src/help.rs`), which strips ANSI/control characters but not
+the literal `@R` sequence, so the converter resolves the codes with
+`strip_colour_codes` at conversion time. `@@` becomes a literal `@`; every
+other `@<c>` is dropped.
+
+**Combat messages.** `load_messages` (`msgedit.c:97`) reads `M`-delimited
+entries: the numeric attack type and twelve strings (die/miss/hit/god ×
+attacker/victim/room; a line beginning with `#` is Circle's NULL). Several `M`
+entries may share a type — those are random variants — and the converter groups
+them under one topic body that labels all twelve slots. The `*`-comment name
+(for example `burning hands`) titles the topic. The legacy `lib/text/help/`
+database (`help.hlp` and friends) is *not* converted; it is recorded once as
+`global_drops`/`out_of_scope` because the generated command catalog plus these
+topics supersede it.
+
+### 3.9 Socials (`tba.socials`)
+
+One `tba.socials` entry per `lib/misc/socials.new` record, keyed by the command
+word (491 records). `stdlib.verbs` cannot express a social — it is a static
+effect list, while a social is a message table parameterised by actor, target,
+body part and object — so TBA owns the section.
+
+| Source | `tba.socials` |
+|---|---|
+| command word (`~<name>`) | map key |
+| `sort_as` | `sort_as` |
+| `hide` | `hide` |
+| `min_char_position`/`min_victim_position`/`min_level_char` | the same fields |
+| the thirteen message lines | the matching `char_*`/`others_*`/`vict_*` fields; a `#` line is `None` |
+
+Two records with the same command word are a `duplicate_social` global drop
+(the last wins). The `$`-codes are preserved verbatim; the runtime
+(`code/src/socials.rs`) resolves `$n`/`$N`/`$e`/`$E`/`$m`/`$M`/`$s`/`$S`,
+`$t`/`$T` (body part/object), `$p`/`$P`/`$o`/`$O` (object) and the `$u`/`$U`
+case switches, and drops an unknown code as `perform_act`'s default branch does.
+The source's stray `$i` (which `perform_act` also has no case for) is recorded
+once as a `social_code` global drop. MIB models no sex, so the pronouns render
+as neutral singular *they/them/their*. The legacy `lib/misc/socials` old-format
+file is a `global_drops`/`out_of_scope` entry (`CONFIG_NEW_SOCIALS` is `YES`).
+
+---
+
 ## 4. Drop-report schema
 
 `serde_json`, pretty-printed, terminated by a newline. Every vector is sorted
@@ -384,8 +485,8 @@ before writing, so the report is deterministic. Schema `2`:
   ],
   "totals": {
     "zones": 189, "rooms": 12700, "npcs": 3705, "items": 4765,
-    "zone_commands": 18513, "deferred": 3161,
-    "dangling": 14, "unmapped": 17578, "global_drops": 7,
+    "zone_commands": 18513, "deferred": 3160,
+    "dangling": 15, "unmapped": 17585, "global_drops": 10,
     "unmapped_by_kind": { "room_flag": 1726, "mob_sex": 3705, ... },
     "dangling_by_kind": { "dangling_door_key": 3, ... }
   },
@@ -425,12 +526,17 @@ before writing, so the report is deterministic. Schema `2`:
 Finding kinds:
 
 - `global_drops[].kind`: `no_source_field` (a whole-world absence, e.g. room
-  coordinates), `combat_skill` (the explicit combat-skill non-goals).
-- `deferred.section`: `triggers`, `trigger_variables`, `quests`.
+  coordinates), `combat_skill` (the explicit combat-skill non-goals),
+  `out_of_scope` (the legacy `lib/misc/socials` and `lib/text/help` files),
+  `social_code` (a `$`-code `perform_act` cannot resolve), `duplicate_social`.
+- `deferred.section`: `triggers`, `trigger_variables`. Quests are no longer
+  deferred (issue #16).
 - `dangling.kind`: `dangling_door_key`, `dangling_exit`, `dangling_reset_mob`,
   `dangling_reset_item`, `dangling_reset_container`, `dangling_reset_room`,
   `dangling_shop_keeper`, `dangling_shop_produce`, `dangling_shop_room`,
-  `duplicate_shop_keeper`, plus the defensive `dangling_npc_stats_key` /
+  `duplicate_shop_keeper`, `dangling_quest_giver`, `dangling_quest_target_item`,
+  `dangling_quest_target_room`, `dangling_quest_target_npc`,
+  `dangling_quest_reward_item`, plus the defensive `dangling_npc_stats_key` /
   `dangling_item_stats_key`.
   A dangling reference is **not** in the emitted YAML; the report is the only
   record of it.
@@ -439,7 +545,9 @@ Finding kinds:
   `exit_description_only`, `item_affect_flag`, `item_action_description`,
   `item_extra_descriptions`, `item_type`, `affect_location`, `zone_flag`,
   `zone_command_dropped`, `reset_mode`, `shop_buy_word`, `shop_broke_temper`,
-  `shop_bitvector`, `shop_record`, `shop_profit_buy`.
+  `shop_bitvector`, `shop_record`, `shop_profit_buy`, `quest_objective`,
+  `quest_gold_reward`, `quest_text`, `quest_flag`, `quest_link`,
+  `quest_condition`.
 
 `command_flags` remains the raw carrier for the Circle `if_flag`: one entry per
 parsed command, in source order, keyed by its index in the reset program
@@ -469,14 +577,18 @@ tools/tbaport/
 │   │   ├── mob.rs             # parse_mobile / simple+enhanced
 │   │   ├── obj.rs             # parse_object
 │   │   ├── zone.rs            # load_zones
-│   │   └── deferred.rs        # .shp / .trg / .qst scanners
+│   │   ├── quest.rs           # parse_quest (.qst → stdlib.quests)
+│   │   ├── social.rs          # socials.new → tba.socials
+│   │   ├── text.rs            # lib/text + lib/misc/messages → stdlib.help
+│   │   └── deferred.rs        # .trg scanner
 │   ├── mapping.rs             # raw records → mib-stdlib/mib-tba types
 │   ├── emit.rs                # OutputBundle + YAML writers
 │   └── report.rs              # DropReport types + JSON writer
 └── tests/
     ├── parse.rs               # per-record fixture tests
     ├── convert.rs             # round-trip, determinism, zone 30 counts
-    └── fixtures/tbamud/lib/world/{wld,mob,obj,zon,shp,trg,qst}/30.*
+    └── fixtures/tbamud/lib/{world/{wld,mob,obj,zon,shp,trg,qst}/30.*,
+                             misc/{messages,socials.new},text/{motd,news}}
 ```
 
 `mapping.rs` runs in two phases: read every selected zone into raw records,
@@ -500,11 +612,15 @@ tbaport convert --source DIR [--out DIR] [--report FILE] [--only ZONE] [--start-
 ```
 
 Files written: `stdlib.areas.yaml`, `stdlib.rooms.<zone>.yaml` (one shard per
-zone, TBA-E01), `stdlib.npcs.yaml`, `stdlib.items.yaml`, `tba.zones.yaml`,
-`tba.npc_stats.yaml`, `tba.items.yaml`, `tba.shops.yaml`, plus the report and
-its Markdown summary. `tba.classes.yaml` is **not** converter output: the four
-Diku classes live in `class.c`, not in world files, and stay hand-authored. A
-committed report lives at `reports/drop-report.json` (§8/runbook).
+zone, TBA-E01), `stdlib.npcs.yaml`, `stdlib.items.yaml`,
+`stdlib.quests.yaml`, `stdlib.help.yaml`, `tba.zones.yaml`,
+`tba.npc_stats.yaml`, `tba.items.yaml`, `tba.shops.yaml`, `tba.socials.yaml`,
+plus the report and its Markdown summary. `tba.classes.yaml`,
+`tba.spells.yaml` and `stdlib.verbs.yaml` are **not** converter output: the
+Diku classes live in `class.c` and the spell catalog and verb list were
+transcribed by hand, so they stay hand-authored (a world swap must preserve
+them; see the runbook). A committed report lives at
+`reports/drop-report.json` (§8/runbook).
 
 Each YAML file is prefixed with a fixed provenance comment. Library entry point:
 
@@ -528,7 +644,11 @@ conversion.report.write(Path::new("target/tbaport/drop-report.json"))?;
 | Mobs | `tests/parse.rs` | simple `S` and enhanced `E` forms; flag words, dice, stats, e-specs |
 | Objects | `tests/parse.rs` | 13-field flags, holds terminator for the caller, affects, container capacity |
 | Zones | `tests/parse.rs` | header/bounds/reset mode, comment skipping, command order, `if_flag`, `E` wear position |
-| Deferred | `tests/parse.rs` | one shop, one trigger (attach `mob`), one quest (questmaster) |
+| Deferred | `tests/parse.rs` | one trigger (attach `mob`); quests are parsed as real records |
+| Quests | `tests/parse.rs`, `tests/convert.rs` | the `.qst` header/objectives/rewards, and the mapped `QuestDef` (giver, kill step, count) |
+| Socials | `tests/parse.rs`, `tests/convert.rs` | the new-format header and thirteen sets, `#`→`None`, and the mapped `SocialDef` |
+| Help | `tests/parse.rs`, `tests/convert.rs` | text files become topics with `@`-codes stripped; `messages` groups by attack type |
+| Social runtime | `code/tests/socials.rs` | target found/not-found, the room/victim lines, the `socials` listing, the sleeping-actor gate, `$`-substitution |
 | Schema exactness | `tests/convert.rs` | every emitted file (including each room shard) deserialises into its real type and re-serialises to the exact bytes written (header aside) |
 | Determinism | `tests/convert.rs` | two in-process conversions produce byte-identical YAML **and** byte-identical JSON report |
 | Sharding | `tests/convert.rs` | rooms are emitted as `stdlib.rooms.<zone>.yaml` shards; the engine merges them back to the full `RoomsFile` |
@@ -575,6 +695,17 @@ drops by reason.
   duplicate keeper, missing produce/room and a non-positive `profit_buy` drop
   the shop (`dangling` / `shop_profit_buy`). Opening hours, room restrictions
   and `trade_with` are now modelled and enforced.
-- **DG triggers and quests** remain deferred wholesale (`deferred`).
+- **Quests** now convert (issue #16). The objective types with a
+  `QuestStepDef` are mapped; `MOB_FIND`/`MOB_SAVE`/`OBJ_RETURN`/`ROOM_CLEAR`
+  and the gold reward, the extra text (`desc`/`done`/`quit`), the repeatable
+  flag, the chain links and the level/time conditions are named drops. The
+  source's one real quest (`tba_quest_100`) converts.
+- **Text and combat messages** now convert to `stdlib.help` topics (issue
+  #18). The legacy `lib/text/help/help.hlp` database is an `out_of_scope`
+  global drop.
+- **Socials** now convert to `tba.socials` (issue #17). The source's stray
+  `$i` code and the legacy old-format `lib/misc/socials` are named global
+  drops; pronouns render neutral (MIB models no sex).
+- **DG triggers** remain deferred wholesale (`deferred`).
 
 None of these is silently discarded.

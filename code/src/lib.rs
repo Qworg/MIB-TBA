@@ -33,6 +33,7 @@ pub mod equipment;
 pub mod items;
 pub mod module;
 pub mod shops;
+pub mod socials;
 pub mod spells;
 pub mod zones;
 
@@ -59,6 +60,7 @@ pub mod prelude {
         ZonesSection, register,
     };
     pub use crate::content::{ShopDef, ShopHours, ShopTrade, ShopsFile, ShopsSection};
+    pub use crate::content::{SocialDef, SocialsFile, SocialsSection};
     pub use crate::equipment::{
         TbaEquipment, TbaEquipmentSave, choose_slot, handle_equipment_commands,
         recompute_combatant, recompute_combatant_full, recompute_equipment_affects,
@@ -70,6 +72,10 @@ pub mod prelude {
     };
     pub use crate::module::{MODULE_NAME, TbaContent, TbaModule, TbaPlugin};
     pub use crate::shops::{ShopCommand, handle_shop_commands, parse_shop_line};
+    pub use crate::socials::{
+        SocialCommand, SocialNames, gate_reason, handle_social_commands, parse_social_line,
+        substitute,
+    };
     pub use crate::spells::{
         ActiveBuff, DEFAULT_BUFF_ROUNDS, TbaBuffs, handle_cast_command, mana_cost, tick_buffs,
     };

@@ -7,8 +7,11 @@
 pub mod deferred;
 pub mod mob;
 pub mod obj;
+pub mod quest;
 pub mod room;
 pub mod shop;
+pub mod social;
+pub mod text;
 pub mod tokens;
 pub mod zone;
 

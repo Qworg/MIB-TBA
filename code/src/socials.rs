@@ -1,0 +1,717 @@
+//! Issue #17 — Circle social emotes: `social <name> [target]` and `socials`.
+//!
+//! Circle registers every one of its ~491 socials as a top-level command and
+//! renders three strings per activation (actor, room, victim) after `act()`
+//! substitution (`src/act.social.c`, `src/comm.c:perform_act`). MIB's fixed
+//! command grammar has no `Command` variant for an open-ended verb set, and
+//! `stdlib.verbs` cannot express a per-social message table, so the pack owns a
+//! `tba.socials` section instead. [`handle_social_commands`] runs in
+//! [`BridgeSet::Game`](mib_core::prelude::BridgeSet::Game) after the stdlib
+//! router, reading [`PlayerInput::RawLine`] the way `shops.rs`/`spells.rs` do;
+//! `social`/`socials` are declared (effect-free) in `content/stdlib.verbs.yaml`
+//! so the router claims them rather than reporting an unknown verb.
+//!
+//! Substitution follows `perform_act` for the codes the source uses:
+//! `$n`/`$N` (names), `$e`/`$E`, `$m`/`$M`, `$s`/`$S` (pronouns — MIB models no
+//! sex, so the neutral singular *they/them/their* is used), `$t`/`$T` (the
+//! named body part or object), `$p`/`$P`/`$o`/`$O` (object names), and the
+//! `$u`/`$U` case switches. An unknown code (the source's stray `$i`) resolves
+//! to nothing exactly as `perform_act`'s default branch does.
+//!
+//! Pronoun note: tbaMUD's `HMHR`/`HSHR`/`HSSH` choose by `GET_SEX`. MIB models
+//! no sex (`Player` and `Npc` carry only a name; the converter records mob sex
+//! as a permanent drop), so a `he`/`she` choice is impossible without inventing
+//! data. Neutral singular *they* is the only non-arbitrary rendering.
+
+use mib_core::prelude::*;
+use mib_stdlib::dialogue::write_prompt;
+use mib_stdlib::prelude::{CarriedBy, Item, Location, Npc, Player, Session, SessionState};
+
+use crate::combat::commands::text;
+use crate::combat::{TbaCombatant, TbaProgress};
+use crate::content::Position;
+use crate::module::TbaContent;
+
+/// Circle's exact refusal for an unknown social (`do_action`, `act.social.c`).
+const MSG_UNSUPPORTED: &str = "That action is not supported.";
+/// Circle's refusal when a body part is supplied to a social without body text.
+const MSG_NO_BODY_PART: &str = "Sorry, this social does not support body parts.";
+/// Fallback when a social has no `not_found` string (`do_action`).
+const MSG_DEFAULT_NOT_FOUND: &str = "I don't see anything by that name here.";
+/// Fallback when a self-target social has no `char_auto` string.
+const MSG_DEFAULT_AUTO: &str = "Erm, no.";
+/// The actor's position gate.
+const MSG_BAD_POSITION: &str = "You are in no position to do that.";
+/// The actor's level gate.
+const MSG_BAD_LEVEL: &str = "You are not experienced enough to use that social.";
+/// The victim's position gate.
+const MSG_BAD_VICTIM_POSITION: &str = "They are not in a proper position for that.";
+
+/// One parsed social command, before the social or target is resolved.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SocialCommand {
+    /// `socials` — list the available socials.
+    List,
+    /// `social <name> [<target>] [<body part>]`.
+    Act {
+        name: String,
+        target: String,
+        part: String,
+    },
+}
+
+/// Parse a raw line as a social command, or `None` when it is not one.
+pub fn parse_social_line(line: &str) -> Option<SocialCommand> {
+    let line = line.trim();
+    let (verb, rest) = match line.find(char::is_whitespace) {
+        Some(index) => (&line[..index], line[index + 1..].trim()),
+        None => (line, ""),
+    };
+    if verb.eq_ignore_ascii_case("socials") {
+        return Some(SocialCommand::List);
+    }
+    if !verb.eq_ignore_ascii_case("social") {
+        return None;
+    }
+    let mut parts = rest.split_whitespace();
+    let name = parts.next().unwrap_or("").to_owned();
+    let target = parts.next().unwrap_or("").to_owned();
+    let part = parts.next().unwrap_or("").to_owned();
+    Some(SocialCommand::Act { name, target, part })
+}
+
+/// The names a social template can substitute. `target`, `object` and `body`
+/// are `None` when that argument was not supplied.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SocialNames<'a> {
+    pub actor: &'a str,
+    pub target: Option<&'a str>,
+    pub object: Option<&'a str>,
+    pub body: Option<&'a str>,
+}
+
+/// Expand one Circle social message against the resolved names, following
+/// `perform_act` (`comm.c:2604`). Unknown `$`-codes expand to nothing.
+pub fn substitute(template: &str, names: &SocialNames<'_>) -> String {
+    // MIB has no sex model; neutral singular they/them/their is the documented
+    // fallback (see the module docs).
+    let actor_pronouns = ("they", "them", "their");
+    let target_pronouns = ("they", "them", "their");
+
+    let mut out = String::with_capacity(template.len() + names.actor.len());
+    let mut chars = template.chars().peekable();
+    let mut uppercase_next = false;
+    while let Some(ch) = chars.next() {
+        if ch != '$' {
+            if uppercase_next && !ch.is_whitespace() {
+                out.extend(ch.to_uppercase());
+                uppercase_next = false;
+            } else {
+                out.push(ch);
+            }
+            continue;
+        }
+        let code = match chars.next() {
+            Some(code) => code,
+            None => {
+                out.push('$');
+                break;
+            }
+        };
+        let substitution: &str = match code {
+            'n' => names.actor,
+            'N' => names.target.unwrap_or(""),
+            'e' => actor_pronouns.0,
+            'm' => actor_pronouns.1,
+            's' => actor_pronouns.2,
+            'E' => target_pronouns.0,
+            'M' => target_pronouns.1,
+            'S' => target_pronouns.2,
+            't' => names.body.unwrap_or(""),
+            'T' => names.target.or(names.body).unwrap_or(""),
+            'p' | 'o' => names.object.unwrap_or(""),
+            'P' | 'O' => names.object.unwrap_or(""),
+            'a' | 'A' | 'i' | 'F' => "",
+            'u' => {
+                // Uppercase the first letter of the previous word.
+                uppercase_last_word(&mut out);
+                ""
+            }
+            'U' => {
+                uppercase_next = true;
+                ""
+            }
+            '$' => "$",
+            _ => "",
+        };
+        for subst in substitution.chars() {
+            if uppercase_next && !subst.is_whitespace() {
+                out.extend(subst.to_uppercase());
+                uppercase_next = false;
+            } else {
+                out.push(subst);
+            }
+        }
+    }
+    out
+}
+
+/// Uppercase the first character after the final whitespace in `text`.
+fn uppercase_last_word(text: &mut String) {
+    let start = text.rfind(char::is_whitespace).map_or(0, |index| index + 1);
+    if let Some(rest) = text.get(start..)
+        && let Some(first) = rest.chars().next()
+    {
+        let upper: String = first.to_uppercase().collect();
+        let mut replaced = String::with_capacity(text.len() + upper.len());
+        replaced.push_str(&text[..start]);
+        replaced.push_str(&upper);
+        replaced.push_str(&rest[first.len_utf8()..]);
+        *text = replaced;
+    }
+}
+
+/// Why a social cannot run, or `None` when it can. Mirrors Circle's command
+/// table gate (`minimum_position`/`minimum_level`, set from the social in
+/// `create_command_list`) plus the victim gate in `do_action`.
+pub fn gate_reason(
+    social: &crate::content::SocialDef,
+    actor_position: Position,
+    actor_level: u32,
+    victim_position: Option<Position>,
+) -> Option<&'static str> {
+    if let Some(min) = position_from_i32(social.min_char_position)
+        && actor_position < min
+    {
+        return Some(MSG_BAD_POSITION);
+    }
+    if social.min_level_char > 0 && actor_level < social.min_level_char as u32 {
+        return Some(MSG_BAD_LEVEL);
+    }
+    if let Some(min) = position_from_i32(social.min_victim_position)
+        && let Some(victim) = victim_position
+        && victim < min
+    {
+        return Some(MSG_BAD_VICTIM_POSITION);
+    }
+    None
+}
+
+/// Map the source `POS_*` number onto [`Position`]. A negative or unknown
+/// value means "no gate" (`None`).
+fn position_from_i32(value: i32) -> Option<Position> {
+    match value {
+        0 => Some(Position::Dead),
+        1 => Some(Position::MortallyWounded),
+        2 => Some(Position::Incapacitated),
+        3 => Some(Position::Stunned),
+        4 => Some(Position::Sleeping),
+        5 => Some(Position::Resting),
+        6 => Some(Position::Sitting),
+        7 => Some(Position::Fighting),
+        8 => Some(Position::Standing),
+        _ => None,
+    }
+}
+
+/// Case-insensitive `contains` match, the same convention the item/shop
+/// lookups use.
+fn name_matches(needle: &str, name: &str) -> bool {
+    let needle = needle.trim().to_lowercase();
+    !needle.is_empty() && name.to_lowercase().contains(&needle)
+}
+
+fn actor_name(players: &Query<(Entity, &Player, &Location)>, session: Entity) -> String {
+    players
+        .iter()
+        .find(|(entity, _, _)| *entity == session)
+        .map(|(_, player, _)| player.name.clone())
+        .unwrap_or_else(|| "Someone".to_owned())
+}
+
+fn actor_room(players: &Query<(Entity, &Player, &Location)>, session: Entity) -> Option<Entity> {
+    players
+        .iter()
+        .find(|(entity, _, _)| *entity == session)
+        .map(|(_, _, location)| location.room)
+}
+
+fn position_of(combatants: &Query<&TbaCombatant>, entity: Entity) -> Position {
+    combatants
+        .get(entity)
+        .map(|combatant| combatant.position)
+        .unwrap_or(Position::Standing)
+}
+
+fn level_of(progress: &Query<&TbaProgress>, session: Entity) -> u32 {
+    progress.get(session).map(|p| p.level).unwrap_or(1)
+}
+
+/// A social target: an entity, its display name, and whether it is a player
+/// (so the `vict_*` line can reach it).
+struct Target {
+    entity: Entity,
+    name: String,
+    is_player: bool,
+    /// True when the target resolved through the item fallback rather than
+    /// `get_char_vis`, so the object strings apply (`do_action`).
+    is_item: bool,
+}
+
+/// Resolve `needle` against the players and NPCs in `room`, then (Circle's
+/// fallback order, `do_action`) against the actor's carried items and the room
+/// floor. Items are returned with their display name so `$p`/`$P` can render.
+#[allow(clippy::type_complexity)]
+fn find_target(
+    needle: &str,
+    session: Entity,
+    room: Entity,
+    players: &Query<(Entity, &Player, &Location)>,
+    npcs: &Query<(Entity, &Npc, &Location)>,
+    carried: &Query<(Entity, &Item, &CarriedBy)>,
+    ground: &Query<(Entity, &Item, &Location)>,
+) -> Option<Target> {
+    if needle.trim().is_empty() {
+        return None;
+    }
+    if let Some((entity, player, _)) = players
+        .iter()
+        .find(|(_, player, location)| location.room == room && name_matches(needle, &player.name))
+    {
+        return Some(Target {
+            entity,
+            name: player.name.clone(),
+            is_player: true,
+            is_item: false,
+        });
+    }
+    if let Some((entity, npc, _)) = npcs
+        .iter()
+        .find(|(_, npc, location)| location.room == room && name_matches(needle, &npc.name))
+    {
+        return Some(Target {
+            entity,
+            name: npc.name.clone(),
+            is_player: false,
+            is_item: false,
+        });
+    }
+    if let Some((entity, item, _)) = carried
+        .iter()
+        .find(|(_, item, holder)| holder.0 == session && name_matches(needle, &item.name))
+    {
+        return Some(Target {
+            entity,
+            name: item.name.clone(),
+            is_player: false,
+            is_item: true,
+        });
+    }
+    ground
+        .iter()
+        .find(|(_, item, location)| location.room == room && name_matches(needle, &item.name))
+        .map(|(entity, item, _)| Target {
+            entity,
+            name: item.name.clone(),
+            is_player: false,
+            is_item: true,
+        })
+}
+
+/// Send one line to every player in `room` except `session` and `victim`.
+fn broadcast_except(
+    players: &Query<(Entity, &Player, &Location)>,
+    room: Entity,
+    session: Entity,
+    victim: Option<Entity>,
+    output: &mut MessageWriter<OutputEvent>,
+    body: &str,
+) {
+    for (entity, _, location) in players.iter() {
+        if entity != session && Some(entity) != victim && location.room == room {
+            output.write(text(entity, body));
+        }
+    }
+}
+
+/// One social activation: resolve the target, apply the gates, and render the
+/// actor/room/victim lines.
+#[allow(clippy::too_many_arguments, clippy::type_complexity)]
+fn run_social(
+    session: Entity,
+    name: &str,
+    target_needle: &str,
+    part: &str,
+    socials: &std::collections::BTreeMap<smol_str::SmolStr, crate::content::SocialDef>,
+    players: &Query<(Entity, &Player, &Location)>,
+    npcs: &Query<(Entity, &Npc, &Location)>,
+    combatants: &Query<&TbaCombatant>,
+    progress: &Query<&TbaProgress>,
+    carried: &Query<(Entity, &Item, &CarriedBy)>,
+    ground: &Query<(Entity, &Item, &Location)>,
+    output: &mut MessageWriter<OutputEvent>,
+) {
+    let Some(social) = socials.get(name).or_else(|| {
+        socials
+            .iter()
+            .find(|(key, _)| key.eq_ignore_ascii_case(name))
+            .map(|(_, s)| s)
+    }) else {
+        output.write(text(session, MSG_UNSUPPORTED.to_owned()));
+        write_prompt(output, session);
+        return;
+    };
+    let Some(room) = actor_room(players, session) else {
+        return;
+    };
+    let actor = actor_name(players, session);
+
+    let target = find_target(target_needle, session, room, players, npcs, carried, ground);
+    let victim_position = target.as_ref().map(|t| position_of(combatants, t.entity));
+    if let Some(reason) = gate_reason(
+        social,
+        position_of(combatants, session),
+        level_of(progress, session),
+        victim_position,
+    ) {
+        output.write(text(session, reason.to_owned()));
+        write_prompt(output, session);
+        return;
+    }
+
+    // No argument: the no-arg pair.
+    if target_needle.trim().is_empty() {
+        let names = SocialNames {
+            actor: &actor,
+            ..SocialNames::default()
+        };
+        if let Some(line) = social.char_no_arg.as_deref() {
+            output.write(text(session, substitute(line, &names)));
+        }
+        if let Some(line) = social.others_no_arg.as_deref() {
+            broadcast_except(
+                players,
+                room,
+                session,
+                None,
+                output,
+                &substitute(line, &names),
+            );
+        }
+        write_prompt(output, session);
+        return;
+    }
+
+    // The target is the actor: the auto pair.
+    if let Some(target) = &target
+        && target.entity == session
+    {
+        let names = SocialNames {
+            actor: &actor,
+            target: Some(&actor),
+            body: (!part.is_empty()).then_some(part),
+            ..SocialNames::default()
+        };
+        let char_line = social.char_auto.as_deref().unwrap_or(MSG_DEFAULT_AUTO);
+        output.write(text(session, substitute(char_line, &names)));
+        if let Some(line) = social.others_auto.as_deref() {
+            broadcast_except(
+                players,
+                room,
+                session,
+                None,
+                output,
+                &substitute(line, &names),
+            );
+        }
+        write_prompt(output, session);
+        return;
+    }
+
+    let Some(target) = target else {
+        let names = SocialNames {
+            actor: &actor,
+            ..SocialNames::default()
+        };
+        let line = social.not_found.as_deref().unwrap_or(MSG_DEFAULT_NOT_FOUND);
+        output.write(text(session, substitute(line, &names)));
+        write_prompt(output, session);
+        return;
+    };
+
+    // A body part needs the body strings; Circle refuses otherwise.
+    if !part.is_empty() && social.char_body_found.is_none() {
+        output.write(text(session, MSG_NO_BODY_PART.to_owned()));
+        write_prompt(output, session);
+        return;
+    }
+
+    // An object target only has the obj strings; a char/object target always
+    // has the plain found strings in the source data.
+    let names = SocialNames {
+        actor: &actor,
+        target: Some(&target.name),
+        object: Some(&target.name),
+        body: (!part.is_empty()).then_some(part),
+    };
+    let victim = target.is_player.then_some(target.entity);
+    if !part.is_empty() {
+        if let Some(line) = social.char_body_found.as_deref() {
+            output.write(text(session, substitute(line, &names)));
+        }
+        if let Some(line) = social.others_body_found.as_deref() {
+            broadcast_except(
+                players,
+                room,
+                session,
+                victim,
+                output,
+                &substitute(line, &names),
+            );
+        }
+        if let Some(entity) = victim
+            && let Some(line) = social.vict_body_found.as_deref()
+        {
+            output.write(text(entity, substitute(line, &names)));
+        }
+    } else if !target.is_item {
+        if let Some(line) = social.char_found.as_deref() {
+            output.write(text(session, substitute(line, &names)));
+        } else {
+            output.write(text(session, MSG_DEFAULT_AUTO.to_owned()));
+        }
+        if let Some(line) = social.others_found.as_deref() {
+            broadcast_except(
+                players,
+                room,
+                session,
+                victim,
+                output,
+                &substitute(line, &names),
+            );
+        }
+        if let Some(entity) = victim
+            && let Some(line) = social.vict_found.as_deref()
+        {
+            output.write(text(entity, substitute(line, &names)));
+        }
+    } else {
+        if let Some(line) = social.char_obj_found.as_deref() {
+            output.write(text(session, substitute(line, &names)));
+        }
+        if let Some(line) = social.others_obj_found.as_deref() {
+            broadcast_except(
+                players,
+                room,
+                session,
+                None,
+                output,
+                &substitute(line, &names),
+            );
+        }
+    }
+    write_prompt(output, session);
+}
+
+/// The `socials` listing: every social name, sorted.
+fn list_socials(
+    session: Entity,
+    socials: &std::collections::BTreeMap<smol_str::SmolStr, crate::content::SocialDef>,
+    output: &mut MessageWriter<OutputEvent>,
+) {
+    if socials.is_empty() {
+        output.write(text(session, "There are no socials available.".to_owned()));
+        write_prompt(output, session);
+        return;
+    }
+    let mut names: Vec<&str> = socials.keys().map(|name| name.as_str()).collect();
+    names.sort_unstable();
+    output.write(text(
+        session,
+        format!(
+            "The following {} socials are available:\n{}",
+            names.len(),
+            names.join("  ")
+        ),
+    ));
+    write_prompt(output, session);
+}
+
+/// `BridgeSet::Game`: translate `social`/`socials` raw lines into emotes.
+#[allow(clippy::too_many_arguments, clippy::type_complexity)]
+pub fn handle_social_commands(
+    mut reader: MessageReader<CommandReceived>,
+    sessions: Query<&Session>,
+    players: Query<(Entity, &Player, &Location)>,
+    npcs: Query<(Entity, &Npc, &Location)>,
+    combatants: Query<&TbaCombatant>,
+    progress: Query<&TbaProgress>,
+    carried: Query<(Entity, &Item, &CarriedBy)>,
+    ground: Query<(Entity, &Item, &Location)>,
+    content: Option<Res<TbaContent>>,
+    mut output: MessageWriter<OutputEvent>,
+) {
+    let empty = TbaContent::default();
+    let content = content.as_deref().unwrap_or(&empty);
+
+    for msg in reader.read() {
+        let session = msg.session;
+        let playing = sessions
+            .get(session)
+            .map(|session| session.state == SessionState::Playing)
+            .unwrap_or(false);
+        if !playing {
+            continue;
+        }
+        let PlayerInput::RawLine(line) = &msg.input else {
+            continue;
+        };
+        let Some(command) = parse_social_line(line) else {
+            continue;
+        };
+        match command {
+            SocialCommand::List => list_socials(session, &content.socials, &mut output),
+            SocialCommand::Act { name, target, part } => run_social(
+                session,
+                &name,
+                &target,
+                &part,
+                &content.socials,
+                &players,
+                &npcs,
+                &combatants,
+                &progress,
+                &carried,
+                &ground,
+                &mut output,
+            ),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #![allow(clippy::expect_used, clippy::unwrap_used)]
+
+    use super::*;
+
+    fn social() -> crate::content::SocialDef {
+        crate::content::SocialDef {
+            sort_as: smol_str::SmolStr::new("wave"),
+            hide: false,
+            min_char_position: 5,
+            min_victim_position: 0,
+            min_level_char: 1,
+            char_no_arg: Some("You wave.".to_owned()),
+            others_no_arg: Some("$n waves.".to_owned()),
+            char_found: Some("You wave at $N.".to_owned()),
+            others_found: Some("$n waves at $N.".to_owned()),
+            vict_found: Some("$n waves at you.".to_owned()),
+            not_found: Some("Wave at who?".to_owned()),
+            char_auto: Some("You wave at yourself.".to_owned()),
+            others_auto: Some("$n waves at $mself.".to_owned()),
+            char_body_found: None,
+            others_body_found: None,
+            vict_body_found: None,
+            char_obj_found: None,
+            others_obj_found: None,
+        }
+    }
+
+    #[test]
+    fn parses_the_social_verbs() {
+        assert_eq!(parse_social_line("socials"), Some(SocialCommand::List));
+        assert_eq!(
+            parse_social_line("social wave"),
+            Some(SocialCommand::Act {
+                name: "wave".to_owned(),
+                target: String::new(),
+                part: String::new(),
+            })
+        );
+        assert_eq!(
+            parse_social_line("SOCIAL wave bob face"),
+            Some(SocialCommand::Act {
+                name: "wave".to_owned(),
+                target: "bob".to_owned(),
+                part: "face".to_owned(),
+            })
+        );
+        assert_eq!(parse_social_line("list"), None);
+    }
+
+    #[test]
+    fn substitutes_names_pronouns_and_case_switches() {
+        let names = SocialNames {
+            actor: "Bob",
+            target: Some("Alice"),
+            object: Some("a rose"),
+            body: Some("nose"),
+        };
+        assert_eq!(substitute("$n waves at $N.", &names), "Bob waves at Alice.");
+        // MIB has no sex; neutral singular they/them/their is the documented
+        // rendering for $e/$m/$s (and $E/$M/$S).
+        assert_eq!(
+            substitute("$n sighs to $mself; $E is $s friend.", &names),
+            "Bob sighs to themself; they is their friend."
+        );
+        assert_eq!(substitute("$n waves $p.", &names), "Bob waves a rose.");
+        assert_eq!(
+            substitute("$n waves at $S $t.", &names),
+            "Bob waves at their nose."
+        );
+        // `$$` is a literal `$`; an unknown code (the source's stray `$i`)
+        // expands to nothing, matching `perform_act`'s default branch.
+        assert_eq!(
+            substitute("cost $$5, $isilence", &names),
+            "cost $5, silence"
+        );
+        assert_eq!(substitute("$Uhello", &names), "Hello");
+        assert_eq!(substitute("hello world$u", &names), "hello World");
+    }
+
+    #[test]
+    fn sleeping_actor_and_low_level_are_gated() {
+        let def = social();
+        assert_eq!(
+            gate_reason(&def, Position::Sleeping, 10, None),
+            Some(MSG_BAD_POSITION),
+            "min_char_position 5 (resting) blocks a sleeping actor"
+        );
+        assert_eq!(gate_reason(&def, Position::Resting, 10, None), None);
+        assert_eq!(
+            gate_reason(&def, Position::Standing, 0, None),
+            Some(MSG_BAD_LEVEL),
+            "min_level_char 1 blocks a level-0 actor"
+        );
+
+        let mut victim_gate = social();
+        victim_gate.min_victim_position = 6;
+        assert_eq!(
+            gate_reason(
+                &victim_gate,
+                Position::Standing,
+                10,
+                Some(Position::Sleeping)
+            ),
+            Some(MSG_BAD_VICTIM_POSITION)
+        );
+        assert_eq!(
+            gate_reason(
+                &victim_gate,
+                Position::Standing,
+                10,
+                Some(Position::Sitting)
+            ),
+            None
+        );
+    }
+
+    #[test]
+    fn every_source_position_number_maps_and_unknown_disables_the_gate() {
+        assert_eq!(position_from_i32(-1), None);
+        assert_eq!(position_from_i32(0), Some(Position::Dead));
+        assert_eq!(position_from_i32(8), Some(Position::Standing));
+        assert_eq!(position_from_i32(99), None);
+    }
+}

@@ -197,10 +197,13 @@ must replace the converted files and preserve the hand-authored ones.
 | `stdlib.rooms.<zone>.yaml` (one shard per zone) | `tba.spells.yaml` |
 | `stdlib.npcs.yaml` | `stdlib.verbs.yaml` |
 | `stdlib.items.yaml` | |
+| `stdlib.quests.yaml` | |
+| `stdlib.help.yaml` | |
 | `tba.zones.yaml` | |
 | `tba.npc_stats.yaml` | |
 | `tba.items.yaml` | |
 | `tba.shops.yaml` | |
+| `tba.socials.yaml` | |
 
 Procedure:
 
@@ -226,7 +229,7 @@ reason the item count is one higher than the source object count.
 | `zone_reset_system` | `FixedUpdate` | Ages zones; runs the `M/O/G/E/P/D/R` interpreter when `lifespan_mins` elapses. `when_desert` checks player occupancy by room `num` in `[bot, top]`. |
 | `auto_engage_system`, `npc_combatant_system`, `helper_system`, `pursuit_system` | `FixedUpdate` (after `maintain_room_occupants`) | Room-local aggro; alignment ±350 gating; Memory/Sentinel/StayZone/Helper. |
 | `resolve_rounds`, `tick_buffs` | `TbaRound` (every 3 s on the frame clock) | Combat rounds. Deliberately **not** on `tick_hz`, so combat never forces the engine tick rate. |
-| `handle_combat_commands`, `handle_equipment_commands`, `handle_cast_command`, `handle_shop_commands`, `recompute_equipment_affects`, `sync_wielded_weapon` | `Update`, `BridgeSet::Game`, after `route_commands` | Genre commands. `cast`/`list`/`buy`/`sell`/`value` have no fixed `Command` variant and are parsed from `PlayerInput::RawLine`, declared in `stdlib.verbs.yaml` so the stdlib router claims them. |
+| `handle_combat_commands`, `handle_equipment_commands`, `handle_cast_command`, `handle_shop_commands`, `handle_social_commands`, `recompute_equipment_affects`, `sync_wielded_weapon` | `Update`, `BridgeSet::Game`, after `route_commands` | Genre commands. `cast`/`list`/`buy`/`sell`/`value` and `social <name>`/`socials` have no fixed `Command` variant and are parsed from `PlayerInput::RawLine`, declared in `stdlib.verbs.yaml` so the stdlib router claims them. `social` resolves `$n`/`$N`/`$e`/`$E`/`$m`/`$M`/`$s`/`$S` (and `$t`/`$p`/case switches) against the actor/target and broadcasts the room and victim lines. |
 | `apply_death_penalty` | `Update`, `.before(handle_player_death)` | 25% of current-level XP (floored); converts `TbaGold` to a carried `tba_gold` item so the stdlib corpse sweep lands it in the corpse. |
 | `player_combatant_system` | `Update`, `BridgeSet::Game` | On `CharacterCreated`, inserts `TbaProgress` + `derive_vitals` from `tba.classes`. |
 
@@ -260,6 +263,15 @@ These are recorded, not silent:
   trigger is itemised in [`reports/drop-report.json`](../reports/drop-report.json)
   (and grouped in [`reports/drop-report.summary.md`](../reports/drop-report.summary.md))
   for a later phase.
+- **Quests** (`.qst`) convert to `stdlib.quests`; a `MOB_FIND`/`MOB_SAVE`/
+  `OBJ_RETURN`/`ROOM_CLEAR` objective and the reward/condition fields with no
+  `QuestDef` home are named drops (`docs/05-converter.md` §3.7).
+- **Text and combat messages** convert to `stdlib.help` topics; the legacy
+  `lib/text/help/help.hlp` database is an `out_of_scope` global drop.
+- **Socials** (`socials.new`) convert to `tba.socials`; the runtime serves
+  `social <name> [target] [body part]` and `socials`. MIB models no sex, so the
+  `$e`/`$m`/`$s` pronouns render as neutral singular *they/them/their*, and the
+  source's stray `$i` code is a named global drop.
 - **30 of 54 spells** are `Utility`: they cost mana and report "nothing happens
   yet"; their Circle routines (flags, summons, object/room, group, debuffs) are
   not modelled. Buffs are transient (not persisted) with a fixed round duration.
@@ -281,7 +293,7 @@ These are recorded, not silent:
 | Build fails in MIB code | The sibling `../MIB` checkout is mid-change; build MIB or pin a `git` dep. |
 | `validate-packs` names a field path | A content reference is dangling (e.g. `rooms.X.exits.north.door.key`). Fix the content or the converter rule. |
 | No spawn point / `RoomIndex.start` is `None` | No room is tagged `start_room`. Regenerate with `--start-room <vnum>` (default 3001). |
-| `cast`/`list`/`buy`/`sell`/`value` rejected as unknown | The verb is not declared in `content/stdlib.verbs.yaml`. |
+| `cast`/`list`/`buy`/`sell`/`value`/`social`/`socials` rejected as unknown | The verb is not declared in `content/stdlib.verbs.yaml`. |
 | Equipment lost across restart | The item has no stable `SaveId`, so it cannot be relinked; check the warning log. |
 | `run` fails before the world loads | Engine config (database, AI provider). Use `validate-packs` to separate content from infrastructure. |
 

@@ -20,11 +20,13 @@ use std::path::{Path, PathBuf};
 use mib_content::prelude::{MibModule, SectionRegistry, load_packs, registry_for, validate_all};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{
-    ContentRegistry, ItemId, Modules, NpcId, RoomId, RoomIndex, StdlibModule, StdlibPlugin,
+    ContentRegistry, HelpSection, ItemId, Modules, NpcId, QuestId, QuestStepDef, RoomId, RoomIndex,
+    StdlibModule, StdlibPlugin,
 };
 use mib_tba::prelude::{
-    SaveEffect, ShopDef, ShopsSection, SpellKind, SpellTarget, SpellsSection, TbaClassesSection,
-    TbaContent, TbaItemsSection, TbaModule, TbaNpcStatsSection, TbaPlugin, ZonesSection,
+    SaveEffect, ShopDef, ShopsSection, SocialDef, SocialsSection, SpellKind, SpellTarget,
+    SpellsSection, TbaClassesSection, TbaContent, TbaItemsSection, TbaModule, TbaNpcStatsSection,
+    TbaPlugin, ZonesSection,
 };
 
 /// Exact counts from the full tbaMUD conversion now in `content/` (Phase 10).
@@ -38,6 +40,12 @@ const TBA_ZONES: usize = 189;
 const TBA_CLASSES: usize = 4;
 const TBA_SPELLS: usize = 54;
 const TBA_SHOPS: usize = 327;
+/// Issue #17: every `socials.new` record converts.
+const TBA_SOCIALS: usize = 491;
+/// Issue #18: the eleven `lib/text` files plus one topic per combat attack type.
+const TBA_HELP_TOPICS: usize = 49;
+/// Issue #16: the only non-empty `.qst` record in the source world.
+const TBA_QUESTS: usize = 1;
 
 /// Zone 30, Northern Midgaard — the converted heartland the Phase 9.1 scaffold
 /// was pinned to. Its per-zone counts keep a targeted regression readable
@@ -148,6 +156,49 @@ fn tba_pack_loads_and_validates_with_the_expected_sections() {
         tba.section::<ShopsSection>().expect("shops").shops.len(),
         TBA_SHOPS
     );
+    assert_eq!(
+        tba.section::<SocialsSection>()
+            .expect("socials")
+            .socials
+            .len(),
+        TBA_SOCIALS
+    );
+    // Issue #17: a spot-check that the new-format sets survive, including
+    // Circle's `$`-codes and the `#`-as-None mapping.
+    let smile: &SocialDef = tba
+        .section::<SocialsSection>()
+        .expect("socials")
+        .socials
+        .get("smile")
+        .expect("the smile social");
+    assert_eq!(smile.char_no_arg.as_deref(), Some("You smile happily."));
+    assert!(
+        smile
+            .others_found
+            .as_deref()
+            .is_some_and(|line| line.contains("$N")),
+        "substitution codes are preserved"
+    );
+
+    // Issue #18: the text files and combat messages are authored topics.
+    let help = tba.section::<HelpSection>().expect("help");
+    assert_eq!(help.topics.len(), TBA_HELP_TOPICS);
+    assert_eq!(
+        help.topics.get("motd").map(|topic| topic.title.as_str()),
+        Some("Message of the Day")
+    );
+
+    // Issue #16: the single quest maps its objective and giver.
+    let quests = tba
+        .section::<mib_stdlib::prelude::QuestsSection>()
+        .expect("quests");
+    assert_eq!(quests.quests.len(), TBA_QUESTS);
+    let mice = quests
+        .quests
+        .get(&QuestId::from("tba_quest_100"))
+        .expect("Kill the Mice!");
+    assert_eq!(mice.giver, NpcId::from("tba_npc_179"));
+    assert!(matches!(mice.steps.as_slice(), [QuestStepDef::Kill { .. }]));
     // Zone 30's weaponsmith is a real converted shop (30.shp): it buys only
     // weapons and stocks the six 3020-series blades and clubs.
     let weaponsmith: &ShopDef = tba
@@ -470,6 +521,7 @@ fn tba_world_instantiates_and_installs_the_content_resource() {
     );
     assert_eq!(content.items.len(), TBA_ITEMS);
     assert_eq!(content.shops.len(), TBA_SHOPS);
+    assert_eq!(content.socials.len(), TBA_SOCIALS);
     assert_eq!(content.classes.len(), TBA_CLASSES);
     assert_eq!(content.spells.len(), TBA_SPELLS);
     assert!(

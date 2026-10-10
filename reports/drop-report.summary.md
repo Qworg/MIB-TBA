@@ -7,10 +7,10 @@
 - npcs: 3705
 - items: 4765
 - zone commands: 18513
-- deferred: 3161
-- dangling: 14
-- unmapped: 17578
-- global permanent drops: 7
+- deferred: 3160
+- dangling: 15
+- unmapped: 17585
+- global permanent drops: 10
 
 ## Unmapped drops by reason
 
@@ -26,6 +26,9 @@
 | `mob_flag` | 45 |
 | `mob_sex` | 3705 |
 | `npc_keywords` | 3705 |
+| `quest_condition` | 3 |
+| `quest_gold_reward` | 1 |
+| `quest_text` | 3 |
 | `room_flag` | 1726 |
 | `shop_bitvector` | 311 |
 | `shop_broke_temper` | 67 |
@@ -39,6 +42,7 @@
 | reason (`kind`) | count |
 |---|---:|
 | `dangling_door_key` | 3 |
+| `dangling_quest_reward_item` | 1 |
 | `dangling_shop_keeper` | 4 |
 | `dangling_shop_produce` | 2 |
 | `dangling_shop_room` | 3 |
@@ -48,7 +52,6 @@
 
 | section | count |
 |---|---:|
-| `quests` | 1 |
 | `triggers` | 3160 |
 
 ## Global permanent drops
@@ -60,3 +63,6 @@
 - `combat_skill` / `kick`: Circle combat skill with no engine implementation (non-goal)
 - `combat_skill` / `rescue`: Circle combat skill with no engine implementation (non-goal)
 - `no_source_field` / `room coord`: tbaMUD `struct room_data` has no coordinates; `RoomDef::coord` is always `None`
+- `out_of_scope` / `lib/misc/socials`: legacy old-format social file; `CONFIG_NEW_SOCIALS` is YES, so the run-time reads `lib/misc/socials.new` (issue #17)
+- `out_of_scope` / `lib/text/help`: legacy `help.hlp` database; the generated command catalog plus the converted `lib/text` and `lib/misc/messages` topics supersede it (issue #18)
+- `social_code` / `$i`: tbaMUD `perform_act` has no `$i` case; the code is preserved in `tba.socials` and expands to nothing at run time

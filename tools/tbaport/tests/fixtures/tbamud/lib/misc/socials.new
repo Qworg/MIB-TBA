@@ -1,0 +1,31 @@
+~wave wave 0 5 0 0
+You wave.
+$n waves happily.
+You wave at $N.
+$n waves at $N.
+$n waves at you.
+Wave at who?
+You wave at yourself.
+$n waves at $mself.
+You wave at $S $t.
+$n waves at $N's $t.
+$n waves at your $t.
+You wave $p around.
+$n waves $p around.
+
+~ponder ponder 1 1 0 0
+You ponder the situation.
+$n ponders the situation.
+You ponder $N.
+$n ponders $N.
+$n ponders you.
+Who?
+You ponder yourself.
+$n ponders $mself.
+#
+#
+#
+#
+#
+
+$

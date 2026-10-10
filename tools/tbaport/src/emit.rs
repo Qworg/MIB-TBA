@@ -8,8 +8,10 @@
 use std::collections::BTreeMap;
 use std::path::Path;
 
-use mib_stdlib::content::{AreasFile, ItemsFile, NpcsFile, RoomDef, RoomId, RoomsFile};
-use mib_tba::content::{ShopsFile, TbaItemsFile, TbaNpcStatsFile, ZonesFile};
+use mib_stdlib::content::{
+    AreasFile, HelpFile, ItemsFile, NpcsFile, QuestsFile, RoomDef, RoomId, RoomsFile,
+};
+use mib_tba::content::{ShopsFile, SocialsFile, TbaItemsFile, TbaNpcStatsFile, ZonesFile};
 
 use crate::error::{ConvertError, Result};
 
@@ -20,10 +22,13 @@ pub struct OutputBundle {
     pub rooms: RoomsFile,
     pub npcs: NpcsFile,
     pub items: ItemsFile,
+    pub quests: QuestsFile,
+    pub help: HelpFile,
     pub zones: ZonesFile,
     pub npc_stats: TbaNpcStatsFile,
     pub tba_items: TbaItemsFile,
     pub shops: ShopsFile,
+    pub socials: SocialsFile,
 }
 
 impl OutputBundle {
@@ -42,6 +47,12 @@ impl OutputBundle {
             items: ItemsFile {
                 items: Default::default(),
             },
+            quests: QuestsFile {
+                quests: Default::default(),
+            },
+            help: HelpFile {
+                topics: Default::default(),
+            },
             zones: ZonesFile {
                 zones: Default::default(),
             },
@@ -53,6 +64,9 @@ impl OutputBundle {
             },
             shops: ShopsFile {
                 shops: Default::default(),
+            },
+            socials: SocialsFile {
+                socials: Default::default(),
             },
         }
     }
@@ -129,10 +143,13 @@ fn section_files(bundle: &OutputBundle) -> Result<Vec<(String, String)>> {
         ("stdlib.areas.yaml".to_owned(), dump(&bundle.areas)?),
         ("stdlib.npcs.yaml".to_owned(), dump(&bundle.npcs)?),
         ("stdlib.items.yaml".to_owned(), dump(&bundle.items)?),
+        ("stdlib.quests.yaml".to_owned(), dump(&bundle.quests)?),
+        ("stdlib.help.yaml".to_owned(), dump(&bundle.help)?),
         ("tba.zones.yaml".to_owned(), dump(&bundle.zones)?),
         ("tba.npc_stats.yaml".to_owned(), dump(&bundle.npc_stats)?),
         ("tba.items.yaml".to_owned(), dump(&bundle.tba_items)?),
         ("tba.shops.yaml".to_owned(), dump(&bundle.shops)?),
+        ("tba.socials.yaml".to_owned(), dump(&bundle.socials)?),
     ];
     files.extend(room_shards(&bundle.rooms)?);
     Ok(files)

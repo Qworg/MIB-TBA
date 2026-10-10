@@ -7,9 +7,12 @@
 
 use std::path::{Path, PathBuf};
 
-use tbaport::source::deferred::{scan_quests, scan_triggers};
+use tbaport::source::deferred::scan_triggers;
 use tbaport::source::obj::parse_obj;
+use tbaport::source::quest::parse_quests;
 use tbaport::source::shop::parse_shops;
+use tbaport::source::social::parse_socials;
+use tbaport::source::text::{load_message_topics, load_text_topics};
 use tbaport::source::tokens::{Source, ascii_flags, bit};
 use tbaport::source::zone::parse_zone;
 use tbaport::source::{parse_mobs, parse_objs, parse_rooms};
@@ -20,6 +23,16 @@ fn world() -> PathBuf {
 
 fn source(subdir: &str, name: &str) -> Source {
     Source::from_path(&world().join(subdir).join(name)).expect("fixture opens")
+}
+
+/// The fixture tbaMUD root (the parent of `lib/world`).
+fn tbamud() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/tbamud")
+}
+
+/// A path under the fixture `lib/` tree (`text`, `misc`).
+fn lib_path(relative: &str) -> PathBuf {
+    tbamud().join("lib").join(relative)
 }
 
 #[test]
@@ -141,19 +154,100 @@ fn zone_parses_header_flags_and_commands() {
 }
 
 #[test]
-fn deferred_sections_scan_their_records() {
+fn deferred_triggers_scan_their_records() {
     let mut triggers = source("trg", "30.trg");
     let triggers = scan_triggers(&mut triggers).expect("triggers scan");
     assert_eq!(triggers.len(), 1);
     assert_eq!(triggers[0].vnum, 3000);
     assert_eq!(triggers[0].attach, "mob");
     assert_eq!(triggers[0].detail, "Fixture Trigger");
+}
 
+#[test]
+fn quests_parse_their_objective_and_rewards() {
     let mut quests = source("qst", "30.qst");
-    let quests = scan_quests(&mut quests).expect("quests scan");
+    let quests = parse_quests(&mut quests).expect("quests parse");
     assert_eq!(quests.len(), 1);
-    assert_eq!(quests[0].vnum, 100);
-    assert!(quests[0].detail.contains("questmaster 3000"));
+    let quest = &quests[0];
+    assert_eq!(quest.vnum, 100);
+    assert_eq!(quest.name, "Fixture Quest");
+    assert_eq!(quest.quest_type, 3, "AQ_MOB_KILL");
+    assert_eq!(quest.questmaster, 3000);
+    assert_eq!(quest.target, 3001);
+    assert_eq!(quest.values[6], 3, "QST_QUANTITY");
+    assert_eq!(quest.gold_reward, 10);
+    assert_eq!(quest.obj_reward, -1);
+}
+
+#[test]
+fn socials_parse_the_new_format_sets() {
+    let mut src = Source::from_path(&lib_path("misc/socials.new")).expect("socials fixture opens");
+    let socials = parse_socials(&mut src).expect("socials parse");
+    assert_eq!(socials.len(), 2);
+    let wave = &socials[0];
+    assert_eq!(wave.command, "wave");
+    assert_eq!(wave.sort_as, "wave");
+    assert_eq!(wave.hide, 0);
+    assert_eq!(wave.min_char_position, 5);
+    assert_eq!(
+        wave.messages[0].as_deref(),
+        Some("You wave."),
+        "char_no_arg"
+    );
+    assert_eq!(
+        wave.messages[12].as_deref(),
+        Some("$n waves $p around."),
+        "others_obj_found"
+    );
+    let ponder = &socials[1];
+    assert_eq!(ponder.command, "ponder");
+    assert_eq!(ponder.hide, 1);
+    assert_eq!(ponder.min_char_position, 1);
+    assert_eq!(ponder.messages[8], None, "`#` is Circle's NULL");
+}
+
+#[test]
+fn text_files_become_help_topics_with_colour_stripped() {
+    let text_dir = lib_path("text");
+    let topics = load_text_topics(&text_dir).expect("text topics");
+    assert_eq!(topics.len(), 2, "only the committed motd/news fixtures");
+    let motd = topics
+        .iter()
+        .find(|(id, _)| id == "motd")
+        .expect("motd topic");
+    assert!(motd.1.body.contains("Welcome to"));
+    let news = topics
+        .iter()
+        .find(|(id, _)| id == "news")
+        .expect("news topic");
+    assert!(
+        news.1.body.contains("http://tbamud.com"),
+        "`@C`/`@n` are resolved: {}",
+        news.1.body
+    );
+    assert!(!news.1.body.contains('@'), "no colour codes survive");
+}
+
+#[test]
+fn combat_messages_become_one_topic_per_attack_type() {
+    let messages = load_message_topics(&lib_path("misc/messages")).expect("message topics");
+    assert_eq!(messages.len(), 2);
+    let (id, topic) = messages
+        .iter()
+        .find(|(id, _)| id == "combat-message-5")
+        .expect("burning hands topic");
+    assert_eq!(id, "combat-message-5");
+    assert!(topic.title.contains("burning hands"));
+    assert!(
+        topic
+            .body
+            .contains("die/attacker: You have burned $N to death!")
+    );
+    let unused = messages
+        .iter()
+        .find(|(id, _)| id == "combat-message-202")
+        .expect("unused type topic");
+    assert!(unused.1.title.contains("!UNUSED!"));
 }
 
 #[test]

@@ -28,8 +28,9 @@ use crate::combat::{
     NpcDefeated, TbaAlignment, TbaCombatant, TbaGold, TbaProgress, TbaRng, TbaRound, TbaRoundClock,
 };
 use crate::content::{
-    ShopDef, ShopsSection, SpellDef, SpellsSection, TbaClassDef, TbaClassesSection, TbaItemDef,
-    TbaItemsSection, TbaNpcStats, TbaNpcStatsSection, ZoneDef, ZonesSection,
+    ShopDef, ShopsSection, SocialDef, SocialsSection, SpellDef, SpellsSection, TbaClassDef,
+    TbaClassesSection, TbaItemDef, TbaItemsSection, TbaNpcStats, TbaNpcStatsSection, ZoneDef,
+    ZonesSection,
 };
 use crate::equipment::TbaEquipmentSave;
 use crate::items::TbaObjectClock;
@@ -59,6 +60,8 @@ pub struct TbaContent {
     pub spells: BTreeMap<SmolStr, SpellDef>,
     /// `tba.shops` — keyed by the shopkeeper `stdlib.npcs` id (TBA-E17).
     pub shops: BTreeMap<NpcId, ShopDef>,
+    /// `tba.socials` — keyed by the social word (issue #17).
+    pub socials: BTreeMap<SmolStr, SocialDef>,
 }
 
 /// The TBA game module.
@@ -97,6 +100,9 @@ impl MibModule for TbaModule {
         let shops = section_defs::<ShopsSection>(packs)
             .map(|defs| defs.shops.clone())
             .unwrap_or_default();
+        let socials = section_defs::<SocialsSection>(packs)
+            .map(|defs| defs.socials.clone())
+            .unwrap_or_default();
 
         // The reset tracker is derived state, seeded from the same content so
         // it exists before the first `FixedUpdate`.
@@ -108,6 +114,7 @@ impl MibModule for TbaModule {
             classes,
             spells,
             shops,
+            socials,
         });
     }
 }
@@ -173,6 +180,7 @@ impl Plugin for TbaPlugin {
                 crate::combat::handle_combat_commands,
                 crate::spells::handle_cast_command,
                 crate::shops::handle_shop_commands,
+                crate::socials::handle_social_commands,
                 crate::equipment::handle_equipment_commands,
                 crate::equipment::recompute_equipment_affects,
                 crate::equipment::recompute_npc_equipment_affects,
@@ -281,6 +289,7 @@ mod tests {
                 "tba.items",
                 "tba.npc_stats",
                 "tba.shops",
+                "tba.socials",
                 "tba.spells",
                 "tba.zones"
             ],

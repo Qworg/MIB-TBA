@@ -8,15 +8,17 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
+use mib_content::prelude::SmolStr;
 use mib_stdlib::content::{
     AreaDef, ContainerDef, DoorDef, ExitDef, ExtraDescDef, ItemDef, ItemId, ItemTag,
-    NpcBehaviorFlags, NpcDef, NpcId, RoomDef, RoomId, RoomTag, Sector,
+    NpcBehaviorFlags, NpcDef, NpcId, QuestDef, QuestId, QuestOrigin, QuestStepDef, RewardSpec,
+    RoomDef, RoomId, RoomTag, Sector,
 };
 use mib_tba::combat::{GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID, GOLD_ITEM_NAME};
 use mib_tba::content::{
     AffectDef, AffectLocation, DoorReset, ItemAffectFlag, ItemExtraFlag, NpcBehaviour, Position,
-    ResetMode, ShopDef, ShopHours, ShopTrade, TbaItemDef, TbaItemKind, TbaNpcStats, WearSlot,
-    ZoneCommand, ZoneCommandKind, ZoneDef,
+    ResetMode, ShopDef, ShopHours, ShopTrade, SocialDef, TbaItemDef, TbaItemKind, TbaNpcStats,
+    WearSlot, ZoneCommand, ZoneCommandKind, ZoneDef,
 };
 
 use crate::emit::OutputBundle;
@@ -27,12 +29,15 @@ use crate::report::{
     Totals, UnmappedFlag, ZoneReport,
 };
 use crate::source::{
-    deferred::{DeferredRecord, scan_quests, scan_triggers},
+    deferred::{DeferredRecord, scan_triggers},
     mob::RawMob,
     obj::RawObj,
     parse_mobs, parse_objs, parse_rooms,
+    quest::{RawQuest, parse_quests},
     room::RawRoom,
     shop::{RawShop, parse_shops},
+    social::{RawSocial, parse_socials},
+    text::{load_message_topics, load_text_topics},
     tokens::Source,
     zone::{RawZone, parse_zone},
 };
@@ -216,7 +221,7 @@ struct ZoneSource {
     objs: Vec<RawObj>,
     shops: Vec<RawShop>,
     triggers: Vec<DeferredRecord>,
-    quests: Vec<DeferredRecord>,
+    quests: Vec<RawQuest>,
     files: SourceFiles,
 }
 
@@ -328,12 +333,12 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
             &source.triggers,
             "DG scripts are deferred (doc §10)",
         );
-        add_deferred(
-            &mut zr,
-            "quests",
-            &source.quests,
-            "quests are deferred (doc §9)",
-        );
+        for raw in &source.quests {
+            if let Some((quest_id, quest)) = map_quest(raw, &room_ids, &npc_ids, &item_ids, &mut zr)
+            {
+                bundle.quests.quests.insert(quest_id, quest);
+            }
+        }
 
         zones.push(zr);
     }
@@ -343,6 +348,11 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
     // converted world that fully replaces `content/` therefore still has the
     // prototype TBA-E09 drops.
     insert_gold_prototype(&mut bundle);
+
+    // Login prose and socials are world-global, not per-zone; load them once.
+    let mut drops = global_drops();
+    load_help(&options.source_root, &mut bundle)?;
+    load_socials(&options.source_root, &mut bundle, &mut drops)?;
 
     // Confirm the tag landed: the requested room must exist and actually carry
     // the tag. A missing room is a no-op recorded as `None` (the CLI also
@@ -364,7 +374,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         },
         only: options.only,
         start_room,
-        global_drops: global_drops(),
+        global_drops: drops,
         totals: Totals::default(),
         zones,
     };
@@ -393,6 +403,21 @@ fn global_drops() -> Vec<GlobalDrop> {
             reason: "Circle combat skill with no engine implementation (non-goal)".to_owned(),
         });
     }
+    drops.push(GlobalDrop {
+        kind: "out_of_scope".to_owned(),
+        name: "lib/misc/socials".to_owned(),
+        reason: "legacy old-format social file; `CONFIG_NEW_SOCIALS` is YES, so the \
+                 run-time reads `lib/misc/socials.new` (issue #17)"
+            .to_owned(),
+    });
+    drops.push(GlobalDrop {
+        kind: "out_of_scope".to_owned(),
+        name: "lib/text/help".to_owned(),
+        reason: "legacy `help.hlp` database; the generated command catalog plus the \
+                 converted `lib/text` and `lib/misc/messages` topics supersede it \
+                 (issue #18)"
+            .to_owned(),
+    });
     drops
 }
 
@@ -496,8 +521,8 @@ fn load_zone(world: &Path, filename_number: u32) -> Result<ZoneSource> {
     files.shp = shp;
     let triggers = optional_scan(&world.join("trg"), filename_number, "trg", scan_triggers)?;
     files.trg = triggers.is_some();
-    let quests = optional_scan(&world.join("qst"), filename_number, "qst", scan_quests)?;
-    files.qst = quests.is_some();
+    let (quests, qst) = optional_parse(&world.join("qst"), filename_number, "qst", parse_quests)?;
+    files.qst = qst;
 
     Ok(ZoneSource {
         number: zone.number,
@@ -1707,6 +1732,284 @@ fn map_shop_trade_with(bits: i32, label: &str, zr: &mut ZoneReport) -> Vec<ShopT
         );
     }
     out
+}
+
+// ---------------------------------------------------------------------------
+// Quests
+// ---------------------------------------------------------------------------
+
+/// Circle's `AQ_*` objective names (`quest.h:14`).
+fn quest_type_name(value: i32) -> &'static str {
+    match value {
+        -1 => "UNDEFINED",
+        0 => "OBJ_FIND",
+        1 => "ROOM_FIND",
+        2 => "MOB_FIND",
+        3 => "MOB_KILL",
+        4 => "MOB_SAVE",
+        5 => "OBJ_RETURN",
+        6 => "ROOM_CLEAR",
+        _ => "UNKNOWN",
+    }
+}
+
+/// Map one `.qst` record into `stdlib.quests`.
+///
+/// The objective types with a direct `QuestStepDef` are converted (fetch,
+/// visit, kill); a type with no variant drops the **whole** quest through a
+/// named `unmapped` entry, because a quest missing its objective would change
+/// the world rather than merely omit a field. Giver and step references are
+/// resolved against the converted id sets, so a dangling one drops the quest
+/// and is reported. Source fields `stdlib.quests` cannot carry (`gold_reward`,
+/// `desc`/`done`/`quit`, the chain links and the level/time conditions) are
+/// recorded as `unmapped`.
+fn map_quest(
+    raw: &RawQuest,
+    room_ids: &BTreeSet<RoomId>,
+    npc_ids: &BTreeSet<NpcId>,
+    item_ids: &BTreeSet<ItemId>,
+    zr: &mut ZoneReport,
+) -> Option<(QuestId, QuestDef)> {
+    let label = format!("quest {}", raw.vnum);
+    let giver = ids::npc_id(raw.questmaster);
+    if raw.questmaster < 0 || !npc_ids.contains(&giver) {
+        push_dangling(zr, "dangling_quest_giver", &label, giver.as_ref());
+        return None;
+    }
+
+    let quantity = raw.values[6].max(1) as u32;
+    let step = match raw.quest_type {
+        // AQ_OBJ_FIND: retrieve an object.
+        0 => {
+            let item = ids::item_id(raw.target);
+            if !item_ids.contains(&item) {
+                push_dangling(zr, "dangling_quest_target_item", &label, item.as_ref());
+                return None;
+            }
+            QuestStepDef::Collect {
+                item,
+                count: quantity,
+            }
+        }
+        // AQ_ROOM_FIND: reach a room.
+        1 => {
+            let room = ids::room_id(raw.target);
+            if !room_ids.contains(&room) {
+                push_dangling(zr, "dangling_quest_target_room", &label, room.as_ref());
+                return None;
+            }
+            QuestStepDef::Visit { room }
+        }
+        // AQ_MOB_KILL: kill a mob.
+        3 => {
+            let npc = ids::npc_id(raw.target);
+            if !npc_ids.contains(&npc) {
+                push_dangling(zr, "dangling_quest_target_npc", &label, npc.as_ref());
+                return None;
+            }
+            QuestStepDef::Kill {
+                npc,
+                count: quantity,
+            }
+        }
+        other => {
+            push_unmapped(
+                zr,
+                &label,
+                "quest_objective",
+                quest_type_name(other),
+                "no QuestStepDef variant for this AQ_* objective; the quest is dropped",
+            );
+            return None;
+        }
+    };
+
+    let mut reward = RewardSpec::default();
+    if raw.exp_reward > 0 {
+        reward.xp = raw.exp_reward as u64;
+    }
+    if raw.obj_reward > 0 {
+        let item = ids::item_id(raw.obj_reward);
+        if item_ids.contains(&item) {
+            reward.items.push(item);
+        } else {
+            push_dangling(zr, "dangling_quest_reward_item", &label, item.as_ref());
+        }
+    }
+    if raw.gold_reward > 0 {
+        push_unmapped(
+            zr,
+            &label,
+            "quest_gold_reward",
+            &raw.gold_reward.to_string(),
+            "RewardSpec has no gold field (issue #16)",
+        );
+    }
+
+    // `info` is the long description shown at join; `desc` is the short form.
+    let description = if raw.info.trim().is_empty() {
+        raw.desc.trim().to_owned()
+    } else {
+        raw.info.trim().to_owned()
+    };
+    if raw.info.trim().is_empty() && !raw.desc.trim().is_empty() {
+        // `desc` stood in for `description`; nothing dropped.
+    } else if !raw.desc.trim().is_empty() {
+        push_unmapped(zr, &label, "quest_text", "desc", raw.desc.trim());
+    }
+    for (name, text) in [("done", &raw.done), ("quit", &raw.quit)] {
+        if !text.trim().is_empty() {
+            push_unmapped(zr, &label, "quest_text", name, text.trim());
+        }
+    }
+
+    record_quest_conditions(raw, &label, zr);
+
+    Some((
+        ids::quest_id(raw.vnum),
+        QuestDef {
+            name: raw.name.clone(),
+            description,
+            giver,
+            steps: vec![step],
+            reward,
+            origin: QuestOrigin::Authored,
+        },
+    ))
+}
+
+/// Record the quest fields the MIB schema has no home for.
+fn record_quest_conditions(raw: &RawQuest, label: &str, zr: &mut ZoneReport) {
+    if raw.flags & 1 != 0 {
+        push_unmapped(
+            zr,
+            label,
+            "quest_flag",
+            "REPEATABLE",
+            "QuestDef has no repeatable flag",
+        );
+    }
+    for (name, value) in [
+        ("prereq", raw.prereq),
+        ("prev_quest", raw.prev_quest),
+        ("next_quest", raw.next_quest),
+    ] {
+        if value >= 0 {
+            push_unmapped(zr, label, "quest_link", name, &value.to_string());
+        }
+    }
+    let conditions = [
+        ("points", raw.values[0]),
+        ("penalty", raw.values[1]),
+        ("min_level", raw.values[2]),
+        ("max_level", raw.values[3]),
+        ("time_limit", raw.values[4]),
+        ("return_mob", raw.values[5]),
+    ];
+    for (name, value) in conditions {
+        if value != 0 && value != -1 {
+            push_unmapped(zr, label, "quest_condition", name, &value.to_string());
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Help topics + socials (world-global)
+// ---------------------------------------------------------------------------
+
+/// Load `lib/text/*` and `lib/misc/messages` into `stdlib.help` topics.
+fn load_help(source_root: &Path, bundle: &mut OutputBundle) -> Result<()> {
+    for (id, topic) in load_text_topics(&source_root.join("lib/text"))? {
+        bundle.help.topics.insert(SmolStr::new(id), topic);
+    }
+    for (id, topic) in load_message_topics(&source_root.join("lib/misc/messages"))? {
+        bundle.help.topics.insert(SmolStr::new(id), topic);
+    }
+    Ok(())
+}
+
+/// Codes `mib_tba::socials::substitute` resolves (`perform_act`'s cases).
+const SUPPORTED_SOCIAL_CODES: &str = "nNeEmMsStTpPoOaAuUF$";
+
+/// Load `lib/misc/socials.new` into `tba.socials`, recording duplicate command
+/// words and any `$`-code the engine cannot resolve as global drops.
+fn load_socials(
+    source_root: &Path,
+    bundle: &mut OutputBundle,
+    drops: &mut Vec<GlobalDrop>,
+) -> Result<()> {
+    let path = source_root.join("lib/misc/socials.new");
+    if !path.is_file() {
+        return Ok(());
+    }
+    let mut src = Source::from_path(&path)?;
+    let raw_socials: Vec<RawSocial> = parse_socials(&mut src)?;
+    let mut unsupported: BTreeSet<char> = BTreeSet::new();
+    for raw in &raw_socials {
+        for message in raw.messages.iter().flatten() {
+            collect_unsupported_codes(message, &mut unsupported);
+        }
+        let name = SmolStr::new(raw.command.clone());
+        if bundle
+            .socials
+            .socials
+            .insert(name.clone(), map_social(raw))
+            .is_some()
+        {
+            drops.push(GlobalDrop {
+                kind: "duplicate_social".to_owned(),
+                name: name.to_string(),
+                reason: "two socials share a command word; the last one wins".to_owned(),
+            });
+        }
+    }
+    for code in unsupported {
+        drops.push(GlobalDrop {
+            kind: "social_code".to_owned(),
+            name: format!("${code}"),
+            reason: format!(
+                "tbaMUD `perform_act` has no `${code}` case; the code is preserved in \
+                 `tba.socials` and expands to nothing at run time"
+            ),
+        });
+    }
+    Ok(())
+}
+
+fn collect_unsupported_codes(message: &str, out: &mut BTreeSet<char>) {
+    let mut chars = message.chars();
+    while let Some(c) = chars.next() {
+        if c == '$'
+            && let Some(code) = chars.next()
+            && !SUPPORTED_SOCIAL_CODES.contains(code)
+        {
+            out.insert(code);
+        }
+    }
+}
+
+fn map_social(raw: &RawSocial) -> SocialDef {
+    let message = |index: usize| raw.messages.get(index).cloned().flatten();
+    SocialDef {
+        sort_as: SmolStr::new(raw.sort_as.clone()),
+        hide: raw.hide != 0,
+        min_char_position: raw.min_char_position,
+        min_victim_position: raw.min_victim_position,
+        min_level_char: raw.min_level_char,
+        char_no_arg: message(0),
+        others_no_arg: message(1),
+        char_found: message(2),
+        others_found: message(3),
+        vict_found: message(4),
+        not_found: message(5),
+        char_auto: message(6),
+        others_auto: message(7),
+        char_body_found: message(8),
+        others_body_found: message(9),
+        vict_body_found: message(10),
+        char_obj_found: message(11),
+        others_obj_found: message(12),
+    }
 }
 
 // ---------------------------------------------------------------------------

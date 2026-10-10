@@ -6,8 +6,14 @@
 
 use std::path::{Path, PathBuf};
 
-use mib_stdlib::content::{AreasFile, ItemId, ItemsFile, NpcId, NpcsFile, RoomId, RoomsFile};
-use mib_tba::content::{ShopsFile, TbaItemKind, TbaItemsFile, TbaNpcStatsFile, ZonesFile};
+use mib_content::prelude::SmolStr;
+use mib_stdlib::content::{
+    AreasFile, HelpFile, ItemId, ItemsFile, NpcId, NpcsFile, QuestId, QuestStepDef, QuestsFile,
+    RoomId, RoomsFile,
+};
+use mib_tba::content::{
+    ShopsFile, SocialsFile, TbaItemKind, TbaItemsFile, TbaNpcStatsFile, ZonesFile,
+};
 use tbaport::{ConvertOptions, DEFAULT_START_ROOM, convert, emit::render};
 
 fn fixture_root() -> PathBuf {
@@ -53,7 +59,7 @@ fn fixture_bundle_is_schema_exact_and_deterministic() {
     assert_eq!(first.report.totals.items, 2);
     assert_eq!(first.report.totals.zone_commands, 7);
     assert_eq!(first.report.totals.dangling, 0);
-    assert_eq!(first.report.totals.deferred, 4);
+    assert_eq!(first.report.totals.deferred, 3, "only the DG trigger layer");
 
     // Every emitted file parses back into its real type and re-serialises to
     // exactly the bytes that were written (modulo the provenance header).
@@ -82,10 +88,13 @@ fn fixture_bundle_is_schema_exact_and_deterministic() {
             "stdlib.areas.yaml" => roundtrip::<AreasFile>(body),
             "stdlib.npcs.yaml" => roundtrip::<NpcsFile>(body),
             "stdlib.items.yaml" => roundtrip::<ItemsFile>(body),
+            "stdlib.quests.yaml" => roundtrip::<QuestsFile>(body),
+            "stdlib.help.yaml" => roundtrip::<HelpFile>(body),
             "tba.zones.yaml" => roundtrip::<ZonesFile>(body),
             "tba.npc_stats.yaml" => roundtrip::<TbaNpcStatsFile>(body),
             "tba.items.yaml" => roundtrip::<TbaItemsFile>(body),
             "tba.shops.yaml" => roundtrip::<ShopsFile>(body),
+            "tba.socials.yaml" => roundtrip::<SocialsFile>(body),
             other => panic!("unexpected emitted file {other}"),
         }
     }
@@ -157,6 +166,54 @@ fn fixture_content_maps_the_expected_fields() {
     let zone = conversion.bundle.zones.zones.get(&30).expect("zone 30");
     assert_eq!(zone.name, "Fixture Zone");
     assert_eq!(zone.commands.len(), 7);
+
+    // Issue #16: the fixture quest maps onto a real `QuestDef`.
+    let quest = conversion
+        .bundle
+        .quests
+        .quests
+        .get(&QuestId::from("tba_quest_100"))
+        .expect("fixture quest");
+    assert_eq!(quest.name, "Fixture Quest");
+    assert_eq!(quest.giver, NpcId::from("tba_npc_3000"));
+    assert_eq!(
+        quest.reward,
+        mib_stdlib::content::RewardSpec::default(),
+        "gold is recorded as a drop; -1 obj_reward is NOTHING"
+    );
+    match quest.steps.as_slice() {
+        [QuestStepDef::Kill { npc, count }] => {
+            assert_eq!(npc, &NpcId::from("tba_npc_3001"));
+            assert_eq!(*count, 3, "QST_QUANTITY");
+        }
+        other => panic!("expected one kill step, got {other:?}"),
+    }
+
+    // Issue #18: the fixture `lib/text` + `lib/misc/messages` become topics.
+    let topics = &conversion.bundle.help.topics;
+    assert!(topics.contains_key(&SmolStr::new("motd")), "motd topic");
+    assert!(topics.contains_key(&SmolStr::new("news")), "news topic");
+    assert!(
+        topics.contains_key(&SmolStr::new("combat-message-5")),
+        "combat messages become topics"
+    );
+
+    // Issue #17: the fixture socials parse into `tba.socials`.
+    let socials = &conversion.bundle.socials.socials;
+    let wave = socials
+        .get(&SmolStr::new("wave"))
+        .expect("fixture wave social");
+    assert_eq!(wave.sort_as, "wave");
+    assert_eq!(wave.char_no_arg.as_deref(), Some("You wave."));
+    assert_eq!(
+        wave.others_obj_found.as_deref(),
+        Some("$n waves $p around.")
+    );
+    let ponder = socials
+        .get(&SmolStr::new("ponder"))
+        .expect("fixture ponder social");
+    assert!(ponder.hide);
+    assert_eq!(ponder.char_body_found, None, "`#` maps to None");
 
     let shop = conversion
         .bundle
