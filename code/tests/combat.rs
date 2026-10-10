@@ -193,6 +193,8 @@ fn combatant(hp: i32, thaco: i32, damroll: i32) -> TbaCombatant {
         damroll,
         armor_class: 100,
         thaco,
+        attributes: TbaAttributes::neutral(),
+        saves: TbaSaves::default(),
         position: Position::Standing,
         target: None,
     }
@@ -576,6 +578,37 @@ fn resolve_rounds_deals_damage_without_defeating_a_healthy_target() {
     assert!(hp < 100 && hp > 0, "took damage but survived: {hp}");
     assert!(drain_defeats(&mut app).is_empty());
     assert!(app.world().get_entity(dummy).is_ok());
+}
+
+#[test]
+fn strength_bonus_flips_a_borderline_swing_in_resolve_rounds() {
+    // circle's `compute_thaco` subtracts `str_app[].tohit` from THAC0
+    // (`tbamud/src/fight.c:830`). The first d20 from the shared seed is 14;
+    // with THAC0 26 against AC 100 the needed roll is 16, so a neutral (13)
+    // attacker misses while strength 20 (str_app +3) lands on 17.
+    fn swing(strength: i32) -> bool {
+        let mut app = test_app(content());
+        let room = spawn_room(app.world_mut());
+        let player = spawn_player(app.world_mut(), room, 0);
+        let dummy = spawn_npc(app.world_mut(), room, "dummy");
+        app.world_mut()
+            .entity_mut(dummy)
+            .insert(combatant(100, 100, 0));
+        {
+            let mut att = app.world_mut().get_mut::<TbaCombatant>(player).unwrap();
+            att.target = Some(dummy);
+            att.thaco = 26;
+            att.attributes.strength = strength;
+        }
+        run_round(&mut app);
+        combatant_of(&app, dummy).hp < 100
+    }
+
+    assert!(!swing(13), "a 13-strength attacker misses the 16 threshold");
+    assert!(
+        swing(20),
+        "str_app's +3 lifts the 14 roll over the threshold"
+    );
 }
 
 #[test]

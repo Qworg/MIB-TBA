@@ -27,7 +27,8 @@ pub use init::{
     player_combatant_system, resolve_class_key,
 };
 pub use model::{
-    EVIL_ALIGNMENT, GOOD_ALIGNMENT, TbaAlignment, TbaCombatant, TbaGold, TbaProgress, WieldedWeapon,
+    BASE_ATTRIBUTE, EVIL_ALIGNMENT, GOOD_ALIGNMENT, TbaAlignment, TbaAttributes, TbaCombatant,
+    TbaGold, TbaProgress, TbaSaves, WieldedWeapon,
 };
 pub use progression::{
     BASE_MOVE, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, TbaRng, derive_vitals, level_for_xp,

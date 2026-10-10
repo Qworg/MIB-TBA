@@ -1,4 +1,4 @@
-//! TBA-E18 — the `cast` command, spell mana, and transient buffs.
+//! TBA-E18 — the `cast` command, spell mana, and round-counted buffs.
 //!
 //! CircleMUD's `cast '<spell>' [target]` has no structured protocol variant:
 //! [`Command`](mib_protocol::prelude::Command) stops at `Attack`/`Flee`. So
@@ -16,19 +16,25 @@
 //!
 //! ## Buffs
 //!
-//! [`TbaBuffs`] is a **transient** runtime component: a list of [`ActiveBuff`]s,
-//! each an [`AffectDef`] and a countdown. [`tick_buffs`] runs on the existing
-//! [`TbaRound`](crate::combat::TbaRound) schedule (one tick per 3-second combat
-//! round) and expires them; the affect recompute in
+//! [`TbaBuffs`] is a list of [`ActiveBuff`]s, each an [`AffectDef`] and a
+//! countdown. The countdown's initial value comes from the spell's
+//! [`SpellDef::duration`] (Circle's `af[].duration` in `mag_affects`).
+//! [`tick_buffs`] runs on the existing [`TbaRound`](crate::combat::TbaRound)
+//! schedule (one tick per 3-second combat round) and expires them; the affect
+//! recompute in
 //! [`recompute_equipment_affects`](crate::equipment::recompute_equipment_affects)
 //! includes the live buff affects in the same no-stacking base + worn + buffs
-//! rebuild, so a buff is never applied twice and expires cleanly. Buffs are not
-//! serialised and do not survive a restart — they are combat-round state, like
-//! a melee target.
+//! rebuild, so a buff is never applied twice and expires cleanly.
+//!
+//! [`TbaBuffs`] is a [`Component`] and registered with the stdlib
+//! [`SaveRegistry`](mib_stdlib::prelude::SaveRegistry) under
+//! [`DocKind::Player`](mib_persist::prelude::DocKind::Player), so active buffs
+//! and their remaining rounds survive a restart.
 
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{Location, Npc, NpcKey, Player, PlayerDefeated, Session, SessionState};
+use serde::{Deserialize, Serialize};
 use smol_str::SmolStr;
 
 use crate::combat::commands::{broadcast, deny, entity_name, find_target_in_room, text};
@@ -37,28 +43,32 @@ use crate::combat::{TbaCombatant, TbaProgress, TbaRng, default_class};
 use crate::content::{AffectDef, Position, SpellDef, SpellKind, SpellTarget};
 use crate::module::TbaContent;
 
-/// Combat rounds a cast buff lasts.
+/// Combat rounds a cast buff lasts when the spell carries no source pulse
+/// count.
 ///
-/// Circle's affects age on a different clock and `tba.spells` carries no
-/// duration (the per-spell pulse counts live in `src/spells.c`'s
-/// `mag_affects`), so a buff here lasts a fixed, documented number of
-/// [`TbaRound`](crate::combat::TbaRound)s. A later pass can thread the source
-/// duration through [`SpellDef`] without changing the cast/buff plumbing.
-pub const DEFAULT_BUFF_ROUNDS: u32 = 6;
+/// Circle's `mag_affects` sets an explicit `af[].duration` per spell, authored
+/// onto [`SpellDef::duration`]; this is the documented fallback for a spell
+/// without one. It is the same value as
+/// [`DEFAULT_SPELL_DURATION`](crate::content::DEFAULT_SPELL_DURATION).
+pub const DEFAULT_BUFF_ROUNDS: u32 = crate::content::DEFAULT_SPELL_DURATION;
 
 /// One live buff: the affect it contributes and the rounds left before it
 /// expires.
-#[derive(Debug, Clone, PartialEq, Eq, Component)]
+#[derive(Debug, Clone, PartialEq, Eq, Component, Serialize, Deserialize)]
 pub struct ActiveBuff {
     pub affect: AffectDef,
     pub rounds_left: u32,
 }
 
-/// A combatant's transient buff list.
+/// A combatant's active buff list, persisted with the player.
 ///
-/// Deliberately not serialisable: buffs are combat-round state and the death /
-/// restart paths do not persist them (see the module docs).
-#[derive(Debug, Clone, Default, PartialEq, Eq, Component)]
+/// Each entry's `rounds_left` starts at the casting spell's
+/// [`SpellDef::duration`] and is decremented by [`tick_buffs`] once per
+/// [`TbaRound`](crate::combat::TbaRound). Registered with the stdlib
+/// [`SaveRegistry`](mib_stdlib::prelude::SaveRegistry) under
+/// [`DocKind::Player`](mib_persist::prelude::DocKind::Player), so a restart
+/// restores both the affects and their remaining rounds.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Component, Serialize, Deserialize)]
 pub struct TbaBuffs {
     pub buffs: Vec<ActiveBuff>,
 }
@@ -186,19 +196,20 @@ fn is_hostile(spell: &SpellDef) -> bool {
     spell.kind == SpellKind::Damage
 }
 
-/// Install (or refresh) a buff affect on `target`.
+/// Install (or refresh) a buff affect on `target`, lasting `rounds`.
 ///
 /// A re-cast of the same apply location replaces the old entry rather than
 /// stacking it, which is what keeps the recompute's additive affects bounded.
 fn add_buff(
     target: Entity,
     affect: AffectDef,
+    rounds: u32,
     buffs: &mut Query<&mut TbaBuffs>,
     commands: &mut Commands,
 ) {
     let entry = ActiveBuff {
         affect,
-        rounds_left: DEFAULT_BUFF_ROUNDS,
+        rounds_left: rounds,
     };
     match buffs.get_mut(target) {
         Ok(mut store) => {
@@ -458,7 +469,13 @@ pub fn handle_cast_command(
                     let Some(affect) = &spell.affect else {
                         continue;
                     };
-                    add_buff(target, affect.clone(), &mut buffs, &mut commands);
+                    add_buff(
+                        target,
+                        affect.clone(),
+                        spell.duration,
+                        &mut buffs,
+                        &mut commands,
+                    );
                     if target == session {
                         output.write(text(session, format!("You feel the {spell_name} settle.")));
                     } else if players.get(target).is_ok() {
@@ -483,12 +500,18 @@ pub fn handle_cast_command(
             }
 
             // A damage spell may also carry an affect (`chill touch`). Apply it
-            // through the same transient buff store. `Buff` already ran above.
+            // through the same buff store. `Buff` already ran above.
             if let Some(affect) = &spell.affect
                 && spell.kind != SpellKind::Buff
                 && !lethal
             {
-                add_buff(target, affect.clone(), &mut buffs, &mut commands);
+                add_buff(
+                    target,
+                    affect.clone(),
+                    spell.duration,
+                    &mut buffs,
+                    &mut commands,
+                );
             }
 
             if lethal {

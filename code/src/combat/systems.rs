@@ -5,11 +5,16 @@
 //! §4.3 formulas:
 //!
 //! ```text
-//! roll    = d20 + hitroll
+//! roll    = d20 + hitroll + attributes.to_hit_bonus()
 //! needed  = THAC0 - (target_ac / 10)
 //! hit     = roll >= needed
 //! damage  = weapon_dice() + damroll
 //! ```
+//!
+//! The attribute term is Circle's `compute_thaco` (`tbamud/src/fight.c:830-833`),
+//! which subtracts `str_app[].tohit` plus `(int - 13) / 1.5` and
+//! `(wis - 13) / 1.5` from THAC0; adding the same term to the roll is the
+//! identical comparison.
 //!
 //! A defeated player emits [`PlayerDefeated`] (the stdlib corpse + sanctuary
 //! respawn path, TBA-E09); a defeated NPC is despawned, which the spawner pass
@@ -99,7 +104,7 @@ pub fn resolve_rounds(
             if !att.is_alive() || !def.is_alive() {
                 continue;
             }
-            let roll = rng.d20() + att.hitroll;
+            let roll = rng.d20() + att.hitroll + att.attributes.to_hit_bonus();
             if roll < att.needed_to_hit(def.armor_class) {
                 continue;
             }

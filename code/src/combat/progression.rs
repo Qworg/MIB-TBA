@@ -21,7 +21,7 @@ fn table_entry<T>(table: &[T], level: u32) -> Option<&T> {
     table.get(index)
 }
 
-use super::model::TbaCombatant;
+use super::model::{TbaAttributes, TbaCombatant, TbaSaves};
 
 /// Move points a level-1 character starts with (Circle base movement).
 pub const BASE_MOVE: i32 = 80;
@@ -94,6 +94,8 @@ pub fn derive_vitals(class: &TbaClassDef, level: u32) -> TbaCombatant {
         damroll: 0,
         armor_class: NAKED_ARMOR_CLASS,
         thaco,
+        attributes: TbaAttributes::neutral(),
+        saves: TbaSaves::default(),
         position: Position::Standing,
         target: None,
     }

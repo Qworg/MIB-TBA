@@ -24,11 +24,11 @@
 //! unequipping cannot stack (the classic-rpg lesson) and a recompute never
 //! heals.
 //!
-//! [`AffectLocation::Str`]/`Dex`/`Int`/`Wis`/`Con`/`Cha` and the
-//! `SavePara`/`SaveRod`/`SavePetri`/`SaveBreath`/`SaveSpell` saves have no
-//! field on [`TbaCombatant`]; they parse and persist with the item but are
-//! **carried-but-not-yet-applied** until a stat/save block exists. See
-//! [`apply_affect`].
+//! [`AffectLocation`] entry maps to a field: `Hitroll`/`Damroll`/`ArmorClass`
+//! and the hit-point/mana/move maxima live directly on [`TbaCombatant`], the
+//! attributes on its [`TbaAttributes`](crate::combat::TbaAttributes) block and
+//! the saves on its [`TbaSaves`](crate::combat::TbaSaves) block. Every one is
+//! rebuilt from the base, so an affect can never stack. See [`apply_affect`].
 //!
 //! ## `WieldedWeapon`
 //!
@@ -197,34 +197,34 @@ pub fn choose_slot(def: &TbaItemDef, worn: &HashMap<WearSlot, Entity>) -> Option
 
 // -- affect layer -----------------------------------------------------------
 
-/// Apply one item affect to a combatant block.
+/// Apply one item or buff affect to a combatant block.
 ///
-/// Only the [`AffectLocation`]s with a [`TbaCombatant`] field are applied
-/// (`Hitroll`, `Damroll`, `ArmorClass`, `MaxHp`, `MaxMana`, `MaxMove`). The
-/// attribute (`Str`…`Cha`) and saving-throw (`SavePara`…`SaveSpell`) locations
-/// are **carried-but-not-yet-applied**: they parse and persist with the item
-/// but there is nowhere to put them until a stat/save block exists, so they
-/// are silently skipped here rather than mis-applied to a wrong field.
+/// Every [`AffectLocation`] maps to a field: the attributes to
+/// [`TbaCombatant::attributes`], the saving throws to [`TbaCombatant::saves`],
+/// and the rest to the matching vital. Because this is always called on a
+/// freshly derived base (never the previous block), the additions cannot
+/// stack. The save modifiers are Circle's `apply_saving_throw[]` values:
+/// they are added to the class/level base throw when a save is rolled
+/// (issue #7), not used here.
 pub fn apply_affect(combatant: &mut TbaCombatant, affect: &AffectDef) {
     match affect.location {
+        AffectLocation::Str => combatant.attributes.strength += affect.modifier,
+        AffectLocation::Dex => combatant.attributes.dexterity += affect.modifier,
+        AffectLocation::Int => combatant.attributes.intelligence += affect.modifier,
+        AffectLocation::Wis => combatant.attributes.wisdom += affect.modifier,
+        AffectLocation::Con => combatant.attributes.constitution += affect.modifier,
+        AffectLocation::Cha => combatant.attributes.charisma += affect.modifier,
         AffectLocation::Hitroll => combatant.hitroll += affect.modifier,
         AffectLocation::Damroll => combatant.damroll += affect.modifier,
         AffectLocation::ArmorClass => combatant.armor_class += affect.modifier,
         AffectLocation::MaxHp => combatant.max_hp += affect.modifier,
         AffectLocation::MaxMana => combatant.max_mana += affect.modifier,
         AffectLocation::MaxMove => combatant.max_move_points += affect.modifier,
-        // No `TbaCombatant` field yet — see the function doc.
-        AffectLocation::Str
-        | AffectLocation::Dex
-        | AffectLocation::Int
-        | AffectLocation::Wis
-        | AffectLocation::Con
-        | AffectLocation::Cha
-        | AffectLocation::SavePara
-        | AffectLocation::SaveRod
-        | AffectLocation::SavePetri
-        | AffectLocation::SaveBreath
-        | AffectLocation::SaveSpell => {}
+        AffectLocation::SavePara => combatant.saves.para += affect.modifier,
+        AffectLocation::SaveRod => combatant.saves.rod += affect.modifier,
+        AffectLocation::SavePetri => combatant.saves.petri += affect.modifier,
+        AffectLocation::SaveBreath => combatant.saves.breath += affect.modifier,
+        AffectLocation::SaveSpell => combatant.saves.spell += affect.modifier,
     }
 }
 
@@ -763,6 +763,7 @@ mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
 
     use super::*;
+    use crate::combat::{TbaAttributes, TbaSaves};
     use crate::content::Position;
 
     fn item(slots: Vec<WearSlot>, kind: TbaItemKind) -> TbaItemDef {
@@ -791,6 +792,8 @@ mod tests {
             damroll: 0,
             armor_class: 100,
             thaco: 20,
+            attributes: TbaAttributes::neutral(),
+            saves: TbaSaves::default(),
             position: Position::Standing,
             target: None,
         }
@@ -843,7 +846,7 @@ mod tests {
     }
 
     #[test]
-    fn affects_change_only_the_mapped_combatant_fields() {
+    fn affects_change_every_mapped_combatant_field() {
         let mut def = item(vec![WearSlot::Body], TbaItemKind::Armor);
         def.affects = vec![
             AffectDef {
@@ -879,6 +882,20 @@ mod tests {
         assert_eq!(next.max_hp, 25);
         assert_eq!(next.hp, 10, "recompute never heals");
         assert_eq!(next.thaco, 20, "unaffected fields keep the base");
+        assert_eq!(
+            next.attributes.strength, 18,
+            "the str affect reaches the attribute block"
+        );
+        assert_eq!(
+            next.attributes.to_hit_bonus(),
+            1,
+            "str 18 is str_app's first +1 to-hit row"
+        );
+        assert_eq!(
+            next.saves.spell, 4,
+            "the save affect reaches the save block"
+        );
+        assert_eq!(next.saves.para, 0, "untouched saves stay neutral");
         assert_eq!(next.position, current.position);
     }
 

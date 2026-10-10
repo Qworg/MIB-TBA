@@ -277,6 +277,91 @@ fn armor_affects_change_armor_class_and_hitroll_then_revert_on_unequip() {
 }
 
 #[test]
+fn attribute_and_save_affects_accumulate_then_revert_without_stacking() {
+    let hat = item_def(
+        TbaItemKind::Armor,
+        vec![WearSlot::Head],
+        vec![
+            apply(AffectLocation::Str, 5),
+            apply(AffectLocation::Dex, 2),
+            apply(AffectLocation::SaveSpell, 2),
+            apply(AffectLocation::SavePara, -1),
+        ],
+    );
+    let cloak = item_def(
+        TbaItemKind::Armor,
+        vec![WearSlot::About],
+        vec![
+            apply(AffectLocation::Str, 1),
+            apply(AffectLocation::SaveSpell, 3),
+            apply(AffectLocation::Hitroll, 2),
+        ],
+    );
+    let mut app = test_app(content_with(vec![("hat", hat), ("cloak", cloak)]));
+    let player = spawn_player(&mut app);
+    let base = combatant_of(&app, player);
+    assert_eq!(base.attributes, TbaAttributes::neutral());
+    assert_eq!(base.saves, TbaSaves::default());
+
+    spawn_item(&mut app, player, "item:hat", "hat", "a wool hat");
+    spawn_item(&mut app, player, "item:cloak", "cloak", "a grey cloak");
+    send_command(
+        &mut app,
+        player,
+        Command::Equip {
+            item: "wool hat".to_owned(),
+        },
+    );
+    send_command(
+        &mut app,
+        player,
+        Command::Equip {
+            item: "grey cloak".to_owned(),
+        },
+    );
+    run_game(&mut app);
+
+    let equipped = combatant_of(&app, player);
+    assert_eq!(equipped.attributes.strength, BASE_ATTRIBUTE + 6);
+    assert_eq!(equipped.attributes.dexterity, BASE_ATTRIBUTE + 2);
+    assert_eq!(equipped.saves.spell, 5, "the two save affects accumulate");
+    assert_eq!(equipped.saves.para, -1);
+    assert_eq!(equipped.hitroll, 2);
+    assert_eq!(
+        equipped.attributes.to_hit_bonus(),
+        3,
+        "str 19 sits on str_app's +3 to-hit row"
+    );
+
+    // Repeated recomputes rebuild from the neutral base, so nothing stacks.
+    for _ in 0..3 {
+        run_game(&mut app);
+    }
+    assert_eq!(combatant_of(&app, player), equipped);
+
+    send_command(
+        &mut app,
+        player,
+        Command::Unequip {
+            slot: "head".to_owned(),
+        },
+    );
+    send_command(
+        &mut app,
+        player,
+        Command::Unequip {
+            slot: "about".to_owned(),
+        },
+    );
+    run_game(&mut app);
+    assert_eq!(
+        combatant_of(&app, player),
+        base,
+        "unequipping reverts the attributes and saves to the base"
+    );
+}
+
+#[test]
 fn unequipping_a_weapon_clears_wielded_weapon() {
     let mut app = test_app(content_with(vec![("sword", weapon_def([1, 8, 1]))]));
     let player = spawn_player(&mut app);

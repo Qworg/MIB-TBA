@@ -23,6 +23,12 @@ use smol_str::SmolStr;
 // Fixtures
 // ---------------------------------------------------------------------------
 
+/// Synthetic armor duration: the test asserts a buff lasts exactly the spell's
+/// declared rounds without looping the catalog's real 24.
+const ARMOR_ROUNDS: u32 = 3;
+/// Circle's unsaved `chill touch` duration (`tbamud/src/magic.c:326`).
+const CHILL_TOUCH_ROUNDS: u32 = 4;
+
 fn mage() -> TbaClassDef {
     TbaClassDef {
         name: "Mage".to_owned(),
@@ -74,6 +80,7 @@ fn damage(name: &str, mana: u32, dice: Dice) -> SpellDef {
         kind: SpellKind::Damage,
         dice: Some(dice),
         affect: None,
+        duration: DEFAULT_BUFF_ROUNDS,
         target: SpellTarget::Victim,
         min_position: Position::Fighting,
     }
@@ -86,18 +93,20 @@ fn heal(name: &str, mana: u32, dice: Dice) -> SpellDef {
         kind: SpellKind::Heal,
         dice: Some(dice),
         affect: None,
+        duration: DEFAULT_BUFF_ROUNDS,
         target: SpellTarget::Victim,
         min_position: Position::Fighting,
     }
 }
 
-fn buff(name: &str, mana: u32, affect: AffectDef) -> SpellDef {
+fn buff(name: &str, mana: u32, affect: AffectDef, duration: u32) -> SpellDef {
     SpellDef {
         name: name.to_owned(),
         mana,
         kind: SpellKind::Buff,
         dice: None,
         affect: Some(affect),
+        duration,
         target: SpellTarget::Victim,
         min_position: Position::Standing,
     }
@@ -110,6 +119,7 @@ fn detect(name: &str, mana: u32) -> SpellDef {
         kind: SpellKind::Detect,
         dice: None,
         affect: None,
+        duration: DEFAULT_BUFF_ROUNDS,
         target: SpellTarget::Caster,
         min_position: Position::Standing,
     }
@@ -122,6 +132,7 @@ fn utility(name: &str, mana: u32) -> SpellDef {
         kind: SpellKind::Utility,
         dice: None,
         affect: None,
+        duration: DEFAULT_BUFF_ROUNDS,
         target: SpellTarget::Caster,
         min_position: Position::Standing,
     }
@@ -144,6 +155,7 @@ fn content() -> TbaContent {
                     location: AffectLocation::Str,
                     modifier: -1,
                 }),
+                duration: CHILL_TOUCH_ROUNDS,
                 ..damage("chill touch", 10, Dice::new(1, 8, 1))
             },
         ),
@@ -160,6 +172,7 @@ fn content() -> TbaContent {
                     location: AffectLocation::ArmorClass,
                     modifier: -20,
                 },
+                ARMOR_ROUNDS,
             ),
         ),
         (
@@ -171,6 +184,7 @@ fn content() -> TbaContent {
                     location: AffectLocation::Hitroll,
                     modifier: 2,
                 },
+                DEFAULT_BUFF_ROUNDS,
             ),
         ),
         (SmolStr::new("detect_magic"), detect("detect magic", 10)),
@@ -509,7 +523,7 @@ fn heal_restores_hp_capped_at_max_and_deducts_mana() {
 // ---------------------------------------------------------------------------
 
 #[test]
-fn buff_changes_a_stat_and_expires_after_its_rounds() {
+fn buff_duration_comes_from_the_spell_and_expires_exactly() {
     let mut app = test_app();
     let room = spawn_room(&mut app);
     let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
@@ -525,17 +539,23 @@ fn buff_changes_a_stat_and_expires_after_its_rounds() {
         base.armor_class - 20,
         "the buff affect reached the recompute"
     );
+    let buffs = app.world().get::<TbaBuffs>(player).unwrap();
+    assert_eq!(buffs.buffs.len(), 1, "one active buff recorded");
     assert_eq!(
-        app.world().get::<TbaBuffs>(player).unwrap().buffs.len(),
-        1,
-        "one active buff recorded"
+        buffs.buffs[0].rounds_left, ARMOR_ROUNDS,
+        "the countdown starts at the spell's duration"
     );
 
     // Still active after all but the last round...
-    for _ in 0..DEFAULT_BUFF_ROUNDS - 1 {
+    for _ in 0..ARMOR_ROUNDS - 1 {
         run_round(&mut app);
         run_game(&mut app);
     }
+    assert_eq!(
+        app.world().get::<TbaBuffs>(player).unwrap().buffs[0].rounds_left,
+        1,
+        "one round left after the others elapsed"
+    );
     assert_eq!(
         combatant_of(&app, player).armor_class,
         base.armor_class - 20,
@@ -561,6 +581,23 @@ fn buff_changes_a_stat_and_expires_after_its_rounds() {
 }
 
 #[test]
+fn active_buffs_round_trip_through_serde() {
+    let store = TbaBuffs {
+        buffs: vec![ActiveBuff {
+            affect: AffectDef {
+                location: AffectLocation::Str,
+                modifier: -1,
+            },
+            rounds_left: 3,
+        }],
+    };
+    let json = serde_json::to_string(&store).expect("serialise buffs");
+    let back: TbaBuffs = serde_json::from_str(&json).expect("deserialise buffs");
+    assert_eq!(back, store, "a restart keeps the effect and its rounds");
+    assert!(json.contains("rounds_left"), "{json}");
+}
+
+#[test]
 fn damaging_spell_with_an_affect_records_the_buff() {
     let mut app = test_app();
     let room = spawn_room(&mut app);
@@ -571,10 +608,11 @@ fn damaging_spell_with_an_affect_records_the_buff() {
     run_game(&mut app);
 
     assert!(combatant_of(&app, goblin).hp < 100, "damage landed");
+    let buffs = app.world().get::<TbaBuffs>(goblin).unwrap();
+    assert_eq!(buffs.buffs.len(), 1, "the strength drain was installed");
     assert_eq!(
-        app.world().get::<TbaBuffs>(goblin).unwrap().buffs.len(),
-        1,
-        "the strength drain was installed alongside the damage"
+        buffs.buffs[0].rounds_left, CHILL_TOUCH_ROUNDS,
+        "the damage spell's affect uses its own duration"
     );
 }
 

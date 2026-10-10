@@ -16,7 +16,7 @@ use crate::content::{Position, TbaClassDef, TbaNpcStats};
 use crate::module::TbaContent;
 
 use super::ai::TbaSpawnHome;
-use super::model::{TbaAlignment, TbaCombatant, TbaGold, TbaProgress};
+use super::model::{TbaAlignment, TbaAttributes, TbaCombatant, TbaGold, TbaProgress, TbaSaves};
 use super::progression::{BASE_MOVE, NAKED_ARMOR_CLASS, TbaRng, derive_vitals};
 
 /// An NPC's unaffected base vitals, captured when its [`TbaCombatant`] is
@@ -115,6 +115,8 @@ pub fn npc_combatant_from_stats(stats: &TbaNpcStats, rng: &mut TbaRng) -> TbaCom
         damroll: stats.damroll,
         armor_class: stats.armor_class,
         thaco: if stats.thaco == 0 { 20 } else { stats.thaco },
+        attributes: TbaAttributes::neutral(),
+        saves: TbaSaves::default(),
         position: stats.default_position,
         target: None,
     }
@@ -137,6 +139,8 @@ pub fn fallback_combatant() -> TbaCombatant {
         damroll: 0,
         armor_class: NAKED_ARMOR_CLASS,
         thaco: 20,
+        attributes: TbaAttributes::neutral(),
+        saves: TbaSaves::default(),
         position: Position::Standing,
         target: None,
     }

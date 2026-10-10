@@ -147,6 +147,7 @@ impl Plugin for TbaPlugin {
             registry.register::<TbaAlignment>("TbaAlignment", DocKind::Player);
             registry.register::<TbaGold>("TbaGold", DocKind::Player);
             registry.register::<TbaEquipmentSave>("TbaEquipment", DocKind::Player);
+            registry.register::<crate::spells::TbaBuffs>("TbaBuffs", DocKind::Player);
             // Item timers are item-scoped; `DocKind::Item` is already writable
             // because the stdlib registers `Item` under it.
             crate::items::register(&mut registry);
@@ -309,6 +310,7 @@ mod tests {
         assert!(registered.contains(&"TbaAlignment"), "{registered:?}");
         assert!(registered.contains(&"TbaGold"), "{registered:?}");
         assert!(registered.contains(&"TbaEquipment"), "{registered:?}");
+        assert!(registered.contains(&"TbaBuffs"), "{registered:?}");
         assert!(registered.contains(&"TbaItemTimer"), "{registered:?}");
         assert!(
             registry.kinds().contains(&DocKind::Player),

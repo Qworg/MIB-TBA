@@ -606,6 +606,20 @@ pub enum SpellTarget {
     None,
 }
 
+/// The duration, in combat rounds, a spell's affect lasts when the catalog
+/// does not carry a source pulse count.
+///
+/// Circle's `mag_affects` sets an explicit `af[].duration` per spell; where a
+/// spell has no source value (or no affect at all) this documented default
+/// applies. It is 6 because the most common short buff in the source,
+/// `SPELL_BLESS` (`tbamud/src/magic.c:344`), lasts 6 pulses.
+pub const DEFAULT_SPELL_DURATION: u32 = 6;
+
+/// The serde default for [`SpellDef::duration`].
+fn default_spell_duration() -> u32 {
+    DEFAULT_SPELL_DURATION
+}
+
 /// One spell, from tbaMUD's `spell_info[]`.
 ///
 /// Circle stores a level-scaled mana cost (`mana_max` at the level the spell
@@ -629,6 +643,12 @@ pub struct SpellDef {
     /// damage roll.
     #[serde(default)]
     pub affect: Option<AffectDef>,
+    /// Combat rounds the affect lasts (Circle's `af[].duration` from
+    /// `mag_affects` in `tbamud/src/magic.c`), counted down by
+    /// [`crate::spells::tick_buffs`]. Defaults to [`DEFAULT_SPELL_DURATION`]
+    /// for a spell whose source carries no pulse count.
+    #[serde(default = "default_spell_duration")]
+    pub duration: u32,
     pub target: SpellTarget,
     /// Circle's minimum caster position (usually `standing`; combat spells are
     /// `fighting`). The caster must be at least this high on the [`Position`]
@@ -883,6 +903,7 @@ mod tests {
             kind,
             dice: None,
             affect: None,
+            duration: DEFAULT_SPELL_DURATION,
             target: SpellTarget::Victim,
             min_position: Position::Standing,
         }

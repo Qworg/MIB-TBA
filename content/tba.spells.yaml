@@ -13,6 +13,10 @@
 #   - damage and healing dice come from `mag_damage()` in `src/magic.c:195-289`
 #     and `mag_points()` in `src/magic.c:801-822`; buff affects come from
 #     `mag_affects()` in `src/magic.c:314-556`.
+#   - each buff-carrying spell's `duration` (in combat rounds) is the
+#     `af[].duration` that `mag_affects()` assigns, with the `magic.c` line
+#     cited beside it. A spell with no source duration falls back to the
+#     documented `DEFAULT_SPELL_DURATION` (6) in `code/src/content.rs`.
 #
 # `mana` is Circle's `mana_min` — the settled cost after the source's
 # `mana_max - mana_change * (level - min_level)` reduction bottoms out. The
@@ -44,7 +48,7 @@ spells:
     target: none
     min_position: standing
 
-  # src/spell_parser.c:744-745, spells.c magic.c:333 (APPLY_AC -20, dur 24).
+  # src/spell_parser.c:744-745, magic.c:333-336 (APPLY_AC -20, dur 24).
   armor:
     name: armor
     mana: 15
@@ -52,10 +56,12 @@ spells:
     affect:
       location: armor_class
       modifier: -20
+    duration: 24
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:747-749, spells.c magic.c:359 (APPLY_HITROLL +2).
+  # src/spell_parser.c:747-749, magic.c:341-348 (APPLY_HITROLL +2 and
+  # APPLY_SAVING_SPELL -1, both 6 rounds; the catalog carries the hitroll).
   bless:
     name: bless
     mana: 5
@@ -63,6 +69,7 @@ spells:
     affect:
       location: hitroll
       modifier: 2
+    duration: 6
     target: victim
     min_position: standing
 
@@ -100,7 +107,9 @@ spells:
     target: victim
     min_position: fighting
 
-  # src/spell_parser.c:765-766, magic.c:206 (1d8+1) plus magic.c:330 STR -1.
+  # src/spell_parser.c:765-766, magic.c:206 (1d8+1) plus magic.c:323 STR -1.
+  # `mag_affects` gives the drain 4 rounds on a failed save (1 on a success,
+  # `magic.c:322-328`); saving throws are issue #7, so the unsaved 4 is used.
   chill_touch:
     name: chill touch
     mana: 10
@@ -109,6 +118,7 @@ spells:
     affect:
       location: str
       modifier: -1
+    duration: 4
     target: victim
     min_position: fighting
 
@@ -442,6 +452,8 @@ spells:
     min_position: standing
 
   # src/spell_parser.c:894-896, MAG_AFFECTS (APPLY_STR +1, dur level/2 + 4).
+  # The source duration scales with the caster's level (`magic.c:498`); the
+  # static catalog carries the level-1 floor (4) until a level-scaled pass.
   strength:
     name: strength
     mana: 30
@@ -449,6 +461,7 @@ spells:
     affect:
       location: str
       modifier: 1
+    duration: 4
     target: victim
     min_position: standing
 

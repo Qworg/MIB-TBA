@@ -38,15 +38,16 @@ pub mod zones;
 
 pub mod prelude {
     pub use crate::combat::{
-        BASE_MOVE, EVIL_ALIGNMENT, GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID, GOLD_ITEM_NAME,
-        GOOD_ALIGNMENT, KillReward, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, NpcDefeated, ROUND_SECONDS,
-        TbaAlignment, TbaAttackerMemory, TbaCombatant, TbaGold, TbaNpcBase, TbaProgress, TbaRng,
-        TbaRound, TbaRoundClock, TbaSpawnHome, WieldedWeapon, alignment_after_kill, alignment_for,
-        apply_death_penalty, auto_engage_system, award_kill_rewards, credit_gold_pickups,
-        default_class, derive_vitals, engages, fallback_combatant, grant_kill,
-        handle_combat_commands, helper_system, level_for_xp, npc_combatant_from_stats,
-        npc_combatant_system, player_combatant_system, pursuit_system, resolve_class_key,
-        resolve_rounds, reward_for, run_due_round, weapon_dice, xp_threshold, xp_to_advance,
+        BASE_ATTRIBUTE, BASE_MOVE, EVIL_ALIGNMENT, GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID,
+        GOLD_ITEM_NAME, GOOD_ALIGNMENT, KillReward, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, NpcDefeated,
+        ROUND_SECONDS, TbaAlignment, TbaAttackerMemory, TbaAttributes, TbaCombatant, TbaGold,
+        TbaNpcBase, TbaProgress, TbaRng, TbaRound, TbaRoundClock, TbaSaves, TbaSpawnHome,
+        WieldedWeapon, alignment_after_kill, alignment_for, apply_death_penalty,
+        auto_engage_system, award_kill_rewards, credit_gold_pickups, default_class, derive_vitals,
+        engages, fallback_combatant, grant_kill, handle_combat_commands, helper_system,
+        level_for_xp, npc_combatant_from_stats, npc_combatant_system, player_combatant_system,
+        pursuit_system, resolve_class_key, resolve_rounds, reward_for, run_due_round, weapon_dice,
+        xp_threshold, xp_to_advance,
     };
     pub use crate::content::{
         AffectDef, AffectLocation, Attribute, DoorReset, NpcBehaviour, Position, ResetMode,

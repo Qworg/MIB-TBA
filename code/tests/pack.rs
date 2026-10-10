@@ -336,6 +336,23 @@ fn tba_spell_catalog_is_the_circle_catalog() {
     let armor = spells.spells.get("armor").expect("armor");
     assert_eq!(armor.kind, SpellKind::Buff);
     assert!(armor.affect.is_some(), "armor installs APPLY_AC");
+    assert_eq!(armor.duration, 24, "magic.c:336 armor af[0].duration");
+
+    let bless = spells.spells.get("bless").expect("bless");
+    assert_eq!(bless.kind, SpellKind::Buff);
+    assert_eq!(bless.duration, 6, "magic.c:344 bless af[0].duration");
+
+    let chill = spells.spells.get("chill_touch").expect("chill_touch");
+    assert_eq!(
+        chill.duration, 4,
+        "magic.c:327 chill touch's unsaved duration"
+    );
+
+    let strength = spells.spells.get("strength").expect("strength");
+    assert_eq!(
+        strength.duration, 4,
+        "magic.c:498 strength level-1 floor (level/2 + 4)"
+    );
 
     let detect = spells.spells.get("detect_invis").expect("detect_invis");
     assert_eq!(detect.kind, SpellKind::Detect);
