@@ -54,7 +54,7 @@ cd MIB-TBA
 cargo build -p mib-tba              # the game runtime
 cargo build -p tbaport             # the converter (build-time tool)
 
-cargo test -p mib-tba              # 93 tests: unit + combat/death/equipment/shops/spells/pack
+cargo test -p mib-tba              # unit + combat/death/equipment/shops/spells/rewards/pack
 cargo test -p tbaport             # 22 tests: parsers, determinism, full-conversion validation
 ```
 
@@ -72,6 +72,12 @@ cargo clippy -p mib-tba --lib --tests
 cargo clippy -p tbaport --all-targets
 cargo fmt --all -- --check
 ```
+
+All of the above run in CI on every push and pull request
+(`.github/workflows/ci.yml`): it checks out the MIB engine and tbaMUD as
+siblings of this repository, then runs fmt, clippy with `-D warnings`, both
+test suites (the converter suite includes the full-conversion registry
+validation), and `validate-packs`.
 
 ---
 
