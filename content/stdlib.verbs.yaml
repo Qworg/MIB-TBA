@@ -1,0 +1,89 @@
+# Pack verbs owned by `stdlib.verbs` but claimed here.
+#
+# These are genre commands with an argument grammar the fixed command parser
+# does not model:
+#
+# - `cast '<spell>' [target]` — no `Command` variant.
+# - `list`, `buy <item>`, `sell <item>`, `value <item>` — CircleMUD shop
+#   commands; the fixed parser stops at the movement/combat grammar.
+# - `social <name> [target] [body part]` and `socials` — CircleMUD social
+#   emotes; the open-ended social name cannot be a fixed `Command` variant.
+# - `time` — the in-world clock report (`mib_tba::clock`).
+# - `group`, `gtell` (and `;`), `follow`, `unfollow` — the party system
+#   (`mib_tba::party`).
+# - `backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`, `sneak`, `hide`,
+#   `pick_lock` — the Circle class abilities and stealth state
+#   (`mib_tba::skills`, issue #25). The bare `pick` stays with the stdlib door
+#   handler (a fixed `Command::Pick` the router handles before this registry);
+#   `pick_lock` is the pack's class-gated lockpick verb.
+#
+# The stdlib router would otherwise reject the verbs as unknown before the
+# genre systems (`mib_tba::spells`, `mib_tba::shops`, `mib_tba::socials`,
+# `mib_tba::clock`, `mib_tba::party`) can see the raw line. Declaring them here
+# (with no DSL effects) makes the router claim each as a known pack verb and
+# leave the work to those systems, which run after the router in
+# `BridgeSet::Game`.
+verbs:
+  cast:
+    description: Cast a spell you know.
+    effects: []
+  list:
+    description: List what the shopkeeper here has for sale.
+    effects: []
+  buy:
+    description: Buy an item from the shopkeeper here.
+    effects: []
+  sell:
+    description: Sell an item to the shopkeeper here.
+    effects: []
+  value:
+    description: Ask what the shopkeeper here would pay for an item.
+    effects: []
+  social:
+    description: Perform a social emote, optionally at a target.
+    effects: []
+  socials:
+    description: List the social emotes available to you.
+    effects: []
+  time:
+    description: Report the in-world time.
+    effects: []
+  group:
+    description: Form, join, list, leave, or disband a party.
+    effects: []
+  gtell:
+    description: Send a message to your party.
+    effects: []
+  follow:
+    description: Follow another character (or stop with no argument).
+    effects: []
+  unfollow:
+    description: Stop following.
+    effects: []
+  backstab:
+    description: Strike an unwary opponent from hiding with a piercing weapon.
+    effects: []
+  kick:
+    description: Kick an opponent for damage; costs movement.
+    effects: []
+  bash:
+    description: Bash an opponent to the ground; costs movement.
+    effects: []
+  rescue:
+    description: Pull an ally's attacker onto yourself.
+    effects: []
+  assist:
+    description: Join an ally's fight.
+    effects: []
+  consider:
+    description: Judge how dangerous an opponent is.
+    effects: []
+  sneak:
+    description: Move silently for a while.
+    effects: []
+  hide:
+    description: Hide from sight.
+    effects: []
+  pick_lock:
+    description: Pick a locked door in a named direction.
+    effects: []

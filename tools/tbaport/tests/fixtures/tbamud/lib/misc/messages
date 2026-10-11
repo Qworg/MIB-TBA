@@ -1,0 +1,34 @@
+* TBAMUD Combat Message File
+* burning hands 5
+M
+5
+You have burned $N to death!
+You have been burned to death by $n!
+$n has burned $N to death!
+You miss $N with your burning hands.
+$n reaches for you with burning hands, but misses!
+$n tries to burn $N, but $E escapes!
+You burn $N with your hot little hands!
+You cry out in pain as $n grabs you with burning hands!
+$N cries out as $n burns $M!
+Your attempt to burn $N nears BLASPHEMY!!!
+The pitiful creature before you tries to burn you.
+Unaware of the risks, $n tries to burn $N.
+
+* !UNUSED! 202
+M
+202
+$N is killed by fire breath.
+You are burned to ash, as $n breathes on you.
+$n makes $N to ash.
+$N is missed by fire breath.
+$n breathes fire at you, but you avoids it.
+$N avoids $n's firebreath.
+$N is hit by fire breath.
+$n burns you.
+$N is partly made ash, as $n breaths fire.
+$N, being immortal, is just warmed.
+$n warms you.
+$n warms $N.
+
+$

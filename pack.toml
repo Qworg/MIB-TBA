@@ -1,0 +1,16 @@
+id = "tba"
+version = "1"
+title = "The Builder Academy (CircleMUD / tbaMUD)"
+game = "tba"
+depends_on = ["stdlib"]
+
+# `packs/tba` is an independent game pack for the CircleMUD/tbaMUD port. It does
+# NOT depend on `classic-rpg`: TBA combat is native Circle round-based
+# (THAC0/AC/damroll), not classic-rpg's 3x3 tactical grid, so the two genres
+# coexist rather than stack. The `tba.*` sections below are owned by the
+# `mib-tba` code half in `code/`.
+#
+# `stdlib.*` sections (rooms, npcs, items, ...) carry the world itself; the
+# `tba.*` sections carry the Diku domain rules layered on top of it.
+[code]
+module = "tba"

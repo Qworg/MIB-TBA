@@ -1,0 +1,26 @@
+#3000
+testguard~
+the test guard~
+A test guard stands here.
+~
+   A stern guard used only for testing.
+~
+26635 0 0 0 16 0 0 0 350 S
+5 3 2 3d8+20 2d6+3
+20 100
+8 8 1
+#3001
+testmage~
+the test mage~
+A test mage is here, muttering.
+~
+   An enhanced mob with e-specs.
+~
+0 0 0 0 0 0 0 0 0 E
+10 5 5 5d5+50 1d4+1
+50 500
+8 8 2
+Str: 18
+Int: 25
+E
+$

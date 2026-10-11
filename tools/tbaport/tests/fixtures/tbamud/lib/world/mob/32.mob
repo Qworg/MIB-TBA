@@ -1,0 +1,12 @@
+#3200
+shopkeeper~
+the shopkeeper~
+A shopkeeper stands here.
+~
+   A fixture shopkeeper used to test shop conversion.
+~
+0 0 0 0 8 0 0 0 0 S
+5 3 2 3d8+20 2d6+3
+20 100
+8 8 1
+$

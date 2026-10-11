@@ -1,0 +1,50 @@
+# MIB-TBA is a *game*, not part of the MIB shell.
+#
+# MIB is the engine (rooms, movement, the bridge, networking, persistence); this
+# repository is one game built on top of it. Nothing here is vendored into MIB,
+# and MIB does not depend on it — a MIB operator chooses which game they run.
+#
+# So this is a normal standalone Cargo workspace whose packs depend on the MIB
+# crates as path dependencies. Both repositories are expected to be checked out
+# side by side:
+#
+#     ~/Development/MIB
+#     ~/Development/MIB-TBA   <- this
+#
+# For a released game you would swap these `path` deps for `git` deps pinned to
+# an engine revision; during co-development a sibling checkout is the fast loop.
+
+[workspace]
+resolver = "2"
+members = ["code", "tools/tbaport"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.96.0"
+license = "MIT"
+
+[workspace.dependencies]
+# --- the engine, consumed as path deps into the sibling MIB checkout ---
+mib-protocol = { path = "../MIB/crates/mib-protocol" }
+mib-core = { path = "../MIB/crates/mib-core" }
+mib-content = { path = "../MIB/crates/mib-content" }
+mib-persist = { path = "../MIB/crates/mib-persist" }
+mib-host = { path = "../MIB/crates/mib-host" }
+# `packs/stdlib` is the genre-agnostic MUD base layer. It ships with the engine,
+# not with any one game, which is why this game depends on it rather than
+# carrying its own copy.
+mib-stdlib = { path = "../MIB/packs/stdlib/code" }
+
+# --- external deps, pinned to the versions the engine pins ---
+bevy = { version = "=0.20.0-rc.2", default-features = false, features = ["std"] }
+serde = { version = "1", features = ["derive"] }
+smol_str = { version = "0.2", features = ["serde"] }
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+
+[workspace.lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+dbg_macro = "warn"

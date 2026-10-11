@@ -1,0 +1,28 @@
+[package]
+name = "mib-tba"
+description = "The Builder Academy (CircleMUD/tbaMUD) game pack: native round-based combat, Diku zone resets, 18 wear positions and tba.* pack sections."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+mib-protocol.workspace = true
+mib-core.workspace = true
+mib-stdlib.workspace = true
+mib-content.workspace = true
+mib-persist.workspace = true
+mib-host.workspace = true
+bevy.workspace = true
+serde.workspace = true
+serde_json = "1"
+smol_str.workspace = true
+tracing = "0.1"
+
+[dev-dependencies]
+# Only the integration tests build a `Connection` (GMCP projection tests); the
+# engine `Connection.egress` is a tokio `mpsc::Sender`.
+tokio = { version = "1", features = ["sync"] }
+
+[lints]
+workspace = true

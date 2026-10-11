@@ -1,0 +1,6 @@
+# Rust build artifacts — this game builds against a sibling MIB checkout, and
+# its own target dir is never committed.
+/target
+
+# Agent harness scratch (session logs, workflow scripts); never part of the pack.
+/.pi/
