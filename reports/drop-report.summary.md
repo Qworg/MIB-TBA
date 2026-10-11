@@ -54,6 +54,64 @@
 |---|---:|
 | `triggers` | 3160 |
 
+## DG trigger triage (#15)
+
+- records: 1461
+- script lines (non-blank): 26305
+- zones with triggers: 113
+
+### Triggers by attach
+
+| attach | count |
+|---|---:|
+| `mob` | 795 |
+| `object` | 282 |
+| `world` | 384 |
+
+### Triggers by interactivity bucket
+
+| bucket | count |
+|---|---:|
+| `ambience_flavour` | 206 |
+| `combat_behaviour` | 166 |
+| `gatekeeper_transport` | 111 |
+| `interactive_response` | 902 |
+| `quest_objective` | 76 |
+
+### Triggers by expanded type
+
+| type | count |
+|---|---:|
+| `Act` | 25 |
+| `Bribe` | 10 |
+| `Cast` | 7 |
+| `Command` | 376 |
+| `Consume` | 6 |
+| `Death` | 46 |
+| `Door` | 5 |
+| `Drop` | 19 |
+| `Enter` | 108 |
+| `Entry` | 11 |
+| `Fight` | 66 |
+| `Get` | 18 |
+| `Give` | 4 |
+| `Global` | 28 |
+| `Greet` | 197 |
+| `Greet-All` | 36 |
+| `HitPrcnt` | 8 |
+| `Leave` | 69 |
+| `Load` | 39 |
+| `Login` | 3 |
+| `Memory` | 6 |
+| `Random` | 229 |
+| `Receive` | 42 |
+| `Remove` | 9 |
+| `Speech` | 120 |
+| `Time` | 2 |
+| `Timer` | 14 |
+| `Wear` | 22 |
+| `Zone Reset` | 10 |
+
 ## Global permanent drops
 
 - `combat_skill` / `assist`: Circle class ability `assist`; implemented as tba pack gameplay (issue #25), not lost by conversion

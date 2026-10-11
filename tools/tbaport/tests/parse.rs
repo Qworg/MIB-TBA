@@ -160,7 +160,56 @@ fn deferred_triggers_scan_their_records() {
     assert_eq!(triggers.len(), 1);
     assert_eq!(triggers[0].vnum, 3000);
     assert_eq!(triggers[0].attach, "mob");
-    assert_eq!(triggers[0].detail, "Fixture Trigger");
+    assert_eq!(triggers[0].name, "Fixture Trigger");
+    assert_eq!(triggers[0].flags, "q");
+    assert_eq!(triggers[0].types, vec!["Leave"], "letter q is bit 16");
+    assert_eq!(triggers[0].narg, 100);
+    assert_eq!(triggers[0].lines, 1);
+    assert_eq!(
+        triggers[0].bucket,
+        tbaport::source::deferred::TriggerBucket::GatekeeperTransport
+    );
+}
+
+#[test]
+fn trigger_type_letters_expand_per_attach_family() {
+    use tbaport::source::deferred::{TriggerBucket, classify, expand_types};
+
+    // Same letter, different bit name per attach family.
+    assert_eq!(expand_types(0, "cg"), vec!["Command", "Greet"]);
+    assert_eq!(
+        expand_types(2, "cfg"),
+        vec!["Command", "Zone Reset", "Enter"]
+    );
+    // Object bit 3 (`d`) is `UNUSED1` and is dropped.
+    assert!(expand_types(1, "d").is_empty());
+
+    let types = |name: &str| vec![name.to_owned()];
+    assert_eq!(
+        classify(
+            "mob",
+            &types("Greet"),
+            "Questmaster Greet",
+            "if %actor.varexists(quest_x)%"
+        ),
+        TriggerBucket::QuestObjective
+    );
+    assert_eq!(
+        classify("mob", &types("Speech"), "Mob Speech", "say hi"),
+        TriggerBucket::InteractiveResponse
+    );
+    assert_eq!(
+        classify("world", &types("Door"), "Room Door", "open door"),
+        TriggerBucket::GatekeeperTransport
+    );
+    assert_eq!(
+        classify("mob", &types("Random"), "Mob Random", "%echo% nothing"),
+        TriggerBucket::AmbienceFlavour
+    );
+    assert_eq!(
+        classify("mob", &types("Random"), "Mob Random", "kill %actor%"),
+        TriggerBucket::CombatBehaviour
+    );
 }
 
 #[test]

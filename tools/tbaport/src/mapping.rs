@@ -26,10 +26,10 @@ use crate::error::{ConvertError, Result};
 use crate::ids;
 use crate::report::{
     CommandFlag, DanglingRef, DeferredEntry, DropReport, GlobalDrop, REPORT_SCHEMA, SourceFiles,
-    Totals, UnmappedFlag, ZoneReport,
+    Totals, TriggerTriage, TriggerTriageRecord, UnmappedFlag, ZoneReport,
 };
 use crate::source::{
-    deferred::{DeferredRecord, scan_triggers},
+    deferred::{DeferredRecord, TriggerRecord, scan_triggers},
     mob::RawMob,
     obj::RawObj,
     parse_mobs, parse_objs, parse_rooms,
@@ -220,7 +220,7 @@ struct ZoneSource {
     mobs: Vec<RawMob>,
     objs: Vec<RawObj>,
     shops: Vec<RawShop>,
-    triggers: Vec<DeferredRecord>,
+    triggers: Vec<TriggerRecord>,
     quests: Vec<RawQuest>,
     files: SourceFiles,
 }
@@ -269,6 +269,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
             dangling: Vec::new(),
             unmapped: Vec::new(),
             command_flags: Vec::new(),
+            triggers: Vec::new(),
         };
 
         bundle.areas.areas.insert(
@@ -327,9 +328,8 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         zr.items = source.objs.len();
         zr.commands = zone_def_kept(&bundle, source.number);
 
-        add_deferred(
+        add_trigger_records(
             &mut zr,
-            "triggers",
             &source.triggers,
             "DG scripts are deferred (doc §10)",
         );
@@ -375,12 +375,193 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         only: options.only,
         start_room,
         global_drops: drops,
+        trigger_triage: TriggerTriage::default(),
         totals: Totals::default(),
         zones,
     };
     report.finalise();
 
     Ok(Conversion { bundle, report })
+}
+
+/// Build the standalone DG trigger triage (`reports/trigger-triage.json`).
+///
+/// This is the regenerable source for the Phase-2 (TBA-E20) scope: every
+/// `.trg` record, its classification, its attachment owners, and the curated
+/// essential-interactivity ranking documented in `docs/design/triggers.md`.
+/// It performs no mapping and emits no content.
+pub fn build_triage(options: &ConvertOptions) -> Result<crate::triage::TriageReport> {
+    let world = options.source_root.join("lib/world");
+    let numbers = selected_zone_numbers(&world, options.only)?;
+
+    let mut sources = Vec::with_capacity(numbers.len());
+    for number in numbers {
+        sources.push(load_zone(&world, number)?);
+    }
+
+    // Owner map: trigger vnum -> the (id, zone) of every thing that attaches
+    // it, from the `.mob`/`.obj`/`.wld` `T` lines and the zone-reset `T`
+    // commands. Attachment is what makes a trigger demo-visible.
+    type Owners = BTreeMap<i32, BTreeSet<(String, u32)>>;
+    let mut owners: Owners = BTreeMap::new();
+    for source in &sources {
+        for mob in &source.mobs {
+            for trigger in &mob.trigger_vnums {
+                owners.entry(*trigger).or_default().insert((
+                    format!("npc tba_npc_{}", mob.vnum),
+                    crate::triage::vnum_zone(mob.vnum),
+                ));
+            }
+        }
+        for obj in &source.objs {
+            for trigger in &obj.trigger_vnums {
+                owners.entry(*trigger).or_default().insert((
+                    format!("item tba_item_{}", obj.vnum),
+                    crate::triage::vnum_zone(obj.vnum),
+                ));
+            }
+        }
+        for room in &source.rooms {
+            for trigger in &room.trigger_vnums {
+                owners.entry(*trigger).or_default().insert((
+                    format!("room tba.{}", room.vnum),
+                    crate::triage::vnum_zone(room.vnum),
+                ));
+            }
+        }
+        for command in &source.zone.commands {
+            if command.code == 'T' {
+                owners
+                    .entry(command.arg2)
+                    .or_default()
+                    .insert((format!("zone tba_{} reset", source.number), source.number));
+            }
+        }
+    }
+
+    let mut records: Vec<crate::triage::TriageRecord> = Vec::new();
+    for source in &sources {
+        for trigger in &source.triggers {
+            let owner_entries: Vec<(String, u32)> = owners
+                .get(&trigger.vnum)
+                .map(|set| set.iter().cloned().collect())
+                .unwrap_or_default();
+            let mut owner_ids: Vec<String> =
+                owner_entries.iter().map(|(id, _)| id.clone()).collect();
+            let mut owner_zones: Vec<u32> = owner_entries.iter().map(|(_, z)| *z).collect();
+            owner_zones.sort_unstable();
+            owner_zones.dedup();
+            let in_demo = crate::triage::is_demo_zone(source.number)
+                || owner_zones.iter().any(|z| crate::triage::is_demo_zone(*z));
+            let essential = in_demo
+                && crate::triage::is_essential(trigger.bucket, &trigger.attach, &trigger.types);
+            let score = crate::triage::score(
+                trigger.bucket,
+                source.number,
+                &owner_zones,
+                &trigger.types,
+                trigger.lines,
+                &trigger.name,
+            );
+            owner_ids.sort();
+            owner_ids.dedup();
+            records.push(crate::triage::TriageRecord {
+                vnum: trigger.vnum,
+                zone: source.number,
+                source_file: format!("{}.trg", source.number),
+                attach: trigger.attach.clone(),
+                name: trigger.name.clone(),
+                flags: trigger.flags.clone(),
+                types: trigger.types.clone(),
+                narg: trigger.narg,
+                bucket: trigger.bucket.as_str().to_owned(),
+                lines: trigger.lines,
+                raw_lines: trigger.raw_lines,
+                essential,
+                tier: if essential {
+                    crate::triage::tier(trigger.bucket)
+                } else {
+                    3
+                },
+                score,
+                rank: None,
+                owners: owner_ids,
+            });
+        }
+    }
+    records.sort_by_key(|record| (record.zone, record.vnum));
+
+    // Rank the essential set by demo impact, with `(zone, vnum)` tie-breaks.
+    let mut essential_indices: Vec<usize> = records
+        .iter()
+        .enumerate()
+        .filter(|(_, record)| record.essential)
+        .map(|(index, _)| index)
+        .collect();
+    essential_indices.sort_by(|a, b| {
+        let left = &records[*a];
+        let right = &records[*b];
+        right
+            .score
+            .cmp(&left.score)
+            .then_with(|| left.zone.cmp(&right.zone))
+            .then_with(|| left.vnum.cmp(&right.vnum))
+    });
+    let mut rank = 0usize;
+    for index in essential_indices {
+        rank += 1;
+        records[index].rank = Some(rank);
+    }
+
+    // Roll-ups.
+    let mut corpus = crate::triage::Corpus::default();
+    let mut by_attach: BTreeMap<String, usize> = BTreeMap::new();
+    let mut by_type: BTreeMap<String, usize> = BTreeMap::new();
+    let mut by_bucket: BTreeMap<String, usize> = BTreeMap::new();
+    let mut by_zone: BTreeMap<u32, usize> = BTreeMap::new();
+    let mut essential_buckets: BTreeMap<String, usize> = BTreeMap::new();
+    let mut essential_attach: BTreeMap<String, usize> = BTreeMap::new();
+    let mut essential_zones: BTreeSet<u32> = BTreeSet::new();
+    for record in &records {
+        *by_attach.entry(record.attach.clone()).or_default() += 1;
+        *by_bucket.entry(record.bucket.clone()).or_default() += 1;
+        *by_zone.entry(record.zone).or_default() += 1;
+        for name in &record.types {
+            *by_type.entry(name.clone()).or_default() += 1;
+        }
+        corpus.script_lines += record.raw_lines;
+        corpus.nonblank_script_lines += record.lines;
+        if record.essential {
+            *essential_buckets.entry(record.bucket.clone()).or_default() += 1;
+            *essential_attach.entry(record.attach.clone()).or_default() += 1;
+            essential_zones.insert(record.zone);
+        }
+    }
+    corpus.records = records.len();
+    corpus.zones_with_triggers = by_zone.len();
+    corpus.by_attach = by_attach;
+    corpus.by_type = by_type;
+    corpus.by_bucket = by_bucket;
+    corpus.by_zone = by_zone;
+
+    let mut demo_zones: Vec<u32> = crate::triage::DEMO_ZONES.to_vec();
+    demo_zones.sort_unstable();
+    demo_zones.dedup();
+
+    Ok(crate::triage::TriageReport {
+        schema: crate::triage::TRIAGE_SCHEMA,
+        tool: format!("tbaport {}", env!("CARGO_PKG_VERSION")),
+        source: options.source_root.display().to_string(),
+        corpus,
+        essential: crate::triage::Essential {
+            count: records.iter().filter(|record| record.essential).count(),
+            zones: essential_zones.into_iter().collect(),
+            demo_zones,
+            by_attach: essential_attach,
+            by_bucket: essential_buckets,
+        },
+        records,
+    })
 }
 
 /// Whole-world features with no schema home, recorded once per report.
@@ -557,12 +738,12 @@ fn optional_parse<T>(
     Ok((Some(parser(&mut src)?), true))
 }
 
-fn optional_scan(
+fn optional_scan<T>(
     dir: &Path,
     number: u32,
     ext: &str,
-    scanner: fn(&mut Source) -> Result<Vec<DeferredRecord>>,
-) -> Result<Option<Vec<DeferredRecord>>> {
+    scanner: fn(&mut Source) -> Result<Vec<T>>,
+) -> Result<Option<Vec<T>>> {
     let path = dir.join(format!("{number}.{ext}"));
     if !path.is_file() {
         return Ok(None);
@@ -2034,6 +2215,32 @@ fn add_deferred(zr: &mut ZoneReport, section: &str, records: &[DeferredRecord], 
     }
 }
 
+/// Record the classified `.trg` layer: a deferred entry per trigger (so the
+/// drop report still itemises exactly what is not yet emitted) plus the
+/// structured triage record that makes the Phase-2 scope regenerable.
+fn add_trigger_records(zr: &mut ZoneReport, records: &[TriggerRecord], reason: &str) {
+    for record in records {
+        zr.deferred.push(DeferredEntry {
+            section: "triggers".to_owned(),
+            vnum: record.vnum,
+            attach: record.attach.clone(),
+            detail: record.name.clone(),
+            reason: reason.to_owned(),
+        });
+        zr.triggers.push(TriggerTriageRecord {
+            vnum: record.vnum,
+            name: record.name.clone(),
+            attach: record.attach.clone(),
+            flags: record.flags.clone(),
+            types: record.types.clone(),
+            narg: record.narg,
+            bucket: record.bucket.as_str().to_owned(),
+            lines: record.lines,
+            raw_lines: record.raw_lines,
+        });
+    }
+}
+
 /// Record the `T <vnum>` trigger attachments that follow a `.wld`/`.mob`/`.obj`
 /// record. They are part of the deferred DG layer (#15) and would otherwise be
 /// a silent drop.
@@ -2135,6 +2342,7 @@ mod tests {
             dangling: Vec::new(),
             unmapped: Vec::new(),
             command_flags: Vec::new(),
+            triggers: Vec::new(),
         }
     }
 

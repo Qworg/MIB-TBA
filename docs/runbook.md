@@ -176,6 +176,9 @@ cargo run -p tbaport -- convert \
 cargo run -p tbaport -- convert --source ../tbamud --out target/tbaport/z30 --only 30
 cargo run -p tbaport -- convert --source ../tbamud --validate-only
 
+# Regenerate the DG trigger triage (issue #15):
+cargo run -p tbaport -- triage --source ../tbamud --out reports/trigger-triage.json
+
 # Pick the room new characters spawn in (Circle CONFIG_MORTAL_START):
 cargo run -p tbaport -- convert --source ../tbamud --out target/tbaport/content --start-room 3001
 ```
@@ -190,9 +193,11 @@ CLI:
 
 ```text
 tbaport convert --source DIR [--out DIR] [--report FILE] [--only ZONE] [--start-room VNUM] [--validate-only]
+tbaport triage  --source DIR [--out FILE] [--only ZONE]
 
 --source DIR       tbaMUD checkout root (must contain lib/world)
---out DIR          staging output directory      [default: target/tbaport/content]
+--out DIR|FILE     convert: staging output directory      [default: target/tbaport/content]
+                   triage:  JSON output path               [default: reports/trigger-triage.json]
 --report FILE      drop-report path              [default: target/tbaport/drop-report.json]
 --only ZONE        convert a single zone
 --start-room VNUM  tag this room vnum as `start_room`  [default: 3001]
@@ -289,8 +294,11 @@ These are recorded, not silent:
 
 - **DG triggers (TBA-E20)** are not ported — the spec itself defers them. Every
   trigger is itemised in [`reports/drop-report.json`](../reports/drop-report.json)
-  (and grouped in [`reports/drop-report.summary.md`](../reports/drop-report.summary.md))
-  for a later phase.
+  (grouped in [`reports/drop-report.summary.md`](../reports/drop-report.summary.md))
+  and classified (attach, expanded type, interactivity bucket, script size) in
+  the triage JSON [`reports/trigger-triage.json`](../reports/trigger-triage.json).
+  The classification, the curated 133-trigger essential set, and the Phase-2
+  native design live in [`docs/design/triggers.md`](design/triggers.md).
 - **Quests** (`.qst`) convert to `stdlib.quests`; a `MOB_FIND`/`MOB_SAVE`/
   `OBJ_RETURN`/`ROOM_CLEAR` objective and the reward/condition fields with no
   `QuestDef` home are named drops (`docs/05-converter.md` §3.7).

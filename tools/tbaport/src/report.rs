@@ -38,6 +38,11 @@ pub struct DropReport {
     /// once per record (for example room coordinates, which tbaMUD never
     /// stores). Sorted by `(kind, name)`.
     pub global_drops: Vec<GlobalDrop>,
+    /// The DG trigger-corpus triage (issue #15). Every `.trg` record is
+    /// classified by attach, expanded type, interactivity bucket and script
+    /// size so the Phase-2 re-authoring scope is regenerable rather than
+    /// hand-counted. Summary plus the per-record list.
+    pub trigger_triage: TriggerTriage,
     pub totals: Totals,
     pub zones: Vec<ZoneReport>,
 }
@@ -91,6 +96,43 @@ pub struct ZoneReport {
     pub unmapped: Vec<UnmappedFlag>,
     /// One entry per reset command, preserving the source `if_flag`.
     pub command_flags: Vec<CommandFlag>,
+    /// The classified `.trg` records that live in this zone file.
+    pub triggers: Vec<TriggerTriageRecord>,
+}
+
+/// The whole-corpus DG trigger triage (issue #15).
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct TriggerTriage {
+    pub records: usize,
+    /// All body lines, blank included.
+    pub script_lines: usize,
+    /// Non-blank body lines.
+    pub nonblank_script_lines: usize,
+    pub zones_with_triggers: usize,
+    pub by_attach: BTreeMap<String, usize>,
+    pub by_type: BTreeMap<String, usize>,
+    pub by_bucket: BTreeMap<String, usize>,
+    pub by_zone: BTreeMap<u32, usize>,
+}
+
+/// One classified `.trg` record in the report.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+pub struct TriggerTriageRecord {
+    pub vnum: i32,
+    pub name: String,
+    /// `mob`, `object`, or `world`.
+    pub attach: String,
+    /// Raw attach-line letter string.
+    pub flags: String,
+    /// Expanded type names (valid flags only).
+    pub types: Vec<String>,
+    pub narg: i32,
+    /// The rough interactivity bucket (`docs/design/triggers.md`).
+    pub bucket: String,
+    /// Non-blank body lines.
+    pub lines: usize,
+    /// All body lines, blank included.
+    pub raw_lines: usize,
 }
 
 /// Which source files were present (and therefore scanned).
@@ -150,6 +192,8 @@ impl DropReport {
             zone.dangling.dedup();
             zone.unmapped.sort();
             zone.unmapped.dedup();
+            zone.triggers.sort();
+            zone.triggers.dedup();
         }
         self.zones.sort_by_key(|zone| zone.number);
         self.global_drops.sort();
@@ -158,6 +202,12 @@ impl DropReport {
         let mut unmapped_by_kind: BTreeMap<String, usize> = BTreeMap::new();
         let mut dangling_by_kind: BTreeMap<String, usize> = BTreeMap::new();
         let mut deferred_by_section: BTreeMap<String, usize> = BTreeMap::new();
+        let mut by_attach: BTreeMap<String, usize> = BTreeMap::new();
+        let mut by_type: BTreeMap<String, usize> = BTreeMap::new();
+        let mut by_bucket: BTreeMap<String, usize> = BTreeMap::new();
+        let mut by_zone: BTreeMap<u32, usize> = BTreeMap::new();
+        let mut script_lines = 0usize;
+        let mut nonblank_script_lines = 0usize;
         for zone in &self.zones {
             for entry in &zone.unmapped {
                 *unmapped_by_kind.entry(entry.kind.clone()).or_default() += 1;
@@ -170,7 +220,28 @@ impl DropReport {
                     .entry(entry.section.clone())
                     .or_default() += 1;
             }
+            for trigger in &zone.triggers {
+                *by_attach.entry(trigger.attach.clone()).or_default() += 1;
+                *by_bucket.entry(trigger.bucket.clone()).or_default() += 1;
+                *by_zone.entry(zone.number).or_default() += 1;
+                for name in &trigger.types {
+                    *by_type.entry(name.clone()).or_default() += 1;
+                }
+                script_lines += trigger.raw_lines;
+                nonblank_script_lines += trigger.lines;
+            }
         }
+
+        self.trigger_triage = TriggerTriage {
+            records: self.zones.iter().map(|z| z.triggers.len()).sum(),
+            script_lines,
+            nonblank_script_lines,
+            zones_with_triggers: by_zone.len(),
+            by_attach,
+            by_type,
+            by_bucket,
+            by_zone,
+        };
 
         self.totals = Totals {
             zones: self.zones.len(),
@@ -258,6 +329,34 @@ impl DropReport {
         let _ = writeln!(out, "|---|---:|");
         for (section, count) in &totals.deferred_by_section {
             let _ = writeln!(out, "| `{section}` | {count} |");
+        }
+
+        let triage = &self.trigger_triage;
+        let _ = writeln!(out, "\n## DG trigger triage (#15)\n");
+        let _ = writeln!(out, "- records: {}", triage.records);
+        let _ = writeln!(
+            out,
+            "- script lines (non-blank): {}",
+            triage.nonblank_script_lines
+        );
+        let _ = writeln!(out, "- zones with triggers: {}", triage.zones_with_triggers);
+        let _ = writeln!(out, "\n### Triggers by attach\n");
+        let _ = writeln!(out, "| attach | count |");
+        let _ = writeln!(out, "|---|---:|");
+        for (attach, count) in &triage.by_attach {
+            let _ = writeln!(out, "| `{attach}` | {count} |");
+        }
+        let _ = writeln!(out, "\n### Triggers by interactivity bucket\n");
+        let _ = writeln!(out, "| bucket | count |");
+        let _ = writeln!(out, "|---|---:|");
+        for (bucket, count) in &triage.by_bucket {
+            let _ = writeln!(out, "| `{bucket}` | {count} |");
+        }
+        let _ = writeln!(out, "\n### Triggers by expanded type\n");
+        let _ = writeln!(out, "| type | count |");
+        let _ = writeln!(out, "|---|---:|");
+        for (name, count) in &triage.by_type {
+            let _ = writeln!(out, "| `{name}` | {count} |");
         }
 
         let _ = writeln!(out, "\n## Global permanent drops\n");
