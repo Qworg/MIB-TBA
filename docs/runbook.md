@@ -253,6 +253,7 @@ reason the item count is one higher than the source object count.
 | `auto_engage_system`, `npc_combatant_system`, `helper_system`, `pursuit_system` | `FixedUpdate` (after `maintain_room_occupants`) | Room-local aggro; alignment ±350 gating; Memory/Sentinel/StayZone/Helper. A player carrying `TbaHidden` or `TbaSneaking` is skipped (`CAN_SEE`-style stealth; see §8). |
 | `resolve_rounds`, `tick_buffs` | `TbaRound` (every 3 s on the frame clock) | Combat rounds. Deliberately **not** on `tick_hz`, so combat never forces the engine tick rate. |
 | `handle_combat_commands`, `handle_skill_commands`, `handle_equipment_commands`, `handle_cast_command`, `handle_shop_commands`, `handle_social_commands`, `handle_time_command`, `handle_party_commands`, `recompute_equipment_affects`, `sync_wielded_weapon` | `Update`, `BridgeSet::Game`, after `route_commands` | Genre commands. `cast`/`list`/`buy`/`sell`/`value`, `social <name>`/`socials`, `time`, `group`/`gtell`(`;`)/`follow`/`unfollow`, and the issue #25 skills `backstab`/`kick`/`bash`/`rescue`/`assist`/`consider`/`sneak`/`hide`/`pick_lock` have no fixed `Command` variant and are parsed from `PlayerInput::RawLine`, declared in `stdlib.verbs.yaml` so the stdlib router claims them. `social` resolves `$n`/`$N`/`$e`/`$E`/`$m`/`$M`/`$s`/`$S` (and `$t`/`$p`/case switches) against the actor/target and broadcasts the room and victim lines. `mib_tba::skills` gates each ability on `tba.classes` `granted_skills` + `skill_levels`, `sneak`/`hide` set the runtime-only `TbaSneaking`/`TbaHidden`, `pick_lock` writes the room's runtime `RoomState` door state, and `find_target_in_room` skips a stealthed player for every actor but themselves. |
+| `intercept_visibility_commands` | `Update`, `CommandSet::PreRoute` (before `route_commands`) | Hides `TbaHidden`/`TbaSneaking` players from another actor's `look`/`who` through MIB's command-interceptor pipeline (`HandledCommands`). Marks handled only when stealth changes the answer: `who` (always; the list drops stealthed players except the asker), bare `look` when a stealthed player shares the actor's room, and `look <t>` when `find_look_target` resolves the selector to a stealthed player. Every other `look` (npc/item/extra-description/direction/visible player) passes through to the stdlib renderer unchanged. Arrival scenes are not covered (§8). |
 | `follow_system` | `FixedUpdate` (after `maintain_room_occupants`) | Drags a follower into the leader's new room only when the follower was standing in the leader's previous room, so a follower who wandered off is never teleported. |
 | `apply_death_penalty` | `Update`, `.before(handle_player_death)` | 25% of current-level XP (floored); converts `TbaGold` to a carried `tba_gold` item so the stdlib corpse sweep lands it in the corpse. |
 | `player_combatant_system` | `Update`, `BridgeSet::Game` | On `CharacterCreated`, inserts `TbaProgress` + `derive_vitals` from `tba.classes`. |
@@ -336,11 +337,20 @@ These are recorded, not silent:
     skills), and `TbaHidden` is cleared by `attack`, by the offensive skills and
     by a hostile `cast` (Circle's `appear()`). Circle gates only `AFF_HIDE` on
     `CAN_SEE`, so the `sneak` aggro gate is a pack extension.
-  - The stdlib `look`/`who` renderers still list a hidden player. They are
-    router-owned fixed commands: `route.rs` handles `Command::Look`/`Who`
-    before the pack-verb registry, and the registry is consulted only on
-    `ParseError::UnknownVerb`, so a pack verb cannot shadow them. Making them
-    respect `TbaHidden` needs an engine visibility hook, not a pack command.
+  - **`look`/`who` respect stealth.** The stdlib renderers are router-owned
+    fixed commands (`route.rs` handles `Command::Look`/`Who` before the
+    pack-verb registry, so a pack verb cannot shadow them), but MIB's
+    command-interceptor pipeline is the engine seam that can:
+    `mib_tba::visibility::intercept_visibility_commands` runs in
+    `CommandSet::PreRoute`, marks only the commands whose answer stealth
+    changes, and otherwise lets the stdlib render the common case (see §6).
+    The remaining gap is the **arrival scene**: when a player moves,
+    `execute_move` emits the destination room with the stdlib `emit_scene`,
+    which lists every occupant, so a hidden player still appears to someone
+    walking in. Covering it would require reimplementing `execute_move`
+    (the deferred `Location` insert, the `OnlinePlayers` room mirror, and the
+    `QuestEvent::Visited` report) with a stealth-filtered renderer, so the
+    movement path stays engine-owned.
   - MIB has no `practice` system, so a granted skill is treated as fully
     learned (`SKILL_LEARNED` = 100); Circle's DEX `dex_app_skill` bonus is not
     modelled, so `pick_lock` uses 100 as the skill level.

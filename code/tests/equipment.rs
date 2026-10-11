@@ -139,6 +139,7 @@ fn send_command(app: &mut App, session: Entity, command: Command) {
     app.world_mut()
         .resource_mut::<Messages<CommandReceived>>()
         .write(CommandReceived {
+            id: CommandId::default(),
             session,
             session_id: 1,
             input: PlayerInput::Command(command),

@@ -248,9 +248,10 @@ impl TbaSaves {
 /// transient play state here. A missing component is "visible".
 ///
 /// Circle gates a mob's `CAN_SEE` on `AFF_HIDE` (`tbamud/src/utils.h:798-799`);
-/// [`crate::combat::ai`] honours that for aggro. The stdlib `look`/`who`
-/// renderers cannot be made to respect it without an engine change, so a hidden
-/// player is still listed there (documented in `docs/runbook.md` §8).
+/// [`crate::combat::ai`] honours that for aggro, and
+/// [`crate::visibility`] hides the player from another actor's `look`/`who`
+/// through MIB's command-interceptor pipeline. The one remaining gap is the
+/// movement arrival scene (`docs/runbook.md` §8).
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Component)]
 pub struct TbaHidden;
 
@@ -259,9 +260,10 @@ pub struct TbaHidden;
 /// Set by the `sneak` skill ([`crate::skills`]); runtime-only and never
 /// persisted, exactly like [`TbaHidden`]. Circle uses `AFF_SNEAK` to suppress
 /// the leave/arrive messages of a move (`tbamud/src/act.movement.c:277,302`);
-/// MIB movement does not route through this pack, so the only effect here is
-/// the aggro gate [`crate::combat::ai`] applies (a pack extension: Circle gates
-/// only `CAN_SEE` on `AFF_HIDE`, not `AFF_SNEAK`).
+/// MIB movement does not route through this pack, so the effects here are the
+/// aggro gate [`crate::combat::ai`] applies and the `look`/`who` filter in
+/// [`crate::visibility`] (pack extensions: Circle gates only `CAN_SEE` on
+/// `AFF_HIDE`, not `AFF_SNEAK`).
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Component)]
 pub struct TbaSneaking;
 

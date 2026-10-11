@@ -94,6 +94,7 @@ fn command(app: &mut App, session: Entity, line: &str) {
     app.world_mut()
         .resource_mut::<Messages<CommandReceived>>()
         .write(CommandReceived {
+            id: CommandId::default(),
             session,
             session_id: 1,
             input: PlayerInput::RawLine(line.to_owned()),

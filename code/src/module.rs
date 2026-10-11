@@ -19,8 +19,8 @@ use mib_content::prelude::{MibModule, PackAsset, SectionRegistry, section_defs};
 use mib_core::prelude::*;
 use mib_persist::prelude::DocKind;
 use mib_stdlib::prelude::{
-    CharacterCreated, ItemId, NpcId, PlayerDefeated, SaveRegistry, SaveSet, attach_pending_holders,
-    handle_player_death, maintain_room_occupants, route_commands,
+    CharacterCreated, CommandSet, ItemId, NpcId, PlayerDefeated, SaveRegistry, SaveSet,
+    attach_pending_holders, handle_player_death, maintain_room_occupants, route_commands,
 };
 use smol_str::SmolStr;
 
@@ -176,6 +176,18 @@ impl Plugin for TbaPlugin {
         app.add_message::<NpcDefeated>();
         app.add_message::<CommandReceived>();
         app.add_message::<OutputEvent>();
+
+        // Stealth visibility (`TbaHidden`/`TbaSneaking`): a `PreRoute`
+        // interceptor that hides a stealthed player from another actor's
+        // `look`/`who` and marks only the commands whose answer stealth
+        // changes, letting the stdlib router render the common case. The
+        // resource is normally inserted by `BridgePlugin`; init here so a
+        // `StdlibPlugin` + `TbaPlugin` composition (tests) also has it.
+        app.init_resource::<HandledCommands>();
+        app.add_systems(
+            Update,
+            crate::visibility::intercept_visibility_commands.in_set(CommandSet::PreRoute),
+        );
 
         // Player progression and the genre command seam, after the stdlib
         // router that emits `CharacterCreated` and no-ops `attack`/`flee`.
