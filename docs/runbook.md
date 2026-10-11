@@ -252,7 +252,7 @@ reason the item count is one higher than the source object count.
 | `tick_item_timers`, `apply_night_darkness` | `FixedUpdate` (after `maintain_room_occupants`) | The shared `TbaObjectClock` ages item timers and advances the MUD calendar (75 real s/hour, 35-day months, 17-month years). `apply_night_darkness` mirrors Circle's `room_is_dark` onto authored `outdoor` rooms' runtime `RoomState.flags[Dark]`; authored `dark` rooms are never touched. The clock is runtime-only (a restart begins at year 0/day 0/hour 0). |
 | `auto_engage_system`, `npc_combatant_system`, `helper_system`, `pursuit_system` | `FixedUpdate` (after `maintain_room_occupants`) | Room-local aggro; alignment ±350 gating; Memory/Sentinel/StayZone/Helper. A player carrying `TbaHidden` or `TbaSneaking` is skipped (`CAN_SEE`-style stealth; see §8). |
 | `resolve_rounds`, `tick_buffs` | `TbaRound` (every 3 s on the frame clock) | Combat rounds. Deliberately **not** on `tick_hz`, so combat never forces the engine tick rate. |
-| `handle_combat_commands`, `handle_skill_commands`, `handle_equipment_commands`, `handle_cast_command`, `handle_shop_commands`, `handle_social_commands`, `handle_time_command`, `handle_party_commands`, `recompute_equipment_affects`, `sync_wielded_weapon` | `Update`, `BridgeSet::Game`, after `route_commands` | Genre commands. `cast`/`list`/`buy`/`sell`/`value`, `social <name>`/`socials`, `time`, `group`/`gtell`(`;`)/`follow`/`unfollow`, and the issue #25 skills `backstab`/`kick`/`bash`/`rescue`/`assist`/`consider`/`sneak`/`hide` have no fixed `Command` variant and are parsed from `PlayerInput::RawLine`, declared in `stdlib.verbs.yaml` so the stdlib router claims them. `social` resolves `$n`/`$N`/`$e`/`$E`/`$m`/`$M`/`$s`/`$S` (and `$t`/`$p`/case switches) against the actor/target and broadcasts the room and victim lines. `mib_tba::skills` gates each ability on `tba.classes` `granted_skills` + `skill_levels`, and `sneak`/`hide` set the runtime-only `TbaSneaking`/`TbaHidden`. |
+| `handle_combat_commands`, `handle_skill_commands`, `handle_equipment_commands`, `handle_cast_command`, `handle_shop_commands`, `handle_social_commands`, `handle_time_command`, `handle_party_commands`, `recompute_equipment_affects`, `sync_wielded_weapon` | `Update`, `BridgeSet::Game`, after `route_commands` | Genre commands. `cast`/`list`/`buy`/`sell`/`value`, `social <name>`/`socials`, `time`, `group`/`gtell`(`;`)/`follow`/`unfollow`, and the issue #25 skills `backstab`/`kick`/`bash`/`rescue`/`assist`/`consider`/`sneak`/`hide`/`pick_lock` have no fixed `Command` variant and are parsed from `PlayerInput::RawLine`, declared in `stdlib.verbs.yaml` so the stdlib router claims them. `social` resolves `$n`/`$N`/`$e`/`$E`/`$m`/`$M`/`$s`/`$S` (and `$t`/`$p`/case switches) against the actor/target and broadcasts the room and victim lines. `mib_tba::skills` gates each ability on `tba.classes` `granted_skills` + `skill_levels`, `sneak`/`hide` set the runtime-only `TbaSneaking`/`TbaHidden`, `pick_lock` writes the room's runtime `RoomState` door state, and `find_target_in_room` skips a stealthed player for every actor but themselves. |
 | `follow_system` | `FixedUpdate` (after `maintain_room_occupants`) | Drags a follower into the leader's new room only when the follower was standing in the leader's previous room, so a follower who wandered off is never teleported. |
 | `apply_death_penalty` | `Update`, `.before(handle_player_death)` | 25% of current-level XP (floored); converts `TbaGold` to a carried `tba_gold` item so the stdlib corpse sweep lands it in the corpse. |
 | `player_combatant_system` | `Update`, `BridgeSet::Game` | On `CharacterCreated`, inserts `TbaProgress` + `derive_vitals` from `tba.classes`. |
@@ -315,28 +315,35 @@ These are recorded, not silent:
 - **Combat skills** are implemented as pack gameplay (issue #25):
   `backstab` (thief, level 3, piercing weapon), `kick` (warrior, level 1),
   `bash` (warrior, level 12), `rescue` (warrior, level 3), `assist` and
-  `consider` (universal), `sneak` (thief, level 1) and `hide` (thief, level 5).
-  The per-class minimum levels are `tba.classes.skill_levels` (transcribed from
-  `init_spell_levels()`, `tbamud/src/class.c:1652-1664`). The remaining honest
-  limits:
+  `consider` (universal), `sneak` (thief, level 1), `hide` (thief, level 5) and
+  `pick_lock` (thief, level 2). The per-class minimum levels are
+  `tba.classes.skill_levels` (transcribed from `init_spell_levels()`,
+  `tbamud/src/class.c:1652-1664`). The remaining honest limits:
 
-  - **Lockpicking** is the stdlib `pick` command
-    ([`mib_stdlib::doors::handle_pick`]). No `pick`/`pick_lock` verb is added;
-    the thief's `pick_lock` skill is carried for the class table, but the
-    stdlib handler is a W4.3 stub that always yields and does not yet read the
-    class skill. Changing that is an engine-side task — no engine change here.
+  - **Lockpicking** is the pack's `pick_lock <direction>` verb
+    (`mib_tba::skills`); the bare stdlib `pick` command
+    ([`mib_stdlib::doors::handle_pick`]) is a W4.3 stub and stays router-owned,
+    so it cannot be overridden. `pick_lock` reads Circle's `do_gen_door`/`pick`
+    (`tbamud/src/act.movement.c:589-608`, `ok_pick`; the success branch at
+    `:560-565`), gates on the thief's `granted_skills`/`skill_levels`, requires
+    a pickable, locked, closed door, and on success writes the runtime
+    `RoomState` door state (`closed = true`, `locked = false`) the way the zone
+    engine's `D` reset does (`code/src/zones/mod.rs::set_door_state`).
   - **Stealth is runtime-only.** `TbaHidden`/`TbaSneaking` are never persisted
     (MIB does not persist Circle's affect-flag bitvector). They suppress
-    `auto_engage_system` aggro, and `TbaHidden` is cleared by `attack`, by the
-    offensive skills and by a hostile `cast` (Circle's `appear()`). Circle
-    gates only `AFF_HIDE` on `CAN_SEE`, so the `sneak` aggro gate is a pack
-    extension.
-  - The stdlib `look`/`who` renderers cannot be made to respect `TbaHidden`
-    without an engine change, so a hidden player is still listed there, and
-    room-target resolution does not yet hide them from other actors.
+    `auto_engage_system` aggro, they hide a player from another actor's
+    `find_target_in_room` resolution (`attack`, spells, and the offensive
+    skills), and `TbaHidden` is cleared by `attack`, by the offensive skills and
+    by a hostile `cast` (Circle's `appear()`). Circle gates only `AFF_HIDE` on
+    `CAN_SEE`, so the `sneak` aggro gate is a pack extension.
+  - The stdlib `look`/`who` renderers still list a hidden player. They are
+    router-owned fixed commands: `route.rs` handles `Command::Look`/`Who`
+    before the pack-verb registry, and the registry is consulted only on
+    `ParseError::UnknownVerb`, so a pack verb cannot shadow them. Making them
+    respect `TbaHidden` needs an engine visibility hook, not a pack command.
   - MIB has no `practice` system, so a granted skill is treated as fully
-    learned; Circle's DEX `dex_app_skill` bonus and the 1%-failure
-    `rand_number(1, 101)` quirk are not modelled.
+    learned (`SKILL_LEARNED` = 100); Circle's DEX `dex_app_skill` bonus is not
+    modelled, so `pick_lock` uses 100 as the skill level.
   - `kick`/`bash` deduct `SKILL_MOVE_COST` (10) movement and refuse at zero.
     This tbaMUD revision's `do_kick`/`do_bash` no longer contains the `GET_MOVE`
     check; the pack reinstates the classic Circle cost.
@@ -354,7 +361,7 @@ These are recorded, not silent:
 | Build fails in MIB code | The sibling `../MIB` checkout is mid-change; build MIB or pin a `git` dep. |
 | `validate-packs` names a field path | A content reference is dangling (e.g. `rooms.X.exits.north.door.key`). Fix the content or the converter rule. |
 | No spawn point / `RoomIndex.start` is `None` | No room is tagged `start_room`. Regenerate with `--start-room <vnum>` (default 3001). |
-| `cast`/`list`/`buy`/`sell`/`value`/`social`/`socials`/`time`/`group`/`gtell`/`follow`/`unfollow`/`backstab`/`kick`/`bash`/`rescue`/`assist`/`consider`/`sneak`/`hide` rejected as unknown | The verb is not declared in `content/stdlib.verbs.yaml`; declare it there (effect-free). |
+| `cast`/`list`/`buy`/`sell`/`value`/`social`/`socials`/`time`/`group`/`gtell`/`follow`/`unfollow`/`backstab`/`kick`/`bash`/`rescue`/`assist`/`consider`/`sneak`/`hide`/`pick_lock` rejected as unknown | The verb is not declared in `content/stdlib.verbs.yaml`; declare it there (effect-free). |
 | Equipment lost across restart | The item has no stable `SaveId`, so it cannot be relinked; check the warning log. |
 | `run` fails before the world loads | Engine config (database, AI provider). Use `validate-packs` to separate content from infrastructure. |
 

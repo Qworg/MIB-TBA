@@ -37,7 +37,7 @@ use mib_stdlib::prelude::{Location, Npc, NpcKey, Player, PlayerDefeated, Session
 use serde::{Deserialize, Serialize};
 use smol_str::SmolStr;
 
-use crate::combat::commands::{broadcast, deny, entity_name, find_target_in_room, text};
+use crate::combat::commands::{Stealthed, broadcast, deny, entity_name, find_target_in_room, text};
 use crate::combat::rewards::{NpcDefeated, alignment_for, reward_for};
 use crate::combat::{
     SaveType, TbaCombatant, TbaHidden, TbaProgress, TbaRng, default_class, mag_savingthrow,
@@ -293,6 +293,7 @@ pub fn handle_cast_command(
     sessions: Query<&Session>,
     players: Query<(Entity, &Player, &Location)>,
     npcs: Query<(Entity, &Npc, &Location)>,
+    hidden: Stealthed<'_, '_>,
     content: Option<Res<TbaContent>>,
     mut combatants: Query<&mut TbaCombatant>,
     progress: Query<&TbaProgress>,
@@ -426,7 +427,9 @@ pub fn handle_cast_command(
             }
             SpellTarget::Victim => match target_arg.as_deref() {
                 Some(name) => {
-                    if let Some(target) = find_target_in_room(session, name, &players, &npcs) {
+                    if let Some(target) =
+                        find_target_in_room(session, name, &players, &npcs, &hidden)
+                    {
                         vec![target]
                     } else {
                         let own_name = players

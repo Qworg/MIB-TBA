@@ -494,6 +494,29 @@ fn hostile_target_gates_name_self_and_unknown_victims() {
     );
 }
 
+#[test]
+fn hidden_caster_can_still_target_itself_by_name() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+    app.world_mut().entity_mut(player).insert(TbaHidden);
+
+    // A hidden caster is invisible to others, but its own name still resolves
+    // (the helper never returns the actor), so the self-target guard fires
+    // rather than "you don't see Merlin".
+    cast(&mut app, player, "cast 'magic missile' Merlin");
+    run_game(&mut app);
+
+    assert_eq!(combatant_of(&app, player).mana, 50, "nothing was cast");
+    let messages = drain_text(&mut app);
+    assert!(
+        messages
+            .iter()
+            .any(|line| line.contains("shouldn't cast that on yourself")),
+        "{messages:?}"
+    );
+}
+
 // ---------------------------------------------------------------------------
 // Damage / heal
 // ---------------------------------------------------------------------------

@@ -20,8 +20,20 @@ use mib_stdlib::prelude::{Exits, Location, Npc, OnlinePlayers, Player, Session, 
 use crate::content::Position;
 
 use super::ai::TbaAttackerMemory;
-use super::model::{TbaCombatant, TbaHidden};
+use super::model::{TbaCombatant, TbaHidden, TbaSneaking};
 use super::progression::TbaRng;
+
+/// The stealth affects that make a player invisible to another actor's
+/// targeting: Circle's `AFF_HIDE` and `AFF_SNEAK`.
+pub(crate) type Stealthed<'w, 's> = Query<'w, 's, (), Or<(With<TbaHidden>, With<TbaSneaking>)>>;
+
+/// Circle's `CAN_SEE` rule for target resolution: a stealthed actor is only
+/// targetable by themselves. Extracted as a pure predicate so the
+/// viewer-relative rule (`self || !stealthed`) is testable without an ECS
+/// [`Query`].
+pub(crate) fn can_target(actor: Entity, candidate: Entity, stealthed: bool) -> bool {
+    candidate == actor || !stealthed
+}
 
 /// One line of room/actor text.
 pub(crate) fn text(session: Entity, body: impl Into<String>) -> OutputEvent {
@@ -45,12 +57,15 @@ pub(crate) fn deny(
 }
 
 /// Find a room-mate by a case-insensitive display-name fragment (NPCs first,
-/// the item core's convention). The actor is never returned.
+/// the item core's convention). The actor is never returned. A player carrying
+/// [`TbaHidden`]/[`TbaSneaking`] is skipped unless it is the actor (Circle's
+/// `CAN_SEE`; you cannot target someone you cannot see).
 pub(crate) fn find_target_in_room(
     actor: Entity,
     needle: &str,
     players: &Query<(Entity, &Player, &Location)>,
     npcs: &Query<(Entity, &Npc, &Location)>,
+    hidden: &Stealthed<'_, '_>,
 ) -> Option<Entity> {
     let room = players
         .iter()
@@ -71,6 +86,7 @@ pub(crate) fn find_target_in_room(
                 .find(|(entity, player, location)| {
                     *entity != actor
                         && location.room == room
+                        && can_target(actor, *entity, hidden.contains(*entity))
                         && player.name.to_lowercase().contains(&needle)
                 })
                 .map(|(entity, _, _)| entity)
@@ -114,6 +130,7 @@ pub fn handle_combat_commands(
     sessions: Query<&Session>,
     players: Query<(Entity, &Player, &Location)>,
     npcs: Query<(Entity, &Npc, &Location)>,
+    hidden: Stealthed<'_, '_>,
     mut combatants: Query<&mut TbaCombatant>,
     mut memories: Query<&mut TbaAttackerMemory>,
     exits: Query<&Exits>,
@@ -141,7 +158,8 @@ pub fn handle_combat_commands(
 
         match command {
             Command::Attack { target } => {
-                let Some(target_entity) = find_target_in_room(session, &target, &players, &npcs)
+                let Some(target_entity) =
+                    find_target_in_room(session, &target, &players, &npcs, &hidden)
                 else {
                     deny(
                         &mut output,
@@ -251,5 +269,18 @@ mod tests {
                 ..
             }
         ));
+    }
+
+    #[test]
+    fn stealth_filter_is_viewer_relative() {
+        let mut world = World::new();
+        let actor = world.spawn_empty().id();
+        let other = world.spawn_empty().id();
+        // A visible target is resolvable by anyone.
+        assert!(can_target(actor, other, false));
+        // A stealthed target is invisible to another actor...
+        assert!(!can_target(actor, other, true));
+        // ...but still visible to itself (the filter never hides the actor).
+        assert!(can_target(other, other, true));
     }
 }

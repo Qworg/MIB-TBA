@@ -275,6 +275,52 @@ fn has_sneaking(app: &App, entity: Entity) -> bool {
     app.world().get::<TbaSneaking>(entity).is_some()
 }
 
+/// A room with one authored, locked door at `direction`. The runtime
+/// [`RoomState`] starts closed and locked, mirroring a converted door.
+fn spawn_room_with_door(app: &mut App, direction: ExitKey, pickable: bool) -> Entity {
+    let room = spawn_room(app);
+    let mut doors = Doors::default();
+    doors.by_dir.insert(
+        direction,
+        Door {
+            key: None,
+            name: Some("wooden door".to_owned()),
+            pickable,
+            difficulty: 0,
+            default_closed: true,
+            default_locked: true,
+        },
+    );
+    let mut state = RoomState::default();
+    state.doors.insert(
+        direction,
+        DoorState {
+            closed: true,
+            locked: true,
+            to: None,
+        },
+    );
+    app.world_mut().entity_mut(room).insert((doors, state));
+    room
+}
+
+fn door_state(app: &App, room: Entity, direction: ExitKey) -> DoorState {
+    app.world()
+        .get::<RoomState>(room)
+        .and_then(|state| state.doors.get(&direction).cloned())
+        .expect("the room has a seeded door state")
+}
+
+/// A seed whose first `range(1, 101)` is the always-failure 101.
+fn failing_seed() -> u64 {
+    (0..10_000)
+        .find(|seed| {
+            let mut rng = TbaRng::from_seed(*seed);
+            rng.range(1, 101) == 101
+        })
+        .expect("some seed fails the 1-in-101 roll")
+}
+
 // ---------------------------------------------------------------------------
 // Gates
 // ---------------------------------------------------------------------------
@@ -645,4 +691,180 @@ fn unknown_class_cannot_hide() {
             .any(|line| line.contains("no idea how to do that")),
         "{text:?}"
     );
+}
+
+// ---------------------------------------------------------------------------
+// pick_lock
+// ---------------------------------------------------------------------------
+
+#[test]
+fn pick_lock_opens_a_pickable_lock() {
+    let mut app = test_app(content());
+    let room = spawn_room_with_door(&mut app, ExitKey::North, true);
+    let thief = spawn_player(&mut app, room, "Shadow", "thief", 2, Position::Standing);
+
+    send_line(&mut app, thief, "pick_lock north");
+    run_game(&mut app);
+
+    let door = door_state(&app, room, ExitKey::North);
+    assert!(!door.locked, "the lock yields");
+    assert!(door.closed, "the door stays closed");
+    let text = drain_text(&mut app);
+    assert!(
+        text.iter()
+            .any(|line| line.contains("lock quickly yields to your skills")),
+        "{text:?}"
+    );
+}
+
+#[test]
+fn pick_lock_roll_failure_leaves_the_lock_locked() {
+    let mut app = test_app(content());
+    app.insert_resource(TbaRng::from_seed(failing_seed()));
+    let room = spawn_room_with_door(&mut app, ExitKey::North, true);
+    let thief = spawn_player(&mut app, room, "Shadow", "thief", 2, Position::Standing);
+
+    send_line(&mut app, thief, "pick_lock north");
+    run_game(&mut app);
+
+    let door = door_state(&app, room, ExitKey::North);
+    assert!(door.locked, "a failed roll leaves the lock");
+    let text = drain_text(&mut app);
+    assert!(
+        text.iter()
+            .any(|line| line.contains("failed to pick the lock")),
+        "{text:?}"
+    );
+}
+
+#[test]
+fn pick_lock_refuses_a_pickproof_door() {
+    let mut app = test_app(content());
+    let room = spawn_room_with_door(&mut app, ExitKey::North, false);
+    let thief = spawn_player(&mut app, room, "Shadow", "thief", 2, Position::Standing);
+
+    send_line(&mut app, thief, "pick_lock north");
+    run_game(&mut app);
+
+    assert!(door_state(&app, room, ExitKey::North).locked);
+    let text = drain_text(&mut app);
+    assert!(
+        text.iter()
+            .any(|line| line.contains("resists your attempts")),
+        "{text:?}"
+    );
+}
+
+#[test]
+fn pick_lock_is_gated_by_class_and_level() {
+    // A mage has no `pick_lock` grant: unknown skill, door untouched.
+    let mut app = test_app(content());
+    let room = spawn_room_with_door(&mut app, ExitKey::North, true);
+    let mage = spawn_player(&mut app, room, "Mage", "mage", 20, Position::Standing);
+    send_line(&mut app, mage, "pick_lock north");
+    run_game(&mut app);
+    assert!(door_state(&app, room, ExitKey::North).locked);
+    let text = drain_text(&mut app);
+    assert!(
+        text.iter()
+            .any(|line| line.contains("no idea how to do that")),
+        "{text:?}"
+    );
+
+    // A level-1 thief is below the level-2 gate.
+    let mut app = test_app(content());
+    let room = spawn_room_with_door(&mut app, ExitKey::North, true);
+    let thief = spawn_player(&mut app, room, "Shadow", "thief", 1, Position::Standing);
+    send_line(&mut app, thief, "pick_lock north");
+    run_game(&mut app);
+    assert!(door_state(&app, room, ExitKey::North).locked);
+    let text = drain_text(&mut app);
+    assert!(
+        text.iter()
+            .any(|line| line.contains("do not know of that skill")),
+        "{text:?}"
+    );
+}
+
+// ---------------------------------------------------------------------------
+// hidden targeting
+// ---------------------------------------------------------------------------
+
+#[test]
+fn hidden_player_is_not_targetable_by_another() {
+    let mut app = test_app(content());
+    let room = spawn_room(&mut app);
+    let hero = spawn_player(&mut app, room, "Hero", "warrior", 5, Position::Standing);
+    let shadow = spawn_player(&mut app, room, "Shadow", "thief", 5, Position::Standing);
+    app.world_mut().entity_mut(shadow).insert(TbaHidden);
+
+    send_command(
+        &mut app,
+        hero,
+        Command::Attack {
+            target: "Shadow".to_owned(),
+        },
+    );
+    run_game(&mut app);
+
+    assert_eq!(
+        target_of(&app, hero),
+        None,
+        "a hidden player is not targetable"
+    );
+    let text = drain_text(&mut app);
+    assert!(
+        text.iter()
+            .any(|line| line.contains("don't see Shadow here")),
+        "{text:?}"
+    );
+}
+
+#[test]
+fn sneaking_player_is_not_targetable_by_another() {
+    let mut app = test_app(content());
+    let room = spawn_room(&mut app);
+    let hero = spawn_player(&mut app, room, "Hero", "warrior", 5, Position::Standing);
+    let shadow = spawn_player(&mut app, room, "Shadow", "thief", 5, Position::Standing);
+    app.world_mut().entity_mut(shadow).insert(TbaSneaking);
+
+    send_command(
+        &mut app,
+        hero,
+        Command::Attack {
+            target: "Shadow".to_owned(),
+        },
+    );
+    run_game(&mut app);
+
+    assert_eq!(
+        target_of(&app, hero),
+        None,
+        "a sneaking player is not targetable"
+    );
+}
+
+#[test]
+fn hidden_player_can_still_target_an_npc() {
+    let mut app = test_app(content());
+    let room = spawn_room(&mut app);
+    let thief = spawn_player(&mut app, room, "Shadow", "thief", 5, Position::Standing);
+    let goblin = spawn_npc(&mut app, room, "goblin");
+    app.world_mut().entity_mut(thief).insert(TbaHidden);
+
+    send_command(
+        &mut app,
+        thief,
+        Command::Attack {
+            target: "goblin".to_owned(),
+        },
+    );
+    run_game(&mut app);
+
+    assert_eq!(
+        target_of(&app, thief),
+        Some(goblin),
+        "being hidden does not blind the actor's own targeting"
+    );
+    assert!(!has_hidden(&app, thief), "attacking clears TbaHidden");
 }

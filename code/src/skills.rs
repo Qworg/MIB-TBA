@@ -21,6 +21,7 @@
 //! | `consider <target>` | `do_consider`, `act.informative.c:1982` | universal |
 //! | `sneak` | `do_sneak`, `act.other.c:101` | thief 1 |
 //! | `hide` | `do_hide`, `act.other.c:126` | thief 5 |
+//! | `pick_lock <direction>` | `do_gen_door` (`pick`), `act.movement.c:589` | thief 2 |
 //!
 //! The per-class minimum levels live in `tba.classes.skill_levels`
 //! ([`TbaContent::skill_levels`]), transcribed from `init_spell_levels()`
@@ -29,12 +30,23 @@
 //! ## Lockpicking
 //!
 //! Circle's `SKILL_PICK_LOCK` is exercised by `do_gen_door`'s `pick` subcommand
-//! (`act.movement.c:598-614`), not by a standalone command. MIB's stdlib
-//! already owns `pick` ([`mib_stdlib::doors::handle_pick`]), so this pack adds
-//! **no** pick verb: the thief's `pick_lock` skill is carried for the class
-//! table, and the stdlib handler (a W4.3 stub that always yields) is the
-//! lockpick path. It does not yet consult the class skill; that is an
-//! engine-side gap documented in `docs/runbook.md` §8 — no engine change here.
+//! (`tbamud/src/interpreter.c:238` maps `pick` to `do_gen_door`/`SCMD_PICK`),
+//! not by a standalone command. The roll lives in `ok_pick`
+//! (`tbamud/src/act.movement.c:589-608`): `percent = rand_number(1, 101)`,
+//! `skill_lvl = GET_SKILL(ch, SKILL_PICK_LOCK) + dex_app_skill[dex].p_locks`,
+//! and the lock yields when `percent <= skill_lvl`; the success branch is
+//! `do_doorcmd`/`SCMD_PICK` (`act.movement.c:560-565`).
+//!
+//! MIB's stdlib owns the bare `pick` command
+//! ([`mib_stdlib::doors::handle_pick`], a W4.3 stub) and the fixed router
+//! handles it before the pack-verb registry, so the pack cannot override it.
+//! This module therefore adds **`pick_lock <direction>`**, gated on the thief's
+//! `granted_skills`/`skill_levels` like the other abilities. It resolves the
+//! direction to the room's authored door, requires the door pickable and
+//! locked, and on success mutates the runtime [`RoomState`] exactly like the
+//! zone engine's `D` reset ([`crate::zones::set_door_state`]); the pack owns
+//! that mutation. MIB models no practice system, so the roll uses
+//! [`SKILL_LEARNED`] (100) as Circle's skill level and omits the DEX bonus.
 //!
 //! ## Effects
 //!
@@ -70,11 +82,11 @@ use bevy::ecs::system::SystemParam;
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{
-    Location, Npc, NpcKey, Player, PlayerDefeated, Room, RoomOccupants, RoomState, RoomTag,
-    Session, SessionState,
+    DoorState, Doors, Location, Npc, NpcKey, Player, PlayerDefeated, Room, RoomOccupants,
+    RoomState, RoomTag, Session, SessionState,
 };
 
-use crate::combat::commands::{broadcast, deny, entity_name, find_target_in_room, text};
+use crate::combat::commands::{Stealthed, broadcast, deny, entity_name, find_target_in_room, text};
 use crate::combat::rewards::{NpcDefeated, alignment_for, reward_for};
 use crate::combat::{
     TbaAttackerMemory, TbaCombatant, TbaHidden, TbaProgress, TbaRng, TbaSneaking, WieldedWeapon,
@@ -121,6 +133,8 @@ pub enum SkillCommand {
     Sneak,
     /// `hide`.
     Hide,
+    /// `pick_lock <direction>`.
+    PickLock { direction: String },
 }
 
 /// Parse a raw line as a class-skill command, or `None` when it is not one.
@@ -140,6 +154,7 @@ pub fn parse_skill_line(line: &str) -> Option<SkillCommand> {
         "consider" => Some(SkillCommand::Consider { target: arg }),
         "sneak" => Some(SkillCommand::Sneak),
         "hide" => Some(SkillCommand::Hide),
+        "pick_lock" => Some(SkillCommand::PickLock { direction: arg }),
         _ => None,
     }
 }
@@ -263,9 +278,10 @@ fn resolve_combat_target(
     current_target: Option<Entity>,
     players: &Query<(Entity, &Player, &Location)>,
     npcs: &Query<(Entity, &Npc, &Location)>,
+    hidden: &Stealthed<'_, '_>,
 ) -> Option<Entity> {
     if !needle.is_empty()
-        && let Some(target) = find_target_in_room(session, needle, players, npcs)
+        && let Some(target) = find_target_in_room(session, needle, players, npcs, hidden)
     {
         return Some(target);
     }
@@ -385,7 +401,8 @@ pub struct SkillQueries<'w, 's> {
     pub npcs: Query<'w, 's, (Entity, &'static Npc, &'static Location)>,
     pub content: Option<Res<'w, TbaContent>>,
     pub progress: Query<'w, 's, &'static TbaProgress>,
-    pub hidden: Query<'w, 's, (), With<TbaHidden>>,
+    pub hidden: Stealthed<'w, 's>,
+    pub doors: Query<'w, 's, &'static Doors>,
     pub following: Query<'w, 's, &'static TbaFollowing>,
     pub keys: Query<'w, 's, &'static NpcKey>,
     pub occupants: Res<'w, RoomOccupants>,
@@ -439,9 +456,13 @@ pub fn handle_skill_commands(
                     deny(&mut output, session, message);
                     continue;
                 }
-                let Some(victim) =
-                    find_target_in_room(session, &target, &queries.players, &queries.npcs)
-                else {
+                let Some(victim) = find_target_in_room(
+                    session,
+                    &target,
+                    &queries.players,
+                    &queries.npcs,
+                    &queries.hidden,
+                ) else {
                     deny(&mut output, session, "Backstab who?");
                     continue;
                 };
@@ -590,6 +611,7 @@ pub fn handle_skill_commands(
                     current_target,
                     &queries.players,
                     &queries.npcs,
+                    &queries.hidden,
                 );
                 let Some(victim) = victim else {
                     deny(&mut output, session, "Kick who?");
@@ -710,6 +732,7 @@ pub fn handle_skill_commands(
                     current_target,
                     &queries.players,
                     &queries.npcs,
+                    &queries.hidden,
                 );
                 let Some(victim) = victim else {
                     deny(&mut output, session, "Bash who?");
@@ -802,9 +825,13 @@ pub fn handle_skill_commands(
                     deny(&mut output, session, message);
                     continue;
                 }
-                let Some(ally) =
-                    find_target_in_room(session, &ally, &queries.players, &queries.npcs)
-                else {
+                let Some(ally) = find_target_in_room(
+                    session,
+                    &ally,
+                    &queries.players,
+                    &queries.npcs,
+                    &queries.hidden,
+                ) else {
                     deny(&mut output, session, "Whom do you want to rescue?");
                     continue;
                 };
@@ -906,7 +933,13 @@ pub fn handle_skill_commands(
                         .map(|following| following.leader)
                         .filter(|leader| *leader != session)
                 } else {
-                    find_target_in_room(session, &ally, &queries.players, &queries.npcs)
+                    find_target_in_room(
+                        session,
+                        &ally,
+                        &queries.players,
+                        &queries.npcs,
+                        &queries.hidden,
+                    )
                 };
                 let Some(ally_entity) = ally_entity else {
                     deny(&mut output, session, "Whom do you wish to assist?");
@@ -978,9 +1011,13 @@ pub fn handle_skill_commands(
                     deny(&mut output, session, "You have no combat state.");
                     continue;
                 };
-                let Some(victim) =
-                    find_target_in_room(session, &target, &queries.players, &queries.npcs)
-                else {
+                let Some(victim) = find_target_in_room(
+                    session,
+                    &target,
+                    &queries.players,
+                    &queries.npcs,
+                    &queries.hidden,
+                ) else {
                     deny(&mut output, session, "Consider killing who?");
                     continue;
                 };
@@ -1047,6 +1084,122 @@ pub fn handle_skill_commands(
                 if skill_succeeds(&mut rng, SKILL_LEARNED) {
                     commands.entity(session).insert(TbaHidden);
                 }
+            }
+
+            // ---------------------------------------------------------------
+            // pick_lock
+            // ---------------------------------------------------------------
+            SkillCommand::PickLock { direction } => {
+                let Some(progress) = queries.progress.get(session).ok() else {
+                    deny(&mut output, session, MSG_UNKNOWN_LONG);
+                    continue;
+                };
+                if let Some(message) = skill_gate(content, progress, "pick_lock", MSG_UNKNOWN_LONG)
+                {
+                    deny(&mut output, session, message);
+                    continue;
+                }
+                // `pick` is `POS_STANDING` (`interpreter.c:238`).
+                let position = combatants
+                    .get(session)
+                    .map(|combatant| combatant.position)
+                    .unwrap_or(Position::Dead);
+                if position < Position::Standing {
+                    deny(&mut output, session, MSG_POSITION);
+                    continue;
+                }
+                if direction.is_empty() {
+                    deny(&mut output, session, "Pick what?");
+                    continue;
+                }
+                let Some(room) = entity_room(session, &queries.players, &queries.npcs) else {
+                    continue;
+                };
+                // `find_door` accepts a direction word (`act.movement.c:371`).
+                let Some(direction) = ExitKey::from_word(&direction.to_lowercase()) else {
+                    deny(&mut output, session, "That's not a direction.");
+                    continue;
+                };
+                let Some(door) = queries
+                    .doors
+                    .get(room)
+                    .ok()
+                    .and_then(|doors| doors.by_dir.get(&direction).cloned())
+                else {
+                    deny(
+                        &mut output,
+                        session,
+                        "I really don't see how you can pick anything there.",
+                    );
+                    continue;
+                };
+                // Runtime state is authoritative; the authored door is the
+                // fallback when the entry is missing (`doors::state_at`).
+                let state = queries
+                    .rooms
+                    .get(room)
+                    .ok()
+                    .and_then(|(_, state)| state.doors.get(&direction).cloned());
+                let closed = state
+                    .as_ref()
+                    .map_or(door.default_closed, |door| door.closed);
+                let locked = state
+                    .as_ref()
+                    .map_or(door.default_locked, |door| door.locked);
+                // `do_gen_door`'s `pick` flags: `NEED_CLOSED | NEED_LOCKED`
+                // (`act.movement.c:489-495, 653-657`).
+                if !closed {
+                    deny(&mut output, session, "But it's currently open!");
+                    continue;
+                }
+                if !locked {
+                    deny(&mut output, session, "Oh.. it wasn't locked, after all..");
+                    continue;
+                }
+                // `ok_pick`'s `pickproof` branch (`act.movement.c:594`).
+                if !door.pickable {
+                    deny(&mut output, session, "It resists your attempts to pick it.");
+                    continue;
+                }
+                // `ok_pick` (`act.movement.c:589-608`): `percent =
+                // rand_number(1, 101)`, `skill_lvl = GET_SKILL(ch,
+                // SKILL_PICK_LOCK)` (the DEX bonus is not modelled), success
+                // on `percent <= skill_lvl`.
+                if !skill_succeeds(&mut rng, SKILL_LEARNED) {
+                    deny(&mut output, session, "You failed to pick the lock.");
+                    continue;
+                }
+                // The lock yields: mutate the runtime `RoomState` exactly like
+                // the zone engine's `D` reset (`zones/mod.rs::set_door_state`).
+                let mut room_state = queries
+                    .rooms
+                    .get(room)
+                    .map(|(_, state)| state.clone())
+                    .unwrap_or_default();
+                if let Some(door_state) = room_state.doors.get_mut(&direction) {
+                    door_state.closed = true;
+                    door_state.locked = false;
+                } else {
+                    room_state.doors.insert(
+                        direction,
+                        DoorState {
+                            closed: true,
+                            locked: false,
+                            to: None,
+                        },
+                    );
+                }
+                commands.entity(room).insert(room_state);
+                output.write(text(session, "The lock quickly yields to your skills."));
+                let door_name = door.name.as_deref().unwrap_or("door");
+                let actor_name = entity_name(session, &queries.players, &queries.npcs);
+                broadcast(
+                    &queries.players,
+                    room,
+                    session,
+                    &mut output,
+                    &format!("{actor_name} skillfully picks the lock on the {door_name}."),
+                );
             }
         }
 
@@ -1127,8 +1280,15 @@ mod tests {
         );
         assert_eq!(parse_skill_line("sneak"), Some(SkillCommand::Sneak));
         assert_eq!(parse_skill_line("hide"), Some(SkillCommand::Hide));
+        assert_eq!(
+            parse_skill_line("pick_lock north"),
+            Some(SkillCommand::PickLock {
+                direction: "north".to_owned()
+            })
+        );
         assert_eq!(parse_skill_line("attack goblin"), None);
-        // Lockpicking is the stdlib `pick` command; this pack adds no verb.
+        // The bare stdlib `pick` stays with the router; the pack verb is
+        // `pick_lock`.
         assert_eq!(parse_skill_line("pick"), None);
         assert_eq!(parse_skill_line("pick lock"), None);
     }

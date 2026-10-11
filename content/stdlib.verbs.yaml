@@ -11,10 +11,11 @@
 # - `time` — the in-world clock report (`mib_tba::clock`).
 # - `group`, `gtell` (and `;`), `follow`, `unfollow` — the party system
 #   (`mib_tba::party`).
-# - `backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`, `sneak`, `hide`
-#   — the Circle class abilities and stealth state (`mib_tba::skills`, issue
-#   #25). `pick`/`pick_lock` are deliberately **not** here: the stdlib door
-#   handler already claims `pick` for lockpicking.
+# - `backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`, `sneak`, `hide`,
+#   `pick_lock` — the Circle class abilities and stealth state
+#   (`mib_tba::skills`, issue #25). The bare `pick` stays with the stdlib door
+#   handler (a fixed `Command::Pick` the router handles before this registry);
+#   `pick_lock` is the pack's class-gated lockpick verb.
 #
 # The stdlib router would otherwise reject the verbs as unknown before the
 # genre systems (`mib_tba::spells`, `mib_tba::shops`, `mib_tba::socials`,
@@ -82,4 +83,7 @@ verbs:
     effects: []
   hide:
     description: Hide from sight.
+    effects: []
+  pick_lock:
+    description: Pick a locked door in a named direction.
     effects: []
