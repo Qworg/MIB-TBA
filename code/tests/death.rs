@@ -43,6 +43,7 @@ fn no_exits() -> Exits {
 #[test]
 fn death_penalty_gold_moves_into_the_corpse() {
     let mut app = App::new();
+    app.init_resource::<VisibilityPolicy>();
     app.add_message::<PlayerDefeated>();
     app.add_message::<OutputEvent>();
 

@@ -177,16 +177,14 @@ impl Plugin for TbaPlugin {
         app.add_message::<CommandReceived>();
         app.add_message::<OutputEvent>();
 
-        // Stealth visibility (`TbaHidden`/`TbaSneaking`): a `PreRoute`
-        // interceptor that hides a stealthed player from another actor's
-        // `look`/`who` and marks only the commands whose answer stealth
-        // changes, letting the stdlib router render the common case. The
+        // The `who` filter is the pack's only remaining visibility surface;
+        // `look`/`Scene`/GMCP are filtered by the engine perception seam. The
         // resource is normally inserted by `BridgePlugin`; init here so a
         // `StdlibPlugin` + `TbaPlugin` composition (tests) also has it.
         app.init_resource::<HandledCommands>();
         app.add_systems(
             Update,
-            crate::visibility::intercept_visibility_commands.in_set(CommandSet::PreRoute),
+            crate::visibility::intercept_who.in_set(CommandSet::PreRoute),
         );
 
         // Player progression and the genre command seam, after the stdlib
@@ -209,6 +207,12 @@ impl Plugin for TbaPlugin {
                 crate::equipment::recompute_equipment_affects,
                 crate::equipment::recompute_npc_equipment_affects,
                 crate::equipment::sync_wielded_weapon,
+                // Drive the engine perception seam from the pack's private
+                // stealth state (`TbaHidden`/`TbaSneaking`) and true-sight
+                // grants (`TbaTrueSight`) after every handler that mutates
+                // them, so the carriers are current by the end of the frame.
+                crate::stealth::sync_concealment,
+                crate::stealth::sync_perception,
             )
                 .chain()
                 .in_set(BridgeSet::Game)
@@ -257,7 +261,12 @@ impl Plugin for TbaPlugin {
         // round before damage resolves.
         app.add_systems(
             TbaRound,
-            (crate::spells::tick_buffs, crate::combat::resolve_rounds).chain(),
+            (
+                crate::spells::tick_buffs,
+                crate::stealth::tick_true_sight,
+                crate::combat::resolve_rounds,
+            )
+                .chain(),
         );
         app.add_systems(Update, crate::combat::run_due_round.after(BridgeSet::Game));
 

@@ -86,7 +86,9 @@ use mib_stdlib::prelude::{
     RoomState, RoomTag, Session, SessionState,
 };
 
-use crate::combat::commands::{Stealthed, broadcast, deny, entity_name, find_target_in_room, text};
+use crate::combat::commands::{
+    StealthView, broadcast, deny, entity_name, find_target_in_room, text,
+};
 use crate::combat::rewards::{NpcDefeated, alignment_for, reward_for};
 use crate::combat::{
     TbaAttackerMemory, TbaCombatant, TbaHidden, TbaProgress, TbaRng, TbaSneaking, WieldedWeapon,
@@ -278,7 +280,7 @@ fn resolve_combat_target(
     current_target: Option<Entity>,
     players: &Query<(Entity, &Player, &Location)>,
     npcs: &Query<(Entity, &Npc, &Location)>,
-    hidden: &Stealthed<'_, '_>,
+    hidden: &StealthView<'_, '_>,
 ) -> Option<Entity> {
     if !needle.is_empty()
         && let Some(target) = find_target_in_room(session, needle, players, npcs, hidden)
@@ -401,7 +403,7 @@ pub struct SkillQueries<'w, 's> {
     pub npcs: Query<'w, 's, (Entity, &'static Npc, &'static Location)>,
     pub content: Option<Res<'w, TbaContent>>,
     pub progress: Query<'w, 's, &'static TbaProgress>,
-    pub hidden: Stealthed<'w, 's>,
+    pub hidden: StealthView<'w, 's>,
     pub doors: Query<'w, 's, &'static Doors>,
     pub following: Query<'w, 's, &'static TbaFollowing>,
     pub keys: Query<'w, 's, &'static NpcKey>,
@@ -526,7 +528,11 @@ pub fn handle_skill_commands(
                     continue;
                 }
 
-                let was_hidden = queries.hidden.contains(session);
+                let was_hidden = queries
+                    .hidden
+                    .concealment
+                    .get(session)
+                    .is_ok_and(|concealment| concealment.hidden);
                 // Attacking breaks stealth (`appear()`, `fight.c:70-84`).
                 commands.entity(session).remove::<TbaHidden>();
                 engage(session, victim, &mut combatants, &mut memories);

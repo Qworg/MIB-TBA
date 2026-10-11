@@ -1,18 +1,15 @@
-//! Stealth visibility integration tests (the `CommandSet::PreRoute`
-//! interceptor in `mib_tba::visibility`).
+//! Observer-relative perception integration tests.
 //!
-//! These drive the real [`intercept_visibility_commands`] system against a
-//! small ECS app whose `Route` system calls the **real stdlib**
-//! [`handle_look`]/[`handle_who`] — the exact functions `route_commands`
-//! dispatches to. So a pass-through test proves the stdlib rendered the scene,
-//! and a marked-handled test proves the interceptor's filtered output replaced
-//! it. A `Routed` counter records how many commands reached the stdlib router.
+//! Two surfaces are exercised against the real engine renderers:
 //!
-//! Required semantics: a stealthed player is absent from another actor's `look`
-//! scene and from `who`, present for themselves; a normal `look` with no
-//! stealthed player present is unchanged (stdlib Scene); `look <stealthed
-//! player>` is denied; `look <npc>`/`<item>`/`<direction>` still reach the
-//! stdlib; `l` works; `who` still lists non-stealthed players.
+//! - the **engine seam** — [`handle_look`] → `build_room_view`/`emit_scene`
+//!   filters a concealed occupant using the engine `Concealment`/`Perception`
+//!   carriers (nothing in this file reimplements the scene), and
+//! - the pack's **`who` filter** ([`intercept_who`]) — the one global list the
+//!   engine does not make observer-aware.
+//!
+//! The pack's own sync of `TbaHidden`/`TbaSneaking` into `Concealment` is
+//! covered end-to-end by the `app_with_sync` cases and in `mib_tba::stealth`.
 //!
 //! Tests may unwrap/expect — a panic here is a test failure, not a fault.
 
@@ -21,7 +18,7 @@
 use std::collections::{BTreeSet, HashMap};
 
 use mib_core::prelude::*;
-use mib_stdlib::content::{RoomTag, Sector};
+use mib_stdlib::content::Sector;
 use mib_stdlib::prelude::*;
 use mib_tba::prelude::*;
 
@@ -54,36 +51,51 @@ fn no_exits() -> Exits {
     }
 }
 
-/// The interceptor exactly as [`TbaPlugin`] wires it (in `PreRoute`), with a
-/// `Route` system that delegates every non-handled `look`/`who` to the stdlib
-/// handlers — the real renderers, not a reimplementation.
-fn test_app() -> App {
+/// The app under test: [`intercept_who`] in `PreRoute`, and a `Route` system
+/// that delegates every non-handled `look`/`who` to the **real** stdlib
+/// handlers. `sync` additionally wires the pack's carrier sync systems.
+fn app_with(sync: bool) -> App {
     let mut app = App::new();
     app.init_resource::<HandledCommands>();
     app.init_resource::<CommandSequence>();
+    app.init_resource::<VisibilityPolicy>();
     app.init_resource::<Routed>();
     app.add_message::<CommandReceived>();
     app.add_message::<OutputEvent>();
     app.configure_sets(Update, (CommandSet::PreRoute, CommandSet::Route).chain());
-    app.add_systems(
-        Update,
-        intercept_visibility_commands.in_set(CommandSet::PreRoute),
-    );
-    app.add_systems(Update, stdlib_route.in_set(CommandSet::Route));
+    if sync {
+        app.add_systems(
+            Update,
+            (sync_concealment, sync_perception, intercept_who)
+                .chain()
+                .in_set(CommandSet::PreRoute),
+        );
+    } else {
+        app.add_systems(Update, intercept_who.in_set(CommandSet::PreRoute));
+    }
+    app.add_systems(Update, engine_route.in_set(CommandSet::Route));
     app
+}
+
+fn test_app() -> App {
+    app_with(false)
 }
 
 /// The `Route` stand-in: skip handled commands, and send `look`/`who` through
 /// the real stdlib handlers (mirrors `route_commands`'s dispatch for these two
-/// verbs).
+/// verbs). `who` normally never reaches here — the interceptor marks it.
 #[allow(clippy::too_many_arguments)]
-fn stdlib_route(
+fn engine_route(
     mut reader: MessageReader<CommandReceived>,
     handled: Res<HandledCommands>,
     mut routed: ResMut<Routed>,
-    players: Query<(&Player, &Location)>,
+    players: Query<(Entity, &Player, &Location)>,
+    who_players: Query<(&Player, &Location)>,
     rooms: Query<(&Room, &Exits)>,
     npcs: Query<(Entity, &Npc, &Location)>,
+    concealment: Query<&Concealment>,
+    perception: Query<&Perception>,
+    policy: Res<VisibilityPolicy>,
     items: ItemQuery<'_, '_>,
     connections: Query<&Connection>,
     discovered: Query<&Discovered>,
@@ -109,6 +121,9 @@ fn stdlib_route(
                     &players,
                     &rooms,
                     &npcs,
+                    &concealment,
+                    &perception,
+                    &policy,
                     &items,
                     &connections,
                     &discovered,
@@ -117,7 +132,7 @@ fn stdlib_route(
             }
             Command::Who => {
                 routed.0 += 1;
-                handle_who(msg.session, &players, &mut output);
+                handle_who(msg.session, &who_players, &mut output);
             }
             _ => {}
         }
@@ -128,7 +143,10 @@ fn spawn_room(app: &mut App, key: &str, name: &str, exits: Exits) -> Entity {
     app.world_mut().spawn((test_room(key, name), exits)).id()
 }
 
-fn spawn_player(app: &mut App, room: Entity, name: &str) -> Entity {
+/// Spawn an observer/occupant with a live `Connection` so the GMCP gates can be
+/// exercised. The receiver is dropped; the engine only reads capabilities.
+fn spawn_player(app: &mut App, room: Entity, name: &str, gmcp: bool) -> Entity {
+    let (egress, _rx) = tokio::sync::mpsc::channel(1);
     app.world_mut()
         .spawn((
             Player {
@@ -139,6 +157,17 @@ fn spawn_player(app: &mut App, room: Entity, name: &str) -> Entity {
                 state: SessionState::Playing,
             },
             Location { room },
+            Connection {
+                session_id: 1,
+                frontend: FrontendKind::Telnet,
+                capabilities: FrontendCapabilities {
+                    ansi: true,
+                    gmcp_like: gmcp,
+                    streaming: false,
+                    mxp: false,
+                },
+                egress,
+            },
         ))
         .id()
 }
@@ -155,43 +184,38 @@ fn spawn_npc(app: &mut App, room: Entity, name: &str, persona: &str) -> Entity {
         .id()
 }
 
-fn spawn_item(app: &mut App, room: Entity, name: &str, description: &str) -> Entity {
-    app.world_mut()
-        .spawn((
-            Item {
-                def_id: ItemId::from("test_item"),
-                name: name.to_owned(),
-                description: description.to_owned(),
-                value: None,
-                tags: Vec::new(),
-            },
-            Location { room },
-        ))
-        .id()
+fn conceal(app: &mut App, entity: Entity, concealment: Concealment) {
+    app.world_mut().entity_mut(entity).insert(concealment);
 }
 
-fn hide(app: &mut App, entity: Entity) {
-    app.world_mut().entity_mut(entity).insert(TbaHidden);
-}
-
-fn sneak(app: &mut App, entity: Entity) {
-    app.world_mut().entity_mut(entity).insert(TbaSneaking);
-}
-
-fn send(app: &mut App, session: Entity, input: PlayerInput) -> CommandId {
-    let id = app.world_mut().resource_mut::<CommandSequence>().next_id();
-    app.world_mut()
-        .resource_mut::<Messages<CommandReceived>>()
-        .write(CommandReceived::new(id, session, 1, input));
-    id
+fn perceive_as(app: &mut App, entity: Entity, perception: Perception) {
+    app.world_mut().entity_mut(entity).insert(perception);
 }
 
 fn send_line(app: &mut App, session: Entity, line: &str) -> CommandId {
-    send(app, session, PlayerInput::RawLine(line.to_owned()))
+    let id = app.world_mut().resource_mut::<CommandSequence>().next_id();
+    app.world_mut()
+        .resource_mut::<Messages<CommandReceived>>()
+        .write(CommandReceived::new(
+            id,
+            session,
+            1,
+            PlayerInput::RawLine(line.to_owned()),
+        ));
+    id
 }
 
 fn send_command(app: &mut App, session: Entity, command: Command) -> CommandId {
-    send(app, session, PlayerInput::Command(command))
+    let id = app.world_mut().resource_mut::<CommandSequence>().next_id();
+    app.world_mut()
+        .resource_mut::<Messages<CommandReceived>>()
+        .write(CommandReceived::new(
+            id,
+            session,
+            1,
+            PlayerInput::Command(command),
+        ));
+    id
 }
 
 fn run(app: &mut App) {
@@ -226,395 +250,306 @@ fn texts(payloads: &[OutboundPayload]) -> Vec<String> {
         .collect()
 }
 
+fn error_kinds(payloads: &[OutboundPayload]) -> Vec<ErrorKind> {
+    payloads
+        .iter()
+        .filter_map(|payload| match payload {
+            OutboundPayload::Error { kind, .. } => Some(*kind),
+            _ => None,
+        })
+        .collect()
+}
+
+fn gmcp_player_names(payloads: &[OutboundPayload]) -> Vec<String> {
+    payloads
+        .iter()
+        .find_map(|payload| match payload {
+            OutboundPayload::GmcpLike { namespace, body } if namespace == "Room.Players" => Some(
+                body.as_array()
+                    .map(|arr| {
+                        arr.iter()
+                            .filter_map(|value| value["name"].as_str().map(str::to_owned))
+                            .collect::<Vec<_>>()
+                    })
+                    .unwrap_or_default(),
+            ),
+            _ => None,
+        })
+        .unwrap_or_default()
+}
+
+fn gmcp_npc_names(payloads: &[OutboundPayload]) -> Vec<String> {
+    payloads
+        .iter()
+        .find_map(|payload| match payload {
+            OutboundPayload::GmcpLike { namespace, body } if namespace == "Room.Info" => Some(
+                body["npcs"]
+                    .as_array()
+                    .map(|arr| {
+                        arr.iter()
+                            .filter_map(|value| value.as_str().map(str::to_owned))
+                            .collect::<Vec<_>>()
+                    })
+                    .unwrap_or_default(),
+            ),
+            _ => None,
+        })
+        .unwrap_or_default()
+}
+
 fn routed(app: &App) -> usize {
     app.world().resource::<Routed>().0
 }
 
-fn occupants(app: &mut App) -> Vec<String> {
-    let payloads = drain(app);
-    scene(&payloads).expect("a Scene was emitted").occupants
+fn who_line(payloads: &[OutboundPayload]) -> Option<String> {
+    texts(payloads)
+        .into_iter()
+        .find(|line| line.starts_with("Players online:"))
 }
 
 // ---------------------------------------------------------------------------
-// Bare `look`
+// The engine seam: look / Scene / GMCP
 // ---------------------------------------------------------------------------
 
-/// A stealthed player does not appear in another actor's bare `look` scene, and
-/// the interceptor marks the command handled (the stdlib router never runs).
+/// A concealed player is absent from another observer's `Scene`; the stdlib
+/// renderer (not a pack reimplementation) applied the filter.
 #[test]
-fn hidden_player_absent_from_anothers_look() {
+fn concealed_player_absent_from_anothers_scene() {
     let mut app = test_app();
     let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let alice = spawn_player(&mut app, room, "Alice");
-    let bob = spawn_player(&mut app, room, "Bob");
-    hide(&mut app, bob);
-
-    send_line(&mut app, alice, "look");
-    run(&mut app);
-
-    assert_eq!(routed(&app), 0, "interceptor marked the look handled");
-    assert_eq!(occupants(&mut app), vec!["Alice"], "Bob is hidden");
-}
-
-/// The same holds for a player who is only `TbaSneaking`.
-#[test]
-fn sneaking_player_absent_from_anothers_look() {
-    let mut app = test_app();
-    let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let alice = spawn_player(&mut app, room, "Alice");
-    let bob = spawn_player(&mut app, room, "Bob");
-    sneak(&mut app, bob);
-
-    send_line(&mut app, alice, "look");
-    run(&mut app);
-
-    assert_eq!(routed(&app), 0);
-    assert_eq!(occupants(&mut app), vec!["Alice"]);
-}
-
-/// A stealthed player sees themselves (and visible room-mates) in their own
-/// `look`. When the asker is the only stealthed occupant, the stdlib scene is
-/// already correct, so the interceptor leaves it alone (no reimplementation).
-#[test]
-fn hidden_player_present_for_self() {
-    let mut app = test_app();
-    let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let _alice = spawn_player(&mut app, room, "Alice");
-    let bob = spawn_player(&mut app, room, "Bob");
-    hide(&mut app, bob);
-
-    send_line(&mut app, bob, "look");
-    run(&mut app);
-
-    assert_eq!(
-        routed(&app),
-        1,
-        "only the asker is stealthed: stdlib is correct"
+    let alice = spawn_player(&mut app, room, "Alice", false);
+    let bob = spawn_player(&mut app, room, "Bob", false);
+    conceal(
+        &mut app,
+        bob,
+        Concealment {
+            hidden: true,
+            invisible: false,
+            stealth: 5,
+        },
     );
-    assert_eq!(
-        occupants(&mut app),
-        vec!["Alice", "Bob"],
-        "Bob sees himself"
+
+    send_line(&mut app, alice, "look");
+    run(&mut app);
+
+    assert_eq!(routed(&app), 1, "the engine renderer handled the look");
+    let view = scene(&drain(&mut app)).expect("a Scene was emitted");
+    assert!(
+        !view.occupants.contains(&"Bob".to_string()),
+        "concealed Bob is hidden, got {:?}",
+        view.occupants
+    );
+    assert!(
+        view.occupants.contains(&"Alice".to_string()),
+        "self is kept"
     );
 }
 
-/// A stealthed player does not see another stealthed player: with two stealthed
-/// occupants the interceptor takes over and filters the other one out.
+/// The same concealment is filtered from both GMCP enumerations: the player
+/// list and the invisible NPC in `Room.Info.npcs`.
 #[test]
-fn hidden_player_does_not_see_another_hidden_player() {
+fn concealed_occupants_absent_from_gmcp() {
     let mut app = test_app();
     let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let bob = spawn_player(&mut app, room, "Bob");
-    let carol = spawn_player(&mut app, room, "Carol");
-    hide(&mut app, bob);
-    hide(&mut app, carol);
-
-    send_line(&mut app, bob, "look");
-    run(&mut app);
-
-    assert_eq!(
-        routed(&app),
-        0,
-        "another stealthed occupant forces filtering"
+    let alice = spawn_player(&mut app, room, "Alice", true);
+    let bob = spawn_player(&mut app, room, "Bob", false);
+    let elder = spawn_npc(&mut app, room, "Elder Marrow", "Wise.");
+    conceal(
+        &mut app,
+        bob,
+        Concealment {
+            hidden: true,
+            invisible: false,
+            stealth: 5,
+        },
     );
-    assert_eq!(occupants(&mut app), vec!["Bob"], "Carol stays hidden");
-}
-
-/// With no stealthed player in the room, bare `look` is untouched: the command
-/// reaches the stdlib router, which emits the normal Scene.
-#[test]
-fn normal_look_without_hidden_passes_through_to_stdlib() {
-    let mut app = test_app();
-    let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let alice = spawn_player(&mut app, room, "Alice");
-    let _bob = spawn_player(&mut app, room, "Bob");
+    conceal(
+        &mut app,
+        elder,
+        Concealment {
+            hidden: false,
+            invisible: true,
+            stealth: 0,
+        },
+    );
 
     send_line(&mut app, alice, "look");
     run(&mut app);
 
-    assert_eq!(routed(&app), 1, "stdlib router handled the look");
-    assert_eq!(occupants(&mut app), vec!["Alice", "Bob"]);
-}
-
-/// `l` is the alias of `look` and follows the same path.
-#[test]
-fn look_alias_l_filters_hidden_players() {
-    let mut app = test_app();
-    let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let alice = spawn_player(&mut app, room, "Alice");
-    let bob = spawn_player(&mut app, room, "Bob");
-    hide(&mut app, bob);
-
-    send_line(&mut app, alice, "l");
-    run(&mut app);
-
-    assert_eq!(routed(&app), 0, "l is intercepted like look");
-    assert_eq!(occupants(&mut app), vec!["Alice"]);
-}
-
-/// A hidden occupant in a different room does not trigger interception.
-#[test]
-fn hidden_player_in_another_room_does_not_intercept() {
-    let mut app = test_app();
-    let camp = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let ridge = spawn_room(&mut app, "ridge", "Ridge", no_exits());
-    let alice = spawn_player(&mut app, camp, "Alice");
-    let bob = spawn_player(&mut app, ridge, "Bob");
-    hide(&mut app, bob);
-
-    send_line(&mut app, alice, "look");
-    run(&mut app);
-
-    assert_eq!(routed(&app), 1, "no stealthed player in Alice's room");
-    assert_eq!(occupants(&mut app), vec!["Alice"]);
-}
-
-// ---------------------------------------------------------------------------
-// Targeted `look`
-// ---------------------------------------------------------------------------
-
-/// `look <stealthed player>` is denied, and the interceptor handles it.
-#[test]
-fn look_hidden_player_is_denied() {
-    let mut app = test_app();
-    let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let alice = spawn_player(&mut app, room, "Alice");
-    let bob = spawn_player(&mut app, room, "Bob");
-    hide(&mut app, bob);
-
-    send_line(&mut app, alice, "look Bob");
-    run(&mut app);
-
-    assert_eq!(routed(&app), 0, "the interceptor denied the look");
     let payloads = drain(&mut app);
+    assert_eq!(
+        gmcp_player_names(&payloads),
+        vec!["Alice".to_string()],
+        "Room.Players hides the concealed player"
+    );
     assert!(
-        texts(&payloads)
-            .iter()
-            .any(|line| line.contains("You don't see them here.")),
-        "denial text: {:?}",
-        texts(&payloads)
+        gmcp_npc_names(&payloads).is_empty(),
+        "Room.Info.npcs hides the invisible NPC, got {:?}",
+        gmcp_npc_names(&payloads)
     );
 }
 
-/// `look at <stealthed player>` (the `at` form) is denied too.
+/// A concealed player is not a targeted `look` target.
 #[test]
-fn look_at_hidden_player_is_denied() {
+fn concealed_player_is_not_a_targeted_look_target() {
     let mut app = test_app();
     let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let alice = spawn_player(&mut app, room, "Alice");
-    let bob = spawn_player(&mut app, room, "Bob");
-    sneak(&mut app, bob);
-
-    send_line(&mut app, alice, "look at Bob");
-    run(&mut app);
-
-    assert_eq!(routed(&app), 0);
-    assert!(
-        texts(&drain(&mut app))
-            .iter()
-            .any(|line| line.contains("You don't see them here."))
+    let alice = spawn_player(&mut app, room, "Alice", false);
+    let bob = spawn_player(&mut app, room, "Bob", false);
+    conceal(
+        &mut app,
+        bob,
+        Concealment {
+            hidden: true,
+            invisible: false,
+            stealth: 1,
+        },
     );
-}
-
-/// A stealthed player can still look at themselves.
-#[test]
-fn look_self_when_hidden_passes_through() {
-    let mut app = test_app();
-    let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let bob = spawn_player(&mut app, room, "Bob");
-    hide(&mut app, bob);
-
-    send_line(&mut app, bob, "look Bob");
-    run(&mut app);
-
-    assert_eq!(routed(&app), 1, "self is never hidden from self");
-    assert!(
-        texts(&drain(&mut app))
-            .iter()
-            .any(|line| line.contains("A fellow traveler."))
-    );
-}
-
-/// `look <visible player>` still reaches the stdlib.
-#[test]
-fn look_visible_player_passes_through() {
-    let mut app = test_app();
-    let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let alice = spawn_player(&mut app, room, "Alice");
-    let _bob = spawn_player(&mut app, room, "Bob");
 
     send_line(&mut app, alice, "look Bob");
     run(&mut app);
 
-    assert_eq!(routed(&app), 1);
     assert!(
-        texts(&drain(&mut app))
-            .iter()
-            .any(|line| line.contains("A fellow traveler."))
+        error_kinds(&drain(&mut app)).contains(&ErrorKind::NoSuchTarget),
+        "concealed Bob is not resolvable with `look`"
     );
 }
 
-/// `look <npc>` is untouched by the interceptor and the stdlib returns the NPC
-/// persona's first sentence.
+/// A `SEE_INVIS` detector sees the concealed occupant — and only the detector.
 #[test]
-fn look_npc_passes_through() {
+fn true_sight_detector_sees_concealed_player() {
     let mut app = test_app();
     let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let alice = spawn_player(&mut app, room, "Alice");
-    spawn_npc(
+    let alice = spawn_player(&mut app, room, "Alice", false);
+    let bob = spawn_player(&mut app, room, "Bob", false);
+    let carol = spawn_player(&mut app, room, "Carol", false);
+    conceal(
         &mut app,
-        room,
-        "Elder Marrow",
-        "Elder Marrow is the village elder: patient, wry, faintly cryptic.",
+        bob,
+        Concealment {
+            hidden: true,
+            invisible: false,
+            stealth: 5,
+        },
     );
-
-    send_line(&mut app, alice, "look elder marrow");
-    run(&mut app);
-
-    assert_eq!(routed(&app), 1);
-    assert!(
-        texts(&drain(&mut app))
-            .iter()
-            .any(|line| line.contains("Elder Marrow is the village elder"))
-    );
-}
-
-/// `look <item>` is untouched and the stdlib returns the item description.
-#[test]
-fn look_item_passes_through() {
-    let mut app = test_app();
-    let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let alice = spawn_player(&mut app, room, "Alice");
-    spawn_item(
+    perceive_as(
         &mut app,
-        room,
-        "rusty sword",
-        "A pitted, rust-flecked blade.",
+        alice,
+        Perception {
+            sight: SEE_INVIS,
+            detect: u8::MAX,
+        },
     );
 
-    send_line(&mut app, alice, "look sword");
-    run(&mut app);
-
-    assert_eq!(routed(&app), 1);
-    assert!(
-        texts(&drain(&mut app))
-            .iter()
-            .any(|line| line.contains("A pitted, rust-flecked blade."))
-    );
-}
-
-/// `look <direction>` reaches the stdlib (which reports no such target, the
-/// same as before this interceptor existed) rather than being denied as a
-/// stealthed player.
-#[test]
-fn look_direction_passes_through() {
-    let mut app = test_app();
-    let camp = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let ridge = spawn_room(&mut app, "ridge", "Ridge", no_exits());
-    let mut exits = no_exits();
-    exits.map.insert(ExitKey::North, ridge);
-    app.world_mut().entity_mut(camp).insert(exits);
-    let alice = spawn_player(&mut app, camp, "Alice");
-
-    send_line(&mut app, alice, "look north");
-    run(&mut app);
-
-    assert_eq!(routed(&app), 1, "direction look is stdlib's");
-    assert!(
-        texts(&drain(&mut app))
-            .iter()
-            .any(|line| line.contains("You see no north here."))
-    );
-}
-
-/// A hidden player does not make a dark room's `look` render as if it were lit.
-#[test]
-fn hidden_player_in_dark_room_still_renders_darkness() {
-    let mut app = test_app();
-    let mut room = test_room("cave", "Cave");
-    room.tags.insert(RoomTag::Dark);
-    let cave = app.world_mut().spawn((room, no_exits())).id();
-    let alice = spawn_player(&mut app, cave, "Alice");
-    let bob = spawn_player(&mut app, cave, "Bob");
-    hide(&mut app, bob);
-
+    // Alice (true sight) sees Bob; Carol (no perception) does not.
     send_line(&mut app, alice, "look");
     run(&mut app);
-
-    assert_eq!(
-        routed(&app),
-        0,
-        "interceptor handles it (a hidden occupant exists)"
+    let alice_view = scene(&drain(&mut app)).expect("Alice's scene");
+    assert!(
+        alice_view.occupants.contains(&"Bob".to_string()),
+        "true sight reveals Bob, got {:?}",
+        alice_view.occupants
     );
-    let view = scene(&drain(&mut app)).expect("dark scene");
-    assert_eq!(view.name, "A Dark Room");
-    assert!(view.occupants.is_empty(), "nothing is visible in the dark");
+
+    send_line(&mut app, carol, "look");
+    run(&mut app);
+    let carol_view = scene(&drain(&mut app)).expect("Carol's scene");
+    assert!(
+        !carol_view.occupants.contains(&"Bob".to_string()),
+        "Bob stays hidden from Carol, got {:?}",
+        carol_view.occupants
+    );
 }
 
 // ---------------------------------------------------------------------------
-// `who`
+// The pack's `who` filter
 // ---------------------------------------------------------------------------
 
-/// `who` excludes stealthed players and lists the rest.
+/// `who` excludes concealed players and lists the rest.
 #[test]
-fn who_excludes_hidden_players() {
+fn who_excludes_concealed_players() {
     let mut app = test_app();
     let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let alice = spawn_player(&mut app, room, "Alice");
-    let bob = spawn_player(&mut app, room, "Bob");
-    let _carol = spawn_player(&mut app, room, "Carol");
-    hide(&mut app, bob);
+    let alice = spawn_player(&mut app, room, "Alice", false);
+    let bob = spawn_player(&mut app, room, "Bob", false);
+    let _carol = spawn_player(&mut app, room, "Carol", false);
+    conceal(
+        &mut app,
+        bob,
+        Concealment {
+            hidden: true,
+            invisible: false,
+            stealth: 5,
+        },
+    );
 
     send_line(&mut app, alice, "who");
     run(&mut app);
 
-    assert_eq!(routed(&app), 0, "who is always intercepted");
-    let lines = texts(&drain(&mut app));
-    assert!(
-        lines
-            .iter()
-            .any(|line| line == "Players online: Alice, Carol (2)"),
-        "who line: {lines:?}"
+    assert_eq!(routed(&app), 0, "who is intercepted, not routed");
+    assert_eq!(
+        who_line(&drain(&mut app)).as_deref(),
+        Some("Players online: Alice, Carol (2)")
     );
 }
 
-/// A stealthed asker still sees themselves in `who`.
+/// A concealed asker still sees themselves in `who`.
 #[test]
-fn who_includes_hidden_asker() {
+fn who_includes_concealed_asker() {
     let mut app = test_app();
     let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let _alice = spawn_player(&mut app, room, "Alice");
-    let bob = spawn_player(&mut app, room, "Bob");
-    hide(&mut app, bob);
+    let _alice = spawn_player(&mut app, room, "Alice", false);
+    let bob = spawn_player(&mut app, room, "Bob", false);
+    conceal(
+        &mut app,
+        bob,
+        Concealment {
+            hidden: true,
+            invisible: false,
+            stealth: 5,
+        },
+    );
 
     send_line(&mut app, bob, "who");
     run(&mut app);
 
-    let lines = texts(&drain(&mut app));
-    assert!(
-        lines
-            .iter()
-            .any(|line| line == "Players online: Alice, Bob (2)"),
-        "who line: {lines:?}"
+    assert_eq!(
+        who_line(&drain(&mut app)).as_deref(),
+        Some("Players online: Alice, Bob (2)")
     );
 }
 
-/// A `TbaSneaking` player is excluded from `who` too.
+/// A detector sees a concealed player in `who`, matching the scene projection.
 #[test]
-fn who_excludes_sneaking_players() {
+fn who_shows_a_concealed_player_to_a_detector() {
     let mut app = test_app();
     let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let alice = spawn_player(&mut app, room, "Alice");
-    let bob = spawn_player(&mut app, room, "Bob");
-    sneak(&mut app, bob);
+    let alice = spawn_player(&mut app, room, "Alice", false);
+    let bob = spawn_player(&mut app, room, "Bob", false);
+    conceal(
+        &mut app,
+        bob,
+        Concealment {
+            hidden: true,
+            invisible: false,
+            stealth: 5,
+        },
+    );
+    perceive_as(
+        &mut app,
+        alice,
+        Perception {
+            sight: SEE_INVIS,
+            detect: u8::MAX,
+        },
+    );
 
     send_line(&mut app, alice, "who");
     run(&mut app);
 
-    let lines = texts(&drain(&mut app));
-    assert!(
-        lines.iter().any(|line| line == "Players online: Alice (1)"),
-        "who line: {lines:?}"
+    assert_eq!(
+        who_line(&drain(&mut app)).as_deref(),
+        Some("Players online: Alice, Bob (2)")
     );
 }
 
@@ -623,45 +558,25 @@ fn who_excludes_sneaking_players() {
 fn who_typed_command_is_intercepted() {
     let mut app = test_app();
     let room = spawn_room(&mut app, "camp", "Camp", no_exits());
-    let alice = spawn_player(&mut app, room, "Alice");
-    let bob = spawn_player(&mut app, room, "Bob");
-    hide(&mut app, bob);
+    let alice = spawn_player(&mut app, room, "Alice", false);
+    let bob = spawn_player(&mut app, room, "Bob", false);
+    conceal(
+        &mut app,
+        bob,
+        Concealment {
+            hidden: true,
+            invisible: false,
+            stealth: 5,
+        },
+    );
 
     send_command(&mut app, alice, Command::Who);
     run(&mut app);
 
     assert_eq!(routed(&app), 0);
-    let lines = texts(&drain(&mut app));
-    assert!(lines.iter().any(|line| line == "Players online: Alice (1)"));
-}
-
-/// `TbaPlugin` registers the interceptor: a bare plugin app intercepts `who`
-/// with no manual system wiring.
-#[test]
-fn tba_plugin_registers_the_interceptor() {
-    let mut app = App::new();
-    app.add_plugins(TbaPlugin);
-    app.init_resource::<CommandSequence>();
-    app.init_resource::<RoomOccupants>();
-    let room = app
-        .world_mut()
-        .spawn((test_room("camp", "Camp"), no_exits()))
-        .id();
-    let alice = spawn_player(&mut app, room, "Alice");
-
-    let id = send_line(&mut app, alice, "who");
-    app.world_mut().run_schedule(Update);
-    app.world_mut().flush();
-
-    assert!(
-        app.world().resource::<HandledCommands>().is_handled(id),
-        "TbaPlugin's interceptor marked the who handled"
-    );
-    assert!(
-        texts(&drain(&mut app))
-            .iter()
-            .any(|line| line == "Players online: Alice (1)"),
-        "TbaPlugin's interceptor emitted the who line"
+    assert_eq!(
+        who_line(&drain(&mut app)).as_deref(),
+        Some("Players online: Alice (1)")
     );
 }
 
@@ -687,4 +602,89 @@ fn who_in_login_state_passes_through() {
     run(&mut app);
 
     assert_eq!(routed(&app), 1, "non-Playing sessions are left alone");
+}
+
+/// `TbaPlugin` registers the `who` interceptor with no manual wiring.
+#[test]
+fn tba_plugin_registers_the_who_interceptor() {
+    let mut app = App::new();
+    app.add_plugins(TbaPlugin);
+    app.init_resource::<CommandSequence>();
+    app.init_resource::<RoomOccupants>();
+    app.init_resource::<VisibilityPolicy>();
+    let room = app
+        .world_mut()
+        .spawn((test_room("camp", "Camp"), no_exits()))
+        .id();
+    let alice = spawn_player(&mut app, room, "Alice", false);
+
+    let id = send_line(&mut app, alice, "who");
+    app.world_mut().run_schedule(Update);
+    app.world_mut().flush();
+
+    assert!(
+        app.world().resource::<HandledCommands>().is_handled(id),
+        "TbaPlugin's interceptor marked the who handled"
+    );
+    assert_eq!(
+        who_line(&drain(&mut app)).as_deref(),
+        Some("Players online: Alice (1)")
+    );
+}
+
+// ---------------------------------------------------------------------------
+// The pack's carrier sync
+// ---------------------------------------------------------------------------
+
+/// The sync mirrors `TbaHidden` into `Concealment` and removes it when the
+/// pack state clears — end-to-end through `who`.
+#[test]
+fn sync_mirrors_pack_hidden_state_into_concealment() {
+    let mut app = app_with(true);
+    let room = spawn_room(&mut app, "camp", "Camp", no_exits());
+    let alice = spawn_player(&mut app, room, "Alice", false);
+    let bob = spawn_player(&mut app, room, "Bob", false);
+    app.world_mut().entity_mut(bob).insert(TbaHidden);
+
+    run(&mut app);
+    assert_eq!(
+        app.world().get::<Concealment>(bob),
+        Some(&Concealment {
+            hidden: true,
+            invisible: false,
+            stealth: 1,
+        }),
+        "TbaHidden syncs a Concealment (no level ⇒ stealth 1)"
+    );
+
+    send_line(&mut app, alice, "who");
+    run(&mut app);
+    assert_eq!(
+        who_line(&drain(&mut app)).as_deref(),
+        Some("Players online: Alice (1)"),
+        "the synced Concealment filters who"
+    );
+
+    app.world_mut().entity_mut(bob).remove::<TbaHidden>();
+    run(&mut app);
+    assert!(
+        app.world().get::<Concealment>(bob).is_none(),
+        "clearing the pack state removes the carrier"
+    );
+}
+
+/// `TbaSneaking` syncs the same carrier, so sneak and hide filter identically.
+#[test]
+fn sync_mirrors_pack_sneak_state_into_concealment() {
+    let mut app = app_with(true);
+    let room = spawn_room(&mut app, "camp", "Camp", no_exits());
+    let _alice = spawn_player(&mut app, room, "Alice", false);
+    let bob = spawn_player(&mut app, room, "Bob", false);
+    app.world_mut().entity_mut(bob).insert(TbaSneaking);
+
+    run(&mut app);
+    assert!(
+        app.world().get::<Concealment>(bob).is_some(),
+        "TbaSneaking syncs a Concealment"
+    );
 }

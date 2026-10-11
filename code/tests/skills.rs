@@ -124,6 +124,7 @@ fn test_app(content: TbaContent) -> App {
     app.insert_resource(content);
     app.insert_resource(TbaRng::from_seed(SEED));
     app.init_resource::<RoomOccupants>();
+    app.init_resource::<VisibilityPolicy>();
     app.add_message::<OutputEvent>();
     app.add_message::<CommandReceived>();
     app.add_message::<PlayerDefeated>();
@@ -131,9 +132,14 @@ fn test_app(content: TbaContent) -> App {
     app.add_systems(
         Update,
         (
+            // Drive the engine `Concealment` carrier from the pack's private
+            // state both before the consumers (a direct `TbaHidden` insert)
+            // and after the command handlers (a `hide` this frame).
+            sync_concealment,
             maintain_room_occupants,
             handle_combat_commands,
             handle_skill_commands,
+            sync_concealment,
         )
             .chain(),
     );
@@ -633,8 +639,10 @@ fn hide_and_sneak_suppress_auto_engage() {
     run_fixed(&mut app);
     assert_eq!(target_of(&app, orc), None, "a hidden player is not aggroed");
 
-    // Clear it: the same mob now engages.
+    // Clear it: the same mob now engages. One `Update` lets the sync drop the
+    // engine `Concealment` before the next aggro pass.
     app.world_mut().entity_mut(thief).remove::<TbaHidden>();
+    run_game(&mut app);
     run_fixed(&mut app);
     assert_eq!(target_of(&app, orc), Some(thief));
 }
@@ -843,6 +851,35 @@ fn sneaking_player_is_not_targetable_by_another() {
         target_of(&app, hero),
         None,
         "a sneaking player is not targetable"
+    );
+}
+
+#[test]
+fn detector_can_target_a_concealed_player() {
+    let mut app = test_app(content());
+    let room = spawn_room(&mut app);
+    let hero = spawn_player(&mut app, room, "Hero", "warrior", 5, Position::Standing);
+    let shadow = spawn_player(&mut app, room, "Shadow", "thief", 5, Position::Standing);
+    app.world_mut().entity_mut(shadow).insert(TbaHidden);
+    // True sight on the attacker: the engine seam admits the concealed target.
+    app.world_mut().entity_mut(hero).insert(Perception {
+        sight: SEE_INVIS,
+        detect: u8::MAX,
+    });
+
+    send_command(
+        &mut app,
+        hero,
+        Command::Attack {
+            target: "Shadow".to_owned(),
+        },
+    );
+    run_game(&mut app);
+
+    assert_eq!(
+        target_of(&app, hero),
+        Some(shadow),
+        "a detector can target a concealed player"
     );
 }
 

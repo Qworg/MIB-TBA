@@ -37,7 +37,9 @@ use mib_stdlib::prelude::{Location, Npc, NpcKey, Player, PlayerDefeated, Session
 use serde::{Deserialize, Serialize};
 use smol_str::SmolStr;
 
-use crate::combat::commands::{Stealthed, broadcast, deny, entity_name, find_target_in_room, text};
+use crate::combat::commands::{
+    StealthView, broadcast, deny, entity_name, find_target_in_room, text,
+};
 use crate::combat::rewards::{NpcDefeated, alignment_for, reward_for};
 use crate::combat::{
     SaveType, TbaCombatant, TbaHidden, TbaProgress, TbaRng, default_class, mag_savingthrow,
@@ -201,6 +203,13 @@ fn is_hostile(spell: &SpellDef) -> bool {
     matches!(spell.kind, SpellKind::Damage | SpellKind::Debuff)
 }
 
+/// Whether a `detect` spell is true sight: it reveals concealed occupants
+/// (Circle's `AFF_DETECT_INVIS`/`AFF_SENSE_LIFE`) rather than a narrower
+/// divination such as `detect magic`/`detect alignment`.
+fn grants_true_sight(spell_id: &str) -> bool {
+    matches!(spell_id, "detect_invis" | "sense_life")
+}
+
 /// Circle's `mag_manacost` (`tbamud/src/spell_parser.c:58-62`):
 ///
 /// ```text
@@ -293,7 +302,7 @@ pub fn handle_cast_command(
     sessions: Query<&Session>,
     players: Query<(Entity, &Player, &Location)>,
     npcs: Query<(Entity, &Npc, &Location)>,
-    hidden: Stealthed<'_, '_>,
+    hidden: StealthView<'_, '_>,
     content: Option<Res<TbaContent>>,
     mut combatants: Query<&mut TbaCombatant>,
     progress: Query<&TbaProgress>,
@@ -636,6 +645,19 @@ pub fn handle_cast_command(
                         session,
                         format!("Your senses sharpen with {spell_name}."),
                     ));
+                    // True sight (`detect invisibility`, `sense life`) grants the
+                    // engine `Perception` carrier for the spell's duration so a
+                    // concealed occupant is perceived through the projection and
+                    // by the pack's own targeting. The grant rides the pack's
+                    // round-ticked `TbaTrueSight`, mirrored into `Perception` by
+                    // `mib_tba::stealth::sync_perception`.
+                    if grants_true_sight(&spell_id) {
+                        crate::stealth::grant_true_sight(
+                            target,
+                            affect_rounds(spell, caster_level),
+                            &mut commands,
+                        );
+                    }
                 }
                 SpellKind::Utility => {
                     // Issue #7: an unmodelled Circle routine is explicit, never

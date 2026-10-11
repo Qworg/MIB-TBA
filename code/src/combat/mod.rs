@@ -19,7 +19,7 @@ pub mod systems;
 pub use ai::{
     TbaAttackerMemory, TbaSpawnHome, auto_engage_system, engages, helper_system, pursuit_system,
 };
-pub use commands::handle_combat_commands;
+pub use commands::{StealthView, handle_combat_commands};
 pub use death::{
     GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID, GOLD_ITEM_NAME, apply_death_penalty, credit_gold_pickups,
 };

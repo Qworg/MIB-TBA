@@ -38,6 +38,7 @@ pub mod shops;
 pub mod skills;
 pub mod socials;
 pub mod spells;
+pub mod stealth;
 pub mod visibility;
 pub mod zones;
 
@@ -95,6 +96,10 @@ pub mod prelude {
     pub use crate::spells::{
         ActiveBuff, DEFAULT_BUFF_ROUNDS, TbaBuffs, handle_cast_command, mana_cost, tick_buffs,
     };
-    pub use crate::visibility::intercept_visibility_commands;
+    pub use crate::stealth::{
+        TRUE_SIGHT_DETECT, TbaTrueSight, grant_true_sight, stealth_for, sync_concealment,
+        sync_perception, tick_true_sight,
+    };
+    pub use crate::visibility::intercept_who;
     pub use crate::zones::{ZoneState, ZoneTracker, zone_reset_system};
 }

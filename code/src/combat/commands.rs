@@ -13,26 +13,33 @@
 //! Both emit room/actor text through [`OutputEvent`]; the round itself is
 //! resolved later on the combat [`TbaRound`](super::round::TbaRound) clock.
 
+use bevy::ecs::system::SystemParam;
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
-use mib_stdlib::prelude::{Exits, Location, Npc, OnlinePlayers, Player, Session, SessionState};
+use mib_stdlib::prelude::{
+    Concealment, Exits, Location, Npc, OnlinePlayers, Perception, Player, Session, SessionState,
+    VisibilityPolicy, visible_to,
+};
 
 use crate::content::Position;
 
 use super::ai::TbaAttackerMemory;
-use super::model::{TbaCombatant, TbaHidden, TbaSneaking};
+use super::model::{TbaCombatant, TbaHidden};
 use super::progression::TbaRng;
 
-/// The stealth affects that make a player invisible to another actor's
-/// targeting: Circle's `AFF_HIDE` and `AFF_SNEAK`.
-pub(crate) type Stealthed<'w, 's> = Query<'w, 's, (), Or<(With<TbaHidden>, With<TbaSneaking>)>>;
-
-/// Circle's `CAN_SEE` rule for target resolution: a stealthed actor is only
-/// targetable by themselves. Extracted as a pure predicate so the
-/// viewer-relative rule (`self || !stealthed`) is testable without an ECS
-/// [`Query`].
-pub(crate) fn can_target(actor: Entity, candidate: Entity, stealthed: bool) -> bool {
-    candidate == actor || !stealthed
+/// The engine perception view a target resolution consults: the observer's
+/// [`Perception`], every candidate's [`Concealment`], and the registered
+/// [`VisibilityPolicy`].
+///
+/// Bundled as one [`SystemParam`] so `find_target_in_room` and its callers
+/// (combat, the offensive skills, spells) thread the whole seam as one value
+/// instead of three parameters. The field is named `hidden` on the callers for
+/// continuity with the pre-seam pack state it replaces.
+#[derive(SystemParam)]
+pub struct StealthView<'w, 's> {
+    pub concealment: Query<'w, 's, &'static Concealment>,
+    pub perception: Query<'w, 's, &'static Perception>,
+    pub policy: Res<'w, VisibilityPolicy>,
 }
 
 /// One line of room/actor text.
@@ -57,15 +64,16 @@ pub(crate) fn deny(
 }
 
 /// Find a room-mate by a case-insensitive display-name fragment (NPCs first,
-/// the item core's convention). The actor is never returned. A player carrying
-/// [`TbaHidden`]/[`TbaSneaking`] is skipped unless it is the actor (Circle's
-/// `CAN_SEE`; you cannot target someone you cannot see).
+/// the item core's convention). The actor is never returned. A concealed
+/// candidate is skipped unless the actor's engine perception admits it
+/// (Circle's `CAN_SEE`; you cannot target someone you cannot see).
+#[allow(clippy::too_many_arguments)]
 pub(crate) fn find_target_in_room(
     actor: Entity,
     needle: &str,
     players: &Query<(Entity, &Player, &Location)>,
     npcs: &Query<(Entity, &Npc, &Location)>,
-    hidden: &Stealthed<'_, '_>,
+    hidden: &StealthView<'_, '_>,
 ) -> Option<Entity> {
     let room = players
         .iter()
@@ -77,7 +85,21 @@ pub(crate) fn find_target_in_room(
     }
     npcs.iter()
         .find(|(entity, npc, location)| {
-            *entity != actor && location.room == room && npc.name.to_lowercase().contains(&needle)
+            *entity != actor
+                && location.room == room
+                && npc.name.to_lowercase().contains(&needle)
+                && visible_to(
+                    &hidden.policy,
+                    actor,
+                    room,
+                    *entity,
+                    &npc.name,
+                    false,
+                    &hidden.concealment,
+                    &hidden.perception,
+                    false,
+                    true,
+                )
         })
         .map(|(entity, _, _)| entity)
         .or_else(|| {
@@ -86,8 +108,19 @@ pub(crate) fn find_target_in_room(
                 .find(|(entity, player, location)| {
                     *entity != actor
                         && location.room == room
-                        && can_target(actor, *entity, hidden.contains(*entity))
                         && player.name.to_lowercase().contains(&needle)
+                        && visible_to(
+                            &hidden.policy,
+                            actor,
+                            room,
+                            *entity,
+                            &player.name,
+                            true,
+                            &hidden.concealment,
+                            &hidden.perception,
+                            false,
+                            true,
+                        )
                 })
                 .map(|(entity, _, _)| entity)
         })
@@ -130,7 +163,7 @@ pub fn handle_combat_commands(
     sessions: Query<&Session>,
     players: Query<(Entity, &Player, &Location)>,
     npcs: Query<(Entity, &Npc, &Location)>,
-    hidden: Stealthed<'_, '_>,
+    hidden: StealthView<'_, '_>,
     mut combatants: Query<&mut TbaCombatant>,
     mut memories: Query<&mut TbaAttackerMemory>,
     exits: Query<&Exits>,
@@ -271,16 +304,71 @@ mod tests {
         ));
     }
 
+    #[derive(Resource, Default)]
+    struct TargetHit(Option<Entity>);
+
+    /// Probe `find_target_in_room` for the room's `Bram`, recording whether it
+    /// resolves. Used to exercise the engine seam without an integration app.
+    fn probe_bram(
+        players: Query<(Entity, &Player, &Location)>,
+        npcs: Query<(Entity, &Npc, &Location)>,
+        hidden: super::StealthView<'_, '_>,
+        mut hit: ResMut<TargetHit>,
+    ) {
+        let actor = players
+            .iter()
+            .find(|(_, player, _)| player.name == "Aria")
+            .map(|(entity, _, _)| entity)
+            .expect("Aria is spawned");
+        hit.0 = find_target_in_room(actor, "Bram", &players, &npcs, &hidden);
+    }
+
     #[test]
-    fn stealth_filter_is_viewer_relative() {
-        let mut world = World::new();
-        let actor = world.spawn_empty().id();
-        let other = world.spawn_empty().id();
-        // A visible target is resolvable by anyone.
-        assert!(can_target(actor, other, false));
-        // A stealthed target is invisible to another actor...
-        assert!(!can_target(actor, other, true));
-        // ...but still visible to itself (the filter never hides the actor).
-        assert!(can_target(other, other, true));
+    fn concealment_filters_targeting_through_the_engine_seam() {
+        // The consumer uses the engine `Concealment`/`Perception` carriers, not
+        // the pack's `TbaHidden`: a concealed entity is unreachable unless the
+        // observer carries a matching `Perception`.
+        let mut app = App::new();
+        app.init_resource::<VisibilityPolicy>();
+        app.init_resource::<TargetHit>();
+        app.add_systems(Update, probe_bram);
+        let room = app.world_mut().spawn_empty().id();
+        let actor = app
+            .world_mut()
+            .spawn((
+                Player {
+                    account_id: 1,
+                    name: "Aria".to_owned(),
+                },
+                Location { room },
+            ))
+            .id();
+        let target = app
+            .world_mut()
+            .spawn((
+                Player {
+                    account_id: 2,
+                    name: "Bram".to_owned(),
+                },
+                Location { room },
+            ))
+            .id();
+        app.world_mut().entity_mut(target).insert(Concealment {
+            hidden: true,
+            invisible: false,
+            stealth: 5,
+        });
+
+        // No observer Perception: the concealed target is not resolvable.
+        app.world_mut().run_schedule(Update);
+        assert_eq!(app.world().resource::<TargetHit>().0, None);
+
+        // A matching detect reveals it.
+        app.world_mut().entity_mut(actor).insert(Perception {
+            sight: 0,
+            detect: 5,
+        });
+        app.world_mut().run_schedule(Update);
+        assert_eq!(app.world().resource::<TargetHit>().0, Some(target));
     }
 }

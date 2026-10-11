@@ -131,6 +131,7 @@ fn test_app(content: TbaContent) -> App {
     app.insert_resource(content);
     app.insert_resource(TbaRng::from_seed(0xC0FFEE));
     app.init_resource::<RoomOccupants>();
+    app.init_resource::<VisibilityPolicy>();
     app.insert_resource(Time::<Fixed>::from_hz(10.0));
     app.add_message::<OutputEvent>();
     app.add_message::<PlayerDefeated>();

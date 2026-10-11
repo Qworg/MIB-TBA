@@ -19,5 +19,10 @@ serde_json = "1"
 smol_str.workspace = true
 tracing = "0.1"
 
+[dev-dependencies]
+# Only the integration tests build a `Connection` (GMCP projection tests); the
+# engine `Connection.egress` is a tokio `mpsc::Sender`.
+tokio = { version = "1", features = ["sync"] }
+
 [lints]
 workspace = true

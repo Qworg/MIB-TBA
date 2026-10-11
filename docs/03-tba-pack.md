@@ -366,14 +366,16 @@ Each class's `granted_skills` also names the Circle **skills** it learns, and
 parsed from `PlayerInput::RawLine` and gated on the class skill and its minimum
 level. `assist` and `consider` are universal (`do_assist`/`do_consider` have no
 class gate). `sneak`/`hide` set the runtime-only `TbaSneaking`/`TbaHidden`
-components, which suppress `auto_engage_system` aggro and hide the player from
-another actor's target resolution. `pick_lock` reads Circle's
+components, which `mib_tba::stealth` syncs into the engine `Concealment`
+carrier; the observer-aware projection (`look`/`Scene`/GMCP) and the pack's own
+target resolution then filter through the engine `Concealment`/`Perception`
+seam (a `detect invisibility`/`sense life` cast grants the matching engine
+`Perception`). `pick_lock` reads Circle's
 `do_gen_door`/`pick` (`tbamud/src/act.movement.c:589-608`), requires a pickable,
 locked door, and writes the room's runtime `RoomState` exactly like the zone
 engine's `D` reset. The bare stdlib `pick` command (`handle_pick`) is
 router-owned and cannot be overridden. See `docs/runbook.md` §6/§8 for the
-system wiring and the remaining limits (`look`/`who` do not yet respect
-`TbaHidden`, and there is no practice system).
+system wiring and the remaining limits (there is no practice system).
 
 ---
 

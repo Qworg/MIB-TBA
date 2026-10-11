@@ -49,6 +49,7 @@ fn mage() -> TbaClassDef {
             "armor",
             "bless",
             "detect_magic",
+            "detect_invis",
             "blink",
             "scaling",
             "hex",
@@ -194,6 +195,10 @@ fn content() -> TbaContent {
         ),
         (SmolStr::new("detect_magic"), detect("detect magic", 10)),
         (
+            SmolStr::new("detect_invis"),
+            detect("detect invisibility", 10),
+        ),
+        (
             SmolStr::new("blink"),
             utility("blink", 5, "the blink routine is not modelled"),
         ),
@@ -247,16 +252,22 @@ fn test_app() -> App {
     let mut app = App::new();
     app.insert_resource(content());
     app.insert_resource(TbaRng::from_seed(0xC0FFEE));
+    app.init_resource::<VisibilityPolicy>();
     app.add_message::<OutputEvent>();
     app.add_message::<CommandReceived>();
     app.add_message::<PlayerDefeated>();
     app.add_message::<NpcDefeated>();
     app.add_systems(
         Update,
-        (handle_cast_command, recompute_equipment_affects).chain(),
+        (
+            handle_cast_command,
+            recompute_equipment_affects,
+            sync_perception,
+        )
+            .chain(),
     );
     app.init_schedule(TbaRound);
-    app.add_systems(TbaRound, tick_buffs);
+    app.add_systems(TbaRound, (tick_buffs, tick_true_sight));
     app
 }
 
@@ -703,6 +714,54 @@ fn damaging_spell_with_an_affect_records_the_buff() {
 // ---------------------------------------------------------------------------
 // Detect / utility
 // ---------------------------------------------------------------------------
+
+/// A true-sight divination (`detect invisibility`) grants the engine
+/// `Perception` carrier for the spell's duration; a narrower one
+/// (`detect magic`) does not. The grant rides the pack's round-ticked
+/// `TbaTrueSight` and expires cleanly.
+#[test]
+fn detect_invis_grants_true_sight_and_expires() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let seer = spawn_player(&mut app, room, "Seer", "mage", 50);
+    let dabbler = spawn_player(&mut app, room, "Dabbler", "mage", 50);
+
+    cast(&mut app, seer, "cast 'detect invis'");
+    cast(&mut app, dabbler, "cast 'detect magic'");
+    run_game(&mut app);
+
+    assert_eq!(
+        app.world().get::<Perception>(seer),
+        Some(&Perception {
+            sight: SEE_INVIS,
+            detect: u8::MAX,
+        }),
+        "detect invis mirrors TbaTrueSight into Perception"
+    );
+    assert!(
+        app.world().get::<TbaTrueSight>(seer).is_some(),
+        "the pack grant is present"
+    );
+    assert!(
+        app.world().get::<Perception>(dabbler).is_none()
+            && app.world().get::<TbaTrueSight>(dabbler).is_none(),
+        "detect magic is not true sight"
+    );
+
+    // `affect_rounds` for a duration-only detect spell is `DEFAULT_BUFF_ROUNDS`.
+    for _ in 0..DEFAULT_BUFF_ROUNDS {
+        run_round(&mut app);
+    }
+    assert!(
+        app.world().get::<TbaTrueSight>(seer).is_none(),
+        "the grant expires"
+    );
+    run_game(&mut app);
+    assert!(
+        app.world().get::<Perception>(seer).is_none(),
+        "the engine carrier is removed with the grant"
+    );
+}
 
 #[test]
 fn detect_and_utility_spells_spend_mana_and_report() {

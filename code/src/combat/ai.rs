@@ -20,14 +20,15 @@ use std::collections::HashSet;
 
 use mib_core::prelude::*;
 use mib_protocol::prelude::{OutboundPayload, TextChannel};
-use mib_stdlib::prelude::{Exits, Location, Npc, NpcKey, Player, Room, RoomOccupants};
+use mib_stdlib::prelude::{
+    Concealment, Exits, Location, Npc, NpcKey, Perception, Player, Room, RoomOccupants,
+    VisibilityPolicy, visible_to,
+};
 
 use crate::content::{NpcBehaviour, Position};
 use crate::module::TbaContent;
 
-use super::model::{
-    EVIL_ALIGNMENT, GOOD_ALIGNMENT, TbaAlignment, TbaCombatant, TbaHidden, TbaSneaking,
-};
+use super::model::{EVIL_ALIGNMENT, GOOD_ALIGNMENT, TbaAlignment, TbaCombatant};
 
 /// A Diku `MEMORY` mob's list of remembered attackers (doc §5).
 ///
@@ -88,8 +89,6 @@ pub fn auto_engage_system(
                 &Location,
                 Option<&TbaCombatant>,
                 Option<&TbaAlignment>,
-                Has<TbaHidden>,
-                Has<TbaSneaking>,
             ),
             With<Player>,
         >,
@@ -105,25 +104,25 @@ pub fn auto_engage_system(
         >,
     )>,
     content: Option<Res<TbaContent>>,
+    concealment: Query<&Concealment>,
+    perception: Query<&Perception>,
+    policy: Res<VisibilityPolicy>,
     mut output: MessageWriter<OutputEvent>,
 ) {
     // Snapshot the players first: the mob query needs a conflicting `&mut
     // TbaCombatant` view, and the room broadcast below needs the names.
-    let players: Vec<(Entity, String, Entity, Option<i32>, bool, bool)> = queries
+    let players: Vec<(Entity, String, Entity, Option<i32>, bool)> = queries
         .p0()
         .iter()
-        .map(
-            |(entity, player, location, combatant, alignment, hidden, sneaking)| {
-                (
-                    entity,
-                    player.name.clone(),
-                    location.room,
-                    alignment.map(|a| a.0),
-                    combatant.is_none_or(TbaCombatant::is_alive),
-                    hidden || sneaking,
-                )
-            },
-        )
+        .map(|(entity, player, location, combatant, alignment)| {
+            (
+                entity,
+                player.name.clone(),
+                location.room,
+                alignment.map(|a| a.0),
+                combatant.is_none_or(TbaCombatant::is_alive),
+            )
+        })
         .collect();
 
     let empty = TbaContent::default();
@@ -133,12 +132,8 @@ pub fn auto_engage_system(
     // outlive the `get_mut` borrow it guards.
     let mut mobs = queries.p1();
     let mut engaged: Vec<(Entity, String, String, Entity)> = Vec::new();
-    for (player, player_name, room, alignment, alive, stealthy) in &players {
-        // A hidden/sneaking player is invisible to `CAN_SEE`-based aggro
-        // (Circle's `mobact.c:114-117` skips `!CAN_SEE(ch, vict)`). The
-        // extended `TbaHidden` doc note records that Circle gates only
-        // `AFF_HIDE` on `CAN_SEE`, and this pack extends the gate to sneak.
-        if !*alive || *stealthy {
+    for (player, player_name, room, alignment, alive) in &players {
+        if !*alive {
             continue;
         }
         for &occupant in occupants.occupants(*room) {
@@ -152,6 +147,23 @@ pub fn auto_engage_system(
                 || combatant.position != Position::Standing
                 || !combatant.is_alive()
             {
+                continue;
+            }
+            // Circle's `!CAN_SEE(ch, vict)` skip (`mobact.c:114-117`): a
+            // concealed player is not aggroed unless this observer's engine
+            // perception admits them.
+            if !visible_to(
+                &policy,
+                occupant,
+                *room,
+                *player,
+                player_name,
+                true,
+                &concealment,
+                &perception,
+                false,
+                true,
+            ) {
                 continue;
             }
             let behaviour = key
@@ -179,7 +191,7 @@ pub fn auto_engage_system(
             session: player,
             payload: OutboundPayload::text(TextChannel::Room, format!("{mob_name} attacks you!")),
         });
-        for (other, _, other_room, _, _, _) in &players {
+        for (other, _, other_room, _, _) in &players {
             if *other_room == room && *other != player {
                 output.write(OutputEvent {
                     session: *other,
