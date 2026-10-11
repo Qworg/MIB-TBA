@@ -24,6 +24,7 @@ packs/tba/
 │   ├── tba.npc_stats.yaml     # Diku mob stats & THAC0 (TBA-E27)
 │   ├── tba.items.yaml         # 24 item types & 15 wear slots (TBA-E28)
 │   ├── tba.classes.yaml       # 4 Diku classes (TBA-E18/E19)
+│   ├── tba.triggers.<zone>.yaml # Essential DG scripts (issue #15; one shard per zone)
 │   └── tba.messages.yaml      # Combat messages (TBA-E30)
 └── code/                      # The `mib-tba` crate
     ├── Cargo.toml
@@ -32,6 +33,7 @@ packs/tba/
         ├── combat/            # Native Circle round-based combat & aggro
         ├── zones/             # Stateful zone reset interpreter
         ├── items/             # 15-slot wear positions & affect calculations
+        ├── triggers/          # DG script AST, context, interpreter, events
         └── content/           # `tba.*` serde section schemas
 ```
 

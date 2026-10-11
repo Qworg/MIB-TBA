@@ -1345,6 +1345,7 @@ pub fn register(registry: &mut SectionRegistry) {
     registry.register::<SpellsSection>();
     registry.register::<ShopsSection>();
     registry.register::<SocialsSection>();
+    crate::triggers::content::register(registry);
 }
 
 // ---------------------------------------------------------------------------

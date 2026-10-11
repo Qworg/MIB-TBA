@@ -14,6 +14,7 @@ use mib_stdlib::content::{
 use mib_tba::content::{
     ShopsFile, SocialsFile, TbaItemKind, TbaItemsFile, TbaNpcStatsFile, ZonesFile,
 };
+use mib_tba::triggers::content::TriggersFile;
 use tbaport::{ConvertOptions, DEFAULT_START_ROOM, convert, emit::render};
 
 fn fixture_root() -> PathBuf {
@@ -59,7 +60,25 @@ fn fixture_bundle_is_schema_exact_and_deterministic() {
     assert_eq!(first.report.totals.items, 2);
     assert_eq!(first.report.totals.zone_commands, 7);
     assert_eq!(first.report.totals.dangling, 0);
-    assert_eq!(first.report.totals.deferred, 3, "only the DG trigger layer");
+    assert_eq!(
+        first.report.totals.deferred, 2,
+        "the zone-reset T and V remain deferred; the essential trigger is emitted"
+    );
+    assert_eq!(first.report.totals.triggers_converted, 1);
+
+    // The fixture trigger is essential (demo zone + gatekeeper), so it lands
+    // in `tba.triggers` with its resolved attach and verbatim script.
+    let emitted = first
+        .bundle
+        .triggers
+        .triggers
+        .get(&mib_tba::triggers::content::TriggerId::from_vnum(3000))
+        .expect("fixture trigger emitted");
+    assert_eq!(emitted.attach, "npc:tba_npc_3000");
+    assert_eq!(emitted.types, vec!["leave"]);
+    assert!(emitted.script.contains("Hello from a DG trigger."));
+    assert_eq!(first.report.trigger_coverage.records, 1);
+    assert_eq!(first.report.trigger_coverage.parsed, 1);
 
     // The trigger layer is classified, not just deferred. The fixture trigger
     // (`0 q 100`, mob) is a `GatekeeperTransport`.
@@ -94,6 +113,17 @@ fn fixture_bundle_is_schema_exact_and_deterministic() {
             );
             roundtrip::<RoomsFile>(body);
             room_shards += 1;
+            continue;
+        }
+        if let Some(zone) = name
+            .strip_prefix("tba.triggers.")
+            .and_then(|rest| rest.strip_suffix(".yaml"))
+        {
+            assert!(
+                zone.parse::<u32>().is_ok(),
+                "trigger shard `{name}` names a zone number"
+            );
+            roundtrip::<TriggersFile>(body);
             continue;
         }
         match name.as_str() {
@@ -584,4 +614,33 @@ where
     let parsed: T = serde_yaml::from_str(body).expect("emitted YAML deserialises");
     let again = serde_yaml::to_string(&parsed).expect("re-serialises");
     assert_eq!(body, again, "round-trip must be byte-stable");
+}
+
+#[test]
+fn every_essential_trigger_parses() {
+    let Some(root) = real_tbamud() else {
+        eprintln!("skipping: tbaMUD source not checked out (set TBAMUD_SOURCE)");
+        return;
+    };
+    let conversion = convert(&ConvertOptions {
+        source_root: root,
+        only: None,
+        start_room: Some(DEFAULT_START_ROOM),
+    })
+    .expect("full conversion");
+    let mut failures = Vec::new();
+    for (id, def) in &conversion.bundle.triggers.triggers {
+        let program = mib_tba::triggers::ast::parse_script(&def.script);
+        if let Some(error) = &program.error {
+            failures.push(format!("{id} ({}): {error}", def.name));
+        }
+    }
+    assert!(
+        failures.is_empty(),
+        "every essential trigger must parse: {failures:#?}"
+    );
+    assert_eq!(
+        conversion.report.trigger_coverage.parse_failures, 0,
+        "coverage agrees"
+    );
 }

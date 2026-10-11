@@ -39,6 +39,7 @@ pub mod skills;
 pub mod socials;
 pub mod spells;
 pub mod stealth;
+pub mod triggers;
 pub mod visibility;
 pub mod zones;
 
@@ -100,6 +101,20 @@ pub mod prelude {
         TRUE_SIGHT_DETECT, TbaTrueSight, grant_true_sight, stealth_for, sync_concealment,
         sync_perception, tick_true_sight,
     };
+    pub use crate::triggers::ast::{
+        CmpOp, Cond, Node, ParsedProgram, STEP_CAP, parse_condition, parse_script,
+    };
+    pub use crate::triggers::content::{
+        AttachTarget, TriggerDef, TriggerId, TriggersFile, TriggersSection,
+    };
+    pub use crate::triggers::context::{
+        ActorView, EntityView, NamedDrop, Resolved, TriggerContext, is_known_token, resolve_token,
+    };
+    pub use crate::triggers::eval::{Emitted, EvalOutcome, TextTarget, run};
+    pub use crate::triggers::events::{
+        TriggerKind, TriggerLastRoom, trigger_command_system, trigger_greet_system,
+    };
+    pub use crate::triggers::index::{TbaTriggers, TriggerIndex};
     pub use crate::visibility::intercept_who;
     pub use crate::zones::{ZoneState, ZoneTracker, zone_reset_system};
 }

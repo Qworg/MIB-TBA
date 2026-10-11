@@ -35,6 +35,9 @@ use crate::content::{
 use crate::equipment::TbaEquipmentSave;
 use crate::items::TbaObjectClock;
 use crate::party::TbaParties;
+use crate::triggers::content::{TriggerDef, TriggerId, TriggersSection};
+use crate::triggers::events::{TriggerLastRoom, trigger_command_system, trigger_greet_system};
+use crate::triggers::index::TbaTriggers;
 use crate::zones::ZoneTracker;
 
 /// Module id; matches `[code] module = "tba"` in `packs/tba/pack.toml`.
@@ -66,6 +69,8 @@ pub struct TbaContent {
     pub shops: BTreeMap<NpcId, ShopDef>,
     /// `tba.socials` — keyed by the social word (issue #17).
     pub socials: BTreeMap<SmolStr, SocialDef>,
+    /// `tba.triggers` — keyed by [`TriggerId`] (issue #15).
+    pub triggers: BTreeMap<TriggerId, TriggerDef>,
 }
 
 /// The TBA game module.
@@ -110,10 +115,15 @@ impl MibModule for TbaModule {
         let socials = section_defs::<SocialsSection>(packs)
             .map(|defs| defs.socials.clone())
             .unwrap_or_default();
+        let triggers = section_defs::<TriggersSection>(packs)
+            .map(|defs| defs.triggers.clone())
+            .unwrap_or_default();
 
         // The reset tracker is derived state, seeded from the same content so
-        // it exists before the first `FixedUpdate`.
+        // it exists before the first `FixedUpdate`. The parsed trigger corpus
+        // is derived the same way (Phase 1 parses once at build/reload).
         world.insert_resource(ZoneTracker::from_zones(&zones));
+        world.insert_resource(TbaTriggers::build(triggers.clone()));
         world.insert_resource(TbaContent {
             zones,
             npc_stats,
@@ -123,6 +133,7 @@ impl MibModule for TbaModule {
             spells,
             shops,
             socials,
+            triggers,
         });
     }
 }
@@ -150,6 +161,8 @@ impl Plugin for TbaPlugin {
         app.init_resource::<TbaRoundClock>();
         app.init_resource::<TbaObjectClock>();
         app.init_resource::<TbaParties>();
+        app.init_resource::<TriggerLastRoom>();
+        app.init_resource::<TbaTriggers>();
         app.init_schedule(TbaRound);
 
         // Each component owner owns its schema (the classic-rpg idiom): the
@@ -213,6 +226,10 @@ impl Plugin for TbaPlugin {
                 // them, so the carriers are current by the end of the frame.
                 crate::stealth::sync_concealment,
                 crate::stealth::sync_perception,
+                // Issue #15: speech/command/act trigger intake reads the same
+                // `CommandReceived` stream the router does, after movement has
+                // been applied so the actor's room is current.
+                trigger_command_system,
             )
                 .chain()
                 .in_set(BridgeSet::Game)
@@ -297,6 +314,9 @@ impl Plugin for TbaPlugin {
                 crate::combat::pursuit_system,
                 crate::party::follow_system,
                 crate::party::cleanup_parties_on_logout,
+                // Issue #15: greet/entry fires on a room change, after the
+                // stdlib spatial index is current.
+                trigger_greet_system,
             )
                 .chain()
                 .after(maintain_room_occupants)
@@ -327,6 +347,7 @@ mod tests {
                 "tba.shops",
                 "tba.socials",
                 "tba.spells",
+                "tba.triggers",
                 "tba.zones"
             ],
             "only tba.* sections: {ids:?}"
@@ -342,6 +363,7 @@ mod tests {
         assert!(content.classes.is_empty());
         assert!(content.spells.is_empty());
         assert!(content.shops.is_empty());
+        assert!(content.triggers.is_empty());
     }
 
     #[test]
@@ -370,6 +392,14 @@ mod tests {
         assert!(
             app.world().get_resource::<TbaParties>().is_some(),
             "the party resource is installed by the plugin"
+        );
+        assert!(
+            app.world().get_resource::<TbaTriggers>().is_some(),
+            "the parsed trigger corpus is installed by the plugin"
+        );
+        assert!(
+            app.world().get_resource::<TriggerLastRoom>().is_some(),
+            "the greet direction log is installed by the plugin"
         );
     }
 

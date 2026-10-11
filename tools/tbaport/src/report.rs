@@ -43,6 +43,10 @@ pub struct DropReport {
     /// size so the Phase-2 re-authoring scope is regenerable rather than
     /// hand-counted. Summary plus the per-record list.
     pub trigger_triage: TriggerTriage,
+    /// Phase-1/2 parse coverage for the emitted essential scripts: which
+    /// constructs parsed, which were named-dropped, and which substitutions
+    /// are unknown. Written once for the whole world.
+    pub trigger_coverage: TriggerCoverage,
     pub totals: Totals,
     pub zones: Vec<ZoneReport>,
 }
@@ -66,6 +70,8 @@ pub struct Totals {
     pub dangling_by_kind: BTreeMap<String, usize>,
     /// Every `deferred` entry folded by `section`.
     pub deferred_by_section: BTreeMap<String, usize>,
+    /// Essential DG scripts emitted into `tba.triggers` (issue #15).
+    pub triggers_converted: usize,
 }
 
 /// A source feature that is a permanent, named drop: it has no schema home and
@@ -113,6 +119,25 @@ pub struct TriggerTriage {
     pub by_type: BTreeMap<String, usize>,
     pub by_bucket: BTreeMap<String, usize>,
     pub by_zone: BTreeMap<u32, usize>,
+}
+
+/// Phase-1/2 parse coverage for the emitted essential scripts.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize)]
+pub struct TriggerCoverage {
+    /// Emitted essential records.
+    pub records: usize,
+    /// Records whose script parsed without a structural error.
+    pub parsed: usize,
+    /// Records whose script had a structural error (a named drop each).
+    pub parse_failures: usize,
+    /// Records containing at least one unsupported construct.
+    pub records_with_unsupported: usize,
+    /// AST node kind -> occurrences.
+    pub construct_counts: BTreeMap<String, usize>,
+    /// Unsupported construct kind -> occurrences.
+    pub unsupported_counts: BTreeMap<String, usize>,
+    /// Unknown `%…%` token -> occurrences.
+    pub unknown_tokens: BTreeMap<String, usize>,
 }
 
 /// One classified `.trg` record in the report.
@@ -256,6 +281,7 @@ impl DropReport {
             unmapped_by_kind,
             dangling_by_kind,
             deferred_by_section,
+            triggers_converted: self.trigger_coverage.records,
         };
     }
 
@@ -309,6 +335,7 @@ impl DropReport {
         let _ = writeln!(out, "- dangling: {}", totals.dangling);
         let _ = writeln!(out, "- unmapped: {}", totals.unmapped);
         let _ = writeln!(out, "- global permanent drops: {}", totals.global_drops);
+        let _ = writeln!(out, "- DG triggers emitted: {}", totals.triggers_converted);
 
         let _ = writeln!(out, "\n## Unmapped drops by reason\n");
         let _ = writeln!(out, "| reason (`kind`) | count |");
@@ -357,6 +384,29 @@ impl DropReport {
         let _ = writeln!(out, "|---|---:|");
         for (name, count) in &triage.by_type {
             let _ = writeln!(out, "| `{name}` | {count} |");
+        }
+
+        let coverage = &self.trigger_coverage;
+        let _ = writeln!(out, "\n## DG trigger parse coverage (#15)\n");
+        let _ = writeln!(out, "- emitted records: {}", coverage.records);
+        let _ = writeln!(out, "- parsed: {}", coverage.parsed);
+        let _ = writeln!(out, "- parse failures: {}", coverage.parse_failures);
+        let _ = writeln!(
+            out,
+            "- records with unsupported constructs: {}",
+            coverage.records_with_unsupported
+        );
+        let _ = writeln!(out, "\n### Emitted constructs\n");
+        let _ = writeln!(out, "| construct | count |");
+        let _ = writeln!(out, "|---|---:|");
+        for (kind, count) in &coverage.construct_counts {
+            let _ = writeln!(out, "| `{kind}` | {count} |");
+        }
+        let _ = writeln!(out, "\n### Unsupported constructs (named drops)\n");
+        let _ = writeln!(out, "| construct | count |");
+        let _ = writeln!(out, "|---|---:|");
+        for (kind, count) in &coverage.unsupported_counts {
+            let _ = writeln!(out, "| `{kind}` | {count} |");
         }
 
         let _ = writeln!(out, "\n## Global permanent drops\n");

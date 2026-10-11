@@ -231,6 +231,7 @@ must replace the converted files and preserve the hand-authored ones.
 | `tba.items.yaml` | |
 | `tba.shops.yaml` | |
 | `tba.socials.yaml` | |
+| `tba.triggers.<zone>.yaml` (one shard per zone) | |
 
 Procedure:
 
@@ -262,6 +263,8 @@ reason the item count is one higher than the source object count.
 | `sync_concealment`, `sync_perception` | `Update`, `BridgeSet::Game` (after the genre command chain) | Mirror the pack's private `TbaHidden`/`TbaSneaking` into the engine `Concealment` and the pack's `TbaTrueSight` into the engine `Perception`, removing each carrier when its pack state clears. This is how the pack drives the engine's observer-aware projection. |
 | `tick_true_sight` | `TbaRound` | Ages the pack's `TbaTrueSight` true-sight grant one combat round; `sync_perception` then drops the engine `Perception`. |
 | `follow_system` | `FixedUpdate` (after `maintain_room_occupants`) | Drags a follower into the leader's new room only when the follower was standing in the leader's previous room, so a follower who wandered off is never teleported. |
+| `trigger_command_system` | `Update`, `BridgeSet::Game`, after `route_commands` | Issue #15: the `speech`/`command`/`act` DG trigger intake. It reads the same `CommandReceived` stream the router does, matches the trigger `arglist`, and evaluates the Phase-2 subset (`say`/`emote`/`echo`/`%send%`/`%echoaround%`, `if`/`switch`/`while`, conditions) with `%…%` substitution. `set`/`eval`/`%load%`/`wait` and the rest are parsed-but-deferred and recorded as named drops. |
+| `trigger_greet_system` | `FixedUpdate`, after `maintain_room_occupants` | Issue #15: the `greet`/`greet-all`/`entry` DG trigger intake on a player room change (`Changed<Location>`), with `%direction%` derived from the exit graph. |
 | `apply_death_penalty` | `Update`, `.before(handle_player_death)` | 25% of current-level XP (floored); converts `TbaGold` to a carried `tba_gold` item so the stdlib corpse sweep lands it in the corpse. |
 | `player_combatant_system` | `Update`, `BridgeSet::Game` | On `CharacterCreated`, inserts `TbaProgress` + `derive_vitals` from `tba.classes`. |
 

@@ -26,7 +26,7 @@ use mib_stdlib::prelude::{
 use mib_tba::prelude::{
     SaveEffect, ShopDef, ShopsSection, SocialDef, SocialsSection, SpellKind, SpellTarget,
     SpellsSection, TbaClassesSection, TbaContent, TbaItemsSection, TbaModule, TbaNpcStatsSection,
-    TbaPlugin, ZonesSection,
+    TbaPlugin, TriggersSection, ZonesSection,
 };
 
 /// Exact counts from the full tbaMUD conversion now in `content/` (Phase 10).
@@ -46,6 +46,8 @@ const TBA_SOCIALS: usize = 491;
 const TBA_HELP_TOPICS: usize = 49;
 /// Issue #16: the only non-empty `.qst` record in the source world.
 const TBA_QUESTS: usize = 1;
+/// Issue #15: the curated essential DG trigger set emitted into `tba.triggers`.
+const TBA_TRIGGERS: usize = 133;
 
 /// Zone 30, Northern Midgaard — the converted heartland the Phase 9.1 scaffold
 /// was pinned to. Its per-zone counts keep a targeted regression readable
@@ -163,6 +165,17 @@ fn tba_pack_loads_and_validates_with_the_expected_sections() {
             .len(),
         TBA_SOCIALS
     );
+    // Issue #15: the essential DG scripts land in `tba.triggers`, keyed by a
+    // stable `tba_trig_<vnum>` id with a resolved attach.
+    let triggers = tba.section::<TriggersSection>().expect("triggers");
+    assert_eq!(triggers.triggers.len(), TBA_TRIGGERS);
+    let guildguard = triggers
+        .triggers
+        .get(&mib_tba::prelude::TriggerId::from_vnum(3000))
+        .expect("zone-30 guild guard trigger");
+    assert_eq!(guildguard.attach, "npc:tba_npc_3024");
+    assert_eq!(guildguard.types, vec!["leave"]);
+    assert!(guildguard.script.contains("%direction%"));
     // Issue #17: a spot-check that the new-format sets survive, including
     // Circle's `$`-codes and the `#`-as-None mapping.
     let smile: &SocialDef = tba
@@ -587,6 +600,38 @@ fn spell_missing_dice_names_the_field_path() {
     assert!(
         issue.message.contains("dice"),
         "issue explains the missing roll: {}",
+        issue.message
+    );
+
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn dangling_trigger_attach_names_the_field_path() {
+    // A `tba.triggers` attach that names no emitted NPC is a validation issue
+    // at the exact field path, not a silent no-op (issue #15).
+    let dir = temp_dir("dangling-trigger");
+    std::fs::create_dir_all(dir.join("content")).expect("mkdir content");
+    std::fs::write(
+        dir.join("pack.toml"),
+        "id = \"tba-bad\"\nversion = \"1\"\ntitle = \"bad\"\ndepends_on = [\"stdlib\"]\n",
+    )
+    .expect("write manifest");
+    std::fs::write(
+        dir.join("content/tba.triggers.yaml"),
+        "triggers:\n  tba_trig_7:\n    vnum: 7\n    name: broken\n    attach: npc:tba_npc_9999\n    types:\n    - greet\n    script: |\n      say hi\n",
+    )
+    .expect("write triggers");
+
+    let assets = load_packs(&[engine_pack("stdlib"), dir.clone()], &registry()).expect("loads");
+    let issues = validate_all(&assets, &registry());
+    let issue = issues
+        .iter()
+        .find(|issue| issue.field.as_deref() == Some("triggers.tba_trig_7.attach"))
+        .unwrap_or_else(|| panic!("expected a triggers.tba_trig_7.attach issue, got {issues:?}"));
+    assert!(
+        issue.message.contains("tba_npc_9999"),
+        "issue names the bad target: {}",
         issue.message
     );
 

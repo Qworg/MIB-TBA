@@ -126,6 +126,10 @@ pub struct TriggerRecord {
     pub types: Vec<String>,
     /// The `narg` field (0 when the attach line omits it).
     pub narg: i32,
+    /// The DG `arglist` (match text for speech/command).
+    pub arglist: String,
+    /// The script body, verbatim and colour-stripped.
+    pub body: String,
     /// Non-blank lines in the script body.
     pub lines: usize,
     /// All body lines, blank included.
@@ -222,7 +226,7 @@ pub fn scan_triggers(src: &mut Source) -> Result<Vec<TriggerRecord>> {
         };
         // Consume the arg list and the script body so the next record's `#`
         // is read at the right level.
-        let _arglist = src.read_string("trigger arglist")?;
+        let arglist = src.read_string("trigger arglist")?;
         let body = src.read_string("trigger body")?;
         let types = expand_types(attach_type, &flags);
         let lines = body.lines().filter(|line| !line.trim().is_empty()).count();
@@ -236,6 +240,8 @@ pub fn scan_triggers(src: &mut Source) -> Result<Vec<TriggerRecord>> {
             flags,
             types,
             narg,
+            arglist,
+            body,
             lines,
             raw_lines,
             bucket,
