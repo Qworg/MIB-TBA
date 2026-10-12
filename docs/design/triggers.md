@@ -323,7 +323,7 @@ The other **1,328 records (90.9%)** are not demo-visible for Phase 2:
 | gatekeeper_transport | 86 | gates in non-demo zones |
 | quest_objective | 54 | quest chains in non-demo zones |
 
-These stay deferred. None is silently dropped: every record is itemised in
+These stay deferred (tracked in #27). None is silently dropped: every record is itemised in
 `drop-report.json` with its bucket, and the essential flag distinguishes the
 Phase-2 scope from the rest.
 
@@ -603,13 +603,23 @@ conversion report, so coverage is explicit rather than silent.
 | **`while`/`switch`** | supported, with a per-record iteration cap to prevent a bad script wedging a tick. |
 | **combat** (Phase 5) | `fight`/`hitprcnt` fire once per round from `TbaRound`; `damage`/`death`/`cast`/`load`/`door` fire from the combat/spawn/door seams; `%damage%`, `mkill`, and `detach` apply; `dg_cast` maps to `tba.spells`. |
 
-**Explicitly not covered** (deferred to the spec's full VM):
+**Explicitly not covered** (tracked in #28; the full VM is #29):
 complete expression precedence and every `%…%` substitution; `dg_cast` of a
 spell the catalog does not carry (named-dropped); `%transform%`,
 `dg_affect`/full affect application, `mfollow`, `mremember`, `context` scope,
-OLC/`rdelete`, user-defined arrays (`set_array`), the `receive`/`get`/`bribe`/
-`timer`/`zone reset` event types, and `remote` to offline players. Each is
-recorded as a named drop when a script uses it.
+`%attach%`, OLC/`rdelete`, user-defined arrays (`set_array`), and `remote` to
+offline players. Each is recorded as a named drop when a script uses it.
+
+**Event types with no intake.** `TriggerKind` (`code/src/triggers/events.rs`)
+dispatches `speech`, `command`, `act`, `greet`/`greet-all`, `entry`/`enter`,
+`leave`, `fight`, `hitprcnt`, `damage`, `death`, `cast`, `load`, `door`,
+`random`, `global`, `timer` and `time`. The remaining corpus types have no
+variant, so a record of one of these types is emitted and parsed but never
+fires (corpus counts from `reports/trigger-triage.json`): `receive` (42),
+`wear` (22), `drop` (19), `get` (18), `bribe` (10), `zone reset` (10),
+`remove` (9), `consume` (6), `memory` (6), `give` (4) and `login` (3). Twelve
+of those records are in the essential set (`receive` 7, `bribe` 3, `get` 1,
+`zone reset` 1).
 
 ---
 
@@ -630,7 +640,7 @@ Acceptance:
 - `cargo test -p tbaport`, `cargo fmt --check`, and `cargo clippy -D warnings`
   are green; no pack runtime behaviour changes.
 
-### Phase 1 — `tba.triggers` content + parser (no evaluation) — ~2–3 days
+### Phase 1 — `tba.triggers` content + parser (no evaluation) — done (est. ~2–3 days)
 
 Emit the **essential** scripts as `tba.triggers.<zone>.yaml`; parse them into an
 AST at build/reload; keep the rest deferred and itemised.
@@ -641,7 +651,7 @@ Acceptance:
 - A coverage report states the per-construct and per-record coverage.
 - No behaviours fire yet; existing packs stay green.
 
-### Phase 2 — evaluation core: context, substitutions, text, control — ~1 week
+### Phase 2 — evaluation core: context, substitutions, text, control — done (est. ~1 week)
 
 `say`/`emote`/`echo`/`%echoaround%`/`%send%`, `if`/`elseif`/`else`/`end`,
 `switch`/`case`, `return`/`nop`, substitutions, and the `speech`/`command`/
@@ -653,7 +663,7 @@ Acceptance:
   scripted harness; unknown substitutions resolve to a named drop.
 - A malformed/looping script cannot panic or wedge a tick (iteration cap).
 
-### Phase 3 — state + quests: variables, `%load%`/`%purge%`, bridge — ~1 week
+### Phase 3 — state + quests: variables, `%load%`/`%purge%`, bridge — done (est. ~1 week)
 
 `set`/`eval`, `remote`/`global` with `TbaTriggerVars` persistence, and the
 `stdlib.quests` bridge emitting `QuestEvent`s.
@@ -665,7 +675,7 @@ Acceptance:
   step.
 - Quest journal shows the steps and the ready-to-turn-in state.
 
-### Phase 4 — time + movement: `wait`, doors, gates, teleport — ~1 week
+### Phase 4 — time + movement: `wait`, doors, gates, teleport — done (est. ~1 week)
 
 `TriggerTimers` and the movement/gate/door events.
 
@@ -689,7 +699,7 @@ Acceptance:
 ### Deferred — full DG VM
 
 The spec's Phase 3 (a clean Rust parser for the whole DG AST in
-`code/src/triggers/`) remains separately costed. Phase 1's parser is designed
+`code/src/triggers/`) remains separately costed (tracked in #29). Phase 1's parser is designed
 so the AST is the same shape the full VM can extend, but no commitment is made
 here beyond the subset in §6.5.
 

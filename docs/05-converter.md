@@ -282,7 +282,7 @@ dangling destination and is recorded as `dangling_exit` instead.
 | default position | `default_position: Position` |
 | `—` | `thaco = 20` (monsters use a flat 20; see `fight.c:829`) |
 | `MOB_NOCHARM`/`NO_SUMMON`/`NOSLEEP`/`NOBASH`/`NOBLIND`/`NOKILL` | `TbaNpcStats::behaviour` (`NpcBehaviour::No*`) |
-| `MOB_SPEC` | **permanent drop** (`mob_flag`): special procedures are a non-goal (#15) |
+| `MOB_SPEC` | **permanent drop** (`mob_flag`): special procedures are a non-goal (#31) |
 | `AFF_*` on the mob | **permanent drop** (`mob_aff`): no affect-flag field |
 | e-specs | **permanent drop** (`mob_espec`): no target field |
 | sex | **permanent drop** (`mob_sex`): `TbaNpcStats` has no sex field |
@@ -517,7 +517,7 @@ before writing, so the report is deterministic. Schema `2`:
       ],
       "unmapped": [
         { "object": "npc tba_npc_3000", "kind": "mob_flag",
-          "name": "SPEC", "detail": "special procedures are a non-goal (see #15)" },
+          "name": "SPEC", "detail": "special procedures are a non-goal (see #31)" },
         { "object": "item tba_item_3000", "kind": "affect_location",
           "name": "AGE", "detail": "modifier 5; permanent drop: AffectLocation has no such variant" }
       ],
@@ -695,7 +695,7 @@ drops by reason.
 - **NPC attack dice** are now modelled (`tba.npc_stats.damage` +
   `TbaAttackDice`). **NPC affect-flags, e-specs, sex and keyword lists** have no
   field and are named (`mob_aff`, `mob_espec`, `mob_sex`, `npc_keywords`).
-- **`MOB_SPEC` special procedures** are a non-goal (`mob_flag`), pending #15.
+- **`MOB_SPEC` special procedures** are a non-goal (`mob_flag`), tracked in #31.
 - **Combat skills** `backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`
   are class rules with no world-content field, so they stay in the
   `global_drops` list (`combat_skill`) — but they are **implemented** as pack

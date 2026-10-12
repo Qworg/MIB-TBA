@@ -1119,7 +1119,7 @@ fn map_npc(raw: &RawMob, zr: &mut ZoneReport) -> (NpcDef, TbaNpcStats) {
     }
 
     // Every meaningful `MOB_*` flag now has a home in `behaviour`. `MOB_SPEC`
-    // (0) is a special procedure, which is a documented non-goal (#15);
+    // (0) is a special procedure, which is a documented non-goal (#31);
     // `MOB_ISNPC` (3) and `MOB_NOTDEADYET` (19) are loader bookkeeping the
     // loader sets itself and are not reported.
     if bit(f0, 0) {
@@ -1128,7 +1128,7 @@ fn map_npc(raw: &RawMob, zr: &mut ZoneReport) -> (NpcDef, TbaNpcStats) {
             &object,
             "mob_flag",
             MOB_FLAG_NAMES[0],
-            "special procedures are a non-goal (see #15)",
+            "special procedures are a non-goal (see #31)",
         );
     }
 
