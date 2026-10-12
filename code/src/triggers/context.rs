@@ -76,6 +76,12 @@ pub struct TriggerContext {
     pub room_vnum: Option<i32>,
     /// The in-world clock, for `%time.hour%`/`%time.day%` (Phase 4).
     pub clock: Option<ClockView>,
+    /// The name of the spell being cast at this entity (`%spellname%`), set by
+    /// the `cast` event so a shield trigger can read it (Phase 5).
+    pub spell: Option<String>,
+    /// The damage just dealt to `self`/`victim` (`%damage%`), set by the
+    /// `damage` event (Phase 5).
+    pub damage: Option<i32>,
     /// The variable scopes and pseudo-array sources.
     pub vars: TriggerVars,
 }
@@ -135,6 +141,12 @@ pub fn resolve_token(
         "victim" => Resolved::known(entity(ctx.victim.as_ref())),
         "target" => Resolved::known(entity(ctx.target.as_ref())),
         "random.char" => Resolved::known(random_char(ctx, rng)),
+        "spellname" | "spell" => Resolved::known(ctx.spell.clone().unwrap_or_default()),
+        "damage" => Resolved::known(
+            ctx.damage
+                .map(|damage| damage.to_string())
+                .unwrap_or_default(),
+        ),
         "hours_in_day" => Resolved::known("24"),
         "time" | "time.hour" => Resolved::known(clock_field(ctx, |clock| clock.hour)),
         "time.day" => Resolved::known(clock_field(ctx, |clock| clock.day)),
@@ -195,6 +207,9 @@ pub fn is_known_token(token: &str) -> bool {
             | "random.char"
             | "random.dir"
             | "random.obj"
+            | "spellname"
+            | "spell"
+            | "damage"
             | "time"
             | "time.hour"
             | "time.day"

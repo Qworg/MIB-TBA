@@ -6,7 +6,7 @@
 //! [`TbaContent::triggers`](crate::module::TbaContent) exactly like
 //! `RoomIndex`; the runtime never re-parses a script mid-tick.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use mib_core::prelude::Resource;
 
@@ -14,7 +14,7 @@ use crate::triggers::ast::{ParsedProgram, parse_script};
 use crate::triggers::content::{TriggerDef, TriggerId};
 use crate::triggers::context::NamedDrop;
 
-/// The event types the Phase-4 intake systems actually dispatch. A record whose
+/// The event types the Phase-5 intake systems actually dispatch. A record whose
 /// only type is outside this set is parsed and indexed but never fires; it is
 /// recorded as a named drop so the gap is explicit rather than silent.
 pub const DISPATCHED_EVENT_TYPES: &[&str] = &[
@@ -24,13 +24,28 @@ pub const DISPATCHED_EVENT_TYPES: &[&str] = &[
     "greet",
     "greet-all",
     "entry",
+    "enter",
     "leave",
+    "fight",
+    "hitprcnt",
+    "damage",
+    "death",
+    "cast",
+    "load",
+    "door",
+    "random",
+    "global",
+    "timer",
+    "time",
 ];
 
 /// Attachment key + event type -> trigger ids, in stable id order.
 #[derive(Debug, Clone, Default)]
 pub struct TriggerIndex {
     by_attach: BTreeMap<String, BTreeMap<String, Vec<TriggerId>>>,
+    /// Type -> `(attach, id)` for the periodic systems, which fire a record
+    /// without a room scan. Sorted by `(attach, id)` at build time.
+    by_type: BTreeMap<String, Vec<(String, TriggerId)>>,
 }
 
 impl TriggerIndex {
@@ -52,11 +67,16 @@ impl TriggerIndex {
                     .by_attach
                     .entry(def.attach.clone())
                     .or_default()
-                    .entry(ty)
+                    .entry(ty.clone())
                     .or_default();
                 if !ids.contains(id) {
                     ids.push(id.clone());
                 }
+                index
+                    .by_type
+                    .entry(ty)
+                    .or_default()
+                    .push((def.attach.clone(), id.clone()));
             }
         }
         for types in index.by_attach.values_mut() {
@@ -64,6 +84,10 @@ impl TriggerIndex {
                 ids.sort();
                 ids.dedup();
             }
+        }
+        for entries in index.by_type.values_mut() {
+            entries.sort();
+            entries.dedup();
         }
         index
     }
@@ -75,6 +99,11 @@ impl TriggerIndex {
             .and_then(|types| types.get(ty))
             .map(Vec::as_slice)
             .unwrap_or(&[])
+    }
+
+    /// The `(attach, id)` pairs for an event type, for the periodic systems.
+    pub fn by_type(&self, ty: &str) -> &[(String, TriggerId)] {
+        self.by_type.get(ty).map(Vec::as_slice).unwrap_or(&[])
     }
 
     /// The number of distinct attachment keys.
@@ -100,6 +129,9 @@ pub struct TbaTriggers {
     pub index: TriggerIndex,
     /// Scripts whose parse failed structurally (a named drop each).
     pub parse_drops: Vec<NamedDrop>,
+    /// Triggers detached at runtime by a `detach` directive. Per-session only
+    /// (DG parity: a reboot reloads the attachment).
+    pub detached: BTreeSet<TriggerId>,
 }
 
 impl TbaTriggers {
@@ -138,7 +170,18 @@ impl TbaTriggers {
             programs,
             index,
             parse_drops,
+            detached: BTreeSet::new(),
         }
+    }
+
+    /// Whether a record was detached at runtime.
+    pub fn is_detached(&self, id: &TriggerId) -> bool {
+        self.detached.contains(id)
+    }
+
+    /// Detach a record for this session; returns whether it was newly detached.
+    pub fn detach(&mut self, id: TriggerId) -> bool {
+        self.detached.insert(id)
     }
 
     /// The parsed program for a trigger id.
@@ -205,15 +248,18 @@ mod tests {
     #[test]
     fn undispatched_event_types_are_named_drops() {
         let mut defs = BTreeMap::new();
-        defs.insert(TriggerId::from_vnum(1), def(1, "room:tba.59", &["door"]));
+        defs.insert(
+            TriggerId::from_vnum(1),
+            def(1, "room:tba.59", &["zone reset"]),
+        );
         defs.insert(TriggerId::from_vnum(2), def(2, "npc:tba_npc_5", &["Leave"]));
         let triggers = TbaTriggers::build(defs);
         assert!(
             triggers
                 .parse_drops
                 .iter()
-                .any(|drop| drop.kind == "unsupported_event" && drop.detail.contains("door")),
-            "the door event type is a named drop: {:?}",
+                .any(|drop| drop.kind == "unsupported_event" && drop.detail.contains("zone reset")),
+            "the zone reset event type is a named drop: {:?}",
             triggers.parse_drops
         );
         assert!(
@@ -223,6 +269,30 @@ mod tests {
                 .any(|drop| drop.detail.contains("leave")),
             "leave is dispatched: {:?}",
             triggers.parse_drops
+        );
+    }
+
+    #[test]
+    fn combat_and_periodic_event_types_are_dispatched() {
+        let mut defs = BTreeMap::new();
+        defs.insert(TriggerId::from_vnum(1), def(1, "npc:tba_npc_5", &["fight"]));
+        defs.insert(
+            TriggerId::from_vnum(2),
+            def(2, "npc:tba_npc_5", &["random"]),
+        );
+        defs.insert(TriggerId::from_vnum(3), def(3, "npc:tba_npc_5", &["death"]));
+        let triggers = TbaTriggers::build(defs);
+        assert!(
+            !triggers
+                .parse_drops
+                .iter()
+                .any(|drop| drop.kind == "unsupported_event"),
+            "fight/random/death are dispatched: {:?}",
+            triggers.parse_drops
+        );
+        assert_eq!(
+            triggers.index.by_type("random"),
+            &[("npc:tba_npc_5".to_owned(), TriggerId::from_vnum(2))]
         );
     }
 }

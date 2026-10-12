@@ -599,15 +599,17 @@ conversion report, so coverage is explicit rather than silent.
 | **`%actor%` context** | `TriggerContext` with `actor`/`self`/`object`/`victim`/`target`, `%direction%`, `%cmd%`, `%speech%`, `%object.vnum%`, etc. |
 | **timers/`wait`** | `TriggerTimers`; `wait N sec` suspends the record's program counter; `wait until hh:mm` hooks the in-world clock (`mib_tba::clock`). |
 | **`%load%`** | `%load% obj <vnum> [victim] [wear]` / `%load% mob <vnum>` route to the existing spawner/world spawn path. |
-| **nested triggers** | A depth guard plus a serialized pending queue, mirroring DG's `GET_TRIG_DEPTH`/`TRIGGER_CHECK` (`dg_scripts.h:419,446`); `%attach%`/`detach` deferred. |
+| **nested triggers** | A depth guard plus a serialized pending queue, mirroring DG's `GET_TRIG_DEPTH`/`TRIGGER_CHECK` (`dg_scripts.h:419,446`); `%attach%` deferred, `detach` supported (session-scoped). |
 | **`while`/`switch`** | supported, with a per-record iteration cap to prevent a bad script wedging a tick. |
+| **combat** (Phase 5) | `fight`/`hitprcnt` fire once per round from `TbaRound`; `damage`/`death`/`cast`/`load`/`door` fire from the combat/spawn/door seams; `%damage%`, `mkill`, and `detach` apply; `dg_cast` maps to `tba.spells`. |
 
-**Explicitly not covered by Phase 2** (deferred to the spec's Phase 3 full VM):
-complete expression precedence and every `%…%` substitution; `dg_cast` of
-arbitrary spells (only spells in `tba.spells` are mapped, others named-dropped);
-`%transform%`, `dg_affect`/full affect application, `mkill`, `context` scope,
-OLC/`rdelete`, user-defined arrays, and `remote` to offline players. Each is
-recorded as a named drop when a Phase-2 script uses it.
+**Explicitly not covered** (deferred to the spec's full VM):
+complete expression precedence and every `%…%` substitution; `dg_cast` of a
+spell the catalog does not carry (named-dropped); `%transform%`,
+`dg_affect`/full affect application, `mfollow`, `mremember`, `context` scope,
+OLC/`rdelete`, user-defined arrays (`set_array`), the `receive`/`get`/`bribe`/
+`timer`/`zone reset` event types, and `remote` to offline players. Each is
+recorded as a named drop when a script uses it.
 
 ---
 
@@ -672,15 +674,17 @@ Acceptance:
   trigger lands the player in the right room.
 - Timers are cancelled when their owner is purged; no timer leaks across reset.
 
-### Phase 5 — combat triggers + hardening — ~1 week
+### Phase 5 — combat triggers + hardening — done
 
-`fight`/`hitprcnt`/`death`/`damage`, `dg_cast` mapping, nested-trigger depth
-cap, telemetry, and the curated-zone playtest.
+`fight`/`hitprcnt`/`death`/`damage`/`cast`/`load`/`door`/`random`/`global`/
+`timer`/`time`, `dg_cast` mapping, the nested-trigger depth cap and serialized
+pending queue, telemetry, and the curated-zone playtest.
 
 Acceptance:
 - Combat triggers fire once per round (never per damage point) with a depth cap.
 - The curated demo checklist passes in zones 0/1/30/74.
 - Final corpus coverage published: essential records firing vs named-dropped.
+- The 133 essential records parse and dispatch without panicking (fuzz test).
 
 ### Deferred — full DG VM
 

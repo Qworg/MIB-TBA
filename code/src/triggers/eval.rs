@@ -84,6 +84,14 @@ pub struct EvalOutcome {
     pub ats: Vec<AtRequest>,
     /// `%zoneecho%` broadcasts (Phase 4).
     pub zone_echoes: Vec<ZoneEchoRequest>,
+    /// `dg_cast` requests (Phase 5).
+    pub casts: Vec<CastRequest>,
+    /// `%damage%` requests (Phase 5).
+    pub damages: Vec<DamageRequest>,
+    /// `mkill` requests (Phase 5).
+    pub kills: Vec<KillRequest>,
+    /// `detach` requests (Phase 5).
+    pub detaches: Vec<DetachRequest>,
     /// A truthy `remote` write: the name of a quest flag a `stdlib.quests`
     /// `Flag` step can consume.
     pub flags: Vec<String>,
@@ -174,6 +182,39 @@ pub struct SpawnRequest {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PurgeRequest {
     pub target: Option<String>,
+}
+
+/// A `dg_cast` request (Phase 5). The spell phrase is resolved against the
+/// catalog by the effect layer, so an unknown spell is a named drop.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CastRequest {
+    pub spell: String,
+    /// The DG recipient token (`%actor%`/`%self%`/`%victim%`).
+    pub target: String,
+}
+
+/// A `%damage%` request (Phase 5), after the amount was substituted.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DamageRequest {
+    pub target: String,
+    /// The substituted amount text; the effect layer parses it and reports an
+    /// unparseable amount as a named drop.
+    pub amount: String,
+}
+
+/// An `mkill` request (Phase 5).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct KillRequest {
+    pub target: String,
+}
+
+/// A `detach` request (Phase 5).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DetachRequest {
+    /// The trigger vnum to detach (after substitution).
+    pub vnum: String,
+    /// The entity token the detach was aimed at (`%self.id%`).
+    pub target: String,
 }
 
 /// One flattened instruction (Phase 4).
@@ -640,6 +681,35 @@ impl State<'_> {
                 self.outcome.ats.push(AtRequest {
                     room,
                     command: command.clone(),
+                });
+                Flow::Normal
+            }
+            Node::DgCast { spell, target } => {
+                self.outcome.casts.push(CastRequest {
+                    spell: spell.clone(),
+                    target: target.clone(),
+                });
+                Flow::Normal
+            }
+            Node::Damage { target, amount } => {
+                let amount = self.substitute(amount);
+                self.outcome.damages.push(DamageRequest {
+                    target: target.clone(),
+                    amount,
+                });
+                Flow::Normal
+            }
+            Node::Mkill { target } => {
+                self.outcome.kills.push(KillRequest {
+                    target: target.clone(),
+                });
+                Flow::Normal
+            }
+            Node::Detach { vnum, target } => {
+                let vnum = self.substitute(vnum);
+                self.outcome.detaches.push(DetachRequest {
+                    vnum,
+                    target: target.clone(),
                 });
                 Flow::Normal
             }

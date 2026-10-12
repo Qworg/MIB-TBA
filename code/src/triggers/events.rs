@@ -32,18 +32,26 @@
 use bevy::ecs::system::SystemParam;
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{
-    CarriedBy, Exits, Item, Location, Npc, NpcKey, Player, Room, Session, SessionState,
+    CarriedBy, Exits, Item, Location, Npc, NpcKey, Player, PlayerDefeated, Room, Session,
+    SessionState,
 };
 
+use std::collections::{BTreeMap, BTreeSet};
+
+use crate::combat::TbaCombatant;
 use crate::combat::commands::text;
 use crate::combat::model::TbaProgress;
 use crate::combat::progression::TbaRng;
+use crate::combat::rewards::{NpcDefeated, TbaDamage};
 use crate::items::TbaObjectClock;
+use crate::module::TbaContent;
 use crate::triggers::ast::{DoorOp, LoadKind, Node, parse_script};
+use crate::triggers::content::TriggerId;
 use crate::triggers::context::{ActorView, ClockView, EntityView, NamedDrop, TriggerContext};
 use crate::triggers::effects::{
-    PendingAt, PendingDoor, PendingFlag, PendingForce, PendingPurge, PendingSpawn, PendingTeleport,
-    PendingTriggerOps, PendingVarWrite, PendingZoneEcho, TbaTriggerVars,
+    PendingAt, PendingCast, PendingDamage, PendingDetach, PendingDoor, PendingFlag, PendingForce,
+    PendingKill, PendingPurge, PendingSpawn, PendingTeleport, PendingTriggerOps, PendingVarWrite,
+    PendingZoneEcho, TbaTriggerVars,
 };
 use crate::triggers::eval::{EvalOutcome, TextTarget, VarScope, run};
 use crate::triggers::index::TbaTriggers;
@@ -80,11 +88,14 @@ pub struct TriggerView<'w, 's> {
     pub vars: Query<'w, 's, &'static TbaTriggerVars>,
     /// The in-world clock, for `%time.hour%` and `wait until`.
     pub clock: Option<Res<'w, TbaObjectClock>>,
+    /// The spell catalog, for resolving a `dg_cast` spell phrase.
+    pub content: Option<Res<'w, TbaContent>>,
 }
 
 /// The kind of intake event.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum TriggerKind {
+    #[default]
     Speech,
     Command,
     Act,
@@ -93,6 +104,28 @@ pub enum TriggerKind {
     Leave,
     /// A resumed `wait`; never dispatched as an intake event.
     Wait,
+    /// A combat round for a fighting owner (`fight`).
+    Fight,
+    /// A combat round below the record's `narg` hit-point percent.
+    HitPrcnt,
+    /// Damage just applied to the owner (`damage`).
+    Damage,
+    /// The owner died (`death`).
+    Death,
+    /// A spell was cast at the owner (`cast`).
+    Cast,
+    /// The owner was loaded/spawned (`load`).
+    Load,
+    /// A door state changed (`door`).
+    Door,
+    /// A periodic random heartbeat (`random`).
+    Random,
+    /// A periodic global heartbeat (`global`).
+    Global,
+    /// A periodic deterministic timer (`timer`).
+    Timer,
+    /// An in-world clock time (`time`).
+    Time,
 }
 
 impl TriggerKind {
@@ -103,9 +136,20 @@ impl TriggerKind {
             TriggerKind::Command => &["command"],
             TriggerKind::Act => &["act"],
             TriggerKind::Greet => &["greet", "greet-all"],
-            TriggerKind::Entry => &["entry"],
+            TriggerKind::Entry => &["entry", "enter"],
             TriggerKind::Leave => &["leave"],
             TriggerKind::Wait => &[],
+            TriggerKind::Fight => &["fight"],
+            TriggerKind::HitPrcnt => &["hitprcnt"],
+            TriggerKind::Damage => &["damage"],
+            TriggerKind::Death => &["death"],
+            TriggerKind::Cast => &["cast"],
+            TriggerKind::Load => &["load"],
+            TriggerKind::Door => &["door"],
+            TriggerKind::Random => &["random"],
+            TriggerKind::Global => &["global"],
+            TriggerKind::Timer => &["timer"],
+            TriggerKind::Time => &["time"],
         }
     }
 }
@@ -119,6 +163,35 @@ pub struct TriggerEvent {
     pub text: Option<String>,
     pub command: Option<String>,
     pub direction: Option<String>,
+    /// Restrict the candidates to this owner (combat/periodic events). `None`
+    /// keeps the room-wide candidate scan.
+    pub self_entity: Option<Entity>,
+    /// The combat victim/target the owner is facing (`%victim%`/`%target%`).
+    pub victim: Option<Entity>,
+    /// The spell name for a `cast` event (`%spellname%`).
+    pub spell: Option<String>,
+    /// The damage amount for a `damage` event (`%damage%`).
+    pub damage: Option<i32>,
+    /// The owner's current hit-point percent for a `hitprcnt` event.
+    pub percent: Option<i32>,
+}
+
+impl Default for TriggerEvent {
+    fn default() -> Self {
+        Self {
+            kind: TriggerKind::Speech,
+            actor: Entity::PLACEHOLDER,
+            room: Entity::PLACEHOLDER,
+            text: None,
+            command: None,
+            direction: None,
+            self_entity: None,
+            victim: None,
+            spell: None,
+            damage: None,
+            percent: None,
+        }
+    }
 }
 
 /// `BridgeSet::Game`, after `route_commands`: speech, command, and act.
@@ -158,8 +231,7 @@ pub fn trigger_command_system(
                 actor: msg.session,
                 room,
                 text: Some(text.clone()),
-                command: None,
-                direction: None,
+                ..TriggerEvent::default()
             }),
             PlayerInput::RawLine(line) => {
                 let trimmed = line.trim();
@@ -174,8 +246,7 @@ pub fn trigger_command_system(
                         actor: msg.session,
                         room,
                         text: Some(rest.to_owned()),
-                        command: None,
-                        direction: None,
+                        ..TriggerEvent::default()
                     }),
                     "emote" | "em" => events.push(TriggerEvent {
                         kind: TriggerKind::Act,
@@ -183,7 +254,7 @@ pub fn trigger_command_system(
                         room,
                         text: Some(rest.to_owned()),
                         command: Some(lower),
-                        direction: None,
+                        ..TriggerEvent::default()
                     }),
                     "social" => {
                         let (name, _) = split_word(rest);
@@ -193,16 +264,15 @@ pub fn trigger_command_system(
                             room,
                             text: Some(name.to_owned()),
                             command: Some(name.to_ascii_lowercase()),
-                            direction: None,
+                            ..TriggerEvent::default()
                         });
                     }
                     _ => events.push(TriggerEvent {
                         kind: TriggerKind::Command,
                         actor: msg.session,
                         room,
-                        text: None,
                         command: Some(lower),
-                        direction: None,
+                        ..TriggerEvent::default()
                     }),
                 }
             }
@@ -216,9 +286,8 @@ pub fn trigger_command_system(
                     kind: TriggerKind::Command,
                     actor: msg.session,
                     room,
-                    text: None,
                     command: Some(word),
-                    direction: None,
+                    ..TriggerEvent::default()
                 });
             }
         }
@@ -272,9 +341,8 @@ pub fn trigger_greet_system(
                 kind,
                 actor: player,
                 room: new_room,
-                text: None,
-                command: None,
                 direction: direction.clone(),
+                ..TriggerEvent::default()
             };
             dispatch(
                 &event,
@@ -336,9 +404,8 @@ pub fn trigger_leave_system(
             kind: TriggerKind::Leave,
             actor: msg.session,
             room: location.room,
-            text: None,
-            command: None,
             direction: Some(direction),
+            ..TriggerEvent::default()
         };
         let outcome = dispatch(
             &event,
@@ -379,6 +446,14 @@ fn direction_between(from: Entity, to: Entity, exits: &Query<&Exits>) -> Option<
         .map(|(key, _)| key.as_str().to_owned())
 }
 
+/// The maximum synchronous trigger nesting depth (DG's `GET_TRIG_DEPTH`).
+///
+/// The pack's events fire iteratively rather than recursively, so dispatch is
+/// depth 1 in practice; the cap makes the invariant explicit and turns a future
+/// recursive `%trigger%` every-event path into a named drop rather than a stack
+/// overflow.
+pub const MAX_TRIGGER_DEPTH: usize = 10;
+
 /// Find candidates and run each matching trigger.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub(crate) struct DispatchOutcome {
@@ -389,7 +464,30 @@ pub(crate) struct DispatchOutcome {
 }
 
 #[allow(clippy::too_many_arguments)]
-fn dispatch(
+pub(crate) fn dispatch(
+    event: &TriggerEvent,
+    triggers: &TbaTriggers,
+    view: &TriggerView,
+    rng: &mut TbaRng,
+    ops: &mut PendingTriggerOps,
+    timers: &mut TriggerTimers,
+    output: &mut MessageWriter<OutputEvent>,
+) -> DispatchOutcome {
+    if ops.depth >= MAX_TRIGGER_DEPTH {
+        ops.drops.push(NamedDrop::new(
+            "trigger_depth",
+            format!("depth cap {MAX_TRIGGER_DEPTH} reached"),
+        ));
+        return DispatchOutcome::default();
+    }
+    ops.depth += 1;
+    let result = dispatch_inner(event, triggers, view, rng, ops, timers, output);
+    ops.depth -= 1;
+    result
+}
+
+#[allow(clippy::too_many_arguments)]
+fn dispatch_inner(
     event: &TriggerEvent,
     triggers: &TbaTriggers,
     view: &TriggerView,
@@ -403,9 +501,19 @@ fn dispatch(
         let candidate = event_candidate(event);
         for ty in event.kind.type_names() {
             for id in triggers.index.lookup(&attach_key, ty) {
+                if triggers.is_detached(id) {
+                    continue;
+                }
                 let Some(def) = triggers.def(id) else {
                     continue;
                 };
+                // A `hitprcnt` record only fires below its `narg` percent.
+                if event.kind == TriggerKind::HitPrcnt
+                    && let Some(percent) = event.percent
+                    && percent >= def.narg
+                {
+                    continue;
+                }
                 let Some(program) = triggers.program(id) else {
                     continue;
                 };
@@ -519,10 +627,78 @@ pub(crate) fn queue_effects(
         });
     }
     queue_movement_effects(outcome, event, self_entity, view, ops);
+    queue_combat_effects(outcome, event, self_entity, ops);
     // Everything the interpreter recorded (including the unresolved targets
     // added above) is counted in the runtime drop log.
     for drop in &outcome.drops {
         ops.drops.push(drop.clone());
+    }
+}
+
+/// Translate the Phase-5 combat directives (`dg_cast`, `%damage%`, `mkill`,
+/// `detach`), resolving recipient tokens and recording a named drop for any
+/// unresolved target or unparseable argument.
+fn queue_combat_effects(
+    outcome: &mut EvalOutcome,
+    event: &TriggerEvent,
+    self_entity: Entity,
+    ops: &mut PendingTriggerOps,
+) {
+    for cast in &outcome.casts {
+        match recipient_entity(&cast.target, event, self_entity) {
+            Some(target) => ops.casts.push(PendingCast {
+                caster: self_entity,
+                target,
+                spell: cast.spell.clone(),
+            }),
+            None => outcome.drops.push(NamedDrop::new(
+                "dg_cast_target",
+                format!("unresolved recipient: {}", cast.target),
+            )),
+        }
+    }
+    for damage in &outcome.damages {
+        let Some(target) = recipient_entity(&damage.target, event, self_entity) else {
+            outcome.drops.push(NamedDrop::new(
+                "damage_target",
+                format!("unresolved recipient: {}", damage.target),
+            ));
+            continue;
+        };
+        match damage.amount.trim().parse::<i32>() {
+            Ok(amount) => ops.damages.push(PendingDamage {
+                source: self_entity,
+                target,
+                amount,
+            }),
+            Err(_) => outcome.drops.push(NamedDrop::new(
+                "damage_amount",
+                format!("unparseable amount: {:?}", damage.amount),
+            )),
+        }
+    }
+    for kill in &outcome.kills {
+        match recipient_entity(&kill.target, event, self_entity) {
+            Some(target) => ops.kills.push(PendingKill {
+                killer: self_entity,
+                target,
+            }),
+            None => outcome.drops.push(NamedDrop::new(
+                "kill_target",
+                format!("unresolved recipient: {}", kill.target),
+            )),
+        }
+    }
+    for detach in &outcome.detaches {
+        match detach.vnum.trim().parse::<i32>() {
+            Ok(vnum) => ops.detaches.push(PendingDetach {
+                trigger: Some(TriggerId::from_vnum(vnum)),
+            }),
+            Err(_) => outcome.drops.push(NamedDrop::new(
+                "detach_vnum",
+                format!("unparseable trigger vnum: {:?}", detach.vnum),
+            )),
+        }
     }
 }
 
@@ -691,11 +867,12 @@ fn at_load(command: &str) -> Option<(LoadKind, String, Option<String>, Option<St
     }
 }
 
-/// The entity a `%load%` recipient token names.
+/// The entity a `%load%`/`%damage%`/`dg_cast%` recipient token names.
 fn recipient_entity(token: &str, event: &TriggerEvent, self_entity: Entity) -> Option<Entity> {
     match token.trim().trim_matches('%').to_ascii_lowercase().as_str() {
         "actor" => Some(event.actor),
         "self" => Some(self_entity),
+        "victim" | "target" => event.victim,
         _ => None,
     }
 }
@@ -732,7 +909,21 @@ fn event_candidate(event: &TriggerEvent) -> Option<&str> {
     match event.kind {
         TriggerKind::Speech | TriggerKind::Act => event.text.as_deref(),
         TriggerKind::Command => event.command.as_deref(),
-        TriggerKind::Greet | TriggerKind::Entry | TriggerKind::Leave | TriggerKind::Wait => None,
+        TriggerKind::Greet
+        | TriggerKind::Entry
+        | TriggerKind::Leave
+        | TriggerKind::Wait
+        | TriggerKind::Fight
+        | TriggerKind::HitPrcnt
+        | TriggerKind::Damage
+        | TriggerKind::Death
+        | TriggerKind::Cast
+        | TriggerKind::Load
+        | TriggerKind::Door
+        | TriggerKind::Random
+        | TriggerKind::Global
+        | TriggerKind::Timer
+        | TriggerKind::Time => None,
     }
 }
 
@@ -757,6 +948,11 @@ fn arglist_matches(arglist: &str, candidate: &str) -> bool {
 /// The `(entity, attach key, vnum, name)` of every thing in the room whose
 /// triggers could respond to `event`.
 fn candidates(event: &TriggerEvent, view: &TriggerView) -> Vec<(Entity, String, i32, String)> {
+    // A combat/periodic event names the exact owner, so its record fires even
+    // when the owner is not the only candidate in the room.
+    if let Some(self_entity) = event.self_entity {
+        return entity_candidate(self_entity, view).into_iter().collect();
+    }
     let mut out = Vec::new();
     for (entity, npc, key, location) in view.npcs.iter() {
         if location.room != event.room {
@@ -801,6 +997,45 @@ fn candidates(event: &TriggerEvent, view: &TriggerView) -> Vec<(Entity, String, 
     out
 }
 
+/// The `(entity, attach key, vnum, name)` of one explicit owner, if it exists
+/// as an NPC, room, or item.
+fn entity_candidate(entity: Entity, view: &TriggerView) -> Option<(Entity, String, i32, String)> {
+    if let Ok((_, npc, key, _)) = view.npcs.get(entity) {
+        let id = key.0.as_ref();
+        return Some((
+            entity,
+            format!("npc:{id}"),
+            vnum_from_id(id),
+            npc.name.clone(),
+        ));
+    }
+    if let Ok((_, room)) = view.rooms.get(entity) {
+        return Some((
+            entity,
+            format!("room:{}", room.key),
+            i64::from(room.num) as i32,
+            room.name.clone(),
+        ));
+    }
+    if let Ok((_, item, _)) = view.ground.get(entity) {
+        return Some((
+            entity,
+            format!("item:{}", item.def_id),
+            vnum_from_id(item.def_id.as_ref()),
+            item.name.clone(),
+        ));
+    }
+    if let Ok((_, item, _)) = view.carried.get(entity) {
+        return Some((
+            entity,
+            format!("item:{}", item.def_id),
+            vnum_from_id(item.def_id.as_ref()),
+            item.name.clone(),
+        ));
+    }
+    None
+}
+
 /// Build the substitution context for one record.
 fn build_context(
     event: &TriggerEvent,
@@ -828,10 +1063,26 @@ fn build_context(
         TriggerKind::Speech => (None, event.text.clone()),
         TriggerKind::Command => (event.command.clone(), None),
         TriggerKind::Act => (event.command.clone(), event.text.clone()),
-        TriggerKind::Greet | TriggerKind::Entry | TriggerKind::Leave | TriggerKind::Wait => {
-            (None, None)
-        }
+        TriggerKind::Greet
+        | TriggerKind::Entry
+        | TriggerKind::Leave
+        | TriggerKind::Wait
+        | TriggerKind::Fight
+        | TriggerKind::HitPrcnt
+        | TriggerKind::Damage
+        | TriggerKind::Death
+        | TriggerKind::Cast
+        | TriggerKind::Load
+        | TriggerKind::Door
+        | TriggerKind::Random
+        | TriggerKind::Global
+        | TriggerKind::Timer
+        | TriggerKind::Time => (None, None),
     };
+    // The combat victim an owner faces (`%victim%`/`%target%`).
+    let victim = event.victim.and_then(|victim| {
+        entity_candidate(victim, view).map(|(_, _, vnum, name)| EntityView { name, vnum })
+    });
     let room_vnum = view
         .rooms
         .iter()
@@ -874,10 +1125,14 @@ fn build_context(
             name: self_name.to_owned(),
             vnum: self_vnum,
         }),
+        victim: victim.clone(),
+        target: victim,
         direction: event.direction.clone(),
         cmd,
         speech,
         room_vnum,
+        spell: event.spell.clone(),
+        damage: event.damage,
         clock: view.clock.as_deref().map(|clock| ClockView {
             hour: clock.hour_of_day,
             day: clock.day,
@@ -941,6 +1196,383 @@ pub(crate) fn deliver(
     }
 }
 
+/// The serialized pending queue for the Phase-5 event paths (DG's
+/// `TRIGGER_CHECK` work list). Intake systems enqueue; one drain system
+/// dispatches them in order, so a combat round or a periodic heartbeat cannot
+/// re-enter the evaluator. The queue has a hard capacity so a storm cannot
+/// grow without bound.
+#[derive(Debug, Default, Resource)]
+pub struct TriggerQueue {
+    pub pending: Vec<TriggerEvent>,
+    /// Events rejected because the queue was full.
+    pub overflow: usize,
+}
+
+/// The most events the queue holds, and the most one drain processes.
+pub const QUEUE_CAP: usize = 1024;
+pub const QUEUE_DRAIN_CAP: usize = 256;
+
+impl TriggerQueue {
+    /// Enqueue an event, dropping (and counting) past the capacity.
+    pub fn enqueue(&mut self, event: TriggerEvent) {
+        if self.pending.len() < QUEUE_CAP {
+            self.pending.push(event);
+        } else {
+            self.overflow += 1;
+        }
+    }
+}
+
+/// Periodic-heartbeat bookkeeping for `random`/`global`/`timer`/`time`.
+#[derive(Debug, Default, Resource)]
+pub struct TriggerPeriodic {
+    /// Fixed-tick seconds accumulated since the last check.
+    pub accumulator: f32,
+    /// The in-world hour of the last `time` check.
+    pub last_hour: Option<u32>,
+    /// Seconds accumulated per `timer` record.
+    pub timer_elapsed: BTreeMap<TriggerId, f32>,
+}
+
+/// Seconds between random/global heartbeat checks (DG's 2-second heartbeat).
+pub const PERIODIC_INTERVAL: f32 = 2.0;
+
+/// Victims whose `death` trigger already fired this frame (the TbaRound and
+/// Update readers share one death; the set keeps it to one firing).
+#[derive(Debug, Default, Resource)]
+pub struct TriggerDeathSeen(pub BTreeSet<Entity>);
+
+/// `Update`, before `run_due_round`: start each frame with a clean dedupe set.
+pub fn trigger_death_reset_system(mut seen: ResMut<TriggerDeathSeen>) {
+    seen.0.clear();
+}
+
+/// `Update`: drain the serialized queue and dispatch each event in order.
+#[allow(clippy::too_many_arguments)]
+pub fn trigger_queue_system(
+    mut queue: ResMut<TriggerQueue>,
+    triggers: Option<Res<TbaTriggers>>,
+    view: TriggerView,
+    mut rng: ResMut<TbaRng>,
+    mut ops: ResMut<PendingTriggerOps>,
+    mut timers: ResMut<TriggerTimers>,
+    mut output: MessageWriter<OutputEvent>,
+) {
+    if queue.pending.is_empty() {
+        return;
+    }
+    let drained: Vec<TriggerEvent> = queue.pending.drain(..).take(QUEUE_DRAIN_CAP).collect();
+    if queue.overflow > 0 {
+        ops.drops.push(NamedDrop::new(
+            "queue_overflow",
+            format!("{} event(s) dropped", queue.overflow),
+        ));
+        queue.overflow = 0;
+    }
+    let Some(triggers) = triggers else {
+        return;
+    };
+    for event in drained {
+        dispatch(
+            &event,
+            &triggers,
+            &view,
+            &mut rng,
+            &mut ops,
+            &mut timers,
+            &mut output,
+        );
+    }
+}
+
+/// `Update`: fire `damage` records once per hit-point loss.
+#[allow(clippy::too_many_arguments)]
+pub fn trigger_damage_system(
+    mut damage: MessageReader<TbaDamage>,
+    triggers: Option<Res<TbaTriggers>>,
+    view: TriggerView,
+    mut rng: ResMut<TbaRng>,
+    mut ops: ResMut<PendingTriggerOps>,
+    mut timers: ResMut<TriggerTimers>,
+    mut output: MessageWriter<OutputEvent>,
+) {
+    let Some(triggers) = triggers else {
+        return;
+    };
+    if triggers.is_empty() {
+        return;
+    }
+    for event in damage.read() {
+        let Some(room) = entity_room(&view, event.victim) else {
+            continue;
+        };
+        let trigger = TriggerEvent {
+            kind: TriggerKind::Damage,
+            actor: event.attacker,
+            room,
+            self_entity: Some(event.victim),
+            victim: Some(event.attacker),
+            damage: Some(event.damage),
+            ..TriggerEvent::default()
+        };
+        dispatch(
+            &trigger,
+            &triggers,
+            &view,
+            &mut rng,
+            &mut ops,
+            &mut timers,
+            &mut output,
+        );
+    }
+}
+
+/// `TbaRound` and `Update`: fire `death` records for a defeated NPC.
+///
+/// The TbaRound instance runs before the round's despawn command is applied,
+/// so the victim is still queryable; the Update instance covers spell/skill
+/// kills. [`TriggerDeathSeen`] keeps the two readers from firing twice.
+#[allow(clippy::too_many_arguments)]
+pub fn trigger_death_system(
+    mut players: MessageReader<PlayerDefeated>,
+    mut npcs: MessageReader<NpcDefeated>,
+    mut seen: ResMut<TriggerDeathSeen>,
+    triggers: Option<Res<TbaTriggers>>,
+    view: TriggerView,
+    mut rng: ResMut<TbaRng>,
+    mut ops: ResMut<PendingTriggerOps>,
+    mut timers: ResMut<TriggerTimers>,
+    mut output: MessageWriter<OutputEvent>,
+) {
+    // Player death triggers are owned by the corpse/respawn path, not the mob
+    // attachment set; drain the reader so the cursor advances.
+    for _ in players.read() {}
+    let Some(triggers) = triggers else {
+        return;
+    };
+    if triggers.is_empty() {
+        return;
+    }
+    for event in npcs.read() {
+        if !seen.0.insert(event.victim) {
+            continue;
+        }
+        let Some(room) = entity_room(&view, event.victim) else {
+            continue;
+        };
+        let trigger = TriggerEvent {
+            kind: TriggerKind::Death,
+            actor: event.killer,
+            room,
+            self_entity: Some(event.victim),
+            victim: Some(event.killer),
+            ..TriggerEvent::default()
+        };
+        dispatch(
+            &trigger,
+            &triggers,
+            &view,
+            &mut rng,
+            &mut ops,
+            &mut timers,
+            &mut output,
+        );
+    }
+}
+
+/// `TbaRound`, after `resolve_rounds`: enqueue `fight`/`hitprcnt` records for
+/// every combatant still in a fight. The queue serializes them.
+#[allow(clippy::too_many_arguments)]
+pub fn trigger_round_system(
+    combatants: Query<(Entity, &'static TbaCombatant, &'static Location)>,
+    triggers: Option<Res<TbaTriggers>>,
+    mut queue: ResMut<TriggerQueue>,
+) {
+    let Some(triggers) = triggers else {
+        return;
+    };
+    if triggers.is_empty() {
+        return;
+    }
+    for (entity, combatant, location) in combatants.iter() {
+        let Some(target) = combatant.target else {
+            continue;
+        };
+        if !combatant.is_alive() {
+            continue;
+        }
+        queue.enqueue(TriggerEvent {
+            kind: TriggerKind::Fight,
+            actor: target,
+            room: location.room,
+            self_entity: Some(entity),
+            victim: Some(target),
+            ..TriggerEvent::default()
+        });
+        let percent = if combatant.max_hp > 0 {
+            combatant.hp.saturating_mul(100) / combatant.max_hp
+        } else {
+            100
+        };
+        queue.enqueue(TriggerEvent {
+            kind: TriggerKind::HitPrcnt,
+            actor: target,
+            room: location.room,
+            self_entity: Some(entity),
+            victim: Some(target),
+            percent: Some(percent),
+            ..TriggerEvent::default()
+        });
+    }
+}
+
+/// `FixedUpdate`: the periodic `random`/`global`/`timer`/`time` heartbeats.
+#[allow(clippy::too_many_arguments)]
+pub fn trigger_periodic_system(
+    time: Res<Time<Fixed>>,
+    clock: Option<Res<TbaObjectClock>>,
+    triggers: Option<Res<TbaTriggers>>,
+    view: TriggerView,
+    mut periodic: ResMut<TriggerPeriodic>,
+    mut queue: ResMut<TriggerQueue>,
+    mut rng: ResMut<TbaRng>,
+) {
+    let Some(triggers) = triggers else {
+        return;
+    };
+    if triggers.is_empty() {
+        return;
+    }
+    let delta = time.delta_secs().max(0.0);
+    periodic.accumulator += delta;
+
+    // `timer` accumulates every tick; the others check on the heartbeat.
+    let timer_ids: Vec<TriggerId> = triggers
+        .index
+        .by_type("timer")
+        .iter()
+        .map(|(_, id)| id.clone())
+        .collect();
+    for id in timer_ids {
+        *periodic.timer_elapsed.entry(id).or_default() += delta;
+    }
+
+    if periodic.accumulator < PERIODIC_INTERVAL {
+        return;
+    }
+    periodic.accumulator = 0.0;
+
+    for (kind, ty) in [
+        (TriggerKind::Random, "random"),
+        (TriggerKind::Global, "global"),
+    ] {
+        for (attach, id) in triggers.index.by_type(ty).to_vec() {
+            let Some(def) = triggers.def(&id) else {
+                continue;
+            };
+            if rng.range(1, 100) > def.narg {
+                continue;
+            }
+            let Some((entity, room)) = find_attached(&view, &attach) else {
+                continue;
+            };
+            queue.enqueue(TriggerEvent {
+                kind,
+                room,
+                self_entity: Some(entity),
+                ..TriggerEvent::default()
+            });
+        }
+    }
+
+    for (attach, id) in triggers.index.by_type("timer").to_vec() {
+        let Some(def) = triggers.def(&id) else {
+            continue;
+        };
+        let charged = periodic.timer_elapsed.entry(id.clone()).or_default();
+        if *charged < def.narg.max(1) as f32 {
+            continue;
+        }
+        *charged = 0.0;
+        let Some((entity, room)) = find_attached(&view, &attach) else {
+            continue;
+        };
+        queue.enqueue(TriggerEvent {
+            kind: TriggerKind::Timer,
+            room,
+            self_entity: Some(entity),
+            ..TriggerEvent::default()
+        });
+    }
+
+    if let Some(clock) = clock.as_deref()
+        && periodic.last_hour != Some(clock.hour_of_day)
+    {
+        periodic.last_hour = Some(clock.hour_of_day);
+        for (attach, id) in triggers.index.by_type("time").to_vec() {
+            let Some(def) = triggers.def(&id) else {
+                continue;
+            };
+            if def.narg != clock.hour_of_day as i32 {
+                continue;
+            }
+            let Some((entity, room)) = find_attached(&view, &attach) else {
+                continue;
+            };
+            queue.enqueue(TriggerEvent {
+                kind: TriggerKind::Time,
+                room,
+                self_entity: Some(entity),
+                ..TriggerEvent::default()
+            });
+        }
+    }
+}
+
+/// The room a player or NPC occupies.
+fn entity_room(view: &TriggerView, entity: Entity) -> Option<Entity> {
+    if let Ok((_, _, location)) = view.players.get(entity) {
+        return Some(location.room);
+    }
+    if let Ok((_, _, _, location)) = view.npcs.get(entity) {
+        return Some(location.room);
+    }
+    None
+}
+
+/// The live `(entity, room)` an `attach` key names, for the periodic systems.
+fn find_attached(view: &TriggerView, attach: &str) -> Option<(Entity, Entity)> {
+    let (kind, id) = attach.split_once(':')?;
+    match kind {
+        "npc" => view
+            .npcs
+            .iter()
+            .find(|(_, _, key, _)| key.0.as_ref() == id)
+            .map(|(entity, _, _, location)| (entity, location.room)),
+        "room" => view
+            .rooms
+            .iter()
+            .find(|(_, room)| room.key.as_ref() == id)
+            .map(|(entity, _)| (entity, entity)),
+        "item" => {
+            if let Some((entity, _, location)) = view
+                .ground
+                .iter()
+                .find(|(_, item, _)| item.def_id.as_ref() == id)
+            {
+                return Some((entity, location.room));
+            }
+            let (entity, _, carried) = view
+                .carried
+                .iter()
+                .find(|(_, item, _)| item.def_id.as_ref() == id)?;
+            let room = entity_room(view, carried.0)?;
+            Some((entity, room))
+        }
+        _ => None,
+    }
+}
+
 /// The player entities in `room`, in query order.
 fn players_in_room(view: &TriggerView, room: Entity) -> Vec<Entity> {
     view.players
@@ -993,6 +1625,15 @@ pub const RUNTIME_DROP_KINDS: &[&str] = &[
     "timer_orphan",
     "wait_minute",
     "internal_control",
+    // Phase 5: combat directives, the serialized queue, and the depth cap.
+    "trigger_depth",
+    "queue_overflow",
+    "dg_cast_target",
+    "dg_cast_spell",
+    "damage_target",
+    "damage_amount",
+    "kill_target",
+    "detach_vnum",
 ];
 
 /// The outcome drops as reportable [`NamedDrop`]s (a small convenience for
@@ -1036,9 +1677,33 @@ mod tests {
         assert_eq!(TriggerKind::Greet.type_names(), &["greet", "greet-all"]);
         assert_eq!(TriggerKind::Speech.type_names(), &["speech"]);
         assert_eq!(TriggerKind::Command.type_names(), &["command"]);
-        assert_eq!(TriggerKind::Entry.type_names(), &["entry"]);
+        assert_eq!(TriggerKind::Entry.type_names(), &["entry", "enter"]);
         assert_eq!(TriggerKind::Leave.type_names(), &["leave"]);
+        assert_eq!(TriggerKind::Fight.type_names(), &["fight"]);
+        assert_eq!(TriggerKind::HitPrcnt.type_names(), &["hitprcnt"]);
+        assert_eq!(TriggerKind::Damage.type_names(), &["damage"]);
+        assert_eq!(TriggerKind::Death.type_names(), &["death"]);
+        assert_eq!(TriggerKind::Cast.type_names(), &["cast"]);
+        assert_eq!(TriggerKind::Load.type_names(), &["load"]);
+        assert_eq!(TriggerKind::Door.type_names(), &["door"]);
+        assert_eq!(TriggerKind::Random.type_names(), &["random"]);
+        assert_eq!(TriggerKind::Global.type_names(), &["global"]);
+        assert_eq!(TriggerKind::Timer.type_names(), &["timer"]);
+        assert_eq!(TriggerKind::Time.type_names(), &["time"]);
         assert!(TriggerKind::Wait.type_names().is_empty());
+    }
+
+    #[test]
+    fn the_serialized_queue_caps_and_counts_overflow() {
+        let mut queue = TriggerQueue::default();
+        for _ in 0..QUEUE_CAP {
+            queue.enqueue(TriggerEvent::default());
+        }
+        assert_eq!(queue.pending.len(), QUEUE_CAP);
+        queue.enqueue(TriggerEvent::default());
+        assert_eq!(queue.pending.len(), QUEUE_CAP);
+        assert_eq!(queue.overflow, 1);
+        assert_eq!(MAX_TRIGGER_DEPTH, 10);
     }
 
     #[test]

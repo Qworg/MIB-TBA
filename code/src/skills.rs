@@ -89,7 +89,7 @@ use mib_stdlib::prelude::{
 use crate::combat::commands::{
     StealthView, broadcast, deny, entity_name, find_target_in_room, text,
 };
-use crate::combat::rewards::{NpcDefeated, alignment_for, reward_for};
+use crate::combat::rewards::{NpcDefeated, TbaDamage, alignment_for, reward_for};
 use crate::combat::{
     TbaAttackerMemory, TbaCombatant, TbaHidden, TbaProgress, TbaRng, TbaSneaking, WieldedWeapon,
     combat_dice,
@@ -353,6 +353,7 @@ fn deal_damage(
     combatants: &mut Query<&mut TbaCombatant>,
     defeated: &mut MessageWriter<PlayerDefeated>,
     npc_defeated: &mut MessageWriter<NpcDefeated>,
+    damage_events: &mut MessageWriter<TbaDamage>,
     commands: &mut Commands,
 ) -> bool {
     {
@@ -363,6 +364,12 @@ fn deal_damage(
             return false;
         }
         victim.hp = (victim.hp - amount.max(0)).max(0);
+        damage_events.write(TbaDamage {
+            attacker,
+            victim: target,
+            damage: amount,
+            lethal: victim.hp == 0,
+        });
         if victim.hp > 0 {
             return false;
         }
@@ -428,6 +435,7 @@ pub fn handle_skill_commands(
     mut rng: ResMut<TbaRng>,
     mut defeated: MessageWriter<PlayerDefeated>,
     mut npc_defeated: MessageWriter<NpcDefeated>,
+    mut damage_events: MessageWriter<TbaDamage>,
     mut commands: Commands,
     mut output: MessageWriter<OutputEvent>,
 ) {
@@ -584,6 +592,7 @@ pub fn handle_skill_commands(
                     &mut combatants,
                     &mut defeated,
                     &mut npc_defeated,
+                    &mut damage_events,
                     &mut commands,
                 );
                 let actor_name = entity_name(session, &queries.players, &queries.npcs);
@@ -684,6 +693,7 @@ pub fn handle_skill_commands(
                         &mut combatants,
                         &mut defeated,
                         &mut npc_defeated,
+                        &mut damage_events,
                         &mut commands,
                     );
                     let actor_name = entity_name(session, &queries.players, &queries.npcs);
@@ -799,6 +809,7 @@ pub fn handle_skill_commands(
                     &mut combatants,
                     &mut defeated,
                     &mut npc_defeated,
+                    &mut damage_events,
                     &mut commands,
                 );
                 if !lethal {

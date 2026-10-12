@@ -27,14 +27,22 @@ use std::collections::BTreeMap;
 
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{
-    DoorState, ItemId, Location, NpcId, OnlinePlayers, QuestEvent, Room, RoomId, RoomState,
-    find_item_def, spawn_item_carried_by_entity, spawn_item_on_ground, spawn_npc_from_content,
+    DoorState, ItemId, Location, Npc, NpcId, NpcKey, OnlinePlayers, Player, PlayerDefeated,
+    QuestEvent, Room, RoomId, RoomState, find_item_def, spawn_item_carried_by_entity,
+    spawn_item_on_ground, spawn_npc_from_content,
 };
 use serde::{Deserialize, Serialize};
 
+use crate::combat::TbaCombatant;
+use crate::combat::rewards::{NpcDefeated, TbaDamage, alignment_for, reward_for};
+use crate::content::Position;
+use crate::module::TbaContent;
 use crate::triggers::ast::{DoorOp, LoadKind};
+use crate::triggers::content::TriggerId;
 use crate::triggers::context::NamedDrop;
 use crate::triggers::eval::VarScope;
+use crate::triggers::events::{TriggerEvent, TriggerKind, TriggerQueue};
+use crate::triggers::index::TbaTriggers;
 
 /// Per-player persisted DG variables (issue #15, Phase 3).
 ///
@@ -130,6 +138,40 @@ pub struct PendingZoneEcho {
     pub text: String,
 }
 
+/// One resolved `dg_cast` request (Phase 5).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PendingCast {
+    /// The trigger owner (the caster).
+    pub caster: Entity,
+    /// The resolved target entity.
+    pub target: Entity,
+    /// The spell phrase, resolved against `tba.spells` by the caster system.
+    pub spell: String,
+}
+
+/// One resolved `%damage%` request (Phase 5).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PendingDamage {
+    /// The entity that dealt the damage (the trigger owner).
+    pub source: Entity,
+    pub target: Entity,
+    pub amount: i32,
+}
+
+/// One resolved `mkill` request (Phase 5).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PendingKill {
+    pub killer: Entity,
+    pub target: Entity,
+}
+
+/// One resolved `detach` request (Phase 5).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PendingDetach {
+    /// The trigger vnum to detach, when it parses.
+    pub trigger: Option<TriggerId>,
+}
+
 /// Effects queued by the trigger systems and drained by
 /// [`trigger_effects_system`].
 #[derive(Debug, Default, Resource)]
@@ -144,13 +186,21 @@ pub struct PendingTriggerOps {
     pub forces: Vec<PendingForce>,
     pub ats: Vec<PendingAt>,
     pub zone_echoes: Vec<PendingZoneEcho>,
+    /// Phase 5 combat directives.
+    pub casts: Vec<PendingCast>,
+    pub damages: Vec<PendingDamage>,
+    pub kills: Vec<PendingKill>,
+    pub detaches: Vec<PendingDetach>,
     /// Runtime named drops (unknown tokens, deferred constructs, unresolved
     /// effect targets) so nothing is silent.
     pub drops: Vec<NamedDrop>,
+    /// The current dispatch nesting depth (DG's `GET_TRIG_DEPTH`).
+    pub depth: usize,
 }
 
 impl PendingTriggerOps {
-    /// Whether nothing is queued.
+    /// Whether nothing is queued. The transient [`depth`](Self::depth) counter
+    /// is not itself pending work.
     pub fn is_empty(&self) -> bool {
         self.spawns.is_empty()
             && self.purges.is_empty()
@@ -161,6 +211,10 @@ impl PendingTriggerOps {
             && self.forces.is_empty()
             && self.ats.is_empty()
             && self.zone_echoes.is_empty()
+            && self.casts.is_empty()
+            && self.damages.is_empty()
+            && self.kills.is_empty()
+            && self.detaches.is_empty()
             && self.drops.is_empty()
     }
 }
@@ -202,6 +256,19 @@ pub fn trigger_effects_system(world: &mut World) {
     for purge in ops.purges {
         if world.get_entity(purge.target).is_ok() {
             let _ = world.despawn(purge.target);
+        }
+    }
+    for damage in ops.damages {
+        apply_raw_damage(world, damage.source, damage.target, damage.amount);
+    }
+    for kill in ops.kills {
+        apply_kill(world, kill.killer, kill.target);
+    }
+    for detach in ops.detaches {
+        if let Some(id) = detach.trigger
+            && let Some(mut triggers) = world.get_resource_mut::<TbaTriggers>()
+        {
+            triggers.detach(id);
         }
     }
     for at in ops.ats {
@@ -248,6 +315,99 @@ pub fn trigger_effects_system(world: &mut World) {
     for drop in &ops.drops {
         record_drop(world, drop.clone());
     }
+}
+
+/// Apply a raw `%damage%` amount to a combatant, emitting a [`TbaDamage`] and
+/// handling a lethal blow like `resolve_rounds` does.
+fn apply_raw_damage(world: &mut World, source: Entity, target: Entity, amount: i32) {
+    let applied = {
+        let Some(mut combatant) = world.get_mut::<TbaCombatant>(target) else {
+            return;
+        };
+        if !combatant.is_alive() {
+            return;
+        }
+        crate::combat::apply_damage_to(&mut combatant, amount)
+    };
+    if let Some(mut events) = world.get_resource_mut::<Messages<TbaDamage>>() {
+        events.write(TbaDamage {
+            attacker: source,
+            victim: target,
+            damage: applied.applied,
+            lethal: applied.lethal,
+        });
+    }
+    if applied.lethal {
+        defeat_target(world, source, target);
+    }
+}
+
+/// `mkill`: drop a combatant to zero and run the defeat path.
+fn apply_kill(world: &mut World, killer: Entity, target: Entity) {
+    {
+        let Some(mut combatant) = world.get_mut::<TbaCombatant>(target) else {
+            record_drop(
+                world,
+                NamedDrop::new("kill_target", "target has no combat state"),
+            );
+            return;
+        };
+        if !combatant.is_alive() {
+            return;
+        }
+        combatant.hp = 0;
+        combatant.position = Position::Dead;
+        combatant.target = None;
+    }
+    let lethal = true;
+    if let Some(mut events) = world.get_resource_mut::<Messages<TbaDamage>>() {
+        events.write(TbaDamage {
+            attacker: killer,
+            victim: target,
+            damage: 0,
+            lethal,
+        });
+    }
+    defeat_target(world, killer, target);
+}
+
+/// The shared player/NPC defeat path (the same split `resolve_rounds` uses).
+fn defeat_target(world: &mut World, killer: Entity, target: Entity) {
+    if world.get::<Player>(target).is_some() {
+        if let Some(mut events) = world.get_resource_mut::<Messages<PlayerDefeated>>() {
+            events.write(PlayerDefeated { player: target });
+        }
+        return;
+    }
+    if world.get::<Npc>(target).is_none() {
+        return;
+    }
+    let key = world.get::<NpcKey>(target).map(|key| key.0.clone());
+    let (npc, experience, gold, alignment) = match key {
+        None => (NpcId::from(""), 0, 0, 0),
+        Some(id) => {
+            let (experience, gold) = world
+                .get_resource::<TbaContent>()
+                .map(|content| reward_for(content, &NpcKey(id.clone())))
+                .unwrap_or((0, 0));
+            let alignment = world
+                .get_resource::<TbaContent>()
+                .map(|content| alignment_for(content, &NpcKey(id.clone())))
+                .unwrap_or(0);
+            (id, experience, gold, alignment)
+        }
+    };
+    if let Some(mut events) = world.get_resource_mut::<Messages<NpcDefeated>>() {
+        events.write(NpcDefeated {
+            victim: target,
+            killer,
+            npc,
+            experience,
+            gold,
+            alignment,
+        });
+    }
+    let _ = world.despawn(target);
 }
 
 /// Count one runtime named drop.
@@ -323,18 +483,38 @@ fn apply_door(world: &mut World, door: PendingDoor) {
                 },
             );
         }
-        return;
+    } else {
+        let mut state = RoomState::default();
+        state.doors.insert(
+            door.direction,
+            DoorState {
+                closed,
+                locked,
+                to: None,
+            },
+        );
+        world.entity_mut(door.room).insert(state);
     }
-    let mut state = RoomState::default();
-    state.doors.insert(
-        door.direction,
-        DoorState {
-            closed,
-            locked,
-            to: None,
-        },
-    );
-    world.entity_mut(door.room).insert(state);
+
+    // A door state change is the `door` event; the room's records fire with the
+    // operation word in `%cmd%` and the direction in `%direction%`.
+    let command = match &door.op {
+        DoorOp::Open => Some("open".to_owned()),
+        DoorOp::Close => Some("close".to_owned()),
+        DoorOp::Lock => Some("lock".to_owned()),
+        DoorOp::Unlock => Some("unlock".to_owned()),
+        DoorOp::Flags(_) | DoorOp::Purge | DoorOp::Deferred(_) => None,
+    };
+    if let Some(mut queue) = world.get_resource_mut::<TriggerQueue>() {
+        queue.enqueue(TriggerEvent {
+            kind: TriggerKind::Door,
+            room: door.room,
+            self_entity: Some(door.room),
+            command,
+            direction: Some(door.direction.as_str().to_owned()),
+            ..TriggerEvent::default()
+        });
+    }
 }
 
 /// Inject a forced command for `target` through the same `CommandReceived`
@@ -428,8 +608,15 @@ fn apply_spawn(world: &mut World, spawn: PendingSpawn) {
                 .room
                 .filter(|entity| world.get_entity(*entity).is_ok())
                 && let Some(key) = world.get::<Room>(room).map(|room| room.key.clone())
+                && let Some(entity) = spawn_npc_from_content(world, &key.as_str().into(), &npc_id)
+                && let Some(mut queue) = world.get_resource_mut::<TriggerQueue>()
             {
-                spawn_npc_from_content(world, &key.as_str().into(), &npc_id);
+                queue.enqueue(TriggerEvent {
+                    kind: TriggerKind::Load,
+                    room,
+                    self_entity: Some(entity),
+                    ..TriggerEvent::default()
+                });
             }
         }
     }

@@ -40,7 +40,9 @@ use crate::triggers::effects::{
     PendingTriggerOps, TbaTriggerVars, TriggerDropLog, trigger_effects_system,
 };
 use crate::triggers::events::{
-    TriggerLastRoom, trigger_command_system, trigger_greet_system, trigger_leave_system,
+    TriggerDeathSeen, TriggerLastRoom, TriggerPeriodic, TriggerQueue, trigger_command_system,
+    trigger_damage_system, trigger_death_reset_system, trigger_death_system, trigger_greet_system,
+    trigger_leave_system, trigger_periodic_system, trigger_queue_system, trigger_round_system,
 };
 use crate::triggers::index::TbaTriggers;
 use crate::triggers::quests::trigger_quest_bridge_system;
@@ -173,6 +175,9 @@ impl Plugin for TbaPlugin {
         app.init_resource::<PendingTriggerOps>();
         app.init_resource::<TriggerDropLog>();
         app.init_resource::<TriggerTimers>();
+        app.init_resource::<TriggerQueue>();
+        app.init_resource::<TriggerPeriodic>();
+        app.init_resource::<TriggerDeathSeen>();
         app.init_schedule(TbaRound);
 
         // Each component owner owns its schema (the classic-rpg idiom): the
@@ -200,6 +205,9 @@ impl Plugin for TbaPlugin {
         app.add_message::<CharacterCreated>();
         app.add_message::<PlayerDefeated>();
         app.add_message::<NpcDefeated>();
+        // Issue #15 Phase 5: every hit-point reduction emits a `TbaDamage` so
+        // `damage` triggers fire once per blow, from one intake seam.
+        app.add_message::<crate::combat::TbaDamage>();
         app.add_message::<CommandReceived>();
         app.add_message::<OutputEvent>();
         // Issue #15 Phase 3: the quest bridge emits stdlib quest events.
@@ -257,6 +265,35 @@ impl Plugin for TbaPlugin {
                 .after(route_commands),
         );
 
+        // Issue #15 Phase 5: resolve a queued `dg_cast` against `tba.spells`
+        // before the exclusive drain takes the rest of the pending effects.
+        app.add_systems(
+            Update,
+            crate::spells::apply_trigger_casts
+                .in_set(BridgeSet::Game)
+                .after(trigger_command_system)
+                .before(trigger_effects_system),
+        );
+        // The serialized queue drains the events the combat round and periodic
+        // heartbeats enqueued, after the drain applied their predecessor's
+        // direct effects.
+        app.add_systems(
+            Update,
+            trigger_queue_system
+                .in_set(BridgeSet::Game)
+                .after(trigger_effects_system),
+        );
+        // Phase 5 combat intake: `damage` and `death` fire once per blow/kill
+        // after the round and the spell/skill chains have produced them.
+        app.add_systems(
+            Update,
+            trigger_death_reset_system.before(crate::combat::run_due_round),
+        );
+        app.add_systems(
+            Update,
+            (trigger_damage_system, trigger_death_system).after(crate::combat::run_due_round),
+        );
+
         // TBA-E09: the genre death rules (XP loss + gold to a carried pile)
         // must be in place before the stdlib corpse/respawn pass, which sweeps
         // every carried item (including the gold pile just spawned) into the
@@ -306,6 +343,12 @@ impl Plugin for TbaPlugin {
             )
                 .chain(),
         );
+        // Phase 5: `fight`/`hitprcnt` records enqueue once per fighting owner
+        // per round, and `death` fires before the round's despawn applies.
+        app.add_systems(
+            TbaRound,
+            (trigger_round_system, trigger_death_system).after(crate::combat::resolve_rounds),
+        );
         app.add_systems(Update, crate::combat::run_due_round.after(BridgeSet::Game));
 
         // Kill rewards: read every `NpcDefeated` produced this frame — melee
@@ -348,6 +391,9 @@ impl Plugin for TbaPlugin {
                 // applies any queued spawns/purges/movement requests.
                 trigger_timer_system,
                 trigger_greet_system,
+                trigger_periodic_system,
+                trigger_queue_system,
+                crate::spells::apply_trigger_casts,
                 trigger_effects_system,
             )
                 .chain()

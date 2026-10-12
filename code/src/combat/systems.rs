@@ -28,7 +28,7 @@ use crate::module::TbaContent;
 
 use super::model::{TbaAttackDice, TbaCombatant, WieldedWeapon};
 use super::progression::TbaRng;
-use super::rewards::{NpcDefeated, alignment_for, reward_for};
+use super::rewards::{NpcDefeated, TbaDamage, alignment_for, reward_for};
 
 /// Unarmed damage. An equipped weapon's `tba.items` dice replace this through
 /// [`weapon_dice`] once the equipment pass sets [`WieldedWeapon`].
@@ -103,6 +103,7 @@ pub fn resolve_rounds(
     keys: Query<&NpcKey>,
     mut defeated: MessageWriter<PlayerDefeated>,
     mut npc_defeated: MessageWriter<NpcDefeated>,
+    mut damage_events: MessageWriter<TbaDamage>,
     mut commands: Commands,
 ) {
     let content = content.as_deref();
@@ -147,6 +148,12 @@ pub fn resolve_rounds(
                 continue;
             }
             combatant.hp = (combatant.hp - damage).max(0);
+            damage_events.write(TbaDamage {
+                attacker,
+                victim: target,
+                damage,
+                lethal: combatant.hp == 0,
+            });
             if combatant.hp == 0 {
                 combatant.position = Position::Dead;
                 combatant.target = None;

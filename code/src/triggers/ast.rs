@@ -218,6 +218,14 @@ pub enum Node {
     Force { target: String, command: String },
     /// `%at% <room vnum> <command>` — execute a command in another room.
     At { room: String, command: String },
+    /// `dg_cast '<spell>' <target>` — cast a catalog spell (Phase 5).
+    DgCast { spell: String, target: String },
+    /// `%damage% <target> <amount>` — deal direct damage (Phase 5).
+    Damage { target: String, amount: String },
+    /// `mkill <target>` — kill an NPC (Phase 5).
+    Mkill { target: String },
+    /// `detach <vnum> <target>` — detach a trigger for this session (Phase 5).
+    Detach { vnum: String, target: String },
     /// A construct parsed but deferred (an indexed user array; Phase 4+).
     Deferred { kind: String, line: String },
     /// A line whose construct Phase 3 does not support.
@@ -255,6 +263,10 @@ impl Node {
             Node::Door { .. } => "door".to_owned(),
             Node::Force { .. } => "force".to_owned(),
             Node::At { .. } => "at".to_owned(),
+            Node::DgCast { .. } => "dg_cast".to_owned(),
+            Node::Damage { .. } => "damage".to_owned(),
+            Node::Mkill { .. } => "mkill".to_owned(),
+            Node::Detach { .. } => "detach".to_owned(),
             Node::Deferred { kind, .. } => kind.clone(),
             Node::Unsupported { kind, .. } => format!("unsupported:{kind}"),
         }
@@ -701,6 +713,27 @@ impl<'a> Parser<'a> {
                 let (target, text) = split_target(&rest);
                 Node::EchoAround { target, text }
             }
+            "dg_cast" | "%dg_cast%" | "%mcast%" | "%ocast%" | "%wcast%" => {
+                let node = parse_dg_cast(&rest);
+                self.count("dg_cast");
+                node
+            }
+            "%damage%" | "%mdamage%" | "%odamage%" | "%wdamage%" => {
+                self.count("damage");
+                let (target, amount) = split_target(&rest);
+                Node::Damage { target, amount }
+            }
+            "mkill" => {
+                self.count("mkill");
+                Node::Mkill {
+                    target: rest.trim().to_owned(),
+                }
+            }
+            "detach" => {
+                self.count("detach");
+                let (vnum, target) = split_target(&rest);
+                Node::Detach { vnum, target }
+            }
             _ => {
                 let kind = directive_kind(&keyword);
                 self.count_unsupported(&kind);
@@ -727,6 +760,39 @@ fn directive_kind(first_word: &str) -> String {
 /// User arrays are deferred past Phase 3, so the parser records them by name.
 fn is_array_name(name: &str) -> bool {
     name.contains('[') || name.contains('(')
+}
+
+/// Parse a `dg_cast` body after the keyword.
+///
+/// `dg_cast '<spell>' <%target%>` and `dg_cast <spell> <%target%>` both parse;
+/// a bare `dg_cast '<spell>'` targets the owner. The spell phrase is kept
+/// verbatim (the effect layer resolves it against `tba.spells`), so an
+/// unknown spell is a named drop rather than a silent no-op.
+fn parse_dg_cast(rest: &str) -> Node {
+    let rest = rest.trim();
+    let (spell, target) =
+        if let Some(after) = rest.strip_prefix('\'').or_else(|| rest.strip_prefix('"')) {
+            let quote = rest.chars().next().unwrap_or('\'');
+            match after.split_once(quote) {
+                Some((spell, target)) => (spell.trim().to_owned(), target.trim()),
+                None => (rest.trim_matches(quote).trim().to_owned(), ""),
+            }
+        } else {
+            split_word(rest)
+        };
+    Node::DgCast {
+        spell,
+        target: target.trim().to_owned(),
+    }
+}
+
+/// Split the first whitespace-delimited word from the rest.
+fn split_word(line: &str) -> (String, &str) {
+    let trimmed = line.trim();
+    match trimmed.find(char::is_whitespace) {
+        Some(index) => (trimmed[..index].to_owned(), trimmed[index + 1..].trim()),
+        None => (trimmed.to_owned(), ""),
+    }
 }
 
 /// Parse a `%load%` body after the directive word.
@@ -1015,6 +1081,28 @@ fn collect_references(nodes: &[Node], out: &mut String) {
             // token is not a substitution, so only the room is scanned.
             Node::At { room, .. } => {
                 out.push_str(room);
+                out.push('\n');
+            }
+            Node::DgCast { spell, target } => {
+                out.push_str(spell);
+                out.push('\n');
+                out.push_str(target);
+                out.push('\n');
+            }
+            Node::Damage { target, amount } => {
+                out.push_str(target);
+                out.push('\n');
+                out.push_str(amount);
+                out.push('\n');
+            }
+            Node::Mkill { target } => {
+                out.push_str(target);
+                out.push('\n');
+            }
+            Node::Detach { vnum, target } => {
+                out.push_str(vnum);
+                out.push('\n');
+                out.push_str(target);
                 out.push('\n');
             }
             Node::Return(None)
@@ -1366,19 +1454,37 @@ mod tests {
     #[test]
     fn unsupported_lines_become_named_markers() {
         let program = parse_script(
-            "%transform% %actor% 10
-\
+            "%transform% %actor% 10\n\
              give sword %actor%\n\
-             dg_cast 'poison' %actor%\n\
-             mkill %actor%\n",
+             mfollow %actor%\n\
+             sleep\n",
         );
         assert!(program.is_valid(), "{:?}", program.error);
         assert_eq!(program.unsupported.get("transform"), Some(&1));
         assert_eq!(program.unsupported.get("give"), Some(&1));
-        assert_eq!(program.unsupported.get("dg_cast"), Some(&1));
-        assert_eq!(program.unsupported.get("mkill"), Some(&1));
+        assert_eq!(program.unsupported.get("mfollow"), Some(&1));
+        assert_eq!(program.unsupported.get("sleep"), Some(&1));
         assert_eq!(program.nodes.len(), 4);
         assert!(matches!(&program.nodes[0], Node::Unsupported { kind, .. } if kind == "transform"));
+    }
+
+    #[test]
+    fn phase5_combat_directives_parse_as_nodes() {
+        let program = parse_script(
+            "dg_cast 'cure blind' %actor%\n\
+             %damage% %actor% %random.5%\n\
+             mkill %speech.cdr%\n\
+             detach 59 %self.id%\n",
+        );
+        assert!(program.is_valid(), "{:?}", program.error);
+        assert_eq!(program.constructs.get("dg_cast"), Some(&1));
+        assert_eq!(program.constructs.get("damage"), Some(&1));
+        assert_eq!(program.constructs.get("mkill"), Some(&1));
+        assert_eq!(program.constructs.get("detach"), Some(&1));
+        assert!(matches!(&program.nodes[0], Node::DgCast { spell, .. } if spell == "cure blind"));
+        assert!(matches!(&program.nodes[1], Node::Damage { .. }));
+        assert!(matches!(&program.nodes[2], Node::Mkill { .. }));
+        assert!(matches!(&program.nodes[3], Node::Detach { vnum, .. } if vnum == "59"));
     }
 
     #[test]

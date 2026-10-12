@@ -119,7 +119,7 @@
 - emitted records: 133
 - parsed: 133
 - parse failures: 0
-- records with unsupported constructs: 50
+- records with unsupported constructs: 44
 
 ### Emitted constructs
 
@@ -128,7 +128,10 @@
 | `at.load` | 1 |
 | `break` | 29 |
 | `case` | 33 |
+| `damage` | 5 |
 | `default` | 3 |
+| `detach` | 1 |
+| `dg_cast` | 12 |
 | `done` | 9 |
 | `door` | 4 |
 | `echo` | 72 |
@@ -143,6 +146,7 @@
 | `if` | 224 |
 | `load.mob` | 4 |
 | `load.obj` | 97 |
+| `mkill` | 1 |
 | `nop` | 11 |
 | `purge` | 17 |
 | `rdelete` | 5 |
@@ -162,10 +166,7 @@
 | `unsupported:clap` | 1 |
 | `unsupported:close` | 3 |
 | `unsupported:d` | 1 |
-| `unsupported:damage` | 5 |
 | `unsupported:dance` | 2 |
-| `unsupported:detach` | 1 |
-| `unsupported:dg_cast` | 12 |
 | `unsupported:door_purge` | 1 |
 | `unsupported:drink` | 1 |
 | `unsupported:drop` | 2 |
@@ -181,7 +182,6 @@
 | `unsupported:lock` | 3 |
 | `unsupported:look` | 1 |
 | `unsupported:mfollow` | 1 |
-| `unsupported:mkill` | 1 |
 | `unsupported:mremember` | 1 |
 | `unsupported:ogle` | 1 |
 | `unsupported:open` | 3 |
@@ -223,10 +223,7 @@
 | `clap` | 1 |
 | `close` | 3 |
 | `d` | 1 |
-| `damage` | 5 |
 | `dance` | 2 |
-| `detach` | 1 |
-| `dg_cast` | 12 |
 | `door_purge` | 1 |
 | `drink` | 1 |
 | `drop` | 2 |
@@ -242,7 +239,6 @@
 | `lock` | 3 |
 | `look` | 1 |
 | `mfollow` | 1 |
-| `mkill` | 1 |
 | `mremember` | 1 |
 | `ogle` | 1 |
 | `open` | 3 |

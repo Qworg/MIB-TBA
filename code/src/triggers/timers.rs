@@ -220,9 +220,8 @@ pub fn trigger_timer_system(
             kind: TriggerKind::Wait,
             actor: timer.actor,
             room: timer.room,
-            text: None,
-            command: None,
             direction: timer.ctx.direction.clone(),
+            ..TriggerEvent::default()
         };
         queue_effects(&mut outcome, &event, timer.owner, &view, &mut ops);
         deliver(&outcome, &event, timer.owner, &view, &mut output);

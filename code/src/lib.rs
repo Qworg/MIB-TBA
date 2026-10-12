@@ -52,14 +52,14 @@ pub mod prelude {
         BASE_ATTRIBUTE, BASE_MOVE, EVIL_ALIGNMENT, GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID,
         GOLD_ITEM_NAME, GOOD_ALIGNMENT, KillReward, MOVE_PER_LEVEL, NAKED_ARMOR_CLASS, NpcDefeated,
         ROUND_SECONDS, SaveType, TbaAlignment, TbaAttackDice, TbaAttackerMemory, TbaAttributes,
-        TbaCombatant, TbaGold, TbaHidden, TbaNpcBase, TbaProgress, TbaRng, TbaRound, TbaRoundClock,
-        TbaSaves, TbaSneaking, TbaSpawnHome, WieldedWeapon, alignment_after_kill, alignment_for,
-        apply_death_penalty, auto_engage_system, award_kill_rewards, combat_dice,
-        credit_gold_pickups, default_class, derive_vitals, engages, fallback_combatant, grant_kill,
-        handle_combat_commands, helper_system, level_for_xp, mag_savingthrow,
-        npc_combatant_from_stats, npc_combatant_system, player_combatant_system, pursuit_system,
-        resolve_class_key, resolve_rounds, reward_for, run_due_round, saving_throws, weapon_dice,
-        xp_threshold, xp_to_advance,
+        TbaCombatant, TbaDamage, TbaGold, TbaHidden, TbaNpcBase, TbaProgress, TbaRng, TbaRound,
+        TbaRoundClock, TbaSaves, TbaSneaking, TbaSpawnHome, WieldedWeapon, alignment_after_kill,
+        alignment_for, apply_damage_to, apply_death_penalty, auto_engage_system,
+        award_kill_rewards, combat_dice, credit_gold_pickups, default_class, derive_vitals,
+        engages, fallback_combatant, grant_kill, handle_combat_commands, helper_system,
+        level_for_xp, mag_savingthrow, npc_combatant_from_stats, npc_combatant_system,
+        player_combatant_system, pursuit_system, resolve_class_key, resolve_rounds, reward_for,
+        run_due_round, saving_throws, weapon_dice, xp_threshold, xp_to_advance,
     };
     pub use crate::content::{
         AffectDef, AffectLocation, Attribute, DoorReset, ItemAffectFlag, ItemExtraFlag, LevelBonus,
@@ -95,7 +95,8 @@ pub mod prelude {
         substitute,
     };
     pub use crate::spells::{
-        ActiveBuff, DEFAULT_BUFF_ROUNDS, TbaBuffs, handle_cast_command, mana_cost, tick_buffs,
+        ActiveBuff, DEFAULT_BUFF_ROUNDS, TbaBuffs, apply_trigger_casts, handle_cast_command,
+        mana_cost, tick_buffs,
     };
     pub use crate::stealth::{
         TRUE_SIGHT_DETECT, TbaTrueSight, grant_true_sight, stealth_for, sync_concealment,
@@ -113,16 +114,20 @@ pub mod prelude {
         resolve_token,
     };
     pub use crate::triggers::effects::{
-        PendingAt, PendingDoor, PendingForce, PendingTeleport, PendingTriggerOps, PendingZoneEcho,
-        TbaTriggerVars, TriggerDropLog, trigger_effects_system,
+        PendingAt, PendingCast, PendingDamage, PendingDetach, PendingDoor, PendingForce,
+        PendingKill, PendingTeleport, PendingTriggerOps, PendingZoneEcho, TbaTriggerVars,
+        TriggerDropLog, trigger_effects_system,
     };
     pub use crate::triggers::eval::{
-        AtRequest, DoorRequest, Emitted, EvalOutcome, ForceRequest, Suspension, TeleportRequest,
-        TextTarget, ZoneEchoRequest, run, run_from,
+        AtRequest, CastRequest, DamageRequest, DetachRequest, DoorRequest, Emitted, EvalOutcome,
+        ForceRequest, KillRequest, Suspension, TeleportRequest, TextTarget, ZoneEchoRequest, run,
+        run_from,
     };
     pub use crate::triggers::events::{
-        TriggerKind, TriggerLastRoom, trigger_command_system, trigger_greet_system,
-        trigger_leave_system,
+        MAX_TRIGGER_DEPTH, TriggerDeathSeen, TriggerEvent, TriggerKind, TriggerLastRoom,
+        TriggerPeriodic, TriggerQueue, trigger_command_system, trigger_damage_system,
+        trigger_death_reset_system, trigger_death_system, trigger_greet_system,
+        trigger_leave_system, trigger_periodic_system, trigger_queue_system, trigger_round_system,
     };
     pub use crate::triggers::index::{TbaTriggers, TriggerIndex};
     pub use crate::triggers::timers::{
