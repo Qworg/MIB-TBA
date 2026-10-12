@@ -23,6 +23,9 @@ tracing = "0.1"
 # Only the integration tests build a `Connection` (GMCP projection tests); the
 # engine `Connection.egress` is a tokio `mpsc::Sender`.
 tokio = { version = "1", features = ["sync"] }
+# The Phase 3 trigger tests load the real `content/tba.triggers.*` and
+# `content/stdlib.quests.yaml` records instead of hand-copied fixtures.
+serde_yaml = "0.9"
 
 [lints]
 workspace = true

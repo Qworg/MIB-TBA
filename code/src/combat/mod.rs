@@ -37,8 +37,8 @@ pub use progression::{
     xp_threshold, xp_to_advance,
 };
 pub use rewards::{
-    KillReward, NpcDefeated, alignment_after_kill, alignment_for, award_kill_rewards, grant_kill,
-    reward_for,
+    DamageApply, KillReward, NpcDefeated, TbaDamage, alignment_after_kill, alignment_for,
+    apply_damage_to, award_kill_rewards, grant_kill, reward_for,
 };
 pub use round::{ROUND_SECONDS, TbaRound, TbaRoundClock, run_due_round};
 pub use saves::{mag_savingthrow, saving_throws};

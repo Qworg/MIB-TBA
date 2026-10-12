@@ -2944,6 +2944,7 @@ dependencies = [
  "mib-stdlib",
  "serde",
  "serde_json",
+ "serde_yaml",
  "smol_str",
  "tokio",
  "tracing",

@@ -12,7 +12,7 @@ use std::path::PathBuf;
 
 use crate::emit::write_bundle;
 use crate::error::{ConvertError, Result};
-use crate::mapping::{Conversion, ConvertOptions, convert};
+use crate::mapping::{Conversion, ConvertOptions, build_triage, convert};
 use crate::report::DEFAULT_START_ROOM;
 
 const USAGE: &str = "\
@@ -20,10 +20,12 @@ tbaport — deterministic tbaMUD -> MIB content converter
 
 USAGE:
     tbaport convert --source DIR [--out DIR] [--report FILE] [--only ZONE] [--start-room VNUM] [--validate-only]
+    tbaport triage  --source DIR [--out FILE] [--only ZONE]
 
 OPTIONS:
     --source DIR       tbaMUD checkout root (must contain lib/world)
-    --out DIR          staging output directory [default: target/tbaport/content]
+    --out DIR|FILE     convert: staging output directory [default: target/tbaport/content]
+                       triage:  JSON output path [default: reports/trigger-triage.json]
     --report FILE      drop-report path [default: target/tbaport/drop-report.json]
     --only ZONE        convert a single zone
     --start-room VNUM  tag this room vnum as `start_room` [default: 3001]
@@ -44,6 +46,7 @@ pub fn run(args: &[String]) -> Result<()> {
 
     match command {
         "convert" => run_convert(iter),
+        "triage" => run_triage(iter),
         "-h" | "--help" | "help" => {
             print!("{USAGE}");
             Ok(())
@@ -133,6 +136,56 @@ fn next_value<'a>(iter: &mut impl Iterator<Item = &'a String>, flag: &str) -> Re
     iter.next()
         .cloned()
         .ok_or_else(|| ConvertError::Usage(format!("{flag} requires a value")))
+}
+
+fn run_triage<'a>(mut iter: impl Iterator<Item = &'a String>) -> Result<()> {
+    let mut source: Option<PathBuf> = None;
+    let mut out = PathBuf::from("reports/trigger-triage.json");
+    let mut only: Option<u32> = None;
+
+    while let Some(arg) = iter.next() {
+        match arg.as_str() {
+            "--source" => source = Some(PathBuf::from(next_value(&mut iter, "--source")?)),
+            "--out" => out = PathBuf::from(next_value(&mut iter, "--out")?),
+            "--only" => {
+                let value = next_value(&mut iter, "--only")?;
+                only = Some(value.parse::<u32>().map_err(|_| {
+                    ConvertError::Usage(format!("--only expects a zone number, got `{value}`"))
+                })?);
+            }
+            other => {
+                return Err(ConvertError::Usage(format!(
+                    "unknown argument `{other}` (try `tbaport --help`)"
+                )));
+            }
+        }
+    }
+
+    let source = source.ok_or_else(|| ConvertError::Usage("--source is required".to_owned()))?;
+    let options = ConvertOptions {
+        source_root: source,
+        only,
+        start_room: Some(DEFAULT_START_ROOM),
+    };
+
+    let triage = build_triage(&options)?;
+    if let Some(parent) = out.parent() {
+        std::fs::create_dir_all(parent).map_err(|source| ConvertError::Io {
+            path: parent.to_path_buf(),
+            source,
+        })?;
+    }
+    let json = serde_json::to_string_pretty(&triage)?;
+    std::fs::write(&out, format!("{json}\n")).map_err(|source| ConvertError::Io {
+        path: out.clone(),
+        source,
+    })?;
+    println!(
+        "triage: records={} essential={} buckets={:?}",
+        triage.corpus.records, triage.essential.count, triage.corpus.by_bucket,
+    );
+    println!("triage: {}", out.display());
+    Ok(())
 }
 
 /// Entry point for the binary; returns a process exit code.

@@ -136,6 +136,7 @@ fn test_app(content: TbaContent) -> App {
     app.add_message::<OutputEvent>();
     app.add_message::<PlayerDefeated>();
     app.add_message::<NpcDefeated>();
+    app.add_message::<TbaDamage>();
     app.add_message::<CommandReceived>();
     app.add_message::<CharacterCreated>();
     app.add_systems(

@@ -12,6 +12,7 @@ use mib_stdlib::content::{
     AreasFile, HelpFile, ItemsFile, NpcsFile, QuestsFile, RoomDef, RoomId, RoomsFile,
 };
 use mib_tba::content::{ShopsFile, SocialsFile, TbaItemsFile, TbaNpcStatsFile, ZonesFile};
+use mib_tba::triggers::content::{TriggerDef, TriggerId, TriggersFile};
 
 use crate::error::{ConvertError, Result};
 
@@ -29,6 +30,8 @@ pub struct OutputBundle {
     pub tba_items: TbaItemsFile,
     pub shops: ShopsFile,
     pub socials: SocialsFile,
+    /// `tba.triggers` — the essential DG scripts, sharded by source zone.
+    pub triggers: TriggersFile,
 }
 
 impl OutputBundle {
@@ -67,6 +70,9 @@ impl OutputBundle {
             },
             socials: SocialsFile {
                 socials: Default::default(),
+            },
+            triggers: TriggersFile {
+                triggers: Default::default(),
             },
         }
     }
@@ -137,6 +143,34 @@ fn room_shards(rooms: &RoomsFile) -> Result<Vec<(String, String)>> {
     Ok(files)
 }
 
+/// One `tba.triggers.<zone>.yaml` shard per source zone.
+///
+/// A trigger's zone is Circle's vnum banding (`vnum / 100`), which the triage
+/// confirms equals the `.trg` file's zone for the whole corpus. Shards are
+/// emitted in ascending zone order so the staging directory is deterministic.
+fn trigger_shards(triggers: &TriggersFile) -> Result<Vec<(String, String)>> {
+    let mut by_zone: BTreeMap<u32, BTreeMap<TriggerId, TriggerDef>> = BTreeMap::new();
+    for (id, def) in &triggers.triggers {
+        let zone = if def.vnum < 0 {
+            0
+        } else {
+            (def.vnum / 100) as u32
+        };
+        by_zone
+            .entry(zone)
+            .or_default()
+            .insert(id.clone(), def.clone());
+    }
+    let mut files = Vec::with_capacity(by_zone.len());
+    for (zone, triggers) in by_zone {
+        files.push((
+            format!("tba.triggers.{zone}.yaml"),
+            dump(&TriggersFile { triggers })?,
+        ));
+    }
+    Ok(files)
+}
+
 /// Every section file for a bundle, in deterministic order.
 fn section_files(bundle: &OutputBundle) -> Result<Vec<(String, String)>> {
     let mut files = vec![
@@ -152,6 +186,7 @@ fn section_files(bundle: &OutputBundle) -> Result<Vec<(String, String)>> {
         ("tba.socials.yaml".to_owned(), dump(&bundle.socials)?),
     ];
     files.extend(room_shards(&bundle.rooms)?);
+    files.extend(trigger_shards(&bundle.triggers)?);
     Ok(files)
 }
 

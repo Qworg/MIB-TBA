@@ -14,14 +14,64 @@
 //! which regenerates the base block from the new level.
 
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{Location, NpcKey, Player, Session, SessionState};
+use mib_stdlib::prelude::{Location, NpcId, NpcKey, Player, Session, SessionState};
 
 use crate::content::TbaClassDef;
 use crate::module::TbaContent;
 use crate::party::TbaParties;
 
-use super::model::{TbaAlignment, TbaGold, TbaProgress};
+use super::model::{TbaAlignment, TbaCombatant, TbaGold, TbaProgress};
 use super::progression::level_for_xp;
+use crate::content::Position;
+
+/// A `TbaRound`/spell/skill damage application (issue #15, Phase 5).
+///
+/// Emitted wherever a combatant's hit points drop, so the trigger intake can
+/// fire `damage` records without every damage site knowing about triggers. The
+/// message carries the amount and the attacker because the trigger's
+/// `%damage%`/`%actor%` context needs both.
+#[derive(Debug, Clone, Copy, Message)]
+pub struct TbaDamage {
+    /// The entity that dealt the damage.
+    pub attacker: Entity,
+    /// The entity that took the damage.
+    pub victim: Entity,
+    /// The damage applied.
+    pub damage: i32,
+    /// Whether the blow reduced the victim to zero hit points.
+    pub lethal: bool,
+}
+
+/// The outcome of applying a raw damage amount to a combatant.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct DamageApply {
+    /// The damage actually applied (never more than the victim's remaining hp).
+    pub applied: i32,
+    /// Whether the victim reached zero hit points.
+    pub lethal: bool,
+}
+
+/// Reduce a combatant's hit points, marking it dead at zero.
+///
+/// Pure over the combatant so both the exclusive trigger drain and the trigger
+/// unit tests share the same clamping. Returns a zero application when the
+/// entity has no hit points left.
+pub fn apply_damage_to(combatant: &mut TbaCombatant, amount: i32) -> DamageApply {
+    if !combatant.is_alive() {
+        return DamageApply {
+            applied: 0,
+            lethal: false,
+        };
+    }
+    let applied = amount.max(0).min(combatant.hp.max(0));
+    combatant.hp = (combatant.hp - amount.max(0)).max(0);
+    let lethal = combatant.hp == 0;
+    if lethal {
+        combatant.position = Position::Dead;
+        combatant.target = None;
+    }
+    DamageApply { applied, lethal }
+}
 
 /// A defeated NPC, with the reward data the killer is owed.
 ///
@@ -33,6 +83,9 @@ pub struct NpcDefeated {
     pub victim: Entity,
     /// The entity that landed the killing blow (a player, for a reward).
     pub killer: Entity,
+    /// The defeated prototype id, so a quest bridge never has to re-query the
+    /// entity the same frame despawns it.
+    pub npc: NpcId,
     /// XP the prototype yields (`tba.npc_stats.experience`), or 0.
     pub experience: u64,
     /// Gold the prototype yields (`tba.npc_stats.gold`), or 0.

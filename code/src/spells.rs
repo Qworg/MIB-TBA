@@ -31,21 +31,29 @@
 //! [`DocKind::Player`](mib_persist::prelude::DocKind::Player), so active buffs
 //! and their remaining rounds survive a restart.
 
+use bevy::ecs::system::SystemParam;
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
-use mib_stdlib::prelude::{Location, Npc, NpcKey, Player, PlayerDefeated, Session, SessionState};
+use mib_stdlib::prelude::{
+    Location, Npc, NpcId, NpcKey, Player, PlayerDefeated, Session, SessionState,
+};
 use serde::{Deserialize, Serialize};
 use smol_str::SmolStr;
 
 use crate::combat::commands::{
     StealthView, broadcast, deny, entity_name, find_target_in_room, text,
 };
-use crate::combat::rewards::{NpcDefeated, alignment_for, reward_for};
+use crate::combat::rewards::{NpcDefeated, TbaDamage, alignment_for, reward_for};
 use crate::combat::{
     SaveType, TbaCombatant, TbaHidden, TbaProgress, TbaRng, default_class, mag_savingthrow,
 };
 use crate::content::{AffectDef, Position, SaveEffect, SpellDef, SpellKind, SpellTarget};
 use crate::module::TbaContent;
+use crate::triggers::context::NamedDrop;
+use crate::triggers::effects::{PendingTriggerOps, TriggerDropLog};
+use crate::triggers::events::{TriggerEvent, TriggerKind, TriggerView, dispatch};
+use crate::triggers::index::TbaTriggers;
+use crate::triggers::timers::TriggerTimers;
 
 /// Combat rounds a cast buff lasts when the spell carries no source pulse
 /// count.
@@ -295,6 +303,17 @@ fn add_buff(
     }
 }
 
+/// The trigger runtime `cast` dispatch needs, bundled so
+/// [`handle_cast_command`] stays within Bevy's 16-parameter system limit.
+#[derive(SystemParam)]
+pub struct CastTriggerRuntime<'w, 's> {
+    pub triggers: Option<Res<'w, TbaTriggers>>,
+    pub view: TriggerView<'w, 's>,
+    pub timers: ResMut<'w, TriggerTimers>,
+    pub ops: ResMut<'w, PendingTriggerOps>,
+    pub damage_events: MessageWriter<'w, TbaDamage>,
+}
+
 /// `BridgeSet::Game`: translate `cast '<spell>' [target]` into a spell effect.
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn handle_cast_command(
@@ -311,9 +330,17 @@ pub fn handle_cast_command(
     keys: Query<&NpcKey>,
     mut defeated: MessageWriter<PlayerDefeated>,
     mut npc_defeated: MessageWriter<NpcDefeated>,
+    runtime: CastTriggerRuntime,
     mut commands: Commands,
     mut output: MessageWriter<OutputEvent>,
 ) {
+    let CastTriggerRuntime {
+        triggers,
+        view,
+        mut timers,
+        mut ops,
+        mut damage_events,
+    } = runtime;
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
 
@@ -490,6 +517,33 @@ pub fn handle_cast_command(
             let target_name = entity_name(target, &players, &npcs);
             let mut lethal = false;
 
+            // A `cast` record attached to the victim can negate the spell with
+            // `return 0` (DG's `cast_mtrigger`/`cast_otrigger` hook).
+            if let Some(triggers) = triggers.as_deref() {
+                let trigger = TriggerEvent {
+                    kind: TriggerKind::Cast,
+                    actor: session,
+                    room: room.unwrap_or(Entity::PLACEHOLDER),
+                    self_entity: Some(target),
+                    victim: Some(session),
+                    spell: Some(spell_name.clone()),
+                    ..TriggerEvent::default()
+                };
+                let outcome = dispatch(
+                    &trigger,
+                    triggers,
+                    &view,
+                    &mut rng,
+                    &mut ops,
+                    &mut timers,
+                    &mut output,
+                );
+                if outcome.blocked {
+                    output.write(text(target, format!("{spell_name} fizzles.")));
+                    continue;
+                }
+            }
+
             // Circle rolls the saving throw, then halves or negates. A `cast`
             // always resolves `SAVING_SPELL` (`call_magic`,
             // spell_parser.c:205-222) against the victim's class/level base
@@ -551,6 +605,12 @@ pub fn handle_cast_command(
                             continue;
                         }
                         victim.hp = (victim.hp - damage).max(0);
+                        damage_events.write(TbaDamage {
+                            attacker: session,
+                            victim: target,
+                            damage,
+                            lethal: victim.hp == 0,
+                        });
                         if victim.hp == 0 {
                             victim.position = Position::Dead;
                             victim.target = None;
@@ -705,6 +765,11 @@ pub fn handle_cast_command(
                     npc_defeated.write(NpcDefeated {
                         victim: target,
                         killer: session,
+                        npc: keys
+                            .get(target)
+                            .ok()
+                            .map(|key| key.0.clone())
+                            .unwrap_or_else(|| NpcId::from("")),
                         experience,
                         gold,
                         alignment,
@@ -715,6 +780,199 @@ pub fn handle_cast_command(
         }
 
         write_prompt(&mut output, session);
+    }
+}
+
+/// `BridgeSet::Game` / `FixedUpdate`, before the exclusive effect drain:
+/// apply queued `dg_cast` directives.
+///
+/// Only spells present in `tba.spells` are mapped; a phrase the catalog does
+/// not carry is counted as a `dg_cast_spell` named drop rather than silently
+/// doing nothing. The caster's level comes from `TbaProgress` for a player and
+/// `tba.npc_stats` for an NPC; DG's `dg_cast` spends no mana and needs no class
+/// gate, so neither is checked here.
+#[allow(clippy::too_many_arguments, clippy::type_complexity)]
+pub fn apply_trigger_casts(
+    mut ops: ResMut<PendingTriggerOps>,
+    content: Option<Res<TbaContent>>,
+    mut combatants: Query<&mut TbaCombatant>,
+    mut buffs: Query<&mut TbaBuffs>,
+    progress: Query<&TbaProgress>,
+    keys: Query<&NpcKey>,
+    players: Query<(), With<Player>>,
+    npcs: Query<(), With<Npc>>,
+    mut rng: ResMut<TbaRng>,
+    mut defeated: MessageWriter<PlayerDefeated>,
+    mut npc_defeated: MessageWriter<NpcDefeated>,
+    mut damage_events: MessageWriter<TbaDamage>,
+    mut commands: Commands,
+    mut output: MessageWriter<OutputEvent>,
+    mut log: ResMut<TriggerDropLog>,
+) {
+    let casts = std::mem::take(&mut ops.casts);
+    if casts.is_empty() {
+        return;
+    }
+    let empty = TbaContent::default();
+    let content = content.as_deref().unwrap_or(&empty);
+    for cast in casts {
+        let Some((spell_id, spell)) =
+            resolve_spell(content, &cast.spell).map(|(id, def)| (id.clone(), def))
+        else {
+            log.record(&NamedDrop::new(
+                "dg_cast_spell",
+                format!("unknown spell: {}", cast.spell),
+            ));
+            continue;
+        };
+        if combatants.get(cast.target).is_err() {
+            log.record(&NamedDrop::new(
+                "dg_cast_target",
+                "target is gone before the cast applied",
+            ));
+            continue;
+        }
+        let caster_level = if let Ok(progress) = progress.get(cast.caster) {
+            progress.level.max(1)
+        } else if let Ok(key) = keys.get(cast.caster) {
+            content
+                .npc_stats
+                .get(&key.0)
+                .map(|stats| stats.level.max(1))
+                .unwrap_or(1)
+        } else {
+            1
+        };
+        let target = cast.target;
+        let spell_name = spell.name.clone();
+
+        let saved = if spell.save == SaveEffect::None {
+            false
+        } else {
+            let (victim_class, victim_level) =
+                victim_class_level(target, content, &progress, &keys);
+            let victim_saves = combatants
+                .get(target)
+                .map(|combatant| combatant.saves)
+                .unwrap_or_default();
+            mag_savingthrow(
+                &mut rng,
+                &victim_class,
+                victim_level,
+                &victim_saves,
+                SaveType::Spell,
+            )
+        };
+        if saved && spell.save == SaveEffect::Negate {
+            continue;
+        }
+
+        match spell.kind {
+            SpellKind::Damage => {
+                let Some(dice) = spell.dice else {
+                    continue;
+                };
+                let rolled = rng.roll(&dice).max(0) + spell.level_bonus.bonus(caster_level);
+                let damage = if saved && spell.save == SaveEffect::Half {
+                    rolled / 2
+                } else {
+                    rolled
+                };
+                let lethal = {
+                    let Ok(mut victim) = combatants.get_mut(target) else {
+                        continue;
+                    };
+                    if !victim.is_alive() {
+                        continue;
+                    }
+                    let applied = crate::combat::apply_damage_to(&mut victim, damage);
+                    damage_events.write(TbaDamage {
+                        attacker: cast.caster,
+                        victim: target,
+                        damage: applied.applied,
+                        lethal: applied.lethal,
+                    });
+                    applied.lethal
+                };
+                if lethal {
+                    if players.get(target).is_ok() {
+                        defeated.write(PlayerDefeated { player: target });
+                    } else if npcs.get(target).is_ok() {
+                        let (experience, gold) = keys
+                            .get(target)
+                            .ok()
+                            .map(|key| reward_for(content, key))
+                            .unwrap_or((0, 0));
+                        let alignment = keys
+                            .get(target)
+                            .ok()
+                            .map(|key| alignment_for(content, key))
+                            .unwrap_or(0);
+                        npc_defeated.write(NpcDefeated {
+                            victim: target,
+                            killer: cast.caster,
+                            npc: keys
+                                .get(target)
+                                .ok()
+                                .map(|key| key.0.clone())
+                                .unwrap_or_else(|| NpcId::from("")),
+                            experience,
+                            gold,
+                            alignment,
+                        });
+                        commands.entity(target).despawn();
+                    }
+                }
+            }
+            SpellKind::Heal => {
+                let Some(dice) = spell.dice else {
+                    continue;
+                };
+                let amount =
+                    (rng.roll(&dice).max(0) + spell.level_bonus.bonus(caster_level)).max(0);
+                if let Ok(mut combatant) = combatants.get_mut(target)
+                    && combatant.is_alive()
+                {
+                    combatant.hp = (combatant.hp + amount).min(combatant.max_hp);
+                }
+            }
+            SpellKind::Buff | SpellKind::Debuff => {
+                if let Some(affect) = &spell.affect {
+                    let rounds = affect_rounds(spell, caster_level);
+                    add_buff(target, affect.clone(), rounds, &mut buffs, &mut commands);
+                }
+            }
+            SpellKind::Detect => {
+                if grants_true_sight(&spell_id) {
+                    crate::stealth::grant_true_sight(
+                        target,
+                        affect_rounds(spell, caster_level),
+                        &mut commands,
+                    );
+                }
+                output.write(text(
+                    cast.caster,
+                    format!("Your senses sharpen with {spell_name}."),
+                ));
+            }
+            SpellKind::Utility => {
+                let reason = spell
+                    .unsupported
+                    .as_deref()
+                    .unwrap_or("the Circle routine is not modelled");
+                output.write(text(
+                    cast.caster,
+                    format!("You cast {spell_name}, but {reason}."),
+                ));
+            }
+        }
+
+        if let Some(affect) = &spell.affect
+            && matches!(spell.kind, SpellKind::Damage)
+        {
+            let rounds = affect_rounds(spell, caster_level);
+            add_buff(target, affect.clone(), rounds, &mut buffs, &mut commands);
+        }
     }
 }
 

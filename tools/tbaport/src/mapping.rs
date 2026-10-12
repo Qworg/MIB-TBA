@@ -20,16 +20,19 @@ use mib_tba::content::{
     ResetMode, ShopDef, ShopHours, ShopTrade, SocialDef, TbaItemDef, TbaItemKind, TbaNpcStats,
     WearSlot, ZoneCommand, ZoneCommandKind, ZoneDef,
 };
+use mib_tba::triggers::ast::parse_script;
+use mib_tba::triggers::content::{TriggerDef, TriggerId, TriggersFile};
+use mib_tba::triggers::context::unknown_tokens_excluding;
 
 use crate::emit::OutputBundle;
 use crate::error::{ConvertError, Result};
 use crate::ids;
 use crate::report::{
     CommandFlag, DanglingRef, DeferredEntry, DropReport, GlobalDrop, REPORT_SCHEMA, SourceFiles,
-    Totals, UnmappedFlag, ZoneReport,
+    Totals, TriggerCoverage, TriggerTriage, TriggerTriageRecord, UnmappedFlag, ZoneReport,
 };
 use crate::source::{
-    deferred::{DeferredRecord, scan_triggers},
+    deferred::{DeferredRecord, TriggerRecord, scan_triggers},
     mob::RawMob,
     obj::RawObj,
     parse_mobs, parse_objs, parse_rooms,
@@ -220,9 +223,124 @@ struct ZoneSource {
     mobs: Vec<RawMob>,
     objs: Vec<RawObj>,
     shops: Vec<RawShop>,
-    triggers: Vec<DeferredRecord>,
+    triggers: Vec<TriggerRecord>,
     quests: Vec<RawQuest>,
     files: SourceFiles,
+}
+
+/// A resolved attachment target for one trigger.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+enum AttachCandidate {
+    Npc(i32),
+    Item(i32),
+    Room(i32),
+}
+
+impl AttachCandidate {
+    /// The content id (`tba_npc_3`, `tba_item_16`, `tba.22`).
+    fn id(self) -> String {
+        match self {
+            AttachCandidate::Npc(vnum) => ids::npc_id(vnum).to_string(),
+            AttachCandidate::Item(vnum) => ids::item_id(vnum).to_string(),
+            AttachCandidate::Room(vnum) => ids::room_id(vnum).to_string(),
+        }
+    }
+
+    /// The `tba.triggers` attach string (`npc:<id>`, …).
+    fn attach(self) -> String {
+        match self {
+            AttachCandidate::Npc(_) => format!("npc:{}", self.id()),
+            AttachCandidate::Item(_) => format!("item:{}", self.id()),
+            AttachCandidate::Room(_) => format!("room:{}", self.id()),
+        }
+    }
+
+    /// The triage-style owner label (`npc tba_npc_3`, …).
+    fn label(self) -> String {
+        match self {
+            AttachCandidate::Npc(_) => format!("npc {}", self.id()),
+            AttachCandidate::Item(_) => format!("item {}", self.id()),
+            AttachCandidate::Room(_) => format!("room {}", self.id()),
+        }
+    }
+}
+
+/// One thing that attaches a trigger, from the `.wld`/`.mob`/`.obj` `T` lines
+/// or a zone-reset `T` command.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+struct TriggerOwner {
+    /// The triage label (`npc tba_npc_3`, `zone tba_30 reset`).
+    label: String,
+    /// The zone used for the demo/essential check (the triage's `owner_zones`).
+    zone: u32,
+    /// The entity to attach to, when the source reference resolves to one.
+    attach: Option<AttachCandidate>,
+}
+
+/// Collect every trigger attachment. The `zone` field deliberately matches the
+/// triage (`build_triage`) so the curated essential set cannot drift; `attach`
+/// is the richer target the converter resolves for `tba.triggers`.
+fn collect_trigger_owners(sources: &[ZoneSource]) -> BTreeMap<i32, Vec<TriggerOwner>> {
+    let mut owners: BTreeMap<i32, Vec<TriggerOwner>> = BTreeMap::new();
+    for source in sources {
+        for mob in &source.mobs {
+            for trigger in &mob.trigger_vnums {
+                owners.entry(*trigger).or_default().push(TriggerOwner {
+                    label: AttachCandidate::Npc(mob.vnum).label(),
+                    zone: crate::triage::vnum_zone(mob.vnum),
+                    attach: Some(AttachCandidate::Npc(mob.vnum)),
+                });
+            }
+        }
+        for obj in &source.objs {
+            for trigger in &obj.trigger_vnums {
+                owners.entry(*trigger).or_default().push(TriggerOwner {
+                    label: AttachCandidate::Item(obj.vnum).label(),
+                    zone: crate::triage::vnum_zone(obj.vnum),
+                    attach: Some(AttachCandidate::Item(obj.vnum)),
+                });
+            }
+        }
+        for room in &source.rooms {
+            for trigger in &room.trigger_vnums {
+                owners.entry(*trigger).or_default().push(TriggerOwner {
+                    label: AttachCandidate::Room(room.vnum).label(),
+                    zone: crate::triage::vnum_zone(room.vnum),
+                    attach: Some(AttachCandidate::Room(room.vnum)),
+                });
+            }
+        }
+        // Zone-reset `T` commands attach to the last-loaded mob (`arg1 == 0`),
+        // the last-loaded object (`1`), or the named room (`2`). The triage
+        // zone stays the reset zone; only the attach target is resolved.
+        let mut last_mob: Option<i32> = None;
+        let mut last_obj: Option<i32> = None;
+        for command in &source.zone.commands {
+            match command.code {
+                'M' => last_mob = Some(command.arg1),
+                'O' => last_obj = Some(command.arg1),
+                'T' => {
+                    let attach = match command.arg1 {
+                        0 => last_mob.map(AttachCandidate::Npc),
+                        1 => last_obj.map(AttachCandidate::Item),
+                        2 => Some(AttachCandidate::Room(command.arg3)),
+                        _ => None,
+                    };
+                    owners.entry(command.arg2).or_default().push(TriggerOwner {
+                        label: format!("zone tba_{} reset", source.number),
+                        zone: source.number,
+                        attach,
+                    });
+                }
+                _ => {}
+            }
+        }
+    }
+    for list in owners.values_mut() {
+        list.sort();
+        list.dedup();
+    }
+    owners
 }
 
 /// Convert a tbaMUD world into MIB content plus a drop report.
@@ -249,6 +367,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         .iter()
         .flat_map(|s| s.objs.iter().map(|o| ids::item_id(o.vnum)))
         .collect();
+    let owners = collect_trigger_owners(&sources);
 
     // Phase 2: map.
     let mut bundle = OutputBundle::empty();
@@ -269,6 +388,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
             dangling: Vec::new(),
             unmapped: Vec::new(),
             command_flags: Vec::new(),
+            triggers: Vec::new(),
         };
 
         bundle.areas.areas.insert(
@@ -327,11 +447,20 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         zr.items = source.objs.len();
         zr.commands = zone_def_kept(&bundle, source.number);
 
-        add_deferred(
+        let emitted = map_triggers(
+            source,
+            &owners,
+            &room_ids,
+            &npc_ids,
+            &item_ids,
+            &mut bundle,
             &mut zr,
-            "triggers",
+        );
+        add_trigger_records(
+            &mut zr,
             &source.triggers,
-            "DG scripts are deferred (doc §10)",
+            &emitted,
+            "non-essential DG trigger; Phase 1 emits only the essential interactivity set",
         );
         for raw in &source.quests {
             if let Some((quest_id, quest)) = map_quest(raw, &room_ids, &npc_ids, &item_ids, &mut zr)
@@ -362,6 +491,8 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         .start_room
         .filter(|vnum| bundle.rooms.rooms.contains_key(&ids::room_id(*vnum as i32)));
 
+    let trigger_coverage = trigger_coverage(&bundle.triggers);
+
     let mut report = DropReport {
         schema: REPORT_SCHEMA,
         tool: format!("tbaport {}", env!("CARGO_PKG_VERSION")),
@@ -375,12 +506,159 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         only: options.only,
         start_room,
         global_drops: drops,
+        trigger_triage: TriggerTriage::default(),
+        trigger_coverage,
         totals: Totals::default(),
         zones,
     };
     report.finalise();
 
     Ok(Conversion { bundle, report })
+}
+
+/// Build the standalone DG trigger triage (`reports/trigger-triage.json`).
+///
+/// This is the regenerable source for the Phase-2 (TBA-E20) scope: every
+/// `.trg` record, its classification, its attachment owners, and the curated
+/// essential-interactivity ranking documented in `docs/design/triggers.md`.
+/// It performs no mapping and emits no content.
+pub fn build_triage(options: &ConvertOptions) -> Result<crate::triage::TriageReport> {
+    let world = options.source_root.join("lib/world");
+    let numbers = selected_zone_numbers(&world, options.only)?;
+
+    let mut sources = Vec::with_capacity(numbers.len());
+    for number in numbers {
+        sources.push(load_zone(&world, number)?);
+    }
+
+    // Owner map: trigger vnum -> every thing that attaches it, from the
+    // `.mob`/`.obj`/`.wld` `T` lines and the zone-reset `T` commands.
+    // Attachment is what makes a trigger demo-visible.
+    let owners = collect_trigger_owners(&sources);
+
+    let mut records: Vec<crate::triage::TriageRecord> = Vec::new();
+    for source in &sources {
+        for trigger in &source.triggers {
+            let owner_entries: Vec<(String, u32)> = owners
+                .get(&trigger.vnum)
+                .map(|list| list.iter().map(|o| (o.label.clone(), o.zone)).collect())
+                .unwrap_or_default();
+            let mut owner_ids: Vec<String> =
+                owner_entries.iter().map(|(id, _)| id.clone()).collect();
+            let mut owner_zones: Vec<u32> = owner_entries.iter().map(|(_, z)| *z).collect();
+            owner_zones.sort_unstable();
+            owner_zones.dedup();
+            let in_demo = crate::triage::is_demo_zone(source.number)
+                || owner_zones.iter().any(|z| crate::triage::is_demo_zone(*z));
+            let essential = in_demo
+                && crate::triage::is_essential(trigger.bucket, &trigger.attach, &trigger.types);
+            let score = crate::triage::score(
+                trigger.bucket,
+                source.number,
+                &owner_zones,
+                &trigger.types,
+                trigger.lines,
+                &trigger.name,
+            );
+            owner_ids.sort();
+            owner_ids.dedup();
+            records.push(crate::triage::TriageRecord {
+                vnum: trigger.vnum,
+                zone: source.number,
+                source_file: format!("{}.trg", source.number),
+                attach: trigger.attach.clone(),
+                name: trigger.name.clone(),
+                flags: trigger.flags.clone(),
+                types: trigger.types.clone(),
+                narg: trigger.narg,
+                bucket: trigger.bucket.as_str().to_owned(),
+                lines: trigger.lines,
+                raw_lines: trigger.raw_lines,
+                essential,
+                tier: if essential {
+                    crate::triage::tier(trigger.bucket)
+                } else {
+                    3
+                },
+                score,
+                rank: None,
+                owners: owner_ids,
+            });
+        }
+    }
+    records.sort_by_key(|record| (record.zone, record.vnum));
+
+    // Rank the essential set by demo impact, with `(zone, vnum)` tie-breaks.
+    let mut essential_indices: Vec<usize> = records
+        .iter()
+        .enumerate()
+        .filter(|(_, record)| record.essential)
+        .map(|(index, _)| index)
+        .collect();
+    essential_indices.sort_by(|a, b| {
+        let left = &records[*a];
+        let right = &records[*b];
+        right
+            .score
+            .cmp(&left.score)
+            .then_with(|| left.zone.cmp(&right.zone))
+            .then_with(|| left.vnum.cmp(&right.vnum))
+    });
+    let mut rank = 0usize;
+    for index in essential_indices {
+        rank += 1;
+        records[index].rank = Some(rank);
+    }
+
+    // Roll-ups.
+    let mut corpus = crate::triage::Corpus::default();
+    let mut by_attach: BTreeMap<String, usize> = BTreeMap::new();
+    let mut by_type: BTreeMap<String, usize> = BTreeMap::new();
+    let mut by_bucket: BTreeMap<String, usize> = BTreeMap::new();
+    let mut by_zone: BTreeMap<u32, usize> = BTreeMap::new();
+    let mut essential_buckets: BTreeMap<String, usize> = BTreeMap::new();
+    let mut essential_attach: BTreeMap<String, usize> = BTreeMap::new();
+    let mut essential_zones: BTreeSet<u32> = BTreeSet::new();
+    for record in &records {
+        *by_attach.entry(record.attach.clone()).or_default() += 1;
+        *by_bucket.entry(record.bucket.clone()).or_default() += 1;
+        *by_zone.entry(record.zone).or_default() += 1;
+        for name in &record.types {
+            *by_type.entry(name.clone()).or_default() += 1;
+        }
+        corpus.script_lines += record.raw_lines;
+        corpus.nonblank_script_lines += record.lines;
+        if record.essential {
+            *essential_buckets.entry(record.bucket.clone()).or_default() += 1;
+            *essential_attach.entry(record.attach.clone()).or_default() += 1;
+            essential_zones.insert(record.zone);
+        }
+    }
+    corpus.records = records.len();
+    corpus.zones_with_triggers = by_zone.len();
+    corpus.by_attach = by_attach;
+    corpus.by_type = by_type;
+    corpus.by_bucket = by_bucket;
+    corpus.by_zone = by_zone;
+
+    let mut demo_zones: Vec<u32> = crate::triage::DEMO_ZONES.to_vec();
+    demo_zones.sort_unstable();
+    demo_zones.dedup();
+
+    Ok(crate::triage::TriageReport {
+        schema: crate::triage::TRIAGE_SCHEMA,
+        tool: format!("tbaport {}", env!("CARGO_PKG_VERSION")),
+        source: options.source_root.display().to_string(),
+        corpus,
+        essential: crate::triage::Essential {
+            count: records.iter().filter(|record| record.essential).count(),
+            zones: essential_zones.into_iter().collect(),
+            demo_zones,
+            by_attach: essential_attach,
+            by_bucket: essential_buckets,
+        },
+        records,
+    })
 }
 
 /// Whole-world features with no schema home, recorded once per report.
@@ -557,12 +835,12 @@ fn optional_parse<T>(
     Ok((Some(parser(&mut src)?), true))
 }
 
-fn optional_scan(
+fn optional_scan<T>(
     dir: &Path,
     number: u32,
     ext: &str,
-    scanner: fn(&mut Source) -> Result<Vec<DeferredRecord>>,
-) -> Result<Option<Vec<DeferredRecord>>> {
+    scanner: fn(&mut Source) -> Result<Vec<T>>,
+) -> Result<Option<Vec<T>>> {
     let path = dir.join(format!("{number}.{ext}"));
     if !path.is_file() {
         return Ok(None);
@@ -2034,6 +2312,144 @@ fn add_deferred(zr: &mut ZoneReport, section: &str, records: &[DeferredRecord], 
     }
 }
 
+/// Record the classified `.trg` layer: a deferred entry per trigger that is
+/// **not** emitted into `tba.triggers` (so the drop report still itemises
+/// exactly what is not yet runnable) plus the structured triage record that
+/// makes the Phase-2 scope regenerable.
+fn add_trigger_records(
+    zr: &mut ZoneReport,
+    records: &[TriggerRecord],
+    emitted: &BTreeSet<i32>,
+    reason: &str,
+) {
+    for record in records {
+        if !emitted.contains(&record.vnum) {
+            zr.deferred.push(DeferredEntry {
+                section: "triggers".to_owned(),
+                vnum: record.vnum,
+                attach: record.attach.clone(),
+                detail: record.name.clone(),
+                reason: reason.to_owned(),
+            });
+        }
+        zr.triggers.push(TriggerTriageRecord {
+            vnum: record.vnum,
+            name: record.name.clone(),
+            attach: record.attach.clone(),
+            flags: record.flags.clone(),
+            types: record.types.clone(),
+            narg: record.narg,
+            bucket: record.bucket.as_str().to_owned(),
+            lines: record.lines,
+            raw_lines: record.raw_lines,
+        });
+    }
+}
+
+/// Emit the essential interactivity set into `tba.triggers` for one zone.
+///
+/// Essentiality is exactly the triage's rule (demo zone or demo-zone owner +
+/// [`crate::triage::is_essential`]); the attach is resolved from the `T`
+/// attachments, preferring an entity that actually exists in the converted
+/// world. A trigger with no resolvable attach is still emitted (so its script
+/// parses and its coverage is counted) with an empty `attach` and a named
+/// `dangling_trigger_attach` drop.
+fn map_triggers(
+    source: &ZoneSource,
+    owners: &BTreeMap<i32, Vec<TriggerOwner>>,
+    rooms: &BTreeSet<RoomId>,
+    npcs: &BTreeSet<NpcId>,
+    items: &BTreeSet<ItemId>,
+    bundle: &mut OutputBundle,
+    zr: &mut ZoneReport,
+) -> BTreeSet<i32> {
+    let mut emitted = BTreeSet::new();
+    for trigger in &source.triggers {
+        let owner_entries = owners.get(&trigger.vnum).cloned().unwrap_or_default();
+        let owner_zones: BTreeSet<u32> = owner_entries.iter().map(|owner| owner.zone).collect();
+        let in_demo = crate::triage::is_demo_zone(source.number)
+            || owner_zones
+                .iter()
+                .any(|zone| crate::triage::is_demo_zone(*zone));
+        if !(in_demo
+            && crate::triage::is_essential(trigger.bucket, &trigger.attach, &trigger.types))
+        {
+            continue;
+        }
+        let resolved = owner_entries
+            .iter()
+            .filter_map(|owner| owner.attach)
+            .find(|candidate| match candidate {
+                AttachCandidate::Npc(vnum) => npcs.contains(&ids::npc_id(*vnum)),
+                AttachCandidate::Item(vnum) => items.contains(&ids::item_id(*vnum)),
+                AttachCandidate::Room(vnum) => rooms.contains(&ids::room_id(*vnum)),
+            });
+        let attach = match resolved {
+            Some(candidate) => candidate.attach(),
+            None => {
+                let labels: Vec<String> = owner_entries
+                    .iter()
+                    .map(|owner| owner.label.clone())
+                    .collect();
+                push_dangling(
+                    zr,
+                    "dangling_trigger_attach",
+                    &format!("trigger {} ({})", trigger.vnum, trigger.name),
+                    &labels.join(", "),
+                );
+                String::new()
+            }
+        };
+        let def = TriggerDef {
+            vnum: trigger.vnum,
+            name: trigger.name.clone(),
+            attach,
+            types: trigger
+                .types
+                .iter()
+                .map(|name| name.to_ascii_lowercase())
+                .collect(),
+            narg: trigger.narg,
+            arglist: trigger.arglist.clone(),
+            script: trigger.body.clone(),
+        };
+        bundle
+            .triggers
+            .triggers
+            .insert(TriggerId::from_vnum(trigger.vnum), def);
+        emitted.insert(trigger.vnum);
+    }
+    emitted
+}
+
+/// Parse coverage for the emitted essential scripts (Phase 1 acceptance: per
+/// construct and per record).
+fn trigger_coverage(triggers: &TriggersFile) -> TriggerCoverage {
+    let mut coverage = TriggerCoverage::default();
+    for def in triggers.triggers.values() {
+        coverage.records += 1;
+        let program = parse_script(&def.script);
+        if program.error.is_some() {
+            coverage.parse_failures += 1;
+        } else {
+            coverage.parsed += 1;
+        }
+        if !program.unsupported.is_empty() {
+            coverage.records_with_unsupported += 1;
+        }
+        for (kind, count) in &program.constructs {
+            *coverage.construct_counts.entry(kind.clone()).or_default() += count;
+        }
+        for (kind, count) in &program.unsupported {
+            *coverage.unsupported_counts.entry(kind.clone()).or_default() += count;
+        }
+        for (token, count) in unknown_tokens_excluding(&program.referenced_text(), &program.vars) {
+            *coverage.unknown_tokens.entry(token).or_default() += count;
+        }
+    }
+    coverage
+}
+
 /// Record the `T <vnum>` trigger attachments that follow a `.wld`/`.mob`/`.obj`
 /// record. They are part of the deferred DG layer (#15) and would otherwise be
 /// a silent drop.
@@ -2135,6 +2551,7 @@ mod tests {
             dangling: Vec::new(),
             unmapped: Vec::new(),
             command_flags: Vec::new(),
+            triggers: Vec::new(),
         }
     }
 

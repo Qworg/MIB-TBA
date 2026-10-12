@@ -29,8 +29,10 @@ pub mod ids;
 pub mod mapping;
 pub mod report;
 pub mod source;
+pub mod triage;
 
 pub use emit::{OutputBundle, render, write_bundle};
 pub use error::{ConvertError, Result};
-pub use mapping::{Conversion, ConvertOptions, convert};
+pub use mapping::{Conversion, ConvertOptions, build_triage, convert};
 pub use report::{DEFAULT_START_ROOM, DropReport};
+pub use triage::TriageReport;

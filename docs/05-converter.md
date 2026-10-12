@@ -42,7 +42,11 @@ the running server and links only the schema crates (`mib-stdlib`, `mib-tba`,
    carries kind, slots, values, affects and the economy fields.
 8. **DG triggers (`.trg`) are deferred** (doc §10). No section is emitted for
 them; each record is written to the drop report with vnum and attachment point
-so a later phase can rebuild it. **Shops (`.shp`)** are parsed and emitted as
+so a later phase can rebuild it, and each is **classified** (attach type,
+expanded trigger type, interactivity bucket, script size) into
+`trigger_triage` / per-zone `triggers[]`. `tbaport triage` writes the same
+classification as a standalone `reports/trigger-triage.json`; see
+[`docs/design/triggers.md`](design/triggers.md). **Shops (`.shp`)** are parsed and emitted as
 `tba.shops` (see §3.6); **quests (`.qst`)** are parsed and emitted as
 `stdlib.quests` (see §3.7); **`lib/text`, `lib/misc/messages`** become
 `stdlib.help` topics (see §3.8) and **`lib/misc/socials.new`** becomes
@@ -190,7 +194,7 @@ S | $
 
 | File | C source | Header scanned | Attachment |
 | --- | --- | --- | --- |
-| `.trg` | `parse_trigger` (`dg_db_scripts.c:30`) | `#vnum`, name, `<attach> <flags> <narg>`, arg list, body | `0` mob, `1` object, `2` world |
+| `.trg` | `parse_trigger` (`dg_db_scripts.c:30`) | `#vnum`, name, `<attach> <flags> <narg>`, arg list, body | `0` mob, `1` object, `2` world; classified into `reports/trigger-triage.json` |
 | `.qst` | `parse_quest` (`quest.c:129`) | `#vnum`, five strings, three numeric lines, `S` | questmaster vnum from line 1 |
 | `lib/misc/socials.new` | `boot_social_messages` (`db.c:195`), `save_socials` (`aedit.c:341`) | `~<command> <sort_as> <hide> <min_char_pos> <min_victim_pos> <min_level>`, thirteen message lines | command word |
 | `lib/text/*` | `MOTD_FILE`/`NEWS_FILE`/… (`db.h:90`) | raw prose | file name |
@@ -606,14 +610,20 @@ output cannot drift from the schema the engine loads.
 
 ```text
 tbaport convert --source DIR [--out DIR] [--report FILE] [--only ZONE] [--start-room VNUM] [--validate-only]
+tbaport triage  --source DIR [--out FILE] [--only ZONE]
 
   --source DIR       tbaMUD checkout root (must contain lib/world)
-  --out DIR          staging output directory [default: target/tbaport/content]
+  --out DIR|FILE     convert: staging output directory [default: target/tbaport/content]
+                     triage:  JSON output path [default: reports/trigger-triage.json]
   --report FILE      drop-report path [default: target/tbaport/drop-report.json]
   --only ZONE        convert a single zone
   --start-room VNUM  tag this room vnum as `start_room` [default: 3001]
   --validate-only    parse/map and write the report, but emit no YAML
 ```
+
+`tbaport triage` performs no mapping: it reads the `.trg` records, classifies
+every one, marks the curated essential-interactivity set, and writes the
+deterministic `reports/trigger-triage.json` (see `docs/design/triggers.md`).
 
 Files written: `stdlib.areas.yaml`, `stdlib.rooms.<zone>.yaml` (one shard per
 zone, TBA-E01), `stdlib.npcs.yaml`, `stdlib.items.yaml`,
@@ -713,6 +723,9 @@ drops by reason.
 - **Socials** now convert to `tba.socials` (issue #17). The source's stray
   `$i` code and the legacy old-format `lib/misc/socials` are named global
   drops; pronouns render neutral (MIB models no sex).
-- **DG triggers** remain deferred wholesale (`deferred`).
+- **DG triggers** remain deferred wholesale (`deferred`), but each is now
+  classified into the drop report's `trigger_triage` and the per-zone
+  `triggers[]`, and the standalone `reports/trigger-triage.json`
+  (`tbaport triage`). Phase-2 scope and design: `docs/design/triggers.md`.
 
 None of these is silently discarded.
