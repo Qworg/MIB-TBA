@@ -320,6 +320,7 @@ fn experience_is_split_among_present_party_members_and_gold_stays_with_the_kille
         .write(NpcDefeated {
             victim,
             killer: alice,
+            npc: NpcId::from("tba_npc_194"),
             experience: 90,
             gold: 9,
             alignment: 0,
@@ -352,6 +353,7 @@ fn a_solo_kill_still_awards_the_full_experience() {
         .write(NpcDefeated {
             victim,
             killer: alice,
+            npc: NpcId::from("tba_npc_194"),
             experience: 42,
             gold: 5,
             alignment: 0,

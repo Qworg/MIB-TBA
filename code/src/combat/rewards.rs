@@ -14,7 +14,7 @@
 //! which regenerates the base block from the new level.
 
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{Location, NpcKey, Player, Session, SessionState};
+use mib_stdlib::prelude::{Location, NpcId, NpcKey, Player, Session, SessionState};
 
 use crate::content::TbaClassDef;
 use crate::module::TbaContent;
@@ -33,6 +33,9 @@ pub struct NpcDefeated {
     pub victim: Entity,
     /// The entity that landed the killing blow (a player, for a reward).
     pub killer: Entity,
+    /// The defeated prototype id, so a quest bridge never has to re-query the
+    /// entity the same frame despawns it.
+    pub npc: NpcId,
     /// XP the prototype yields (`tba.npc_stats.experience`), or 0.
     pub experience: u64,
     /// Gold the prototype yields (`tba.npc_stats.gold`), or 0.

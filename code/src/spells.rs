@@ -33,7 +33,9 @@
 
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
-use mib_stdlib::prelude::{Location, Npc, NpcKey, Player, PlayerDefeated, Session, SessionState};
+use mib_stdlib::prelude::{
+    Location, Npc, NpcId, NpcKey, Player, PlayerDefeated, Session, SessionState,
+};
 use serde::{Deserialize, Serialize};
 use smol_str::SmolStr;
 
@@ -705,6 +707,11 @@ pub fn handle_cast_command(
                     npc_defeated.write(NpcDefeated {
                         victim: target,
                         killer: session,
+                        npc: keys
+                            .get(target)
+                            .ok()
+                            .map(|key| key.0.clone())
+                            .unwrap_or_else(|| NpcId::from("")),
                         experience,
                         gold,
                         alignment,

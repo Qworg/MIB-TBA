@@ -263,15 +263,18 @@ reason the item count is one higher than the source object count.
 | `sync_concealment`, `sync_perception` | `Update`, `BridgeSet::Game` (after the genre command chain) | Mirror the pack's private `TbaHidden`/`TbaSneaking` into the engine `Concealment` and the pack's `TbaTrueSight` into the engine `Perception`, removing each carrier when its pack state clears. This is how the pack drives the engine's observer-aware projection. |
 | `tick_true_sight` | `TbaRound` | Ages the pack's `TbaTrueSight` true-sight grant one combat round; `sync_perception` then drops the engine `Perception`. |
 | `follow_system` | `FixedUpdate` (after `maintain_room_occupants`) | Drags a follower into the leader's new room only when the follower was standing in the leader's previous room, so a follower who wandered off is never teleported. |
-| `trigger_command_system` | `Update`, `BridgeSet::Game`, after `route_commands` | Issue #15: the `speech`/`command`/`act` DG trigger intake. It reads the same `CommandReceived` stream the router does, matches the trigger `arglist`, and evaluates the Phase-2 subset (`say`/`emote`/`echo`/`%send%`/`%echoaround%`, `if`/`switch`/`while`, conditions) with `%…%` substitution. `set`/`eval`/`%load%`/`wait` and the rest are parsed-but-deferred and recorded as named drops. |
+| `trigger_command_system` | `Update`, `BridgeSet::Game`, after `route_commands` | Issue #15: the `speech`/`command`/`act` DG trigger intake. It reads the same `CommandReceived` stream the router does, matches the trigger `arglist`, and evaluates the supported subset (`say`/`emote`/`echo`/`%send%`/`%echoaround%`, `if`/`switch`/`while`, conditions, `set`/`eval`/`unset`/`remote`/`global`/`local`/`rdelete`, `%load%`/`%purge%`) with `%…%` substitution. It only queues effects; `wait`, `dg_cast`, `%teleport%` and the rest are parsed-but-deferred and counted in the runtime drop log. |
+| `trigger_effects_system` | `Update` (`BridgeSet::Game`) and `FixedUpdate`, after the trigger intake | Issue #15 Phase 3: the exclusive drain for `%load%`/`%purge%` (routing through the stdlib `spawn_item_on_ground`/`spawn_item_carried_by_entity`/`spawn_npc_from_content` helpers, which take `&mut World`) and for `remote`/`global` variable writes (`TbaTriggerVars`). It also forwards a satisfied objective's flag to the stdlib as `QuestEvent::FlagSet` and accumulates runtime named drops in `TriggerDropLog`. |
+| `trigger_quest_bridge_system` | `Update`, after `award_kill_rewards` | Issue #15 Phase 3: translates each TBA native kill (`NpcDefeated`) into a stdlib `QuestEvent::Killed`, so `stdlib.quests` `Kill` steps advance. The prototype id rides on the message because the victim is despawned the same frame. `stdlib.quests` owns objective persistence, the journal, and rewards. |
 | `trigger_greet_system` | `FixedUpdate`, after `maintain_room_occupants` | Issue #15: the `greet`/`greet-all`/`entry` DG trigger intake on a player room change (`Changed<Location>`), with `%direction%` derived from the exit graph. |
 | `apply_death_penalty` | `Update`, `.before(handle_player_death)` | 25% of current-level XP (floored); converts `TbaGold` to a carried `tba_gold` item so the stdlib corpse sweep lands it in the corpse. |
 | `player_combatant_system` | `Update`, `BridgeSet::Game` | On `CharacterCreated`, inserts `TbaProgress` + `derive_vitals` from `tba.classes`. |
 
 Persistent player state (`SaveRegistry`, `DocKind::Player`): `TbaProgress`,
 `TbaCombatant`, `TbaGold`, `TbaEquipmentSave` (equipment is relinked to live item
-entities on restore). Buffs are transient. Parties and the follow state are
-runtime-only resources/components; they do not survive a restart.
+entities on restore), `TbaTriggerVars` (DG `remote`/`global` quest variables).
+Buffs are transient. Parties and the follow state are runtime-only
+components/resources; they do not survive a restart.
 
 Progression uses Circle's real tables: per-class `xp_table` / `thaco_table` in
 `content/tba.classes.yaml`, transcribed from `tbamud/src/class.c`
@@ -295,13 +298,18 @@ No TBA-specific environment variables exist. The pack's tunables are content
 
 These are recorded, not silent:
 
-- **DG triggers (TBA-E20)** are not ported — the spec itself defers them. Every
-  trigger is itemised in [`reports/drop-report.json`](../reports/drop-report.json)
+- **DG triggers (TBA-E20)** are ported through Phase 3. The essential
+  133-record set is emitted into `tba.triggers.<zone>.yaml` and evaluated
+  natively: text/control (Phase 2) plus variables, `%load%`/`%purge%`, and the
+  `stdlib.quests` bridge (Phase 3). `wait`/timers, doors/gates/teleport, and
+  combat triggers are Phase 4/5 and stay named drops. Every trigger is
+  itemised in [`reports/drop-report.json`](../reports/drop-report.json)
   (grouped in [`reports/drop-report.summary.md`](../reports/drop-report.summary.md))
   and classified (attach, expanded type, interactivity bucket, script size) in
   the triage JSON [`reports/trigger-triage.json`](../reports/trigger-triage.json).
-  The classification, the curated 133-trigger essential set, and the Phase-2
-  native design live in [`docs/design/triggers.md`](design/triggers.md).
+  The classification, the curated 133-trigger essential set, and the native
+  design live in [`docs/design/triggers.md`](design/triggers.md); the parser's
+  per-construct coverage and runtime named drops are both in the drop report.
 - **Quests** (`.qst`) convert to `stdlib.quests`; a `MOB_FIND`/`MOB_SAVE`/
   `OBJ_RETURN`/`ROOM_CLEAR` objective and the reward/condition fields with no
   `QuestDef` home are named drops (`docs/05-converter.md` §3.7).

@@ -29,7 +29,10 @@ use crate::combat::commands::text;
 use crate::combat::model::TbaProgress;
 use crate::combat::progression::TbaRng;
 use crate::triggers::context::{ActorView, EntityView, NamedDrop, TriggerContext};
-use crate::triggers::eval::{EvalOutcome, TextTarget, run};
+use crate::triggers::effects::{
+    PendingFlag, PendingPurge, PendingSpawn, PendingTriggerOps, PendingVarWrite, TbaTriggerVars,
+};
+use crate::triggers::eval::{EvalOutcome, TextTarget, VarScope, run};
 use crate::triggers::index::TbaTriggers;
 
 /// Remembers each player's previous room so a greet can name the direction.
@@ -59,6 +62,8 @@ pub struct TriggerView<'w, 's> {
     pub rooms: Query<'w, 's, (Entity, &'static Room)>,
     pub ground: Query<'w, 's, (Entity, &'static Item, &'static Location)>,
     pub carried: Query<'w, 's, (Entity, &'static Item, &'static CarriedBy)>,
+    /// Persisted DG variables, read into the substitution context.
+    pub vars: Query<'w, 's, &'static TbaTriggerVars>,
 }
 
 /// The kind of intake event.
@@ -102,6 +107,7 @@ pub fn trigger_command_system(
     view: TriggerView,
     triggers: Option<Res<TbaTriggers>>,
     mut rng: ResMut<TbaRng>,
+    mut ops: ResMut<PendingTriggerOps>,
     mut output: MessageWriter<OutputEvent>,
 ) {
     let Some(triggers) = triggers else {
@@ -195,7 +201,7 @@ pub fn trigger_command_system(
         }
     }
     for event in events {
-        dispatch(&event, &triggers, &view, &mut rng, &mut output);
+        dispatch(&event, &triggers, &view, &mut rng, &mut ops, &mut output);
     }
 }
 
@@ -208,6 +214,7 @@ pub fn trigger_greet_system(
     mut last_rooms: ResMut<TriggerLastRoom>,
     triggers: Option<Res<TbaTriggers>>,
     mut rng: ResMut<TbaRng>,
+    mut ops: ResMut<PendingTriggerOps>,
     mut output: MessageWriter<OutputEvent>,
 ) {
     let Some(triggers) = triggers else {
@@ -237,7 +244,7 @@ pub fn trigger_greet_system(
                 command: None,
                 direction: direction.clone(),
             };
-            dispatch(&event, &triggers, &view, &mut rng, &mut output);
+            dispatch(&event, &triggers, &view, &mut rng, &mut ops, &mut output);
         }
     }
 }
@@ -258,6 +265,7 @@ fn dispatch(
     triggers: &TbaTriggers,
     view: &TriggerView,
     rng: &mut TbaRng,
+    ops: &mut PendingTriggerOps,
     output: &mut MessageWriter<OutputEvent>,
 ) {
     for (self_entity, attach_key, self_vnum, self_name) in candidates(event, view) {
@@ -278,10 +286,130 @@ fn dispatch(
                 {
                     continue;
                 }
-                let ctx = build_context(event, view, self_vnum, &self_name);
-                let outcome = run(&program.nodes, &ctx, rng);
+                let ctx = build_context(event, view, self_entity, self_vnum, &self_name);
+                let mut outcome = run(&program.nodes, &ctx, rng);
+                queue_effects(&mut outcome, event, self_entity, view, ops);
                 deliver(&outcome, event, self_entity, view, output);
             }
+        }
+    }
+}
+
+/// Translate the interpreter's queued effects into resolved [`PendingTriggerOps`].
+///
+/// An unresolved `%load%` recipient, a `%purge% %object%` (no receive event
+/// this phase), or a cross-player `remote` is recorded as a named drop rather
+/// than silently dropped.
+fn queue_effects(
+    outcome: &mut EvalOutcome,
+    event: &TriggerEvent,
+    self_entity: Entity,
+    view: &TriggerView,
+    ops: &mut PendingTriggerOps,
+) {
+    for spawn in &outcome.spawns {
+        let victim = spawn
+            .target
+            .as_deref()
+            .and_then(|token| recipient_entity(token, event, self_entity));
+        if spawn.target.is_some() && victim.is_none() {
+            outcome.drops.push(NamedDrop::new(
+                "load_target",
+                format!(
+                    "unresolved recipient: {}",
+                    spawn.target.as_deref().unwrap_or("")
+                ),
+            ));
+        }
+        ops.spawns.push(PendingSpawn {
+            kind: spawn.kind,
+            vnum: spawn.vnum.clone(),
+            victim,
+            room: Some(event.room),
+            wear: spawn.wear.clone(),
+            owner: self_entity,
+        });
+    }
+    for purge in &outcome.purges {
+        match resolve_purge_target(purge.target.as_deref(), event, self_entity) {
+            Some(target) => ops.purges.push(PendingPurge { target }),
+            None => outcome.drops.push(NamedDrop::new(
+                "purge_target",
+                format!(
+                    "unresolved target: {}",
+                    purge.target.as_deref().unwrap_or("self")
+                ),
+            )),
+        }
+    }
+    let actor_id = event.actor.index_u32().to_string();
+    for write in &outcome.var_writes {
+        if write.scope == VarScope::Remote
+            && !remote_targets_actor(write.target.as_deref(), &actor_id)
+        {
+            outcome.drops.push(NamedDrop::new(
+                "remote_target",
+                format!(
+                    "cross-player remote is deferred: {} -> {}",
+                    write.name,
+                    write.target.as_deref().unwrap_or("")
+                ),
+            ));
+            continue;
+        }
+        ops.vars.push(PendingVarWrite {
+            owner: event.actor,
+            scope: write.scope,
+            name: write.name.clone(),
+            value: write.value.clone(),
+        });
+    }
+    for flag in &outcome.flags {
+        ops.flags.push(PendingFlag {
+            player: event.actor,
+            flag: flag.clone(),
+        });
+    }
+    // Everything the interpreter recorded (including the unresolved targets
+    // added above) is counted in the runtime drop log.
+    for drop in &outcome.drops {
+        ops.drops.push(drop.clone());
+    }
+    let _ = view;
+}
+
+/// The entity a `%load%` recipient token names.
+fn recipient_entity(token: &str, event: &TriggerEvent, self_entity: Entity) -> Option<Entity> {
+    match token.trim().trim_matches('%').to_ascii_lowercase().as_str() {
+        "actor" => Some(event.actor),
+        "self" => Some(self_entity),
+        _ => None,
+    }
+}
+
+/// The entity `%purge%` should despawn.
+fn resolve_purge_target(
+    target: Option<&str>,
+    event: &TriggerEvent,
+    self_entity: Entity,
+) -> Option<Entity> {
+    match target {
+        None => Some(self_entity),
+        Some(token) => match token.trim().trim_matches('%').to_ascii_lowercase().as_str() {
+            "self" => Some(self_entity),
+            "actor" => Some(event.actor),
+            _ => None,
+        },
+    }
+}
+
+/// Whether a `remote` target names the triggering actor.
+fn remote_targets_actor(target: Option<&str>, actor_id: &str) -> bool {
+    match target {
+        None => true,
+        Some(target) => {
+            let target = target.trim();
+            target.is_empty() || target == actor_id
         }
     }
 }
@@ -364,6 +492,7 @@ fn candidates(event: &TriggerEvent, view: &TriggerView) -> Vec<(Entity, String, 
 fn build_context(
     event: &TriggerEvent,
     view: &TriggerView,
+    self_entity: Entity,
     self_vnum: i32,
     self_name: &str,
 ) -> TriggerContext {
@@ -376,7 +505,7 @@ fn build_context(
             ActorView {
                 name: player.name.clone(),
                 is_pc: true,
-                id: 0,
+                id: event.actor.index_u32() as i64,
                 vnum: 0,
                 level: progress.map(|p| p.level).unwrap_or(1),
                 class: progress.map(|p| p.class.to_string()).unwrap_or_default(),
@@ -393,6 +522,37 @@ fn build_context(
         .iter()
         .find(|(entity, _)| *entity == event.room)
         .map(|(_, room)| room.num as i32);
+    // The persisted scopes: the actor's `remote`/`global`, and the owner's
+    // `remote` (DG `%self.<name>%`).
+    let actor_vars = view.vars.get(event.actor).ok();
+    let (remote, global) = actor_vars
+        .map(|vars| (vars.remote.clone(), vars.global.clone()))
+        .unwrap_or_default();
+    let self_remote = view
+        .vars
+        .get(self_entity)
+        .map(|vars| vars.remote.clone())
+        .unwrap_or_default();
+    let actor_inventory = items_of(view, event.actor);
+    let self_contents = items_of(view, self_entity);
+    let mut room_characters: Vec<EntityView> = view
+        .players
+        .iter()
+        .filter(|(_, _, location)| location.room == event.room)
+        .map(|(_, player, _)| EntityView {
+            name: player.name.clone(),
+            vnum: 0,
+        })
+        .collect();
+    room_characters.extend(
+        view.npcs
+            .iter()
+            .filter(|(_, _, _, location)| location.room == event.room)
+            .map(|(_, npc, key, _)| EntityView {
+                name: npc.name.clone(),
+                vnum: vnum_from_id(key.0.as_ref()),
+            }),
+    );
     TriggerContext {
         actor,
         self_: Some(EntityView {
@@ -403,8 +563,29 @@ fn build_context(
         cmd,
         speech,
         room_vnum,
+        vars: crate::triggers::context::TriggerVars {
+            remote,
+            global,
+            self_remote,
+            actor_inventory,
+            self_contents,
+            room_characters,
+            ..Default::default()
+        },
         ..TriggerContext::default()
     }
+}
+
+/// The carried items of `holder`, as pseudo-array entries.
+fn items_of(view: &TriggerView, holder: Entity) -> Vec<EntityView> {
+    view.carried
+        .iter()
+        .filter(|(_, _, carried_by)| carried_by.0 == holder)
+        .map(|(_, item, _)| EntityView {
+            name: item.name.clone(),
+            vnum: vnum_from_id(item.def_id.as_ref()),
+        })
+        .collect()
 }
 
 /// Emit the record's lines to the right recipients.

@@ -19,7 +19,7 @@ use mib_content::prelude::{MibModule, PackAsset, SectionRegistry, section_defs};
 use mib_core::prelude::*;
 use mib_persist::prelude::DocKind;
 use mib_stdlib::prelude::{
-    CharacterCreated, CommandSet, ItemId, NpcId, PlayerDefeated, SaveRegistry, SaveSet,
+    CharacterCreated, CommandSet, ItemId, NpcId, PlayerDefeated, QuestEvent, SaveRegistry, SaveSet,
     attach_pending_holders, handle_player_death, maintain_room_occupants, route_commands,
 };
 use smol_str::SmolStr;
@@ -36,8 +36,12 @@ use crate::equipment::TbaEquipmentSave;
 use crate::items::TbaObjectClock;
 use crate::party::TbaParties;
 use crate::triggers::content::{TriggerDef, TriggerId, TriggersSection};
+use crate::triggers::effects::{
+    PendingTriggerOps, TbaTriggerVars, TriggerDropLog, trigger_effects_system,
+};
 use crate::triggers::events::{TriggerLastRoom, trigger_command_system, trigger_greet_system};
 use crate::triggers::index::TbaTriggers;
+use crate::triggers::quests::trigger_quest_bridge_system;
 use crate::zones::ZoneTracker;
 
 /// Module id; matches `[code] module = "tba"` in `packs/tba/pack.toml`.
@@ -163,6 +167,8 @@ impl Plugin for TbaPlugin {
         app.init_resource::<TbaParties>();
         app.init_resource::<TriggerLastRoom>();
         app.init_resource::<TbaTriggers>();
+        app.init_resource::<PendingTriggerOps>();
+        app.init_resource::<TriggerDropLog>();
         app.init_schedule(TbaRound);
 
         // Each component owner owns its schema (the classic-rpg idiom): the
@@ -177,6 +183,9 @@ impl Plugin for TbaPlugin {
             registry.register::<TbaGold>("TbaGold", DocKind::Player);
             registry.register::<TbaEquipmentSave>("TbaEquipment", DocKind::Player);
             registry.register::<crate::spells::TbaBuffs>("TbaBuffs", DocKind::Player);
+            // Issue #15 Phase 3: quest variables (`remote`/`global`) survive
+            // reconnect in the player's character bundle.
+            registry.register::<TbaTriggerVars>("TbaTriggerVars", DocKind::Player);
             // Item timers are item-scoped; `DocKind::Item` is already writable
             // because the stdlib registers `Item` under it.
             crate::items::register(&mut registry);
@@ -189,6 +198,8 @@ impl Plugin for TbaPlugin {
         app.add_message::<NpcDefeated>();
         app.add_message::<CommandReceived>();
         app.add_message::<OutputEvent>();
+        // Issue #15 Phase 3: the quest bridge emits stdlib quest events.
+        app.add_message::<QuestEvent>();
 
         // The `who` filter is the pack's only remaining visibility surface;
         // `look`/`Scene`/GMCP are filtered by the engine perception seam. The
@@ -228,8 +239,10 @@ impl Plugin for TbaPlugin {
                 crate::stealth::sync_perception,
                 // Issue #15: speech/command/act trigger intake reads the same
                 // `CommandReceived` stream the router does, after movement has
-                // been applied so the actor's room is current.
+                // been applied so the actor's room is current. The exclusive
+                // effect drain applies any `%load%`/`%purge%`/variable writes.
                 trigger_command_system,
+                trigger_effects_system,
             )
                 .chain()
                 .in_set(BridgeSet::Game)
@@ -296,6 +309,13 @@ impl Plugin for TbaPlugin {
             crate::combat::award_kill_rewards.after(crate::combat::run_due_round),
         );
 
+        // Issue #15 Phase 3: translate each native kill into a stdlib
+        // `QuestEvent::Killed`, after the reward pass read the same stream.
+        app.add_systems(
+            Update,
+            trigger_quest_bridge_system.after(crate::combat::award_kill_rewards),
+        );
+
         // World simulation on the fixed tick: reset zones (spawn NPCs), attach
         // and age object timers, give each NPC its vitals, then run room-local
         // aggro. Ordered after the stdlib spatial index so `RoomOccupants` is
@@ -315,8 +335,10 @@ impl Plugin for TbaPlugin {
                 crate::party::follow_system,
                 crate::party::cleanup_parties_on_logout,
                 // Issue #15: greet/entry fires on a room change, after the
-                // stdlib spatial index is current.
+                // stdlib spatial index is current. The effects drain applies
+                // any queued spawns/purges/variable writes.
                 trigger_greet_system,
+                trigger_effects_system,
             )
                 .chain()
                 .after(maintain_room_occupants)

@@ -82,7 +82,7 @@ use bevy::ecs::system::SystemParam;
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{
-    DoorState, Doors, Location, Npc, NpcKey, Player, PlayerDefeated, Room, RoomOccupants,
+    DoorState, Doors, Location, Npc, NpcId, NpcKey, Player, PlayerDefeated, Room, RoomOccupants,
     RoomState, RoomTag, Session, SessionState,
 };
 
@@ -386,6 +386,11 @@ fn deal_damage(
         npc_defeated.write(NpcDefeated {
             victim: target,
             killer: attacker,
+            npc: keys
+                .get(target)
+                .ok()
+                .map(|key| key.0.clone())
+                .unwrap_or_else(|| NpcId::from("")),
             experience,
             gold,
             alignment,

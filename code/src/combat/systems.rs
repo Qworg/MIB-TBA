@@ -21,7 +21,7 @@
 //! observes to repopulate the world.
 
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{Npc, NpcKey, Player, PlayerDefeated};
+use mib_stdlib::prelude::{Npc, NpcId, NpcKey, Player, PlayerDefeated};
 
 use crate::content::{Position, TbaItemKind};
 use crate::module::TbaContent;
@@ -171,6 +171,9 @@ pub fn resolve_rounds(
             npc_defeated.write(NpcDefeated {
                 victim,
                 killer,
+                npc: key
+                    .map(|key| key.0.clone())
+                    .unwrap_or_else(|| NpcId::from("")),
                 experience,
                 gold,
                 alignment,

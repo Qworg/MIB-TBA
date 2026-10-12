@@ -12,16 +12,20 @@
 //!   text commands, step cap).
 //! - [`index`] — [`index::TriggerIndex`] / [`index::TbaTriggers`], rebuilt at
 //!   build/reload.
-//! - [`events`] — the Four events that fire this pass: speech, command,
-//!   greet/entry, act.
+//! - [`events`] — the events that fire: speech, command, greet/entry, act.
+//! - [`effects`] — Phase 3 persisted [`effects::TbaTriggerVars`] and the
+//!   exclusive drain for `%load%`/`%purge%` and variable writes.
+//! - [`quests`] — the `stdlib.quests` bridge (native kills -> `QuestEvent`).
 //!
-//! Phase 3 owns variables and the `stdlib.quests` bridge; Phase 4 owns
-//! timers/movement; Phase 5 owns combat. Every construct outside the Phase-2
-//! subset is parsed-but-deferred and reported by name, never executed.
+//! Phase 4 owns timers/movement; Phase 5 owns combat. Every construct outside
+//! the Phase-3 subset is parsed-but-deferred and reported by name, never
+//! executed.
 
 pub mod ast;
 pub mod content;
 pub mod context;
+pub mod effects;
 pub mod eval;
 pub mod events;
 pub mod index;
+pub mod quests;

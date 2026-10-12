@@ -119,7 +119,7 @@
 - emitted records: 133
 - parsed: 133
 - parse failures: 0
-- records with unsupported constructs: 98
+- records with unsupported constructs: 95
 
 ### Emitted constructs
 
@@ -135,13 +135,19 @@
 | `elseif` | 33 |
 | `emote` | 62 |
 | `eval` | 40 |
+| `global` | 2 |
 | `halt` | 42 |
 | `if` | 224 |
+| `load.mob` | 4 |
+| `load.obj` | 97 |
 | `nop` | 11 |
+| `purge` | 17 |
+| `rdelete` | 5 |
+| `remote` | 6 |
 | `return` | 31 |
 | `say` | 205 |
 | `send` | 52 |
-| `set` | 167 |
+| `set` | 45 |
 | `switch` | 3 |
 | `unset` | 1 |
 | `unsupported:at` | 4 |
@@ -167,11 +173,9 @@
 | `unsupported:gaze` | 1 |
 | `unsupported:give` | 34 |
 | `unsupported:glare` | 2 |
-| `unsupported:global` | 2 |
 | `unsupported:grin` | 2 |
 | `unsupported:growl` | 1 |
 | `unsupported:junk` | 2 |
-| `unsupported:load` | 101 |
 | `unsupported:lock` | 3 |
 | `unsupported:look` | 1 |
 | `unsupported:mfollow` | 1 |
@@ -180,11 +184,9 @@
 | `unsupported:ogle` | 1 |
 | `unsupported:open` | 3 |
 | `unsupported:pout` | 1 |
-| `unsupported:purge` | 17 |
 | `unsupported:random.dir` | 4 |
-| `unsupported:rdelete` | 5 |
-| `unsupported:remote` | 6 |
 | `unsupported:roll` | 2 |
+| `unsupported:set_array` | 122 |
 | `unsupported:shake` | 2 |
 | `unsupported:sigh` | 3 |
 | `unsupported:sit` | 2 |
@@ -233,11 +235,9 @@
 | `gaze` | 1 |
 | `give` | 34 |
 | `glare` | 2 |
-| `global` | 2 |
 | `grin` | 2 |
 | `growl` | 1 |
 | `junk` | 2 |
-| `load` | 101 |
 | `lock` | 3 |
 | `look` | 1 |
 | `mfollow` | 1 |
@@ -246,11 +246,9 @@
 | `ogle` | 1 |
 | `open` | 3 |
 | `pout` | 1 |
-| `purge` | 17 |
 | `random.dir` | 4 |
-| `rdelete` | 5 |
-| `remote` | 6 |
 | `roll` | 2 |
+| `set_array` | 122 |
 | `shake` | 2 |
 | `sigh` | 3 |
 | `sit` | 2 |

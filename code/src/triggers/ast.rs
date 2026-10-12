@@ -10,10 +10,12 @@
 //! Supported text: `say`, `emote`, `echo`/`%echo%`, `%echoaround%`, `%send%`,
 //! `%zoneecho%`. Supported control: `if`/`elseif`/`else`/`end`,
 //! `switch`/`case`/`default`/`break`/`done`, `while`/`done`, `return`, `nop`,
-//! `halt`. `set`/`eval`/`unset` parse into [`Node::Deferred`] (Phase 3 owns
-//! them). Everything else is a named unsupported drop.
+//! `halt`. Phase 3 adds state (`set`/`eval`/`unset`/`remote`/`global`/`local`/
+//! `rdelete`) and the `%load%`/`%purge%` effects into real [`Node`]s. User
+//! arrays (`set txt[1] …`) remain named drops, matching the design. Everything
+//! else is a named unsupported drop.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 /// Maximum nodes a single record may execute before the cap trips. A looping
 /// script is stopped and reported rather than allowed to wedge a tick.
@@ -55,6 +57,25 @@ impl CmpOp {
             CmpOp::Gt => ">",
             CmpOp::Le => "<=",
             CmpOp::Ge => ">=",
+        }
+    }
+}
+
+/// The kind argument of a `%load%` directive.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LoadKind {
+    /// `%load% obj <vnum> [victim] [wear]`.
+    Obj,
+    /// `%load% mob <vnum>`.
+    Mob,
+}
+
+impl LoadKind {
+    /// Stable report spelling.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            LoadKind::Obj => "obj",
+            LoadKind::Mob => "mob",
         }
     }
 }
@@ -115,9 +136,32 @@ pub enum Node {
     Nop(String),
     /// `break` — leaves the innermost `switch`/`while`.
     Break,
-    /// `set`/`eval`/`unset` — parsed but deferred to Phase 3.
+    /// `set <name> <value>` — assign the trigger-local variable `name`.
+    Set { name: String, value: String },
+    /// `eval <name> <expr>` — evaluate integer arithmetic and assign it.
+    Eval { name: String, expr: String },
+    /// `unset <name>` — remove the trigger-local variable.
+    Unset { name: String },
+    /// `remote <name> <target>` — persist the local `name` on the target.
+    Remote { name: String, target: String },
+    /// `global <name> [value]` — persist `name` in the global scope.
+    Global { name: String, value: String },
+    /// `local <name> [value]` — assign the trigger-local variable.
+    Local { name: String, value: String },
+    /// `rdelete <name> <target>` — delete the target's persisted `name`.
+    RDelete { name: String, target: String },
+    /// `%load% obj|mob <vnum> [victim] [wear]` — spawn from the world.
+    Load {
+        kind: LoadKind,
+        vnum: String,
+        target: Option<String>,
+        wear: Option<String>,
+    },
+    /// `%purge% [target]` — despawn the target (default: the owner).
+    Purge { target: Option<String> },
+    /// A construct parsed but deferred (an indexed user array; Phase 4+).
     Deferred { kind: String, line: String },
-    /// A line whose construct Phase 2 does not support.
+    /// A line whose construct Phase 3 does not support.
     Unsupported { kind: String, line: String },
 }
 
@@ -138,6 +182,15 @@ impl Node {
             Node::Halt => "halt".to_owned(),
             Node::Nop(_) => "nop".to_owned(),
             Node::Break => "break".to_owned(),
+            Node::Set { .. } => "set".to_owned(),
+            Node::Eval { .. } => "eval".to_owned(),
+            Node::Unset { .. } => "unset".to_owned(),
+            Node::Remote { .. } => "remote".to_owned(),
+            Node::Global { .. } => "global".to_owned(),
+            Node::Local { .. } => "local".to_owned(),
+            Node::RDelete { .. } => "rdelete".to_owned(),
+            Node::Load { kind, .. } => format!("load.{}", kind.as_str()),
+            Node::Purge { .. } => "purge".to_owned(),
             Node::Deferred { kind, .. } => kind.clone(),
             Node::Unsupported { kind, .. } => format!("unsupported:{kind}"),
         }
@@ -156,6 +209,10 @@ pub struct ParsedProgram {
     /// A structural error (`if` without `end`, stray `end`) when present. A
     /// record with an error is a named drop and is not executed.
     pub error: Option<String>,
+    /// Every variable name the record assigns (lowercased, array suffix
+    /// stripped). The coverage scan treats these as known, so a bare `%name%`
+    /// reference is not miscounted as an unknown token.
+    pub vars: BTreeSet<String>,
 }
 
 impl ParsedProgram {
@@ -190,11 +247,13 @@ pub fn parse_script(source: &str) -> ParsedProgram {
         let stray = parser.lines[parser.pos].trim();
         parser.error = Some(format!("unexpected trailing `{stray}`"));
     }
+    let vars = collect_assigned_vars(&nodes);
     ParsedProgram {
         nodes,
         constructs: parser.constructs,
         unsupported: parser.unsupported,
         error: parser.error,
+        vars,
     }
 }
 
@@ -433,12 +492,57 @@ impl<'a> Parser<'a> {
                 self.count("break");
                 Node::Break
             }
-            "set" | "eval" | "unset" => {
-                self.count(&keyword);
-                Node::Deferred {
-                    kind: keyword,
-                    line: line.to_owned(),
+            "set" => {
+                let (name, value) = split_target(&rest);
+                if is_array_name(&name) {
+                    self.count_unsupported("set_array");
+                    Node::Unsupported {
+                        kind: "set_array".to_owned(),
+                        line: line.to_owned(),
+                    }
+                } else {
+                    self.count("set");
+                    Node::Set { name, value }
                 }
+            }
+            "eval" => {
+                let (name, expr) = split_target(&rest);
+                if is_array_name(&name) {
+                    self.count_unsupported("eval_array");
+                    Node::Unsupported {
+                        kind: "eval_array".to_owned(),
+                        line: line.to_owned(),
+                    }
+                } else {
+                    self.count("eval");
+                    Node::Eval { name, expr }
+                }
+            }
+            "unset" => {
+                self.count("unset");
+                Node::Unset {
+                    name: rest.trim().to_owned(),
+                }
+            }
+            "remote" => {
+                let (name, target) = split_target(&rest);
+                self.count("remote");
+                Node::Remote { name, target }
+            }
+            "global" => {
+                let (name, value) = split_target(&rest);
+                self.count("global");
+                Node::Global { name, value }
+            }
+            "local" => {
+                let (name, value) = split_target(&rest);
+                self.count("local");
+                Node::Local { name, value }
+            }
+            "rdelete" => {
+                let (name, target) = split_target(&rest);
+                self.count("rdelete");
+                Node::RDelete { name, target }
             }
             "%echo%" => {
                 self.count("echo");
@@ -459,6 +563,25 @@ impl<'a> Parser<'a> {
                 let (zone, text) = split_target(&rest);
                 Node::ZoneEcho { zone, text }
             }
+            "%load%" => {
+                let node = parse_load(&rest);
+                match &node {
+                    Node::Load { kind, .. } => {
+                        self.count(&format!("load.{}", kind.as_str()));
+                    }
+                    _ => {
+                        self.count_unsupported("load");
+                    }
+                }
+                node
+            }
+            "%purge%" => {
+                self.count("purge");
+                let target = rest.trim();
+                Node::Purge {
+                    target: (!target.is_empty()).then(|| target.to_owned()),
+                }
+            }
             _ => {
                 let kind = directive_kind(&keyword);
                 self.count_unsupported(&kind);
@@ -478,6 +601,75 @@ fn directive_kind(first_word: &str) -> String {
         first_word.trim_matches('%').to_ascii_lowercase()
     } else {
         first_word.to_ascii_lowercase()
+    }
+}
+
+/// Whether a variable name uses the user-array form (`txt[1]`, `phrase(2)`).
+/// User arrays are deferred past Phase 3, so the parser records them by name.
+fn is_array_name(name: &str) -> bool {
+    name.contains('[') || name.contains('(')
+}
+
+/// Parse a `%load%` body after the directive word.
+fn parse_load(rest: &str) -> Node {
+    let mut parts = rest.split_whitespace();
+    let kind_word = parts.next().unwrap_or("");
+    let vnum = parts.next().unwrap_or("").to_owned();
+    let target = parts.next().map(str::to_owned);
+    let wear = parts.next().map(str::to_owned);
+    let kind = match kind_word.to_ascii_lowercase().as_str() {
+        "obj" | "o" | "object" => Some(LoadKind::Obj),
+        "mob" | "m" | "mobile" => Some(LoadKind::Mob),
+        _ => None,
+    };
+    match kind {
+        Some(kind) if !vnum.is_empty() => Node::Load {
+            kind,
+            vnum,
+            target,
+            wear,
+        },
+        _ => Node::Unsupported {
+            kind: "load".to_owned(),
+            line: format!("%load% {rest}"),
+        },
+    }
+}
+
+/// Every variable name a record assigns, lowercased.
+fn collect_assigned_vars(nodes: &[Node]) -> BTreeSet<String> {
+    let mut out = BTreeSet::new();
+    collect_assigned(nodes, &mut out);
+    out
+}
+
+fn collect_assigned(nodes: &[Node], out: &mut BTreeSet<String>) {
+    for node in nodes {
+        match node {
+            Node::Set { name, .. }
+            | Node::Eval { name, .. }
+            | Node::Unset { name }
+            | Node::Remote { name, .. }
+            | Node::Global { name, .. }
+            | Node::Local { name, .. }
+            | Node::RDelete { name, .. } => {
+                out.insert(name.trim().to_ascii_lowercase());
+            }
+            Node::If { arms, otherwise } => {
+                for (_, body) in arms {
+                    collect_assigned(body, out);
+                }
+                collect_assigned(otherwise, out);
+            }
+            Node::Switch { cases, default, .. } => {
+                for (_, body) in cases {
+                    collect_assigned(body, out);
+                }
+                collect_assigned(default, out);
+            }
+            Node::While { body, .. } => collect_assigned(body, out),
+            _ => {}
+        }
     }
 }
 
@@ -556,7 +748,42 @@ fn collect_references(nodes: &[Node], out: &mut String) {
                 out.push_str(value);
                 out.push('\n');
             }
-            Node::Return(None) | Node::Halt | Node::Break | Node::Deferred { .. } => {}
+            Node::Set { value, .. } | Node::Local { value, .. } | Node::Global { value, .. } => {
+                out.push_str(value);
+                out.push('\n');
+            }
+            Node::Eval { expr, .. } => {
+                out.push_str(expr);
+                out.push('\n');
+            }
+            Node::Load {
+                vnum, target, wear, ..
+            } => {
+                out.push_str(vnum);
+                out.push('\n');
+                if let Some(target) = target {
+                    out.push_str(target);
+                    out.push('\n');
+                }
+                if let Some(wear) = wear {
+                    out.push_str(wear);
+                    out.push('\n');
+                }
+            }
+            Node::Purge {
+                target: Some(target),
+            } => {
+                out.push_str(target);
+                out.push('\n');
+            }
+            Node::Return(None)
+            | Node::Halt
+            | Node::Break
+            | Node::Unset { .. }
+            | Node::Remote { .. }
+            | Node::RDelete { .. }
+            | Node::Purge { target: None }
+            | Node::Deferred { .. } => {}
             Node::Unsupported { .. } => {}
         }
     }
@@ -601,6 +828,10 @@ pub fn parse_condition(text: &str) -> Cond {
 }
 
 /// Split a condition into words and operators.
+///
+/// A `%…%` substitution is a **single** token, so `%actor.varexists(x)%` and
+/// `%item.vnum%` keep their parentheses and dots instead of being split on the
+/// embedded punctuation.
 fn tokenize_condition(text: &str) -> Vec<String> {
     let mut tokens = Vec::new();
     let mut current = String::new();
@@ -608,6 +839,21 @@ fn tokenize_condition(text: &str) -> Vec<String> {
     let mut i = 0;
     while i < chars.len() {
         let ch = chars[i];
+        if ch == '%' {
+            if !current.is_empty() {
+                tokens.push(std::mem::take(&mut current));
+            }
+            let start = i;
+            i += 1;
+            while i < chars.len() && chars[i] != '%' {
+                i += 1;
+            }
+            if i < chars.len() {
+                i += 1;
+            }
+            tokens.push(chars[start..i].iter().collect());
+            continue;
+        }
         let two: Option<&str> = if i + 1 < chars.len() {
             match (ch, chars[i + 1]) {
                 ('&', '&') => Some("&&"),
@@ -844,18 +1090,18 @@ mod tests {
     #[test]
     fn unsupported_lines_become_named_markers() {
         let program = parse_script(
-            "%load% obj 1300\n\
+            "%teleport% %actor% 3001\n\
              give sword %actor%\n\
              dg_cast 'poison' %actor%\n\
              mkill %actor%\n",
         );
         assert!(program.is_valid(), "{:?}", program.error);
-        assert_eq!(program.unsupported.get("load"), Some(&1));
+        assert_eq!(program.unsupported.get("teleport"), Some(&1));
         assert_eq!(program.unsupported.get("give"), Some(&1));
         assert_eq!(program.unsupported.get("dg_cast"), Some(&1));
         assert_eq!(program.unsupported.get("mkill"), Some(&1));
         assert_eq!(program.nodes.len(), 4);
-        assert!(matches!(&program.nodes[0], Node::Unsupported { kind, .. } if kind == "load"));
+        assert!(matches!(&program.nodes[0], Node::Unsupported { kind, .. } if kind == "teleport"));
     }
 
     #[test]
@@ -867,18 +1113,59 @@ mod tests {
     }
 
     #[test]
-    fn set_eval_unset_are_deferred() {
-        let program = parse_script("set value 10\neval value %value% + 1\nunset value\n");
+    fn set_eval_unset_parse_as_state_nodes() {
+        let program = parse_script(
+            "set value 10\neval value %value% + 1\nunset value\nremote value %actor.id%\n",
+        );
         assert!(program.is_valid(), "{:?}", program.error);
         assert_eq!(program.constructs.get("set"), Some(&1));
         assert_eq!(program.constructs.get("eval"), Some(&1));
         assert_eq!(program.constructs.get("unset"), Some(&1));
+        assert_eq!(program.constructs.get("remote"), Some(&1));
         assert!(
-            program
-                .nodes
-                .iter()
-                .all(|node| matches!(node, Node::Deferred { .. }))
+            matches!(&program.nodes[0], Node::Set { name, value } if name == "value" && value == "10")
         );
+        assert!(matches!(&program.nodes[1], Node::Eval { name, .. } if name == "value"));
+        assert!(matches!(&program.nodes[2], Node::Unset { name } if name == "value"));
+        assert!(
+            matches!(&program.nodes[3], Node::Remote { name, target } if name == "value" && target == "%actor.id%")
+        );
+        assert!(program.vars.contains("value"), "assigned names are known");
+    }
+
+    #[test]
+    fn load_and_purge_parse_as_effects() {
+        let program = parse_script(
+            "%load% obj 50 %actor% light\n%load% mob %self.vnum%\n%load% m 15\n%purge% %object%\n",
+        );
+        assert!(program.is_valid(), "{:?}", program.error);
+        assert_eq!(program.constructs.get("load.obj"), Some(&1));
+        assert_eq!(program.constructs.get("load.mob"), Some(&2));
+        assert_eq!(program.constructs.get("purge"), Some(&1));
+        assert!(matches!(
+            &program.nodes[0],
+            Node::Load { kind: LoadKind::Obj, vnum, target: Some(target), wear: Some(wear) }
+                if vnum == "50" && target == "%actor%" && wear == "light"
+        ));
+        assert!(matches!(
+            &program.nodes[3],
+            Node::Purge { target: Some(target) } if target == "%object%"
+        ));
+    }
+
+    #[test]
+    fn user_arrays_are_named_drops() {
+        let program = parse_script("set txt[1] hello\nset phrase(2) world\n");
+        assert!(program.is_valid(), "{:?}", program.error);
+        assert_eq!(program.unsupported.get("set_array"), Some(&2));
+    }
+
+    #[test]
+    fn assigned_variables_are_collected_for_coverage() {
+        let program =
+            parse_script("set polly 1\nif %polly%\n  eval polly %polly%+1\n  unset polly\nend\n");
+        assert!(program.vars.contains("polly"));
+        assert_eq!(program.unsupported.get("unset"), None);
     }
 
     #[test]

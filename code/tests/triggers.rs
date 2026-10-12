@@ -18,6 +18,8 @@ use std::collections::BTreeMap;
 use mib_core::prelude::*;
 use mib_stdlib::prelude::*;
 use mib_tba::prelude::*;
+use mib_tba::triggers::effects::{PendingTriggerOps, TriggerDropLog, trigger_effects_system};
+use mib_tba::triggers::quests::trigger_quest_bridge_system;
 
 fn trigger(vnum: i32, attach: &str, types: &[&str], arglist: &str, script: &str) -> TriggerDef {
     TriggerDef {
@@ -35,6 +37,7 @@ fn test_app(defs: Vec<TriggerDef>) -> App {
     let mut app = App::new();
     app.init_resource::<TbaRng>();
     app.init_resource::<TriggerLastRoom>();
+    app.init_resource::<PendingTriggerOps>();
     let mut map = BTreeMap::new();
     for def in defs {
         map.insert(TriggerId::from_vnum(def.vnum), def);
@@ -42,8 +45,17 @@ fn test_app(defs: Vec<TriggerDef>) -> App {
     app.insert_resource(TbaTriggers::build(map));
     app.add_message::<CommandReceived>();
     app.add_message::<OutputEvent>();
-    app.add_systems(Update, trigger_command_system);
-    app.add_systems(FixedUpdate, trigger_greet_system);
+    app.add_message::<QuestEvent>();
+    app.add_message::<NpcDefeated>();
+    app.add_systems(
+        Update,
+        (trigger_command_system, trigger_effects_system).chain(),
+    );
+    app.add_systems(
+        FixedUpdate,
+        (trigger_greet_system, trigger_effects_system).chain(),
+    );
+    app.add_systems(Update, trigger_quest_bridge_system);
     app
 }
 
@@ -272,14 +284,13 @@ fn structured_custom_command_matches_the_verb() {
 
 #[test]
 fn unsupported_construct_is_reported_not_executed() {
-    // `%load%` is parsed-but-deferred; only the `say` after it runs, and no
-    // item is spawned by the trigger.
+    // `%teleport%` is parsed-but-deferred; only the `say` after it runs.
     let mut app = test_app(vec![trigger(
         4,
         "npc:tba_npc_5",
         &["speech"],
         "*",
-        "%load% obj 1300\nsay The load was deferred.\n",
+        "%teleport% %actor% 3001\nsay The teleport was deferred.\n",
     )]);
     let room = spawn_room(&mut app);
     let actor = spawn_player(&mut app, room, "Aria");
@@ -289,7 +300,57 @@ fn unsupported_construct_is_reported_not_executed() {
     run_update(&mut app);
 
     let all = text(&mut app);
-    assert!(all.contains("The load was deferred."), "say ran: {all}");
-    let items = app.world_mut().query::<&Item>().iter(app.world()).count();
-    assert_eq!(items, 0, "the deferred %load% spawned nothing");
+    assert!(all.contains("The teleport was deferred."), "say ran: {all}");
+    let log = app.world().resource::<TriggerDropLog>();
+    assert_eq!(
+        log.count("teleport"),
+        1,
+        "the deferred construct is counted"
+    );
+}
+
+#[test]
+fn purge_self_despawns_the_trigger_owner() {
+    let mut app = test_app(vec![trigger(
+        7,
+        "npc:tba_npc_5",
+        &["command"],
+        "vanish",
+        "%purge% %self%\n",
+    )]);
+    let room = spawn_room(&mut app);
+    let actor = spawn_player(&mut app, room, "Aria");
+    let npc = spawn_npc(&mut app, room, "the questmaster", "tba_npc_5");
+
+    command(&mut app, actor, "vanish");
+    run_update(&mut app);
+
+    assert!(
+        app.world().get_entity(npc).is_err(),
+        "the effect drain purged the owner"
+    );
+}
+
+#[test]
+fn load_with_an_unresolved_recipient_is_a_named_drop() {
+    let mut app = test_app(vec![trigger(
+        8,
+        "npc:tba_npc_5",
+        &["speech"],
+        "*",
+        "%load% obj 1300 %victim%\n",
+    )]);
+    let room = spawn_room(&mut app);
+    let actor = spawn_player(&mut app, room, "Aria");
+    let _npc = spawn_npc(&mut app, room, "the questmaster", "tba_npc_5");
+
+    command(&mut app, actor, "say anything");
+    run_update(&mut app);
+
+    let log = app.world().resource::<TriggerDropLog>();
+    assert_eq!(
+        log.count("load_target"),
+        1,
+        "the unresolved recipient dropped"
+    );
 }

@@ -22,7 +22,7 @@ use mib_tba::content::{
 };
 use mib_tba::triggers::ast::parse_script;
 use mib_tba::triggers::content::{TriggerDef, TriggerId, TriggersFile};
-use mib_tba::triggers::context::unknown_tokens;
+use mib_tba::triggers::context::unknown_tokens_excluding;
 
 use crate::emit::OutputBundle;
 use crate::error::{ConvertError, Result};
@@ -2443,7 +2443,7 @@ fn trigger_coverage(triggers: &TriggersFile) -> TriggerCoverage {
         for (kind, count) in &program.unsupported {
             *coverage.unsupported_counts.entry(kind.clone()).or_default() += count;
         }
-        for (token, count) in unknown_tokens(&program.referenced_text()) {
+        for (token, count) in unknown_tokens_excluding(&program.referenced_text(), &program.vars) {
             *coverage.unknown_tokens.entry(token).or_default() += count;
         }
     }

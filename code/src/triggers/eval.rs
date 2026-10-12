@@ -1,18 +1,25 @@
-//! The Phase-2 AST interpreter (issue #15).
+//! The Phase-2/3 AST interpreter (issue #15).
 //!
 //! Walks a [`crate::triggers::ast::ParsedProgram`] against a
 //! [`TriggerContext`], resolving `%…%` substitutions and producing text
-//! emissions plus a list of named drops. It supports `if`/`switch`/`while`,
-//! `return`/`nop`/`halt`, boolean conditions, and the text commands. `set`,
-//! `eval`, `unset`, `%load%`, `%purge%`, `wait`, `dg_cast` and every other
-//! directive are parsed-but-deferred and recorded as named drops — never
-//! executed.
+//! emissions, variable writes, spawn/purge requests, quest-flag signals, and a
+//! list of named drops. It supports `if`/`switch`/`while`,
+//! `return`/`nop`/`halt`, boolean conditions, the text commands, and (Phase 3)
+//! `set`/`eval`/`unset`/`remote`/`global`/`local`/`rdelete` plus `%load%` and
+//! `%purge%`.
+//!
+//! The interpreter never touches `&mut World`: it queues [`SpawnRequest`]s,
+//! [`PurgeRequest`]s, and [`VarWrite`]s, which an exclusive system drains (the
+//! spawn helpers take `&mut World`). That keeps evaluation pure and unit
+//! testable, and keeps the `World` mutation in one place.
 //!
 //! A single record is bounded by [`STEP_CAP`] node visits: a looping script
 //! records a `step_cap` drop and stops, so a bad script cannot wedge a tick.
 
+use std::collections::BTreeMap;
+
 use crate::combat::progression::TbaRng;
-use crate::triggers::ast::{CmpOp, Cond, Node, STEP_CAP};
+use crate::triggers::ast::{CmpOp, Cond, LoadKind, Node, STEP_CAP};
 use crate::triggers::context::{NamedDrop, TriggerContext, resolve_token};
 
 /// Where an emitted line goes. The event system maps these to entities and
@@ -55,6 +62,47 @@ pub struct EvalOutcome {
     pub steps: usize,
     /// True when the step cap tripped.
     pub capped: bool,
+    /// Persisted variable writes (`remote`/`global`/`rdelete`).
+    pub var_writes: Vec<VarWrite>,
+    /// Item/NPC spawns requested by `%load%`.
+    pub spawns: Vec<SpawnRequest>,
+    /// Despawns requested by `%purge%`.
+    pub purges: Vec<PurgeRequest>,
+    /// A truthy `remote` write: the name of a quest flag a `stdlib.quests`
+    /// `Flag` step can consume.
+    pub flags: Vec<String>,
+}
+
+/// Which persisted scope a write targets.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum VarScope {
+    Remote,
+    Global,
+}
+
+/// One persisted variable write (or deletion when `value` is `None`).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct VarWrite {
+    pub scope: VarScope,
+    pub name: String,
+    pub value: Option<String>,
+    /// The `remote` target token (`%actor.id%`); `None` for `global`.
+    pub target: Option<String>,
+}
+
+/// A `%load%` request (the interpreter has no `World`).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SpawnRequest {
+    pub kind: LoadKind,
+    pub vnum: String,
+    pub target: Option<String>,
+    pub wear: Option<String>,
+}
+
+/// A `%purge%` request.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PurgeRequest {
+    pub target: Option<String>,
 }
 
 /// Run a parsed record.
@@ -62,6 +110,7 @@ pub fn run(nodes: &[Node], ctx: &TriggerContext, rng: &mut TbaRng) -> EvalOutcom
     let mut state = State {
         ctx,
         rng,
+        locals: ctx.vars.local.clone(),
         outcome: EvalOutcome::default(),
     };
     match state.run_nodes(nodes) {
@@ -82,6 +131,7 @@ enum Flow {
 struct State<'a> {
     ctx: &'a TriggerContext,
     rng: &'a mut TbaRng,
+    locals: BTreeMap<String, String>,
     outcome: EvalOutcome,
 }
 
@@ -192,6 +242,98 @@ impl State<'_> {
                     return Flow::Halt;
                 }
             },
+            Node::Set { name, value } => {
+                let rendered = self.substitute(value);
+                self.assign(name, rendered);
+                Flow::Normal
+            }
+            Node::Eval { name, expr } => {
+                let rendered = self.substitute(expr);
+                let value = eval_arithmetic(&rendered)
+                    .map(|number| number.to_string())
+                    .unwrap_or(rendered);
+                self.assign(name, value);
+                Flow::Normal
+            }
+            Node::Unset { name } => {
+                self.locals.remove(&normalize_name(name));
+                Flow::Normal
+            }
+            Node::Remote { name, target } => {
+                let name = normalize_name(name);
+                let value = self.locals.get(&name).cloned().unwrap_or_default();
+                let target = self.substitute(target);
+                self.outcome.var_writes.push(VarWrite {
+                    scope: VarScope::Remote,
+                    name: name.clone(),
+                    value: Some(value.clone()),
+                    target: Some(target),
+                });
+                if truthy(&value) {
+                    self.outcome.flags.push(name);
+                }
+                Flow::Normal
+            }
+            Node::Global { name, value } => {
+                let name = normalize_name(name);
+                let value = if value.trim().is_empty() {
+                    self.locals.get(&name).cloned().unwrap_or_default()
+                } else {
+                    self.substitute(value)
+                };
+                self.outcome.var_writes.push(VarWrite {
+                    scope: VarScope::Global,
+                    name,
+                    value: Some(value),
+                    target: None,
+                });
+                Flow::Normal
+            }
+            Node::Local { name, value } => {
+                if !value.trim().is_empty() {
+                    let rendered = self.substitute(value);
+                    self.assign(name, rendered);
+                }
+                Flow::Normal
+            }
+            Node::RDelete { name, target } => {
+                let name = normalize_name(name);
+                self.locals.remove(&name);
+                let target = self.substitute(target);
+                self.outcome.var_writes.push(VarWrite {
+                    scope: VarScope::Remote,
+                    name,
+                    value: None,
+                    target: Some(target),
+                });
+                Flow::Normal
+            }
+            Node::Load {
+                kind,
+                vnum,
+                target,
+                wear,
+            } => {
+                let vnum = self.substitute(vnum);
+                // The recipient is a DG token (`%actor%`/`%self%`), not a
+                // substituted value; the event dispatch resolves it to an
+                // entity so a name change cannot break the holder.
+                let target = target.clone();
+                let wear = wear.as_ref().map(|wear| self.substitute(wear));
+                self.outcome.spawns.push(SpawnRequest {
+                    kind: *kind,
+                    vnum,
+                    target,
+                    wear,
+                });
+                Flow::Normal
+            }
+            Node::Purge { target } => {
+                self.outcome.purges.push(PurgeRequest {
+                    target: target.clone(),
+                });
+                Flow::Normal
+            }
             Node::Return(_) => Flow::Return,
             Node::Halt => Flow::Halt,
             Node::Break => Flow::Break,
@@ -228,6 +370,19 @@ impl State<'_> {
             .push(NamedDrop::new(kind, format!("unresolved: {detail}")));
     }
 
+    /// Assign a trigger-local variable, normalising the name the way the
+    /// resolver looks it up.
+    fn assign(&mut self, name: &str, value: String) {
+        let name = normalize_name(name);
+        if name.is_empty() {
+            self.outcome
+                .drops
+                .push(NamedDrop::new("set", "empty variable name"));
+            return;
+        }
+        self.locals.insert(name, value);
+    }
+
     /// Substitute every `%…%` token in `template`.
     fn substitute(&mut self, template: &str) -> String {
         let mut out = String::with_capacity(template.len());
@@ -254,7 +409,7 @@ impl State<'_> {
             }
             if closed && end > start {
                 let token: String = chars[start..end].iter().collect();
-                let resolved = resolve_token(&token, self.ctx, self.rng);
+                let resolved = resolve_token(&token, self.ctx, &self.locals, self.rng);
                 if !resolved.known {
                     self.outcome
                         .drops
@@ -306,6 +461,124 @@ impl State<'_> {
 fn truthy(value: &str) -> bool {
     let value = value.trim();
     !value.is_empty() && value != "0"
+}
+
+/// The canonical spelling of a DG variable name: trimmed and lowercased, so
+/// `%HOURS_IN_DAY%` finds `set HOURS_IN_DAY`.
+fn normalize_name(name: &str) -> String {
+    name.trim().to_ascii_lowercase()
+}
+
+/// Evaluate the bounded integer arithmetic DG uses in `eval`: `+ - * / %`,
+/// parentheses, and unary minus, all saturating and never panicking. Returns
+/// `None` when the expression is not pure arithmetic (a bare string), so the
+/// caller stores it verbatim.
+fn eval_arithmetic(expr: &str) -> Option<i64> {
+    let chars: Vec<char> = expr.chars().collect();
+    let mut parser = ExprParser {
+        chars: &chars,
+        pos: 0,
+    };
+    let value = parser.parse_add()?;
+    parser.skip_ws();
+    (parser.pos == parser.chars.len()).then_some(value)
+}
+
+struct ExprParser<'a> {
+    chars: &'a [char],
+    pos: usize,
+}
+
+impl ExprParser<'_> {
+    fn skip_ws(&mut self) {
+        while self.chars.get(self.pos).is_some_and(|c| c.is_whitespace()) {
+            self.pos += 1;
+        }
+    }
+
+    fn peek(&self) -> Option<char> {
+        self.chars.get(self.pos).copied()
+    }
+
+    fn parse_add(&mut self) -> Option<i64> {
+        let mut value = self.parse_mul()?;
+        loop {
+            self.skip_ws();
+            match self.peek() {
+                Some('+') => {
+                    self.pos += 1;
+                    value = value.saturating_add(self.parse_mul()?);
+                }
+                Some('-') => {
+                    self.pos += 1;
+                    value = value.saturating_sub(self.parse_mul()?);
+                }
+                _ => return Some(value),
+            }
+        }
+    }
+
+    fn parse_mul(&mut self) -> Option<i64> {
+        let mut value = self.parse_unary()?;
+        loop {
+            self.skip_ws();
+            match self.peek() {
+                Some('*') => {
+                    self.pos += 1;
+                    value = value.saturating_mul(self.parse_unary()?);
+                }
+                Some('/') => {
+                    self.pos += 1;
+                    let divisor = self.parse_unary()?;
+                    value = if divisor == 0 { 0 } else { value / divisor };
+                }
+                Some('%') => {
+                    self.pos += 1;
+                    let divisor = self.parse_unary()?;
+                    value = if divisor == 0 { 0 } else { value % divisor };
+                }
+                _ => return Some(value),
+            }
+        }
+    }
+
+    fn parse_unary(&mut self) -> Option<i64> {
+        self.skip_ws();
+        match self.peek() {
+            Some('-') => {
+                self.pos += 1;
+                Some(-self.parse_unary()?)
+            }
+            Some('+') => {
+                self.pos += 1;
+                self.parse_unary()
+            }
+            _ => self.parse_atom(),
+        }
+    }
+
+    fn parse_atom(&mut self) -> Option<i64> {
+        self.skip_ws();
+        if self.peek() == Some('(') {
+            self.pos += 1;
+            let value = self.parse_add()?;
+            self.skip_ws();
+            if self.peek() == Some(')') {
+                self.pos += 1;
+                return Some(value);
+            }
+            return None;
+        }
+        let start = self.pos;
+        while self.peek().is_some_and(|c| c.is_ascii_digit()) {
+            self.pos += 1;
+        }
+        if self.pos == start {
+            return None;
+        }
+        let digits: String = self.chars[start..self.pos].iter().collect();
+        digits.parse::<i64>().ok()
+    }
 }
 
 /// Compare two substituted values, numerically when both parse.
@@ -416,10 +689,84 @@ mod tests {
 
     #[test]
     fn unsupported_construct_is_reported_not_executed() {
-        let out = run_body("%load% obj 1300\nsay after\n", &context());
+        let out = run_body("%teleport% %actor% 3001\nsay after\n", &context());
         assert_eq!(out.emitted.len(), 1);
         assert_eq!(out.emitted[0].text, "after");
-        assert!(out.drops.iter().any(|drop| drop.kind == "load"));
+        assert!(out.drops.iter().any(|drop| drop.kind == "teleport"));
+    }
+
+    #[test]
+    fn set_eval_and_unset_drive_conditions() {
+        let out = run_body(
+            "set value 10\n\
+             eval value %value% + 5\n\
+             if %value% == 15\n\
+               say fifteen\n\
+             end\n\
+             unset value\n\
+             say done\n",
+            &context(),
+        );
+        let lines: Vec<&str> = out.emitted.iter().map(|e| e.text.as_str()).collect();
+        assert_eq!(lines, vec!["fifteen", "done"]);
+    }
+
+    #[test]
+    fn eval_handles_parentheses_and_missing_operands() {
+        let out = run_body(
+            "set day 3\n\
+             set hour 5\n\
+             eval ticks (%day%/24)+%hour%\n\
+             eval word hello\n\
+             say %ticks% %word%\n",
+            &context(),
+        );
+        assert_eq!(out.emitted[0].text, "5 hello");
+    }
+
+    #[test]
+    fn remote_persists_a_quest_flag() {
+        let out = run_body(
+            "set solved_tutorial 1\nremote solved_tutorial %actor.id%\n",
+            &context(),
+        );
+        assert_eq!(out.var_writes.len(), 1);
+        let write = &out.var_writes[0];
+        assert_eq!(write.scope, VarScope::Remote);
+        assert_eq!(write.name, "solved_tutorial");
+        assert_eq!(write.value.as_deref(), Some("1"));
+        assert_eq!(write.target.as_deref(), Some("1"), "%actor.id% substitutes");
+        assert_eq!(out.flags, vec!["solved_tutorial".to_owned()]);
+    }
+
+    #[test]
+    fn varexists_sees_a_local_assignment() {
+        let out = run_body(
+            "set on_quest_zone_1 1\n\
+             if %actor.varexists(on_quest_zone_1)%\n\
+               say already\n\
+             else\n\
+               say fresh\n\
+             end\n",
+            &context(),
+        );
+        assert_eq!(out.emitted[0].text, "already");
+    }
+
+    #[test]
+    fn load_and_purge_queue_effects() {
+        let out = run_body(
+            "%load% obj 50 %actor% light\n%load% mob %self.vnum%\n%purge% %object%\n",
+            &context(),
+        );
+        assert_eq!(out.spawns.len(), 2);
+        assert_eq!(out.spawns[0].kind, LoadKind::Obj);
+        assert_eq!(out.spawns[0].target.as_deref(), Some("%actor%"));
+        assert_eq!(out.spawns[1].kind, LoadKind::Mob);
+        assert_eq!(out.spawns[1].vnum, "139", "%self.vnum% substituted");
+        assert_eq!(out.purges.len(), 1);
+        assert_eq!(out.purges[0].target.as_deref(), Some("%object%"));
+        assert!(out.drops.is_empty(), "{:?}", out.drops);
     }
 
     #[test]
