@@ -39,9 +39,12 @@ use crate::triggers::content::{TriggerDef, TriggerId, TriggersSection};
 use crate::triggers::effects::{
     PendingTriggerOps, TbaTriggerVars, TriggerDropLog, trigger_effects_system,
 };
-use crate::triggers::events::{TriggerLastRoom, trigger_command_system, trigger_greet_system};
+use crate::triggers::events::{
+    TriggerLastRoom, trigger_command_system, trigger_greet_system, trigger_leave_system,
+};
 use crate::triggers::index::TbaTriggers;
 use crate::triggers::quests::trigger_quest_bridge_system;
+use crate::triggers::timers::{TriggerTimers, trigger_timer_system};
 use crate::zones::ZoneTracker;
 
 /// Module id; matches `[code] module = "tba"` in `packs/tba/pack.toml`.
@@ -169,6 +172,7 @@ impl Plugin for TbaPlugin {
         app.init_resource::<TbaTriggers>();
         app.init_resource::<PendingTriggerOps>();
         app.init_resource::<TriggerDropLog>();
+        app.init_resource::<TriggerTimers>();
         app.init_schedule(TbaRound);
 
         // Each component owner owns its schema (the classic-rpg idiom): the
@@ -210,6 +214,10 @@ impl Plugin for TbaPlugin {
             Update,
             crate::visibility::intercept_who.in_set(CommandSet::PreRoute),
         );
+        // Issue #15 Phase 4: `leave` triggers gate movement in `PreRoute`, before
+        // `route_commands` commits the move. A `return 0` marks the command
+        // handled so the move never applies.
+        app.add_systems(Update, trigger_leave_system.in_set(CommandSet::PreRoute));
 
         // Player progression and the genre command seam, after the stdlib
         // router that emits `CharacterCreated` and no-ops `attack`/`flee`.
@@ -335,8 +343,10 @@ impl Plugin for TbaPlugin {
                 crate::party::follow_system,
                 crate::party::cleanup_parties_on_logout,
                 // Issue #15: greet/entry fires on a room change, after the
-                // stdlib spatial index is current. The effects drain applies
-                // any queued spawns/purges/variable writes.
+                // stdlib spatial index is current. The wait queue resumes
+                // before greet on the same fixed tick; the effects drain
+                // applies any queued spawns/purges/movement requests.
+                trigger_timer_system,
                 trigger_greet_system,
                 trigger_effects_system,
             )

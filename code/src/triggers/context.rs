@@ -34,6 +34,15 @@ pub struct EntityView {
     pub vnum: i32,
 }
 
+/// The in-world clock fields (`%time.hour%` etc.) the resolver exposes.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct ClockView {
+    pub hour: u32,
+    pub day: u32,
+    pub month: u32,
+    pub year: u32,
+}
+
 /// The variable scopes one trigger firing sees (issue #15, Phase 3).
 ///
 /// `local` is the trigger-local frame; the interpreter clones it into a mutable
@@ -65,6 +74,8 @@ pub struct TriggerContext {
     pub speech: Option<String>,
     /// The room vnum, for `%room.vnum%`/`%inroom.vnum%`.
     pub room_vnum: Option<i32>,
+    /// The in-world clock, for `%time.hour%`/`%time.day%` (Phase 4).
+    pub clock: Option<ClockView>,
     /// The variable scopes and pseudo-array sources.
     pub vars: TriggerVars,
 }
@@ -124,8 +135,12 @@ pub fn resolve_token(
         "victim" => Resolved::known(entity(ctx.victim.as_ref())),
         "target" => Resolved::known(entity(ctx.target.as_ref())),
         "random.char" => Resolved::known(random_char(ctx, rng)),
-        "random.dir" | "random.obj" | "time" | "time.hour" | "time.day" | "time.month"
-        | "time.year" | "hours_in_day" => {
+        "hours_in_day" => Resolved::known("24"),
+        "time" | "time.hour" => Resolved::known(clock_field(ctx, |clock| clock.hour)),
+        "time.day" => Resolved::known(clock_field(ctx, |clock| clock.day)),
+        "time.month" => Resolved::known(clock_field(ctx, |clock| clock.month)),
+        "time.year" => Resolved::known(clock_field(ctx, |clock| clock.year)),
+        "random.dir" | "random.obj" => {
             // Modelled but not filled this pass: a known-empty, not a drop.
             Resolved::empty_known()
         }
@@ -232,7 +247,13 @@ fn resolve_prefixed(
             "vnum" | "number" => Resolved::known(opt_vnum(ctx.room_vnum)),
             _ => Resolved::empty_known(),
         },
-        "time" => Resolved::empty_known(),
+        "time" => match field {
+            "hour" => Resolved::known(clock_field(ctx, |clock| clock.hour)),
+            "day" => Resolved::known(clock_field(ctx, |clock| clock.day)),
+            "month" => Resolved::known(clock_field(ctx, |clock| clock.month)),
+            "year" => Resolved::known(clock_field(ctx, |clock| clock.year)),
+            _ => Resolved::empty_known(),
+        },
         _ => Resolved::unknown(),
     }
 }
@@ -342,6 +363,14 @@ fn first_name(entities: &[EntityView]) -> String {
     entities
         .first()
         .map(|entity| entity.name.clone())
+        .unwrap_or_default()
+}
+
+/// One in-world clock field as a string, or empty when the clock is absent.
+fn clock_field(ctx: &TriggerContext, field: impl FnOnce(&ClockView) -> u32) -> String {
+    ctx.clock
+        .as_ref()
+        .map(|clock| field(clock).to_string())
         .unwrap_or_default()
 }
 

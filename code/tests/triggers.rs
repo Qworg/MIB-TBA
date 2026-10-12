@@ -20,6 +20,7 @@ use mib_stdlib::prelude::*;
 use mib_tba::prelude::*;
 use mib_tba::triggers::effects::{PendingTriggerOps, TriggerDropLog, trigger_effects_system};
 use mib_tba::triggers::quests::trigger_quest_bridge_system;
+use mib_tba::triggers::timers::TriggerTimers;
 
 fn trigger(vnum: i32, attach: &str, types: &[&str], arglist: &str, script: &str) -> TriggerDef {
     TriggerDef {
@@ -38,6 +39,7 @@ fn test_app(defs: Vec<TriggerDef>) -> App {
     app.init_resource::<TbaRng>();
     app.init_resource::<TriggerLastRoom>();
     app.init_resource::<PendingTriggerOps>();
+    app.init_resource::<TriggerTimers>();
     let mut map = BTreeMap::new();
     for def in defs {
         map.insert(TriggerId::from_vnum(def.vnum), def);
@@ -284,13 +286,13 @@ fn structured_custom_command_matches_the_verb() {
 
 #[test]
 fn unsupported_construct_is_reported_not_executed() {
-    // `%teleport%` is parsed-but-deferred; only the `say` after it runs.
+    // `%transform%` is Phase-5/deferred; only the `say` after it runs.
     let mut app = test_app(vec![trigger(
         4,
         "npc:tba_npc_5",
         &["speech"],
         "*",
-        "%teleport% %actor% 3001\nsay The teleport was deferred.\n",
+        "%transform% %actor% 10\nsay The transform was deferred.\n",
     )]);
     let room = spawn_room(&mut app);
     let actor = spawn_player(&mut app, room, "Aria");
@@ -300,10 +302,13 @@ fn unsupported_construct_is_reported_not_executed() {
     run_update(&mut app);
 
     let all = text(&mut app);
-    assert!(all.contains("The teleport was deferred."), "say ran: {all}");
+    assert!(
+        all.contains("The transform was deferred."),
+        "say ran: {all}"
+    );
     let log = app.world().resource::<TriggerDropLog>();
     assert_eq!(
-        log.count("teleport"),
+        log.count("transform"),
         1,
         "the deferred construct is counted"
     );

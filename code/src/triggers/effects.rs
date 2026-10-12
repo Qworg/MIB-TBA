@@ -27,12 +27,12 @@ use std::collections::BTreeMap;
 
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{
-    ItemId, NpcId, QuestEvent, Room, find_item_def, spawn_item_carried_by_entity,
-    spawn_item_on_ground, spawn_npc_from_content,
+    DoorState, ItemId, Location, NpcId, OnlinePlayers, QuestEvent, Room, RoomId, RoomState,
+    find_item_def, spawn_item_carried_by_entity, spawn_item_on_ground, spawn_npc_from_content,
 };
 use serde::{Deserialize, Serialize};
 
-use crate::triggers::ast::LoadKind;
+use crate::triggers::ast::{DoorOp, LoadKind};
 use crate::triggers::context::NamedDrop;
 use crate::triggers::eval::VarScope;
 
@@ -89,6 +89,47 @@ pub struct PendingFlag {
     pub flag: String,
 }
 
+/// One resolved `%teleport%` request.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PendingTeleport {
+    pub target: Entity,
+    /// The destination room, or `None` when the vnum did not resolve.
+    pub room: Option<Entity>,
+}
+
+/// One resolved `%door%` request.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PendingDoor {
+    pub room: Entity,
+    pub direction: ExitKey,
+    pub op: DoorOp,
+}
+
+/// One resolved `%force%` request (a command injected for `target`).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PendingForce {
+    pub target: Entity,
+    pub command: String,
+}
+
+/// One resolved `%at%` request: a `%load%` spawned into another room.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PendingAt {
+    pub kind: LoadKind,
+    pub vnum: String,
+    pub target: Option<Entity>,
+    pub room: Option<Entity>,
+    pub wear: Option<String>,
+    pub owner: Entity,
+}
+
+/// One resolved `%zoneecho%` request: a broadcast to the zone of `room`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PendingZoneEcho {
+    pub room: Option<Entity>,
+    pub text: String,
+}
+
 /// Effects queued by the trigger systems and drained by
 /// [`trigger_effects_system`].
 #[derive(Debug, Default, Resource)]
@@ -97,6 +138,12 @@ pub struct PendingTriggerOps {
     pub purges: Vec<PendingPurge>,
     pub vars: Vec<PendingVarWrite>,
     pub flags: Vec<PendingFlag>,
+    /// Phase 4 movement/gate requests.
+    pub teleports: Vec<PendingTeleport>,
+    pub doors: Vec<PendingDoor>,
+    pub forces: Vec<PendingForce>,
+    pub ats: Vec<PendingAt>,
+    pub zone_echoes: Vec<PendingZoneEcho>,
     /// Runtime named drops (unknown tokens, deferred constructs, unresolved
     /// effect targets) so nothing is silent.
     pub drops: Vec<NamedDrop>,
@@ -109,6 +156,11 @@ impl PendingTriggerOps {
             && self.purges.is_empty()
             && self.vars.is_empty()
             && self.flags.is_empty()
+            && self.teleports.is_empty()
+            && self.doors.is_empty()
+            && self.forces.is_empty()
+            && self.ats.is_empty()
+            && self.zone_echoes.is_empty()
             && self.drops.is_empty()
     }
 }
@@ -152,6 +204,36 @@ pub fn trigger_effects_system(world: &mut World) {
             let _ = world.despawn(purge.target);
         }
     }
+    for at in ops.ats {
+        apply_spawn(
+            world,
+            PendingSpawn {
+                kind: at.kind,
+                vnum: at.vnum,
+                victim: at.target,
+                room: at.room,
+                wear: at.wear,
+                owner: at.owner,
+            },
+        );
+    }
+    for teleport in ops.teleports {
+        apply_teleport(world, teleport);
+    }
+    for door in ops.doors {
+        apply_door(world, door);
+    }
+    for force in ops.forces {
+        if !apply_force(world, force) {
+            record_drop(
+                world,
+                NamedDrop::new("force_target", "target has no session to force"),
+            );
+        }
+    }
+    for echo in ops.zone_echoes {
+        apply_zone_echo(world, echo);
+    }
     for write in ops.vars {
         apply_var_write(world, write);
     }
@@ -163,13 +245,151 @@ pub fn trigger_effects_system(world: &mut World) {
             });
         }
     }
-    if !ops.drops.is_empty() {
-        if world.get_resource::<TriggerDropLog>().is_none() {
-            world.insert_resource(TriggerDropLog::default());
+    for drop in &ops.drops {
+        record_drop(world, drop.clone());
+    }
+}
+
+/// Count one runtime named drop.
+fn record_drop(world: &mut World, drop: NamedDrop) {
+    if world.get_resource::<TriggerDropLog>().is_none() {
+        world.insert_resource(TriggerDropLog::default());
+    }
+    world.resource_mut::<TriggerDropLog>().record(&drop);
+}
+
+/// Move `target` into `room`, keeping the online directory and the quest
+/// `Visited` stream in step.
+fn apply_teleport(world: &mut World, teleport: PendingTeleport) {
+    let Some(room) = teleport.room else {
+        return;
+    };
+    if world.get_entity(teleport.target).is_err() || world.get_entity(room).is_err() {
+        return;
+    }
+    if world.get::<Location>(teleport.target).is_none() {
+        return;
+    }
+    world.entity_mut(teleport.target).insert(Location { room });
+    if let Some(mut online) = world.get_resource_mut::<OnlinePlayers>() {
+        for record in online.map.values_mut() {
+            if record.entity == teleport.target {
+                record.room = room;
+            }
         }
-        let mut log = world.resource_mut::<TriggerDropLog>();
-        for drop in &ops.drops {
-            log.record(drop);
+    }
+    if let Some(key) = world.get::<Room>(room).map(|room| room.key.clone())
+        && let Some(mut events) = world.get_resource_mut::<Messages<QuestEvent>>()
+    {
+        events.write(QuestEvent::Visited {
+            player: teleport.target,
+            room: RoomId(key),
+        });
+    }
+}
+
+/// Apply a `%door%` state change to the room's runtime [`RoomState`].
+///
+/// Mirrors the zone-reset `D` command's [`set_door_state`](crate::zones):
+/// the runtime [`DoorState`] is the authority, with `to: None` for a door this
+/// phase did not seed. `purge` and the unmodelled fields are named drops the
+/// queue layer recorded, so they never reach here.
+fn apply_door(world: &mut World, door: PendingDoor) {
+    let (closed, locked) = match &door.op {
+        DoorOp::Open => (false, false),
+        DoorOp::Close => (true, false),
+        DoorOp::Lock => (true, true),
+        DoorOp::Unlock => (true, false),
+        DoorOp::Flags(flags) => {
+            let flags = flags.to_ascii_lowercase();
+            (flags.contains('b'), flags.contains('c'))
+        }
+        DoorOp::Purge | DoorOp::Deferred(_) => return,
+    };
+    if world.get_entity(door.room).is_err() {
+        return;
+    }
+    if let Some(mut state) = world.get_mut::<RoomState>(door.room) {
+        if let Some(existing) = state.doors.get_mut(&door.direction) {
+            existing.closed = closed;
+            existing.locked = locked;
+        } else {
+            state.doors.insert(
+                door.direction,
+                DoorState {
+                    closed,
+                    locked,
+                    to: None,
+                },
+            );
+        }
+        return;
+    }
+    let mut state = RoomState::default();
+    state.doors.insert(
+        door.direction,
+        DoorState {
+            closed,
+            locked,
+            to: None,
+        },
+    );
+    world.entity_mut(door.room).insert(state);
+}
+
+/// Inject a forced command for `target` through the same `CommandReceived`
+/// stream the bridge feeds, so it runs through the normal command path on the
+/// next frame. Returns `false` when the target has no online session.
+fn apply_force(world: &mut World, force: PendingForce) -> bool {
+    if world.get_entity(force.target).is_err() {
+        return false;
+    }
+    let session_id = world.get_resource::<OnlinePlayers>().and_then(|online| {
+        online
+            .map
+            .iter()
+            .find(|(_, record)| record.entity == force.target)
+            .map(|(id, _)| *id)
+    });
+    let Some(session_id) = session_id else {
+        return false;
+    };
+    if let Some(mut messages) = world.get_resource_mut::<Messages<CommandReceived>>() {
+        messages.write(CommandReceived {
+            // `CommandSequence` starts at 1, so the zero id is a sentinel that
+            // cannot collide with a bridge-assigned command.
+            id: CommandId::default(),
+            session: force.target,
+            session_id,
+            input: PlayerInput::RawLine(force.command),
+        });
+        return true;
+    }
+    false
+}
+
+/// Broadcast a `%zoneecho%` to every player in the named room's area.
+fn apply_zone_echo(world: &mut World, echo: PendingZoneEcho) {
+    let Some(room) = echo.room else {
+        return;
+    };
+    let Some(area) = world.get::<Room>(room).map(|room| room.area.clone()) else {
+        return;
+    };
+    let mut recipients = Vec::new();
+    let mut query = world.query::<(Entity, &Location)>();
+    for (entity, location) in query.iter(world) {
+        if world
+            .get::<Room>(location.room)
+            .is_some_and(|candidate| candidate.area == area)
+        {
+            recipients.push(entity);
+        }
+    }
+    drop(query);
+    if let Some(mut output) = world.get_resource_mut::<Messages<OutputEvent>>() {
+        for recipient in recipients {
+            output.write(crate::combat::commands::text(recipient, echo.text.clone()));
         }
     }
 }
@@ -251,6 +471,8 @@ fn parse_vnum(text: &str) -> Option<i32> {
 mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
 
+    use mib_stdlib::prelude::OnlinePlayer;
+
     use super::*;
 
     #[test]
@@ -323,5 +545,137 @@ mod tests {
             &events[0],
             QuestEvent::FlagSet { player: p, flag } if *p == player && flag.as_str() == "solved_tutorial_quest_zone_0"
         ));
+    }
+
+    fn test_room(app: &mut App, num: u32, area: &str) -> Entity {
+        app.world_mut()
+            .spawn((
+                Room {
+                    key: format!("tba.{num}").into(),
+                    name: format!("Room {num}"),
+                    description: Default::default(),
+                    num,
+                    area: area.into(),
+                    coord: (0, 0, 0),
+                    tags: Default::default(),
+                    media: Vec::new(),
+                    sector: mib_stdlib::content::Sector::Field,
+                    extra_descriptions: Vec::new(),
+                },
+                RoomState::default(),
+            ))
+            .id()
+    }
+
+    #[test]
+    fn teleport_moves_the_actor_and_updates_the_directory() {
+        let mut app = App::new();
+        app.init_resource::<PendingTriggerOps>();
+        app.init_resource::<OnlinePlayers>();
+        app.add_message::<QuestEvent>();
+        let from = test_room(&mut app, 1, "test");
+        let to = test_room(&mut app, 2, "test");
+        let actor = app.world_mut().spawn(Location { room: from }).id();
+        app.world_mut().resource_mut::<OnlinePlayers>().map.insert(
+            1,
+            OnlinePlayer {
+                entity: actor,
+                name: "Aria".to_owned(),
+                room: from,
+                account_id: 1,
+            },
+        );
+        app.world_mut()
+            .resource_mut::<PendingTriggerOps>()
+            .teleports
+            .push(PendingTeleport {
+                target: actor,
+                room: Some(to),
+            });
+        trigger_effects_system(app.world_mut());
+        assert_eq!(app.world().get::<Location>(actor).unwrap().room, to);
+        assert_eq!(app.world().resource::<OnlinePlayers>().map[&1].room, to);
+        let events: Vec<QuestEvent> = app
+            .world_mut()
+            .resource_mut::<Messages<QuestEvent>>()
+            .drain()
+            .collect();
+        assert!(matches!(
+            &events[0],
+            QuestEvent::Visited { player, room } if *player == actor && room.as_ref() == "tba.2"
+        ));
+    }
+
+    #[test]
+    fn door_flags_mutate_the_runtime_state() {
+        let mut app = App::new();
+        app.init_resource::<PendingTriggerOps>();
+        app.add_message::<QuestEvent>();
+        let room = test_room(&mut app, 225, "test");
+        {
+            let mut ops = app.world_mut().resource_mut::<PendingTriggerOps>();
+            ops.doors.push(PendingDoor {
+                room,
+                direction: ExitKey::Up,
+                op: DoorOp::Flags("ab".to_owned()),
+            });
+        }
+        trigger_effects_system(app.world_mut());
+        let state = app.world().get::<RoomState>(room).unwrap();
+        let door = state.doors.get(&ExitKey::Up).unwrap();
+        assert!(door.closed && !door.locked, "flags ab: {door:?}");
+
+        {
+            let mut ops = app.world_mut().resource_mut::<PendingTriggerOps>();
+            ops.doors.push(PendingDoor {
+                room,
+                direction: ExitKey::Up,
+                op: DoorOp::Flags("abcd".to_owned()),
+            });
+        }
+        trigger_effects_system(app.world_mut());
+        let state = app.world().get::<RoomState>(room).unwrap();
+        let door = state.doors.get(&ExitKey::Up).unwrap();
+        assert!(door.closed && door.locked, "flags abcd: {door:?}");
+
+        {
+            let mut ops = app.world_mut().resource_mut::<PendingTriggerOps>();
+            ops.doors.push(PendingDoor {
+                room,
+                direction: ExitKey::Up,
+                op: DoorOp::Open,
+            });
+        }
+        trigger_effects_system(app.world_mut());
+        let state = app.world().get::<RoomState>(room).unwrap();
+        assert!(!state.doors.get(&ExitKey::Up).unwrap().closed);
+    }
+
+    #[test]
+    fn zone_echo_reaches_only_the_named_area() {
+        let mut app = App::new();
+        app.init_resource::<PendingTriggerOps>();
+        app.add_message::<QuestEvent>();
+        app.add_message::<OutputEvent>();
+        let in_area = test_room(&mut app, 1, "zone-a");
+        let other = test_room(&mut app, 2, "zone-b");
+        let inside = app.world_mut().spawn(Location { room: in_area }).id();
+        let outside = app.world_mut().spawn(Location { room: other }).id();
+        app.world_mut()
+            .resource_mut::<PendingTriggerOps>()
+            .zone_echoes
+            .push(PendingZoneEcho {
+                room: Some(in_area),
+                text: "The zone hums.".to_owned(),
+            });
+        trigger_effects_system(app.world_mut());
+        let events: Vec<OutputEvent> = app
+            .world_mut()
+            .resource_mut::<Messages<OutputEvent>>()
+            .drain()
+            .collect();
+        assert_eq!(events.len(), 1);
+        assert_eq!(events[0].session, inside);
+        assert_ne!(events[0].session, outside);
     }
 }

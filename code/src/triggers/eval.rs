@@ -19,7 +19,7 @@
 use std::collections::BTreeMap;
 
 use crate::combat::progression::TbaRng;
-use crate::triggers::ast::{CmpOp, Cond, LoadKind, Node, STEP_CAP};
+use crate::triggers::ast::{CmpOp, Cond, DoorOp, LoadKind, Node, STEP_CAP, TriggerWait};
 use crate::triggers::context::{NamedDrop, TriggerContext, resolve_token};
 
 /// Where an emitted line goes. The event system maps these to entities and
@@ -58,19 +58,90 @@ pub struct EvalOutcome {
     pub drops: Vec<NamedDrop>,
     /// True when a `return`/`halt` stopped the record early.
     pub halted: bool,
+    /// The `return` value, when the record executed one (`return 0` blocks a
+    /// `leave`/`door` event).
+    pub returned: Option<String>,
     /// Node visits performed.
     pub steps: usize,
     /// True when the step cap tripped.
     pub capped: bool,
+    /// A `wait` suspended the record: resume at [`Suspension::pc`] with
+    /// [`Suspension::locals`] after [`Suspension::wait`].
+    pub suspension: Option<Suspension>,
     /// Persisted variable writes (`remote`/`global`/`rdelete`).
     pub var_writes: Vec<VarWrite>,
     /// Item/NPC spawns requested by `%load%`.
     pub spawns: Vec<SpawnRequest>,
     /// Despawns requested by `%purge%`.
     pub purges: Vec<PurgeRequest>,
+    /// `%teleport%` moves (Phase 4).
+    pub teleports: Vec<TeleportRequest>,
+    /// `%door%` state changes (Phase 4).
+    pub doors: Vec<DoorRequest>,
+    /// `%force%` command injections (Phase 4).
+    pub forces: Vec<ForceRequest>,
+    /// `%at%` commands in another room (Phase 4).
+    pub ats: Vec<AtRequest>,
+    /// `%zoneecho%` broadcasts (Phase 4).
+    pub zone_echoes: Vec<ZoneEchoRequest>,
     /// A truthy `remote` write: the name of a quest flag a `stdlib.quests`
     /// `Flag` step can consume.
     pub flags: Vec<String>,
+}
+
+/// A suspended record, ready to resume.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Suspension {
+    pub wait: TriggerWait,
+    /// The instruction after the `wait`.
+    pub pc: usize,
+    /// The trigger-local frame at suspension.
+    pub locals: BTreeMap<String, String>,
+}
+
+/// A `%teleport%` request (the interpreter has no `World`).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TeleportRequest {
+    /// The DG recipient token (`%actor%`/`%self%`), resolved to an entity later.
+    pub target: String,
+    /// The room vnum after substitution.
+    pub room: String,
+}
+
+/// A `%door%` request.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DoorRequest {
+    /// The room vnum after substitution.
+    pub room: String,
+    /// The direction word.
+    pub direction: String,
+    pub op: DoorOp,
+}
+
+/// A `%force%` request.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ForceRequest {
+    /// The DG recipient token, resolved to an entity later.
+    pub target: String,
+    /// The substituted command line.
+    pub command: String,
+}
+
+/// An `%at%` request.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AtRequest {
+    /// The room vnum after substitution.
+    pub room: String,
+    /// The substituted nested command.
+    pub command: String,
+}
+
+/// A `%zoneecho%` request.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ZoneEchoRequest {
+    /// The room vnum naming the zone after substitution.
+    pub zone: String,
+    pub text: String,
 }
 
 /// Which persisted scope a write targets.
@@ -105,16 +176,177 @@ pub struct PurgeRequest {
     pub target: Option<String>,
 }
 
-/// Run a parsed record.
+/// One flattened instruction (Phase 4).
+///
+/// The AST's nested control flow is compiled to jumps so a record has a
+/// **program counter**: a `wait` suspends at the instruction after it and the
+/// timer queue resumes from the same index. The compilation is a pure function
+/// of the node tree, so a `usize` pc is stable across a suspend/resume cycle.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum Instr {
+    /// A leaf statement.
+    Node(Node),
+    /// Unconditional jump.
+    Jump(usize),
+    /// Evaluate `cond`; jump to `target` when false.
+    Branch { cond: Cond, target: usize },
+    /// Evaluate and store the `switch` subject for the following `CaseMatch`es.
+    SwitchSubject(String),
+    /// Jump to `target` when the stored switch subject matches any pattern.
+    CaseMatch {
+        patterns: Vec<String>,
+        target: usize,
+    },
+}
+
+/// Compile a record's node tree to a flat instruction list.
+fn compile(nodes: &[Node]) -> Vec<Instr> {
+    let mut out = Vec::new();
+    let mut breaks: Vec<Vec<usize>> = Vec::new();
+    emit_block(nodes, &mut out, &mut breaks);
+    out
+}
+
+fn emit_block(nodes: &[Node], out: &mut Vec<Instr>, breaks: &mut Vec<Vec<usize>>) {
+    for node in nodes {
+        match node {
+            Node::If { arms, otherwise } => {
+                let mut end_jumps = Vec::new();
+                for (index, (cond, body)) in arms.iter().enumerate() {
+                    let branch = out.len();
+                    out.push(Instr::Branch {
+                        cond: cond.clone(),
+                        target: 0,
+                    });
+                    emit_block(body, out, breaks);
+                    let is_last = index + 1 == arms.len();
+                    if !(is_last && otherwise.is_empty()) {
+                        let jump = out.len();
+                        out.push(Instr::Jump(0));
+                        end_jumps.push(jump);
+                    }
+                    let target = out.len();
+                    if let Instr::Branch { target: slot, .. } = &mut out[branch] {
+                        *slot = target;
+                    }
+                }
+                if !otherwise.is_empty() {
+                    emit_block(otherwise, out, breaks);
+                }
+                let end = out.len();
+                for jump in end_jumps {
+                    if let Instr::Jump(target) = &mut out[jump] {
+                        *target = end;
+                    }
+                }
+            }
+            Node::While { cond, body } => {
+                let top = out.len();
+                let branch = out.len();
+                out.push(Instr::Branch {
+                    cond: cond.clone(),
+                    target: 0,
+                });
+                breaks.push(Vec::new());
+                emit_block(body, out, breaks);
+                let body_breaks = breaks.pop().unwrap_or_default();
+                out.push(Instr::Jump(top));
+                let end = out.len();
+                if let Instr::Branch { target, .. } = &mut out[branch] {
+                    *target = end;
+                }
+                for jump in body_breaks {
+                    if let Instr::Jump(target) = &mut out[jump] {
+                        *target = end;
+                    }
+                }
+            }
+            Node::Switch {
+                subject,
+                cases,
+                default,
+            } => {
+                out.push(Instr::SwitchSubject(subject.clone()));
+                breaks.push(Vec::new());
+                let mut tests = Vec::new();
+                for (patterns, _) in cases {
+                    tests.push(out.len());
+                    out.push(Instr::CaseMatch {
+                        patterns: patterns.clone(),
+                        target: 0,
+                    });
+                }
+                let no_match = out.len();
+                out.push(Instr::Jump(0));
+                let mut end_jumps = Vec::new();
+                for (index, (_, body)) in cases.iter().enumerate() {
+                    let target = out.len();
+                    if let Instr::CaseMatch { target: slot, .. } = &mut out[tests[index]] {
+                        *slot = target;
+                    }
+                    emit_block(body, out, breaks);
+                    let jump = out.len();
+                    out.push(Instr::Jump(0));
+                    end_jumps.push(jump);
+                }
+                let default_target = out.len();
+                if let Instr::Jump(target) = &mut out[no_match] {
+                    *target = default_target;
+                }
+                if !default.is_empty() {
+                    emit_block(default, out, breaks);
+                }
+                let end = out.len();
+                for jump in end_jumps {
+                    if let Instr::Jump(target) = &mut out[jump] {
+                        *target = end;
+                    }
+                }
+                for jump in breaks.pop().unwrap_or_default() {
+                    if let Instr::Jump(target) = &mut out[jump] {
+                        *target = end;
+                    }
+                }
+            }
+            Node::Break => {
+                if breaks.is_empty() {
+                    out.push(Instr::Node(Node::Break));
+                } else {
+                    let jump = out.len();
+                    out.push(Instr::Jump(0));
+                    if let Some(list) = breaks.last_mut() {
+                        list.push(jump);
+                    }
+                }
+            }
+            other => out.push(Instr::Node(other.clone())),
+        }
+    }
+}
+
+/// Run a parsed record to completion (or to its first `wait`).
 pub fn run(nodes: &[Node], ctx: &TriggerContext, rng: &mut TbaRng) -> EvalOutcome {
+    run_from(nodes, 0, ctx.vars.local.clone(), ctx, rng)
+}
+
+/// Resume a record at `pc` with a saved trigger-local frame.
+pub fn run_from(
+    nodes: &[Node],
+    pc: usize,
+    locals: BTreeMap<String, String>,
+    ctx: &TriggerContext,
+    rng: &mut TbaRng,
+) -> EvalOutcome {
+    let instrs = compile(nodes);
     let mut state = State {
         ctx,
         rng,
-        locals: ctx.vars.local.clone(),
+        locals,
+        switch_value: String::new(),
         outcome: EvalOutcome::default(),
     };
-    match state.run_nodes(nodes) {
-        Flow::Normal => {}
+    match state.run_instrs(&instrs, pc) {
+        Flow::Normal | Flow::Suspend => {}
         Flow::Break | Flow::Return | Flow::Halt => state.outcome.halted = true,
     }
     state.outcome
@@ -126,12 +358,15 @@ enum Flow {
     Break,
     Return,
     Halt,
+    Suspend,
 }
 
 struct State<'a> {
     ctx: &'a TriggerContext,
     rng: &'a mut TbaRng,
     locals: BTreeMap<String, String>,
+    /// The stored `switch` subject, set by [`Instr::SwitchSubject`].
+    switch_value: String,
     outcome: EvalOutcome,
 }
 
@@ -150,14 +385,59 @@ impl State<'_> {
         true
     }
 
-    fn run_nodes(&mut self, nodes: &[Node]) -> Flow {
-        for node in nodes {
+    fn run_instrs(&mut self, instrs: &[Instr], start: usize) -> Flow {
+        let mut pc = start;
+        while pc < instrs.len() {
             if !self.tick() {
                 return Flow::Halt;
             }
-            match self.run_node(node) {
-                Flow::Normal => {}
-                other => return other,
+            match &instrs[pc] {
+                Instr::Jump(target) => pc = *target,
+                Instr::Branch { cond, target } => {
+                    if self.eval_cond(cond) {
+                        pc += 1;
+                    } else {
+                        pc = *target;
+                    }
+                }
+                Instr::SwitchSubject(subject) => {
+                    self.switch_value = self.substitute(subject);
+                    pc += 1;
+                }
+                Instr::CaseMatch { patterns, target } => {
+                    let value = self.switch_value.clone();
+                    if patterns
+                        .iter()
+                        .any(|pattern| self.compare_eq(pattern, &value))
+                    {
+                        pc = *target;
+                    } else {
+                        pc += 1;
+                    }
+                }
+                Instr::Node(Node::Wait(wait)) => {
+                    if let TriggerWait::Until { minute, .. } = wait
+                        && *minute != 0
+                    {
+                        // The MIB clock is whole-hour; a sub-hour `until`
+                        // target is honoured at the hour boundary and the
+                        // minute is a named drop rather than silently ignored.
+                        self.outcome.drops.push(NamedDrop::new(
+                            "wait_minute",
+                            format!("sub-hour wait target ignored: {minute}"),
+                        ));
+                    }
+                    self.outcome.suspension = Some(Suspension {
+                        wait: wait.clone(),
+                        pc: pc + 1,
+                        locals: self.locals.clone(),
+                    });
+                    return Flow::Suspend;
+                }
+                Instr::Node(node) => match self.run_node(node) {
+                    Flow::Normal => pc += 1,
+                    other => return other,
+                },
             }
         }
         Flow::Normal
@@ -197,51 +477,33 @@ impl State<'_> {
                 }
                 Flow::Normal
             }
-            Node::ZoneEcho { .. } => {
+            Node::ZoneEcho { zone, text } => {
+                let zone = self.substitute(zone);
+                let text = self.substitute(text);
                 self.outcome
-                    .drops
-                    .push(NamedDrop::new("zoneecho", "zone broadcast is Phase 4"));
+                    .zone_echoes
+                    .push(ZoneEchoRequest { zone, text });
                 Flow::Normal
             }
-            Node::If { arms, otherwise } => {
-                for (cond, body) in arms {
-                    if self.eval_cond(cond) {
-                        return self.run_nodes(body);
-                    }
-                }
-                self.run_nodes(otherwise)
+            // Control flow is flattened by `compile`; a raw control node here
+            // would mean the compiler missed a case. Count it rather than
+            // executing it recursively (which would break the program counter).
+            Node::If { .. } | Node::Switch { .. } | Node::While { .. } => {
+                self.outcome
+                    .drops
+                    .push(NamedDrop::new("internal_control", "unflattened block"));
+                Flow::Normal
             }
-            Node::Switch {
-                subject,
-                cases,
-                default,
-            } => {
-                let value = self.substitute(subject);
-                for (patterns, body) in cases {
-                    if patterns
-                        .iter()
-                        .any(|pattern| self.compare_eq(pattern, &value))
-                    {
-                        return match self.run_nodes(body) {
-                            Flow::Break => Flow::Normal,
-                            other => other,
-                        };
-                    }
-                }
-                self.run_nodes(default)
+            Node::Wait(wait) => {
+                // `run_instrs` handles a wait so it can record `pc + 1`; this
+                // arm keeps the match exhaustive for a direct `run_node`.
+                self.outcome.suspension = Some(Suspension {
+                    wait: wait.clone(),
+                    pc: 0,
+                    locals: self.locals.clone(),
+                });
+                Flow::Suspend
             }
-            Node::While { cond, body } => loop {
-                if !self.eval_cond(cond) {
-                    return Flow::Normal;
-                }
-                match self.run_nodes(body) {
-                    Flow::Break | Flow::Normal => {}
-                    other => return other,
-                }
-                if !self.tick() {
-                    return Flow::Halt;
-                }
-            },
             Node::Set { name, value } => {
                 let rendered = self.substitute(value);
                 self.assign(name, rendered);
@@ -334,7 +596,57 @@ impl State<'_> {
                 });
                 Flow::Normal
             }
-            Node::Return(_) => Flow::Return,
+            Node::Teleport { target, room } => {
+                // The recipient is a DG token (`%actor%`/`%self%`), resolved to
+                // an entity by the effect drain; the vnum is substituted now.
+                let room = self.substitute(room);
+                self.outcome.teleports.push(TeleportRequest {
+                    target: target.clone(),
+                    room,
+                });
+                Flow::Normal
+            }
+            Node::Door {
+                room,
+                direction,
+                op,
+            } => {
+                let room = self.substitute(room);
+                let direction = self.substitute(direction);
+                let op = match op {
+                    DoorOp::Flags(flags) => DoorOp::Flags(self.substitute(flags)),
+                    other => other.clone(),
+                };
+                self.outcome.doors.push(DoorRequest {
+                    room,
+                    direction,
+                    op,
+                });
+                Flow::Normal
+            }
+            Node::Force { target, command } => {
+                let command = self.substitute(command);
+                self.outcome.forces.push(ForceRequest {
+                    target: target.clone(),
+                    command,
+                });
+                Flow::Normal
+            }
+            Node::At { room, command } => {
+                // The nested command is re-parsed by the queue layer, so its
+                // directive token (`%load%`) must survive verbatim; only the
+                // room vnum is substituted here.
+                let room = self.substitute(room);
+                self.outcome.ats.push(AtRequest {
+                    room,
+                    command: command.clone(),
+                });
+                Flow::Normal
+            }
+            Node::Return(value) => {
+                self.outcome.returned = value.clone();
+                Flow::Return
+            }
             Node::Halt => Flow::Halt,
             Node::Break => Flow::Break,
             Node::Nop(command) => {
@@ -689,10 +1001,63 @@ mod tests {
 
     #[test]
     fn unsupported_construct_is_reported_not_executed() {
-        let out = run_body("%teleport% %actor% 3001\nsay after\n", &context());
+        let out = run_body("%transform% %actor% 10\nsay after\n", &context());
         assert_eq!(out.emitted.len(), 1);
         assert_eq!(out.emitted[0].text, "after");
-        assert!(out.drops.iter().any(|drop| drop.kind == "teleport"));
+        assert!(out.drops.iter().any(|drop| drop.kind == "transform"));
+    }
+
+    #[test]
+    fn wait_suspends_with_a_resume_position() {
+        let out = run_body("say before\nwait 2 sec\nsay after\n", &context());
+        assert_eq!(out.emitted.len(), 1);
+        assert_eq!(out.emitted[0].text, "before");
+        let suspension = out.suspension.expect("a wait suspends");
+        assert_eq!(suspension.wait, TriggerWait::Seconds(2));
+
+        // Resume from the saved program counter.
+        let program = parse_script("say before\nwait 2 sec\nsay after\n");
+        let mut rng = TbaRng::from_seed(7);
+        let resumed = run_from(
+            &program.nodes,
+            suspension.pc,
+            suspension.locals,
+            &context(),
+            &mut rng,
+        );
+        assert_eq!(resumed.emitted.len(), 1);
+        assert_eq!(resumed.emitted[0].text, "after");
+    }
+
+    #[test]
+    fn movement_directives_queue_requests() {
+        let out = run_body(
+            "%teleport% %actor% 3001\n\
+             %door% 225 up flags ab\n\
+             %force% %actor% look\n\
+             %at% 165 %load% m 15\n\
+             %zoneecho% 3000 the zone hums.\n",
+            &context(),
+        );
+        assert_eq!(out.teleports.len(), 1);
+        assert_eq!(out.teleports[0].target, "%actor%");
+        assert_eq!(out.teleports[0].room, "3001");
+        assert_eq!(out.doors.len(), 1);
+        assert_eq!(out.doors[0].op, DoorOp::Flags("ab".to_owned()));
+        assert_eq!(out.forces.len(), 1);
+        assert_eq!(out.forces[0].command, "look");
+        assert_eq!(out.ats.len(), 1);
+        assert_eq!(out.ats[0].command, "%load% m 15");
+        assert_eq!(out.zone_echoes.len(), 1);
+        assert_eq!(out.zone_echoes[0].text, "the zone hums.");
+        assert!(out.drops.is_empty(), "{:?}", out.drops);
+    }
+
+    #[test]
+    fn return_records_its_value() {
+        let out = run_body("return 0\n", &context());
+        assert_eq!(out.returned.as_deref(), Some("0"));
+        assert!(out.halted);
     }
 
     #[test]
@@ -784,6 +1149,59 @@ mod tests {
         let out = run_body("return 0\nsay unreachable\n", &context());
         assert!(out.halted);
         assert!(out.emitted.is_empty());
+    }
+
+    #[test]
+    fn while_break_stops_the_loop() {
+        let out = run_body(
+            "set i 0\n\
+             while %i% < 10\n\
+               eval i %i% + 1\n\
+               if %i% == 3\n\
+                 break\n\
+               end\n\
+               say %i%\n\
+             done\n\
+             say done\n",
+            &context(),
+        );
+        let lines: Vec<&str> = out.emitted.iter().map(|e| e.text.as_str()).collect();
+        assert_eq!(lines, vec!["1", "2", "done"]);
+    }
+
+    #[test]
+    fn wait_inside_a_loop_resumes_the_iteration() {
+        let body = "set i 0\nwhile %i% < 2\neval i %i% + 1\nwait 1 sec\nsay %i%\ndone\n";
+        let program = parse_script(body);
+        let mut rng = TbaRng::from_seed(7);
+
+        let first = run(&program.nodes, &context(), &mut rng);
+        assert!(first.emitted.is_empty(), "suspends before the first say");
+        let suspension = first.suspension.expect("wait suspends");
+        assert_eq!(suspension.locals.get("i").map(String::as_str), Some("1"));
+
+        let second = run_from(
+            &program.nodes,
+            suspension.pc,
+            suspension.locals,
+            &context(),
+            &mut rng,
+        );
+        let lines: Vec<&str> = second.emitted.iter().map(|e| e.text.as_str()).collect();
+        assert_eq!(lines, vec!["1"], "the first iteration resumes");
+        let suspension = second.suspension.expect("the second iteration waits");
+        assert_eq!(suspension.locals.get("i").map(String::as_str), Some("2"));
+
+        let third = run_from(
+            &program.nodes,
+            suspension.pc,
+            suspension.locals,
+            &context(),
+            &mut rng,
+        );
+        let lines: Vec<&str> = third.emitted.iter().map(|e| e.text.as_str()).collect();
+        assert_eq!(lines, vec!["2"], "the loop then exits");
+        assert!(third.suspension.is_none());
     }
 
     #[test]

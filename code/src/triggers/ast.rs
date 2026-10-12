@@ -80,6 +80,50 @@ impl LoadKind {
     }
 }
 
+/// A resolved `wait` duration (issue #15, Phase 4).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum TriggerWait {
+    /// `wait N sec` / `wait N s`: N seconds of engine time.
+    Seconds(u32),
+    /// `wait N tick` / `wait N t`, or a bare `wait N`: N fixed engine ticks.
+    Ticks(u32),
+    /// `wait until HH:MM`: resume when the in-world clock next reaches the
+    /// target wall time.
+    Until { hour: u32, minute: u32 },
+}
+
+impl TriggerWait {
+    /// Stable report spelling.
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            TriggerWait::Seconds(_) => "wait.sec",
+            TriggerWait::Ticks(_) => "wait.tick",
+            TriggerWait::Until { .. } => "wait.until",
+        }
+    }
+}
+
+/// The operation argument of a `%door%` directive (issue #15, Phase 4).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum DoorOp {
+    /// `%door% <room> <dir> open`.
+    Open,
+    /// `%door% <room> <dir> close` (the `closed` spelling is accepted too).
+    Close,
+    /// `%door% <room> <dir> lock` (the `locked` spelling is accepted too).
+    Lock,
+    /// `%door% <room> <dir> unlock` (the `unlocked` spelling is accepted too).
+    Unlock,
+    /// `%door% <room> <dir> flags <letters>`: DG's `asciiflag_conv` set.
+    Flags(String),
+    /// `%door% <room> <dir> purge`: remove the exit. Named-dropped: MIB's
+    /// authored exit set is content-owned.
+    Purge,
+    /// A recognised field Phase 4 does not apply (`description`, `key`,
+    /// `name`, `room`).
+    Deferred(String),
+}
+
 /// A boolean condition.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Cond {
@@ -159,6 +203,21 @@ pub enum Node {
     },
     /// `%purge% [target]` — despawn the target (default: the owner).
     Purge { target: Option<String> },
+    /// `wait <n> [sec|s|tick]` / `wait until <hh:mm>` — suspend the record's
+    /// program counter and resume after the delay (Phase 4).
+    Wait(TriggerWait),
+    /// `%teleport% <target> <room vnum>` — move the target to a room.
+    Teleport { target: String, room: String },
+    /// `%door% <room vnum> <direction> <op> [value]` — mutate a runtime door.
+    Door {
+        room: String,
+        direction: String,
+        op: DoorOp,
+    },
+    /// `%force% <target> <command>` — make the target execute a command.
+    Force { target: String, command: String },
+    /// `%at% <room vnum> <command>` — execute a command in another room.
+    At { room: String, command: String },
     /// A construct parsed but deferred (an indexed user array; Phase 4+).
     Deferred { kind: String, line: String },
     /// A line whose construct Phase 3 does not support.
@@ -191,6 +250,11 @@ impl Node {
             Node::RDelete { .. } => "rdelete".to_owned(),
             Node::Load { kind, .. } => format!("load.{}", kind.as_str()),
             Node::Purge { .. } => "purge".to_owned(),
+            Node::Wait(wait) => wait.as_str().to_owned(),
+            Node::Teleport { .. } => "teleport".to_owned(),
+            Node::Door { .. } => "door".to_owned(),
+            Node::Force { .. } => "force".to_owned(),
+            Node::At { .. } => "at".to_owned(),
             Node::Deferred { kind, .. } => kind.clone(),
             Node::Unsupported { kind, .. } => format!("unsupported:{kind}"),
         }
@@ -582,6 +646,61 @@ impl<'a> Parser<'a> {
                     target: (!target.is_empty()).then(|| target.to_owned()),
                 }
             }
+            "wait" => {
+                let node = parse_wait(&rest);
+                if let Node::Wait(wait) = &node {
+                    self.count(wait.as_str());
+                } else {
+                    self.count_unsupported("wait");
+                }
+                node
+            }
+            "%teleport%" | "%mteleport%" | "%oteleport%" | "%wteleport%" => {
+                self.count("teleport");
+                let (target, room) = split_target(&rest);
+                Node::Teleport { target, room }
+            }
+            "%door%" | "%mdoor%" | "%odoor%" | "%wdoor%" => {
+                let node = parse_door(&rest);
+                match &node {
+                    Node::Door {
+                        op: DoorOp::Purge, ..
+                    } => self.count_unsupported("door_purge"),
+                    Node::Door {
+                        op: DoorOp::Deferred(field),
+                        ..
+                    } => self.count_unsupported(&format!("door_{field}")),
+                    Node::Door { .. } => self.count("door"),
+                    _ => self.count_unsupported("door"),
+                }
+                node
+            }
+            "%force%" | "%mforce%" | "%oforce%" | "%wforce%" => {
+                self.count("force");
+                let (target, command) = split_target(&rest);
+                Node::Force { target, command }
+            }
+            "%at%" | "%mat%" | "%oat%" | "%wat%" => {
+                let (room, command) = split_target(&rest);
+                // `%at% <room> %load% ...` is executed by Phase 4 (the spawn
+                // honours the room); every other nested command is a named
+                // drop, so the committed coverage does not overstate it.
+                if command
+                    .trim_start()
+                    .to_ascii_lowercase()
+                    .starts_with("%load%")
+                {
+                    self.count("at.load");
+                } else {
+                    self.count_unsupported("at_command");
+                }
+                Node::At { room, command }
+            }
+            "%echoround%" => {
+                self.count("echoaround");
+                let (target, text) = split_target(&rest);
+                Node::EchoAround { target, text }
+            }
             _ => {
                 let kind = directive_kind(&keyword);
                 self.count_unsupported(&kind);
@@ -633,6 +752,96 @@ fn parse_load(rest: &str) -> Node {
             kind: "load".to_owned(),
             line: format!("%load% {rest}"),
         },
+    }
+}
+
+/// Parse a `wait` body after the keyword.
+///
+/// Accepted: `wait N`, `wait N sec`/`wait N s`, `wait N tick`/`wait N t`, and
+/// `wait until HH:MM` (or `HHMM`). A body the parser cannot read is an
+/// [`Node::Unsupported`], never a silent no-op.
+fn parse_wait(rest: &str) -> Node {
+    let rest = rest.trim();
+    let lower = rest.to_ascii_lowercase();
+    if let Some(time) = lower.strip_prefix("until") {
+        let time = time.trim();
+        return match parse_clock_time(time) {
+            Some((hour, minute)) => Node::Wait(TriggerWait::Until { hour, minute }),
+            None => Node::Unsupported {
+                kind: "wait".to_owned(),
+                line: format!("wait {rest}"),
+            },
+        };
+    }
+    let mut parts = rest.split_whitespace();
+    let Some(count) = parts.next().and_then(|n| n.parse::<u32>().ok()) else {
+        return Node::Unsupported {
+            kind: "wait".to_owned(),
+            line: format!("wait {rest}"),
+        };
+    };
+    match parts.next().map(str::to_ascii_lowercase).as_deref() {
+        None => Node::Wait(TriggerWait::Ticks(count)),
+        Some("tick") | Some("t") => Node::Wait(TriggerWait::Ticks(count)),
+        Some("sec") | Some("s") | Some("secs") | Some("second") | Some("seconds") => {
+            Node::Wait(TriggerWait::Seconds(count))
+        }
+        Some(_) => Node::Unsupported {
+            kind: "wait".to_owned(),
+            line: format!("wait {rest}"),
+        },
+    }
+}
+
+/// Parse `HH:MM` or `HHMM` into `(hour, minute)`.
+fn parse_clock_time(text: &str) -> Option<(u32, u32)> {
+    let (hour, minute): (String, String) = match text.split_once(':') {
+        Some((hour, minute)) => (hour.trim().to_owned(), minute.trim().to_owned()),
+        None => {
+            let digits: String = text.chars().filter(char::is_ascii_digit).collect();
+            if digits.len() != text.len() || digits.is_empty() {
+                return None;
+            }
+            if digits.len() <= 2 {
+                (digits, "0".to_owned())
+            } else {
+                let split = digits.len() - 2;
+                (digits[..split].to_owned(), digits[split..].to_owned())
+            }
+        }
+    };
+    let hour = hour.parse::<u32>().ok()?;
+    let minute = minute.parse::<u32>().ok()?;
+    (hour < 24 && minute < 60).then_some((hour, minute))
+}
+
+/// Parse a `%door%` body after the directive word.
+fn parse_door(rest: &str) -> Node {
+    let mut parts = rest.splitn(4, char::is_whitespace);
+    let room = parts.next().unwrap_or("").to_owned();
+    let direction = parts.next().unwrap_or("").to_owned();
+    let op_word = parts.next().unwrap_or("").to_ascii_lowercase();
+    let value = parts.next().unwrap_or("").trim().to_owned();
+    if room.is_empty() || direction.is_empty() || op_word.is_empty() {
+        return Node::Unsupported {
+            kind: "door".to_owned(),
+            line: format!("%door% {rest}"),
+        };
+    }
+    let op = match op_word.as_str() {
+        "open" => DoorOp::Open,
+        "close" | "closed" => DoorOp::Close,
+        "lock" | "locked" => DoorOp::Lock,
+        "unlock" | "unlocked" => DoorOp::Unlock,
+        "flags" => DoorOp::Flags(value),
+        "purge" => DoorOp::Purge,
+        "description" | "key" | "name" | "room" => DoorOp::Deferred(op_word),
+        _ => DoorOp::Deferred(op_word),
+    };
+    Node::Door {
+        room,
+        direction,
+        op,
     }
 }
 
@@ -776,9 +985,42 @@ fn collect_references(nodes: &[Node], out: &mut String) {
                 out.push_str(target);
                 out.push('\n');
             }
+            Node::Teleport { target, room } => {
+                out.push_str(target);
+                out.push('\n');
+                out.push_str(room);
+                out.push('\n');
+            }
+            Node::Door {
+                room,
+                direction,
+                op,
+            } => {
+                out.push_str(room);
+                out.push('\n');
+                out.push_str(direction);
+                out.push('\n');
+                if let DoorOp::Flags(flags) = op {
+                    out.push_str(flags);
+                    out.push('\n');
+                }
+            }
+            Node::Force { target, command } => {
+                out.push_str(target);
+                out.push('\n');
+                out.push_str(command);
+                out.push('\n');
+            }
+            // The `%at%` command is a directive line, not text: its `%load%`
+            // token is not a substitution, so only the room is scanned.
+            Node::At { room, .. } => {
+                out.push_str(room);
+                out.push('\n');
+            }
             Node::Return(None)
             | Node::Halt
             | Node::Break
+            | Node::Wait(_)
             | Node::Unset { .. }
             | Node::Remote { .. }
             | Node::RDelete { .. }
@@ -956,12 +1198,8 @@ impl<'a> CondParser<'a> {
         };
         if let Some(op) = CmpOp::parse(&op_token) {
             self.pos += 1;
-            let right = self.tokens.get(self.pos).cloned();
-            match right {
-                Some(right) => {
-                    self.pos += 1;
-                    Cond::Cmp(unquote(&left), op, unquote(&right))
-                }
+            match self.gather_operand(op) {
+                Some(right) => Cond::Cmp(unquote(&left), op, unquote(&right)),
                 None => Cond::Unsupported(format!("{left} {op_token}")),
             }
         } else if op_token == "/=" || op_token == "=" {
@@ -974,6 +1212,37 @@ impl<'a> CondParser<'a> {
             Cond::Unsupported(format!("{left} {op_token}"))
         } else {
             Cond::Truthy(unquote(&left))
+        }
+    }
+
+    /// Consume the right-hand operand of a comparison.
+    ///
+    /// `==`/`!=` are string comparisons in DG, and the operand may be a
+    /// multi-word literal (`%actor.class% != Magic User`), so gather tokens
+    /// until a logical operator, a closing paren, or another comparison. The
+    /// ordering operators take a single token.
+    fn gather_operand(&mut self, op: CmpOp) -> Option<String> {
+        if !matches!(op, CmpOp::Eq | CmpOp::Ne) {
+            let right = self.tokens.get(self.pos).cloned();
+            if right.is_some() {
+                self.pos += 1;
+            }
+            return right;
+        }
+        let start = self.pos;
+        while let Some(token) = self.tokens.get(self.pos) {
+            if matches!(
+                token.as_str(),
+                "&&" | "||" | ")" | "==" | "!=" | "<" | ">" | "<=" | ">=" | "/="
+            ) {
+                break;
+            }
+            self.pos += 1;
+        }
+        if self.pos == start {
+            None
+        } else {
+            Some(self.tokens[start..self.pos].join(" "))
         }
     }
 }
@@ -996,7 +1265,8 @@ mod tests {
         assert!(program.is_valid(), "{:?}", program.error);
         assert_eq!(program.constructs.get("if"), Some(&1));
         assert_eq!(program.constructs.get("say"), Some(&2));
-        assert_eq!(program.unsupported.get("wait"), Some(&1));
+        assert_eq!(program.constructs.get("wait.sec"), Some(&1));
+        assert!(program.unsupported.is_empty(), "{:?}", program.unsupported);
         match &program.nodes[..] {
             [Node::If { arms, otherwise }] => {
                 assert!(otherwise.is_empty());
@@ -1007,6 +1277,12 @@ mod tests {
                         .1
                         .iter()
                         .any(|n| matches!(n, Node::Say(s) if s.contains("%actor.name%")))
+                );
+                assert!(
+                    arms[0]
+                        .1
+                        .iter()
+                        .any(|n| matches!(n, Node::Wait(TriggerWait::Seconds(1))))
                 );
             }
             other => panic!("expected one if, got {other:?}"),
@@ -1090,18 +1366,61 @@ mod tests {
     #[test]
     fn unsupported_lines_become_named_markers() {
         let program = parse_script(
-            "%teleport% %actor% 3001\n\
+            "%transform% %actor% 10
+\
              give sword %actor%\n\
              dg_cast 'poison' %actor%\n\
              mkill %actor%\n",
         );
         assert!(program.is_valid(), "{:?}", program.error);
-        assert_eq!(program.unsupported.get("teleport"), Some(&1));
+        assert_eq!(program.unsupported.get("transform"), Some(&1));
         assert_eq!(program.unsupported.get("give"), Some(&1));
         assert_eq!(program.unsupported.get("dg_cast"), Some(&1));
         assert_eq!(program.unsupported.get("mkill"), Some(&1));
         assert_eq!(program.nodes.len(), 4);
-        assert!(matches!(&program.nodes[0], Node::Unsupported { kind, .. } if kind == "teleport"));
+        assert!(matches!(&program.nodes[0], Node::Unsupported { kind, .. } if kind == "transform"));
+    }
+
+    #[test]
+    fn parses_phase4_movement_and_wait_directives() {
+        let program = parse_script(
+            "wait until 21:00\n\
+             %teleport% %actor% 3001\n\
+             %door% 225 up flags ab\n\
+             %force% %actor% look\n\
+             %at% 165 %load% m 15\n\
+             %echoround% %actor% %actor.name% stares.\n",
+        );
+        assert!(program.is_valid(), "{:?}", program.error);
+        assert!(matches!(
+            &program.nodes[0],
+            Node::Wait(TriggerWait::Until {
+                hour: 21,
+                minute: 0
+            })
+        ));
+        assert!(
+            matches!(&program.nodes[1], Node::Teleport { target, room } if target == "%actor%" && room == "3001")
+        );
+        assert!(matches!(
+            &program.nodes[2],
+            Node::Door { room, direction, op }
+                if room == "225" && direction == "up" && *op == DoorOp::Flags("ab".to_owned())
+        ));
+        assert!(
+            matches!(&program.nodes[3], Node::Force { target, command } if target == "%actor%" && command == "look")
+        );
+        assert!(
+            matches!(&program.nodes[4], Node::At { room, command } if room == "165" && command == "%load% m 15")
+        );
+        assert!(
+            matches!(&program.nodes[5], Node::EchoAround { target, .. } if target == "%actor%")
+        );
+        assert_eq!(program.constructs.get("teleport"), Some(&1));
+        assert_eq!(program.constructs.get("door"), Some(&1));
+        assert_eq!(program.constructs.get("force"), Some(&1));
+        assert_eq!(program.constructs.get("at.load"), Some(&1));
+        assert_eq!(program.constructs.get("echoaround"), Some(&1));
     }
 
     #[test]

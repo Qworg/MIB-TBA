@@ -119,22 +119,25 @@
 - emitted records: 133
 - parsed: 133
 - parse failures: 0
-- records with unsupported constructs: 95
+- records with unsupported constructs: 50
 
 ### Emitted constructs
 
 | construct | count |
 |---|---:|
+| `at.load` | 1 |
 | `break` | 29 |
 | `case` | 33 |
 | `default` | 3 |
 | `done` | 9 |
+| `door` | 4 |
 | `echo` | 72 |
-| `echoaround` | 32 |
+| `echoaround` | 34 |
 | `else` | 62 |
 | `elseif` | 33 |
 | `emote` | 62 |
 | `eval` | 40 |
+| `force` | 3 |
 | `global` | 2 |
 | `halt` | 42 |
 | `if` | 224 |
@@ -149,8 +152,9 @@
 | `send` | 52 |
 | `set` | 45 |
 | `switch` | 3 |
+| `teleport` | 5 |
 | `unset` | 1 |
-| `unsupported:at` | 4 |
+| `unsupported:at_command` | 3 |
 | `unsupported:beam` | 1 |
 | `unsupported:bow` | 3 |
 | `unsupported:cackle` | 1 |
@@ -162,13 +166,11 @@
 | `unsupported:dance` | 2 |
 | `unsupported:detach` | 1 |
 | `unsupported:dg_cast` | 12 |
-| `unsupported:door` | 5 |
+| `unsupported:door_purge` | 1 |
 | `unsupported:drink` | 1 |
 | `unsupported:drop` | 2 |
-| `unsupported:echoround` | 2 |
 | `unsupported:em` | 1 |
 | `unsupported:extract` | 4 |
-| `unsupported:force` | 3 |
 | `unsupported:frown` | 2 |
 | `unsupported:gaze` | 1 |
 | `unsupported:give` | 34 |
@@ -195,16 +197,17 @@
 | `unsupported:smile` | 5 |
 | `unsupported:snarl` | 1 |
 | `unsupported:stand` | 3 |
-| `unsupported:teleport` | 5 |
 | `unsupported:tell` | 5 |
 | `unsupported:transform` | 1 |
 | `unsupported:unlock` | 1 |
 | `unsupported:up` | 1 |
-| `unsupported:wait` | 198 |
 | `unsupported:wake` | 1 |
 | `unsupported:whisper` | 1 |
 | `unsupported:wink` | 1 |
 | `unsupported:yawn` | 2 |
+| `wait.sec` | 194 |
+| `wait.tick` | 2 |
+| `wait.until` | 2 |
 | `while` | 6 |
 | `zoneecho` | 4 |
 
@@ -212,7 +215,7 @@
 
 | construct | count |
 |---|---:|
-| `at` | 4 |
+| `at_command` | 3 |
 | `beam` | 1 |
 | `bow` | 3 |
 | `cackle` | 1 |
@@ -224,13 +227,11 @@
 | `dance` | 2 |
 | `detach` | 1 |
 | `dg_cast` | 12 |
-| `door` | 5 |
+| `door_purge` | 1 |
 | `drink` | 1 |
 | `drop` | 2 |
-| `echoround` | 2 |
 | `em` | 1 |
 | `extract` | 4 |
-| `force` | 3 |
 | `frown` | 2 |
 | `gaze` | 1 |
 | `give` | 34 |
@@ -257,12 +258,10 @@
 | `smile` | 5 |
 | `snarl` | 1 |
 | `stand` | 3 |
-| `teleport` | 5 |
 | `tell` | 5 |
 | `transform` | 1 |
 | `unlock` | 1 |
 | `up` | 1 |
-| `wait` | 198 |
 | `wake` | 1 |
 | `whisper` | 1 |
 | `wink` | 1 |

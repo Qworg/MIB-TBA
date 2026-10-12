@@ -102,19 +102,32 @@ pub mod prelude {
         sync_perception, tick_true_sight,
     };
     pub use crate::triggers::ast::{
-        CmpOp, Cond, Node, ParsedProgram, STEP_CAP, parse_condition, parse_script,
+        CmpOp, Cond, DoorOp, Node, ParsedProgram, STEP_CAP, TriggerWait, parse_condition,
+        parse_script,
     };
     pub use crate::triggers::content::{
         AttachTarget, TriggerDef, TriggerId, TriggersFile, TriggersSection,
     };
     pub use crate::triggers::context::{
-        ActorView, EntityView, NamedDrop, Resolved, TriggerContext, is_known_token, resolve_token,
+        ActorView, ClockView, EntityView, NamedDrop, Resolved, TriggerContext, is_known_token,
+        resolve_token,
     };
-    pub use crate::triggers::eval::{Emitted, EvalOutcome, TextTarget, run};
+    pub use crate::triggers::effects::{
+        PendingAt, PendingDoor, PendingForce, PendingTeleport, PendingTriggerOps, PendingZoneEcho,
+        TbaTriggerVars, TriggerDropLog, trigger_effects_system,
+    };
+    pub use crate::triggers::eval::{
+        AtRequest, DoorRequest, Emitted, EvalOutcome, ForceRequest, Suspension, TeleportRequest,
+        TextTarget, ZoneEchoRequest, run, run_from,
+    };
     pub use crate::triggers::events::{
         TriggerKind, TriggerLastRoom, trigger_command_system, trigger_greet_system,
+        trigger_leave_system,
     };
     pub use crate::triggers::index::{TbaTriggers, TriggerIndex};
+    pub use crate::triggers::timers::{
+        PendingTimer, TriggerTimers, arm_timer, trigger_timer_system,
+    };
     pub use crate::visibility::intercept_who;
     pub use crate::zones::{ZoneState, ZoneTracker, zone_reset_system};
 }

@@ -11,13 +11,23 @@
 //!   that connects the old room to the new one.
 //! - **act** — an `emote`/`social` phrase matches an `act` trigger.
 //!
-//! Nothing else fires: `%load%`, `wait`, combat, door and timer triggers stay
-//! parsed-but-deferred and are counted as named drops.
+//! Phase 4 adds two more paths:
+//!
+//! - **leave** ([`trigger_leave_system`], `CommandSet::PreRoute`) — runs before
+//!   `route_commands` commits a move, so a `return 0` blocks it.
+//! - **wait** ([`crate::triggers::timers::trigger_timer_system`]) — resumes a
+//!   suspended record; it reuses this module's `queue_effects`/`deliver`.
+//!
+//! The `door` event type (a player opening a door) is **not** wired yet; the
+//! `%door%` directive is. A record whose type list is not dispatched is recorded
+//! as an `unsupported_event` parse drop on
+//! [`TbaTriggers`](crate::triggers::index::TbaTriggers), so the gap is
+//! explicit rather than silent.
 //!
 //! Schedule: the command/speech/act intake runs in `BridgeSet::Game` after
 //! `route_commands` (so movement for a command is applied); greet/entry runs
-//! on `FixedUpdate` after `maintain_room_occupants`. Both only read; output
-//! goes through [`OutputEvent`].
+//! on `FixedUpdate` after `maintain_room_occupants`; leave runs in
+//! `CommandSet::PreRoute`. All only read; output goes through [`OutputEvent`].
 
 use bevy::ecs::system::SystemParam;
 use mib_core::prelude::*;
@@ -28,12 +38,16 @@ use mib_stdlib::prelude::{
 use crate::combat::commands::text;
 use crate::combat::model::TbaProgress;
 use crate::combat::progression::TbaRng;
-use crate::triggers::context::{ActorView, EntityView, NamedDrop, TriggerContext};
+use crate::items::TbaObjectClock;
+use crate::triggers::ast::{DoorOp, LoadKind, Node, parse_script};
+use crate::triggers::context::{ActorView, ClockView, EntityView, NamedDrop, TriggerContext};
 use crate::triggers::effects::{
-    PendingFlag, PendingPurge, PendingSpawn, PendingTriggerOps, PendingVarWrite, TbaTriggerVars,
+    PendingAt, PendingDoor, PendingFlag, PendingForce, PendingPurge, PendingSpawn, PendingTeleport,
+    PendingTriggerOps, PendingVarWrite, PendingZoneEcho, TbaTriggerVars,
 };
 use crate::triggers::eval::{EvalOutcome, TextTarget, VarScope, run};
 use crate::triggers::index::TbaTriggers;
+use crate::triggers::timers::{TriggerTimers, arm_timer};
 
 /// Remembers each player's previous room so a greet can name the direction.
 #[derive(Debug, Default, Resource)]
@@ -64,6 +78,8 @@ pub struct TriggerView<'w, 's> {
     pub carried: Query<'w, 's, (Entity, &'static Item, &'static CarriedBy)>,
     /// Persisted DG variables, read into the substitution context.
     pub vars: Query<'w, 's, &'static TbaTriggerVars>,
+    /// The in-world clock, for `%time.hour%` and `wait until`.
+    pub clock: Option<Res<'w, TbaObjectClock>>,
 }
 
 /// The kind of intake event.
@@ -74,6 +90,9 @@ pub enum TriggerKind {
     Act,
     Greet,
     Entry,
+    Leave,
+    /// A resumed `wait`; never dispatched as an intake event.
+    Wait,
 }
 
 impl TriggerKind {
@@ -85,6 +104,8 @@ impl TriggerKind {
             TriggerKind::Act => &["act"],
             TriggerKind::Greet => &["greet", "greet-all"],
             TriggerKind::Entry => &["entry"],
+            TriggerKind::Leave => &["leave"],
+            TriggerKind::Wait => &[],
         }
     }
 }
@@ -101,6 +122,7 @@ pub struct TriggerEvent {
 }
 
 /// `BridgeSet::Game`, after `route_commands`: speech, command, and act.
+#[allow(clippy::too_many_arguments)]
 pub fn trigger_command_system(
     mut reader: MessageReader<CommandReceived>,
     sessions: Query<&Session>,
@@ -108,6 +130,7 @@ pub fn trigger_command_system(
     triggers: Option<Res<TbaTriggers>>,
     mut rng: ResMut<TbaRng>,
     mut ops: ResMut<PendingTriggerOps>,
+    mut timers: ResMut<TriggerTimers>,
     mut output: MessageWriter<OutputEvent>,
 ) {
     let Some(triggers) = triggers else {
@@ -201,7 +224,15 @@ pub fn trigger_command_system(
         }
     }
     for event in events {
-        dispatch(&event, &triggers, &view, &mut rng, &mut ops, &mut output);
+        dispatch(
+            &event,
+            &triggers,
+            &view,
+            &mut rng,
+            &mut ops,
+            &mut timers,
+            &mut output,
+        );
     }
 }
 
@@ -215,6 +246,7 @@ pub fn trigger_greet_system(
     triggers: Option<Res<TbaTriggers>>,
     mut rng: ResMut<TbaRng>,
     mut ops: ResMut<PendingTriggerOps>,
+    mut timers: ResMut<TriggerTimers>,
     mut output: MessageWriter<OutputEvent>,
 ) {
     let Some(triggers) = triggers else {
@@ -244,8 +276,96 @@ pub fn trigger_greet_system(
                 command: None,
                 direction: direction.clone(),
             };
-            dispatch(&event, &triggers, &view, &mut rng, &mut ops, &mut output);
+            dispatch(
+                &event,
+                &triggers,
+                &view,
+                &mut rng,
+                &mut ops,
+                &mut timers,
+                &mut output,
+            );
         }
+    }
+}
+
+/// `CommandSet::PreRoute`: run `leave` triggers before movement commits.
+///
+/// A `leave` record that `return 0`s blocks the move: the command is marked
+/// handled so `route_commands` never applies it, matching DG's
+/// `leave_wtrigger`/`leave_mtrigger` gate. The record's text and queued effects
+/// still go through the normal delivery/drain path.
+#[allow(clippy::too_many_arguments)]
+pub fn trigger_leave_system(
+    mut reader: MessageReader<CommandReceived>,
+    sessions: Query<&Session>,
+    view: TriggerView,
+    triggers: Option<Res<TbaTriggers>>,
+    mut rng: ResMut<TbaRng>,
+    mut ops: ResMut<PendingTriggerOps>,
+    mut timers: ResMut<TriggerTimers>,
+    handled: Option<ResMut<HandledCommands>>,
+    mut output: MessageWriter<OutputEvent>,
+) {
+    let Some(triggers) = triggers else {
+        return;
+    };
+    if triggers.is_empty() {
+        return;
+    }
+    let mut handled = handled;
+    for msg in reader.read() {
+        let playing = sessions
+            .get(msg.session)
+            .map(|session| session.state == SessionState::Playing)
+            .unwrap_or(false);
+        if !playing {
+            continue;
+        }
+        let Some(direction) = move_direction(&msg.input) else {
+            continue;
+        };
+        let Some((_, _, location)) = view
+            .players
+            .iter()
+            .find(|(entity, _, _)| *entity == msg.session)
+        else {
+            continue;
+        };
+        let event = TriggerEvent {
+            kind: TriggerKind::Leave,
+            actor: msg.session,
+            room: location.room,
+            text: None,
+            command: None,
+            direction: Some(direction),
+        };
+        let outcome = dispatch(
+            &event,
+            &triggers,
+            &view,
+            &mut rng,
+            &mut ops,
+            &mut timers,
+            &mut output,
+        );
+        if outcome.blocked
+            && let Some(handled) = handled.as_mut()
+        {
+            handled.mark_handled(msg.id);
+        }
+    }
+}
+
+/// The direction of a movement command, if the input is one.
+fn move_direction(input: &PlayerInput) -> Option<String> {
+    match input {
+        PlayerInput::Command(Command::Move { direction }) => Some(direction.as_str().to_owned()),
+        PlayerInput::RawLine(line) => match parse_line(line) {
+            Ok(Command::Move { direction }) => Some(direction.as_str().to_owned()),
+            _ => None,
+        },
+        _ => None,
     }
 }
 
@@ -260,14 +380,25 @@ fn direction_between(from: Entity, to: Entity, exits: &Query<&Exits>) -> Option<
 }
 
 /// Find candidates and run each matching trigger.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub(crate) struct DispatchOutcome {
+    /// A record returned `0` (a `leave`/`door` block).
+    pub blocked: bool,
+    /// A record returned a non-zero value (an explicit allow).
+    pub allowed: bool,
+}
+
+#[allow(clippy::too_many_arguments)]
 fn dispatch(
     event: &TriggerEvent,
     triggers: &TbaTriggers,
     view: &TriggerView,
     rng: &mut TbaRng,
     ops: &mut PendingTriggerOps,
+    timers: &mut TriggerTimers,
     output: &mut MessageWriter<OutputEvent>,
-) {
+) -> DispatchOutcome {
+    let mut result = DispatchOutcome::default();
     for (self_entity, attach_key, self_vnum, self_name) in candidates(event, view) {
         let candidate = event_candidate(event);
         for ty in event.kind.type_names() {
@@ -288,11 +419,28 @@ fn dispatch(
                 }
                 let ctx = build_context(event, view, self_entity, self_vnum, &self_name);
                 let mut outcome = run(&program.nodes, &ctx, rng);
+                match outcome.returned.as_deref() {
+                    Some(value) if value.trim().parse::<i64>() == Ok(0) => result.blocked = true,
+                    Some(_) => result.allowed = true,
+                    None => {}
+                }
+                if let Some(suspension) = outcome.suspension.take() {
+                    timers.schedule(arm_timer(
+                        self_entity,
+                        event.actor,
+                        event.room,
+                        id.clone(),
+                        &ctx,
+                        suspension,
+                        view.clock.as_deref(),
+                    ));
+                }
                 queue_effects(&mut outcome, event, self_entity, view, ops);
                 deliver(&outcome, event, self_entity, view, output);
             }
         }
     }
+    result
 }
 
 /// Translate the interpreter's queued effects into resolved [`PendingTriggerOps`].
@@ -300,7 +448,7 @@ fn dispatch(
 /// An unresolved `%load%` recipient, a `%purge% %object%` (no receive event
 /// this phase), or a cross-player `remote` is recorded as a named drop rather
 /// than silently dropped.
-fn queue_effects(
+pub(crate) fn queue_effects(
     outcome: &mut EvalOutcome,
     event: &TriggerEvent,
     self_entity: Entity,
@@ -370,12 +518,177 @@ fn queue_effects(
             flag: flag.clone(),
         });
     }
+    queue_movement_effects(outcome, event, self_entity, view, ops);
     // Everything the interpreter recorded (including the unresolved targets
     // added above) is counted in the runtime drop log.
     for drop in &outcome.drops {
         ops.drops.push(drop.clone());
     }
-    let _ = view;
+}
+
+/// Translate the Phase-4 movement/door/force/zone requests, resolving vnums and
+/// recipient tokens and recording a named drop for anything unresolved.
+fn queue_movement_effects(
+    outcome: &mut EvalOutcome,
+    event: &TriggerEvent,
+    self_entity: Entity,
+    view: &TriggerView,
+    ops: &mut PendingTriggerOps,
+) {
+    for teleport in &outcome.teleports {
+        let Some(target) = recipient_entity(&teleport.target, event, self_entity) else {
+            outcome.drops.push(NamedDrop::new(
+                "teleport_target",
+                format!("unresolved recipient: {}", teleport.target),
+            ));
+            continue;
+        };
+        let room = room_by_vnum(view, &teleport.room);
+        if room.is_none() {
+            outcome.drops.push(NamedDrop::new(
+                "teleport_room",
+                format!("unresolved room: {}", teleport.room),
+            ));
+        }
+        ops.teleports.push(PendingTeleport { target, room });
+    }
+    for door in &outcome.doors {
+        let Some(room) = room_by_vnum(view, &door.room) else {
+            outcome.drops.push(NamedDrop::new(
+                "door_room",
+                format!("unresolved room: {}", door.room),
+            ));
+            continue;
+        };
+        let Some(direction) = dir_key(&door.direction) else {
+            outcome.drops.push(NamedDrop::new(
+                "door_direction",
+                format!("unresolved direction: {}", door.direction),
+            ));
+            continue;
+        };
+        match &door.op {
+            DoorOp::Flags(flags) => {
+                for flag in flags.to_ascii_lowercase().chars() {
+                    if !matches!(flag, 'a' | 'b' | 'c') {
+                        outcome.drops.push(NamedDrop::new(
+                            "door_flag",
+                            format!("unmodelled exit flag: {flag}"),
+                        ));
+                    }
+                }
+            }
+            DoorOp::Purge => {
+                outcome.drops.push(NamedDrop::new(
+                    "door_purge",
+                    "exit removal is content-owned",
+                ));
+                continue;
+            }
+            DoorOp::Deferred(field) => {
+                outcome.drops.push(NamedDrop::new(
+                    "door_field",
+                    format!("unmodelled door field: {field}"),
+                ));
+                continue;
+            }
+            DoorOp::Open | DoorOp::Close | DoorOp::Lock | DoorOp::Unlock => {}
+        }
+        ops.doors.push(PendingDoor {
+            room,
+            direction,
+            op: door.op.clone(),
+        });
+    }
+    for force in &outcome.forces {
+        let Some(target) = recipient_entity(&force.target, event, self_entity) else {
+            outcome.drops.push(NamedDrop::new(
+                "force_target",
+                format!("unresolved recipient: {}", force.target),
+            ));
+            continue;
+        };
+        ops.forces.push(PendingForce {
+            target,
+            command: force.command.clone(),
+        });
+    }
+    for at in &outcome.ats {
+        let room = room_by_vnum(view, &at.room);
+        if room.is_none() {
+            outcome.drops.push(NamedDrop::new(
+                "at_room",
+                format!("unresolved room: {}", at.room),
+            ));
+        }
+        let node = at_load(&at.command);
+        match node {
+            Some((kind, vnum, target, wear)) => {
+                ops.ats.push(PendingAt {
+                    kind,
+                    vnum,
+                    target: target
+                        .as_deref()
+                        .and_then(|token| recipient_entity(token, event, self_entity)),
+                    room,
+                    wear,
+                    owner: self_entity,
+                });
+            }
+            None => outcome.drops.push(NamedDrop::new(
+                "at_command",
+                format!("nested command is not a %load%: {}", at.command),
+            )),
+        }
+    }
+    for echo in &outcome.zone_echoes {
+        let room = room_by_vnum(view, &echo.zone);
+        if room.is_none() {
+            outcome.drops.push(NamedDrop::new(
+                "zoneecho_room",
+                format!("unresolved room: {}", echo.zone),
+            ));
+        }
+        ops.zone_echoes.push(PendingZoneEcho {
+            room,
+            text: echo.text.clone(),
+        });
+    }
+    let _ = event;
+}
+
+/// The room entity whose converted `Room.num` equals `vnum`.
+fn room_by_vnum(view: &TriggerView, vnum: &str) -> Option<Entity> {
+    let vnum: u32 = vnum.trim().parse().ok()?;
+    view.rooms
+        .iter()
+        .find(|(_, room)| room.num == vnum)
+        .map(|(entity, _)| entity)
+}
+
+/// The canonical direction word for a `%door%` direction token.
+fn dir_key(word: &str) -> Option<ExitKey> {
+    ExitKey::from_word(word.trim())
+}
+
+/// Parse an `%at%` nested command as a single `%load%`.
+///
+/// `%at% <room> %load% …` is the only nested command Phase 4 executes; any
+/// other command is a named drop the caller records.
+fn at_load(command: &str) -> Option<(LoadKind, String, Option<String>, Option<String>)> {
+    let program = parse_script(command);
+    if !program.is_valid() || program.nodes.len() != 1 {
+        return None;
+    }
+    match &program.nodes[0] {
+        Node::Load {
+            kind,
+            vnum,
+            target,
+            wear,
+        } => Some((*kind, vnum.clone(), target.clone(), wear.clone())),
+        _ => None,
+    }
 }
 
 /// The entity a `%load%` recipient token names.
@@ -419,7 +732,7 @@ fn event_candidate(event: &TriggerEvent) -> Option<&str> {
     match event.kind {
         TriggerKind::Speech | TriggerKind::Act => event.text.as_deref(),
         TriggerKind::Command => event.command.as_deref(),
-        TriggerKind::Greet | TriggerKind::Entry => None,
+        TriggerKind::Greet | TriggerKind::Entry | TriggerKind::Leave | TriggerKind::Wait => None,
     }
 }
 
@@ -515,7 +828,9 @@ fn build_context(
         TriggerKind::Speech => (None, event.text.clone()),
         TriggerKind::Command => (event.command.clone(), None),
         TriggerKind::Act => (event.command.clone(), event.text.clone()),
-        TriggerKind::Greet | TriggerKind::Entry => (None, None),
+        TriggerKind::Greet | TriggerKind::Entry | TriggerKind::Leave | TriggerKind::Wait => {
+            (None, None)
+        }
     };
     let room_vnum = view
         .rooms
@@ -563,6 +878,12 @@ fn build_context(
         cmd,
         speech,
         room_vnum,
+        clock: view.clock.as_deref().map(|clock| ClockView {
+            hour: clock.hour_of_day,
+            day: clock.day,
+            month: clock.month,
+            year: clock.year,
+        }),
         vars: crate::triggers::context::TriggerVars {
             remote,
             global,
@@ -589,7 +910,7 @@ fn items_of(view: &TriggerView, holder: Entity) -> Vec<EntityView> {
 }
 
 /// Emit the record's lines to the right recipients.
-fn deliver(
+pub(crate) fn deliver(
     outcome: &EvalOutcome,
     event: &TriggerEvent,
     self_entity: Entity,
@@ -648,7 +969,31 @@ fn split_word(line: &str) -> (&str, &str) {
 
 /// The kinds of named drop the runtime records. Kept here so the vocabulary is
 /// one place.
-pub const RUNTIME_DROP_KINDS: &[&str] = &["unknown_token", "step_cap", "nop", "zoneecho"];
+pub const RUNTIME_DROP_KINDS: &[&str] = &[
+    "unknown_token",
+    "step_cap",
+    "nop",
+    "send_target",
+    "echoaround_target",
+    "load_target",
+    "purge_target",
+    "remote_target",
+    "teleport_target",
+    "teleport_room",
+    "door_room",
+    "door_direction",
+    "door_flag",
+    "door_purge",
+    "door_field",
+    "force_target",
+    "at_room",
+    "at_command",
+    "zoneecho_room",
+    "timer_cancelled",
+    "timer_orphan",
+    "wait_minute",
+    "internal_control",
+];
 
 /// The outcome drops as reportable [`NamedDrop`]s (a small convenience for
 /// tests and future telemetry).
@@ -687,10 +1032,47 @@ mod tests {
     }
 
     #[test]
-    fn type_names_cover_the_four_events() {
+    fn type_names_cover_the_events() {
         assert_eq!(TriggerKind::Greet.type_names(), &["greet", "greet-all"]);
         assert_eq!(TriggerKind::Speech.type_names(), &["speech"]);
         assert_eq!(TriggerKind::Command.type_names(), &["command"]);
         assert_eq!(TriggerKind::Entry.type_names(), &["entry"]);
+        assert_eq!(TriggerKind::Leave.type_names(), &["leave"]);
+        assert!(TriggerKind::Wait.type_names().is_empty());
+    }
+
+    #[test]
+    fn at_load_reads_only_a_single_load() {
+        let parsed = at_load("%load% m 15").expect("a single load");
+        assert_eq!(parsed.0, LoadKind::Mob);
+        assert_eq!(parsed.1, "15");
+        assert!(parsed.2.is_none());
+        assert!(at_load("drop quest_token_zone_1").is_none());
+        assert!(at_load("%load% m 15\nsay after").is_none());
+    }
+
+    #[test]
+    fn dir_key_reads_canonical_directions() {
+        assert_eq!(dir_key("up"), Some(ExitKey::Up));
+        assert_eq!(dir_key(" south "), Some(ExitKey::South));
+        assert_eq!(dir_key("sideways"), None);
+    }
+
+    #[test]
+    fn move_direction_reads_typed_and_raw_moves() {
+        assert_eq!(
+            move_direction(&PlayerInput::Command(Command::Move {
+                direction: ExitKey::North,
+            })),
+            Some("north".to_owned())
+        );
+        assert_eq!(
+            move_direction(&PlayerInput::RawLine("south".to_owned())),
+            Some("south".to_owned())
+        );
+        assert_eq!(
+            move_direction(&PlayerInput::RawLine("look".to_owned())),
+            None
+        );
     }
 }

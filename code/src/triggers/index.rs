@@ -14,6 +14,19 @@ use crate::triggers::ast::{ParsedProgram, parse_script};
 use crate::triggers::content::{TriggerDef, TriggerId};
 use crate::triggers::context::NamedDrop;
 
+/// The event types the Phase-4 intake systems actually dispatch. A record whose
+/// only type is outside this set is parsed and indexed but never fires; it is
+/// recorded as a named drop so the gap is explicit rather than silent.
+pub const DISPATCHED_EVENT_TYPES: &[&str] = &[
+    "speech",
+    "command",
+    "act",
+    "greet",
+    "greet-all",
+    "entry",
+    "leave",
+];
+
 /// Attachment key + event type -> trigger ids, in stable id order.
 #[derive(Debug, Clone, Default)]
 pub struct TriggerIndex {
@@ -108,6 +121,15 @@ impl TbaTriggers {
                     format!("{id}: {count} line(s)"),
                 ));
             }
+            // The event types: a record that no intake system dispatches (a
+            // `door`, `fight`, `timer`, `zone reset`, …) is a named drop even
+            // though it parses.
+            for ty in &def.types {
+                let ty = ty.trim().to_ascii_lowercase();
+                if !ty.is_empty() && !DISPATCHED_EVENT_TYPES.contains(&ty.as_str()) {
+                    parse_drops.push(NamedDrop::new("unsupported_event", format!("{id}: {ty}")));
+                }
+            }
             programs.insert(id.clone(), program);
         }
         let index = TriggerIndex::build(&defs);
@@ -178,5 +200,29 @@ mod tests {
         // The unattached trigger is parsed but indexed nowhere.
         assert!(triggers.program(&TriggerId::from_vnum(4)).is_some());
         assert_eq!(triggers.index.lookup("", "greet"), &[] as &[TriggerId]);
+    }
+
+    #[test]
+    fn undispatched_event_types_are_named_drops() {
+        let mut defs = BTreeMap::new();
+        defs.insert(TriggerId::from_vnum(1), def(1, "room:tba.59", &["door"]));
+        defs.insert(TriggerId::from_vnum(2), def(2, "npc:tba_npc_5", &["Leave"]));
+        let triggers = TbaTriggers::build(defs);
+        assert!(
+            triggers
+                .parse_drops
+                .iter()
+                .any(|drop| drop.kind == "unsupported_event" && drop.detail.contains("door")),
+            "the door event type is a named drop: {:?}",
+            triggers.parse_drops
+        );
+        assert!(
+            !triggers
+                .parse_drops
+                .iter()
+                .any(|drop| drop.detail.contains("leave")),
+            "leave is dispatched: {:?}",
+            triggers.parse_drops
+        );
     }
 }

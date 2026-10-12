@@ -14,12 +14,15 @@
 //!   build/reload.
 //! - [`events`] — the events that fire: speech, command, greet/entry, act.
 //! - [`effects`] — Phase 3 persisted [`effects::TbaTriggerVars`] and the
-//!   exclusive drain for `%load%`/`%purge%` and variable writes.
+//!   exclusive drain for `%load%`/`%purge%` and variable writes; Phase 4 adds
+//!   the movement/gate requests (`%teleport%`/`%door%`/`%force%`/`%at%`/
+//!   `%zoneecho%`) to the same drain.
+//! - [`timers`] — Phase 4 [`timers::TriggerTimers`]: the `wait` queue keyed on
+//!   the engine clock, with the resume system.
 //! - [`quests`] — the `stdlib.quests` bridge (native kills -> `QuestEvent`).
 //!
-//! Phase 4 owns timers/movement; Phase 5 owns combat. Every construct outside
-//! the Phase-3 subset is parsed-but-deferred and reported by name, never
-//! executed.
+//! Phase 5 owns combat. Every construct outside the Phase-4 subset is
+//! parsed-but-deferred and reported by name, never executed.
 
 pub mod ast;
 pub mod content;
@@ -29,3 +32,4 @@ pub mod eval;
 pub mod events;
 pub mod index;
 pub mod quests;
+pub mod timers;

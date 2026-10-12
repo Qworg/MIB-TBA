@@ -33,6 +33,7 @@ use mib_tba::triggers::eval::run;
 use mib_tba::triggers::events::{TriggerLastRoom, trigger_command_system, trigger_greet_system};
 use mib_tba::triggers::index::TbaTriggers;
 use mib_tba::triggers::quests::trigger_quest_bridge_system;
+use mib_tba::triggers::timers::TriggerTimers;
 use smol_str::SmolStr;
 
 fn content_path(name: &str) -> String {
@@ -58,6 +59,14 @@ fn run_update(app: &mut App) {
 fn run_fixed(app: &mut App) {
     app.world_mut().run_schedule(FixedUpdate);
     app.world_mut().flush();
+}
+
+/// Advance the fixed clock and run one fixed tick, so `wait` timers fire.
+fn tick_fixed(app: &mut App, seconds: f32) {
+    app.world_mut()
+        .resource_mut::<Time<Fixed>>()
+        .advance_by(std::time::Duration::from_secs_f32(seconds));
+    run_fixed(app);
 }
 
 fn lines(app: &mut App) -> Vec<String> {
@@ -147,6 +156,8 @@ fn tutorial_1317_persists_the_flag_and_advances_a_quest_step() {
     app.init_resource::<TbaRng>();
     app.init_resource::<TriggerLastRoom>();
     app.init_resource::<PendingTriggerOps>();
+    app.init_resource::<TriggerTimers>();
+    app.insert_resource(Time::<Fixed>::from_hz(10.0));
     app.add_message::<CommandReceived>();
     app.add_message::<OutputEvent>();
     app.add_message::<QuestEvent>();
@@ -163,7 +174,12 @@ fn tutorial_1317_persists_the_flag_and_advances_a_quest_step() {
     );
     app.add_systems(
         FixedUpdate,
-        (trigger_greet_system, trigger_effects_system).chain(),
+        (
+            trigger_timer_system,
+            trigger_greet_system,
+            trigger_effects_system,
+        )
+            .chain(),
     );
 
     // The player walks south into the questmaster's room.
@@ -182,19 +198,29 @@ fn tutorial_1317_persists_the_flag_and_advances_a_quest_step() {
 
     app.world_mut().entity_mut(actor).insert(Location { room });
     run_fixed(&mut app);
+    assert!(
+        lines(&mut app).is_empty(),
+        "the greet suspends on `wait 1 sec`"
+    );
+    tick_fixed(&mut app, 1.0);
     let greeted = lines(&mut app).join("\n");
     assert!(
         greeted.contains("Hello, Aria. Could you find me the magic eight ball?"),
-        "the greet fired with substituted text: {greeted}"
+        "the greet resumed with substituted text: {greeted}"
     );
 
-    // The player says "yes"; the speech trigger answers.
+    // The player says "yes"; the speech trigger answers (also after a wait).
     command(&mut app, actor, "say yes");
     run_update(&mut app);
+    assert!(
+        lines(&mut app).is_empty(),
+        "the accept suspends on `wait 1 sec`"
+    );
+    tick_fixed(&mut app, 1.0);
     let accepted = lines(&mut app).join("\n");
     assert!(
         accepted.contains("Perfect, Aria. I'll make this easy."),
-        "the accept speech fired: {accepted}"
+        "the accept speech resumed: {accepted}"
     );
     assert!(
         app.world().get::<TbaTriggerVars>(actor).is_none(),
