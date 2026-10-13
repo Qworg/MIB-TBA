@@ -30,10 +30,15 @@ use dg_vm::cstr::{any_one_arg, skip_spaces};
 use dg_vm::dispatch::{command_mtrigger, command_otrigger, command_wtrigger};
 use dg_vm::{BaseHost, Uid, WorldHost};
 use mib_core::prelude::Entity;
-use mib_core::prelude::{CommandReceived, CommandSequence, Messages, PlayerInput};
+use mib_core::prelude::{
+    CommandId, CommandReceived, CommandSequence, Messages, PlayerInput, Resource,
+};
 use mib_stdlib::prelude::{OnlinePlayers, Player};
 
+use std::collections::VecDeque;
+
 use super::host::EcsHost;
+use super::script::DgScript;
 use crate::combat::TbaHidden;
 use crate::module::TbaContent;
 
@@ -161,12 +166,81 @@ fn run_handler(host: &mut EcsHost<'_>, ch: Uid, cmd: &table::Cmd, line: &str) {
     }
 }
 
+/// The forced commands still in flight that must not be offered to triggers
+/// that were running when they were forced: `command_interpreter` is called
+/// inside the forcing trigger, and `TRIGGER_CHECK` skips a trigger whose depth
+/// is non-zero. The injected line reaches the engine's pipeline a frame
+/// later, so the pairs are kept here for command intake to consult.
+#[derive(Resource, Debug, Default)]
+pub struct ForcedCommands {
+    entries: VecDeque<(CommandId, Vec<(Uid, u64)>)>,
+}
+
+/// The most forced commands [`ForcedCommands`] remembers.
+const FORCED_KEPT: usize = 256;
+
+impl ForcedCommands {
+    fn record(&mut self, id: CommandId, busy: Vec<(Uid, u64)>) {
+        if self.entries.len() >= FORCED_KEPT {
+            self.entries.pop_front();
+        }
+        self.entries.push_back((id, busy));
+    }
+
+    /// Whether trigger `trigger` (a [`dg_vm::TrigInstance::id`]) of `owner`
+    /// was running or waiting when command `id` was forced, so that command
+    /// is not offered to it.
+    pub fn skips(&self, id: CommandId, owner: Uid, trigger: u64) -> bool {
+        self.entries
+            .iter()
+            .any(|(forced, busy)| *forced == id && busy.contains(&(owner, trigger)))
+    }
+
+    /// Forget command `id` once it has been routed.
+    pub fn forget(&mut self, id: CommandId) {
+        self.entries.retain(|(forced, _)| *forced != id);
+    }
+}
+
+/// Every attached trigger that is running or waiting (`GET_TRIG_DEPTH != 0`),
+/// as (owner, trigger instance id).
+fn busy_triggers(host: &mut EcsHost<'_>) -> Vec<(Uid, u64)> {
+    let mut found = Vec::new();
+    let mut query = host.world.query::<(Entity, &DgScript)>();
+    let held: Vec<(Entity, Vec<u64>)> = query
+        .iter(host.world)
+        .map(|(entity, script)| {
+            let busy = script
+                .0
+                .triggers
+                .iter()
+                .filter(|trig| trig.is_busy())
+                .map(|trig| trig.id)
+                .collect();
+            (entity, busy)
+        })
+        .collect();
+    for (entity, ids) in held {
+        if ids.is_empty() {
+            continue;
+        }
+        if let Some(uid) = host.uid(entity) {
+            found.extend(ids.into_iter().map(|id| (uid, id)));
+        }
+    }
+    found
+}
+
 /// Force a player to run a line: it is injected as the player's own input
 /// with a fresh command id, so next frame it goes through the engine's whole
 /// pipeline (rate limit, `command` triggers, the pack's handlers). The id is
 /// fresh because the router marks an id handled once it has routed a command,
 /// which would skip a second forced command sharing id 0 in the same frame.
 fn force_player(host: &mut EcsHost<'_>, player: Entity, line: &str) {
+    // `command_interpreter` returns silently on a blank line.
+    if skip_spaces(line).is_empty() {
+        return;
+    }
     let session_id = host
         .world
         .get_resource::<OnlinePlayers>()
@@ -189,6 +263,14 @@ fn force_player(host: &mut EcsHost<'_>, player: Entity, line: &str) {
         .world
         .get_resource_or_insert_with(CommandSequence::default)
         .next_id();
+    // The C runs a forced command inside the forcing trigger, whose depth is
+    // non-zero, so none of the triggers running or waiting now see it.
+    let busy = busy_triggers(host);
+    if !busy.is_empty() {
+        host.world
+            .get_resource_or_insert_with(ForcedCommands::default)
+            .record(id, busy);
+    }
     host.world.write_message(CommandReceived::new(
         id,
         player,

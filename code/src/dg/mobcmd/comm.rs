@@ -9,12 +9,12 @@
 
 use dg_vm::cstr::{half_chop, skip_spaces};
 use dg_vm::dispatch::{speech_mtrigger, speech_wtrigger};
-use dg_vm::lookup::get_player_vis;
+use dg_vm::lookup::{Where, get_char_vis, get_player_vis};
 use dg_vm::{BaseHost, Uid, WorldHost};
 use mib_stdlib::prelude::{Player, RoomTag};
 
 use super::act::{ActObj, ActVict, Flags, To, act, act_full, act_vict};
-use super::table::Channel;
+use super::table::{Channel, LVL_GOD, LVL_IMMORT};
 use super::world;
 use crate::combat::TbaCombatant;
 use crate::dg::host::EcsHost;
@@ -84,6 +84,7 @@ fn tell_ok(host: &mut EcsHost<'_>, ch: Uid, vict: Uid) -> bool {
         .and_then(|e| host.world.get::<mib_stdlib::prelude::Location>(e))
         .map(|l| l.room)
         && world::room_flagged(host, room, RoomTag::Soundproof)
+        && host.level(ch) < LVL_GOD
     {
         return false;
     }
@@ -115,6 +116,7 @@ fn tell_ok(host: &mut EcsHost<'_>, ch: Uid, vict: Uid) -> bool {
         .map(|l| l.room);
     if let Some(room) = vict_room
         && world::room_flagged(host, room, RoomTag::Soundproof)
+        && host.level(ch) < LVL_GOD
     {
         act_full(
             host,
@@ -140,7 +142,12 @@ pub fn do_tell(host: &mut EcsHost<'_>, ch: Uid, argument: &str) {
     if target.is_empty() || rest.is_empty() {
         return;
     }
-    let Some(vict) = get_player_vis(host, ch, &target, false) else {
+    let vict = if host.level(ch) >= LVL_IMMORT {
+        get_char_vis(host, ch, &target, Where::World)
+    } else {
+        get_player_vis(host, ch, &target, false)
+    };
+    let Some(vict) = vict else {
         return;
     };
     if !tell_ok(host, ch, vict) {
@@ -221,7 +228,9 @@ pub fn do_gen_comm(host: &mut EcsHost<'_>, ch: Uid, argument: &str, channel: Cha
         .world
         .get::<mib_stdlib::prelude::Location>(entity)
         .map(|location| location.room);
-    if room.is_some_and(|room| world::room_flagged(host, room, RoomTag::Soundproof)) {
+    if room.is_some_and(|room| world::room_flagged(host, room, RoomTag::Soundproof))
+        && host.level(ch) < LVL_GOD
+    {
         return;
     }
     if host.level(ch) < LEVEL_CAN_SHOUT {
@@ -277,7 +286,9 @@ pub fn do_gen_comm(host: &mut EcsHost<'_>, ch: Uid, argument: &str, channel: Cha
             .world
             .get::<mib_stdlib::prelude::Location>(listener_entity)
             .map(|location| location.room);
-        if listener_room.is_some_and(|room| world::room_flagged(host, room, RoomTag::Soundproof)) {
+        if listener_room.is_some_and(|room| world::room_flagged(host, room, RoomTag::Soundproof))
+            && host.level(ch) < LVL_GOD
+        {
             continue;
         }
         if channel == Channel::Shout {

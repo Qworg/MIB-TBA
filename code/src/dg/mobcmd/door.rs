@@ -10,7 +10,7 @@
 
 use dg_vm::cstr::{is_abbrev, search_block, two_arguments};
 use dg_vm::dispatch::{door_mtrigger, door_wtrigger};
-use dg_vm::lookup::{WEAR_HOLD, get_obj_in_list_vis, isname};
+use dg_vm::lookup::{WEAR_HOLD, isname};
 use dg_vm::types::ITEM_CONTAINER;
 use dg_vm::{BaseHost, Uid, WorldHost};
 use mib_core::prelude::Entity;
@@ -130,6 +130,45 @@ fn has_key(host: &EcsHost<'_>, ch: Uid, key: Option<&Door>) -> bool {
         .any(|obj| host.vnum(obj) == vnum)
 }
 
+/// `handler.c` `is_name`: `name` is, letter for letter (any case), one of the
+/// words of `namelist`. Unlike `isname` it does not accept an abbreviation.
+fn is_name(name: &str, namelist: &str) -> bool {
+    if name.is_empty() || namelist.is_empty() {
+        return false;
+    }
+    let s = name.as_bytes();
+    let list = namelist.as_bytes();
+    let mut at = 0usize;
+    loop {
+        let mut i = 0usize;
+        loop {
+            let cur_str = s.get(i).copied();
+            let cur_name = list.get(at).copied();
+            if cur_str.is_none() && !cur_name.is_some_and(|c| c.is_ascii_alphabetic()) {
+                return true;
+            }
+            let Some(name_char) = cur_name else {
+                return false;
+            };
+            let Some(str_char) = cur_str else {
+                break;
+            };
+            if name_char == b' ' || !str_char.eq_ignore_ascii_case(&name_char) {
+                break;
+            }
+            i += 1;
+            at += 1;
+        }
+        while list.get(at).is_some_and(|c| c.is_ascii_alphabetic()) {
+            at += 1;
+        }
+        if at >= list.len() {
+            return false;
+        }
+        at += 1;
+    }
+}
+
 /// `find_door`: the direction a door command means, or `None` after telling
 /// the character why not.
 fn find_door(
@@ -155,7 +194,7 @@ fn find_door(
             return None;
         };
         return match exit.door.and_then(|door| door.proto.name) {
-            Some(keyword) if !isname(kind, &keyword) => {
+            Some(keyword) if !is_name(kind, &keyword) => {
                 to_char(host, ch, &format!("I see no {kind} there.\r\n"));
                 None
             }
@@ -337,12 +376,7 @@ pub fn do_gen_door(host: &mut EcsHost<'_>, ch: Uid, argument: &str, cmd: DoorCmd
     };
     // `generic_find(type, FIND_OBJ_INV | FIND_OBJ_ROOM)`: an object by that
     // name decides unless it is not a container.
-    let mut found = get_obj_in_list_vis(host, ch, &kind, &host.carrying(ch));
-    if found.is_none()
-        && let Some(room_uid) = host.in_room(ch)
-    {
-        found = get_obj_in_list_vis(host, ch, &kind, &host.room_contents(room_uid));
-    }
+    let found = super::item::find_inv_or_room(host, ch, &kind).map(|(obj, _)| obj);
     if let Some(obj) = found
         && host.obj_type(obj) == ITEM_CONTAINER
     {

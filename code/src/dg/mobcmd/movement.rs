@@ -114,6 +114,12 @@ pub fn simple_move(host: &mut EcsHost<'_>, ch: Uid, dir: usize, exit: &ExitView)
         || matches!(sector(host, going_to), Some(Sector::WaterNoSwim)))
         && !has_boat(host, ch)
     {
+        // `AFF_WATERWALK` and `AFF_FLYING` would let it through; the pack
+        // has no such affect bits on characters.
+        host.unsupported(
+            "mobcmd.aff_waterwalk",
+            "water crossing refused without AFF_WATERWALK",
+        );
         to_char(host, ch, "You need a boat to go there.\r\n");
         return false;
     }
@@ -121,6 +127,7 @@ pub fn simple_move(host: &mut EcsHost<'_>, ch: Uid, dir: usize, exit: &ExitView)
         || matches!(sector(host, going_to), Some(Sector::Flying)))
         && !has_flight(host, ch)
     {
+        host.unsupported("mobcmd.aff_flying", "flight refused without AFF_FLYING");
         to_char(host, ch, "You need to be flying to go there!\r\n");
         return false;
     }
@@ -184,7 +191,12 @@ pub fn perform_move(host: &mut EcsHost<'_>, ch: Uid, dir: usize) -> bool {
         to_char(host, ch, "Alas, you cannot go that way...\r\n");
         return false;
     };
-    if let Some(door) = exit.door.as_ref().filter(|door| door.closed) {
+    // A level 31 or higher NPC walks through a closed door.
+    if let Some(door) = exit
+        .door
+        .as_ref()
+        .filter(|door| door.closed && host.level(ch) < super::table::LVL_IMMORT)
+    {
         match door.proto.name.as_deref() {
             Some(keyword) => to_char(
                 host,

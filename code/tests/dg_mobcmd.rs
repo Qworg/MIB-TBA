@@ -253,6 +253,14 @@ fn texts(app: &mut App) -> Vec<String> {
 /// Whether the character facts the dispatch functions read (`CharStat::Pos`
 /// for "awake") are answered by the host. Triggers whose C tests `AWAKE` can
 /// only be exercised once they are.
+fn skipped_without_chars(test: &str) -> bool {
+    if chars_modelled() {
+        return false;
+    }
+    eprintln!("SKIPPED {test}: CharHost::char_stat(Pos) is not answered yet");
+    true
+}
+
 fn chars_modelled() -> bool {
     let mut app = fresh();
     let room = room(&mut app, 1);
@@ -387,7 +395,7 @@ fn an_unknown_word_is_huh_for_the_npc_alone_and_logs_nothing() {
 
 #[test]
 fn say_tells_the_room_and_runs_the_speech_triggers_of_the_others() {
-    if !chars_modelled() {
+    if skipped_without_chars("say_tells_the_room_and_runs_the_speech_triggers_of_the_others") {
         return;
     }
     let mut s = scene();
@@ -454,7 +462,7 @@ fn say_runs_the_rooms_speech_trigger() {
 
 #[test]
 fn a_sleeping_mob_hears_no_speech() {
-    if !chars_modelled() {
+    if skipped_without_chars("a_sleeping_mob_hears_no_speech") {
         return;
     }
     let mut s = scene();
@@ -477,7 +485,7 @@ fn a_sleeping_mob_hears_no_speech() {
 
 #[test]
 fn the_apostrophe_is_say_and_a_bare_say_still_fires_speech_triggers() {
-    if !chars_modelled() {
+    if skipped_without_chars("the_apostrophe_is_say_and_a_bare_say_still_fires_speech_triggers") {
         return;
     }
     let mut s = scene();
@@ -1233,7 +1241,7 @@ fn the_remove_trigger_can_refuse() {
 #[test]
 fn an_item_that_fits_nowhere_is_refused() {
     let mut s = scene();
-    define_item(&mut s.app, 30, TbaItemKind::Treasure, &[], &["sword"]);
+    define_item(&mut s.app, 30, TbaItemKind::Treasure, &[], &["lump"]);
     let junk = item_carried(&mut s.app, s.guard, 30, "a lump");
     cmd(&mut s.app, s.guard_id, "wear lump");
     cmd(&mut s.app, s.guard_id, "wield lump");
@@ -1465,7 +1473,7 @@ fn the_door_world_trigger_can_stop_the_command() {
 
 #[test]
 fn the_door_mob_trigger_can_stop_the_command() {
-    if !chars_modelled() {
+    if skipped_without_chars("the_door_mob_trigger_can_stop_the_command") {
         return;
     }
     let mut app = fresh();
@@ -1632,7 +1640,7 @@ fn the_leave_triggers_can_stop_a_walk() {
 
 #[test]
 fn the_leave_mob_trigger_can_stop_a_walk() {
-    if !chars_modelled() {
+    if skipped_without_chars("the_leave_mob_trigger_can_stop_a_walk") {
         return;
     }
     let mut app = fresh();
@@ -1696,7 +1704,7 @@ fn an_enter_world_trigger_that_refuses_sends_the_mover_back() {
 
 #[test]
 fn a_greet_trigger_that_refuses_sends_the_mover_back() {
-    if !chars_modelled() {
+    if skipped_without_chars("a_greet_trigger_that_refuses_sends_the_mover_back") {
         return;
     }
     let mut app = fresh();
@@ -2381,4 +2389,466 @@ fn a_position_change_survives_until_the_combat_system_reads_it() {
     let combatant = s.app.world().get::<TbaCombatant>(s.guard).unwrap();
     assert_eq!(combatant.position, Position::Resting);
     assert!(combatant.hp > 0 || combatant.max_hp >= 0);
+}
+
+// -- review fixes ----------------------------------------------------------------
+
+fn set_extra(app: &mut App, vnum: u32, flag: mib_tba::content::ItemExtraFlag) {
+    app.world_mut()
+        .resource_mut::<TbaContent>()
+        .items
+        .get_mut(&ItemId::from(format!("tba_item_{vnum}")))
+        .unwrap()
+        .extra_flags
+        .push(flag);
+}
+
+fn set_min_level(app: &mut App, vnum: u32, level: u32) {
+    app.world_mut()
+        .resource_mut::<TbaContent>()
+        .items
+        .get_mut(&ItemId::from(format!("tba_item_{vnum}")))
+        .unwrap()
+        .min_level = level;
+}
+
+fn count_of(app: &App, key: &str) -> u64 {
+    app.world().resource::<mib_tba::dg::DgLog>().count(key)
+}
+
+#[test]
+fn a_forced_command_is_not_offered_to_the_triggers_running_when_it_was_forced() {
+    use mib_tba::dg::mobcmd::ForcedCommands;
+    let mut app = fresh();
+    define_arg(&mut app, 90, "mob", "c", 100, "*", "return 0");
+    attach(&mut app, "npc:tba_npc_1", &[90]);
+    let mut s = scene_in(app);
+    online(&mut s.app, s.alice, s.room, 42);
+    // Pretend the guard's trigger is running while it forces the player.
+    let trig = {
+        let mut script = s
+            .app
+            .world_mut()
+            .get_mut::<mib_tba::dg::script::DgScript>(s.guard)
+            .unwrap();
+        let trig = script.0.triggers.first_mut().unwrap();
+        trig.checked_out = true;
+        trig.id
+    };
+    cmd(&mut s.app, s.alice_id, "sleep");
+    let sent = drained(&mut s.app);
+    assert_eq!(sent.len(), 1);
+    let forced = s.app.world().resource::<ForcedCommands>();
+    assert!(forced.skips(sent[0].id, s.guard_id, trig));
+    assert!(!forced.skips(sent[0].id, s.guard_id, trig + 1));
+    assert!(!forced.skips(CommandId(sent[0].id.0 + 1), s.guard_id, trig));
+    s.app
+        .world_mut()
+        .resource_mut::<ForcedCommands>()
+        .forget(sent[0].id);
+    assert!(
+        !s.app
+            .world()
+            .resource::<ForcedCommands>()
+            .skips(sent[0].id, s.guard_id, trig)
+    );
+}
+
+#[test]
+fn forcing_a_blank_line_injects_nothing() {
+    let mut s = scene();
+    online(&mut s.app, s.alice, s.room, 42);
+    cmd(&mut s.app, s.alice_id, "");
+    cmd(&mut s.app, s.alice_id, "   ");
+    assert!(drained(&mut s.app).is_empty());
+}
+
+#[test]
+fn a_fight_puts_a_resting_victim_into_the_fighting_position_and_flee_stands_the_foe() {
+    let mut d = doorway(false, false);
+    set_position(&mut d.s.app, d.s.alice, Position::Resting);
+    cmd(&mut d.s.app, d.s.guard_id, "kill alice");
+    assert_eq!(position_of(&d.s.app, d.s.guard), Position::Fighting);
+    assert_eq!(position_of(&d.s.app, d.s.alice), Position::Fighting);
+    // The pack's own combatants fight in the fighting position; fleeing sets
+    // both back to standing.
+    for _ in 0..40 {
+        cmd(&mut d.s.app, d.s.guard_id, "flee");
+        if room_of(&d.s.app, d.s.guard) == d.north {
+            break;
+        }
+    }
+    assert_eq!(position_of(&d.s.app, d.s.guard), Position::Standing);
+    assert_eq!(position_of(&d.s.app, d.s.alice), Position::Standing);
+}
+
+#[test]
+fn only_a_player_attacker_is_remembered_by_the_victim() {
+    let mut s = scene();
+    let clerk = npc(&mut s.app, s.room, 2, "Clerk");
+    let clerk_id = uid(&mut s.app, clerk);
+    for who in [s.guard, clerk, s.alice] {
+        s.app
+            .world_mut()
+            .entity_mut(who)
+            .insert(mib_tba::combat::TbaAttackerMemory::default());
+    }
+    // The aggressor never remembers its victim.
+    cmd(&mut s.app, s.guard_id, "kill alice");
+    let memory = |app: &App, who: Entity| {
+        app.world()
+            .get::<mib_tba::combat::TbaAttackerMemory>(who)
+            .unwrap()
+            .0
+            .len()
+    };
+    assert_eq!(memory(&s.app, s.guard), 0);
+    // An NPC attacker is never remembered.
+    cmd(&mut s.app, clerk_id, "kill guard");
+    assert_eq!(memory(&s.app, s.guard), 0);
+}
+
+#[test]
+fn a_high_level_npc_walks_through_closed_doors_and_soundproof_walls() {
+    let mut d = doorway(true, false);
+    define_npc_level(&mut d.s.app, 3, 34);
+    let boss = npc(&mut d.s.app, d.s.room, 3, "Boss");
+    let boss_id = uid(&mut d.s.app, boss);
+    cmd(&mut d.s.app, d.s.guard_id, "north");
+    assert_eq!(
+        room_of(&d.s.app, d.s.guard),
+        d.s.room,
+        "a level 10 mob is stopped"
+    );
+    cmd(&mut d.s.app, boss_id, "north");
+    assert_eq!(room_of(&d.s.app, boss), d.north, "a level 34 mob is not");
+
+    let mut s = scene();
+    define_npc_level(&mut s.app, 3, 34);
+    let boss = npc(&mut s.app, s.room, 3, "Boss");
+    let boss_id = uid(&mut s.app, boss);
+    let other = room(&mut s.app, 200);
+    player(&mut s.app, other, "Bob", 8);
+    for room_entity in [s.room, other] {
+        s.app
+            .world_mut()
+            .get_mut::<Room>(room_entity)
+            .unwrap()
+            .tags
+            .insert(RoomTag::Soundproof);
+    }
+    cmd(&mut s.app, s.guard_id, "tell bob hello");
+    assert!(
+        texts(&mut s.app).is_empty(),
+        "soundproof stops a level 10 mob"
+    );
+    cmd(&mut s.app, boss_id, "tell bob hello");
+    assert_eq!(texts(&mut s.app), ["Boss tells you, 'hello'"]);
+    cmd(&mut s.app, boss_id, "shout hey");
+    assert!(!texts(&mut s.app).is_empty());
+}
+
+#[test]
+fn a_social_with_only_a_blank_argument_has_no_target_to_find() {
+    let mut s = scene();
+    install_socials(&mut s.app, standard_socials());
+    cmd(&mut s.app, s.guard_id, "smile ");
+    let lines = texts(&mut s.app);
+    assert!(
+        !lines.contains(&"Guard smiles.".to_owned()),
+        "the room sees nothing: {lines:?}"
+    );
+}
+
+#[test]
+fn a_counted_name_runs_across_the_inventory_and_the_floor() {
+    let mut s = scene();
+    define_item(&mut s.app, 30, TbaItemKind::Treasure, &[], &["ring"]);
+    let ring = item_carried(&mut s.app, s.guard, 30, "a ring");
+    let carried_chest = container(&mut s.app, s.room, 31, "chest");
+    s.app
+        .world_mut()
+        .entity_mut(carried_chest)
+        .remove::<(GroundItem, Location)>()
+        .insert(CarriedBy(s.guard));
+    let floor_chest = container(&mut s.app, s.room, 31, "chest");
+    cmd(&mut s.app, s.guard_id, "put ring 2.chest");
+    assert_eq!(
+        s.app.world().get::<ContainedBy>(ring).map(|c| c.0),
+        Some(floor_chest),
+        "the second chest is the one on the floor"
+    );
+}
+
+#[test]
+fn the_count_prefix_is_cut_once_when_taking_several() {
+    let mut s = scene();
+    define_item(&mut s.app, 30, TbaItemKind::Treasure, &[], &["gem"]);
+    let gems: Vec<Entity> = (0..4)
+        .map(|_| item_on_ground(&mut s.app, s.room, 30, "a gem"))
+        .collect();
+    cmd(&mut s.app, s.guard_id, "get 2 2.gem");
+    // Order is by arrival; the second match and the one after it are taken.
+    let taken: Vec<bool> = gems
+        .iter()
+        .map(|gem| carried_by(&s.app, *gem).is_some())
+        .collect();
+    assert_eq!(taken.iter().filter(|t| **t).count(), 2);
+    assert!(!taken[0]);
+    assert!(taken[1]);
+    assert!(
+        taken[2],
+        "the next match after the second, not the fourth: {taken:?}"
+    );
+}
+
+#[test]
+fn a_direction_names_the_door_by_a_whole_word() {
+    let mut d = doorway(true, false);
+    cmd(&mut d.s.app, d.s.guard_id, "open do north");
+    assert_eq!(
+        door_state(&d.s.app, d.s.room, ExitKey::North),
+        (true, false)
+    );
+    cmd(&mut d.s.app, d.s.guard_id, "open door north");
+    assert_eq!(
+        door_state(&d.s.app, d.s.room, ExitKey::North),
+        (false, false)
+    );
+}
+
+#[test]
+fn junk_and_sacrifice_take_what_a_container_holds_through_either_link() {
+    let mut s = scene();
+    define_item(&mut s.app, 30, TbaItemKind::Treasure, &[], &["ring"]);
+    let chest = container(&mut s.app, s.room, 31, "chest");
+    // Placed with `ContainedBy` alone, as the host's own placement does.
+    let ring = item_inside(&mut s.app, chest, 30, "a ring");
+    let chest_id = uid(&mut s.app, chest);
+    let _ = chest_id;
+    cmd(&mut s.app, s.guard_id, "sacrifice chest");
+    assert!(s.app.world().get_entity(chest).is_err());
+    assert_eq!(
+        on_ground_in(&s.app, ring),
+        Some(s.room),
+        "spilled onto the floor"
+    );
+
+    let mut t = scene();
+    define_item(&mut t.app, 30, TbaItemKind::Treasure, &[], &["ring"]);
+    let chest = container(&mut t.app, t.room, 31, "chest");
+    let ring = item_inside(&mut t.app, chest, 30, "a ring");
+    let carried = chest;
+    t.app
+        .world_mut()
+        .entity_mut(carried)
+        .remove::<(GroundItem, Location)>()
+        .insert(CarriedBy(t.guard));
+    cmd(&mut t.app, t.guard_id, "junk chest");
+    assert!(t.app.world().get_entity(chest).is_err());
+    assert!(
+        t.app.world().get_entity(ring).is_err(),
+        "no orphan is left behind"
+    );
+}
+
+#[test]
+fn a_drop_with_nowhere_to_land_keeps_the_item() {
+    let mut s = scene();
+    define_item(&mut s.app, 30, TbaItemKind::Treasure, &[], &["lump"]);
+    let lump = item_carried(&mut s.app, s.guard, 30, "a lump");
+    s.app.world_mut().entity_mut(s.guard).remove::<Location>();
+    cmd(&mut s.app, s.guard_id, "drop lump");
+    assert_eq!(carried_by(&s.app, lump), Some(s.guard));
+}
+
+#[test]
+fn an_npc_cannot_drop_give_put_or_remove_a_cursed_item() {
+    use mib_tba::content::ItemExtraFlag;
+    let mut s = scene();
+    let clerk = npc(&mut s.app, s.room, 2, "Clerk");
+    let _ = clerk;
+    define_item(&mut s.app, 30, TbaItemKind::Treasure, &[], &["cursed"]);
+    set_extra(&mut s.app, 30, ItemExtraFlag::NoDrop);
+    let item = item_carried(&mut s.app, s.guard, 30, "a cursed thing");
+    cmd(&mut s.app, s.guard_id, "drop cursed");
+    assert_eq!(carried_by(&s.app, item), Some(s.guard));
+    cmd(&mut s.app, s.guard_id, "give cursed clerk");
+    assert_eq!(carried_by(&s.app, item), Some(s.guard));
+    let chest = container(&mut s.app, s.room, 31, "chest");
+    cmd(&mut s.app, s.guard_id, "put cursed chest");
+    assert_eq!(carried_by(&s.app, item), Some(s.guard));
+    assert!(s.app.world().get::<ContainedBy>(item).is_none());
+    let _ = chest;
+
+    let mut t = scene();
+    define_item(
+        &mut t.app,
+        60,
+        TbaItemKind::Armor,
+        &[WearSlot::Body],
+        &["mail"],
+    );
+    set_extra(&mut t.app, 60, ItemExtraFlag::NoDrop);
+    let mail = item_worn(&mut t.app, t.guard, WearSlot::Body, 60, "a chain mail");
+    cmd(&mut t.app, t.guard_id, "remove mail");
+    assert_eq!(
+        t.app
+            .world()
+            .get::<TbaEquipment>(t.guard)
+            .unwrap()
+            .worn(WearSlot::Body),
+        Some(mail)
+    );
+}
+
+#[test]
+fn an_item_above_the_wearers_level_is_not_worn() {
+    let mut s = scene();
+    define_item(
+        &mut s.app,
+        60,
+        TbaItemKind::Armor,
+        &[WearSlot::Body],
+        &["mail"],
+    );
+    set_min_level(&mut s.app, 60, 20);
+    item_carried(&mut s.app, s.guard, 60, "a chain mail");
+    cmd(&mut s.app, s.guard_id, "wear mail");
+    assert!(
+        s.app
+            .world()
+            .get::<TbaEquipment>(s.guard)
+            .is_none_or(|e| e.slots.is_empty())
+    );
+    set_min_level(&mut s.app, 60, 5);
+    cmd(&mut s.app, s.guard_id, "wear mail");
+    assert!(
+        s.app
+            .world()
+            .get::<TbaEquipment>(s.guard)
+            .unwrap()
+            .worn(WearSlot::Body)
+            .is_some()
+    );
+}
+
+#[test]
+fn the_put_and_container_get_triggers_run() {
+    let mut s = scene();
+    define(
+        &mut s.app,
+        91,
+        "obj",
+        "h",
+        100,
+        "set dropped 1
+global dropped",
+    );
+    define(
+        &mut s.app,
+        92,
+        "obj",
+        "g",
+        100,
+        "set got 1
+global got",
+    );
+    attach(&mut s.app, "item:tba_item_30", &[91, 92]);
+    define_item(&mut s.app, 30, TbaItemKind::Treasure, &[], &["ring"]);
+    let ring = item_carried(&mut s.app, s.guard, 30, "a ring");
+    let ring_id = uid(&mut s.app, ring);
+    container(&mut s.app, s.room, 31, "chest");
+    cmd(&mut s.app, s.guard_id, "put ring chest");
+    assert_eq!(global(&mut s.app, ring_id, "dropped").as_deref(), Some("1"));
+    assert_eq!(global(&mut s.app, ring_id, "got"), None);
+    cmd(&mut s.app, s.guard_id, "get ring chest");
+    assert_eq!(global(&mut s.app, ring_id, "got").as_deref(), Some("1"));
+}
+
+#[test]
+fn donate_moves_the_item_or_junks_it_and_junk_pays_by_cost() {
+    let mut s = scene();
+    let donation = room(&mut s.app, 3063);
+    define_item(&mut s.app, 30, TbaItemKind::Treasure, &[], &["ring"]);
+    s.app
+        .world_mut()
+        .resource_mut::<TbaContent>()
+        .items
+        .get_mut(&ItemId::from("tba_item_30"))
+        .unwrap()
+        .cost = 160;
+    let mut seen = (false, false);
+    for _ in 0..60 {
+        let ring = item_carried(&mut s.app, s.guard, 30, "a ring");
+        cmd(&mut s.app, s.guard_id, "donate ring");
+        if s.app.world().get_entity(ring).is_err() {
+            seen.0 = true;
+        } else if on_ground_in(&s.app, ring) == Some(donation) {
+            seen.1 = true;
+        }
+        texts(&mut s.app);
+    }
+    assert!(
+        seen.0 || seen.1,
+        "a donation either vanishes or lands in a donation room"
+    );
+    // Junk pays cost / 16 coins, at least one: 160 / 16 = 10.
+    item_carried(&mut s.app, s.guard, 30, "a ring");
+    let before = gold_of(&s.app, s.guard);
+    cmd(&mut s.app, s.guard_id, "junk ring");
+    assert_eq!(gold_of(&s.app, s.guard), before + 10);
+}
+
+#[test]
+fn the_pack_cannot_model_are_counted_for_flight_water_and_closed_containers() {
+    let mut s = scene();
+    define_item(&mut s.app, 31, TbaItemKind::Container, &[], &["chest"]);
+    s.app
+        .world_mut()
+        .resource_mut::<TbaContent>()
+        .items
+        .get_mut(&ItemId::from("tba_item_31"))
+        .unwrap()
+        .values = [10, 1 | 4, 0, 0];
+    let chest = item_on_ground(&mut s.app, s.room, 31, "a chest");
+    s.app.world_mut().entity_mut(chest).insert(Container {
+        capacity: 10,
+        contents: Vec::new(),
+    });
+    cmd(&mut s.app, s.guard_id, "get all chest");
+    assert_eq!(count_of(&s.app, "mobcmd.container_closed"), 1);
+    cmd(&mut s.app, s.guard_id, "bandage");
+    assert_eq!(count_of(&s.app, "mobcmd.bandage"), 0);
+}
+
+#[test]
+fn plain_command_lines_in_a_mob_trigger_run_the_npc_side() {
+    let mut app = fresh();
+    define(
+        &mut app,
+        93,
+        "mob",
+        "n",
+        100,
+        "say Hello\nemote waves\n' still here\nsmil\nnorth",
+    );
+    attach(&mut app, "npc:tba_npc_1", &[93]);
+    let mut s = scene_in(app);
+    install_socials(&mut s.app, standard_socials());
+    let north = room(&mut s.app, 101);
+    link(&mut s.app, s.room, ExitKey::North, north, ExitKey::South);
+    run_trigger(&mut s.app, s.guard_id, 93);
+    let lines = texts(&mut s.app);
+    assert!(
+        lines.contains(&"Guard says, 'Hello'".to_owned()),
+        "{lines:?}"
+    );
+    assert!(lines.contains(&"Guard waves".to_owned()), "{lines:?}");
+    assert!(
+        lines.contains(&"Guard says, 'still here'".to_owned()),
+        "{lines:?}"
+    );
+    assert!(lines.contains(&"Guard smiles.".to_owned()), "{lines:?}");
+    assert_eq!(room_of(&s.app, s.guard), north);
 }

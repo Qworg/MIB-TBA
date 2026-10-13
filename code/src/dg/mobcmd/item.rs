@@ -14,10 +14,11 @@ use dg_vm::dispatch::{
     bribe_mtrigger, drop_otrigger, drop_wtrigger, get_otrigger, give_otrigger, receive_mtrigger,
     remove_otrigger, wear_otrigger,
 };
-use dg_vm::lookup::{NUM_WEARS, get_char_room_vis, get_obj_in_list_vis, isname};
+use dg_vm::lookup::{
+    FIND_INDEX_LAST, NUM_WEARS, get_char_room_vis, get_number, get_obj_in_list_vis, isname,
+};
 use dg_vm::{BaseHost, Uid, WorldHost};
-use mib_core::prelude::Entity;
-use mib_stdlib::prelude::{Container, Item, Location, Player};
+use mib_stdlib::prelude::{Container, Item};
 
 use super::act::{To, act, act_obj, act_obj_obj, act_obj_vict, act_vict};
 use super::table::DropMode;
@@ -72,6 +73,30 @@ fn is_kind(host: &crate::dg::host::EcsHost<'_>, obj: Uid, kind: TbaItemKind) -> 
     item_def(host, obj).is_some_and(|def| def.kind == kind)
 }
 
+/// Whether an item is a container: a container-type prototype, or an engine
+/// item that carries a `Container` (a corpse has no prototype definition).
+fn is_container(host: &crate::dg::host::EcsHost<'_>, obj: Uid) -> bool {
+    is_kind(host, obj, TbaItemKind::Container)
+        || host
+            .entity(obj)
+            .is_some_and(|entity| host.world.get::<Container>(entity).is_some())
+}
+
+/// `CONT_CLOSED`, a bit of a container's second value.
+const CONT_CLOSED: i32 = 4;
+
+/// Count a container whose prototype starts closed: the pack keeps no
+/// open/closed state per instance, so the C's "$p is closed." refusal is not
+/// made and the access goes ahead.
+fn note_closed(host: &mut crate::dg::host::EcsHost<'_>, cont: Uid) {
+    if item_def(host, cont).is_some_and(|def| def.values[1] & CONT_CLOSED != 0) {
+        host.unsupported(
+            "mobcmd.container_closed",
+            "a container's closed state is not kept per instance",
+        );
+    }
+}
+
 type Host<'a, 'w> = &'a mut crate::dg::host::EcsHost<'w>;
 
 /// The items of `list` after `obj`, that still exist: the C's `obj->next_content`
@@ -88,18 +113,67 @@ fn remaining(host: &crate::dg::host::EcsHost<'_>, list: &[Uid], obj: Uid) -> Vec
     }
 }
 
+/// `get_obj_in_list_vis(ch, name, &number, list)`: the `number`th visible
+/// match in `list`, `number` counting down so a second list continues it.
+pub(super) fn obj_vis_counted(
+    host: &crate::dg::host::EcsHost<'_>,
+    ch: Uid,
+    name: &str,
+    number: &mut i32,
+    list: &[Uid],
+) -> Option<Uid> {
+    if *number == 0 {
+        return None;
+    }
+    let mut last = None;
+    for &obj in list {
+        if *number == 0 {
+            break;
+        }
+        if !isname(name, &host.keywords(obj)) || !host.can_see(ch, obj) {
+            continue;
+        }
+        if *number == FIND_INDEX_LAST {
+            last = Some(obj);
+        } else {
+            *number = number.wrapping_sub(1);
+            if *number == 0 {
+                return Some(obj);
+            }
+        }
+    }
+    last
+}
+
+/// `get_obj_in_list_vis(ch, arg, NULL, list)` on a buffer the C edits in
+/// place: `get_number` cuts the `N.` prefix out of `arg`, so a loop that looks
+/// again in the rest of the list searches the bare keyword.
+fn pull_obj(
+    host: &crate::dg::host::EcsHost<'_>,
+    ch: Uid,
+    arg: &mut String,
+    list: &[Uid],
+) -> Option<Uid> {
+    let (mut number, name) = get_number(arg);
+    let name = name.to_owned();
+    *arg = name;
+    obj_vis_counted(host, ch, arg, &mut number, list)
+}
+
 /// `generic_find(name, FIND_OBJ_INV | FIND_OBJ_ROOM, ...)`: an item the actor
-/// carries, else one on the floor; and whether it was the inventory.
-fn find_inv_or_room(
+/// carries, else one on the floor, the count running across both; and whether
+/// it was the inventory.
+pub(super) fn find_inv_or_room(
     host: &crate::dg::host::EcsHost<'_>,
     ch: Uid,
     name: &str,
 ) -> Option<(Uid, bool)> {
-    if let Some(obj) = get_obj_in_list_vis(host, ch, name, &host.carrying(ch)) {
+    let (mut number, name) = get_number(name);
+    if let Some(obj) = obj_vis_counted(host, ch, name, &mut number, &host.carrying(ch)) {
         return Some((obj, true));
     }
     let room = host.in_room(ch)?;
-    get_obj_in_list_vis(host, ch, name, &host.room_contents(room)).map(|obj| (obj, false))
+    obj_vis_counted(host, ch, name, &mut number, &host.room_contents(room)).map(|obj| (obj, false))
 }
 
 /// `get_check_money`: coins picked up go into the purse and the pile is gone.
@@ -139,11 +213,11 @@ fn get_from_room(host: Host<'_, '_>, ch: Uid, arg: &str, howmany: i32) {
     let Some(room) = host.in_room(ch) else {
         return;
     };
-    let (dotmode, arg) = find_all_dots(arg);
+    let (dotmode, mut arg) = find_all_dots(arg);
     let list = host.room_contents(room);
     if dotmode == Dot::Indiv {
         let mut howmany = howmany;
-        let mut obj = get_obj_in_list_vis(host, ch, &arg, &list);
+        let mut obj = pull_obj(host, ch, &mut arg, &list);
         while let Some(current) = obj {
             if howmany == 0 {
                 break;
@@ -151,7 +225,7 @@ fn get_from_room(host: Host<'_, '_>, ch: Uid, arg: &str, howmany: i32) {
             howmany = howmany.wrapping_sub(1);
             let next = remaining(host, &list, current);
             perform_get_from_room(host, ch, current);
-            obj = get_obj_in_list_vis(host, ch, &arg, &next);
+            obj = pull_obj(host, ch, &mut arg, &next);
         }
     } else {
         if dotmode == Dot::Prefixed && arg.is_empty() {
@@ -184,11 +258,11 @@ fn perform_get_from_container(host: Host<'_, '_>, ch: Uid, obj: Uid, cont: Uid) 
 
 /// `get_from_container`.
 fn get_from_container(host: Host<'_, '_>, ch: Uid, cont: Uid, arg: &str, howmany: i32) {
-    let (dotmode, arg) = find_all_dots(arg);
+    let (dotmode, mut arg) = find_all_dots(arg);
     let list = host.obj_contains(cont);
     if dotmode == Dot::Indiv {
         let mut howmany = howmany;
-        let mut obj = get_obj_in_list_vis(host, ch, &arg, &list);
+        let mut obj = pull_obj(host, ch, &mut arg, &list);
         while let Some(current) = obj {
             if howmany == 0 {
                 break;
@@ -196,7 +270,7 @@ fn get_from_container(host: Host<'_, '_>, ch: Uid, cont: Uid, arg: &str, howmany
             howmany = howmany.wrapping_sub(1);
             let next = remaining(host, &list, current);
             perform_get_from_container(host, ch, current, cont);
-            obj = get_obj_in_list_vis(host, ch, &arg, &next);
+            obj = pull_obj(host, ch, &mut arg, &next);
         }
     } else {
         if dotmode == Dot::Prefixed && arg.is_empty() {
@@ -239,7 +313,8 @@ pub fn do_get(host: Host<'_, '_>, ch: Uid, argument: &str) {
         let Some((cont, _inv)) = find_inv_or_room(host, ch, &arg2) else {
             return;
         };
-        if is_kind(host, cont, TbaItemKind::Container) {
+        if is_container(host, cont) {
+            note_closed(host, cont);
             get_from_container(host, ch, cont, &arg1, amount);
         }
         return;
@@ -258,7 +333,7 @@ pub fn do_get(host: Host<'_, '_>, ch: Uid, argument: &str) {
             }
             if host.can_see(ch, cont)
                 && (cont_dotmode == Dot::All || isname(&arg2, &host.keywords(cont)))
-                && is_kind(host, cont, TbaItemKind::Container)
+                && is_container(host, cont)
             {
                 get_from_container(host, ch, cont, &arg1, amount);
             }
@@ -280,10 +355,11 @@ fn perform_put(host: Host<'_, '_>, ch: Uid, obj: Uid, cont: Uid) {
         .world
         .get::<Item>(cont_entity)
         .is_some_and(|item| item.def_id.as_ref() == "corpse");
+    let held = world::contents_of(host, cont_entity).len();
     let full = host
         .world
         .get::<Container>(cont_entity)
-        .is_some_and(|c| c.contents.len() >= usize::try_from(c.capacity).unwrap_or(usize::MAX));
+        .is_some_and(|c| held >= usize::try_from(c.capacity).unwrap_or(usize::MAX));
     let cont_lies_in_room = host.in_room(cont).is_some();
     if corpse {
         act_obj_obj(
@@ -324,7 +400,7 @@ pub fn do_put(host: Host<'_, '_>, ch: Uid, argument: &str) {
     } else {
         (arg1, arg2)
     };
-    let (obj_dotmode, theobj) = find_all_dots(&theobj);
+    let (obj_dotmode, mut theobj) = find_all_dots(&theobj);
     let (cont_dotmode, thecont) = find_all_dots(&thecont);
     if theobj.is_empty() || cont_dotmode != Dot::Indiv || thecont.is_empty() {
         return;
@@ -332,12 +408,13 @@ pub fn do_put(host: Host<'_, '_>, ch: Uid, argument: &str) {
     let Some((cont, _)) = find_inv_or_room(host, ch, &thecont) else {
         return;
     };
-    if !is_kind(host, cont, TbaItemKind::Container) {
+    if !is_container(host, cont) {
         return;
     }
+    note_closed(host, cont);
     if obj_dotmode == Dot::Indiv {
         let list = host.carrying(ch);
-        let Some(mut obj) = get_obj_in_list_vis(host, ch, &theobj, &list) else {
+        let Some(mut obj) = pull_obj(host, ch, &mut theobj, &list) else {
             return;
         };
         if obj == cont && howmany == 1 {
@@ -353,7 +430,7 @@ pub fn do_put(host: Host<'_, '_>, ch: Uid, argument: &str) {
                 howmany = howmany.wrapping_sub(1);
                 perform_put(host, ch, obj, cont);
             }
-            let Some(found) = get_obj_in_list_vis(host, ch, &theobj, &next) else {
+            let Some(found) = pull_obj(host, ch, &mut theobj, &next) else {
                 break;
             };
             obj = found;
@@ -505,6 +582,15 @@ fn perform_drop(
     let Some(obj_entity) = host.entity(obj) else {
         return 0;
     };
+    // A dropped item needs a floor to land on before it leaves the hands.
+    if mode == DropMode::Drop
+        && host
+            .in_room(ch)
+            .and_then(|room| host.entity(room))
+            .is_none()
+    {
+        return 0;
+    }
     world::detach_item(host, obj_entity);
     let mut mode = mode;
     if mode == DropMode::Donate && extra_flagged(host, obj, ItemExtraFlag::NoDonate) {
@@ -590,14 +676,14 @@ pub fn do_drop(host: Host<'_, '_>, ch: Uid, argument: &str, command: DropMode) {
     let mut amount: i64 = 0;
     if is_number(&arg) {
         let multi = atoi(&arg);
-        let (arg, _) = one_argument(rest);
+        let (mut arg, _) = one_argument(rest);
         if str_cmp("coins", &arg) == 0 || str_cmp("coin", &arg) == 0 {
             perform_drop_gold(host, ch, multi, mode, donate);
         } else if multi <= 0 || arg.is_empty() {
             return;
         } else {
             let list = host.carrying(ch);
-            let Some(mut obj) = get_obj_in_list_vis(host, ch, &arg, &list) else {
+            let Some(mut obj) = pull_obj(host, ch, &mut arg, &list) else {
                 return;
             };
             let mut multi = multi;
@@ -606,7 +692,7 @@ pub fn do_drop(host: Host<'_, '_>, ch: Uid, argument: &str, command: DropMode) {
                 let next = remaining(host, &list, obj);
                 amount = amount.saturating_add(perform_drop(host, ch, obj, mode, sname, donate));
                 multi = multi.wrapping_sub(1);
-                let Some(found) = get_obj_in_list_vis(host, ch, &arg, &next) else {
+                let Some(found) = pull_obj(host, ch, &mut arg, &next) else {
                     break;
                 };
                 if multi == 0 {
@@ -617,7 +703,7 @@ pub fn do_drop(host: Host<'_, '_>, ch: Uid, argument: &str, command: DropMode) {
             }
         }
     } else {
-        let (dotmode, arg) = find_all_dots(&arg);
+        let (dotmode, mut arg) = find_all_dots(&arg);
         if dotmode == Dot::All && command != DropMode::Drop {
             return;
         }
@@ -633,12 +719,12 @@ pub fn do_drop(host: Host<'_, '_>, ch: Uid, argument: &str, command: DropMode) {
             if arg.is_empty() {
                 return;
             }
-            let mut obj = get_obj_in_list_vis(host, ch, &arg, &list);
+            let mut obj = pull_obj(host, ch, &mut arg, &list);
             while let Some(current) = obj {
                 let next = remaining(host, &list, current);
                 amount =
                     amount.saturating_add(perform_drop(host, ch, current, mode, sname, donate));
-                obj = get_obj_in_list_vis(host, ch, &arg, &next);
+                obj = pull_obj(host, ch, &mut arg, &next);
             }
         } else if let Some(obj) = get_obj_in_list_vis(host, ch, &arg, &list) {
             amount = amount.saturating_add(perform_drop(host, ch, obj, mode, sname, donate));
@@ -736,7 +822,7 @@ pub fn do_give(host: Host<'_, '_>, ch: Uid, argument: &str) {
     }
     if is_number(&arg) {
         let mut amount = atoi(&arg);
-        let (arg, rest) = one_argument(rest);
+        let (mut arg, rest) = one_argument(rest);
         if str_cmp("coins", &arg) == 0 || str_cmp("coin", &arg) == 0 {
             let (target, _) = one_argument(rest);
             if let Some(vict) = give_find_vict(host, ch, &target) {
@@ -751,7 +837,7 @@ pub fn do_give(host: Host<'_, '_>, ch: Uid, argument: &str) {
             return;
         };
         let list = host.carrying(ch);
-        let mut obj = get_obj_in_list_vis(host, ch, &arg, &list);
+        let mut obj = pull_obj(host, ch, &mut arg, &list);
         while let Some(current) = obj {
             if amount == 0 {
                 break;
@@ -759,7 +845,7 @@ pub fn do_give(host: Host<'_, '_>, ch: Uid, argument: &str) {
             amount = amount.wrapping_sub(1);
             let next = remaining(host, &list, current);
             perform_give(host, ch, vict, current);
-            obj = get_obj_in_list_vis(host, ch, &arg, &next);
+            obj = pull_obj(host, ch, &mut arg, &next);
         }
         return;
     }
@@ -946,7 +1032,7 @@ pub fn do_wear(host: Host<'_, '_>, ch: Uid, argument: &str) {
     if arg1.is_empty() {
         return;
     }
-    let (dotmode, arg1) = find_all_dots(&arg1);
+    let (dotmode, mut arg1) = find_all_dots(&arg1);
     if !arg2.is_empty() && dotmode != Dot::Indiv {
         return;
     }
@@ -969,7 +1055,7 @@ pub fn do_wear(host: Host<'_, '_>, ch: Uid, argument: &str) {
             if arg1.is_empty() {
                 return;
             }
-            let Some(mut obj) = get_obj_in_list_vis(host, ch, &arg1, &list) else {
+            let Some(mut obj) = pull_obj(host, ch, &mut arg1, &list) else {
                 return;
             };
             if too_low_level(host, ch, obj) {
@@ -980,7 +1066,7 @@ pub fn do_wear(host: Host<'_, '_>, ch: Uid, argument: &str) {
                 if let Some(slot) = find_eq_pos(host, obj, "") {
                     perform_wear(host, ch, obj, slot);
                 }
-                let Some(found) = get_obj_in_list_vis(host, ch, &arg1, &next) else {
+                let Some(found) = pull_obj(host, ch, &mut arg1, &next) else {
                     break;
                 };
                 obj = found;
@@ -1112,13 +1198,6 @@ pub fn do_remove(host: Host<'_, '_>, ch: Uid, argument: &str) {
     }
 }
 
-/// Whether the entity is lying in a room (used where the C asks `IN_ROOM(obj)
-/// != NOWHERE`).
-#[allow(dead_code)]
-fn lies_in_room(host: &crate::dg::host::EcsHost<'_>, obj: Entity) -> bool {
-    host.world.get::<Location>(obj).is_some() && host.world.get::<Player>(obj).is_none()
-}
-
 // -- sacrifice ----------------------------------------------------------------
 
 /// `do_sac`: the item goes to the gods and what it held falls to the floor.
@@ -1132,8 +1211,9 @@ pub fn do_sac(host: Host<'_, '_>, ch: Uid, argument: &str) {
     let Some(room) = host.in_room(ch) else {
         return;
     };
-    let target = get_obj_in_list_vis(host, ch, &arg, &host.room_contents(room))
-        .or_else(|| get_obj_in_list_vis(host, ch, &arg, &host.carrying(ch)));
+    let (mut number, name) = get_number(&arg);
+    let target = obj_vis_counted(host, ch, name, &mut number, &host.room_contents(room))
+        .or_else(|| obj_vis_counted(host, ch, name, &mut number, &host.carrying(ch)));
     let Some(obj) = target else {
         world::to_char(host, ch, "It doesn't seem to be here.\r\n");
         return;
@@ -1153,11 +1233,7 @@ pub fn do_sac(host: Host<'_, '_>, ch: Uid, argument: &str) {
     let (Some(obj_entity), Some(room_entity)) = (host.entity(obj), host.entity(room)) else {
         return;
     };
-    let inside: Vec<Entity> = host
-        .world
-        .get::<Container>(obj_entity)
-        .map(|container| container.contents.clone())
-        .unwrap_or_default();
+    let inside = world::contents_of(host, obj_entity);
     for item in inside {
         world::obj_to_room(host, item, room_entity);
     }

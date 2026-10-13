@@ -31,6 +31,7 @@ fn start_fight(host: &mut EcsHost<'_>, ch: Uid, vict: Uid) {
     }
     if position(host, vict) > Position::Stunned && world::fighting(host, vict).is_none() {
         world::set_fighting(host, vict, ch);
+        world::remember_attacker(host, vict, ch);
     }
 }
 

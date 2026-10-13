@@ -113,8 +113,8 @@ pub fn fighting(host: &EcsHost<'_>, ch: Uid) -> Option<Uid> {
     host.entity(uid).map(|_| uid)
 }
 
-/// `set_fighting(ch, vict)`: aim `ch` at `vict`, and stand `ch` up into the
-/// fight. A target already set is replaced.
+/// `set_fighting(ch, vict)`: aim `ch` at `vict` and put `ch` in the fighting
+/// position. A target already set is replaced.
 pub fn set_fighting(host: &mut EcsHost<'_>, ch: Uid, vict: Uid) {
     let (Some(entity), Some(target)) = (host.entity(ch), host.entity(vict)) else {
         return;
@@ -122,25 +122,31 @@ pub fn set_fighting(host: &mut EcsHost<'_>, ch: Uid, vict: Uid) {
     ensure_combatant(host.world, entity);
     if let Some(mut combatant) = host.world.get_mut::<TbaCombatant>(entity) {
         combatant.target = Some(target);
-        if combatant.position == Position::Standing {
-            combatant.position = Position::Fighting;
-        }
-    }
-    if let Some(mut memory) = host.world.get_mut::<TbaAttackerMemory>(target) {
-        memory.0.insert(entity);
+        combatant.position = Position::Fighting;
     }
 }
 
-/// `stop_fighting(ch)`.
+/// `remember(victim, ch)`: a memory mob keeps the player who attacked it.
+pub fn remember_attacker(host: &mut EcsHost<'_>, victim: Uid, attacker: Uid) {
+    let (Some(victim), Some(attacker)) = (host.entity(victim), host.entity(attacker)) else {
+        return;
+    };
+    if host.world.get::<Player>(attacker).is_none() {
+        return;
+    }
+    if let Some(mut memory) = host.world.get_mut::<TbaAttackerMemory>(victim) {
+        memory.0.insert(attacker);
+    }
+}
+
+/// `stop_fighting(ch)`: the character stands up out of the fight.
 pub fn stop_fighting(host: &mut EcsHost<'_>, ch: Uid) {
     let Some(entity) = host.entity(ch) else {
         return;
     };
     if let Some(mut combatant) = host.world.get_mut::<TbaCombatant>(entity) {
         combatant.target = None;
-        if combatant.position == Position::Fighting {
-            combatant.position = Position::Standing;
-        }
+        combatant.position = Position::Standing;
     }
 }
 
@@ -266,6 +272,29 @@ pub fn obj_to_obj(host: &mut EcsHost<'_>, obj: Entity, cont: Entity) {
     host.stamp_order(obj);
 }
 
+/// What a container holds: the items that point at it with `ContainedBy`
+/// (what the host's `obj_contains` reads) and those its `Container` lists.
+pub fn contents_of(host: &EcsHost<'_>, cont: Entity) -> Vec<Entity> {
+    use dg_vm::WorldHost;
+    let mut found: Vec<Entity> = host
+        .uid(cont)
+        .map(|uid| {
+            host.obj_contains(uid)
+                .into_iter()
+                .filter_map(|inside| host.entity(inside))
+                .collect()
+        })
+        .unwrap_or_default();
+    if let Some(container) = host.world.get::<Container>(cont) {
+        for inside in &container.contents {
+            if !found.contains(inside) && host.world.get_entity(*inside).is_ok() {
+                found.push(*inside);
+            }
+        }
+    }
+    found
+}
+
 /// `extract_obj(obj)`: the item and everything inside it leave the game.
 pub fn extract_obj(host: &mut EcsHost<'_>, obj: Entity) {
     detach_item(host, obj);
@@ -273,11 +302,9 @@ pub fn extract_obj(host: &mut EcsHost<'_>, obj: Entity) {
     let mut at = 0;
     while let Some(entity) = doomed.get(at).copied() {
         at += 1;
-        if let Some(container) = host.world.get::<Container>(entity) {
-            for inside in container.contents.clone() {
-                if !doomed.contains(&inside) {
-                    doomed.push(inside);
-                }
+        for inside in contents_of(host, entity) {
+            if !doomed.contains(&inside) {
+                doomed.push(inside);
             }
         }
         if doomed.len() > 4096 {

@@ -2,9 +2,9 @@
 //! (`do_action` of `act.social.c`, and the social half of the command lookup
 //! in `command_interpreter`).
 
+use dg_vm::Uid;
 use dg_vm::cstr::{one_argument, str_cmp, two_arguments};
-use dg_vm::lookup::{get_char_room_vis, get_obj_in_list_vis};
-use dg_vm::{Uid, WorldHost};
+use dg_vm::lookup::get_char_room_vis;
 
 use super::act::{ActObj, ActVict, Flags, To, act_full};
 use super::world::{self, position_number, to_char};
@@ -38,7 +38,6 @@ pub fn find_social(content: &TbaContent, word: &str, level: i32) -> Option<Socia
 /// `do_action`.
 pub fn do_action(host: &mut EcsHost<'_>, ch: Uid, action: &SocialDef, argument: &str) {
     let hide = action.hide;
-    let argument = dg_vm::cstr::skip_spaces(argument);
     if argument.is_empty() {
         if let Some(line) = &action.char_no_arg {
             to_char(host, ch, &format!("{line}\r\n"));
@@ -75,12 +74,7 @@ pub fn do_action(host: &mut EcsHost<'_>, ch: Uid, action: &SocialDef, argument: 
 
     let Some(vict) = get_char_room_vis(host, ch, &arg) else {
         if action.char_obj_found.is_some() {
-            let mut target = get_obj_in_list_vis(host, ch, &arg, &host.carrying(ch));
-            if target.is_none()
-                && let Some(room) = host.in_room(ch)
-            {
-                target = get_obj_in_list_vis(host, ch, &arg, &host.room_contents(room));
-            }
+            let target = super::item::find_inv_or_room(host, ch, &arg).map(|(obj, _)| obj);
             if let Some(target) = target {
                 if let Some(line) = &action.char_obj_found {
                     act_full(

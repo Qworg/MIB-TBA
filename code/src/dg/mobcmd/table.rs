@@ -26,6 +26,9 @@ pub const STANDING: i32 = 8;
 /// never reached, and a command that needs it never matches.
 pub const LVL_IMMORT: i32 = 31;
 
+/// `LVL_GOD`: the level that talks through soundproof walls.
+pub const LVL_GOD: i32 = 32;
+
 /// The door commands, in `cmd_door[]` order (`SCMD_OPEN`..`SCMD_PICK`).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DoorCmd {
@@ -176,7 +179,7 @@ pub const COMMANDS: &[Cmd] = &[
     Cmd::new("autosplit", "autospl", DEAD, Handler::Noop, 0),
     Cmd::new("backstab", "ba", STANDING, Handler::Noop, 1),
     Cmd::new("ban", "ban", DEAD, Handler::Noop, 33),
-    Cmd::new("bandage", "band", RESTING, Handler::Unmodelled, 1),
+    Cmd::new("bandage", "band", RESTING, Handler::Noop, 1),
     Cmd::new("balance", "bal", STANDING, Handler::Noop, 1),
     Cmd::new("bash", "bas", FIGHTING, Handler::Noop, 1),
     Cmd::new("brief", "br", DEAD, Handler::Noop, 0),
