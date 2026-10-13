@@ -360,12 +360,4 @@ impl CmdHost for MockHost {
         self.set_text(obj, "name", &name);
         self.set_text(obj, "alias", &name);
     }
-
-    fn cmd_set_obj_val(&mut self, obj: Uid, position: usize, value: i32) {
-        self.set_num(obj, &format!("val{position}"), i64::from(value));
-    }
-
-    fn cmd_set_obj_timer(&mut self, obj: Uid, timer: i32) {
-        self.set_num(obj, "timer", i64::from(timer));
-    }
 }

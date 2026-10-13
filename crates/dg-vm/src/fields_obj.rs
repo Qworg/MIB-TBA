@@ -191,8 +191,14 @@ pub trait ObjHost {
     /// `GET_OBJ_VAL(obj, idx)`, `idx` in `0..4`.
     fn obj_val(&self, obj: Uid, idx: usize) -> i32;
 
+    /// `GET_OBJ_VAL(obj, idx) = value`, `idx` in `0..4`.
+    fn obj_set_val(&mut self, obj: Uid, idx: usize, value: i32);
+
     /// `GET_OBJ_TIMER(obj)`.
     fn obj_timer(&self, obj: Uid) -> i32;
+
+    /// `GET_OBJ_TIMER(obj) = value`.
+    fn obj_set_timer(&mut self, obj: Uid, value: i32);
 
     /// `GET_OBJ_COST(obj)`.
     fn obj_cost(&self, obj: Uid) -> i32;

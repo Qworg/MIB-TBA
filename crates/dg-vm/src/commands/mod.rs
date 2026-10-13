@@ -291,12 +291,6 @@ pub trait CmdHost {
     /// id, scripts and list links. Unlike mobs, `item_number` is copied, so
     /// the vnum of `obj` becomes that of `from`.
     fn cmd_overwrite_obj(&mut self, obj: Uid, from: Uid);
-
-    /// `GET_OBJ_VAL(obj, position) = value`.
-    fn cmd_set_obj_val(&mut self, obj: Uid, position: usize, value: i32);
-
-    /// `GET_OBJ_TIMER(obj) = timer`.
-    fn cmd_set_obj_timer(&mut self, obj: Uid, timer: i32);
 }
 
 /// `script_command_interpreter(ch, cmd)` (`interpreter.c`): run `cmd` if its

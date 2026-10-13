@@ -27,6 +27,14 @@ impl ObjHost for MockHost {
         to_i32(self.num(obj, &format!("val{idx}")))
     }
 
+    fn obj_set_val(&mut self, obj: Uid, idx: usize, value: i32) {
+        self.set_num(obj, &format!("val{idx}"), i64::from(value));
+    }
+
+    fn obj_set_timer(&mut self, obj: Uid, value: i32) {
+        self.set_num(obj, "timer", i64::from(value));
+    }
+
     fn obj_timer(&self, obj: Uid) -> i32 {
         to_i32(self.num(obj, "timer"))
     }

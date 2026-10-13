@@ -214,7 +214,7 @@ fn do_otimer<H: DgHost + ?Sized>(host: &mut H, obj: Uid, argument: &str) {
     } else if !starts_with_digit(&arg) {
         log.log(host, "otimer: bad argument");
     } else {
-        host.cmd_set_obj_timer(obj, atoi(&arg));
+        host.obj_set_timer(obj, atoi(&arg));
     }
 }
 
@@ -391,7 +391,7 @@ fn do_osetval<H: DgHost + ?Sized>(host: &mut H, obj: Uid, argument: &str) {
         if let Some((wearer, pos)) = worn {
             host.cmd_unequip_char(wearer, pos);
         }
-        host.cmd_set_obj_val(obj, position as usize, new_value);
+        host.obj_set_val(obj, position as usize, new_value);
         if let Some((wearer, pos)) = worn {
             host.cmd_equip_char(wearer, obj, pos);
         }
