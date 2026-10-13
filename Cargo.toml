@@ -16,7 +16,7 @@
 
 [workspace]
 resolver = "2"
-members = ["code", "tools/tbaport"]
+members = ["code", "crates/dg-vm", "tools/tbaport"]
 
 [workspace.package]
 version = "0.1.0"
