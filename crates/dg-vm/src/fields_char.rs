@@ -44,7 +44,12 @@
 //!   outside its name table prints `UNDEFINED` (as `sprinttype` does)
 //!   rather than reading past the array.
 //! - `vnum`, `inventory(<vnum>)` compare vnums as the C's unsigned 16-bit
-//!   `IDXTYPE`: a prototype-less entity (host vnum -1) is 65535.
+//!   `IDXTYPE`: a prototype-less entity (host vnum any negative number) is
+//!   65535; a vnum above 65535, which the C cannot hold, is passed through.
+//!   The exception is `has_item(<vnum>)`: it compares through
+//!   [`crate::lookup::item_in_list`] and
+//!   [`crate::lookup::get_object_in_equip`], which compare the host's vnum
+//!   signed, so a prototype-less object does not answer `has_item(65535)`.
 //! - Player-only attributes on an NPC go to the host's shared `dummy_mob`
 //!   record (see [`CharHost`]); the mock keeps one on its globals.
 //! - There is no `race` field in this tree's table (tbaMUD has no races);
@@ -842,7 +847,7 @@ mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
 
     use super::*;
-    use crate::host::BaseHost;
+    use crate::host::{BaseHost, WorldHost};
     use crate::mock::MockHost;
     use crate::types::{TrigInstance, UID_CHAR};
 
@@ -1423,8 +1428,8 @@ mod tests {
     fn npcflag_searches_the_flag_names() {
         let mut f = fx();
         let (mob, pc) = (f.mob, f.pc);
-        // ISNPC (3) and SENTINEL (1).
-        f.host.set_num(mob, "act", (1 << 3) | (1 << 1));
+        // SENTINEL (1) is stored; ISNPC (3) comes from is_npc.
+        f.host.set_num(mob, "act", 1 << 1);
         assert_eq!(f.s(mob, "npcflag", ""), "0");
         assert_eq!(f.s(mob, "npcflag", "SENTINEL"), "1");
         assert_eq!(f.s(mob, "npcflag", "sentinel"), "1");
@@ -1633,7 +1638,7 @@ mod tests {
     fn mock_mob_has_isnpc_flag() {
         let mut f = fx();
         let (mob, pc) = (f.mob, f.pc);
-        // MOB_ISNPC is act bit 3 and IS_NPC reads it.
+        // The ISNPC name is printed for an NPC, whose is_npc supplies bit 3.
         assert_eq!(f.s(mob, "npcflag", "ISNPC"), "1");
         assert_eq!(f.s(pc, "npcflag", "ISNPC"), "0");
     }
@@ -1803,5 +1808,318 @@ mod tests {
         f.host.set_num(pc, "pref", 1 << 34);
         assert_eq!(f.s(pc, "pref", "ZONERESETS"), "1");
         assert_eq!(f.s(pc, "pref", "AUTODOOR"), "0");
+    }
+
+    #[test]
+    fn skillset_on_an_npc_does_nothing_at_all() {
+        let mut f = fx();
+        spells(&mut f.host);
+        let mob = f.mob;
+        // `if (!IS_NPC(c) && subfield && *subfield)`: no write to the mob
+        // and none to the shared dummy record either.
+        assert_eq!(f.s(mob, "skillset", "armor 50"), "");
+        assert_eq!(f.host.num(mob, "skill:1"), 0);
+        assert!(!f.host.globals.nums.contains_key("dummy:skill:1"));
+        assert_eq!(f.s(mob, "skill", "armor"), "0");
+    }
+
+    #[test]
+    fn skillset_needs_a_numeric_amount_even_for_a_known_skill() {
+        let mut f = fx();
+        spells(&mut f.host);
+        let pc = f.pc;
+        f.host.set_num(pc, "skill:1", 33);
+        // `is_number("lots")` is false: the skill keeps its value.
+        f.s(pc, "skillset", "armor lots");
+        assert_eq!(f.host.num(pc, "skill:1"), 33);
+        f.s(pc, "skillset", "armor 12x");
+        assert_eq!(f.host.num(pc, "skill:1"), 33);
+        f.s(pc, "skillset", "armor 12");
+        assert_eq!(f.host.num(pc, "skill:1"), 12);
+    }
+
+    #[test]
+    fn vnum_with_a_subfield_is_false_for_a_player_even_at_nothing() {
+        let mut f = fx();
+        let pc = f.pc;
+        // `IS_NPC(c) ? (GET_MOB_VNUM(c) == atoi(subfield)) : 0`: a player's
+        // NOBODY is 65535, but the IS_NPC guard answers first.
+        assert_eq!(f.s(pc, "vnum", "65535"), "0");
+        assert_eq!(f.s(pc, "vnum", "-1"), "0");
+    }
+
+    #[test]
+    fn a_vnum_above_sixteen_bits_is_passed_through() {
+        let mut f = fx();
+        let pc = f.pc;
+        let big = f.host.add_mob(70_000, "the giant");
+        assert_eq!(f.s(big, "vnum", ""), "70000");
+        assert_eq!(f.s(big, "vnum", "70000"), "1");
+        assert_eq!(f.s(big, "vnum", "65535"), "0");
+        let relic = f.host.add_obj(70_000, "a relic");
+        f.host.obj_to_char(relic, pc);
+        assert_eq!(f.s(pc, "inventory", "70000"), uid_text(relic));
+        assert_eq!(f.s(pc, "inventory", "65535"), "");
+    }
+
+    #[test]
+    fn a_non_numeric_vnum_subfield_is_zero() {
+        let mut f = fx();
+        let (mob, pc) = (f.mob, f.pc);
+        // atoi("abc") is 0: it names vnum 0, nothing else.
+        assert_eq!(f.s(mob, "vnum", "abc"), "0");
+        let zero = f.host.add_mob(0, "the zero");
+        assert_eq!(f.s(zero, "vnum", "abc"), "1");
+        assert_eq!(f.s(zero, "vnum", "12abc"), "0");
+        let thing = f.host.add_obj(0, "a thing");
+        f.host.obj_to_char(thing, pc);
+        assert_eq!(f.s(pc, "inventory", "abc"), uid_text(thing));
+        assert_eq!(f.s(pc, "inventory", "7"), "");
+    }
+
+    #[test]
+    fn has_item_still_compares_vnums_signed() {
+        // A known difference, from lookup::item_in_list (reported): the C
+        // narrows both sides to 16 bits, so a prototype-less object (host
+        // vnum -1) answers `has_item(65535)`. The VM answers 0 there, while
+        // `inventory(65535)` agrees with the C.
+        let mut f = fx();
+        let pc = f.pc;
+        let corpse = f.host.add_obj(-1, "a corpse");
+        f.host.obj_to_char(corpse, pc);
+        assert_eq!(f.s(pc, "inventory", "65535"), uid_text(corpse));
+        assert_eq!(f.s(pc, "has_item", "65535"), "0");
+        // Looking it up by id or name works.
+        assert_eq!(f.s(pc, "has_item", &uid_text(corpse)), "1");
+        assert_eq!(f.s(pc, "has_item", "corpse"), "1");
+    }
+
+    #[test]
+    fn pos_can_be_set_up_to_standing() {
+        let mut f = fx();
+        let pc = f.pc;
+        f.host.set_num(pc, "pos", 4);
+        // POS_SLEEPING..=POS_STANDING, each by a prefix of its name.
+        assert_eq!(f.s(pc, "pos", "standing"), "Standing");
+        assert_eq!(f.host.num(pc, "pos"), 8);
+        assert_eq!(f.s(pc, "pos", "sit"), "Sitting");
+        assert_eq!(f.s(pc, "pos", "REST"), "Resting");
+        assert_eq!(f.s(pc, "pos", "fight"), "Fighting");
+        assert_eq!(f.s(pc, "pos", "s"), "Sleeping");
+        // Positions below sleeping cannot be set: the position stays.
+        assert_eq!(f.s(pc, "pos", "dead"), "Sleeping");
+        assert_eq!(f.s(pc, "pos", "stun"), "Sleeping");
+        assert_eq!(f.s(pc, "pos", "nonsense"), "Sleeping");
+    }
+
+    #[test]
+    fn mana_and_move_pools_wrap_as_shorts() {
+        let mut f = fx();
+        let pc = f.pc;
+        // 100 + 40000 = 40100, which as a sh_int is 40100 - 65536.
+        f.host.set_num(pc, "mana", 100);
+        assert_eq!(f.s(pc, "mana", "40000"), "-25436");
+        for (field, key) in [
+            ("maxmana", "max_mana"),
+            ("maxmove", "max_move"),
+            ("maxhitp", "max_hit"),
+        ] {
+            f.host.set_num(pc, key, 100);
+            assert_eq!(f.s(pc, field, "40000"), "-25436", "{field}");
+        }
+        f.host.set_num(pc, "move", 100);
+        assert_eq!(f.s(pc, "move", "40000"), "-25436");
+    }
+
+    #[test]
+    fn hitroll_and_saves_wrap_as_their_c_types() {
+        let mut f = fx();
+        let pc = f.pc;
+        // sbyte: 100 + 100 = 200 -> -56.
+        f.host.set_num(pc, "hitroll", 100);
+        assert_eq!(f.s(pc, "hitroll", "100"), "-56");
+        // sh_int saves: 30000 + 10000 = 40000 -> -25536.
+        f.host.set_num(pc, "save:1", 30_000);
+        assert_eq!(f.s(pc, "saving_rod", "10000"), "-25536");
+        f.host.set_num(pc, "save:4", 30_000);
+        assert_eq!(f.s(pc, "saving_spell", "10000"), "-25536");
+    }
+
+    #[test]
+    fn int_wis_and_dex_floor_at_three() {
+        let mut f = fx();
+        let pc = f.pc;
+        for (field, key) in [("int", "int"), ("wis", "wis"), ("dex", "dex")] {
+            f.host.set_num(pc, &format!("rabil:{key}"), 10);
+            f.host.set_num(pc, &format!("abil:{key}"), 10);
+            assert_eq!(f.s(pc, field, "-20"), "3", "{field}");
+            assert_eq!(f.s(pc, field, "-1"), "3", "{field}");
+            assert_eq!(f.s(pc, field, "1"), "4", "{field}");
+        }
+    }
+
+    #[test]
+    fn an_ability_without_a_subfield_prints_the_effective_value() {
+        let mut f = fx();
+        let pc = f.pc;
+        f.host.set_num(pc, "rabil:int", 10);
+        f.host.set_num(pc, "abil:int", 15);
+        // GET_INT is aff_abils; nothing is written without a subfield.
+        assert_eq!(f.s(pc, "int", ""), "15");
+        assert_eq!(f.host.num(pc, "rabil:int"), 10);
+    }
+
+    #[test]
+    fn eq_star_looks_at_every_slot() {
+        let mut f = fx();
+        let pc = f.pc;
+        let torch = f.host.add_obj(5, "a torch");
+        f.host.equip_char(pc, torch, 17);
+        assert_eq!(f.s(pc, "eq", "*"), "1");
+        let pc2 = f.host.add_player("Amy");
+        let ring = f.host.add_obj(6, "a ring");
+        f.host.equip_char(pc2, ring, 0);
+        assert_eq!(f.s(pc2, "eq", "*"), "1");
+    }
+
+    #[test]
+    fn hasattached_counts_the_owners_checked_out_trigger() {
+        let mut f = fx();
+        let mob = f.mob;
+        let proto = f.host.add_proto(7, AttachType::Mob, "g", 100, "", "say hi");
+        let id = f.host.attach(mob, &proto).unwrap();
+        // The running instance is out of the list, its slot stays.
+        let _running = f.host.script_mut(mob).unwrap().check_out(id).unwrap();
+        assert_eq!(f.s(mob, "hasattached", "7"), "1");
+        assert_eq!(f.s(mob, "hasattached", "8"), "0");
+    }
+
+    #[test]
+    fn exp_with_a_zero_gain_changes_nothing() {
+        let mut f = fx();
+        let pc = f.pc;
+        f.host.set_num(pc, "exp", -50);
+        // gain_exp(c, 0): neither `gain > 0` nor `gain < 0` runs.
+        assert_eq!(f.s(pc, "exp", "0"), "-50");
+        assert_eq!(f.s(pc, "exp", "abc"), "-50");
+    }
+
+    #[test]
+    fn exp_loss_is_capped_per_call() {
+        let mut f = fx();
+        let pc = f.pc;
+        f.host.set_num(pc, "exp", 700_000);
+        // gain = MAX(-CONFIG_MAX_EXP_LOSS, -600000) = -500000.
+        assert_eq!(f.s(pc, "exp", "-600000"), "200000");
+    }
+
+    #[test]
+    fn dead_is_the_is_dead_fact_in_npcflag() {
+        let mut f = fx();
+        let (mob, pc) = (f.mob, f.pc);
+        assert_eq!(f.s(mob, "npcflag", "DEAD"), "0");
+        f.host.extract_char(mob);
+        assert!(f.host.is_dead(mob));
+        // The buffer is "ISNPC DEAD ".
+        assert_eq!(f.s(mob, "npcflag", "DEAD"), "1");
+        assert_eq!(f.s(mob, "npcflag", "ISNPC DEAD"), "1");
+        // For a player the same dead bit is PLR_NOTDEADYET (16), which the
+        // NPC name table prints as NO_BASH; nothing else is set.
+        assert_eq!(f.s(pc, "npcflag", "NO_BASH"), "0");
+        assert_eq!(f.s(pc, "npcflag", "NOBITS"), "1");
+        f.host.extract_char(pc);
+        assert_eq!(f.s(pc, "npcflag", "NO_BASH"), "1");
+        assert_eq!(f.s(pc, "npcflag", "NOBITS"), "0");
+        assert_eq!(f.s(pc, "npcflag", "DEAD"), "0");
+        // A real NPC act bit 16 is NO_BASH, and a bit 19 on a player is
+        // a bit of the array like any other: neither is the dead fact.
+        let other = f.host.add_mob(1, "a rat");
+        f.host.set_num(other, "act", 1 << 16);
+        assert_eq!(f.s(other, "npcflag", "NO_BASH"), "1");
+        let amy = f.host.add_player("Amy");
+        f.host.set_num(amy, "act", 1 << 19);
+        assert_eq!(f.s(amy, "npcflag", "DEAD"), "1");
+        assert!(!f.host.is_dead(amy));
+    }
+
+    #[test]
+    fn the_mock_keeps_dead_only_in_the_shared_key() {
+        let mut f = fx();
+        let (mob, pc) = (f.mob, f.pc);
+        f.host.extract_char(mob);
+        f.host.extract_char(pc);
+        // Neither dead bit is stored in the act array; reads answer is_dead.
+        assert_eq!(f.host.num(mob, "act"), 0);
+        assert_eq!(f.host.num(pc, "act"), 0);
+        assert!(f.host.char_act_flagged(mob, 19));
+        assert!(f.host.char_act_flagged(pc, 16));
+        assert!(!f.host.char_act_flagged(mob, 16));
+        f.host.char_set_act_flag(mob, 19, false);
+        assert!(f.host.is_dead(mob));
+        f.host.set_num(mob, "dead", 0);
+        f.host.char_set_act_flag(mob, 19, true);
+        assert!(!f.host.is_dead(mob));
+        assert_eq!(f.host.num(mob, "act"), 0);
+    }
+
+    #[test]
+    fn hostile_input_leaves_every_stat_inside_its_c_bounds() {
+        let mut f = fx();
+        let (mob, pc) = (f.mob, f.pc);
+        let weird = [
+            "2147483647",
+            "-2147483648",
+            "99999999999",
+            "-99999999999",
+            "3",
+            "é",
+            "\t",
+            "",
+        ];
+        for c in [mob, pc] {
+            for sub in weird {
+                for field in [
+                    "align", "drunk", "hunger", "thirst", "str", "int", "wis", "dex",
+                ] {
+                    let _ = f.get(c, field, sub);
+                }
+            }
+            assert!((-1000..=1000).contains(&f.host.char_stat(c, CharStat::Align)));
+            for stat in [CharStat::Drunk, CharStat::Hunger, CharStat::Thirst] {
+                assert!((-1..=24).contains(&f.host.char_stat(c, stat)));
+            }
+            let max = if c == mob { 25 } else { 18 };
+            for abil in [CharAbil::Str, CharAbil::Int, CharAbil::Wis, CharAbil::Dex] {
+                assert!(
+                    (3..=max).contains(&f.host.char_real_abil(c, abil)),
+                    "{abil:?}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn a_missing_character_reads_neutral_and_writes_nothing() {
+        let mut f = fx();
+        let ghost = 999_999;
+        for (field, sub, want) in [
+            ("gold", "5", "0"),
+            ("exp", "5", "0"),
+            ("align", "5", "0"),
+            ("str", "2", "0"),
+            ("level", "", "0"),
+            ("hasattached", "7", ""),
+            ("varexists", "x", "0"),
+            ("eq", "*", ""),
+            ("fighting", "", ""),
+            ("master", "", ""),
+            ("npcflag", "SPEC", "0"),
+            ("title", "x", "(null)"),
+        ] {
+            assert_eq!(f.s(ghost, field, sub), want, "{field}({sub})");
+        }
+        assert!(f.host.effects.iter().all(|e| !e.contains("999999")));
+        assert!(!f.host.entities.contains_key(&ghost));
+        assert!(f.host.globals.nums.is_empty());
     }
 }

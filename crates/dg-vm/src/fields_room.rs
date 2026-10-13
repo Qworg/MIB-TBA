@@ -23,8 +23,11 @@
 //!
 //! # Differences from the C
 //!
-//! - `snprintf` truncation to the caller's buffer is applied with
-//!   `fit`.
+//! - `snprintf` truncation to the caller's buffer is applied (the
+//!   crate-private `fit` of `fields_obj`).
+//! - `id` and `roomflag` call `real_room(r->number)`; for a room that call
+//!   cannot find, `id` is empty and `roomflag` is `0` (the C indexes
+//!   `world[NOWHERE]`).
 //! - `weather` indexes `sky_look[]` with `weather_info.sky`; a sky value
 //!   outside `0..4` (which the C would read out of bounds) gives an empty
 //!   result.
@@ -270,7 +273,7 @@ mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
 
     use super::*;
-    use crate::host::BaseHost;
+    use crate::host::{BaseHost, WorldHost};
     use crate::mock::MockHost;
     use crate::types::{AttachType, ROOM_ID_BASE, TrigInstance};
 
@@ -424,6 +427,32 @@ mod tests {
     }
 
     #[test]
+    fn id_and_roomflag_need_a_real_room() {
+        let mut h = MockHost::new();
+        let r = h.add_room(3001, "Temple");
+        h.set_num(r, "flag:0", 1);
+        assert_eq!(f(&mut h, r, "roomflag", "DARK"), "1");
+        // A room whose number real_room cannot find: `id` is empty, and
+        // roomflag answers 0 where the C reads ROOM_FLAGS(NOWHERE).
+        h.set_num(r, "vnum", 9999);
+        assert_eq!(h.real_room(9999), None);
+        assert_eq!(f(&mut h, r, "id", ""), "");
+        assert_eq!(f(&mut h, r, "roomflag", "DARK"), "0");
+        assert_eq!(f(&mut h, r, "roomflag", ""), "0");
+        assert_eq!(f(&mut h, r, "vnum", ""), "9999");
+    }
+
+    #[test]
+    fn weather_outside_the_sky_table_is_empty() {
+        let mut h = MockHost::new();
+        let r = h.add_room(3001, "Temple");
+        for (sky, want) in [(0, "sunny"), (3, "lightning"), (4, ""), (-1, ""), (99, "")] {
+            h.globals.nums.insert("sky".to_owned(), sky);
+            assert_eq!(f(&mut h, r, "weather", ""), want, "sky {sky}");
+        }
+    }
+
+    #[test]
     fn hasattached_checks_the_rooms_script() {
         let mut h = MockHost::new();
         let r = h.add_room(3001, "Temple");
@@ -433,6 +462,10 @@ mod tests {
         h.attach(r, &proto).unwrap();
         assert_eq!(f(&mut h, r, "hasattached", "5"), "1");
         assert_eq!(f(&mut h, r, "hasattached", "6"), "0");
+        // The running instance is checked out of the list; its slot stays.
+        let id = h.script(r).unwrap().trigger_ids()[0];
+        let _running = h.script_mut(r).unwrap().check_out(id).unwrap();
+        assert_eq!(f(&mut h, r, "hasattached", "5"), "1");
     }
 
     #[test]
@@ -459,35 +492,57 @@ mod tests {
         // Other directions are independent.
         assert_eq!(f(&mut h, r, "south", "vnum"), "");
 
-        // An exit with no destination (a link to no entity): vnum is NOWHERE
-        // (65535 in this tree), room is empty, key NOTHING is 65535.
-        h.entity_mut(r)
-            .unwrap()
-            .links
-            .insert("exit:5".to_owned(), -77);
-        h.set_num(r, "exit:5:flags", 0);
-        h.set_num(r, "exit:5:key", 65535);
+        // An exit that leads nowhere (the shared `nowhere` key): vnum is
+        // NOWHERE (65535 in this tree), room is empty, and with no key set
+        // the key is NOTHING, 65535.
+        h.set_num(r, "exit:5:nowhere", 1);
         assert_eq!(f(&mut h, r, "down", ""), "NOBITS ");
         assert_eq!(f(&mut h, r, "down", "vnum"), "65535");
         assert_eq!(f(&mut h, r, "down", "room"), "");
         assert_eq!(f(&mut h, r, "down", "key"), "65535");
+        // A link to an entity that no longer exists is the same exit.
+        h.set_link(r, "exit:4", Some(-77));
+        assert_eq!(f(&mut h, r, "up", "vnum"), "65535");
+        assert_eq!(f(&mut h, r, "up", "room"), "");
 
         // Every direction maps to its own number.
         for (i, dir) in ["north", "east", "south", "west", "up", "down"]
             .iter()
             .enumerate()
         {
-            h.entity_mut(r)
-                .unwrap()
-                .links
-                .entry(format!("exit:{i}"))
-                .or_insert(-77);
+            if h.link(r, &format!("exit:{i}")).is_none() {
+                h.set_num(r, &format!("exit:{i}:nowhere"), 1);
+            }
             h.set_num(r, &format!("exit:{i}:key"), 100 + i as i64);
             assert_eq!(f(&mut h, r, dir, "key"), (100 + i).to_string());
         }
-        // Bits past the table print UNDEFINED.
+        // Bits past the table print UNDEFINED, one per set bit.
         h.set_num(r, "exit:1:flags", 1 << 5);
         assert_eq!(f(&mut h, r, "east", "bits"), "UNDEFINED ");
+        // All four defined bits, then two undefined ones.
+        h.set_num(r, "exit:1:flags", 0b1111 | (1 << 4) | (1 << 6));
+        assert_eq!(
+            f(&mut h, r, "east", "bits"),
+            "DOOR CLOSED LOCKED PICKPROOF UNDEFINED UNDEFINED "
+        );
+        assert_eq!(f(&mut h, r, "east", ""), f(&mut h, r, "east", "bits"));
+    }
+
+    #[test]
+    fn an_exit_needs_a_link_or_the_nowhere_key() {
+        let mut h = MockHost::new();
+        let r = h.add_room(3001, "Temple");
+        // Flags and a key alone do not make an exit.
+        h.set_num(r, "exit:2:flags", 1);
+        h.set_num(r, "exit:2:key", 5);
+        assert_eq!(f(&mut h, r, "south", ""), "");
+        assert_eq!(f(&mut h, r, "south", "key"), "");
+        assert_eq!(h.room_exit(r, 2), None);
+        h.set_num(r, "exit:2:nowhere", 1);
+        assert_eq!(f(&mut h, r, "south", ""), "DOOR ");
+        assert_eq!(f(&mut h, r, "south", "key"), "5");
+        h.set_num(r, "exit:2:nowhere", 0);
+        assert_eq!(h.room_exit(r, 2), None);
     }
 
     #[test]

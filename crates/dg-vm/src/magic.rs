@@ -444,6 +444,9 @@ mod tests {
         host.char_to_room(mob, room);
         host.char_to_room(bob, room);
         host.obj_to_room(sword, room);
+        host.globals
+            .texts
+            .insert("mobproto:1".to_owned(), "Puff".to_owned());
         host.add_spell(
             "magic missile",
             MAGIC_MISSILE,
@@ -452,9 +455,6 @@ mod tests {
         );
         host.add_spell("sanctuary", SANCTUARY, TAR_CHAR_ROOM | TAR_SELF_ONLY, 0);
         host.add_spell("armor", ARMOR, TAR_CHAR_ROOM, 0);
-        host.globals
-            .texts
-            .insert("mobproto:1".to_owned(), "Puff".to_owned());
         host.add_spell(
             "identify",
             IDENTIFY,
@@ -973,6 +973,132 @@ mod tests {
         let mut w = world();
         affect(&mut w, "dg_affect   bob    Saving_Spell   -2    9");
         assert!(w.host.effects[0].contains("location=24 modifier=-2 duration=8"));
+    }
+
+    #[test]
+    fn dg_affect_checks_in_the_c_order() {
+        let mut w = world();
+        // Usage, then duration, then property, then target.
+        affect(&mut w, "dg_affect nobody bogus 1 0");
+        affect(&mut w, "dg_affect nobody str 1 0");
+        affect(&mut w, "dg_affect nobody bogus 1 5");
+        affect(&mut w, "dg_affect nobody str 1 5");
+        assert_eq!(
+            w.host.logs,
+            vec![
+                "Trigger: trigger 9, VNum 9. dg_affect: need positive duration!",
+                "Line was: dg_affect nobody bogus 1 0 (0)",
+                "Trigger: trigger 9, VNum 9. dg_affect: need positive duration!",
+                "Line was: dg_affect nobody str 1 0 (0)",
+                "Trigger: trigger 9, VNum 9. dg_affect: unknown property 'bogus'!",
+                "Trigger: trigger 9, VNum 9. dg_affect: cannot locate target!",
+            ]
+        );
+        assert!(w.host.effects.is_empty());
+    }
+
+    #[test]
+    fn dg_affect_property_names_are_exact() {
+        let mut w = world();
+        // str_cmp, not is_abbrev: "sav" is not SAVING_PARA, "sanc" not SANCT.
+        affect(&mut w, "dg_affect bob sav 1 5");
+        affect(&mut w, "dg_affect bob sanc 1 5");
+        affect(&mut w, "dg_affect bob st 1 5");
+        assert!(w.host.effects.is_empty());
+        assert_eq!(w.host.logs.len(), 3);
+        assert!(w.host.logs[0].ends_with("unknown property 'sav'!"));
+        affect(&mut w, "dg_affect bob SAVING_PARA 1 5");
+        assert_eq!(w.host.effects.len(), 1);
+    }
+
+    #[test]
+    fn a_spell_that_targets_characters_anywhere_finds_a_character() {
+        let mut w = world();
+        let bob = w.bob;
+        // TAR_CHAR_WORLD alone is enough to look for a character.
+        w.host.add_spell("summon", 40, TAR_CHAR_WORLD, 0);
+        cast_as_mob(&mut w, "dg_cast 'summon' bob");
+        assert!(w.host.effects[0].contains(&format!("victim={bob} obj=-")));
+        // ...and not an object.
+        let before = w.host.effects.len();
+        cast_as_mob(&mut w, "dg_cast 'summon' sword");
+        assert_eq!(w.host.effects.len(), before);
+        assert!(w.host.logs[0].contains("target not found"));
+    }
+
+    #[test]
+    fn each_object_target_bit_finds_an_object() {
+        let mut w = world();
+        let sword = w.sword;
+        for (name, num, bit) in [
+            ("hide", 41, TAR_OBJ_INV),
+            ("polish", 42, TAR_OBJ_EQUIP),
+            ("sharpen", 43, TAR_OBJ_ROOM),
+            ("enchant", 44, TAR_OBJ_WORLD),
+        ] {
+            w.host.effects.clear();
+            w.host.logs.clear();
+            w.host.add_spell(name, num, bit, 0);
+            cast_as_mob(&mut w, &format!("dg_cast '{name}' sword"));
+            assert_eq!(w.host.effects.len(), 1, "{name}");
+            assert!(
+                w.host.effects[0].contains(&format!("victim=- obj={sword}")),
+                "{name}"
+            );
+            assert!(w.host.logs.is_empty(), "{name}");
+        }
+    }
+
+    #[test]
+    fn the_proxy_is_named_by_the_short_description_not_the_keywords() {
+        let mut w = world();
+        let sword = w.sword;
+        w.host.set_text(sword, "name", "a gleaming blade");
+        assert_eq!(w.host.keywords(sword), "sword");
+        run(&mut w, sword, AttachType::Obj, |cx| {
+            do_dg_cast(cx, "dg_cast 'magic missile' bob");
+        });
+        let proxy = w.host.character_list[0];
+        assert_eq!(w.host.name(proxy), "a gleaming blade");
+        // The keywords stay the prototype's.
+        assert_eq!(w.host.keywords(proxy), "Puff");
+    }
+
+    #[test]
+    fn group_spells_are_refused_for_object_and_room_casters_too() {
+        let mut w = world();
+        let (sword, room) = (w.sword, w.room);
+        let before = w.host.character_list.len();
+        run(&mut w, sword, AttachType::Obj, |cx| {
+            do_dg_cast(cx, "dg_cast 'group heal'");
+        });
+        run(&mut w, room, AttachType::Wld, |cx| {
+            do_dg_cast(cx, "dg_cast 'group heal'");
+        });
+        assert!(w.host.effects.is_empty());
+        assert_eq!(w.host.logs.len(), 2);
+        assert!(
+            w.host
+                .logs
+                .iter()
+                .all(|l| l.contains("group spells not permitted"))
+        );
+        // Refused before a proxy is made.
+        assert_eq!(w.host.character_list.len(), before);
+    }
+
+    #[test]
+    fn spell_names_match_by_abbreviation_through_the_host_table() {
+        let mut w = world();
+        let bob = w.bob;
+        cast_as_mob(&mut w, "dg_cast 'mag mis' bob");
+        cast_as_mob(&mut w, "dg_cast 'MAGIC' bob");
+        assert_eq!(w.host.effects.len(), 2);
+        assert!(w.host.effects.iter().all(|e| e.contains("spell=32")));
+        assert!(w.host.effects[0].contains(&format!("victim={bob}")));
+        assert_eq!(find_skill_num(&w.host, "sanct"), SANCTUARY);
+        assert_eq!(find_skill_num(&w.host, "magic missile extra"), -1);
+        assert_eq!(find_skill_num(&w.host, "zork"), -1);
     }
 
     #[test]

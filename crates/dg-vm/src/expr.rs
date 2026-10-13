@@ -14,11 +14,16 @@
 //!   cannot hold half a character). This can change truthiness: `(\u{e9}` is
 //!   the empty string (false) here, and the lone byte `0xC3` (true) in the C;
 //!   `!(\u{e9}` is `1` here and `0` in the C.
-//! - Expressions nest at most [`MAX_DEPTH`] levels deep. Deeper input is
-//!   refused where the C recurses up to its 511-byte limit; the VM must not
-//!   overflow the stack of whatever thread runs it. The refusal poisons the
-//!   whole top-level evaluation: it is logged and the result is the empty
-//!   string (false), like the over-length refusal.
+//! - `eval_expr` calls nest at most [`MAX_DEPTH`] deep. A level is spent on
+//!   every operator split and again on every parenthesis strip, so a
+//!   balanced `!(!(…))` nest is refused at 128 pairs, not 256. Deeper input
+//!   is refused where the C recurses up to its 511-byte limit; the VM must
+//!   not overflow the stack of whatever thread runs it. The refusal poisons
+//!   the whole top-level evaluation: it is logged and the result is the empty
+//!   string (false), like the over-length refusal. The counter and the
+//!   poison flag are thread-wide, so an evaluation that [`var_subst`]
+//!   re-enters through `process_eval` (a chained `%a.b.c%` reference) shares
+//!   them with the expression it is a leaf of.
 //! - A rejected `eval` variable name (`add_var`'s `strchr(name, '.')` case)
 //!   is reported through `script_log`, so builders see it; the C writes it
 //!   to the syslog only.
@@ -361,6 +366,86 @@ mod tests {
         assert_eq!(eval("apple <= apple"), "1");
         assert_eq!(eval("apple >= banana"), "0");
         assert_eq!(eval("pear > banana"), "1");
+    }
+
+    #[test]
+    fn operators_are_tried_in_the_c_order() {
+        // `==` is tried before `!=`: (1 != 2) == 0.
+        assert_eq!(eval("1 != 2 == 0"), "0");
+        // `<=` before `/=`: 1 <= (2 /= 2).
+        assert_eq!(eval("1 <= 2 /= 2"), "1");
+        // `*` before `!`: (!0) * 5.
+        assert_eq!(eval("!0 * 5"), "5");
+        // `<` and `>` after `<=` and `>=`: the two-character form is whole.
+        assert_eq!(eval("3 <= 3"), "1");
+        assert_eq!(eval("3 >= 4"), "0");
+        // `||` before `&&`: 1 || (0 && 0).
+        assert_eq!(eval("1 || 0 && 0"), "1");
+        // `&&` before `==`: 0 && (0 == 0) is 0; (0 && 0) == 0 would be 1.
+        assert_eq!(eval("0 && 0 == 0"), "0");
+    }
+
+    #[test]
+    fn comparison_edge_cases_follow_eval_op() {
+        // Equal strings satisfy both `<=` and `>=`.
+        assert_eq!(eval("apple >= apple"), "1");
+        assert_eq!(eval("apple <= apple"), "1");
+        // Numeric order where string order differs: "9" > "10" as text.
+        assert_eq!(eval("9 <= 10"), "1");
+        assert_eq!(eval("10 >= 9"), "1");
+        assert_eq!(eval("9 < 10"), "1");
+        assert_eq!(eval("10 > 9"), "1");
+        // `!=` with one numeric side is the str_cmp difference ('\0' - 'x').
+        assert_eq!(eval("5 != 5x"), "-120");
+        assert_eq!(eval("5x != 5"), "120");
+        // Both numeric: 1 or 0.
+        assert_eq!(eval("5 != 05"), "0");
+    }
+
+    #[test]
+    fn text_after_a_closing_parenthesis_is_dropped() {
+        assert_eq!(eval("(1 + 2) junk"), "3");
+        assert_eq!(eval("(a) b c"), "a");
+    }
+
+    #[test]
+    fn the_limit_is_exactly_five_hundred_and_twelve_bytes() {
+        let at_limit = "9".repeat(MAX_INPUT_LENGTH);
+        let mut host = MockHost::new();
+        let mob = host.add_mob(1, "a mob");
+        let proto = host.add_proto(7, AttachType::Mob, "g", 100, "", "say hi");
+        let mut trig = TrigInstance::new(1, proto);
+        let mut cx = Cx {
+            host: &mut host,
+            owner: mob,
+            attach: AttachType::Mob,
+            trig: &mut trig,
+        };
+        // strlen(line) >= MAX_INPUT_LENGTH is refused.
+        assert_eq!(eval_expr(&mut cx, &at_limit), "");
+        assert_eq!(cx.host.logs.len(), 1);
+        assert!(cx.host.logs[0].contains("Expression is 512 characters"));
+        let below = "9".repeat(MAX_INPUT_LENGTH - 1);
+        assert_eq!(eval_expr(&mut cx, &below), below);
+        assert_eq!(cx.host.logs.len(), 1);
+    }
+
+    #[test]
+    fn leading_whitespace_of_every_kind_is_skipped() {
+        assert_eq!(eval("\t\t5"), "5");
+        assert_eq!(eval(" \t 5 + 1"), "6");
+        assert_eq!(eval("\n7"), "7");
+        assert_eq!(eval("\r\x0b\x0c9"), "9");
+    }
+
+    #[test]
+    fn process_if_skips_leading_spaces_of_the_result() {
+        // A leaf is not trimmed after substitution: "  0" is false, " x" true.
+        with_cx(&[("v", "  0"), ("w", " x"), ("z", "   ")], |cx| {
+            assert!(!process_if(cx, "%v%"));
+            assert!(process_if(cx, "%w%"));
+            assert!(!process_if(cx, "%z%"));
+        });
     }
 
     #[test]

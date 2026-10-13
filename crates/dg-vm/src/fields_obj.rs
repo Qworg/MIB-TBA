@@ -26,9 +26,9 @@
 //! - `weight`, `cost` and `cost_per_day` writes use wrapping `int` arithmetic
 //!   as the C does; the object's carried weight is not adjusted, exactly as in
 //!   the C, which assigns the field directly.
-//! - An `oset apply` modifier is stored in a signed byte and the location in
-//!   a `byte`, also signed (`struct obj_affected_type`; 0..24 fits either
-//!   way), so the sum wraps to `i8`.
+//! - An `oset apply` modifier is a signed byte in the C, so the sum wraps to
+//!   `i8`. The location is a `byte` there too; [`ObjHost::obj_apply`] hands
+//!   it over as `u8`, which holds every apply number (0..24) the same.
 //! - `GET_OBJ_VNUM` of an object with no prototype is `NOTHING`, 65535 in
 //!   this tree (`CIRCLE_UNSIGNED_INDEX`). A host may report any negative
 //!   number for such an object (the mock reports -1); [`obj_vnum`] maps it to
@@ -515,6 +515,7 @@ mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
 
     use super::*;
+    use crate::host::BaseHost;
     use crate::mock::MockHost;
     use crate::types::{AttachType, ROOM_ID_BASE, TrigInstance};
 
@@ -816,6 +817,29 @@ mod tests {
         let o = sword(&mut h);
         assert_eq!(f(&mut h, o, "oset", "alias  \tfoo"), "1");
         assert_eq!(h.text(o, "alias"), "\tfoo");
+    }
+
+    #[test]
+    fn oset_shortdesc_and_longdesc_keep_a_leading_tab_too() {
+        let mut h = MockHost::new();
+        let o = sword(&mut h);
+        assert_eq!(f(&mut h, o, "oset", "shortdesc \tfoo bar"), "1");
+        assert_eq!(h.text(o, "name"), "\tfoo bar");
+        assert_eq!(f(&mut h, o, "oset", "longdesc   \tlies here"), "1");
+        assert_eq!(h.text(o, "longdesc"), "\tlies here");
+        // Spaces before the tab are skipped, and only those.
+        assert_eq!(f(&mut h, o, "oset", "alias  \t foo"), "1");
+        assert_eq!(h.text(o, "alias"), "\t foo");
+    }
+
+    #[test]
+    fn hasattached_counts_the_running_trigger() {
+        let mut h = MockHost::new();
+        let o = sword(&mut h);
+        let proto = h.add_proto(7, AttachType::Obj, "g", 100, "", "nop");
+        let id = h.attach(o, &proto).unwrap();
+        let _running = h.script_mut(o).unwrap().check_out(id).unwrap();
+        assert_eq!(f(&mut h, o, "hasattached", "7"), "1");
     }
 
     #[test]
