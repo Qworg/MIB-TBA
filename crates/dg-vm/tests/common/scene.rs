@@ -80,6 +80,17 @@ pub fn heard(host: &MockHost, ch: Uid) -> Vec<String> {
         .collect()
 }
 
+/// Everything sent to `ch` through `send_to_char`, in order, with its line
+/// end as written (`"\r\n"` from `act`, `"\n\r"` from `sub_write`).
+pub fn heard_raw(host: &MockHost, ch: Uid) -> Vec<String> {
+    let prefix = format!("send {ch}: ");
+    host.effects
+        .iter()
+        .filter_map(|effect| effect.strip_prefix(&prefix))
+        .map(str::to_owned)
+        .collect()
+}
+
 /// The `mud_command` log as `(owner, line)`.
 pub fn said(host: &MockHost) -> Vec<(Uid, String)> {
     host.mud_commands.clone()

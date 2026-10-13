@@ -1,6 +1,5 @@
 //! Scenario tests on real tbaMUD triggers that exercise the script command
-//! families: load, purge, teleport, force, damage, echo, send, at, door-less
-//! movement, `dg_cast`, `dg_affect`, `attach`, `detach`, `transform`, waits
+//! families: load, purge, teleport, force, damage, echo, send, at, door, `dg_cast`, `dg_affect`, `attach`, `detach`, `transform`, waits
 //! and the variables left behind.
 //!
 //! Expectations come from walking the C by hand (`dg_scripts.c`,
@@ -11,7 +10,7 @@
 mod common;
 
 use common::corpus::Record;
-use common::scene::{Scene, assert_clean, heard, other_effects, said, vnums};
+use common::scene::{Scene, assert_clean, heard, heard_raw, other_effects, said, vnums};
 use common::world::{fire, global_var, install_record, make_proto, run_waits, uid};
 use dg_vm::driver::resume;
 use dg_vm::host::BaseHost;
@@ -510,7 +509,6 @@ fn trigger_1113_puts_every_mob_to_sleep() {
 fn shackle_scene(record: &Record, setup: impl FnOnce(&mut Scene)) -> (Scene, i32) {
     let mut scene = Scene::new();
     let (room, player) = (scene.room(), scene.player());
-    scene.host().ensure_script(player);
     setup(&mut scene);
     let id = install_record(scene.host(), room, record);
     let ret = fire(scene.host(), room, id, &[("actor", uid(player))]);
@@ -726,7 +724,6 @@ fn comfy_bed(record: &Record, arg: &str) -> (Scene, Uid) {
         .globals
         .texts
         .insert("commands".to_owned(), format!("{commands} sleep"));
-    scene.host().ensure_script(player);
     let bed = scene.add_room_obj(1401, "a comfy bed");
     let id = install_record(scene.host(), bed, record);
     let vars = [
@@ -1091,5 +1088,292 @@ fn trigger_50_opens_and_closes_the_shop_by_the_clock() {
     let contents = scene.fx.host.list(room, "contents");
     assert_eq!(vnums(&scene.fx.host, &contents), vec![3020, 69, 70]);
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
+    assert_clean(&scene.fx.host);
+}
+
+// ---------------------------------------------------------------------
+// Trigger 17, room command `move` (`2 c 100`): the `%door%` command.
+//
+// `%door%` is `wdoor` (do_wdoor, dg_wldcmd.c): `two_arguments` takes the room
+// and the direction, `one_argument` the field, and `value` is the rest after
+// skip_spaces. arg "chest": the sender hears the first line (wsend, sub_write:
+// "\n\r"), the watcher the echoaround. Then, in room 14520, direction down
+// (dirs index 5):
+//   flags ab   -> exit_info = asciiflag_conv("ab") = 1 + 2 = 3 (the exit is
+//                 CREATEd with every field zero first);
+//   name       -> keyword "trapdoor";
+//   room 14521 -> to_room = real_room(14521);
+//   description-> general_description = value + "\r\n";
+//   key 14500  -> key = atoi("14500").
+// and the mirror exit up (index 4) of room 14521 the same way, to 14520. The
+// field is matched with search_block(field, door_field, FALSE): exact, so the
+// comment lines (`*`) do nothing. The trigger returns 1.
+// ---------------------------------------------------------------------
+#[test]
+fn trigger_17_builds_both_ends_of_a_trapdoor() {
+    let record = real!(17);
+    let mut scene = Scene::new();
+    let (player, watcher) = (scene.player(), scene.watcher);
+    let upper = scene.host().add_room(14520, "A Storeroom");
+    let lower = scene.host().add_room(14521, "A Cellar");
+    for ch in [player, watcher] {
+        scene.host().char_to_room(ch, upper);
+    }
+    let id = install_record(scene.host(), upper, &record);
+    let vars = [
+        ("actor", uid(player)),
+        ("arg", "chest".to_owned()),
+        ("cmd", "move".to_owned()),
+    ];
+    assert_eq!(fire(scene.host(), upper, id, &vars), 1);
+
+    let host = &scene.fx.host;
+    assert_eq!(
+        heard_raw(host, player),
+        vec!["You move the chest across the floor, revealing a trapdoor underneath!!\n\r"]
+    );
+    assert_eq!(
+        heard_raw(host, watcher),
+        vec!["Tester has discovered a hidden trapdoor under a chest!\n\r"]
+    );
+    // down from 14520
+    assert_eq!(host.link(upper, "exit:5"), Some(lower));
+    assert_eq!(host.num(upper, "exit:5:flags"), 3);
+    assert_eq!(host.num(upper, "exit:5:key"), 14500);
+    assert_eq!(host.text(upper, "exit:5:keyword"), "trapdoor");
+    assert_eq!(
+        host.text(upper, "exit:5:desc"),
+        "A wooden ladder leads down into the darkness.\r\n"
+    );
+    // up from 14521
+    assert_eq!(host.link(lower, "exit:4"), Some(upper));
+    assert_eq!(host.num(lower, "exit:4:flags"), 3);
+    assert_eq!(host.num(lower, "exit:4:key"), 14500);
+    assert_eq!(host.text(lower, "exit:4:keyword"), "trapdoor");
+    assert_eq!(
+        host.text(lower, "exit:4:desc"),
+        "A wooden ladder leads up into a storeroom.\r\n"
+    );
+    // nothing else was touched
+    assert!(host.link(upper, "exit:4").is_none());
+    assert!(host.link(lower, "exit:5").is_none());
+    assert!(host.logs.is_empty(), "{:?}", host.logs);
+    assert_clean(host);
+}
+
+// Trigger 17 with another argument: only the else branch runs (wsend "Move
+// what ?!") and no exit appears.
+#[test]
+fn trigger_17_builds_nothing_for_another_argument() {
+    let record = real!(17);
+    let mut scene = Scene::new();
+    let player = scene.player();
+    let upper = scene.host().add_room(14520, "A Storeroom");
+    scene.host().add_room(14521, "A Cellar");
+    scene.host().char_to_room(player, upper);
+    let id = install_record(scene.host(), upper, &record);
+    let vars = [
+        ("actor", uid(player)),
+        ("arg", "table".to_owned()),
+        ("cmd", "move".to_owned()),
+    ];
+    assert_eq!(fire(scene.host(), upper, id, &vars), 1);
+    assert_eq!(heard(&scene.fx.host, player), vec!["Move what ?!"]);
+    assert!(scene.fx.host.link(upper, "exit:5").is_none());
+}
+
+// ---------------------------------------------------------------------
+// Trigger 23840, room command `pu` (`2 c 100`): door room, name with a space,
+// `wait 60s`, then `purge`.
+//
+// `pull /= %cmd%`: str_str("pull", "pu") finds it; `torch /= %arg%` likewise,
+// so the branch runs: wsend, wechoaround, `wdoor 23840 up room 23841` (the
+// exit is created with zero fields, then to_room = real_room(23841)),
+// `name trap door` (value is the rest of the line: "trap door"). `wait 60s`:
+// sscanf("%ld %c") reads 60 and 's' from "60s", so 60 * PASSES_PER_SEC = 600
+// pulses. After it, wecho (act: "\r\n", first letter capitalised) and
+// `wdoor 23840 up purge` frees the exit: the direction has no exit again.
+// ---------------------------------------------------------------------
+#[test]
+fn trigger_23840_opens_a_trapdoor_for_a_minute_then_purges_it() {
+    let record = real!(23840);
+    let mut scene = Scene::new();
+    let (player, watcher) = (scene.player(), scene.watcher);
+    let room = scene.host().add_room(23840, "A Torch Room");
+    let above = scene.host().add_room(23841, "Above");
+    for ch in [player, watcher] {
+        scene.host().char_to_room(ch, room);
+    }
+    let id = install_record(scene.host(), room, &record);
+    let vars = [
+        ("actor", uid(player)),
+        ("arg", "torch".to_owned()),
+        ("cmd", "pull".to_owned()),
+    ];
+    assert_eq!(fire(scene.host(), room, id, &vars), 1);
+    assert_eq!(scene.fx.host.waits, vec![(room, id, 600)]);
+    assert_eq!(
+        heard(&scene.fx.host, player),
+        vec!["The torch turns easily in your hand revealing a trap door."]
+    );
+    assert_eq!(
+        heard(&scene.fx.host, watcher),
+        vec!["As Tester pulls the torch a trap door swings open leading upwards."]
+    );
+    assert_eq!(scene.fx.host.link(room, "exit:4"), Some(above));
+    assert_eq!(scene.fx.host.text(room, "exit:4:keyword"), "trap door");
+    assert_eq!(scene.fx.host.num(room, "exit:4:flags"), 0);
+    assert_eq!(scene.fx.host.num(room, "exit:4:key"), 0);
+
+    assert!(step(scene.host()).is_empty());
+    assert_eq!(
+        heard_raw(&scene.fx.host, player)[1],
+        "The trap door slams itself closed as if by magic.\r\n"
+    );
+    assert!(scene.fx.host.link(room, "exit:4").is_none());
+    assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
+    assert_clean(&scene.fx.host);
+}
+
+// ---------------------------------------------------------------------
+// Trigger 23400, room command `push`: `wdoor 23441 west room 23471` when room
+// 23471 does not exist.
+//
+// flags a -> exit_info = 1, name door -> keyword "door". `room`:
+// real_room(23471) is NOWHERE, so `newexit->to_room = NOWHERE` and
+// wld_log(room, "wdoor: invalid door target (arg == %s)", value) writes
+// "Room 23441 :: wdoor: invalid door target (arg == 23471)". The exit stays
+// (it exists, leading nowhere).
+// ---------------------------------------------------------------------
+#[test]
+fn trigger_23400_logs_a_door_to_a_room_that_does_not_exist() {
+    let record = real!(23400);
+    let mut scene = Scene::new();
+    let player = scene.player();
+    let room = scene.host().add_room(23441, "A Button Room");
+    scene.host().char_to_room(player, room);
+    let id = install_record(scene.host(), room, &record);
+    let vars = [
+        ("actor", uid(player)),
+        ("arg", "button".to_owned()),
+        ("cmd", "push".to_owned()),
+    ];
+    assert_eq!(fire(scene.host(), room, id, &vars), 1);
+    assert_eq!(scene.fx.host.num(room, "exit:3:flags"), 1);
+    assert_eq!(scene.fx.host.text(room, "exit:3:keyword"), "door");
+    assert!(scene.fx.host.link(room, "exit:3").is_none());
+    assert_ne!(scene.fx.host.num(room, "exit:3:nowhere"), 0);
+    assert_eq!(
+        scene.fx.host.logs,
+        vec!["Room 23441 :: wdoor: invalid door target (arg == 23471)"]
+    );
+}
+
+// Trigger 23402, room enter: `wdoor 23471 east purge 0` in two other rooms.
+// After `wait 2 sec` (20 pulses) both exits are freed (`purge` is field 0 and
+// the extra word is ignored), and the wecho follows.
+#[test]
+fn trigger_23402_purges_the_secret_doors_after_two_seconds() {
+    let record = real!(23402);
+    let mut scene = Scene::new();
+    let player = scene.player();
+    let a = scene.host().add_room(23471, "East Room");
+    let b = scene.host().add_room(23441, "West Room");
+    scene.host().set_link(a, "exit:1", Some(b));
+    scene.host().set_link(b, "exit:3", Some(a));
+    scene.host().char_to_room(player, a);
+    let id = install_record(scene.host(), a, &record);
+    assert_eq!(fire(scene.host(), a, id, &[("actor", uid(player))]), 1);
+    assert_eq!(scene.fx.host.waits, vec![(a, id, 20)]);
+    assert!(scene.fx.host.link(a, "exit:1").is_some());
+    assert!(step(scene.host()).is_empty());
+    assert!(scene.fx.host.link(a, "exit:1").is_none());
+    assert!(scene.fx.host.link(b, "exit:3").is_none());
+    assert_eq!(
+        heard(&scene.fx.host, player),
+        vec!["A wall slams down shut!"]
+    );
+}
+
+// ---------------------------------------------------------------------
+// `wait until` when the hour is already past, and the `t` unit: trigger 23700.
+//
+// A mob in room 23607 (`%inroom.vnum% == 23607`): `context %self.id%`,
+// `set trader_leaving 1`, `global trader_leaving`; the switch takes `case
+// 23607`: say, rest, `wait until 07:00`. min = 7*60 = 420; ntime = 420 * 75 *
+// 10 / 60 = 5250. At game hour 22, pulse 40: when = 40 % 750 + 22 * 750 =
+// 16540, which is >= ntime, so process_wait rolls over to the next day:
+// when = (SECS_PER_MUD_DAY * PASSES_PER_SEC) - when + ntime = 18000 - 16540 +
+// 5250 = 6710. After it: `stand`, `wait 1 t` = 1 * PULSES_PER_MUD_HOUR = 750.
+// Then three `wait 6 s` (60), `say Let's go!`, `wait 1 s` (10), `south`, and
+// `break` leaves the switch (to the `done`), after which the `else` skips the
+// other branch.
+// ---------------------------------------------------------------------
+#[test]
+fn trigger_23700_waits_until_dawn_across_midnight_then_one_hour() {
+    let record = real!(23700);
+    let mut scene = Scene::new();
+    let room = scene.host().add_room(23607, "A Camp");
+    let trader = scene.fx.host.add_mob(23700, "the trader");
+    scene.host().char_to_room(trader, room);
+    scene.host().pulse = 40;
+    scene.host().time.hours = 22;
+    let id = install_record(scene.host(), trader, &record);
+    assert_eq!(fire(scene.host(), trader, id, &[]), 1);
+    assert_eq!(
+        common::world::commands(&scene.fx.host),
+        vec!["say We'll leave at dawn.", "rest"]
+    );
+    assert_eq!(scene.fx.host.waits, vec![(trader, id, 6710)]);
+
+    assert_eq!(step(scene.host()), vec![(trader, id, 750)]);
+    assert_eq!(common::world::commands(&scene.fx.host)[2], "stand");
+
+    let mut waits = Vec::new();
+    for _ in 0..5 {
+        waits.push(step(scene.host()).first().map(|w| w.2));
+    }
+    assert_eq!(waits, vec![Some(60), Some(60), Some(60), Some(10), None]);
+    assert_eq!(
+        common::world::commands(&scene.fx.host)[3..],
+        [
+            "say Are you ready to find adventure, men ?",
+            "say Are you ready to fight every hardheaded orc on the way ?",
+            "say Don your gear, and follow  'll bring the name of Aldin to Radidan.",
+            "say Let's go!",
+            "south",
+        ]
+    );
+    assert_eq!(
+        global_var(&scene.fx.host, trader, "trader_leaving").as_deref(),
+        Some("1")
+    );
+    assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
+    assert_clean(&scene.fx.host);
+}
+
+// Trigger 23700 in room 23602 with the global already set: `case 23602` waits
+// 2 s (20 pulses) and falls through the following empty cases (`case 23601`,
+// ... find_case matches the first, the driver ignores `case` lines) to the
+// shared `south`, then `break`.
+#[test]
+fn trigger_23700_falls_through_empty_cases() {
+    let record = real!(23700);
+    let mut scene = Scene::new();
+    let room = scene.host().add_room(23602, "A Road");
+    let trader = scene.fx.host.add_mob(23700, "the trader");
+    scene.host().char_to_room(trader, room);
+    scene
+        .host()
+        .ensure_script(trader)
+        .unwrap()
+        .global_vars
+        .add_var("trader_leaving", "1", 0);
+    let id = install_record(scene.host(), trader, &record);
+    assert_eq!(fire(scene.host(), trader, id, &[]), 1);
+    assert_eq!(scene.fx.host.waits, vec![(trader, id, 20)]);
+    assert!(common::world::commands(&scene.fx.host).is_empty());
+    assert!(step(scene.host()).is_empty());
+    assert_eq!(common::world::commands(&scene.fx.host), vec!["south"]);
     assert_clean(&scene.fx.host);
 }

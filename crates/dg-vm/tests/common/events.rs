@@ -16,7 +16,8 @@ fn first_word<'a>(text: &'a str, fallback: &'a str) -> &'a str {
 
 /// Every event variable the trigger's types could receive, with plausible
 /// values. `actor`, `victim`, `object`, `target` are entity references
-/// supplied by the caller (already in `}id` form).
+/// supplied by the caller (already in `}id` form); `target` is an object
+/// (`obj_script_id(target)` in `act_mtrigger`).
 pub struct Cast {
     pub actor: String,
     pub victim: String,
@@ -51,11 +52,15 @@ pub fn event_vars(record: &Record, owner_kind: AttachType, cast: &Cast) -> Vec<(
                 put("victim", &cast.victim);
                 put("object", &cast.object);
                 put("target", &cast.target);
-                put("arg", &record.arglist);
+                // act_mtrigger: `arg` is the act text itself, up to its '\r'.
+                put(
+                    "arg",
+                    &format!("Tester says something about {}", record.arglist),
+                );
             }
-            // death, greet, greet-all, entry, receive, fight, hitprcnt,
-            // memory all hand over the actor.
-            for bit in [5, 6, 7, 8, 9, 10, 11, 14] {
+            // death, greet, greet-all, receive, fight, hitprcnt, memory all
+            // hand over the actor. entry_mtrigger adds no variable at all.
+            for bit in [5, 6, 7, 9, 10, 11, 14] {
                 if has(bit) {
                     put("actor", &cast.actor);
                 }
@@ -63,7 +68,7 @@ pub fn event_vars(record: &Record, owner_kind: AttachType, cast: &Cast) -> Vec<(
             if has(9) {
                 put("object", &cast.object);
             }
-            if has(6) || has(7) || has(8) || has(16) || has(17) {
+            if has(6) || has(7) || has(16) || has(17) {
                 put("direction", "north");
             }
             if has(12) {

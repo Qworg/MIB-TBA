@@ -18,10 +18,21 @@
 mod common;
 
 use common::corpus::Record;
-use common::scene::{Scene, assert_clean, heard, other_effects, said, vnums};
+use common::scene::{Scene, assert_clean, heard, heard_raw, other_effects, said, vnums};
 use common::world::{commands, fire, global_var, install_record, run_waits, uid};
-use dg_vm::host::BaseHost;
+use dg_vm::driver::resume;
+use dg_vm::host::{BaseHost, WorldHost};
+use dg_vm::mock::MockHost;
 use dg_vm::types::Uid;
+
+/// Resume the pending waits and return those queued next.
+fn step(host: &mut MockHost) -> Vec<(Uid, u64, i64)> {
+    let due = std::mem::take(&mut host.waits);
+    for (owner, id, _) in &due {
+        resume(host, *owner, *id);
+    }
+    host.waits.clone()
+}
 
 // ---------------------------------------------------------------------
 // Trigger 53, room speech `2 d 1`: car, cdr and a while loop.
@@ -277,6 +288,48 @@ fn trigger_1376_lists_what_a_container_holds() {
     assert_eq!(heard(&scene.fx.host, watcher), expected);
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
+}
+
+// Trigger 1376 once more with the line ends as written. `oecho` is two
+// `sub_write` calls (dg_objcmd.c do_oecho), and sub_write_to_char ends every
+// message in "\n\r" (dg_comm.c).
+#[test]
+fn oecho_lines_end_in_newline_return() {
+    let record = real!(1376);
+    let mut scene = Scene::new();
+    let (player, watcher) = (scene.player(), scene.watcher);
+    let bag = scene.add_room_obj(3600, "a bag");
+    let id = install_record(scene.host(), bag, &record);
+    fire(
+        scene.host(),
+        bag,
+        id,
+        &[("actor", uid(player)), ("cmd", "testing".to_owned())],
+    );
+    assert_eq!(heard_raw(&scene.fx.host, player), vec!["firing\n\r"]);
+    assert_eq!(heard_raw(&scene.fx.host, watcher), vec!["firing\n\r"]);
+}
+
+// Trigger 53 with the line ends as written. wecho is act_to_room(), whose
+// act() calls end the line in "\r\n" (comm.c perform_act), the opposite of
+// sub_write.
+#[test]
+fn wecho_lines_end_in_return_newline() {
+    let record = real!(53);
+    let mut scene = Scene::new();
+    let (room, player, watcher) = (scene.room(), scene.player(), scene.watcher);
+    let id = install_record(scene.host(), room, &record);
+    let vars = [("actor", uid(player)), ("speech", "go".to_owned())];
+    fire(scene.host(), room, id, &vars);
+    // `go`: car "go", cdr ""; then the loop echoes "go" and "" once more.
+    let expected = vec![
+        "The first word is: go\r\n",
+        "The rest of the string is: \r\n",
+        "The first word is: go\r\n",
+        "The remaining text is: \r\n",
+    ];
+    assert_eq!(heard_raw(&scene.fx.host, player), expected);
+    assert_eq!(heard_raw(&scene.fx.host, watcher), expected);
 }
 
 // ---------------------------------------------------------------------
@@ -732,4 +785,170 @@ fn trigger_59_ignores_other_door_commands() {
     assert!(scene.fx.host.effects.is_empty());
     assert!(scene.fx.host.script(room).unwrap().trigger(id).is_some());
     assert!(other_effects(&scene.fx.host).is_empty());
+}
+
+// ---------------------------------------------------------------------
+// Trigger 32, mob greet `0 g 100`: does the actor carry object 1300?
+//
+// Three worlds. (a) Tester wields vnum 1300 (slot 16): `%actor.eq(wield)%` is
+// the object id (find_eq_pos_script("wield") is 16), so the first `if` runs,
+// `wep.vnum==1300` sets has_it and the inventory is skipped:
+// "say Tester has that special item.". (b) Nothing wanted anywhere: the
+// weapon is 3023, `!%has_it%` is `!` over an empty operand (eval_op "!" gives
+// `!*rhs` = 1), and the inventory walk takes `eval i %actor.inventory%` (the
+// head of ch->carrying: the dagger, since obj_to_char pushes at the head),
+// then `set next %i.next_in_list%` (the lantern), neither is vnum 1300, neither
+// is a CONTAINER, `set i %next%`; after the lantern next is "" and `while %i%`
+// ends; has_it is still unset: "doesnt have". (c) The watcher carries 1300 as
+// the LAST of three items: the walk goes item by item and `break` inside the
+// `if` finds the loop's `done` (find_done skips nested while/switch blocks
+// and returns the first `done`), after which `if %has_it%` says "has that".
+// ---------------------------------------------------------------------
+fn greeted_by(scene: &mut Scene, mob: Uid, actor: Uid) -> Vec<String> {
+    let record = corpus_trigger(32);
+    let id = install_record(scene.host(), mob, &record);
+    let vars = [("actor", uid(actor)), ("direction", "south".to_owned())];
+    assert_eq!(fire(scene.host(), mob, id, &vars), 1);
+    assert_clean(&scene.fx.host);
+    commands(&scene.fx.host)
+}
+
+fn corpus_trigger(vnum: i32) -> Record {
+    common::corpus::trigger(vnum).expect("corpus")
+}
+
+#[test]
+fn trigger_32_finds_the_wielded_item_first() {
+    if common::corpus::cached().is_none() {
+        common::corpus::skip_message("trigger_32_finds_the_wielded_item_first");
+        return;
+    }
+    let mut scene = Scene::new();
+    let (player, sword) = (scene.player(), scene.fx.equipment[0]);
+    scene.host().set_num(sword, "vnum", 1300);
+    let mob = scene.add_owner_mob(3200, "a checker");
+    assert_eq!(
+        greeted_by(&mut scene, mob, player),
+        vec!["say Tester has that special item."]
+    );
+    assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
+}
+
+#[test]
+fn trigger_32_walks_the_whole_inventory_and_finds_nothing() {
+    if common::corpus::cached().is_none() {
+        common::corpus::skip_message("trigger_32_walks_the_whole_inventory_and_finds_nothing");
+        return;
+    }
+    let mut scene = Scene::new();
+    let player = scene.player();
+    let mob = scene.add_owner_mob(3200, "a checker");
+    assert_eq!(
+        greeted_by(&mut scene, mob, player),
+        vec!["say Tester doesnt have that crappy item."]
+    );
+    assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
+}
+
+#[test]
+fn trigger_32_breaks_out_of_the_walk_on_the_last_item() {
+    if common::corpus::cached().is_none() {
+        common::corpus::skip_message("trigger_32_breaks_out_of_the_walk_on_the_last_item");
+        return;
+    }
+    let mut scene = Scene::new();
+    let watcher = scene.watcher;
+    // obj_to_char pushes at the head: the list is 3042, 3041, 1300.
+    for vnum in [1300, 3041, 3042] {
+        let item = scene.fx.host.add_obj(vnum, "a thing");
+        scene.host().obj_to_char(item, watcher);
+    }
+    let mob = scene.add_owner_mob(3200, "a checker");
+    assert_eq!(
+        greeted_by(&mut scene, mob, watcher),
+        vec!["say Watcher has that special item."]
+    );
+    assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
+}
+
+// ---------------------------------------------------------------------
+// Trigger 40, room greet `2 g 100`: scatter a player and everything carried.
+//
+// Rolls (rand_number(1, 99)) in the order the script asks: teleport 7
+// (room 20307), the dagger 3 (2303), the lantern 4 (2304), then the equipment
+// by ascending slot: the cloak (slot 12) 9 (20309), the sword (slot 16) 2
+// (20302). Walk: `wait 1 sec` (10), wsend; `wait 2 sec` (20);
+// `eval stunned %actor.hitp% -1` is 100 - 1 = 99; wdamage 99 leaves 1 hit
+// point (script_damage: GET_HIT -= dam). wteleport moves Tester to 20307.
+// `while %actor.inventory%` takes the head (the dagger; type UNDEFINED, not a
+// CONTAINER), `set item_to_purge %actor.inventory%` is its id, `wpurge <id>`
+// extracts it and `wat 2303 wload obj 3021` puts a new one in room 2303; again
+// for the lantern, which has become the head. The equipment loop reads
+// `%actor.eq(%i%)%` with the nested `%i%` for i = 0..17; for slots 12 and 16
+// it sends "You drop a cloak" / "You drop a sword" and loads copies into
+// 20309 and 20302. `set item_to_purge %%actor.eq(%i%)%%` is the quirk: var_subst
+// turns `%%` into a literal `%` and only the inner `%i%` is replaced, so the
+// variable holds the TEXT `%actor.eq(12)%`, `wpurge %actor.eq(12)%` matches
+// no name in the room and logs "wpurge: bad argument": the worn items are not
+// removed. `%force% %actor% look` ends the run: do_wforce's one_argument leaves the
+// space in front of the line, so the interpreter gets " look".
+// ---------------------------------------------------------------------
+#[test]
+fn trigger_40_scatters_the_inventory_and_drops_the_equipment_text() {
+    let record = real!(40);
+    let mut scene = Scene::new();
+    let (room, player) = (scene.room(), scene.player());
+    for vnum in [20307, 20309, 20302, 2303, 2304] {
+        scene.host().add_room(vnum, "A Room");
+    }
+    for vnum in [3021, 3022, 3023, 3024] {
+        scene
+            .host()
+            .globals
+            .texts
+            .insert(format!("objproto:{vnum}"), "a copy".to_owned());
+    }
+    scene.host().rolls = [7, 3, 4, 9, 2].into_iter().collect();
+    let id = install_record(scene.host(), room, &record);
+    assert_eq!(fire(scene.host(), room, id, &[("actor", uid(player))]), 1);
+    assert_eq!(scene.fx.host.waits, vec![(room, id, 10)]);
+    assert_eq!(step(scene.host()), vec![(room, id, 20)]);
+    assert_eq!(
+        heard(&scene.fx.host, player),
+        vec![
+            "You feel you must not have been worthy when a powerful force hurls you back through the gates."
+        ]
+    );
+    assert!(step(scene.host()).is_empty());
+
+    let host = &scene.fx.host;
+    assert_eq!(host.num(player, "hit"), 1);
+    assert_eq!(host.in_room(player), host.real_room(20307));
+    assert!(host.carrying(player).is_empty());
+    let loaded = |vnum: i32| -> Vec<i64> {
+        let r = host.real_room(vnum).expect("room");
+        vnums(host, &host.list(r, "contents"))
+    };
+    assert_eq!(loaded(2303), vec![3021]);
+    assert_eq!(loaded(2304), vec![3022]);
+    assert_eq!(loaded(20309), vec![3024]);
+    assert_eq!(loaded(20302), vec![3023]);
+    // The worn items were never purged.
+    assert_eq!(host.equipment(player, 12), Some(scene.fx.equipment[1]));
+    assert_eq!(host.equipment(player, 16), Some(scene.fx.equipment[0]));
+    let drops: Vec<String> = heard(host, player)
+        .into_iter()
+        .filter(|line| line.starts_with("You drop"))
+        .collect();
+    assert_eq!(drops, vec!["You drop a cloak", "You drop a sword"]);
+    assert_eq!(
+        host.logs,
+        vec![
+            "Room 3001 :: wpurge: bad argument",
+            "Room 3001 :: wpurge: bad argument"
+        ]
+    );
+    assert_eq!(host.mud_commands, vec![(player, " look".to_owned())]);
+    assert!(host.rolls.is_empty());
+    assert_clean(host);
 }

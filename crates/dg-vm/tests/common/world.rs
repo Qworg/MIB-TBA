@@ -48,6 +48,10 @@ pub fn dress_player(host: &mut MockHost, ch: Uid, level: i64) {
     host.set_num(ch, "pos", 8);
     host.set_num(ch, "desc", 1);
     host.set_num(ch, "playing", 1);
+    // enter_player_game: `if (!SCRIPT(d->character)) read_saved_vars(d->character);`
+    // and read_saved_vars always does `CREATE(SCRIPT(ch), struct script_data, 1)`,
+    // so every playing PC owns a script (the home of its global variables).
+    host.ensure_script(ch);
 }
 
 /// Give a mob the attributes a script reads.
@@ -166,7 +170,8 @@ pub fn install(
         arglist,
         body,
     );
-    host.attach(owner, &proto).unwrap_or(u64::MAX)
+    host.attach(owner, &proto)
+        .expect("the owner of an installed trigger exists")
 }
 
 /// Add the event variables to the instance (`add_var(&GET_TRIG_VARS(t), …)`).
@@ -209,8 +214,7 @@ pub fn run_waits(host: &mut MockHost, rounds: usize) -> usize {
     resumed
 }
 
-/// The mock's `mud_command` log as `(owner, line)` strings with the owner
-/// replaced by `who`'s label, for compact assertions.
+/// The mock's `mud_command` log reduced to the command lines.
 pub fn commands(host: &MockHost) -> Vec<String> {
     host.mud_commands.iter().map(|(_, c)| c.clone()).collect()
 }
@@ -259,5 +263,6 @@ pub fn install_record(host: &mut MockHost, owner: Uid, record: &super::corpus::R
         &record.arglist,
         &record.body,
     );
-    host.attach(owner, &proto).unwrap_or(u64::MAX)
+    host.attach(owner, &proto)
+        .expect("the owner of an installed trigger exists")
 }

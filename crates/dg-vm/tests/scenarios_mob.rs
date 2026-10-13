@@ -10,41 +10,37 @@
 
 mod common;
 
-use common::world::{
-    Fixture, commands, dress_mob, fire, global_var, install_record, local_var, run_waits, uid,
-};
+use common::scene::Scene as CommonScene;
+use common::world::{commands, fire, global_var, install_record, local_var, run_waits, uid};
 use dg_vm::driver::{Mode, script_driver};
 use dg_vm::host::{BaseHost, WorldHost};
 use dg_vm::mock::MockHost;
 use dg_vm::types::Uid;
 
-/// The standard cast plus a mob that carries the trigger and a bystander
-/// player with a descriptor (only characters with a descriptor "see" echoes).
+/// The standard scene plus a mob that carries the trigger.
 struct Scene {
-    fx: Fixture,
+    inner: CommonScene,
     owner: Uid,
-    watcher: Uid,
+}
+
+impl std::ops::Deref for Scene {
+    type Target = CommonScene;
+    fn deref(&self) -> &CommonScene {
+        &self.inner
+    }
+}
+
+impl std::ops::DerefMut for Scene {
+    fn deref_mut(&mut self) -> &mut CommonScene {
+        &mut self.inner
+    }
 }
 
 impl Scene {
     fn new(owner_vnum: i32, owner_name: &str) -> Self {
-        let mut fx = Fixture::new();
-        let owner = fx.host.add_mob(owner_vnum, owner_name);
-        dress_mob(&mut fx.host, owner, 30);
-        fx.host.char_to_room(owner, fx.room);
-        let watcher = fx.host.add_player("Watcher");
-        common::world::dress_player(&mut fx.host, watcher, 5);
-        fx.host.char_to_room(watcher, fx.room);
-        Self { fx, owner, watcher }
-    }
-
-    fn host(&mut self) -> &mut MockHost {
-        &mut self.fx.host
-    }
-
-    /// Give a character the script a PC gets once it has a global variable.
-    fn give_script(&mut self, ch: Uid) {
-        self.fx.host.ensure_script(ch);
+        let mut inner = CommonScene::new();
+        let owner = inner.add_owner_mob(owner_vnum, owner_name);
+        Self { inner, owner }
     }
 
     /// A global variable on a character's script.
@@ -346,7 +342,6 @@ fn tutorial_11_rewards_the_magic_eight_ball() {
     let record = real!(11);
     let mut scene = Scene::new(1317, "the tutorial guide");
     let (owner, player) = (scene.owner, scene.fx.player);
-    scene.give_script(player);
     let ball = scene.host().add_obj(47, "the magic eight ball");
     scene.host().obj_to_char(ball, owner);
     let id = install_record(scene.host(), owner, &record);
@@ -399,7 +394,6 @@ fn tutorial_11_refuses_any_other_object() {
     let record = real!(11);
     let mut scene = Scene::new(1317, "the tutorial guide");
     let (owner, player) = (scene.owner, scene.fx.player);
-    scene.give_script(player);
     let lantern = scene.fx.inventory[1];
     scene.host().obj_to_char(lantern, owner);
     let id = install_record(scene.host(), owner, &record);
@@ -435,11 +429,35 @@ fn tutorial_11_refuses_the_ball_a_second_time() {
     assert!(scene.fx.host.exists(ball));
 }
 
-// Trigger 11 for a player whose character has no script at all. The C's
-// process_remote ends with `if (sc_remote==NULL) return;`, so the variable is
-// stored nowhere, while the rest of the branch runs (`set`, purge, dance, wait).
+// Trigger 11 with a mob as the actor, a character that has no script at all
+// (a playing PC always owns one, `read_saved_vars`; a trigger-less mob does
+// not). `varexists` is "0" (`if (SCRIPT(c))` fails), the object is vnum 47, so
+// the branch runs. process_remote ends `if (sc_remote==NULL) return;`, so the
+// variable is stored nowhere, while the rest of the branch goes on (`set`,
+// purge, `dance`, then the wait stops the run).
 #[test]
-fn remote_to_a_player_without_a_script_stores_nothing() {
+fn remote_to_a_character_without_a_script_stores_nothing() {
+    let record = real!(11);
+    let mut scene = Scene::new(1317, "the tutorial guide");
+    let owner = scene.owner;
+    let wanderer = scene.host().add_mob(3200, "a wanderer");
+    let room = scene.fx.room;
+    scene.host().char_to_room(wanderer, room);
+    let ball = scene.host().add_obj(47, "the magic eight ball");
+    scene.host().obj_to_char(ball, owner);
+    let id = install_record(scene.host(), owner, &record);
+    let vars = [("actor", uid(wanderer)), ("object", uid(ball))];
+    fire(scene.host(), owner, id, &vars);
+    assert!(scene.fx.host.script(wanderer).is_none());
+    assert!(!scene.fx.host.exists(ball));
+    assert_eq!(say_all(&scene.fx.host), vec!["dance"]);
+    assert!(scene.fx.host.logs.is_empty());
+}
+
+// Trigger 11 for a player: the same branch stores the variable on the PC's
+// script (enter_player_game always allocates it).
+#[test]
+fn remote_to_a_player_stores_the_quest_flag() {
     let record = real!(11);
     let mut scene = Scene::new(1317, "the tutorial guide");
     let (owner, player) = (scene.owner, scene.fx.player);
@@ -448,10 +466,11 @@ fn remote_to_a_player_without_a_script_stores_nothing() {
     let id = install_record(scene.host(), owner, &record);
     let vars = [("actor", uid(player)), ("object", uid(ball))];
     fire(scene.host(), owner, id, &vars);
-    assert!(scene.fx.host.script(player).is_none());
-    assert!(!scene.fx.host.exists(ball));
+    assert_eq!(
+        global_var(&scene.fx.host, player, SOLVED).as_deref(),
+        Some("1")
+    );
     assert_eq!(say_all(&scene.fx.host), vec!["dance"]);
-    assert!(scene.fx.host.logs.is_empty());
 }
 
 // ---------------------------------------------------------------------
@@ -549,8 +568,11 @@ fn questmaster_expires_an_old_quest_on_greet() {
     );
 }
 
-// Trigger 138 with 50 quest points (`50 < 50` is false), and with a mob
-// as the actor (`is_pc` is 0): the whole body is skipped, no wait at all.
+// Trigger 138 with 50 quest points (`50 < 50` is false), and with a mob as the
+// actor (`is_pc` is 0): the body is skipped, no wait at all. `&&` evaluates both
+// sides, and for an NPC the `questpoints` branch is guarded by `!IS_NPC(c)`
+// (dg_variables.c), so it falls to the end of the char fields and logs
+// "unknown char field" once.
 #[test]
 fn questmaster_ignores_veterans_and_mobs_on_greet() {
     let record = real!(138);
@@ -560,16 +582,20 @@ fn questmaster_ignores_veterans_and_mobs_on_greet() {
     let id = install_record(scene.host(), owner, &record);
     fire(scene.host(), owner, id, &[("actor", uid(player))]);
     assert!(scene.fx.host.waits.is_empty());
+    assert!(scene.fx.host.logs.is_empty());
     fire(scene.host(), owner, id, &[("actor", uid(guard))]);
     assert!(scene.fx.host.waits.is_empty());
     assert!(say_all(&scene.fx.host).is_empty());
+    assert_eq!(
+        scene.fx.host.logs,
+        vec!["Trigger: Questmaster Greet - 3, VNum 138. unknown char field: 'questpoints'"]
+    );
 }
 
 fn quest_assignment(speech: &str, rolls: &[i64]) -> (Scene, u64) {
     let record = trigger_139();
     let mut scene = questmaster();
     let (owner, player) = (scene.owner, scene.fx.player);
-    scene.give_script(player);
     {
         let texts = &mut scene.fx.host.globals.texts;
         texts.insert("mobproto:15".to_owned(), "a quest mob".to_owned());
@@ -746,7 +772,8 @@ fn questmaster_walks_the_words_of_the_speech() {
     let _ = id;
 }
 
-// Trigger 139 refusals, all silent `halt`s: the speaker is the mob itself;
+// Trigger 139 refusals, all silent `halt`s (every PC owns a script, so the
+// flag lookups are real): the speaker is the mob itself;
 // the player already has a fresh flag (ticks_passed 15-14 = 1, not > 10);
 // the player has more than 50 quest points.
 #[test]

@@ -28,7 +28,8 @@ pub struct Record {
     pub flags: String,
     pub narg: i32,
     pub arglist: String,
-    /// The body, lines joined with `\r\n`, no trailing newline.
+    /// The body: every line but the last is followed by `\r\n` (`fread_string`),
+    /// so a body whose `~` stands alone ends in `\r\n`.
     pub body: String,
     /// The file the record came from.
     pub file: String,
@@ -54,22 +55,88 @@ pub fn skip_message(test: &str) {
     );
 }
 
-/// `fread_string` over an iterator of lines (each without its terminator).
-fn fread_string<'a>(lines: &mut impl Iterator<Item = &'a str>) -> Result<String, String> {
-    let mut out = String::new();
-    loop {
-        let line = lines
-            .next()
-            .ok_or_else(|| "format error: file ended inside a string".to_owned())?;
-        let line = line.trim_end_matches(['\r', '\n']);
-        if let Some(stripped) = line.strip_suffix('~') {
-            out.push_str(stripped);
-            break;
+/// `FREAD_CHUNK` (`db.h`): `fgets` in `fread_string` reads at most 511 bytes.
+const FREAD_CHUNK: usize = 512;
+/// `READ_SIZE` (`utils.h`): the line buffer `discrete_load` hands `get_line`.
+const READ_SIZE: usize = 256;
+
+/// A file read the way the C does: `fgets` chunks, `get_line`, `fread_string`.
+struct Reader<'a> {
+    data: &'a [u8],
+    pos: usize,
+}
+
+impl Reader<'_> {
+    /// `fgets(buf, size, fl)`: up to `size - 1` bytes, stopping after a newline.
+    /// `None` at the end of the file.
+    fn fgets(&mut self, size: usize) -> Option<&[u8]> {
+        if self.pos >= self.data.len() {
+            return None;
         }
-        out.push_str(line);
-        out.push_str("\r\n");
+        let rest = &self.data[self.pos..];
+        let limit = size.saturating_sub(1).min(rest.len());
+        let take = rest[..limit]
+            .iter()
+            .position(|b| *b == b'\n')
+            .map_or(limit, |at| at + 1);
+        let chunk = &rest[..take];
+        self.pos += take;
+        Some(chunk)
     }
-    Ok(parse_at(&out))
+
+    /// `get_line` (`utils.c`): skip lines that start with `*`, `\n` or `\r`,
+    /// drop the tail of a line longer than the buffer, strip the line end.
+    fn get_line(&mut self, bufsize: usize) -> Option<String> {
+        loop {
+            let chunk = self.fgets(bufsize)?.to_vec();
+            if chunk.last().is_some_and(|b| *b != b'\n') {
+                // the tail of an over-long line is discarded
+                while self.pos < self.data.len() {
+                    let byte = self.data[self.pos];
+                    self.pos += 1;
+                    if byte == b'\n' {
+                        break;
+                    }
+                }
+            }
+            if matches!(chunk.first(), Some(b'*' | b'\n' | b'\r')) {
+                continue;
+            }
+            let mut end = chunk.len();
+            while end > 0 && matches!(chunk[end - 1], b'\n' | b'\r') {
+                end -= 1;
+            }
+            return Some(String::from_utf8_lossy(&chunk[..end]).into_owned());
+        }
+    }
+
+    /// `fread_string` (`db.c`): 511-byte chunks; a chunk whose last byte
+    /// (after trailing CR/LF are skipped) is `~` ends the string and loses
+    /// that `~`; any other chunk gets `"\r\n"` after it. Then `parse_at`.
+    fn fread_string(&mut self) -> Result<String, String> {
+        let mut out: Vec<u8> = Vec::new();
+        loop {
+            let chunk = self
+                .fgets(FREAD_CHUNK)
+                .ok_or_else(|| "format error: file ended inside a string".to_owned())?;
+            let mut end = chunk.len();
+            // `for (point--; (*point=='\r' || *point=='\n') && point > tmp; point--)`
+            while end > 1 && matches!(chunk[end - 1], b'\r' | b'\n') {
+                end -= 1;
+            }
+            if chunk[end - 1] == b'~' {
+                out.extend_from_slice(&chunk[..end - 1]);
+                break;
+            }
+            if matches!(chunk[end - 1], b'\n' | b'\r') {
+                out.extend_from_slice(&chunk[..end - 1]);
+            } else {
+                out.extend_from_slice(&chunk[..end]);
+            }
+            out.extend_from_slice(b"\r\n");
+        }
+        Ok(parse_at(&String::from_utf8_lossy(&out)))
+    }
 }
 
 /// `parse_at`: `@` not followed by `@` becomes a tab; `@@` is left alone.
@@ -94,39 +161,68 @@ fn parse_at(text: &str) -> String {
     out
 }
 
-/// Parse one `.trg` file's text.
+/// One `%d` of `sscanf`: skip white space, an optional sign, the digits.
+/// Returns the value (clamped to `i32`) and the rest of the text.
+fn scan_int(text: &str) -> Option<(i32, &str)> {
+    let text = text.trim_start();
+    let (negative, digits) = match text.strip_prefix('-') {
+        Some(rest) => (true, rest),
+        None => (false, text.strip_prefix('+').unwrap_or(text)),
+    };
+    let length = digits.bytes().take_while(u8::is_ascii_digit).count();
+    if length == 0 {
+        return None;
+    }
+    let magnitude: i64 = digits[..length].parse().unwrap_or(i64::MAX);
+    let value = if negative { -magnitude } else { magnitude };
+    let value = i32::try_from(value).unwrap_or(if negative { i32::MIN } else { i32::MAX });
+    Some((value, &digits[length..]))
+}
+
+/// Parse one `.trg` file's bytes the way `discrete_load` (`db.c`) and
+/// `parse_trigger` (`dg_db_scripts.c`) do.
 pub fn parse_file(file: &str, text: &str) -> Result<Vec<Record>, String> {
-    let mut lines = text.split('\n');
+    let mut reader = Reader {
+        data: text.as_bytes(),
+        pos: 0,
+    };
     let mut records = Vec::new();
-    while let Some(line) = lines.next() {
-        let line = line.trim_end_matches('\r');
+    loop {
+        let Some(line) = reader.get_line(READ_SIZE) else {
+            return Err(format!("{file}: ended without a '$' line"));
+        };
         if line.starts_with('$') {
             break;
         }
         let Some(rest) = line.strip_prefix('#') else {
-            if line.trim().is_empty() {
-                continue;
-            }
             return Err(format!("{file}: expected '#vnum', found {line:?}"));
         };
-        let vnum: i32 = rest
-            .trim()
-            .parse()
-            .map_err(|_| format!("{file}: bad vnum line {line:?}"))?;
-        let name = fread_string(&mut lines).map_err(|e| format!("{file} #{vnum}: {e}"))?;
-        let header = lines
-            .next()
+        let (vnum, _) = scan_int(rest).ok_or_else(|| format!("{file}: bad vnum line {line:?}"))?;
+        if vnum >= 99999 {
+            break;
+        }
+        let name = reader
+            .fread_string()
+            .map_err(|e| format!("{file} #{vnum}: {e}"))?;
+        let header = reader
+            .get_line(READ_SIZE)
             .ok_or_else(|| format!("{file} #{vnum}: missing header"))?;
-        let mut fields = header.split_whitespace();
-        let attach_type: i32 = fields
+        // sscanf(line, "%d %s %d", &attach_type, flags, t)
+        let (attach_type, after) =
+            scan_int(&header).ok_or_else(|| format!("{file} #{vnum}: bad header {header:?}"))?;
+        let mut tokens = after.split_whitespace();
+        let flags = tokens.next().unwrap_or("").to_owned();
+        // narg is set only when the third conversion succeeded too
+        let narg = tokens
             .next()
-            .and_then(|f| f.parse().ok())
-            .ok_or_else(|| format!("{file} #{vnum}: bad header {header:?}"))?;
-        let flags = fields.next().unwrap_or("").to_owned();
-        // `sscanf` yields narg only when all three fields converted.
-        let narg: i32 = fields.next().and_then(|f| f.parse().ok()).unwrap_or(0);
-        let arglist = fread_string(&mut lines).map_err(|e| format!("{file} #{vnum}: {e}"))?;
-        let body = fread_string(&mut lines).map_err(|e| format!("{file} #{vnum}: {e}"))?;
+            .and_then(|token| scan_int(token))
+            .map_or(0, |(n, _)| n);
+        let arglist = reader
+            .fread_string()
+            .map_err(|e| format!("{file} #{vnum}: {e}"))?;
+        let body = reader
+            .fread_string()
+            .map_err(|e| format!("{file} #{vnum}: {e}"))?;
         records.push(Record {
             vnum,
             name,
@@ -141,26 +237,43 @@ pub fn parse_file(file: &str, text: &str) -> Result<Vec<Record>, String> {
     Ok(records)
 }
 
-/// Read every `*.trg` file of the corpus in file-name order. `None` when the
-/// corpus directory is absent.
-pub fn load_corpus() -> Option<Vec<Record>> {
-    let dir = corpus_dir();
-    if !dir.is_dir() {
-        return None;
+/// The files `lib/world/trg/index` lists (up to its `$` line), in order; the
+/// directory's `*.trg` files when there is no index.
+fn corpus_files(dir: &std::path::Path) -> Option<Vec<PathBuf>> {
+    if let Ok(index) = std::fs::read_to_string(dir.join("index")) {
+        return Some(
+            index
+                .lines()
+                .map(str::trim)
+                .take_while(|line| !line.starts_with('$'))
+                .filter(|line| !line.is_empty())
+                .map(|line| dir.join(line))
+                .collect(),
+        );
     }
-    let mut files: Vec<PathBuf> = std::fs::read_dir(&dir)
+    let mut files: Vec<PathBuf> = std::fs::read_dir(dir)
         .ok()?
         .filter_map(|entry| entry.ok().map(|e| e.path()))
         .filter(|path| path.extension().is_some_and(|ext| ext == "trg"))
         .collect();
     files.sort();
+    Some(files)
+}
+
+/// Read every file of the corpus index in order. `None` when the corpus
+/// directory is absent.
+pub fn load_corpus() -> Option<Vec<Record>> {
+    let dir = corpus_dir();
+    if !dir.is_dir() {
+        return None;
+    }
     let mut records = Vec::new();
-    for path in files {
+    for path in corpus_files(&dir)? {
         let name = path
             .file_name()
             .map(|n| n.to_string_lossy().into_owned())
             .unwrap_or_default();
-        let bytes = std::fs::read(&path).unwrap_or_default();
+        let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("{}: {e}", path.display()));
         let text = String::from_utf8_lossy(&bytes);
         match parse_file(&name, &text) {
             Ok(mut parsed) => records.append(&mut parsed),

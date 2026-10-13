@@ -72,6 +72,42 @@ fn at_signs_become_tabs_unless_doubled() {
     assert_eq!(records[0].body, "say \tRred\tn @@ x");
 }
 
+// get_line (utils.c) skips lines that start with '*', '\n' or '\r', for the
+// '#' line and for the header; discrete_load stops at a '#' number of 99999
+// or more and reads the number with sscanf("#%d"), which accepts text after it;
+// sscanf("%d %s %d") reads the 100 of "100x".
+#[test]
+fn the_reader_follows_get_line_and_discrete_load() {
+    let text = "* a comment\n\n#7 trailing words\n\
+                name~\n\n* another\n0 d 100x\n*~\nbody~\n\
+                #99999\n#8\nlater~\n0 a 1\n~\nx~\n$~\n";
+    let records = corpus::parse_file("t.trg", text).unwrap();
+    assert_eq!(records.len(), 1);
+    assert_eq!(records[0].vnum, 7);
+    assert_eq!(records[0].name, "name");
+    assert_eq!(records[0].flags, "d");
+    assert_eq!(records[0].narg, 100);
+    assert_eq!(records[0].body, "body");
+}
+
+// fread_string reads fgets chunks of at most 511 bytes: a longer line gets
+// "\r\n" after the first chunk, and a '~' that is the 511th byte ends the
+// string there (the rest of the line is read as a line of its own).
+#[test]
+fn the_reader_chunks_long_lines_like_fgets() {
+    let long = "a".repeat(600);
+    let text = format!("#7\nn~\n0 d 1\n~\n{long}\n~\n$~\n");
+    let records = corpus::parse_file("t.trg", &text).unwrap();
+    let expected = format!("{}\r\n{}\r\n", "a".repeat(511), "a".repeat(89));
+    assert_eq!(records[0].body, expected);
+
+    let name = "x".repeat(510);
+    let text = format!("#7\n{name}~*junk\n0 d 1\n~\nb~\n$~\n");
+    let records = corpus::parse_file("t.trg", &text).unwrap();
+    assert_eq!(records[0].name, name);
+    assert_eq!(records[0].narg, 1);
+}
+
 /// Vnums and spell names a script's lines refer to, so the mock world can
 /// hold what the script expects to find.
 #[derive(Default)]
@@ -82,52 +118,87 @@ struct Refs {
     spells: BTreeSet<String>,
 }
 
+/// `is_abbrev(arg, full)` (`utils.c`): a non-empty prefix of `full`, any case.
+fn is_abbrev(arg: &str, full: &str) -> bool {
+    !arg.is_empty() && arg.len() <= full.len() && full[..arg.len()].eq_ignore_ascii_case(arg)
+}
+
+fn number(word: &str) -> Option<i32> {
+    if word.is_empty() || !word.chars().all(|c| c.is_ascii_digit()) {
+        return None;
+    }
+    word.parse().ok()
+}
+
+/// Collect what one command line (already split into words) refers to.
+fn scan_command(words: &[&str], line: &str, refs: &mut Refs) {
+    let Some(first) = words.first().map(|w| w.to_ascii_lowercase()) else {
+        return;
+    };
+    // `%load%`, `mload`, `wload`… are the same command.
+    let command = first.trim_matches('%');
+    let command = command
+        .strip_prefix(['m', 'o', 'w'])
+        .filter(|rest| {
+            matches!(
+                *rest,
+                "load" | "at" | "teleport" | "door" | "transform" | "goto"
+            )
+        })
+        .unwrap_or(command);
+    match command {
+        // do_mload / do_oload / do_wload: `is_abbrev(arg1, "mob")` or "obj",
+        // then the vnum.
+        "load" => {
+            if let (Some(kind), Some(vnum)) = (words.get(1), words.get(2).and_then(|w| number(w))) {
+                if is_abbrev(kind, "obj") {
+                    refs.objs.insert(vnum);
+                } else if is_abbrev(kind, "mob") {
+                    refs.mobs.insert(vnum);
+                }
+            }
+        }
+        // do_wat: `at <room> <command>`; the rest of the line is a command.
+        "at" => {
+            if let Some(room) = words.get(1).and_then(|w| number(w)) {
+                refs.rooms.insert(room);
+            }
+            if words.len() > 2 {
+                scan_command(&words[2..], line, refs);
+            }
+        }
+        "teleport" | "goto" => refs
+            .rooms
+            .extend(words.iter().skip(1).filter_map(|w| number(w))),
+        // `door <room> <dir> <field> <value>`: the room, and the value of a
+        // `room` field.
+        "door" => {
+            if let Some(room) = words.get(1).and_then(|w| number(w)) {
+                refs.rooms.insert(room);
+            }
+            if words.get(3).is_some_and(|w| w.eq_ignore_ascii_case("room"))
+                && let Some(room) = words.get(4).and_then(|w| number(w))
+            {
+                refs.rooms.insert(room);
+            }
+        }
+        "dg_cast" => {
+            if let Some(open) = line.find('\'')
+                && let Some(len) = line[open + 1..].find('\'')
+            {
+                refs.spells
+                    .insert(line[open + 1..open + 1 + len].to_ascii_lowercase());
+            }
+        }
+        _ => {}
+    }
+}
+
 fn referenced_vnums(record: &Record) -> Refs {
     let mut refs = Refs::default();
     for line in record.body.lines() {
         let words: Vec<&str> = line.split_whitespace().collect();
-        let Some(first) = words.first().map(|w| w.to_ascii_lowercase()) else {
-            continue;
-        };
-        // `%load%`, `mload`, `wload`… are the same command.
-        let command = first.trim_matches('%');
-        let command = command
-            .strip_prefix(['m', 'o', 'w'])
-            .filter(|rest| {
-                matches!(
-                    *rest,
-                    "load" | "at" | "teleport" | "door" | "transform" | "goto"
-                )
-            })
-            .unwrap_or(command);
-        let numbers: Vec<i32> = words
-            .iter()
-            .skip(1)
-            .filter(|w| !w.is_empty() && w.chars().all(|c| c.is_ascii_digit()))
-            .filter_map(|w| w.parse().ok())
-            .collect();
-        let has = |word: &str| words.iter().any(|w| w.eq_ignore_ascii_case(word));
-        match command {
-            "load" => {
-                for n in numbers {
-                    if has("obj") {
-                        refs.objs.insert(n);
-                    } else {
-                        refs.mobs.insert(n);
-                    }
-                }
-            }
-            "at" | "teleport" | "door" | "goto" => refs.rooms.extend(numbers),
-            "dg_cast" => {
-                if let Some(open) = line.find('\'')
-                    && let Some(len) = line[open + 1..].find('\'')
-                {
-                    refs.spells
-                        .insert(line[open + 1..open + 1 + len].to_ascii_lowercase());
-                }
-            }
-            _ => {}
-        }
+        scan_command(&words, line, &mut refs);
     }
     refs
 }
@@ -156,6 +227,15 @@ fn build(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: usize) 
             .texts
             .insert(format!("objproto:{vnum}"), "a loaded object".to_owned());
     }
+    // `%load% obj %self.vnum%` and the like clone the owner itself.
+    fx.host
+        .globals
+        .texts
+        .insert("objproto:3031".to_owned(), "the owner object".to_owned());
+    fx.host
+        .globals
+        .texts
+        .insert("mobproto:3000".to_owned(), "the owner".to_owned());
     for (number, name) in refs.spells.iter().enumerate() {
         // TAR_CHAR_ROOM | TAR_FIGHT_VICT, MAG_DAMAGE
         fx.host
@@ -195,7 +275,7 @@ fn build(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: usize) 
         actor: dg_vm::types::uid_text(fx.player),
         victim: dg_vm::types::uid_text(fx.guard),
         object: dg_vm::types::uid_text(fx.bench),
-        target: dg_vm::types::uid_text(fx.guard),
+        target: dg_vm::types::uid_text(fx.inventory[0]),
     };
     let vars = event_vars(record, attach, &cast);
     let vars: Vec<(&str, String)> = vars.iter().map(|(k, v)| (k.as_str(), v.clone())).collect();
@@ -288,20 +368,26 @@ fn log_shape(message: &str) -> String {
                 .unwrap_or(m)
         })
         .unwrap_or(message);
+    // The C formats put the quoted text (which may hold apostrophes itself)
+    // at or near the end of the line: everything from the first quote to the
+    // last one is the quoted text.
+    let (head, tail) = match (rest.find('\''), rest.rfind('\'')) {
+        (Some(first), Some(last)) if first < last => (&rest[..first], &rest[last + 1..]),
+        _ => (rest, ""),
+    };
+    let quoted = head.len() != rest.len();
     let mut out = String::new();
-    let mut in_quote = false;
     let mut last_digit = false;
-    for c in rest.chars() {
-        if c == '\'' {
-            if in_quote {
-                out.push_str("..'");
-            } else {
-                out.push('\'');
+    for c in head
+        .chars()
+        .chain(std::iter::once('\0'))
+        .chain(tail.chars())
+    {
+        if c == '\0' {
+            if quoted {
+                out.push_str("'..'");
             }
-            in_quote = !in_quote;
             last_digit = false;
-        } else if in_quote {
-            continue;
         } else if c.is_ascii_digit() {
             if !last_digit {
                 out.push('#');
@@ -440,37 +526,23 @@ fn print_summary(outcomes: &[Outcome], failures: &[String]) {
     }
     println!("vnums behind the 20 most frequent log shapes:");
     for (shape, count) in top(&shapes, 20) {
-        let vnums: Vec<String> = shape_vnums[&shape]
-            .iter()
-            .take(12)
-            .map(|v| v.to_string())
-            .collect();
-        let more = shape_vnums[&shape].len().saturating_sub(12);
-        let tail = if more > 0 {
-            format!(" (+{more} more)")
-        } else {
-            String::new()
-        };
+        let vnums: Vec<String> = shape_vnums[&shape].iter().map(|v| v.to_string()).collect();
         println!(
-            "  {count:5}  {shape}\n         vnums: {}{tail}\n         e.g. {}",
+            "  {count:5}  {shape}\n         vnums: {}\n         e.g. {}",
             vnums.join(" "),
             shape_sample[&shape]
         );
     }
     println!("BaseHost::unsupported keys: {} distinct", unsupported.len());
-    for (key, count) in top(&unsupported, 40) {
+    for (key, count) in top(&unsupported, usize::MAX) {
         println!("  {count:5}  {key}");
     }
     println!(
         "mud_command first words: {total_commands} commands, {} distinct",
         words.len()
     );
-    for (word, count) in top(&words, 40) {
-        let vnums: Vec<String> = word_vnums[&word]
-            .iter()
-            .take(8)
-            .map(|v| v.to_string())
-            .collect();
+    for (word, count) in top(&words, usize::MAX) {
+        let vnums: Vec<String> = word_vnums[&word].iter().map(|v| v.to_string()).collect();
         println!("  {count:5}  {word}  [vnums {}]", vnums.join(" "));
     }
     for failure in failures {
