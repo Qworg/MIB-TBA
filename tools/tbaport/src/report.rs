@@ -8,8 +8,10 @@
 //! byte-identical JSON.
 
 use std::collections::BTreeMap;
+use std::fmt::Write as _;
 use std::path::Path;
 
+use dg_vm::analyze::Corpus;
 use serde::Serialize;
 
 use crate::error::Result;
@@ -215,18 +217,223 @@ pub struct TriggerTriage {
     pub by_zone: BTreeMap<u32, usize>,
 }
 
-/// What `dg-vm` can state about the emitted scripts.
-///
-/// Construct-level coverage (which constructs the corpus uses and which the
-/// VM does not implement) comes from `dg_vm::analyze`, to be filled in later.
+/// What `dg-vm` states about the emitted scripts: the totals of
+/// `dg_vm::analyze` over every record, classified as the VM's driver treats
+/// each line. Every map is keyed by lowercase names and sorted.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize)]
 pub struct TriggerCoverage {
     /// Emitted records.
     pub records: usize,
-    /// Script lines, as `dg_vm::script::Program::parse` splits them.
+    /// Script lines, as `dg_vm::script::Program::parse` splits them; the sum
+    /// of [`TriggerCoverage::lines_by_class`].
     pub script_lines: usize,
     /// The record's `attach_type` (`mob`, `obj`, `wld`) -> records.
     pub by_attach_type: BTreeMap<String, usize>,
+    /// Lines by class: `comment`, `blank`, `control`, `statement`, `magic`,
+    /// `script_command`, `unknown_command`, `mud_command`, `dynamic_command`.
+    pub lines_by_class: BTreeMap<String, usize>,
+    /// Control lines by keyword (`if`, `end`, `case`, `default`, ...).
+    pub controls: BTreeMap<String, usize>,
+    /// The driver's own statements by name (`set`, `eval`, `wait`,
+    /// `dg_cast`, ...).
+    pub statements: BTreeMap<String, usize>,
+    /// `wait` lines by form (`pulses`, `seconds`, `ticks`, `until`,
+    /// `dynamic`, `invalid`).
+    pub wait_forms: BTreeMap<String, usize>,
+    /// Script commands of the owner's command table by name, the commands the
+    /// command variables (`%send%`) expand to included.
+    pub script_commands: BTreeMap<String, usize>,
+    /// Object-owned lines no object command accepts (the C logs "Unknown
+    /// object cmd"), by first word.
+    pub unknown_object_commands: BTreeMap<String, UnknownCommand>,
+    /// Room-owned lines no world command accepts (the C logs "Unknown world
+    /// cmd"), by first word.
+    pub unknown_world_commands: BTreeMap<String, UnknownCommand>,
+    /// Mob-owned lines that go to the game's command interpreter, by first
+    /// word, split by whether the game supports the word.
+    pub mud_commands: MudCommandCoverage,
+    /// Lines whose first word is a variable that cannot be resolved without
+    /// running the script (also in `lines_by_class`).
+    pub dynamic_commands: usize,
+    /// Lines of 1024 bytes or more, which the VM's substitution refuses.
+    pub over_length_lines: usize,
+    /// Control-flow errors the driver's scans hit.
+    pub structural_errors: StructuralErrors,
+    /// Substitution references by what their field names.
+    pub field_references: FieldReferences,
+    /// Variable heads read in a script that the VM does not provide and the
+    /// script never assigns, with their reference counts.
+    pub unknown_variable_heads: BTreeMap<String, usize>,
+    /// Variable heads the VM provides (event, special and command
+    /// variables) -> references.
+    pub provided_variable_heads: BTreeMap<String, usize>,
+    /// References to variables some line of the script assigns.
+    pub assigned_variable_references: usize,
+}
+
+impl TriggerCoverage {
+    /// The report's coverage from the analysis totals of `records` scripts,
+    /// of which `by_attach_type` counts each owner type. `supported_mob_words`
+    /// is the game's list of mob command words ([`split_mud_commands`]).
+    pub fn from_corpus(
+        corpus: &Corpus,
+        by_attach_type: BTreeMap<String, usize>,
+        supported_mob_words: &[&str],
+    ) -> Self {
+        let totals = &corpus.totals;
+        let unknown =
+            |counts: &BTreeMap<String, usize>,
+             vnums: &BTreeMap<String, std::collections::BTreeSet<i32>>| {
+                counts
+                    .iter()
+                    .map(|(word, count)| {
+                        let vnums = vnums
+                            .get(word)
+                            .map(|set| set.iter().copied().collect())
+                            .unwrap_or_default();
+                        (
+                            word.clone(),
+                            UnknownCommand {
+                                count: *count,
+                                vnums,
+                            },
+                        )
+                    })
+                    .collect()
+            };
+        let structural_errors = StructuralErrors {
+            count: corpus.structural.values().map(Vec::len).sum(),
+            scripts: corpus.structural.len(),
+            by_vnum: corpus
+                .structural
+                .iter()
+                .map(|(vnum, errors)| {
+                    let lines = errors
+                        .iter()
+                        .map(|e| format!("line {}: {}", e.line, e.kind.describe()))
+                        .collect();
+                    (*vnum, lines)
+                })
+                .collect(),
+        };
+        Self {
+            records: totals.scripts,
+            script_lines: totals.lines,
+            by_attach_type,
+            lines_by_class: totals
+                .classes
+                .iter()
+                .map(|(class, count)| (class.name().to_owned(), *count))
+                .collect(),
+            controls: totals.controls.clone(),
+            statements: totals.statements.clone(),
+            wait_forms: totals.wait_forms.clone(),
+            script_commands: totals.script_commands.clone(),
+            unknown_object_commands: unknown(
+                &totals.unknown_object_commands,
+                &corpus.unknown_object_vnums,
+            ),
+            unknown_world_commands: unknown(
+                &totals.unknown_world_commands,
+                &corpus.unknown_world_vnums,
+            ),
+            mud_commands: split_mud_commands(&totals.mud_commands, supported_mob_words),
+            dynamic_commands: totals
+                .classes
+                .get(&dg_vm::analyze::LineClass::DynamicCommand)
+                .copied()
+                .unwrap_or(0),
+            over_length_lines: totals.over_length_lines,
+            structural_errors,
+            field_references: FieldReferences {
+                total: totals.field_references,
+                text_functions: totals.text_functions.clone(),
+                character: totals.char_fields.clone(),
+                object: totals.obj_fields.clone(),
+                room: totals.room_fields.clone(),
+                unknown_or_global: totals.unknown_fields.clone(),
+            },
+            unknown_variable_heads: totals.heads_unknown.clone(),
+            provided_variable_heads: totals.heads_provided.clone(),
+            assigned_variable_references: totals.heads_assigned.values().sum(),
+        }
+    }
+}
+
+/// An unknown object or world command word: its uses and the scripts using it.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize)]
+pub struct UnknownCommand {
+    pub count: usize,
+    /// Sorted trigger vnums.
+    pub vnums: Vec<i32>,
+}
+
+/// The mob-owned lines handed to the game's command interpreter.
+///
+/// The game's list of supported mob command words is wired in separately
+/// ([`split_mud_commands`]); until then it is empty, so every word is
+/// unsupported.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize)]
+pub struct MudCommandCoverage {
+    /// Lines in all.
+    pub lines: usize,
+    /// Words the game supports -> lines.
+    pub supported: BTreeMap<String, usize>,
+    /// Words it does not -> lines.
+    pub unsupported: BTreeMap<String, usize>,
+}
+
+/// Split mud-command words (first word -> lines) into those in `supported`
+/// and the rest. A word is supported when it equals an entry ASCII
+/// case-insensitively; the mob command interpreter's abbreviations are the
+/// caller's to expand into the list.
+pub fn split_mud_commands(
+    mud_commands: &BTreeMap<String, usize>,
+    supported: &[&str],
+) -> MudCommandCoverage {
+    let mut out = MudCommandCoverage::default();
+    for (word, count) in mud_commands {
+        out.lines += count;
+        let known = supported.iter().any(|name| name.eq_ignore_ascii_case(word));
+        let side = if known {
+            &mut out.supported
+        } else {
+            &mut out.unsupported
+        };
+        *side.entry(word.clone()).or_default() += count;
+    }
+    out
+}
+
+/// Control-flow errors the driver's scans would hit at run time.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize)]
+pub struct StructuralErrors {
+    /// Errors in all.
+    pub count: usize,
+    /// Scripts with at least one.
+    pub scripts: usize,
+    /// Trigger vnum -> its errors, each `line N: <error>`.
+    pub by_vnum: BTreeMap<i32, Vec<String>>,
+}
+
+/// `%var.field%` references by the table their field name belongs to. A name
+/// several tables know is counted in each, so the maps do not sum to
+/// `total`.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize)]
+pub struct FieldReferences {
+    /// Field names in references, each step of a dotted chain counting once.
+    pub total: usize,
+    /// String functions (`strlen`, `car`, ...).
+    pub text_functions: BTreeMap<String, usize>,
+    /// Fields of the character table.
+    pub character: BTreeMap<String, usize>,
+    /// Fields of the object table.
+    pub object: BTreeMap<String, usize>,
+    /// Fields of the room table.
+    pub room: BTreeMap<String, usize>,
+    /// Names in none of those tables; each may still be a script global on
+    /// its entity.
+    pub unknown_or_global: BTreeMap<String, usize>,
 }
 
 /// One classified `.trg` record in the report.
@@ -433,8 +640,6 @@ impl DropReport {
     /// A deterministic Markdown summary of the report's totals, grouped by
     /// drop reason.
     pub fn summary(&self) -> String {
-        use std::fmt::Write as _;
-
         let mut out = String::new();
         let totals = &self.totals;
         let _ = writeln!(out, "# tbaport drop report summary\n");
@@ -538,17 +743,186 @@ impl DropReport {
         let _ = writeln!(out, "\n## DG trigger corpus (#15)\n");
         let _ = writeln!(out, "- emitted records: {}", coverage.records);
         let _ = writeln!(out, "- script lines: {}", coverage.script_lines);
+        let _ = writeln!(
+            out,
+            "- lines over the substitution limit: {}",
+            coverage.over_length_lines
+        );
         let _ = writeln!(out, "\n### Records by attach type\n");
-        let _ = writeln!(out, "| attach type | count |");
-        let _ = writeln!(out, "|---|---:|");
-        for (attach_type, count) in &coverage.by_attach_type {
-            let _ = writeln!(out, "| `{attach_type}` | {count} |");
+        count_table(&mut out, "attach type", &coverage.by_attach_type, None);
+        let _ = writeln!(out, "\n### Lines by class\n");
+        count_table(&mut out, "class", &coverage.lines_by_class, None);
+        let _ = writeln!(out, "\n### Control lines\n");
+        count_table(&mut out, "keyword", &coverage.controls, None);
+        let _ = writeln!(out, "\n### Statements\n");
+        count_table(&mut out, "statement", &coverage.statements, None);
+        let _ = writeln!(out, "\n### `wait` forms\n");
+        count_table(&mut out, "form", &coverage.wait_forms, None);
+        let _ = writeln!(
+            out,
+            "\n### Script commands (top {TOP_N} of {})\n",
+            coverage.script_commands.len()
+        );
+        count_table(&mut out, "command", &coverage.script_commands, Some(TOP_N));
+
+        let errors = &coverage.structural_errors;
+        let _ = writeln!(out, "\n### Structural errors\n");
+        let _ = writeln!(
+            out,
+            "{} errors in {} scripts.\n",
+            errors.count, errors.scripts
+        );
+        let _ = writeln!(out, "| trigger | errors |");
+        let _ = writeln!(out, "|---:|---|");
+        for (vnum, lines) in &errors.by_vnum {
+            let _ = writeln!(out, "| {vnum} | {} |", lines.join("; "));
         }
+
+        for (title, unknown) in [
+            ("Unknown object commands", &coverage.unknown_object_commands),
+            ("Unknown world commands", &coverage.unknown_world_commands),
+        ] {
+            let _ = writeln!(out, "\n### {title} ({} words)\n", unknown.len());
+            let _ = writeln!(out, "| word | lines | triggers |");
+            let _ = writeln!(out, "|---|---:|---|");
+            for (word, use_) in top_n(unknown.iter().map(|(w, u)| (w, u.count)), TOP_N) {
+                let vnums = unknown.get(word).map_or(&[][..], |u| u.vnums.as_slice());
+                let _ = writeln!(out, "| `{word}` | {} | {} |", use_, vnum_list(vnums));
+            }
+        }
+
+        let mud = &coverage.mud_commands;
+        let _ = writeln!(
+            out,
+            "\n### Mob commands for the game ({} lines)\n",
+            mud.lines
+        );
+        let _ = writeln!(
+            out,
+            "Supported words: {}; unsupported words: {} (top {TOP_N} below).\n",
+            mud.supported.len(),
+            mud.unsupported.len()
+        );
+        count_table(&mut out, "unsupported word", &mud.unsupported, Some(TOP_N));
+
+        let refs = &coverage.field_references;
+        let _ = writeln!(
+            out,
+            "\n### Substitution fields ({} references)\n",
+            refs.total
+        );
+        let _ = writeln!(out, "| table | distinct names | references |");
+        let _ = writeln!(out, "|---|---:|---:|");
+        for (table, names) in [
+            ("text function", &refs.text_functions),
+            ("character", &refs.character),
+            ("object", &refs.object),
+            ("room", &refs.room),
+            ("unknown or global", &refs.unknown_or_global),
+        ] {
+            let _ = writeln!(
+                out,
+                "| {table} | {} | {} |",
+                names.len(),
+                names.values().sum::<usize>()
+            );
+        }
+        let _ = writeln!(out, "\nUnknown or global names (top {TOP_N}):\n");
+        count_table(&mut out, "name", &refs.unknown_or_global, Some(TOP_N));
+        let _ = writeln!(
+            out,
+            "\n### Variables read but never provided or assigned ({} names)\n",
+            coverage.unknown_variable_heads.len()
+        );
+        count_table(
+            &mut out,
+            "variable",
+            &coverage.unknown_variable_heads,
+            Some(TOP_N),
+        );
 
         let _ = writeln!(out, "\n## Global permanent drops\n");
         for drop in &self.global_drops {
             let _ = writeln!(out, "- `{}` / `{}`: {}", drop.kind, drop.name, drop.reason);
         }
         out
+    }
+}
+
+/// How many rows a long map gets in the summary.
+const TOP_N: usize = 15;
+
+/// The `limit` largest entries: count descending, name ascending.
+fn top_n<'a>(
+    entries: impl Iterator<Item = (&'a String, usize)>,
+    limit: usize,
+) -> Vec<(&'a String, usize)> {
+    let mut rows: Vec<(&String, usize)> = entries.collect();
+    rows.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(b.0)));
+    rows.truncate(limit);
+    rows
+}
+
+/// A two-column markdown table of `counts`: all rows, or the `limit` largest.
+fn count_table(
+    out: &mut String,
+    heading: &str,
+    counts: &BTreeMap<String, usize>,
+    limit: Option<usize>,
+) {
+    let _ = writeln!(out, "| {heading} | count |");
+    let _ = writeln!(out, "|---|---:|");
+    let rows = match limit {
+        Some(limit) => top_n(counts.iter().map(|(k, v)| (k, *v)), limit),
+        None => counts.iter().map(|(k, v)| (k, *v)).collect(),
+    };
+    for (name, count) in rows {
+        let _ = writeln!(out, "| `{name}` | {count} |");
+    }
+}
+
+/// Up to eight vnums, then how many more.
+fn vnum_list(vnums: &[i32]) -> String {
+    let shown: Vec<String> = vnums.iter().take(8).map(i32::to_string).collect();
+    match vnums.len().checked_sub(8) {
+        Some(more) if more > 0 => format!("{} (+{more})", shown.join(", ")),
+        _ => shown.join(", "),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn counts(entries: &[(&str, usize)]) -> BTreeMap<String, usize> {
+        entries.iter().map(|(k, v)| ((*k).to_owned(), *v)).collect()
+    }
+
+    #[test]
+    fn mud_commands_split_by_the_supported_words() {
+        let words = counts(&[("say", 5), ("Smile", 2), ("zap", 1)]);
+        let none = split_mud_commands(&words, &[]);
+        assert_eq!(none.lines, 8);
+        assert!(none.supported.is_empty());
+        assert_eq!(none.unsupported, words);
+
+        let split = split_mud_commands(&words, &["say", "smile"]);
+        assert_eq!(split.lines, 8);
+        assert_eq!(split.supported, counts(&[("say", 5), ("Smile", 2)]));
+        assert_eq!(split.unsupported, counts(&[("zap", 1)]));
+    }
+
+    #[test]
+    fn long_lists_are_cut_to_the_largest_entries() {
+        let map = counts(&[("a", 1), ("b", 3), ("c", 3), ("d", 2)]);
+        let top = top_n(map.iter().map(|(k, v)| (k, *v)), 3);
+        let names: Vec<&str> = top.iter().map(|(name, _)| name.as_str()).collect();
+        assert_eq!(names, ["b", "c", "d"]);
+        assert_eq!(vnum_list(&[1, 2]), "1, 2");
+        assert_eq!(
+            vnum_list(&(1..=10).collect::<Vec<_>>()),
+            "1, 2, 3, 4, 5, 6, 7, 8 (+2)"
+        );
+        assert_eq!(vnum_list(&[]), "");
     }
 }
