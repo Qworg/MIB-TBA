@@ -1,0 +1,143 @@
+//! Character state the pack does not model, kept for DG scripts.
+//!
+//! Scripts read and write facts about a character that the pack's own
+//! components have no field for: a title, practices, quest points, hunger and
+//! thirst, per-character skill percentages, an NPC's purse, act flags set on
+//! the fly and the affects a script applied. They live here, each in the
+//! smallest component that holds them. Nothing in the pack's own systems reads
+//! these components; they exist so a script's write is visible to the next
+//! script's read.
+//!
+//! The components derive serde so they can be registered with the stdlib
+//! `SaveRegistry` under `DocKind::Player`; registration is `module.rs`'s.
+//! Until it is done they last for the life of the entity.
+
+use std::collections::{BTreeMap, BTreeSet};
+
+use mib_core::prelude::*;
+use serde::{Deserialize, Serialize};
+
+use crate::content::AffectDef;
+
+/// `GET_COND` for a fresh player when not hungry or thirsty (`init_char`:
+/// `GET_COND(ch, HUNGER) = 24`). The pack models no hunger, so a player is
+/// always full.
+pub const FULL_CONDITION: i32 = 24;
+
+/// The player-special record (`player_specials->saved`) scripts touch, plus
+/// the title (`ch->player.title`).
+///
+/// A player gets one on a script's first write; until then every field reads
+/// as a freshly created character's. Persisted with the player once registered.
+#[derive(Debug, Clone, PartialEq, Eq, Component, Serialize, Deserialize)]
+pub struct TbaCharExtras {
+    /// `GET_TITLE`; `None` is the C's NULL pointer.
+    #[serde(default)]
+    pub title: Option<String>,
+    /// `GET_PRACTICES` (`spells_to_learn`).
+    #[serde(default)]
+    pub practices: i32,
+    /// `GET_QUESTPOINTS`.
+    #[serde(default)]
+    pub quest_points: i32,
+    /// `GET_COND(ch, HUNGER)`.
+    #[serde(default = "full_condition")]
+    pub hunger: i32,
+    /// `GET_COND(ch, THIRST)`.
+    #[serde(default = "full_condition")]
+    pub thirst: i32,
+    /// `GET_COND(ch, DRUNK)`.
+    #[serde(default)]
+    pub drunk: i32,
+    /// `SET_SKILL` percentages a script wrote, by `SKILL_*` / `SPELL_*`
+    /// number. They win over the class grant.
+    #[serde(default)]
+    pub skills: BTreeMap<i32, i32>,
+    /// The permanent adjustment scripts made to each derived statistic, by
+    /// `APPLY_*` number: what `TbaBuffs` holds as a permanent entry so the
+    /// recompute keeps applying it.
+    #[serde(default)]
+    pub adjust: BTreeMap<i32, i32>,
+}
+
+fn full_condition() -> i32 {
+    FULL_CONDITION
+}
+
+impl Default for TbaCharExtras {
+    fn default() -> Self {
+        Self {
+            title: None,
+            practices: 0,
+            quest_points: 0,
+            hunger: FULL_CONDITION,
+            thirst: FULL_CONDITION,
+            drunk: 0,
+            skills: BTreeMap::new(),
+            adjust: BTreeMap::new(),
+        }
+    }
+}
+
+/// The one `dummy_mob` player-special record every NPC shares
+/// (`CHECK_PLAYER_SPECIAL`): a player-only attribute read or written through
+/// an NPC lands here, so it is seen through every other NPC. All zero at the
+/// start, as the C's static record is.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Resource)]
+pub struct TbaDummyMob {
+    pub practices: i32,
+    pub quest_points: i32,
+    pub hunger: i32,
+    pub thirst: i32,
+    pub drunk: i32,
+    pub skills: BTreeMap<i32, i32>,
+}
+
+/// An NPC's gold and experience, which the pack keeps only on the prototype
+/// (`tba.npc_stats`). Inserted on the first script write, from the prototype's
+/// values. The kill reward still reads the prototype.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Component, Serialize, Deserialize)]
+pub struct TbaNpcPurse {
+    /// `GET_GOLD` of the mob.
+    pub gold: i32,
+    /// `GET_EXP` of the mob.
+    pub exp: i32,
+}
+
+/// Act-array bits a script set or cleared on a character, relative to what the
+/// prototype says (`MOB_FLAGS` for an NPC, `PLR_FLAGS` for a player).
+#[derive(Debug, Clone, Default, PartialEq, Eq, Component, Serialize, Deserialize)]
+pub struct TbaActFlags {
+    /// Bits forced on.
+    #[serde(default)]
+    pub set: BTreeSet<u32>,
+    /// Bits forced off.
+    #[serde(default)]
+    pub cleared: BTreeSet<u32>,
+}
+
+/// One affect a script applied with `dg_affect` (or `affect_to_char`).
+///
+/// A numeric affect also has a copy in the character's `TbaBuffs`, which is
+/// what makes it count; the `numeric` field is that copy's affect, found again
+/// by equality. A bit-only affect lives here alone.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct DgAffect {
+    /// `af.spell`: `SPELL_DG_AFFECT` for a script's affect.
+    pub spell: i32,
+    /// `af.location`, an `APPLY_*` number (`0` for a bit affect).
+    pub location: i32,
+    /// `af.modifier`.
+    pub modifier: i8,
+    /// The `AFF_*` bit, for a bit affect.
+    pub bit: Option<u32>,
+    /// The pulse (`DgPulse`) after which the affect has worn off; `None` is
+    /// permanent (`duration == -1`).
+    pub expires: Option<i64>,
+    /// The `TbaBuffs` entry that makes a numeric affect count.
+    pub numeric: Option<AffectDef>,
+}
+
+/// The affects scripts applied to a character, oldest first.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Component, Serialize, Deserialize)]
+pub struct TbaDgAffects(pub Vec<DgAffect>);
