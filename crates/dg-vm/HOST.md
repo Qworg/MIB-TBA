@@ -324,7 +324,7 @@ Bit numbers into the C bit arrays. The VM names these (all in `types.rs`): act a
 
 ### VmState (`BaseHost::vm_state`)
 
-`depth` (`script_driver`'s static), `owner_purged` (`dg_owner_purged`), `act_check` (`comm.c`'s `dg_act_check`), and the `var_subst` / `eval_expr` nesting counters. The host stores one `VmState` and returns it on every call; the crate keeps no global state of its own.
+`depth` (`script_driver`'s static), `owner_purged` (`dg_owner_purged`), `act_check` (`comm.c`'s `dg_act_check`), and the `var_subst` / `eval_expr` nesting counters. The host stores one `VmState` and returns it on every call. The host's own half of `act_check`: its `act()` must set `vm_state().act_check = !IS_SET(type, DG_NO_TRIG)` on every call with non-empty text (nested calls too, so a `say` made by an act trigger switches it off for the rest of the outer walk), and its `perform_act` must test that shared field, not the line's own flag, in `IS_NPC(to) && dg_act_check && to != ch` before calling `dispatch::act_mtrigger`; the crate keeps no global state of its own.
 
 ## Totals
 

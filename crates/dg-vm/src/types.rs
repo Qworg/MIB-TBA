@@ -307,6 +307,10 @@ pub struct VmState {
     /// existence test: a purged mob still exists until the end of the pulse.
     pub owner_purged: bool,
     /// `comm.c`'s `static int dg_act_check`, which every `act()` call sets.
+    /// The host's `act()` must write `!IS_SET(type, DG_NO_TRIG)` here on every
+    /// call that has text (nested ones included), and its `perform_act` must
+    /// read this field, not the line's own flag, in `IS_NPC(to) &&
+    /// dg_act_check && to != ch` before calling `act_mtrigger`.
     pub act_check: bool,
     /// How deeply `var_subst` is nested right now.
     pub subst_nesting: u32,

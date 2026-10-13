@@ -115,7 +115,7 @@ pub mod wld;
 #[cfg(test)]
 mod script_tests;
 #[cfg(test)]
-mod support;
+pub(crate) mod support;
 
 use crate::cstr::{any_one_arg, skip_spaces};
 use crate::host::{Cx, DgHost};

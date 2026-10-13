@@ -292,9 +292,6 @@ fn object_and_room_messages_name_the_actor_and_the_object() {
 }
 
 // ---- load: lastloaded is set before the load trigger ------------------
-//
-// These tests need the dispatch bodies (`load_mtrigger`, `load_otrigger`,
-// `enter_wtrigger`); they are ignored while those are stubs.
 
 /// A trigger for what gets loaded: it reads the loader's `lastloaded` through
 /// a variable holding the loader's id and says what it found.

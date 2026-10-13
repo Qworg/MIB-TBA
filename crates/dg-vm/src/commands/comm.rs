@@ -526,7 +526,9 @@ fn next_in_room<H: DgHost + ?Sized>(host: &H, to: Uid) -> Option<Uid> {
 /// `act_to_room(str, room)` (`dg_wldcmd.c`): `act()` to everyone in a room
 /// by way of its first occupant (`TO_ROOM`, then `TO_CHAR` for the occupant
 /// at the head of the room by then: `room->people` is read for each call, and
-/// an act trigger fired by the first may have changed it).
+/// an act trigger fired by the first may have changed it). The second `act()`
+/// runs even with nobody left at the head (`ch` NULL): it still overwrites
+/// `dg_act_check`.
 pub fn act_to_room<H: DgHost + ?Sized>(host: &mut H, text: &str, room: Uid) {
     let Some(first) = host.room_people(room).first().copied() else {
         return;
@@ -534,6 +536,8 @@ pub fn act_to_room<H: DgHost + ?Sized>(host: &mut H, text: &str, room: Uid) {
     act(host, text, false, first, TO_ROOM);
     if let Some(head) = host.room_people(room).first().copied() {
         act(host, text, false, head, TO_CHAR);
+    } else if !text.is_empty() {
+        host.vm_state().act_check = true;
     }
 }
 
@@ -1003,6 +1007,40 @@ mod tests {
         w.host.vm.act_check = false;
         act(&mut w.host, "", false, alice, TO_ROOM);
         assert!(!w.host.vm.act_check);
+    }
+
+    #[test]
+    fn act_to_room_second_act_overwrites_the_check_even_when_the_room_emptied() {
+        // `act(str, FALSE, room->people, 0, 0, TO_CHAR)` with `room->people`
+        // NULL still runs `dg_act_check = !IS_SET(type, DG_NO_TRIG)` before
+        // it finds nobody to write to.
+        let mut w = World::new();
+        let (room, room2, bob, guard, alice) = (w.room, w.room2, w.player2, w.mob, w.player);
+        w.host.char_from_room(alice);
+        w.host.char_to_room(alice, room2);
+        w.seat(room, &[bob, guard]);
+        all_listening(&mut w);
+        w.listen_for(guard, "hush", "say a\nsay b\nsay c");
+        w.host.hook(Some(guard), "say", MockAction::ActNoTrig);
+        w.host.hook(
+            Some(guard),
+            "say",
+            MockAction::MoveChar {
+                ch: bob,
+                room: room2,
+            },
+        );
+        w.host.hook(
+            Some(guard),
+            "say",
+            MockAction::MoveChar {
+                ch: guard,
+                room: room2,
+            },
+        );
+        act_to_room(&mut w.host, "hush", room);
+        assert!(w.host.room_people(room).is_empty());
+        assert!(w.host.vm.act_check);
     }
 
     #[test]

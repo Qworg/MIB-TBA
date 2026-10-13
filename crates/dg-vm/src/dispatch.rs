@@ -35,16 +35,15 @@
 //!   steps, with one `script_log` line: two mobs that keep putting
 //!   themselves back at the head of a list would loop for ever in the C.
 //! - "The owner was purged" (`!obj` after `script_driver` NULLs `go_adress`)
-//!   is `!host.exists(obj)`, as the doc of [`script_driver`] says. The C
-//!   NULLs the pointer whenever `dg_owner_purged` is set after a command of
-//!   an object's script, and that global is also left set by a nested script
-//!   that purged *its own* owner (an `mload` whose load trigger purges the
-//!   new mob, a `dg_cast` or `dg_affect` line); there the C reports a live
-//!   object as purged. Here the flag ([`crate::types::VmState::owner_purged`])
-//!   still ends the script that sees it, as the C does, but dispatch asks
-//!   whether the object exists. `has_obj_by_uid_in_lookup_table` is
-//!   `!host.exists(obj)` too, and a purged character is `DEAD(ch)`,
-//!   [`crate::host::WorldHost::is_dead`].
+//!   is `!host.exists(obj)` or [`crate::types::VmState::owner_purged`] still
+//!   set after the run, as the C NULLs the pointer whenever `dg_owner_purged`
+//!   is set after a command of an object's script. That includes the flag a
+//!   nested script left set by purging *its own* owner (an `mload` whose load
+//!   trigger purges the new mob): the C then reports the live object as
+//!   purged and its dispatcher refuses the action. The flag is zeroed on
+//!   entry to every driver run, so it is read only straight after one.
+//!   `has_obj_by_uid_in_lookup_table` is `!host.exists(obj)`, and a purged
+//!   character is `DEAD(ch)`, [`crate::host::WorldHost::is_dead`].
 //! - Where the C would read out of bounds, the nearest safe thing happens:
 //!   an actor or owner with no room is skipped where the C indexes
 //!   `world[NOWHERE]`; a door sub-command outside `cmd_door[]` is the empty
@@ -229,10 +228,11 @@ fn run<H: DgHost + ?Sized>(host: &mut H, go: Uid, id: u64) -> i32 {
     script_driver(host, go, id, Mode::New)
 }
 
-/// The C's `!obj` after `script_driver(&obj, ...)`, as `!host.exists(obj)`
-/// (see the module notes: the `dg_owner_purged` flag is not read here).
-fn object_gone<H: DgHost + ?Sized>(host: &H, obj: Uid) -> bool {
-    !host.exists(obj)
+/// The C's `!obj` after `script_driver(&obj, ...)`: the object no longer
+/// exists, or the run ended with `dg_owner_purged` set (which NULLs
+/// `go_adress`). Meant for the point straight after a run.
+fn object_gone<H: DgHost + ?Sized>(host: &mut H, obj: Uid) -> bool {
+    !host.exists(obj) || host.vm_state().owner_purged
 }
 
 /// Bound on the steps of a trigger-list walk (no real list is near it).
@@ -293,6 +293,9 @@ impl TriggerWalk {
         };
         self.prev = id;
         let id = id?;
+        // The list as the trigger about to run found it, for the successor
+        // lookup should that trigger detach itself.
+        self.snapshot = trigger_ids(host, go);
         self.steps += 1;
         if self.steps > TRIGGER_WALK_LIMIT {
             host.script_log(&format!(
@@ -875,8 +878,9 @@ pub fn speech_mtrigger<H: DgHost + ?Sized>(host: &mut H, actor: Uid, str: &str) 
 /// spaces and without everything from its first `\r` on. `arg` (the last
 /// parameter) is unused, as in the C.
 ///
-/// Called from `perform_act` (`comm.c`) for every NPC recipient of an
-/// `act()` line that is not `DG_NO_TRIG`, after the text is built, with the
+/// Called from `perform_act` (`comm.c`) for every NPC recipient other than
+/// the actor while the global `dg_act_check` ([`crate::types::VmState::act_check`]) is set
+/// (the last `act()` made, nested ones included, was not `DG_NO_TRIG`), after the text is built, with the
 /// line still ending in `\r\n`. The result is ignored.
 #[allow(clippy::too_many_arguments)]
 pub fn act_mtrigger<H: DgHost + ?Sized>(
@@ -3187,7 +3191,7 @@ end"#;
                 .add_var("on_quest_zone_1", "1", 0);
             let t = w.trig(w.guard, 143, "j", 100, "", TRIG_143);
             // The branch before the `wait 1 sec` is skipped; the script waits.
-            receive_mtrigger(&mut w.h, w.guard, w.alice, item);
+            assert_eq!(receive_mtrigger(&mut w.h, w.guard, w.alice, item), 1);
             assert!(w.h.mud_commands.is_empty());
             assert_eq!(w.h.waits, [(w.guard, t, 10)]);
             crate::driver::resume(&mut w.h, w.guard, t);
@@ -4783,19 +4787,37 @@ end"#;
     }
 
     #[test]
+    fn a_nested_script_purging_its_own_owner_makes_the_objects_dispatchers_report_it_gone() {
+        // C: the rat's load trigger purges the rat and leaves
+        // `dg_owner_purged` set; the orb's script sees it after `%load%`,
+        // NULLs `go_adress`, and `get_otrigger` returns 0.
+        let mut w = W::new();
+        w.h.globals
+            .texts
+            .insert("mobproto:3100".to_owned(), "a rat".to_owned());
+        let orb = w.obj(10, "an orb");
+        w.trig(orb, 1, "g", 100, "", "oload mob 3100\nreturn 1");
+        w.h.add_proto(3100, AttachType::Mob, "n", 100, "", "mpurge %self%");
+        w.h.globals.nums.insert("mobtrig:3100".to_owned(), 3100);
+        w.h.obj_to_room(orb, w.room);
+        assert_eq!(get_otrigger(&mut w.h, orb, w.alice), 0);
+        assert!(w.h.exists(orb));
+    }
+
+    #[test]
     fn only_an_object_that_no_longer_exists_is_gone() {
         let mut w = W::new();
         let orb = w.obj(10, "an orb");
         w.trig(orb, 1, "g", 100, "", "return 1");
-        // A flag a nested script left set does not make a live object gone
-        // (C: `go_adress` is NULLed only when the script purged its owner).
-        w.h.vm.owner_purged = true;
         assert_eq!(get_otrigger(&mut w.h, orb, w.alice), 1);
+        assert!(!object_gone(&mut w.h, orb));
+        // A flag still set after the run (a nested script purged its own
+        // owner) makes a live object gone: `go_adress` is NULLed.
         w.h.vm.owner_purged = true;
-        assert!(!object_gone(&w.h, orb));
+        assert!(object_gone(&mut w.h, orb));
         // An extracted object is gone.
         w.h.extract_obj(orb);
-        assert!(object_gone(&w.h, orb));
+        assert!(object_gone(&mut w.h, orb));
     }
 
     #[test]
@@ -5396,6 +5418,22 @@ end"#;
         let mut w = W::new();
         w.trig(w.guard, 1, "c", 0, "*", "attach 99 %self.id%\nreturn 0");
         w.h.add_proto(99, AttachType::Mob, "c", 0, "*", "return 1");
+        assert_eq!(command_mtrigger(&mut w.h, w.alice, "x", ""), 1);
+    }
+
+    #[test]
+    fn command_mtrigger_walk_survives_a_trigger_detaching_itself() {
+        // C: B's `next` is read before B runs, so B detaching itself still
+        // leads to trigger 99, attached by A.
+        let mut w = W::new();
+        w.trig(w.guard, 1, "c", 0, "*", "attach 99 %self.id%\nreturn 0");
+        w.trig(w.guard, 2, "c", 0, "*", "detach 2 %self.id%\nreturn 0");
+        w.h.add_proto(99, AttachType::Mob, "c", 0, "*", "return 1");
+        assert_eq!(command_mtrigger(&mut w.h, w.alice, "x", ""), 1);
+        // A trigger after the one that detached itself still runs.
+        let mut w = W::new();
+        w.trig(w.guard, 1, "c", 0, "*", "detach 1 %self.id%\nreturn 0");
+        w.trig(w.guard, 2, "c", 0, "*", "return 1");
         assert_eq!(command_mtrigger(&mut w.h, w.alice, "x", ""), 1);
     }
 

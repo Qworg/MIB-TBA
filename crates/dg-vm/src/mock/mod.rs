@@ -70,7 +70,7 @@
 //! its character and line prefix runs a [`MockAction`] (move or extract a
 //! character, move or extract an object, load a mob, set a variable, clear
 //! `dg_act_check`, or fire a trigger through [`crate::dispatch`]). See
-//! `hooks.rs` for the matching rules.
+//! [`MockHost::hook`] for the matching rules.
 //!
 //! Like the C lists, a newly placed character or object goes to the **head**,
 //! with one exception the C also makes: `obj_to_room` appends, so a room's
