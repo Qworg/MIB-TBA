@@ -5,6 +5,7 @@
 //! are replaced by the port.
 
 use crate::host::{Cx, DgHost};
+use crate::types::Uid;
 
 /// Name lookup and the special variables' world primitives.
 pub trait SubstHost {}
@@ -55,6 +56,26 @@ pub fn find_replacement<H: DgHost + ?Sized>(
     cx.host
         .script(cx.owner)
         .and_then(|script| script.global_vars.get_in_context(var, context))
+        .map(|found| found.value.clone())
+        .unwrap_or_default()
+}
+
+/// `find_replacement(go, SCRIPT(script_owner), NULL, MOB_TRIGGER, var, "", NULL, …)`:
+/// the `%<char>.global(<var>)%` path, the one place the C calls
+/// `find_replacement` with another entity's script and no trigger. Looks
+/// `var` up in `script_owner`'s globals under that script's own context, then
+/// falls back to the no-field specials with the mob spellings.
+///
+/// [`find_replacement`] intercepts the `global` field of an NPC that has a
+/// script and calls this; `char_field` never sees that case.
+pub fn find_global_replacement<H: DgHost + ?Sized>(
+    cx: &mut Cx<'_, H>,
+    script_owner: Uid,
+    var: &str,
+) -> String {
+    cx.host
+        .script(script_owner)
+        .and_then(|script| script.global_vars.get_in_context(var, script.context))
         .map(|found| found.value.clone())
         .unwrap_or_default()
 }

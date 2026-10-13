@@ -16,6 +16,11 @@ pub enum Mode {
 /// The interpreter's per-instance position and nesting state: the C's
 /// `curr_state`, `GET_TRIG_DEPTH`, `GET_TRIG_LOOPS`, and the per-line
 /// `loops`/`original` fields of `cmdlist_element`.
+///
+/// Deviation: in the C the per-line `loops`/`original` live on the command
+/// list, which every instance of a prototype shares. Here they are per
+/// instance, so two mobs running the same looping trigger do not disturb
+/// each other's counters.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct RunState {
     /// `GET_TRIG_DEPTH`: `0` when idle; `1` plus the `if` nesting while
@@ -35,6 +40,14 @@ impl RunState {
 ///
 /// The caller has already added the event's variables to the instance
 /// (`host.script_mut(owner)` → `trigger_mut(id)` → `vars.add_var`).
+///
+/// The run type is the owner's kind (`AttachType::from`), not the
+/// prototype's. The driver checks the instance out of the owner's script for
+/// the run (see [`crate::host::Cx`]).
+///
+/// The C's `go_adress` out-parameter, which it NULLs when an object owner
+/// purges itself, has no counterpart: after the call, a caller that the C
+/// guards with `if (!obj)` tests `!host.exists(owner)`.
 pub fn script_driver<H: DgHost + ?Sized>(
     host: &mut H,
     owner: Uid,

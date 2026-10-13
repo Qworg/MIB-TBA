@@ -11,9 +11,11 @@ pub trait CharHost {}
 /// The `if (c) { … }` branch of `find_replacement`: the value of
 /// `field(subfield)` on this character.
 ///
-/// Returns `None` for a field the table does not name; the caller then
-/// applies the C's fallback (the entity's own script variables, then an
-/// "unknown field" log).
+/// Returns `None` when the table leaves the result untouched (the C's
+/// `*str == '\x1'` sentinel); the caller then applies the C's fallback (the
+/// entity's own script variables, then an "unknown field" log). That is the
+/// case for a field the table does not name, and also for the few it does
+/// name that write nothing on some path.
 pub fn char_field<H: DgHost + ?Sized>(
     _cx: &mut Cx<'_, H>,
     _char: Uid,

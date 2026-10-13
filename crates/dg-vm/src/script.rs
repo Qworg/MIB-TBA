@@ -19,11 +19,14 @@ pub struct Program {
 }
 
 impl Program {
-    /// Split a script body into lines.
+    /// Split a script body into lines as `parse_trigger` does with
+    /// `strtok(s, "\n\r")`: either character ends a line, and empty lines
+    /// are dropped (a line of only spaces is kept).
     pub fn parse(source: &str) -> Self {
         Self {
             lines: source
-                .lines()
+                .split(['\n', '\r'])
+                .filter(|line| !line.is_empty())
                 .map(|line| Line {
                     cmd: line.to_owned(),
                 })

@@ -7,33 +7,65 @@
 //!
 //! # Shared data model
 //!
-//! These keys are the mock's world graph. Every sub-trait implementation uses
-//! them, so tests that combine modules agree on where things are. Use the
+//! These keys are the mock's world. Every sub-trait implementation uses them,
+//! so tests that combine modules agree on where things are and what they
+//! are. Add module-specific keys freely (and document them in that module's
+//! mock file), but never a second key for a fact listed here. Use the
 //! `MockHost` movement helpers rather than editing the lists by hand.
 //!
 //! | entity | key | meaning (C) |
 //! |---|---|---|
 //! | any | `nums["vnum"]` | `GET_MOB_VNUM` / `GET_OBJ_VNUM` / `room->number`; `-1` for a player |
 //! | any | `texts["name"]` | `GET_NAME` / `short_description` / `room->name` |
-//! | char, obj | `texts["alias"]` | keyword list (`player.name` for a mob, `obj->name`) |
+//! | char, obj | `texts["alias"]` | keyword list (`player.name`, `obj->name`) |
 //! | char | `nums["is_npc"]` | `IS_NPC` |
+//! | char | `nums["level"]` | `GET_LEVEL` |
+//! | char | `nums["dead"]` | `DEAD(ch)`: extracted, awaiting [`MockHost::sweep_dead`] |
+//! | char | `nums["dg_invalid"]` | non-zero makes `valid_dg_target` false |
+//! | char | `lists["cannot_see"]` | entities this character fails `CAN_SEE` for |
+//! | char | `nums["pos"]` | `GET_POS` (`0` dead … `8` standing) |
+//! | char | `nums["hit"]`, `nums["max_hit"]`, `nums["mana"]`, `nums["max_mana"]`, `nums["move"]`, `nums["max_move"]` | the point pools |
+//! | char | `nums["gold"]`, `nums["exp"]`, `nums["align"]`, `nums["sex"]`, `nums["class"]` | the same-named `GET_*` |
+//! | char | `links["fighting"]`, `links["master"]` | `FIGHTING(ch)`, `ch->master` |
+//! | char | `lists["followers"]` | `ch->followers`, head first |
+//! | char | `nums["aff:<n>"]` | `AFF_FLAGGED(ch, n)`, `<n>` the `AFF_*` number |
+//! | char | `nums["spell:<n>"]` | `affected_by_spell(ch, n)` |
 //! | char, obj | `links["room"]` | `IN_ROOM` (objects: only when lying in a room) |
-//! | room | `lists["people"]` | `room->people`, head first |
-//! | room, obj | `lists["contents"]` | `room->contents` / `obj->contains`, head first |
 //! | char | `lists["inventory"]` | `ch->carrying`, head first |
 //! | char | `links["eq:<pos>"]` | `GET_EQ(ch, pos)`, `<pos>` the numeric wear position |
 //! | obj | `links["carried_by"]` / `links["worn_by"]` / `links["in_obj"]` | the same-named C fields |
+//! | obj | `nums["type"]` | `GET_OBJ_TYPE` (`15` is a container) |
+//! | obj | `nums["wear"]` | wear flags as a bitvector, bit `n` = `ITEM_WEAR_*` `n` |
+//! | obj | `nums["val0"]`..`nums["val3"]`, `nums["timer"]`, `nums["cost"]`, `nums["weight"]` | `GET_OBJ_VAL` and the same-named `GET_OBJ_*` |
+//! | room, obj | `lists["contents"]` | `room->contents` / `obj->contains` |
+//! | room | `lists["people"]` | `room->people`, head first |
+//! | room | `links["exit:<dir>"]` | `R_EXIT(room, dir)->to_room`, `<dir>` the direction number; absent = no exit |
+//! | room | `nums["exit:<dir>:flags"]`, `nums["exit:<dir>:key"]` | `exit_info`, `key` |
+//! | room | `texts["exit:<dir>:keyword"]`, `texts["exit:<dir>:desc"]` | `keyword`, `general_description` |
+//! | room | `nums["zone"]`, `nums["sector"]` | zone number, `sector_type` |
+//! | room | `nums["flag:<n>"]` | `ROOM_FLAGGED(room, n)` |
 //!
-//! Like the C lists, a newly placed character or object goes to the **head**.
+//! World-level facts live in [`MockHost::globals`], a bag of the same shape:
+//!
+//! | key | meaning |
+//! |---|---|
+//! | `nums["script_players"]` | `CONFIG_SCRIPT_PLAYERS` |
+//! | `texts["commands"]` | the game command table for `mudcommand`, space-separated in table order |
+//! | `texts["zone:<n>:name"]`, `nums["zone:<n>:empty"]` | a zone's name; whether `is_empty(zone)` |
+//! | `texts["mobproto:<vnum>"]`, `texts["objproto:<vnum>"]` | a loadable prototype's name; absent = no such vnum |
+//!
+//! Like the C lists, a newly placed character or object goes to the **head**,
+//! with one exception the C also makes: `obj_to_room` appends, so a room's
+//! contents are oldest first.
 
 use std::collections::{BTreeMap, VecDeque};
 use std::sync::Arc;
 
-use crate::host::BaseHost;
+use crate::host::{BaseHost, WorldHost};
 use crate::script::Program;
 use crate::types::{
-    AttachType, Kind, MOB_ID_BASE, MudTime, OBJ_ID_BASE, ROOM_ID_BASE, Script, TrigProto, Uid,
-    trig::asciiflag_conv,
+    AttachType, Kind, MOB_ID_BASE, MudTime, OBJ_ID_BASE, ROOM_ID_BASE, Script, ScriptMemory,
+    TrigProto, Uid, trig::asciiflag_conv,
 };
 
 mod chars;
@@ -53,6 +85,14 @@ pub struct MockEntity {
     pub links: BTreeMap<String, Uid>,
     pub lists: BTreeMap<String, Vec<Uid>>,
     pub script: Option<Script>,
+    /// `SCRIPT_MEM`, head first.
+    pub memory: Vec<ScriptMemory>,
+}
+
+impl Default for MockEntity {
+    fn default() -> Self {
+        Self::new(Kind::Room)
+    }
 }
 
 impl MockEntity {
@@ -64,6 +104,7 @@ impl MockEntity {
             links: BTreeMap::new(),
             lists: BTreeMap::new(),
             script: None,
+            memory: Vec::new(),
         }
     }
 }
@@ -72,6 +113,14 @@ impl MockEntity {
 #[derive(Debug, Default)]
 pub struct MockHost {
     pub entities: BTreeMap<Uid, MockEntity>,
+    /// World-level facts (see the module table). Its `kind` is meaningless.
+    pub globals: MockEntity,
+    /// The global `pulse` counter.
+    pub pulse: i64,
+    /// `dg_owner_purged`.
+    pub owner_purged: bool,
+    /// Every [`BaseHost::cancel_wait`] call: `(owner, trigger id)`.
+    pub cancelled_waits: Vec<(Uid, u64)>,
     /// Trigger prototypes by vnum, for `attach`.
     pub protos: BTreeMap<i32, Arc<TrigProto>>,
     pub time: MudTime,
@@ -91,6 +140,10 @@ pub struct MockHost {
     /// A free-form record of world effects, appended by the sub-trait
     /// implementations (`"send }5: hello"`), for assertions.
     pub effects: Vec<String>,
+    /// `character_list`, newest first (the C prepends).
+    pub character_list: Vec<Uid>,
+    /// `object_list`, newest first.
+    pub object_list: Vec<Uid>,
     next_player: Uid,
     next_mob: Uid,
     next_obj: Uid,
@@ -106,6 +159,11 @@ impl MockHost {
         entity.nums.insert("vnum".to_owned(), vnum);
         entity.texts.insert("name".to_owned(), name.to_owned());
         self.entities.insert(uid, entity);
+        match kind {
+            Kind::Char => self.character_list.insert(0, uid),
+            Kind::Obj => self.object_list.insert(0, uid),
+            Kind::Room => {}
+        }
         uid
     }
 
@@ -274,11 +332,17 @@ impl MockHost {
         }
     }
 
-    /// `obj_to_room`.
+    /// `obj_to_room`: appended, as in the C.
     pub fn obj_to_room(&mut self, obj: Uid, room: Uid) {
         self.obj_from_anywhere(obj);
         self.set_link(obj, "room", Some(room));
-        self.list_push_front(room, "contents", obj);
+        if let Some(entity) = self.entity_mut(room) {
+            entity
+                .lists
+                .entry("contents".to_owned())
+                .or_default()
+                .push(obj);
+        }
     }
 
     /// `obj_to_char`.
@@ -302,33 +366,61 @@ impl MockHost {
         self.set_link(ch, &format!("eq:{pos}"), Some(obj));
     }
 
-    /// `extract_char` / `extract_obj`: remove an entity and everything it
-    /// holds from the world.
-    pub fn extract(&mut self, uid: Uid) {
-        let Some(entity) = self.entity(uid) else {
+    /// `extract_obj`: remove an object and everything in it from the world,
+    /// immediately.
+    pub fn extract_obj(&mut self, obj: Uid) {
+        if self
+            .entity(obj)
+            .is_none_or(|entity| entity.kind != Kind::Obj)
+        {
             return;
-        };
-        let mut held: Vec<Uid> = Vec::new();
-        for key in ["inventory", "contents"] {
-            held.extend(entity.lists.get(key).cloned().unwrap_or_default());
         }
-        held.extend(
-            entity
-                .links
-                .iter()
-                .filter(|(key, _)| key.starts_with("eq:"))
-                .map(|(_, target)| *target),
-        );
-        let kind = entity.kind;
-        match kind {
-            Kind::Char => self.char_from_room(uid),
-            Kind::Obj => self.obj_from_anywhere(uid),
-            Kind::Room => {}
+        for item in self.list(obj, "contents") {
+            self.extract_obj(item);
         }
-        for item in held {
-            self.extract(item);
+        self.obj_from_anywhere(obj);
+        self.entities.remove(&obj);
+        self.object_list.retain(|entry| *entry != obj);
+    }
+
+    /// `extract_char`: mark a character dead. As in the C it stays in the
+    /// world, in its room and holding its things, until [`Self::sweep_dead`].
+    pub fn extract_char(&mut self, ch: Uid) {
+        if self
+            .entity(ch)
+            .is_some_and(|entity| entity.kind == Kind::Char)
+        {
+            self.set_num(ch, "dead", 1);
         }
-        self.entities.remove(&uid);
+    }
+
+    /// `extract_pending_chars`: the end-of-pulse sweep that really removes
+    /// the characters [`Self::extract_char`] marked, and what they held.
+    pub fn sweep_dead(&mut self) {
+        let dead: Vec<Uid> = self
+            .character_list
+            .iter()
+            .copied()
+            .filter(|ch| self.num(*ch, "dead") != 0)
+            .collect();
+        for ch in dead {
+            let mut held = self.list(ch, "inventory");
+            if let Some(entity) = self.entity(ch) {
+                held.extend(
+                    entity
+                        .links
+                        .iter()
+                        .filter(|(key, _)| key.starts_with("eq:"))
+                        .map(|(_, target)| *target),
+                );
+            }
+            for item in held {
+                self.extract_obj(item);
+            }
+            self.char_from_room(ch);
+            self.entities.remove(&ch);
+            self.character_list.retain(|entry| *entry != ch);
+        }
     }
 
     /// Build and register a trigger prototype. `types` is the `.trg` type
@@ -386,8 +478,29 @@ impl BaseHost for MockHost {
             .map(|entity| entity.script.get_or_insert_with(Script::default))
     }
 
+    fn remove_script(&mut self, uid: Uid) -> Option<Script> {
+        self.entity_mut(uid).and_then(|entity| entity.script.take())
+    }
+
     fn depth_mut(&mut self) -> &mut u32 {
         &mut self.depth
+    }
+
+    fn owner_purged_mut(&mut self) -> &mut bool {
+        &mut self.owner_purged
+    }
+
+    fn script_players(&self) -> bool {
+        self.globals
+            .nums
+            .get("script_players")
+            .copied()
+            .unwrap_or(0)
+            != 0
+    }
+
+    fn pulse(&self) -> i64 {
+        self.pulse
     }
 
     fn rand_number(&mut self, from: i64, to: i64) -> i64 {
@@ -410,8 +523,23 @@ impl BaseHost for MockHost {
         self.waits.push((owner, trigger_id, pulses));
     }
 
-    fn mud_command(&mut self, mob: Uid, line: &str) {
-        self.mud_commands.push((mob, line.to_owned()));
+    fn cancel_wait(&mut self, owner: Uid, trigger_id: u64) {
+        self.cancelled_waits.push((owner, trigger_id));
+        self.waits
+            .retain(|(waiter, id, _)| !(*waiter == owner && *id == trigger_id));
+    }
+
+    fn mud_command(&mut self, ch: Uid, line: &str) {
+        self.mud_commands.push((ch, line.to_owned()));
+    }
+
+    fn mud_command_name(&self, prefix: &str) -> Option<String> {
+        self.globals
+            .texts
+            .get("commands")?
+            .split(' ')
+            .find(|command| command.starts_with(prefix))
+            .map(str::to_owned)
     }
 
     fn script_log(&mut self, message: &str) {
@@ -420,6 +548,116 @@ impl BaseHost for MockHost {
 
     fn unsupported(&mut self, what: &str, detail: &str) {
         self.unsupported.push((what.to_owned(), detail.to_owned()));
+    }
+}
+
+impl WorldHost for MockHost {
+    fn kind(&self, uid: Uid) -> Option<Kind> {
+        self.entity(uid).map(|entity| entity.kind)
+    }
+
+    fn is_npc(&self, ch: Uid) -> bool {
+        self.num(ch, "is_npc") != 0
+    }
+
+    fn valid_dg_target(&self, ch: Uid, _allow_gods: bool) -> bool {
+        self.num(ch, "dg_invalid") == 0
+    }
+
+    fn name(&self, uid: Uid) -> String {
+        self.text(uid, "name")
+    }
+
+    fn keywords(&self, uid: Uid) -> String {
+        self.text(uid, "alias")
+    }
+
+    fn vnum(&self, uid: Uid) -> i32 {
+        self.entity(uid)
+            .and_then(|entity| entity.nums.get("vnum"))
+            .and_then(|vnum| i32::try_from(*vnum).ok())
+            .unwrap_or(-1)
+    }
+
+    fn in_room(&self, uid: Uid) -> Option<Uid> {
+        self.link(uid, "room")
+    }
+
+    fn room_people(&self, room: Uid) -> Vec<Uid> {
+        self.list(room, "people")
+    }
+
+    fn room_contents(&self, room: Uid) -> Vec<Uid> {
+        self.list(room, "contents")
+    }
+
+    fn carrying(&self, ch: Uid) -> Vec<Uid> {
+        self.list(ch, "inventory")
+    }
+
+    fn equipment(&self, ch: Uid, pos: i32) -> Option<Uid> {
+        self.link(ch, &format!("eq:{pos}"))
+    }
+
+    fn obj_contains(&self, obj: Uid) -> Vec<Uid> {
+        self.list(obj, "contents")
+    }
+
+    fn obj_carried_by(&self, obj: Uid) -> Option<Uid> {
+        self.link(obj, "carried_by")
+    }
+
+    fn obj_worn_by(&self, obj: Uid) -> Option<Uid> {
+        self.link(obj, "worn_by")
+    }
+
+    fn obj_in_obj(&self, obj: Uid) -> Option<Uid> {
+        self.link(obj, "in_obj")
+    }
+
+    fn character_list(&self) -> Vec<Uid> {
+        self.character_list.clone()
+    }
+
+    fn object_list(&self) -> Vec<Uid> {
+        self.object_list.clone()
+    }
+
+    fn real_room(&self, vnum: i32) -> Option<Uid> {
+        let uid = ROOM_ID_BASE + Uid::from(vnum);
+        (vnum >= 0 && self.kind(uid) == Some(Kind::Room)).then_some(uid)
+    }
+
+    fn can_see(&self, ch: Uid, target: Uid) -> bool {
+        !self.list(ch, "cannot_see").contains(&target)
+    }
+
+    fn level(&self, ch: Uid) -> i32 {
+        i32::try_from(self.num(ch, "level")).unwrap_or(0)
+    }
+
+    fn is_dead(&self, ch: Uid) -> bool {
+        self.num(ch, "dead") != 0
+    }
+
+    fn is_container(&self, obj: Uid) -> bool {
+        self.num(obj, "type") == 15
+    }
+
+    fn wear_flags(&self, obj: Uid) -> u32 {
+        u32::try_from(self.num(obj, "wear")).unwrap_or(0)
+    }
+
+    fn script_mem(&self, ch: Uid) -> Vec<ScriptMemory> {
+        self.entity(ch)
+            .map(|entity| entity.memory.clone())
+            .unwrap_or_default()
+    }
+
+    fn set_script_mem(&mut self, ch: Uid, memory: Vec<ScriptMemory>) {
+        if let Some(entity) = self.entity_mut(ch) {
+            entity.memory = memory;
+        }
     }
 }
 
@@ -451,10 +689,23 @@ mod tests {
         assert!(host.list(mob, "inventory").is_empty());
         assert_eq!(host.link(mob, "eq:16"), Some(sword));
 
-        host.extract(mob);
+        // A character is only marked dead until the end-of-pulse sweep.
+        host.extract_char(mob);
+        assert!(host.exists(mob) && host.is_dead(mob));
+        assert_eq!(host.list(other, "people"), vec![mob]);
+        host.sweep_dead();
         assert!(!host.exists(mob));
         assert!(!host.exists(sword));
         assert!(host.list(other, "people").is_empty());
+
+        // Room contents are oldest first; an object goes at once.
+        let (a, b) = (host.add_obj(1, "a"), host.add_obj(2, "b"));
+        host.obj_to_room(a, room);
+        host.obj_to_room(b, room);
+        assert_eq!(host.list(room, "contents"), vec![a, b]);
+        host.extract_obj(a);
+        assert!(!host.exists(a));
+        assert_eq!(host.list(room, "contents"), vec![b]);
     }
 
     #[test]

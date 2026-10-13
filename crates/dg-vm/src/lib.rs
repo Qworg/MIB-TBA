@@ -20,6 +20,8 @@
 //!   [`types::TrigInstance`]s, trigger-type bits.
 //! - [`cstr`] — the C string helpers the interpreter's behaviour depends on
 //!   (`atoi`, `str_cmp`, `one_argument`, …).
+//! - [`lookup`] — how text names an entity: `get_char`, `get_obj_vis`,
+//!   `isname`, … shared by every module that resolves a target.
 //! - [`script`] — a script body as classified lines ([`script::Program`]).
 //! - [`driver`] — `script_driver`: control flow and the built-in statements.
 //! - [`expr`] — `eval_expr`/`eval_op`: the expression evaluator.
@@ -58,6 +60,7 @@ pub mod fields_char;
 pub mod fields_obj;
 pub mod fields_room;
 pub mod host;
+pub mod lookup;
 pub mod magic;
 pub mod mock;
 pub mod script;
@@ -65,5 +68,5 @@ pub mod subst;
 pub mod text;
 pub mod types;
 
-pub use host::{BaseHost, Cx, DgHost};
+pub use host::{BaseHost, Cx, DgHost, WorldHost};
 pub use types::{AttachType, Kind, Script, TrigInstance, TrigProto, Uid, Var, VarList};

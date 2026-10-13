@@ -38,8 +38,12 @@ pub enum Kind {
     Room,
 }
 
-/// The kind an id's range implies (`find_char`/`find_obj`/`find_room` test the
-/// same ranges). This says nothing about whether the entity exists.
+/// The kind an id's range implies. This says nothing about whether the entity
+/// exists; [`crate::lookup::find_char`] and friends do.
+///
+/// Deviation: the C `find_room` has no upper bound and truncates to a 16-bit
+/// vnum, so an object id can alias a room there. Here the three ranges are
+/// disjoint.
 pub fn uid_kind(uid: Uid) -> Kind {
     if uid >= OBJ_ID_BASE {
         Kind::Obj
@@ -102,6 +106,19 @@ impl AttachType {
     }
 }
 
+/// The script type an owner of this kind runs its triggers as. The C passes
+/// `MOB_TRIGGER` for anything attached to a character, whatever the record's
+/// own `attach_type` says, so the run type always comes from the owner.
+impl From<Kind> for AttachType {
+    fn from(kind: Kind) -> Self {
+        match kind {
+            Kind::Char => AttachType::Mob,
+            Kind::Obj => AttachType::Obj,
+            Kind::Room => AttachType::Wld,
+        }
+    }
+}
+
 /// Trigger-type bits (`dg_scripts.h`). A record's type letters `a`..`z` set
 /// bits `0`..`25` (`asciiflag_conv`); what a bit means depends on the
 /// [`AttachType`].
@@ -157,17 +174,18 @@ pub mod trig {
 
     /// `asciiflag_conv` (`db.c`) for trigger type letters: lowercase `a`..`z`
     /// set bits `0`..`25`, uppercase `A`..`Z` bits `26`..`51` (truncated to
-    /// the 32 a trigger type holds). A string of digits is the number itself.
+    /// the 32 a trigger type holds). A string of digits, optionally led by a
+    /// `-`, is the number itself.
     pub fn asciiflag_conv(flags: &str) -> u32 {
         let mut bits: u64 = 0;
         let mut is_num = true;
-        for c in flags.chars() {
+        for (index, c) in flags.chars().enumerate() {
             if c.is_ascii_lowercase() {
                 bits |= 1 << (c as u8 - b'a');
             } else if c.is_ascii_uppercase() {
                 bits |= 1 << (26 + (c as u8 - b'A'));
             }
-            if !(c.is_ascii_digit() || c == '-') {
+            if !(c.is_ascii_digit() || (c == '-' && index == 0)) {
                 is_num = false;
             }
         }
@@ -289,9 +307,9 @@ pub struct TrigInstance {
     /// the trigger is running or waiting, which is what `TRIGGER_CHECK` tests
     /// to keep it from firing again.
     pub run: RunState,
-    /// `purged` in `trig_data`: detached while running; dropped when the run
-    /// unwinds.
-    pub purged: bool,
+    /// Set on the slot left in [`Script::triggers`] while the instance is
+    /// checked out for a run (see [`Script::check_out`]).
+    pub checked_out: bool,
 }
 
 impl TrigInstance {
@@ -301,14 +319,19 @@ impl TrigInstance {
             proto,
             vars: VarList::default(),
             run: RunState::default(),
-            purged: false,
+            checked_out: false,
         }
+    }
+
+    /// `GET_TRIG_DEPTH(t) != 0`: running or waiting.
+    pub fn is_busy(&self) -> bool {
+        self.checked_out || self.run.is_active()
     }
 
     /// `TRIGGER_CHECK(t, type)`: the trigger has this type bit and is neither
     /// running nor waiting.
     pub fn check(&self, type_bit: u32) -> bool {
-        self.proto.trigger_type & type_bit != 0 && !self.run.is_active()
+        self.proto.trigger_type & type_bit != 0 && !self.is_busy()
     }
 }
 
@@ -339,17 +362,73 @@ impl Script {
         self.types() & type_bit != 0
     }
 
-    /// `add_trigger(sc, t, loc)`: insert at `loc` (`-1` or past the end
-    /// appends). Returns the new instance's id.
+    /// `add_trigger(sc, t, loc)`. Returns the new instance's id.
+    ///
+    /// `loc` `0` puts it at the head. Otherwise the C walks `loc` links from
+    /// the head, stopping at the last trigger, and inserts **after** where it
+    /// stopped: `loc` `1` on `[A, B, C]` gives `[A, B, T, C]`, and `-1` (or
+    /// anything past the end) appends.
     pub fn add_trigger(&mut self, proto: Arc<TrigProto>, loc: i32) -> u64 {
         let id = self.next_id;
         self.next_id += 1;
         let instance = TrigInstance::new(id, proto);
-        match usize::try_from(loc) {
-            Ok(index) if index < self.triggers.len() => self.triggers.insert(index, instance),
-            _ => self.triggers.push(instance),
-        }
+        let len = self.triggers.len();
+        let index = match usize::try_from(loc) {
+            Ok(0) => 0,
+            Ok(steps) => (steps.min(len.saturating_sub(1)) + 1).min(len),
+            Err(_) => len,
+        };
+        self.triggers.insert(index, instance);
         id
+    }
+
+    /// `trig_is_attached(sc, vnum)`.
+    pub fn is_attached(&self, vnum: i32) -> bool {
+        self.triggers
+            .iter()
+            .any(|trigger| trigger.proto.vnum == vnum)
+    }
+
+    /// The attached triggers' ids in order: a snapshot for a dispatch loop,
+    /// which must re-fetch each trigger by id because a run can attach and
+    /// detach.
+    pub fn trigger_ids(&self) -> Vec<u64> {
+        self.triggers.iter().map(|trigger| trigger.id).collect()
+    }
+
+    /// Take an instance for a run.
+    ///
+    /// The instance's variables and run state move out; its **slot stays** in
+    /// [`Script::triggers`] at the same index with the same id and prototype,
+    /// marked busy. So while it runs, everything that walks the list sees
+    /// what the C sees: `TRIGGER_CHECK` finds it busy, `SCRIPT_TYPES` keeps
+    /// its bits, the list is non-empty, and positional `detach` and
+    /// `hasattached` count it.
+    ///
+    /// `None` when there is no such instance or it is already checked out.
+    pub fn check_out(&mut self, id: u64) -> Option<TrigInstance> {
+        let slot = self.trigger_mut(id).filter(|slot| !slot.checked_out)?;
+        slot.checked_out = true;
+        Some(TrigInstance {
+            id,
+            proto: Arc::clone(&slot.proto),
+            vars: std::mem::take(&mut slot.vars),
+            run: std::mem::take(&mut slot.run),
+            checked_out: false,
+        })
+    }
+
+    /// Return a checked-out instance to its slot. `false` when the slot is
+    /// gone (the trigger was detached during its own run), in which case the
+    /// instance is dropped.
+    pub fn check_in(&mut self, trig: TrigInstance) -> bool {
+        match self.trigger_mut(trig.id).filter(|slot| slot.checked_out) {
+            Some(slot) => {
+                *slot = trig;
+                true
+            }
+            None => false,
+        }
     }
 
     pub fn trigger(&self, id: u64) -> Option<&TrigInstance> {
@@ -370,15 +449,81 @@ pub struct MudTime {
     pub year: i32,
 }
 
+/// `script_memory`: a character a mob remembers, and the command to run when
+/// it next sees them (`mremember`; the `memory` trigger when `cmd` is `None`).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ScriptMemory {
+    pub id: Uid,
+    pub cmd: Option<String>,
+}
+
 /// Real seconds per in-world hour (`SECS_PER_MUD_HOUR`).
 pub const SECS_PER_MUD_HOUR: i64 = 75;
+/// `SECS_PER_MUD_DAY`.
+pub const SECS_PER_MUD_DAY: i64 = 24 * SECS_PER_MUD_HOUR;
 /// Pulses per real second (`PASSES_PER_SEC` with the stock `OPT_USEC`).
 pub const PASSES_PER_SEC: i64 = 10;
+/// Pulses per in-world hour.
+pub const PULSES_PER_MUD_HOUR: i64 = SECS_PER_MUD_HOUR * PASSES_PER_SEC;
 /// `PULSE_DG_SCRIPT`: how often random triggers are checked, in pulses.
 pub const PULSE_DG_SCRIPT: i64 = 13 * PASSES_PER_SEC;
+/// `PULSE_VIOLENCE`: a combat round, in pulses.
+pub const PULSE_VIOLENCE: i64 = 2 * PASSES_PER_SEC;
+
+/// `MAX_INPUT_LENGTH`: the C's working-buffer size. `var_subst` and
+/// `eval_expr` refuse a line this long or longer, and a substituted line is
+/// truncated to one byte less.
+pub const MAX_INPUT_LENGTH: usize = 512;
+
+/// `NUM_OF_DIRS`.
+pub const NUM_OF_DIRS: usize = 10;
+/// `dirs[]` (`constants.c`), indexed by direction number.
+pub const DIRS: [&str; NUM_OF_DIRS] = [
+    "north",
+    "east",
+    "south",
+    "west",
+    "up",
+    "down",
+    "northwest",
+    "northeast",
+    "southeast",
+    "southwest",
+];
+/// `rev_dir[]` (`constants.c`): the opposite of each direction.
+pub const REV_DIR: [usize; NUM_OF_DIRS] = [2, 3, 0, 1, 5, 4, 8, 9, 6, 7];
+
+/// `LVL_IMMORT`.
+pub const LVL_IMMORT: i32 = 31;
+/// `LVL_GOD`.
+pub const LVL_GOD: i32 = 32;
+/// `LVL_GRGOD`.
+pub const LVL_GRGOD: i32 = 33;
+/// `LVL_IMPL`.
+pub const LVL_IMPL: i32 = 34;
+
+/// `DG_CASTER_PROXY`: the vnum of the mob that casts on behalf of an object
+/// or room.
+pub const DG_CASTER_PROXY: i32 = 1;
+/// `DG_SPELL_LEVEL`: the level an object's or room's `dg_cast` is cast at.
+pub const DG_SPELL_LEVEL: i32 = 25;
+
+/// `OCMD_EQUIP`: an object command trigger fires when the object is worn.
+pub const OCMD_EQUIP: i32 = 1 << 0;
+/// `OCMD_INVEN`: … when it is carried.
+pub const OCMD_INVEN: i32 = 1 << 1;
+/// `OCMD_ROOM`: … when it lies in the actor's room.
+pub const OCMD_ROOM: i32 = 1 << 2;
+
+/// `OCMD_EAT`/`OCMD_DRINK`/`OCMD_QUAFF`: the `consume` trigger's command.
+pub const OCMD_EAT: i32 = 1;
+pub const OCMD_DRINK: i32 = 2;
+pub const OCMD_QUAFF: i32 = 3;
 
 #[cfg(test)]
 mod tests {
+    #![allow(clippy::expect_used, clippy::unwrap_used)]
+
     use super::*;
 
     #[test]
@@ -429,5 +574,69 @@ mod tests {
             trig::MTRIG_GLOBAL | trig::MTRIG_RANDOM
         );
         assert_eq!(trig::asciiflag_conv("64"), 64);
+        assert_eq!(trig::asciiflag_conv("1-2"), 0);
+    }
+
+    fn proto(vnum: i32) -> Arc<TrigProto> {
+        Arc::new(TrigProto {
+            vnum,
+            name: format!("t{vnum}"),
+            attach_type: AttachType::Mob,
+            trigger_type: trig::MTRIG_GREET,
+            narg: 100,
+            arglist: String::new(),
+            program: Arc::new(Program::default()),
+        })
+    }
+
+    fn vnums(script: &Script) -> Vec<i32> {
+        script.triggers.iter().map(|t| t.proto.vnum).collect()
+    }
+
+    #[test]
+    fn add_trigger_inserts_after_the_loc_th_link() {
+        let mut script = Script::default();
+        for vnum in [1, 2, 3] {
+            script.add_trigger(proto(vnum), -1);
+        }
+        script.add_trigger(proto(9), 1);
+        assert_eq!(vnums(&script), vec![1, 2, 9, 3]);
+        script.add_trigger(proto(8), 0);
+        assert_eq!(vnums(&script), vec![8, 1, 2, 9, 3]);
+        script.add_trigger(proto(7), 99);
+        assert_eq!(vnums(&script), vec![8, 1, 2, 9, 3, 7]);
+
+        let mut empty = Script::default();
+        empty.add_trigger(proto(1), 5);
+        assert_eq!(vnums(&empty), vec![1]);
+    }
+
+    #[test]
+    fn a_checked_out_trigger_keeps_its_slot_and_reads_busy() {
+        let mut script = Script::default();
+        let first = script.add_trigger(proto(1), -1);
+        script.add_trigger(proto(2), -1);
+        script.triggers[0].vars.add_var("x", "1", 0);
+
+        let mut running = script.check_out(first).unwrap();
+        assert_eq!(running.vars.get("x").map(|v| v.value.as_str()), Some("1"));
+        assert_eq!(vnums(&script), vec![1, 2]);
+        assert!(script.is_attached(1));
+        assert!(script.check(trig::MTRIG_GREET));
+        assert!(!script.triggers[0].check(trig::MTRIG_GREET));
+        assert!(script.check_out(first).is_none());
+
+        running.vars.add_var("x", "2", 0);
+        assert!(script.check_in(running));
+        assert!(script.triggers[0].check(trig::MTRIG_GREET));
+        assert_eq!(
+            script.triggers[0].vars.get("x").map(|v| v.value.as_str()),
+            Some("2")
+        );
+
+        // Detached during its own run: the instance has nowhere to go back to.
+        let running = script.check_out(first).unwrap();
+        script.triggers.retain(|t| t.id != first);
+        assert!(!script.check_in(running));
     }
 }
