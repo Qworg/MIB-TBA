@@ -1024,8 +1024,8 @@ fn a_new_exit_points_at_the_first_room_like_a_zeroed_c_exit() {
     });
     let exits = app.world().get::<Exits>(temple).unwrap();
     assert_eq!(exits.map.get(&ExitKey::North), Some(&first));
-    // A keyword needs a door; the exit exists and the gap is counted.
-    assert_eq!(unsupported(&app, "exit.keyword"), 1);
+    // The keyword waits until the flags make a door of the exit.
+    assert_eq!(unsupported(&app, "exit.keyword"), 0);
 }
 
 #[test]
@@ -1107,17 +1107,13 @@ fn a_door_has_a_key_and_a_keyword() {
     let (t, sq) = (uid(&mut app, temple), uid(&mut app, square));
     run(&mut app, |host| {
         host.cmd_exit_set(t, NORTH, ExitField::ToRoom(Some(sq)));
-        // Without a door there is nowhere to keep them.
+        // Set before the flags make a door: each field is stored on its own.
         host.cmd_exit_set(t, NORTH, ExitField::Key(3001));
         host.cmd_exit_set(t, NORTH, ExitField::Keyword("gate".into()));
+        host.cmd_exit_set(t, NORTH, ExitField::Flags(7));
     });
-    assert_eq!(unsupported(&app, "exit.key"), 1);
-    assert_eq!(unsupported(&app, "exit.keyword"), 1);
-    run(&mut app, |host| {
-        host.cmd_exit_set(t, NORTH, ExitField::Flags(3));
-        host.cmd_exit_set(t, NORTH, ExitField::Key(3001));
-        host.cmd_exit_set(t, NORTH, ExitField::Keyword("gate".into()));
-    });
+    assert_eq!(unsupported(&app, "exit.key"), 0);
+    assert_eq!(unsupported(&app, "exit.keyword"), 0);
     {
         let door = &app.world().get::<Doors>(temple).unwrap().by_dir[&ExitKey::North];
         assert_eq!(door.key, Some(ItemId::from("tba_item_3001")));
@@ -1130,7 +1126,6 @@ fn a_door_has_a_key_and_a_keyword() {
     });
     let door = &app.world().get::<Doors>(temple).unwrap().by_dir[&ExitKey::North];
     assert_eq!((door.key.clone(), door.name.clone()), (None, None));
-    assert_eq!(unsupported(&app, "exit.key"), 1);
 }
 
 #[test]
@@ -1577,4 +1572,588 @@ fn script_state_survives_for_a_loaded_mob() {
     let mut scripts = app.world_mut().query::<(&Npc, &DgScript)>();
     // The loaded copy carries the same prototype trigger as the first guard.
     assert_eq!(scripts.iter(app.world()).count(), 2);
+}
+
+// -- review regressions ------------------------------------------------------------
+
+#[test]
+fn a_closed_exit_without_the_door_flag_still_blocks() {
+    // 175.trg re-seals an exit with `flags bcd`; the C blocks on EX_CLOSED
+    // whether or not the exit is flagged EX_ISDOOR.
+    let (mut app, _, temple, square) = exit_world();
+    let (t, sq) = (uid(&mut app, temple), uid(&mut app, square));
+    run(&mut app, |host| {
+        host.cmd_exit_set(t, NORTH, ExitField::ToRoom(Some(sq)));
+        host.cmd_exit_set(t, NORTH, ExitField::Flags(2));
+    });
+    let state = &app.world().get::<RoomState>(temple).unwrap().doors[&ExitKey::North];
+    assert_eq!((state.closed, state.locked), (true, false));
+    assert!(
+        app.world()
+            .get::<Doors>(temple)
+            .unwrap()
+            .by_dir
+            .contains_key(&ExitKey::North)
+    );
+    run(&mut app, |host| {
+        host.cmd_exit_set(t, NORTH, ExitField::Flags(14));
+    });
+    let state = &app.world().get::<RoomState>(temple).unwrap().doors[&ExitKey::North];
+    assert_eq!((state.closed, state.locked), (true, true));
+    let door = &app.world().get::<Doors>(temple).unwrap().by_dir[&ExitKey::North];
+    assert!(!door.pickable);
+}
+
+#[test]
+fn a_key_and_keyword_survive_the_exit_losing_and_regaining_its_door() {
+    let (mut app, _, temple, square) = exit_world();
+    let (t, sq) = (uid(&mut app, temple), uid(&mut app, square));
+    run(&mut app, |host| {
+        host.cmd_exit_set(t, NORTH, ExitField::ToRoom(Some(sq)));
+        host.cmd_exit_set(t, NORTH, ExitField::Flags(1));
+        host.cmd_exit_set(t, NORTH, ExitField::Key(3001));
+        host.cmd_exit_set(t, NORTH, ExitField::Keyword("gate".into()));
+        host.cmd_exit_set(t, NORTH, ExitField::Flags(0));
+    });
+    assert!(app.world().get::<Doors>(temple).unwrap().by_dir.is_empty());
+    run(&mut app, |host| {
+        host.cmd_exit_set(t, NORTH, ExitField::Flags(7));
+    });
+    let door = &app.world().get::<Doors>(temple).unwrap().by_dir[&ExitKey::North];
+    assert_eq!(door.key, Some(ItemId::from("tba_item_3001")));
+    assert_eq!(door.name.as_deref(), Some("gate"));
+    // Purging the exit forgets what was waiting.
+    run(&mut app, |host| {
+        host.cmd_exit_set(t, NORTH, ExitField::Flags(0));
+        host.cmd_exit_purge(t, NORTH);
+        host.cmd_exit_set(t, NORTH, ExitField::Flags(1));
+    });
+    let door = &app.world().get::<Doors>(temple).unwrap().by_dir[&ExitKey::North];
+    assert_eq!((door.key.clone(), door.name.clone()), (None, None));
+}
+
+#[test]
+fn a_blow_needs_both_in_one_room_no_peace_and_a_killable_victim() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let square = room(&mut app, 3002);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    let beggar = npc(&mut app, temple, 3002, "the beggar");
+    let alice = player(&mut app, square, "Alice", 7);
+    for e in [guard, beggar, alice] {
+        app.world_mut().entity_mut(e).insert(fighter(10));
+    }
+    let [g, b, a] = [guard, beggar, alice].map(|e| uid(&mut app, e));
+    // Not in the same room: nothing starts.
+    run(&mut app, |host| host.cmd_hit_victim(g, a));
+    assert_eq!(app.world().get::<TbaCombatant>(guard).unwrap().target, None);
+    assert_eq!(app.world().get::<TbaCombatant>(alice).unwrap().target, None);
+    // A fight broken off when the opponent is gone from the room.
+    app.world_mut()
+        .get_mut::<TbaCombatant>(guard)
+        .unwrap()
+        .target = Some(alice);
+    run(&mut app, |host| host.cmd_hit_victim(g, a));
+    assert_eq!(app.world().get::<TbaCombatant>(guard).unwrap().target, None);
+
+    // A peaceful room.
+    app.world_mut()
+        .get_mut::<Room>(temple)
+        .unwrap()
+        .tags
+        .insert(RoomTag::Peaceful);
+    run(&mut app, |host| host.cmd_hit_victim(g, b));
+    assert_eq!(app.world().get::<TbaCombatant>(guard).unwrap().target, None);
+    app.world_mut()
+        .get_mut::<Room>(temple)
+        .unwrap()
+        .tags
+        .remove(&RoomTag::Peaceful);
+    run(&mut app, |host| host.cmd_hit_victim(g, b));
+    assert_eq!(
+        app.world().get::<TbaCombatant>(guard).unwrap().target,
+        Some(beggar)
+    );
+
+    // MOB_NOKILL: the guard's prototype (3001) is flagged.
+    let other = npc(&mut app, temple, 3001, "the other guard");
+    let saint = npc(&mut app, temple, 3002, "the saint");
+    for e in [other, saint] {
+        app.world_mut().entity_mut(e).insert(fighter(10));
+    }
+    let [o, s] = [other, saint].map(|e| uid(&mut app, e));
+    app.world_mut()
+        .resource_mut::<TbaContent>()
+        .npc_stats
+        .get_mut(&NpcId::from("tba_npc_3001"))
+        .unwrap()
+        .behaviour
+        .push(NpcBehaviour::NoKill);
+    run(&mut app, |host| host.cmd_hit_victim(s, o));
+    assert_eq!(app.world().get::<TbaCombatant>(saint).unwrap().target, None);
+}
+
+#[test]
+fn an_extracted_character_is_not_fought_followed_or_hunted() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    let beggar = npc(&mut app, temple, 3002, "the beggar");
+    for e in [guard, beggar] {
+        app.world_mut().entity_mut(e).insert(fighter(10));
+    }
+    let [g, b] = [guard, beggar].map(|e| uid(&mut app, e));
+    run(&mut app, |host| {
+        host.cmd_extract_char(b);
+        host.cmd_hit_victim(g, b);
+        host.cmd_follow(g, b);
+        host.cmd_set_hunting(g, b);
+    });
+    let state = app.world().get::<TbaCombatant>(guard).unwrap();
+    assert_eq!((state.target, state.position), (None, Position::Standing));
+    assert!(app.world().get::<TbaFollowing>(guard).is_none());
+    assert_eq!(unsupported(&app, "mhunt"), 0);
+}
+
+#[test]
+fn extracting_a_leader_stops_its_followers() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    let beggar = npc(&mut app, temple, 3002, "the beggar");
+    let [g, b] = [guard, beggar].map(|e| uid(&mut app, e));
+    run(&mut app, |host| host.cmd_follow(g, b));
+    assert!(app.world().get::<TbaFollowing>(guard).is_some());
+    run(&mut app, |host| host.cmd_extract_char(b));
+    assert!(app.world().get::<TbaFollowing>(guard).is_none());
+}
+
+#[test]
+fn a_hunt_of_a_stale_id_is_not_counted() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    let g = uid(&mut app, guard);
+    run(&mut app, |host| host.cmd_set_hunting(g, 654_321));
+    assert_eq!(unsupported(&app, "mhunt"), 0);
+}
+
+#[test]
+fn a_player_killed_twice_before_the_death_handling_runs_dies_once() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let alice = player(&mut app, temple, "Alice", 7);
+    app.world_mut().entity_mut(alice).insert(fighter(5));
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| host.cmd_die(a));
+    run(&mut app, |host| host.cmd_die(a));
+    let defeated = app
+        .world_mut()
+        .resource_mut::<Messages<PlayerDefeated>>()
+        .drain()
+        .count();
+    assert_eq!(defeated, 1);
+}
+
+#[test]
+fn a_script_kill_clears_the_victim_target_and_reports_experience() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    let beggar = npc(&mut app, temple, 3002, "the beggar");
+    for e in [guard, beggar] {
+        app.world_mut().entity_mut(e).insert(fighter(10));
+    }
+    let [g, b] = [guard, beggar].map(|e| uid(&mut app, e));
+    run(&mut app, |host| {
+        host.cmd_hit_victim(g, b);
+        host.cmd_die(g);
+    });
+    assert_eq!(
+        app.world().get::<TbaCombatant>(beggar).unwrap().target,
+        None
+    );
+    let defeated: Vec<NpcDefeated> = app
+        .world_mut()
+        .resource_mut::<Messages<NpcDefeated>>()
+        .drain()
+        .collect();
+    assert_eq!((defeated[0].experience, defeated[0].victim), (100, guard));
+}
+
+#[test]
+fn a_fighter_who_cannot_fight_is_not_engaged() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    let beggar = npc(&mut app, temple, 3002, "the beggar");
+    let mut stunned = fighter(10);
+    stunned.position = Position::Stunned;
+    app.world_mut().entity_mut(guard).insert(fighter(10));
+    app.world_mut().entity_mut(beggar).insert(stunned);
+    let [g, b] = [guard, beggar].map(|e| uid(&mut app, e));
+    run(&mut app, |host| host.cmd_hit_victim(g, b));
+    let state = app.world().get::<TbaCombatant>(beggar).unwrap();
+    assert_eq!((state.target, state.position), (None, Position::Stunned));
+    assert_eq!(
+        app.world().get::<TbaCombatant>(guard).unwrap().target,
+        Some(beggar)
+    );
+}
+
+#[test]
+fn a_remembering_victim_remembers_a_player_attacker() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    let alice = player(&mut app, temple, "Alice", 7);
+    app.world_mut()
+        .entity_mut(guard)
+        .insert((fighter(10), TbaAttackerMemory::default()));
+    app.world_mut().entity_mut(alice).insert(fighter(10));
+    let [g, a] = [guard, alice].map(|e| uid(&mut app, e));
+    run(&mut app, |host| host.cmd_hit_victim(a, g));
+    assert!(
+        app.world()
+            .get::<TbaAttackerMemory>(guard)
+            .unwrap()
+            .0
+            .contains(&alice)
+    );
+}
+
+#[test]
+fn following_oneself_is_refused() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    let g = uid(&mut app, guard);
+    run(&mut app, |host| host.cmd_follow(g, g));
+    assert!(app.world().get::<TbaFollowing>(guard).is_none());
+}
+
+#[test]
+fn script_worn_items_reach_the_saved_equipment_and_leave_it() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let alice = player(&mut app, temple, "Alice", 7);
+    let a = uid(&mut app, alice);
+    let sword = run(&mut app, |host| host.cmd_read_object(3001)).unwrap();
+    run(&mut app, |host| host.cmd_equip_char(a, sword, WEAR_WIELD));
+    let sword_entity = run(&mut app, |host| host.entity(sword)).unwrap();
+    let save_id = app
+        .world()
+        .get::<SaveId>(sword_entity)
+        .unwrap()
+        .0
+        .to_string();
+    let saved = app.world().get::<TbaEquipmentSave>(alice).unwrap();
+    assert_eq!(saved.worn.get(&WearSlot::Wield), Some(&save_id));
+    // Purging the worn item takes it out of the save.
+    run(&mut app, |host| host.cmd_extract_obj(sword));
+    assert!(
+        app.world()
+            .get::<TbaEquipmentSave>(alice)
+            .unwrap()
+            .worn
+            .is_empty()
+    );
+    // So does taking it off.
+    let lamp = run(&mut app, |host| host.cmd_read_object(3003)).unwrap();
+    run(&mut app, |host| {
+        host.cmd_equip_char(a, lamp, WEAR_HEAD);
+        host.cmd_unequip_char(a, WEAR_HEAD);
+    });
+    assert!(
+        app.world()
+            .get::<TbaEquipmentSave>(alice)
+            .unwrap()
+            .worn
+            .is_empty()
+    );
+}
+
+#[test]
+fn an_object_transformed_takes_the_new_prototypes_timer() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let old = item_on_ground(&mut app, temple, 3003, "a lamp");
+    app.world_mut()
+        .entity_mut(old)
+        .insert(TbaItemTimer { remaining: 9 });
+    let o = uid(&mut app, old);
+    // The new prototype has no timer: the old one goes.
+    define_item(&mut app, 3001, TbaItemKind::Other, &[], &["sword"]);
+    let temp = run(&mut app, |host| host.cmd_read_object(3001)).unwrap();
+    run(&mut app, |host| {
+        host.cmd_overwrite_obj(o, temp);
+        host.cmd_extract_obj(temp);
+    });
+    assert!(app.world().get::<TbaItemTimer>(old).is_none());
+    // A prototype with a timer gives it, though the template never had one.
+    define_item(&mut app, 3002, TbaItemKind::Other, &[], &["sack"]);
+    app.world_mut()
+        .resource_mut::<TbaContent>()
+        .items
+        .get_mut(&ItemId::from("tba_item_3002"))
+        .unwrap()
+        .timer = Some(5);
+    let temp = run(&mut app, |host| host.cmd_read_object(3002)).unwrap();
+    run(&mut app, |host| {
+        host.cmd_overwrite_obj(o, temp);
+        host.cmd_extract_obj(temp);
+    });
+    assert_eq!(
+        app.world().get::<TbaItemTimer>(old).map(|t| t.remaining),
+        Some(5)
+    );
+}
+
+#[test]
+fn a_mob_transformed_takes_the_new_behaviours_and_reports_the_rest() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    let g = uid(&mut app, guard);
+    let temp = run(&mut app, |host| host.cmd_read_mobile(3002)).unwrap();
+    let temp_entity = run(&mut app, |host| host.entity(temp)).unwrap();
+    app.world_mut().entity_mut(temp_entity).insert(NpcBehaviors(
+        mib_stdlib::content::NpcBehaviorFlags {
+            sentinel: true,
+            ..Default::default()
+        },
+    ));
+    run(&mut app, |host| {
+        host.cmd_overwrite_mob(g, temp, false);
+        host.cmd_extract_char(temp);
+    });
+    assert!(app.world().get::<NpcBehaviors>(guard).unwrap().0.sentinel);
+    assert_eq!(unsupported(&app, "mtransform.stats"), 1);
+}
+
+#[test]
+fn a_mob_transformed_keeps_its_position_and_target() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    let beggar = npc(&mut app, temple, 3002, "the beggar");
+    let mut busy = fighter(10);
+    busy.position = Position::Fighting;
+    busy.target = Some(beggar);
+    app.world_mut().entity_mut(guard).insert(busy);
+    let g = uid(&mut app, guard);
+    let temp = run(&mut app, |host| host.cmd_read_mobile(3002)).unwrap();
+    run(&mut app, |host| {
+        host.cmd_overwrite_mob(g, temp, false);
+        host.cmd_extract_char(temp);
+    });
+    let state = app.world().get::<TbaCombatant>(guard).unwrap();
+    assert_eq!(
+        (state.position, state.target),
+        (Position::Fighting, Some(beggar))
+    );
+}
+
+#[test]
+fn a_refused_move_does_not_reorder_lists() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let first = item_on_ground(&mut app, temple, 3001, "a sword");
+    let second = item_on_ground(&mut app, temple, 3003, "a lamp");
+    let [f, t] = [first, temple].map(|e| uid(&mut app, e));
+    let _ = second;
+    let before = run(&mut app, |host| host.room_contents(t));
+    run(&mut app, |host| {
+        // An item cannot hold itself, a room cannot carry, a room is no item.
+        host.cmd_obj_to_obj(f, f);
+        host.cmd_obj_to_char(f, t);
+        host.cmd_obj_to_room(f, f);
+    });
+    assert_eq!(run(&mut app, |host| host.room_contents(t)), before);
+}
+
+#[test]
+fn a_move_puts_the_object_at_the_head_of_the_new_list() {
+    // Creation order and move order disagree.
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    let sword = item_on_ground(&mut app, temple, 3001, "a sword");
+    let lamp = item_on_ground(&mut app, temple, 3003, "a lamp");
+    let [g, sw, la] = [guard, sword, lamp].map(|e| uid(&mut app, e));
+    run(&mut app, |host| {
+        host.cmd_obj_to_char(la, g);
+        host.cmd_obj_to_char(sw, g);
+        assert_eq!(host.carrying(g), [sw, la]);
+        host.cmd_obj_to_char(la, g);
+        assert_eq!(host.carrying(g), [la, sw]);
+        host.cmd_equip_char(g, sw, WEAR_WIELD);
+        host.cmd_unequip_char(g, WEAR_WIELD);
+        host.cmd_obj_to_char(sw, g);
+        assert_eq!(host.carrying(g), [sw, la]);
+    });
+}
+
+#[test]
+fn a_temporary_mob_leaves_no_spawn_index_entry() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let t = uid(&mut app, temple);
+    for _ in 0..3 {
+        run(&mut app, |host| {
+            let proxy = host.cmd_read_mobile(3001).unwrap();
+            host.cmd_char_to_room(proxy, t);
+            host.cmd_extract_char(proxy);
+        });
+    }
+    let index = app.world().get_resource::<NpcIndex>();
+    assert!(index.is_none_or(|index| index.map.values().all(Vec::is_empty)));
+}
+
+#[test]
+fn a_loaded_mob_has_attack_dice_and_a_spawn_stamp() {
+    let mut app = world();
+    app.world_mut()
+        .resource_mut::<TbaContent>()
+        .npc_stats
+        .get_mut(&NpcId::from("tba_npc_3001"))
+        .unwrap()
+        .damage = Some("1d4+1".parse().expect("dice"));
+    let mob = run(&mut app, |host| host.cmd_read_mobile(3001)).unwrap();
+    let entity = run(&mut app, |host| host.entity(mob)).unwrap();
+    assert!(app.world().get::<TbaAttackDice>(entity).is_some());
+    assert!(
+        app.world()
+            .get::<mib_tba::dg::ids::DgBirth>(entity)
+            .is_some()
+    );
+}
+
+#[test]
+fn a_player_arriving_not_playing_records_no_visit() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let square = room(&mut app, 3002);
+    let bob = player(&mut app, temple, "Bob", 8);
+    app.world_mut().get_mut::<Session>(bob).unwrap().state = SessionState::Connected;
+    let [b, sq] = [bob, square].map(|e| uid(&mut app, e));
+    run(&mut app, |host| host.cmd_char_to_room(b, sq));
+    let visits = app
+        .world_mut()
+        .resource_mut::<Messages<QuestEvent>>()
+        .drain()
+        .count();
+    assert_eq!(visits, 0);
+}
+
+#[test]
+fn a_purged_exit_is_no_longer_hidden() {
+    let (mut app, _, temple, square) = exit_world();
+    let (t, sq) = (uid(&mut app, temple), uid(&mut app, square));
+    run(&mut app, |host| {
+        host.cmd_exit_set(t, NORTH, ExitField::ToRoom(Some(sq)));
+    });
+    app.world_mut()
+        .get_mut::<Exits>(temple)
+        .unwrap()
+        .hidden
+        .insert(ExitKey::North);
+    run(&mut app, |host| host.cmd_exit_purge(t, NORTH));
+    assert!(
+        !app.world()
+            .get::<Exits>(temple)
+            .unwrap()
+            .hidden
+            .contains(&ExitKey::North)
+    );
+}
+
+// -- more real script lines ------------------------------------------------------------
+
+#[test]
+fn a_script_loads_onto_a_wear_position_and_into_a_container() {
+    let (mut app, _, _, guard, alice) = scripted("mload obj 3001 {ALICE} wield");
+    let g = uid(&mut app, guard);
+    define_item(
+        &mut app,
+        3001,
+        TbaItemKind::Other,
+        &[WearSlot::Wield],
+        &["sword"],
+    );
+    run_trigger(&mut app, g, 700);
+    let worn = app
+        .world()
+        .get::<TbaEquipment>(alice)
+        .and_then(|e| e.worn(WearSlot::Wield));
+    assert!(worn.is_some());
+    assert_eq!(
+        app.world()
+            .get::<TbaEquipmentSave>(alice)
+            .map(|s| s.worn.len()),
+        Some(1)
+    );
+
+    let (mut app, _, _, guard, _) = scripted("mload obj 3002\nmload obj 3003 sack");
+    define_item(&mut app, 3002, TbaItemKind::Container, &[], &["sack"]);
+    let g = uid(&mut app, guard);
+    run_trigger(&mut app, g, 700);
+    run(&mut app, |host| {
+        let sack = host.carrying(g)[0];
+        assert_eq!(host.obj_contains(sack).len(), 1);
+    });
+}
+
+#[test]
+fn an_object_script_loads_builds_a_door_and_teleports() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let square = room(&mut app, 3002);
+    app.world_mut().entity_mut(temple).insert(Exits::default());
+    let alice = player(&mut app, temple, "Alice", 7);
+    let au = uid(&mut app, alice);
+    define(
+        &mut app,
+        710,
+        "obj",
+        "j",
+        0,
+        &format!("oload obj 3003\nodoor 3001 north room 3002\noteleport {UID_CHAR}{au} 3002"),
+    );
+    attach(&mut app, "item:tba_item_3001", &[710]);
+    let sword = item_on_ground(&mut app, temple, 3001, "a sword");
+    let s = uid(&mut app, sword);
+    run_trigger(&mut app, s, 710);
+    assert_eq!(
+        app.world()
+            .get::<Exits>(temple)
+            .unwrap()
+            .map
+            .get(&ExitKey::North),
+        Some(&square)
+    );
+    assert_eq!(location(&app, alice), Some(square));
+}
+
+#[test]
+fn a_room_script_loads_teleports_and_builds_doors() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let square = room(&mut app, 3002);
+    app.world_mut().entity_mut(temple).insert(Exits::default());
+    let alice = player(&mut app, temple, "Alice", 7);
+    define(
+        &mut app,
+        720,
+        "wld",
+        "f",
+        0,
+        "wload obj 3001\nwdoor 3001 north room 3002\nwdoor 3001 north flags bcd\nwecho Rumble.\nwteleport all 3002",
+    );
+    attach(&mut app, "room:tba.3001", &[720]);
+    let t = uid(&mut app, temple);
+    run_trigger(&mut app, t, 720);
+    assert_eq!(location(&app, alice), Some(square));
+    let state = &app.world().get::<RoomState>(temple).unwrap().doors[&ExitKey::North];
+    assert_eq!((state.closed, state.locked), (true, true));
 }

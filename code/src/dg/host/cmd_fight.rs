@@ -1,17 +1,20 @@
 //! Fighting, dying, hunting and following.
 
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{Location, Npc, NpcId, NpcKey, Player, PlayerDefeated};
+use mib_stdlib::prelude::{
+    Location, Npc, NpcId, NpcKey, Player, PlayerDefeated, Room, RoomState, RoomTag,
+};
 
 use crate::combat::{NpcDefeated, TbaAttackerMemory, TbaCombatant, alignment_for, reward_for};
-use crate::content::Position;
+use crate::content::{NpcBehaviour, Position};
+use crate::dg::script::DgDead;
 use crate::module::TbaContent;
 use crate::party::TbaFollowing;
 
 /// What a mob set to hunt a character is after (`HUNTING(ch)`). The pack has
 /// no hunting behaviour (its pursuit follows a combat target only), so this
 /// only records the intent.
-#[allow(dead_code)] // written here; nothing in the pack reads it yet.
+#[allow(dead_code)] // written here; no pack system reads it yet.
 #[derive(Component, Debug, Clone, Copy, PartialEq, Eq)]
 pub struct DgHunting(pub Entity);
 
@@ -55,11 +58,57 @@ fn engage(world: &mut World, who: Entity, target: Entity) {
     }
 }
 
+/// Whether a character has been extracted and awaits the runtime's sweep.
+fn is_dead(world: &World, ch: Entity) -> bool {
+    world.get::<DgDead>(ch).is_some()
+}
+
+/// `ROOM_PEACEFUL` on the room the character is in.
+fn in_peaceful_room(world: &World, ch: Entity) -> bool {
+    world
+        .get::<Location>(ch)
+        .and_then(|location| {
+            let room = world.get::<Room>(location.room)?;
+            let state = world.get::<RoomState>(location.room)?;
+            Some(room.effective_flags(state).contains(&RoomTag::Peaceful))
+        })
+        .unwrap_or(false)
+}
+
+/// `MOB_NOKILL` on the victim's prototype.
+fn is_nokill(world: &World, victim: Entity) -> bool {
+    let (Some(key), Some(content)) = (
+        world.get::<NpcKey>(victim),
+        world.get_resource::<TbaContent>(),
+    ) else {
+        return false;
+    };
+    content
+        .npc_stats
+        .get(&key.0)
+        .is_some_and(|stats| stats.behaviour.contains(&NpcBehaviour::NoKill))
+}
+
 /// `hit(ch, victim, TYPE_UNDEFINED)`: both sides take up the fight, as
 /// `damage` does with `set_fighting` on each. The swing itself is resolved by
-/// the pack's combat round, not here.
+/// the pack's combat round, not here. As in the C nothing happens (and a
+/// fight between the two is broken off) when they are not in the same room,
+/// when the attacker is in a peaceful room, or when the victim is `NOKILL`.
 pub(super) fn hit_victim(world: &mut World, ch: Entity, victim: Entity) {
-    if ch == victim {
+    if ch == victim || is_dead(world, ch) || is_dead(world, victim) {
+        return;
+    }
+    let here = world.get::<Location>(ch).map(|location| location.room);
+    if here.is_none() || here != world.get::<Location>(victim).map(|location| location.room) {
+        if world
+            .get::<TbaCombatant>(ch)
+            .is_some_and(|combatant| combatant.target == Some(victim))
+        {
+            stop_fighting(world, ch);
+        }
+        return;
+    }
+    if in_peaceful_room(world, ch) || is_nokill(world, victim) {
         return;
     }
     super::place::init_npc_combat(world, ch);
@@ -95,7 +144,15 @@ pub(super) fn die(world: &mut World, ch: Entity) {
     if !is_player && !is_npc {
         return;
     }
-    if world.get::<crate::dg::script::DgDead>(ch).is_some() {
+    if is_dead(world, ch) {
+        return;
+    }
+    // A character already at the dead position has been through this: the
+    // pack's death handling may not have run yet.
+    if world
+        .get::<TbaCombatant>(ch)
+        .is_some_and(|combatant| combatant.position == Position::Dead)
+    {
         return;
     }
     if let Some(mut combatant) = world.get_mut::<TbaCombatant>(ch) {
@@ -131,10 +188,29 @@ pub(super) fn die(world: &mut World, ch: Entity) {
     super::place::extract_char(world, ch);
 }
 
-/// `HUNTING(ch) = victim`.
-pub(super) fn set_hunting(world: &mut World, ch: Entity, victim: Entity) {
-    if world.get::<Npc>(ch).is_some() && super::place::is_character(world, victim) {
+/// `HUNTING(ch) = victim`. Returns whether the hunt was recorded.
+pub(super) fn set_hunting(world: &mut World, ch: Entity, victim: Entity) -> bool {
+    if world.get::<Npc>(ch).is_some()
+        && super::place::is_character(world, victim)
+        && !is_dead(world, ch)
+        && !is_dead(world, victim)
+    {
         world.entity_mut(ch).insert(DgHunting(victim));
+        return true;
+    }
+    false
+}
+
+/// `die_follower`: everyone who followed `ch` stops.
+pub(super) fn drop_followers(world: &mut World, ch: Entity) {
+    let mut followers = world.query::<(Entity, &TbaFollowing)>();
+    let behind: Vec<Entity> = followers
+        .iter(world)
+        .filter(|(_, following)| following.leader == ch)
+        .map(|(entity, _)| entity)
+        .collect();
+    for entity in behind {
+        unfollow(world, entity);
     }
 }
 
@@ -149,7 +225,11 @@ pub(super) fn unfollow(world: &mut World, ch: Entity) {
 /// follower only while it stands where its leader just was, so the anchor is
 /// the leader's current room.
 pub(super) fn follow(world: &mut World, ch: Entity, leader: Entity) {
-    if ch == leader || !super::place::is_character(world, ch) {
+    if ch == leader
+        || !super::place::is_character(world, ch)
+        || is_dead(world, ch)
+        || is_dead(world, leader)
+    {
         return;
     }
     let room = world

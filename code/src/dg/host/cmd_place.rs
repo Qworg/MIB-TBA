@@ -9,9 +9,9 @@ use mib_core::prelude::*;
 use mib_persist::prelude::DocKind;
 use mib_stdlib::prelude::{
     CarriedBy, Concealment, ContainedBy, Container, Discovered, Exits, GroundItem, Item, ItemId,
-    ItemQuery, Location, Npc, NpcId, NpcKey, OnlinePlayers, Perception, Player, QuestEvent, Room,
-    RoomId, SaveKind, VisibilityPolicy, find_autonomy_def, find_item_def, find_npc_def,
-    next_item_save_id, spawn_npc_with_autonomy,
+    ItemQuery, Location, Npc, NpcBehaviors, NpcId, NpcIndex, NpcKey, OnlinePlayers, Perception,
+    Player, QuestEvent, Room, RoomId, SaveId, SaveKind, VisibilityPolicy, find_autonomy_def,
+    find_item_def, find_npc_def, next_item_save_id, spawn_npc_with_autonomy,
 };
 
 use crate::combat::{
@@ -20,7 +20,7 @@ use crate::combat::{
 };
 use crate::content::WearSlot;
 use crate::dg::DgLog;
-use crate::equipment::TbaEquipment;
+use crate::equipment::{TbaEquipment, TbaEquipmentSave};
 use crate::items::TbaItemTimer;
 use crate::module::TbaContent;
 
@@ -139,6 +139,7 @@ pub(super) fn lift_item(world: &mut World, item: Entity) {
         && equipment.slots.values().any(|worn| *worn == item)
     {
         equipment.slots.retain(|_, worn| *worn != item);
+        sync_equipment_save(world, holder);
     }
     if let Some(parent) = world.get::<ContainedBy>(item).map(|inside| inside.0)
         && let Some(mut container) = world.get_mut::<Container>(parent)
@@ -151,30 +152,55 @@ pub(super) fn lift_item(world: &mut World, item: Entity) {
     }
 }
 
+/// Rewrite a player's persisted worn set from its runtime equipment, as the
+/// pack's own equip and unequip commands do, so what a script wears or takes
+/// off survives a relog. Items without a `SaveId` are left out.
+fn sync_equipment_save(world: &mut World, holder: Entity) {
+    if world.get::<Player>(holder).is_none() {
+        return;
+    }
+    let Some(slots) = world
+        .get::<TbaEquipment>(holder)
+        .map(|equipment| equipment.slots.clone())
+    else {
+        return;
+    };
+    let worn = slots
+        .iter()
+        .filter_map(|(slot, item)| {
+            let save_id = world.get::<SaveId>(*item)?;
+            Some((*slot, save_id.0.to_string()))
+        })
+        .collect();
+    world.entity_mut(holder).insert(TbaEquipmentSave { worn });
+}
+
 /// Whether `entity` is an item the placement functions may move.
 fn is_item(world: &World, entity: Entity) -> bool {
     world.get::<Item>(entity).is_some()
 }
 
-/// `obj_to_room`.
-pub(super) fn obj_to_room(world: &mut World, obj: Entity, room: Entity) {
+/// `obj_to_room`. Returns whether the object moved.
+pub(super) fn obj_to_room(world: &mut World, obj: Entity, room: Entity) -> bool {
     if !is_item(world, obj) || world.get::<Room>(room).is_none() {
-        return;
+        return false;
     }
     lift_item(world, obj);
     let spawned_at = fixed_elapsed(world);
     world
         .entity_mut(obj)
         .insert((Location { room }, GroundItem { spawned_at }));
+    true
 }
 
-/// `obj_to_char`.
-pub(super) fn obj_to_char(world: &mut World, obj: Entity, ch: Entity) {
+/// `obj_to_char`. Returns whether the object moved.
+pub(super) fn obj_to_char(world: &mut World, obj: Entity, ch: Entity) -> bool {
     if !is_item(world, obj) || !is_character(world, ch) {
-        return;
+        return false;
     }
     lift_item(world, obj);
     world.entity_mut(obj).insert(CarriedBy(ch));
+    true
 }
 
 /// Whether putting `obj` into `container` would make `obj` hold itself.
@@ -193,9 +219,10 @@ fn would_nest(world: &World, obj: Entity, container: Entity) -> bool {
 }
 
 /// `obj_to_obj`. Like the C it does not check the container's capacity.
-pub(super) fn obj_to_obj(world: &mut World, obj: Entity, container: Entity) {
+/// Returns whether the object moved.
+pub(super) fn obj_to_obj(world: &mut World, obj: Entity, container: Entity) -> bool {
     if !is_item(world, obj) || !is_item(world, container) || would_nest(world, obj, container) {
-        return;
+        return false;
     }
     lift_item(world, obj);
     world.entity_mut(obj).insert(ContainedBy(container));
@@ -204,6 +231,7 @@ pub(super) fn obj_to_obj(world: &mut World, obj: Entity, container: Entity) {
     {
         holder.contents.push(obj);
     }
+    true
 }
 
 /// `equip_char`: wear `obj` at `slot`. Like the C, a slot that is taken is a
@@ -226,6 +254,7 @@ pub(super) fn equip_char(world: &mut World, ch: Entity, obj: Entity, slot: WearS
     if let Some(mut equipment) = world.get_mut::<TbaEquipment>(ch) {
         equipment.slots.insert(slot, obj);
     }
+    sync_equipment_save(world, ch);
     true
 }
 
@@ -279,10 +308,11 @@ pub(super) fn char_from_room(world: &mut World, ch: Entity) {
 }
 
 /// `char_to_room`. Keeps the online registry in step for a player, records
-/// the visit for quests, and shows a playing player the room.
-pub(super) fn char_to_room(world: &mut World, ch: Entity, room: Entity) {
+/// the visit for quests, and shows a playing player the room. Returns
+/// whether the character moved.
+pub(super) fn char_to_room(world: &mut World, ch: Entity, room: Entity) -> bool {
     if world.get::<Room>(room).is_none() || !is_character(world, ch) {
-        return;
+        return false;
     }
     world.entity_mut(ch).insert(Location { room });
     if world.get::<Npc>(ch).is_some() && world.get::<TbaSpawnHome>(ch).is_none() {
@@ -290,7 +320,7 @@ pub(super) fn char_to_room(world: &mut World, ch: Entity, room: Entity) {
         world.entity_mut(ch).insert(TbaSpawnHome { room, zone });
     }
     if world.get::<Player>(ch).is_none() {
-        return;
+        return true;
     }
     if let Some(mut online) = world.get_resource_mut::<OnlinePlayers>() {
         for record in online.map.values_mut().filter(|record| record.entity == ch) {
@@ -298,7 +328,7 @@ pub(super) fn char_to_room(world: &mut World, ch: Entity, room: Entity) {
         }
     }
     if !crate::dg::out::is_playing(world, ch) {
-        return;
+        return true;
     }
     let key = world.get::<Room>(room).map(|room| RoomId(room.key.clone()));
     if let Some(key) = key
@@ -310,6 +340,7 @@ pub(super) fn char_to_room(world: &mut World, ch: Entity, room: Entity) {
         });
     }
     show_room(world, ch, room);
+    true
 }
 
 /// The parameters of the engine's scene projection.
@@ -379,7 +410,26 @@ pub(super) fn extract_char(world: &mut World, ch: Entity) {
     }
     super::fight::stop_fighting(world, ch);
     super::fight::drop_targets(world, ch);
+    super::fight::drop_followers(world, ch);
+    forget_npc(world, ch);
     world.entity_mut(ch).insert(crate::dg::script::DgDead);
+}
+
+/// Take an NPC out of the engine's spawn index, which never forgets an
+/// entity on its own; temporary mobs (the `dg_cast` proxy, the `mtransform`
+/// template) would otherwise leave an entry each.
+fn forget_npc(world: &mut World, npc: Entity) {
+    let Some(key) = world.get::<NpcKey>(npc).map(|key| key.0.clone()) else {
+        return;
+    };
+    if let Some(mut index) = world.get_resource_mut::<NpcIndex>()
+        && let Some(entities) = index.map.get_mut(&key)
+    {
+        entities.retain(|entity| *entity != npc);
+        if entities.is_empty() {
+            index.map.remove(&key);
+        }
+    }
 }
 
 /// Forget the waits of removed entities.
@@ -392,8 +442,11 @@ pub(super) fn forget_waits(world: &mut World, uids: &[dg_vm::Uid]) {
 }
 
 /// `memcpy(ch, &tmpmob, sizeof(*ch))` of `do_mtransform`, for what the pack
-/// models of a mob: its descriptions, combat statistics and attack dice.
-/// The character keeps its prototype key (so its vnum), position, target,
+/// models of a mob: its descriptions, behaviour flags, combat statistics and
+/// attack dice. Facts the pack looks up by the mob's prototype key (level,
+/// alignment, rewards, aggression and memory behaviour) stay those of the
+/// vnum the mob was created from; the caller reports that gap. The
+/// character keeps its prototype key (so its vnum), position, target,
 /// memory, home, script, items and followers; with `keep_hp` it also keeps
 /// its hit points.
 pub(super) fn overwrite_mob(world: &mut World, ch: Entity, from: Entity, keep_hp: bool) {
@@ -428,7 +481,11 @@ pub(super) fn overwrite_mob(world: &mut World, ch: Entity, from: Entity, keep_hp
         world.entity_mut(ch).insert((next, TbaNpcBase(base)));
     }
     let dice = world.get::<TbaAttackDice>(from).copied();
+    let behaviors = world.get::<NpcBehaviors>(from).copied();
     let mut entity = world.entity_mut(ch);
+    if let Some(behaviors) = behaviors {
+        entity.insert(behaviors);
+    }
     match dice {
         Some(dice) => {
             entity.insert(dice);
@@ -452,7 +509,14 @@ pub(super) fn overwrite_obj(world: &mut World, obj: Entity, from: Entity) {
     let capacity = world
         .get::<Container>(from)
         .map(|container| container.capacity);
-    let timer = world.get::<TbaItemTimer>(from).copied();
+    // The timer is the new prototype's (the template has not been through the
+    // pack's timer attachment), as `attach_item_timers` would give it.
+    let timer = world
+        .get_resource::<TbaContent>()
+        .and_then(|content| content.items.get(&item.def_id))
+        .and_then(|def| def.timer)
+        .filter(|timer| *timer > 0)
+        .map(|remaining| TbaItemTimer { remaining });
     let held = world
         .get::<Container>(obj)
         .map(|container| container.contents.clone());

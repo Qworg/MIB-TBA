@@ -12,6 +12,8 @@
 //! - Objects have no state of their own beyond their place, so an object
 //!   taken out of its place (`cmd_obj_detach`, `cmd_unequip_char`) is simply
 //!   in none until placed again.
+//! - Read facts the pack does not model are answered without being counted
+//!   by `BaseHost::unsupported`, which needs `&mut self`.
 //! - There is no charm, invisibility level, house or descriptor switching:
 //!   `cmd_is_charmed` and `cmd_invis_level` answer `false` and `0`,
 //!   `cmd_house_can_enter` always allows entry, and a descriptor is a
@@ -24,10 +26,16 @@ mod fight;
 #[path = "cmd_place.rs"]
 mod place;
 
+// Shared with the sibling hosts (`room_exit` must consult `DgNowhereExits`).
+#[allow(unused_imports)]
+pub use exits::{DgNowhereExits, DgPendingDoors};
+#[allow(unused_imports)]
+pub use fight::DgHunting;
+
 use dg_vm::commands::{CmdHost, ExitField};
-use dg_vm::{BaseHost, Uid, WorldHost};
+use dg_vm::{BaseHost, Uid};
 use mib_core::prelude::*;
-use mib_stdlib::prelude::Room;
+use mib_stdlib::prelude::{Player, Room};
 
 use super::{EcsHost, wear_slot};
 use crate::dg::{out, script};
@@ -75,14 +83,14 @@ impl CmdHost for EcsHost<'_> {
         place::log_line(self.world, "syslog", format!("syslog: {text}"));
     }
 
+    /// In `character_list` order (newest first); only players can play, so
+    /// the NPCs are never visited.
     fn cmd_playing_characters(&self) -> Vec<Uid> {
-        self.character_list()
+        let playing = self
+            .all_with::<Player>()
             .into_iter()
-            .filter(|uid| {
-                self.entity(*uid)
-                    .is_some_and(|entity| out::is_playing(self.world, entity))
-            })
-            .collect()
+            .filter(|entity| out::is_playing(self.world, *entity));
+        self.ordered(playing, Self::birth, true)
     }
 
     /// The pack has no charm affect (an item's charm flag is data only).
@@ -114,13 +122,14 @@ impl CmdHost for EcsHost<'_> {
     }
 
     fn cmd_set_hunting(&mut self, ch: Uid, victim: Uid) {
-        if let (Some(ch), Some(victim)) = (self.entity(ch), self.entity(victim)) {
-            fight::set_hunting(self.world, ch, victim);
+        if let (Some(ch), Some(victim)) = (self.entity(ch), self.entity(victim))
+            && fight::set_hunting(self.world, ch, victim)
+        {
+            self.unsupported(
+                "mhunt",
+                "the pack's mobs do not track a character by hunting",
+            );
         }
-        self.unsupported(
-            "mhunt",
-            "the pack's mobs do not track a character by hunting",
-        );
     }
 
     fn cmd_unfollow(&mut self, ch: Uid) {
@@ -198,29 +207,33 @@ impl CmdHost for EcsHost<'_> {
     }
 
     fn cmd_char_to_room(&mut self, ch: Uid, room: Uid) {
-        if let (Some(ch), Some(room)) = (self.entity(ch), self.entity(room)) {
-            place::char_to_room(self.world, ch, room);
+        if let (Some(ch), Some(room)) = (self.entity(ch), self.entity(room))
+            && place::char_to_room(self.world, ch, room)
+        {
             self.moved(ch);
         }
     }
 
     fn cmd_obj_to_room(&mut self, obj: Uid, room: Uid) {
-        if let (Some(obj), Some(room)) = (self.entity(obj), self.entity(room)) {
-            place::obj_to_room(self.world, obj, room);
+        if let (Some(obj), Some(room)) = (self.entity(obj), self.entity(room))
+            && place::obj_to_room(self.world, obj, room)
+        {
             self.moved(obj);
         }
     }
 
     fn cmd_obj_to_char(&mut self, obj: Uid, ch: Uid) {
-        if let (Some(obj), Some(ch)) = (self.entity(obj), self.entity(ch)) {
-            place::obj_to_char(self.world, obj, ch);
+        if let (Some(obj), Some(ch)) = (self.entity(obj), self.entity(ch))
+            && place::obj_to_char(self.world, obj, ch)
+        {
             self.moved(obj);
         }
     }
 
     fn cmd_obj_to_obj(&mut self, obj: Uid, container: Uid) {
-        if let (Some(obj), Some(container)) = (self.entity(obj), self.entity(container)) {
-            place::obj_to_obj(self.world, obj, container);
+        if let (Some(obj), Some(container)) = (self.entity(obj), self.entity(container))
+            && place::obj_to_obj(self.world, obj, container)
+        {
             self.moved(obj);
         }
     }
@@ -282,6 +295,10 @@ impl CmdHost for EcsHost<'_> {
     fn cmd_overwrite_mob(&mut self, ch: Uid, from: Uid, keep_hp: bool) {
         if let (Some(ch), Some(from)) = (self.entity(ch), self.entity(from)) {
             place::overwrite_mob(self.world, ch, from, keep_hp);
+            self.unsupported(
+                "mtransform.stats",
+                "level, alignment, rewards and key-based behaviour stay those of the original vnum",
+            );
         }
     }
 

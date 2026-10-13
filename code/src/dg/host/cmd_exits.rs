@@ -9,7 +9,7 @@
 //!
 //! As in the C, only the room addressed changes; the exit back is not touched.
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{Door, DoorState, Doors, Exits, ItemId, Room, RoomId, RoomState};
@@ -23,6 +23,13 @@ const EX_PICKPROOF: i32 = 8;
 /// The directions whose exit exists but leads `NOWHERE`.
 #[derive(Component, Debug, Clone, Default)]
 pub struct DgNowhereExits(pub BTreeSet<ExitKey>);
+
+/// The key and keyword of an exit that is not a door right now. A C exit
+/// holds them regardless of its flags, while the pack keeps them only on a
+/// [`Door`]; they wait here and move onto the door when the flags make one,
+/// and back here when the flags take it away.
+#[derive(Component, Debug, Clone, Default)]
+pub struct DgPendingDoors(pub BTreeMap<ExitKey, (Option<ItemId>, Option<String>)>);
 
 /// One field of an exit, with the destination already resolved.
 pub(super) enum Field {
@@ -117,6 +124,9 @@ pub(super) fn purge(world: &mut World, room: Entity, dir: usize) {
     if let Some(mut nowhere) = world.get_mut::<DgNowhereExits>(room) {
         nowhere.0.remove(&key);
     }
+    if let Some(mut pending) = world.get_mut::<DgPendingDoors>(room) {
+        pending.0.remove(&key);
+    }
 }
 
 /// `do_mdoor` field assignment. An exit that does not exist is created first,
@@ -141,19 +151,27 @@ pub(super) fn set(world: &mut World, room: Entity, dir: usize, field: Field) -> 
             None
         }
         Field::Key(vnum) => {
-            let applied = set_door(world, room, key, |door| {
-                door.key = u16::try_from(vnum)
-                    .ok()
-                    .filter(|vnum| *vnum != u16::MAX)
-                    .map(|vnum| ItemId::from(format!("tba_item_{vnum}")));
-            });
-            (!applied).then_some(("exit.key", "the pack keeps a key only on a door"))
+            let item = u16::try_from(vnum)
+                .ok()
+                .filter(|vnum| *vnum != u16::MAX)
+                .map(|vnum| ItemId::from(format!("tba_item_{vnum}")));
+            let applied = set_door(world, room, key, |door| door.key = item.clone());
+            if !applied {
+                with(world, room, |pending: &mut DgPendingDoors| {
+                    pending.0.entry(key).or_default().0 = item;
+                });
+            }
+            None
         }
         Field::Keyword(text) => {
-            let applied = set_door(world, room, key, |door| {
-                door.name = Some(text).filter(|text| !text.is_empty());
-            });
-            (!applied).then_some(("exit.keyword", "the pack keeps a keyword only on a door"))
+            let name = Some(text).filter(|text| !text.is_empty());
+            let applied = set_door(world, room, key, |door| door.name = name.clone());
+            if !applied {
+                with(world, room, |pending: &mut DgPendingDoors| {
+                    pending.0.entry(key).or_default().1 = name;
+                });
+            }
+            None
         }
         Field::ToRoom(target) => {
             set_destination(world, room, key, target);
@@ -170,26 +188,38 @@ fn set_door(world: &mut World, room: Entity, key: ExitKey, f: impl FnOnce(&mut D
         .is_some()
 }
 
-/// The exit's flags: `EX_ISDOOR` makes it a door, `EX_CLOSED` and `EX_LOCKED`
-/// its state, `EX_PICKPROOF` unpickable. Without `EX_ISDOOR` the exit has no
-/// door, and the state bits go with it.
+/// The exit's flags. A C exit that is closed or locked blocks passage whether
+/// or not it is flagged `EX_ISDOOR`, and the pack blocks only at a door, so
+/// any of `EX_ISDOOR`, `EX_CLOSED` and `EX_LOCKED` makes a [`Door`] (a pack
+/// door can be opened where a C non-door cannot); `EX_PICKPROOF` makes it
+/// unpickable. With none of the three the exit has no door, and its key and
+/// keyword wait in [`DgPendingDoors`].
 fn set_flags(world: &mut World, room: Entity, key: ExitKey, flags: i32) {
-    if flags & EX_ISDOOR == 0 {
-        if let Some(mut doors) = world.get_mut::<Doors>(room) {
-            doors.by_dir.remove(&key);
+    let closed = flags & EX_CLOSED != 0;
+    let locked = flags & EX_LOCKED != 0;
+    if flags & (EX_ISDOOR | EX_CLOSED | EX_LOCKED) == 0 {
+        let removed = world
+            .get_mut::<Doors>(room)
+            .and_then(|mut doors| doors.by_dir.remove(&key));
+        if let Some(door) = removed {
+            with(world, room, |pending: &mut DgPendingDoors| {
+                pending.0.insert(key, (door.key, door.name));
+            });
         }
         if let Some(mut state) = world.get_mut::<RoomState>(room) {
             state.doors.remove(&key);
         }
         return;
     }
-    let closed = flags & EX_CLOSED != 0;
-    let locked = flags & EX_LOCKED != 0;
     let to = destination_key(world, room, key);
+    let (held_key, held_name) = world
+        .get_mut::<DgPendingDoors>(room)
+        .and_then(|mut pending| pending.0.remove(&key))
+        .unwrap_or_default();
     with(world, room, |doors: &mut Doors| {
         let door = doors.by_dir.entry(key).or_insert_with(|| Door {
-            key: None,
-            name: None,
+            key: held_key,
+            name: held_name,
             pickable: true,
             difficulty: 0,
             default_closed: closed,
