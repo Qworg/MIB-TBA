@@ -15,8 +15,7 @@
 //! | world | `nums["house_enter:<vnum>"]` | `House_can_enter(ch, vnum)` |
 //! | world | `nums["objproto:<vnum>:wear"]`, `nums["objproto:<vnum>:type"]` | a loadable object's wear flags and type |
 //! | world | `nums["zone:<n>:bot"]`, `nums["zone:<n>:top"]` | a zone's vnum range |
-//! | world | `texts["hook:send:<ch>"]`, `texts["hook:arrive:<ch>"]` | a test hook, run once and removed: after the next text delivered to `<ch>` (what an `act` trigger of `<ch>` would do) or after the next time `<ch>` is put into a room (what the command of an `at` would do). `load <mob vnum>` puts a new mob at the head of `<ch>`'s room, `move <room vnum>` takes `<ch>` to that room, `pull <room vnum> <uid>` takes the character `<uid>` there, `noact` clears `dg_act_check` (a nested `act()` with `DG_NO_TRIG`) |
-//! | world | `nums["act_check"]` | `dg_act_check` (0 until the first `act()`) |
+//! | world | `texts["hook:send:<ch>"]`, `texts["hook:arrive:<ch>"]` | a test hook, run once and removed: after the next text delivered to `<ch>` (what an `act` trigger of `<ch>` would do) or after the next time `<ch>` is put into a room (what the command of an `at` would do). `load <mob vnum>` puts a new mob at the head of `<ch>`'s room, `move <room vnum>` takes `<ch>` to that room, `pull <room vnum> <uid>` takes the character `<uid>` there, `noact` clears `VmState::act_check` (a nested `act()` with `DG_NO_TRIG`) |
 //! | world | `nums["mobtrig:<vnum>"]`, `nums["objtrig:<vnum>"]` | a trigger (a `protos` key) that `read_mobile` / `read_object` attach to what they build, as the prototype's trigger list does |
 //!
 //! A character is on `descriptor_list` playing when it has `desc` and its
@@ -26,7 +25,7 @@
 //! follows `config:diagonal_dirs`.
 //!
 //! Effects recorded with [`MockHost::effect`]: `send <ch>: <text>`,
-//! `mudlog <level>: <text>`, `syslog: <text>`, `die <ch>`, `hit <ch>
+//! `mudlog <type> <level>: <text>`, `syslog: <text>`, `die <ch>`, `hit <ch>
 //! <victim>`, `hunt <ch> <victim>`, `extract_char <ch>`, `extract_obj <obj>`,
 //! `transform_mob <ch> <vnum> <keep_hp>`, `transform_obj <obj> <vnum>`,
 //! `transform_obj_while_worn <obj>` (the object was still worn when it was
@@ -133,8 +132,8 @@ impl CmdHost for MockHost {
         (self.num(ch, "desc") != 0).then(|| self.link(ch, "desc_original"))
     }
 
-    fn cmd_mudlog(&mut self, level: i32, text: &str) {
-        self.effect(format!("mudlog {level}: {text}"));
+    fn cmd_mudlog(&mut self, log_type: i32, level: i32, text: &str) {
+        self.effect(format!("mudlog {log_type} {level}: {text}"));
     }
 
     fn cmd_syslog(&mut self, text: &str) {

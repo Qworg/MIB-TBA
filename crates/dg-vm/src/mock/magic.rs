@@ -1,10 +1,10 @@
 //! [`MagicHost`] for the mock.
 //!
-//! Keys beyond the shared table:
+//! Keys beyond the shared table (spell names are the shared
+//! `globals.texts["spell:<n>"]`, which the VM's `find_skill_num` matches over):
 //!
 //! | entity | key | meaning (C) |
 //! |---|---|---|
-//! | globals | `texts["spell:<n>"]` | `spell_info[n].name`; absent = an undefined slot (the C's `"!UNUSED!"`). The VM's `find_skill_num` matches over these |
 //! | globals | `nums["spellinfo:<n>:targets"]`, `nums["spellinfo:<n>:routines"]` | `spell_info[n].targets` / `.routines` |
 //! | char | `texts["dg_aff_bits"]` | comma-separated `AFF_*` numbers set by `dg_affect` (so `off` can clear them) |
 //!

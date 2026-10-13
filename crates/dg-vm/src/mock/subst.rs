@@ -6,7 +6,6 @@
 //! |---|---|---|
 //! | `globals` | `nums["happy:qp"]`, `nums["happy:exp"]`, `nums["happy:gold"]` | `happy_data.qp_rate`, `exp_rate`, `gold_rate` |
 //! | `globals` | `nums["happy:ticks"]` | `happy_data.ticks_left` |
-//! | `globals` | `nums["config:diagonal_dirs"]` | `CONFIG_DIAGONAL_DIRS` (nonzero = on) |
 
 use crate::mock::MockHost;
 use crate::subst::{HappyHour, SubstHost};

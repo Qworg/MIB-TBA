@@ -165,8 +165,10 @@ pub trait CmdHost {
     /// unswitched descriptor itself.
     fn cmd_desc(&self, ch: Uid) -> Option<Option<Uid>>;
 
-    /// `mudlog(BRF, level, TRUE, "%s", text)`.
-    fn cmd_mudlog(&mut self, level: i32, text: &str);
+    /// `mudlog(log_type, level, TRUE, "%s", text)`: `log_type` is `OFF` 0,
+    /// `BRF` 1, `NRM` 2 or `CMP` 3 ([`crate::types::MUDLOG_BRF`] and
+    /// friends); `level` is the lowest immortal level that sees the line.
+    fn cmd_mudlog(&mut self, log_type: i32, level: i32, text: &str);
 
     /// `log("%s", text)`: a line for the server log only (the `SYSERR` lines
     /// of `act` and the object and room handlers). Not shown to immortals.

@@ -41,10 +41,6 @@
 //!   `dg_cast` or `dg_affect` line can leave it set while the outer object is
 //!   alive. `has_obj_by_uid_in_lookup_table` is `!host.exists(obj)` too; a
 //!   purged character is `DEAD(ch)`, [`WorldHost::is_dead`].
-//! - The `SYSERR: … Trigger #%d has no text argument!` lines are `mudlog(NRM,
-//!   LVL_BUILDER, …)` in the C. The host's only `mudlog` primitive
-//!   ([`crate::commands::CmdHost::cmd_mudlog`]) is `BRF`, so they go out at
-//!   that level.
 //! - Where the C would read out of bounds, the nearest safe thing happens:
 //!   an actor or owner with no room is skipped where the C indexes
 //!   `world[NOWHERE]`; a door sub-command outside `cmd_door[]` is the empty
@@ -75,8 +71,8 @@ use crate::types::trig::{
     WTRIG_RESET, WTRIG_SPEECH, WTRIG_TIME,
 };
 use crate::types::{
-    DIRS, LVL_IMMORT, MAX_INPUT_LENGTH, NUM_OF_DIRS, OCMD_DRINK, OCMD_EAT, OCMD_EQUIP, OCMD_INVEN,
-    OCMD_QUAFF, OCMD_ROOM, REV_DIR, SCRIPT_ERROR_CODE, Uid, uid_text,
+    DIRS, LVL_IMMORT, MAX_INPUT_LENGTH, MUDLOG_NRM, NUM_OF_DIRS, OCMD_DRINK, OCMD_EAT, OCMD_EQUIP,
+    OCMD_INVEN, OCMD_QUAFF, OCMD_ROOM, REV_DIR, SCRIPT_ERROR_CODE, Uid, uid_text,
 };
 
 /// What dispatch needs from the world beyond the shared primitives. Position,
@@ -370,6 +366,7 @@ fn command_matches(trig_arg: &str, cmd: &str) -> bool {
 /// argument!", vnum)`.
 fn log_no_text<H: DgHost + ?Sized>(host: &mut H, what: &str, vnum: i32) {
     host.cmd_mudlog(
+        MUDLOG_NRM,
         LVL_IMMORT,
         &format!("SYSERR: {what} Trigger #{vnum} has no text argument!"),
     );
@@ -2707,7 +2704,7 @@ mod tests {
         assert_eq!(command_mtrigger(&mut w.h, w.alice, "x", ""), 1);
         assert_eq!(
             w.h.effects,
-            ["mudlog 31: SYSERR: Command Trigger #77 has no text argument!"]
+            ["mudlog 2 31: SYSERR: Command Trigger #77 has no text argument!"]
         );
         // It was skipped; the next one ran.
         assert!(!w.ran(w.guard));
@@ -2789,7 +2786,7 @@ mod tests {
         assert!(!w.ran(w.guard));
         assert_eq!(
             w.h.effects,
-            ["mudlog 31: SYSERR: Speech Trigger #9 has no text argument!"]
+            ["mudlog 2 31: SYSERR: Speech Trigger #9 has no text argument!"]
         );
     }
 
@@ -2995,7 +2992,7 @@ mod tests {
         assert_eq!(w.g(w.guard, "b").as_deref(), Some("1"));
         assert_eq!(
             w.h.effects,
-            ["mudlog 31: SYSERR: Act Trigger #3 has no text argument!"]
+            ["mudlog 2 31: SYSERR: Act Trigger #3 has no text argument!"]
         );
     }
 
@@ -3569,7 +3566,7 @@ mod tests {
         assert_eq!(cmd_otrig(&mut w.h, ball, w.alice, "x", "", OCMD_ROOM), 0);
         assert_eq!(
             w.h.effects,
-            ["mudlog 31: SYSERR: O-Command Trigger #55 has no text argument!"]
+            ["mudlog 2 31: SYSERR: O-Command Trigger #55 has no text argument!"]
         );
         assert!(!w.ran(ball));
     }
@@ -4023,7 +4020,7 @@ mod tests {
         assert_eq!(command_wtrigger(&mut w.h, w.alice, "x", ""), 1);
         assert_eq!(
             w.h.effects,
-            ["mudlog 31: SYSERR: W-Command Trigger #66 has no text argument!"]
+            ["mudlog 2 31: SYSERR: W-Command Trigger #66 has no text argument!"]
         );
         assert!(!w.ran(w.room));
     }
@@ -4053,7 +4050,7 @@ mod tests {
         speech_wtrigger(&mut w.h, w.alice, "x");
         assert_eq!(
             w.h.effects,
-            ["mudlog 31: SYSERR: W-Speech Trigger #9 has no text argument!"]
+            ["mudlog 2 31: SYSERR: W-Speech Trigger #9 has no text argument!"]
         );
     }
 

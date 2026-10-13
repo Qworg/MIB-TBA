@@ -24,7 +24,7 @@
 //! | char | `nums["dg_invalid"]` | non-zero makes `valid_dg_target` false outright |
 //! | char | `nums["desc"]` | `ch->desc != NULL` |
 //! | char | `nums["con_state"]` | `STATE(ch->desc)`; `0` is `CON_PLAYING` |
-//! | char | `nums["pref"]` | the preference bitvector, bit `n` = `PRF_*` number `n` (`PRF_NOHASSLE` is 8) |
+//! | char | `nums["act"]`, `nums["pref"]` | the act and preference bitvectors, bit `n` = flag number `n` (`PLR_WRITING` is act 4, `PRF_NOHASSLE` is pref 8). `IS_NPC` and `DEAD` are not act bits: they are `nums["is_npc"]` and `nums["dead"]` |
 //! | char | `lists["cannot_see"]` | entities this character fails `CAN_SEE` for |
 //! | char | `nums["pos"]` | `GET_POS` (`0` dead … `8` standing) |
 //! | char | `nums["hit"]`, `nums["max_hit"]`, `nums["mana"]`, `nums["max_mana"]`, `nums["move"]`, `nums["max_move"]` | the point pools |
@@ -39,12 +39,12 @@
 //! | obj | `links["carried_by"]` / `links["worn_by"]` / `links["in_obj"]` | the same-named C fields |
 //! | obj | `nums["type"]` | `GET_OBJ_TYPE` (`15` is a container) |
 //! | obj | `nums["wear"]` | wear flags as a bitvector, bit `n` = `ITEM_WEAR_*` `n` |
-//! | obj | `nums["val0"]`..`nums["val3"]`, `nums["timer"]`, `nums["cost"]`, `nums["weight"]` | `GET_OBJ_VAL` and the same-named `GET_OBJ_*` |
+//! | obj | `nums["val0"]`..`nums["val3"]`, `nums["timer"]`, `nums["cost"]`, `nums["weight"]` | `GET_OBJ_VAL` and the same-named `GET_OBJ_*` (a character's `nums["weight"]` is `GET_WEIGHT`) |
 //! | room, obj | `lists["contents"]` | `room->contents` / `obj->contains` |
 //! | room | `lists["people"]` | `room->people`, head first |
 //! | room | `links["exit:<dir>"]` | `R_EXIT(room, dir)->to_room`, `<dir>` the direction number |
-//! | room | `nums["exit:<dir>:nowhere"]` | non-zero: the exit exists but leads to `NOWHERE`. An exit exists when either this or the link is present |
-//! | room | `nums["exit:<dir>:flags"]`, `nums["exit:<dir>:key"]` | `exit_info`, `key` |
+//! | room | `nums["exit:<dir>:nowhere"]` | non-zero: the exit exists but leads to `NOWHERE` (`to_room` is `None`). An exit exists when this is non-zero or the link names an existing entity; a link to something gone is no exit |
+//! | room | `nums["exit:<dir>:flags"]`, `nums["exit:<dir>:key"]` | `exit_info`, `key`; an absent key is `0`, the calloc'd value of an exit a script created (a world-file exit without a key is `65535`, `NOTHING`) |
 //! | room | `texts["exit:<dir>:keyword"]`, `texts["exit:<dir>:desc"]` | `keyword`, `general_description` |
 //! | room | `nums["zone"]`, `nums["sector"]` | zone number, `sector_type` |
 //! | room | `nums["flag:<n>"]` | `ROOM_FLAGGED(room, n)` |
@@ -54,8 +54,11 @@
 //! | key | meaning |
 //! |---|---|
 //! | `nums["script_players"]` | `CONFIG_SCRIPT_PLAYERS` |
+//! | `nums["config:diagonal_dirs"]` | `CONFIG_DIAGONAL_DIRS`: `DIR_COUNT` is 10 when non-zero, else 6 |
+//! | `nums["sky"]` | `weather_info.sky` |
+//! | `texts["spell:<n>"]` | `spell_info[n].name`; absent = an undefined slot |
 //! | `texts["commands"]` | the game command table for `mudcommand`, space-separated in table order |
-//! | `texts["zone:<n>:name"]`, `nums["zone:<n>:empty"]` | a zone's name; whether `is_empty(zone)` |
+//! | `texts["zone:<n>:name"]` | a zone's name, `<n>` the zone number |
 //! | `texts["mobproto:<vnum>"]`, `texts["objproto:<vnum>"]` | a loadable prototype's name; absent = no such vnum |
 //!
 //! Like the C lists, a newly placed character or object goes to the **head**,

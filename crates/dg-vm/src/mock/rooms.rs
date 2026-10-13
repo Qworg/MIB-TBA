@@ -1,21 +1,9 @@
 //! [`RoomHost`] for the mock.
 //!
-//! Beyond the shared keys (`exit:<dir>*`, `zone`, `sector`, `flag:<n>`), this
-//! file reads:
-//!
-//! | key | meaning (C) |
-//! |---|---|
-//! | `globals.nums["sky"]` | `weather_info.sky` |
-//!
-//! An exit exists (`R_EXIT(room, dir) != NULL`) when `links["exit:<dir>"]`
-//! (to an existing entity) or `nums["exit:<dir>:nowhere"]` is present, as the
-//! shared table says. Its
-//! `to_room` is the link, or `NOWHERE` when the link is absent or `nowhere`
-//! is set. An exit with no `exit:<dir>:key` has key 0, the calloc'd value of
-//! an exit a script just created; a test that models a world-file exit
-//! without a key sets `exit:<dir>:key` to 65535 (`NOTHING`). The zone is
-//! `nums["zone"]`, the zone's *number* (`zone_table[r->zone].number`, not
-//! its index), and its name `globals.texts["zone:<number>:name"]`.
+//! Reads only keys of the shared table (`exit:<dir>*`, `zone`, `sector`,
+//! `flag:<n>`, and the world's `sky` and `zone:<n>:name`); the exit rules
+//! are stated there. The zone is `nums["zone"]`, the zone's *number*
+//! (`zone_table[r->zone].number`, not its index).
 
 use crate::fields_room::{RoomExit, RoomHost};
 use crate::mock::MockHost;

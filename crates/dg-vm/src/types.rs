@@ -503,6 +503,15 @@ pub const PULSE_VIOLENCE: i64 = 2 * PASSES_PER_SEC;
 /// truncated to one byte less.
 pub const MAX_INPUT_LENGTH: usize = 512;
 
+/// `mudlog` types (`utils.h`): the lowest log setting that receives the line.
+pub const MUDLOG_OFF: i32 = 0;
+/// `BRF`: only the most important messages.
+pub const MUDLOG_BRF: i32 = 1;
+/// `NRM`: the standard messages.
+pub const MUDLOG_NRM: i32 = 2;
+/// `CMP`: every message.
+pub const MUDLOG_CMP: i32 = 3;
+
 /// `ITEM_CONTAINER`: the `GET_OBJ_TYPE` of an object that holds others.
 pub const ITEM_CONTAINER: i32 = 15;
 

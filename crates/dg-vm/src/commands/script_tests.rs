@@ -588,3 +588,50 @@ fn an_act_trigger_that_says_something_ends_the_offers_to_later_npcs() {
         );
     }
 }
+
+// ---- an exit that leads nowhere ----------------------------------------
+
+#[test]
+fn an_exit_made_toward_a_missing_room_is_seen_as_an_exit_by_the_field_table() {
+    // `wdoor` with a room that does not exist leaves `to_room = NOWHERE` on a
+    // real exit: `%self.east%` is set (the bits of the exit), its `vnum` is
+    // NOWHERE and its `room` empty, and with the north exit gone it is the
+    // only door `%random.dir%` can name.
+    let mut w = World::new();
+    let room = w.room;
+    run_script(
+        &mut w,
+        room,
+        "wdoor 3001 north purge\n\
+         wdoor 3001 east room 9999\n\
+         set bits %self.east%\n\
+         set vnum %self.east(vnum)%\n\
+         set dest %self.east(room)%\n\
+         set north %self.north%\n\
+         set dir %random.dir%\n\
+         global bits\nglobal vnum\nglobal dest\nglobal north\nglobal dir",
+        None,
+    );
+    let global = |name: &str| {
+        w.host
+            .script(room)
+            .and_then(|script| {
+                script
+                    .global_vars
+                    .vars
+                    .iter()
+                    .find(|var| var.name == name)
+                    .map(|var| var.value.clone())
+            })
+            .unwrap_or_else(|| "<unset>".to_owned())
+    };
+    assert_eq!(global("bits"), "NOBITS ");
+    assert_eq!(global("vnum"), "65535");
+    assert_eq!(global("dest"), "");
+    assert_eq!(global("north"), "");
+    assert_eq!(global("dir"), "east");
+    assert_eq!(
+        logs(&w),
+        [format!("{WLD}wdoor: invalid door target (arg == 9999)")]
+    );
+}

@@ -5,7 +5,7 @@ use super::comm::{TO_CHAR, TO_ROOM, act};
 use super::shared::{color_level, pos};
 use crate::fields_char::CharStat;
 use crate::host::DgHost;
-use crate::types::{LVL_IMMORT, Uid};
+use crate::types::{LVL_IMMORT, MUDLOG_BRF, Uid};
 
 const POS_DEAD: i32 = 0;
 const POS_MORTALLYW: i32 = 1;
@@ -110,7 +110,7 @@ pub fn script_damage<H: DgHost + ?Sized>(host: &mut H, vict: Uid, dam: i32) {
             };
             let level = LVL_IMMORT.max(host.cmd_invis_level(vict));
             let text = format!("{} killed by script at {}", host.name(vict), place);
-            host.cmd_mudlog(level, &text);
+            host.cmd_mudlog(MUDLOG_BRF, level, &text);
         }
         host.cmd_die(vict);
     }
@@ -285,7 +285,7 @@ mod tests {
         script_damage(&mut w.host, alice, 40);
         assert_eq!(
             w.effects("mudlog"),
-            ["mudlog 31: Alice killed by script at The Temple"]
+            ["mudlog 1 31: Alice killed by script at The Temple"]
         );
         assert_eq!(w.effects("die"), [format!("die {alice}")]);
         // The log level is the larger of LVL_IMMORT and the invisibility level.
@@ -295,7 +295,7 @@ mod tests {
         script_damage(&mut w.host, alice, 40);
         assert_eq!(
             w.effects("mudlog"),
-            ["mudlog 33: Alice killed by script at The Temple"]
+            ["mudlog 1 33: Alice killed by script at The Temple"]
         );
         // In no room, the place is NOWHERE.
         w.clear();
@@ -304,7 +304,7 @@ mod tests {
         script_damage(&mut w.host, alice, 40);
         assert_eq!(
             w.effects("mudlog"),
-            ["mudlog 33: Alice killed by script at NOWHERE"]
+            ["mudlog 1 33: Alice killed by script at NOWHERE"]
         );
         w.clear();
         script_damage(&mut w.host, mob, 40);
