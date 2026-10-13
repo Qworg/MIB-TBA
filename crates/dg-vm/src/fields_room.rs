@@ -13,19 +13,21 @@
 //! script's globals (first name match, any context), and a missing script
 //! logs the C's message.
 //!
+//! Only the six directions `north east south west up down` are fields in this
+//! tree of the C, although the game has ten exits; the diagonals fall through
+//! to the unknown-field path, as they do there. An exit subfield other than
+//! `vnum key bits room` leaves the result empty.
+//!
 //! # Differences from the C
 //!
-//! - Only the six directions `north east south west up down` are fields in
-//!   this tree of the C, although the game has ten exits. The diagonals fall
-//!   through to the unknown-field path, as they do there.
-//! - An exit subfield other than `vnum key bits room` leaves the result empty.
 //! - `snprintf` truncation to the caller's buffer is applied with
 //!   [`crate::fields_obj::fit`].
 //! - `weather` indexes `sky_look[]` with `weather_info.sky`; a sky value
 //!   outside `0..4` (which the C would read out of bounds) gives an empty
 //!   result.
 //! - `GET_ROOM_VNUM(to_room)` of an exit with no destination is `NOWHERE`,
-//!   which is `-1` here as in the stock `sh_int` build.
+//!   which is 65535 in this tree (`CIRCLE_UNSIGNED_INDEX`: `IDXTYPE` is
+//!   `ush_int`), and that is what `(vnum)` prints.
 //!
 //! Tables ported from `constants.c`: [`ROOM_BITS`], [`EXIT_BITS`],
 //! [`SECTOR_TYPES`], and `sky_look` ([`SKY_LOOK`]).
@@ -88,7 +90,8 @@ const FIELD_DIRS: usize = 6;
 pub struct RoomExit {
     /// `to_room`: `None` for `NOWHERE`.
     pub to_room: Option<Uid>,
-    /// `key`.
+    /// `key`, the C value: `obj_vnum` is `ush_int` here, so "no key"
+    /// (`NOTHING`) is 65535, not -1; the VM prints it unchanged.
     pub key: i32,
     /// `exit_info`.
     pub info: u32,
@@ -99,8 +102,9 @@ pub struct RoomExit {
 /// A host that does not model a fact returns the neutral value (`0`, empty,
 /// `None`, `false`).
 pub trait RoomHost {
-    /// `R_EXIT(room, dir)`, `dir` in `0..6` (`NORTH`..`DOWN`): `None` when the
-    /// room has no exit that way.
+    /// `R_EXIT(room, dir)`, `dir` in `0..NUM_OF_DIRS` (the field table only
+    /// asks for `0..6`, `NORTH`..`DOWN`): `None` when the room has no exit
+    /// that way.
     fn room_exit(&self, room: Uid, dir: usize) -> Option<RoomExit>;
 
     /// `r->sector_type`.
@@ -248,8 +252,8 @@ fn exit_field<H: DgHost + ?Sized>(host: &H, room: Uid, dir: usize, subfield: &st
     if subfield.is_empty() {
         bits()
     } else if str_eq(subfield, "vnum") {
-        // GET_ROOM_VNUM(to_room): NOWHERE (-1) with no destination.
-        exit.to_room.map_or(-1, |to| host.vnum(to)).to_string()
+        // GET_ROOM_VNUM(to_room): NOWHERE (65535, ush_int) with no destination.
+        exit.to_room.map_or(65535, |to| host.vnum(to)).to_string()
     } else if str_eq(subfield, "key") {
         exit.key.to_string()
     } else if str_eq(subfield, "bits") {
@@ -341,6 +345,8 @@ mod tests {
         assert_eq!(f(&mut h, r, "contents", "8"), format!("}}{b}"));
         assert_eq!(f(&mut h, r, "contents", "7"), format!("}}{a}"));
         assert_eq!(f(&mut h, r, "contents", "9"), "");
+        // atoi stops at the junk: "7junk" is vnum 7.
+        assert_eq!(f(&mut h, r, "contents", "7junk"), format!("}}{a}"));
         // A non-numeric subfield is vnum 0, which nothing here has.
         assert_eq!(f(&mut h, r, "contents", "apple"), "");
         let zero = h.add_obj(0, "zero");
@@ -448,19 +454,29 @@ mod tests {
         // Other directions are independent.
         assert_eq!(f(&mut h, r, "south", "vnum"), "");
 
-        // An exit with no destination: vnum is NOWHERE (-1), room is empty.
+        // An exit with no destination (a link to no entity): vnum is NOWHERE
+        // (65535 in this tree), room is empty, key NOTHING is 65535.
+        h.entity_mut(r)
+            .unwrap()
+            .links
+            .insert("exit:5".to_owned(), -77);
         h.set_num(r, "exit:5:flags", 0);
-        h.set_num(r, "exit:5:key", -1);
+        h.set_num(r, "exit:5:key", 65535);
         assert_eq!(f(&mut h, r, "down", ""), "NOBITS ");
-        assert_eq!(f(&mut h, r, "down", "vnum"), "-1");
+        assert_eq!(f(&mut h, r, "down", "vnum"), "65535");
         assert_eq!(f(&mut h, r, "down", "room"), "");
-        assert_eq!(f(&mut h, r, "down", "key"), "-1");
+        assert_eq!(f(&mut h, r, "down", "key"), "65535");
 
         // Every direction maps to its own number.
         for (i, dir) in ["north", "east", "south", "west", "up", "down"]
             .iter()
             .enumerate()
         {
+            h.entity_mut(r)
+                .unwrap()
+                .links
+                .entry(format!("exit:{i}"))
+                .or_insert(-77);
             h.set_num(r, &format!("exit:{i}:key"), 100 + i as i64);
             assert_eq!(f(&mut h, r, dir, "key"), (100 + i).to_string());
         }

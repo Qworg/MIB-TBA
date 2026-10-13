@@ -7,10 +7,9 @@
 //! |---|---|
 //! | `globals.nums["sky"]` | `weather_info.sky` |
 //!
-//! An exit exists (`R_EXIT(room, dir) != NULL`) when the room has any of
-//! `links["exit:<dir>"]`, `nums["exit:<dir>:flags"]`, `nums["exit:<dir>:key"]`,
-//! `texts["exit:<dir>:keyword"]` or `texts["exit:<dir>:desc"]`; with only the
-//! latter four it has no destination (`to_room == NOWHERE`). The zone number
+//! An exit exists (`R_EXIT(room, dir) != NULL`) exactly when
+//! `links["exit:<dir>"]` is present, as the shared table says. A link to an
+//! entity that does not exist is an exit whose `to_room` is `NOWHERE`. The zone number
 //! is `nums["zone"]` and its name `globals.texts["zone:<number>:name"]`.
 
 use crate::fields_room::{RoomExit, RoomHost};
@@ -21,11 +20,7 @@ impl RoomHost for MockHost {
     fn room_exit(&self, room: Uid, dir: usize) -> Option<RoomExit> {
         let prefix = format!("exit:{dir}");
         let entity = self.entity(room)?;
-        let exists = entity.links.contains_key(&prefix)
-            || entity.nums.contains_key(&format!("{prefix}:flags"))
-            || entity.nums.contains_key(&format!("{prefix}:key"))
-            || entity.texts.contains_key(&format!("{prefix}:keyword"))
-            || entity.texts.contains_key(&format!("{prefix}:desc"));
+        let exists = entity.links.contains_key(&prefix);
         exists.then(|| RoomExit {
             to_room: self.link(room, &prefix),
             key: i32::try_from(self.num(room, &format!("{prefix}:key"))).unwrap_or(0),

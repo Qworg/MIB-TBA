@@ -27,7 +27,7 @@
 //!   as the C does; the object's carried weight is not adjusted, exactly as in
 //!   the C, which assigns the field directly.
 //! - An `oset apply` modifier is stored in a signed byte and the location in
-//!   an unsigned byte (`struct obj_affected_type`), so the sum wraps to `i8`.
+//!   a `byte`, also signed (`struct obj_affected_type`; 0..24 fits either way), so the sum wraps to `i8`.
 //!
 //! Tables ported from `constants.c`: [`ITEM_TYPES`], [`EXTRA_BITS`],
 //! [`AFFECTED_BITS`], [`APPLY_TYPES`]. (`wear_bits` is not used by this
@@ -823,6 +823,23 @@ mod tests {
         let wide = "\u{e9}".repeat(33); // 66 bytes
         assert_eq!(f(&mut h, o, "oset", &format!("alias {wide}")), "1");
         assert_eq!(h.text(o, "alias"), "caf\u{e9}");
+    }
+
+    #[test]
+    fn oset_apply_table_prefix_and_fill_words() {
+        let mut h = MockHost::new();
+        let o = sword(&mut h);
+        // apply_types[] order: NONE STR DEX INT WIS CON CHA ...; the first
+        // table name that is a prefix of "char_weight" is CHA (6), not
+        // CHAR_WEIGHT.
+        assert_eq!(f(&mut h, o, "oset", "apply char_weight 3"), "1");
+        assert_eq!(h.num(o, "apply:0:loc"), 6);
+        assert_eq!(h.num(o, "apply:0:mod"), 3);
+        // one_argument skips a leading fill word ("the").
+        assert_eq!(f(&mut h, o, "oset", "the alias   big axe"), "1");
+        // skip_spaces stops at a tab, so the first word is empty and no
+        // handler matches.
+        assert_eq!(f(&mut h, o, "oset", "\tapply str 1"), "0");
     }
 
     #[test]
