@@ -31,13 +31,18 @@
 //! - The C recurses without bound: a subfield is substituted by a recursive
 //!   `var_subst`, and a chained reference runs `eval`, which substitutes
 //!   again. A variable whose value reproduces its own reference makes that
-//!   loop forever. [`MAX_NESTING`] bounds the nesting; past it the line
-//!   substitutes to nothing and a log line is written.
+//!   loop forever. [`MAX_NESTING`] bounds the nesting and [`MAX_WORK`] the
+//!   total number of nested substitutions under one top-level call; when
+//!   either trips, one log line is written and the whole top-level line
+//!   substitutes to nothing.
 //! - `%random.dir%` retries a random direction until it finds an exit; the
 //!   retry is capped at [`DIR_RETRIES`] and then takes the first exit, so a
-//!   host whose exits change underneath it cannot hang the VM. `DIR_COUNT` is
-//!   taken as 10 (`CONFIG_DIAGONAL_DIRS` on); with it off, the missing
-//!   diagonal exits are simply retried.
+//!   host whose exits change underneath it cannot hang the VM. `DIR_COUNT` follows
+//!   `CONFIG_DIAGONAL_DIRS` ([`SubstHost::subst_diagonal_dirs`]): 6, or 10
+//!   with diagonals on, for both the exit count and the roll.
+//! - The vnum arguments of `%people%`, `%findmob%` and `%findobj%` are
+//!   narrowed to `IDXTYPE` (`u16`) as the C does, so `65535` is `NOBODY`
+//!   and `68537` is `3001`.
 //! - `%global.name%` reads the script of `world[0]`; the port takes that to
 //!   be room vnum 0 (`real_room(0)`), the void the rest of the C names by
 //!   `r->number == 0`.
@@ -92,6 +97,10 @@ pub trait SubstHost {
     /// `R_EXIT(room, dir) != NULL`, `dir` in `0..NUM_OF_DIRS`: whether the
     /// room has an exit that way (whether or not it leads anywhere).
     fn subst_has_exit(&self, room: Uid, dir: usize) -> bool;
+
+    /// `CONFIG_DIAGONAL_DIRS`: whether diagonal directions exist
+    /// (`DIR_COUNT` is 10 when set, 6 otherwise). `false` by default.
+    fn subst_diagonal_dirs(&self) -> bool;
 }
 
 /// `sizeof(repl_str)` in `var_subst`: `MAX_INPUT_LENGTH - 20`, which leaves
@@ -99,10 +108,13 @@ pub trait SubstHost {
 const REPL_MAX: usize = MAX_INPUT_LENGTH - 20 - 1;
 
 /// How deeply `var_subst` may nest (a subfield, or a chained reference's
-/// `eval`) before it gives up. Honest scripts nest a few levels; the deepest
-/// the 511-byte line limit allows without a self-reproducing value is about
-/// 170, which is not worth a stack that deep.
-pub const MAX_NESTING: u32 = 64;
+/// `eval`) before it gives up. Real scripts nest two or three levels.
+pub const MAX_NESTING: u32 = 10;
+
+/// How many `var_subst` entries one top-level call may make in all, nested or
+/// not, before it gives up. Depth alone does not bound the work: a value that
+/// reproduces its chained reference twice branches at every level.
+pub const MAX_WORK: u32 = 300;
 
 /// How many random directions `%random.dir%` tries before taking the first
 /// exit.
@@ -110,28 +122,50 @@ pub const DIR_RETRIES: u32 = 1000;
 
 thread_local! {
     static NESTING: Cell<u32> = const { Cell::new(0) };
+    static WORK: Cell<u32> = const { Cell::new(0) };
+    static ABORTED: Cell<bool> = const { Cell::new(false) };
 }
 
-/// Decrements [`NESTING`] when a `var_subst` call ends.
+/// Decrements [`NESTING`] when a `var_subst` call ends; the outermost call
+/// also resets the work count and the abort flag.
 struct NestGuard;
 
+/// Why [`NestGuard::enter`] refused.
+enum Refusal {
+    /// A limit tripped on this call: log it.
+    Tripped,
+    /// An earlier call of this top-level substitution already gave up.
+    Aborted,
+}
+
 impl NestGuard {
-    /// `None` when the nesting limit is reached.
-    fn enter() -> Option<Self> {
-        NESTING.with(|depth| {
-            if depth.get() >= MAX_NESTING {
-                None
-            } else {
-                depth.set(depth.get() + 1);
-                Some(NestGuard)
-            }
-        })
+    fn enter() -> Result<Self, Refusal> {
+        if ABORTED.with(Cell::get) {
+            return Err(Refusal::Aborted);
+        }
+        let depth = NESTING.with(Cell::get);
+        let work = WORK.with(Cell::get);
+        if depth >= MAX_NESTING || work >= MAX_WORK {
+            ABORTED.with(|flag| flag.set(true));
+            return Err(Refusal::Tripped);
+        }
+        NESTING.with(|d| d.set(depth + 1));
+        WORK.with(|w| w.set(work + 1));
+        Ok(NestGuard)
     }
 }
 
 impl Drop for NestGuard {
     fn drop(&mut self) {
-        NESTING.with(|depth| depth.set(depth.get().saturating_sub(1)));
+        let depth = NESTING.with(|d| {
+            let depth = d.get().saturating_sub(1);
+            d.set(depth);
+            depth
+        });
+        if depth == 0 {
+            WORK.with(|w| w.set(0));
+            ABORTED.with(|flag| flag.set(false));
+        }
     }
 }
 
@@ -209,9 +243,14 @@ pub fn var_subst<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
         return line.to_owned();
     }
 
-    let Some(_guard) = NestGuard::enter() else {
-        cx.log("variable substitution nested too deeply");
-        return String::new();
+    let _guard = match NestGuard::enter() {
+        Ok(guard) => guard,
+        Err(refusal) => {
+            if matches!(refusal, Refusal::Tripped) {
+                cx.log("variable substitution nested too deeply");
+            }
+            return String::new();
+        }
     };
 
     let mut tmp = vec![0u8; MAX_INPUT_LENGTH];
@@ -327,7 +366,12 @@ pub fn var_subst<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
             left -= take;
         }
     }
-    bytes_to_string(out)
+    // A limit tripped somewhere below: the whole line substitutes to nothing,
+    // as the over-length refusal does, rather than running half-expanded.
+    if ABORTED.with(Cell::get) {
+        return String::new();
+    }
+    cap(bytes_to_string(out), MAX_INPUT_LENGTH - 1)
 }
 
 /// `find_replacement(go, sc, trig, type, var, field, subfield, str, slen)`:
@@ -607,7 +651,7 @@ fn special_var<H: DgHost + ?Sized>(
     if str_eq(var, "people") {
         let num = atoi(field);
         let count = if num > 0 {
-            match trgvar_in_room(&*cx.host, num) {
+            match trgvar_in_room(&*cx.host, idx(num)) {
                 Some(count) => count,
                 None => {
                     cx.host
@@ -654,17 +698,17 @@ fn special_var<H: DgHost + ?Sized>(
             cx.host.script_log("findmob.vnum(mvnum) - illegal syntax");
             return Special::Done("0".to_owned());
         }
-        let Some(room) = cx.host.real_room(atoi(field)) else {
+        let Some(room) = cx.host.real_room(idx(atoi(field))) else {
             let message = format!("findmob.vnum(ovnum): No room with vnum {}", atoi(field));
             cx.host.script_log(&message);
             return Special::Done("0".to_owned());
         };
-        let mvnum = atoi(subfield);
+        let mvnum = idx(atoi(subfield));
         let count = cx
             .host
             .room_people(room)
             .into_iter()
-            .filter(|ch| cx.host.vnum(*ch) == mvnum)
+            .filter(|ch| idx(cx.host.vnum(*ch)) == mvnum)
             .count();
         return Special::Done(count.to_string());
     }
@@ -673,7 +717,7 @@ fn special_var<H: DgHost + ?Sized>(
             cx.host.script_log("findobj.vnum(ovnum) - illegal syntax");
             return Special::Done("0".to_owned());
         }
-        let Some(room) = cx.host.real_room(atoi(field)) else {
+        let Some(room) = cx.host.real_room(idx(atoi(field))) else {
             let message = format!("findobj.vnum(ovnum): No room with vnum {}", atoi(field));
             cx.host.script_log(&message);
             return Special::Done("0".to_owned());
@@ -686,6 +730,11 @@ fn special_var<H: DgHost + ?Sized>(
         return Special::Done(random_var(cx, attach, field));
     }
     Special::Entity(Ent::Nothing)
+}
+
+/// An `int` stored into an `IDXTYPE` (`ush_int`): the low 16 bits.
+fn idx(value: i32) -> i32 {
+    i32::from(value as u16)
 }
 
 /// `%random.char%`, `%random.dir%` and `%random.<number>%`.
@@ -736,7 +785,12 @@ fn random_var<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, attach: AttachType, field:
         let Some(room) = in_room else {
             return String::new();
         };
-        let exits: Vec<usize> = (0..NUM_OF_DIRS)
+        let dir_count = if cx.host.subst_diagonal_dirs() {
+            NUM_OF_DIRS
+        } else {
+            6
+        };
+        let exits: Vec<usize> = (0..dir_count)
             .filter(|dir| cx.host.subst_has_exit(room, *dir))
             .collect();
         let Some(first) = exits.first().copied() else {
@@ -744,7 +798,7 @@ fn random_var<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, attach: AttachType, field:
         };
         let mut chosen = first;
         for _ in 0..DIR_RETRIES {
-            let roll = cx.host.rand_number(0, NUM_OF_DIRS as i64 - 1);
+            let roll = cx.host.rand_number(0, dir_count as i64 - 1);
             if let Some(dir) = usize::try_from(roll).ok().filter(|d| exits.contains(d)) {
                 chosen = dir;
                 break;
@@ -1873,12 +1927,14 @@ mod tests {
         ];
         w.trig.vars.add_var("v", "thug", 0);
         for line in lines {
-            let _ = sub(&mut w, line);
+            assert!(sub(&mut w, line).len() < MAX_INPUT_LENGTH);
             let long = line.repeat(100);
-            let _ = sub(&mut w, &long);
+            assert!(sub(&mut w, &long).len() < MAX_INPUT_LENGTH);
         }
         let all: String = (0..511).map(|i| ['%', '.', '(', ')', 'v'][i % 5]).collect();
-        let _ = sub(&mut w, &all);
+        assert!(sub(&mut w, &all).len() < MAX_INPUT_LENGTH);
+        // the counters unwound: an ordinary line still works
+        assert_eq!(sub(&mut w, "%v%"), "thug");
     }
 
     #[test]
@@ -1889,9 +1945,15 @@ mod tests {
         // it, which substitutes it again, forever, were it not bounded.
         set_global(&mut w, thug, "zzloop", "%victim.zzloop.zzx%", 0);
         w.trig.vars.add_var("victim", "thug", 0);
+        // The limit trips: the whole line substitutes to nothing, logged once.
         let out = sub(&mut w, "[%victim.zzloop.zzx%]");
-        assert!(out.starts_with('['));
-        assert!(w.host.logs.iter().any(|l| l.contains("nested too deeply")));
+        assert_eq!(out, "");
+        let trips = w
+            .host
+            .logs
+            .iter()
+            .filter(|l| l.contains("nested too deeply"));
+        assert_eq!(trips.count(), 1);
         // the counter unwinds: an ordinary line works afterwards
         w.host.logs.clear();
         w.trig.vars.add_var("who", "w", 0);
@@ -1915,5 +1977,117 @@ mod tests {
             sub(&mut w, "%force% %actor% north"),
             format!("mforce  {} north", uid_text(thug))
         );
+    }
+
+    #[test]
+    fn a_self_reproducing_value_that_branches_is_bounded_in_work() {
+        let mut w = world();
+        let thug = w.thug;
+        // Each level evals two copies of its own chained reference: 2^depth
+        // substitutions unless the work is capped.
+        set_global(
+            &mut w,
+            thug,
+            "zzloop",
+            "%victim.zzloop.zzx%%victim.zzloop.zzx%",
+            0,
+        );
+        w.trig.vars.add_var("victim", "thug", 0);
+        let started = std::time::Instant::now();
+        assert_eq!(sub(&mut w, "[%victim.zzloop.zzx%]"), "");
+        assert!(started.elapsed().as_secs() < 5);
+        assert_eq!(
+            w.host
+                .logs
+                .iter()
+                .filter(|l| l.contains("nested too deeply"))
+                .count(),
+            1
+        );
+        // the counters reset for the next top-level line
+        w.trig.vars.add_var("who", "w", 0);
+        assert_eq!(sub(&mut w, "%who%"), "w");
+    }
+
+    #[test]
+    fn output_stays_within_the_left_budget_after_an_invalid_byte() {
+        let mut w = world();
+        let thug = w.thug;
+        // The chain cuts the 2-byte "é" with the tmpvr overwrite, leaving a
+        // lone byte in the output; the lossy conversion must not grow the
+        // result past 511 bytes.
+        w.trig.vars.add_var("a", "thug", 0);
+        set_global(&mut w, thug, "b", &uid_text(thug), 0);
+        w.trig.vars.add_var("big", &"b".repeat(300), 0);
+        let out = sub(&mut w, "%a.b.cé%big%%big%");
+        assert!(out.len() < MAX_INPUT_LENGTH, "{}", out.len());
+    }
+
+    #[test]
+    fn random_dir_counts_six_directions_without_diagonals() {
+        let mut w = world();
+        let room = w.room;
+        let other = w.host.add_room(3002, "Altar");
+        // DIR_COUNT is 6 by default: a lone northwest exit is not counted,
+        // and no roll is drawn.
+        w.host.set_link(room, "exit:6", Some(other));
+        w.host.rolls.extend([6]);
+        assert_eq!(sub(&mut w, "[%random.dir%]"), "[]");
+        // with north too, only north can come back, whatever is rolled
+        w.host.set_link(room, "exit:0", Some(other));
+        w.host.rolls.clear();
+        w.host.rolls.extend([0]);
+        assert_eq!(sub(&mut w, "%random.dir%"), "north");
+        // diagonals on: DIR_COUNT is 10 and northwest is a candidate
+        w.host.globals.nums.insert("config:diagonal_dirs".into(), 1);
+        w.host.rolls.clear();
+        w.host.rolls.extend([6]);
+        assert_eq!(sub(&mut w, "%random.dir%"), "northwest");
+    }
+
+    #[test]
+    fn an_exit_with_only_flags_is_not_an_exit() {
+        let mut w = world();
+        let room = w.room;
+        w.host.set_num(room, "exit:2:flags", 1);
+        assert_eq!(sub(&mut w, "[%random.dir%]"), "[]");
+    }
+
+    #[test]
+    fn room_and_mob_vnums_narrow_to_sixteen_bits() {
+        let mut w = world();
+        let room = w.room;
+        let pc = w.host.add_player("Alice");
+        w.host.char_to_room(pc, room);
+        // 68537 == 3001 + 65536
+        assert_eq!(sub(&mut w, "%people.68537%"), sub(&mut w, "%people.3001%"));
+        assert_eq!(sub(&mut w, "%people.3001%"), "3");
+        assert_eq!(sub(&mut w, "%findmob.68537(3000)%"), "1");
+        // a player's vnum is NOBODY, 65535
+        assert_eq!(sub(&mut w, "%findmob.3001(65535)%"), "1");
+        assert_eq!(sub(&mut w, "%findmob.3001(-1)%"), "1");
+    }
+
+    #[test]
+    fn a_chain_link_with_a_subfield_leaves_it_for_the_last_link() {
+        let mut w = world();
+        let (guard, thug) = (w.guard, w.thug);
+        // %actor.zzeq(wield).zzname%: the link zzeq(wield) is resolved with
+        // subfield "wield" (an entity global ignores it), then tmpvr.zzname.
+        set_global(&mut w, thug, "zzeq", &uid_text(guard), 0);
+        set_global(&mut w, guard, "zzname", "Guard", 0);
+        w.trig.vars.add_var("actor", "thug", 0);
+        assert_eq!(sub(&mut w, "%actor.zzeq(wield).zzname%"), "Guard");
+        // the subfield is substituted before the link sees it
+        w.trig.vars.add_var("pos", "wield", 0);
+        assert_eq!(sub(&mut w, "%actor.zzeq(%pos%).zzname%"), "Guard");
+    }
+
+    #[test]
+    fn corpus_double_percent_around_a_variable() {
+        // 2.trg: `eval r %%random.%n%%%`
+        let mut w = world();
+        w.trig.vars.add_var("n", "5", 0);
+        assert_eq!(sub(&mut w, "eval r %%random.%n%%%"), "eval r %random.5%");
     }
 }
