@@ -38,7 +38,7 @@
 use crate::cstr::{atoi, sprintbit, sprinttype, str_eq};
 use crate::fields_obj::fit;
 use crate::host::{Cx, DgHost};
-use crate::types::{DIRS, Uid, uid_text};
+use crate::types::{DIRS, ROOM_INDOORS, Uid, uid_text};
 
 /// `room_bits[]` (`constants.c`), without the terminator. `NUM_ROOM_FLAGS` is
 /// its length.
@@ -81,9 +81,6 @@ pub const SECTOR_TYPES: [&str; 10] = [
 
 /// `sky_look[]`, the `weather` field's names for `weather_info.sky`.
 pub const SKY_LOOK: [&str; 4] = ["sunny", "cloudy", "rainy", "lightning"];
-
-/// `ROOM_INDOORS`: the room-flag number that suppresses weather.
-pub const ROOM_INDOORS: usize = 3;
 
 /// The directions this table names as fields, in direction-number order.
 const FIELD_DIRS: usize = 6;

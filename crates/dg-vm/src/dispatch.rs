@@ -72,7 +72,8 @@ use crate::types::trig::{
 };
 use crate::types::{
     DIRS, LVL_IMMORT, MAX_INPUT_LENGTH, MUDLOG_NRM, NUM_OF_DIRS, OCMD_DRINK, OCMD_EAT, OCMD_EQUIP,
-    OCMD_INVEN, OCMD_QUAFF, OCMD_ROOM, REV_DIR, SCRIPT_ERROR_CODE, Uid, uid_text,
+    OCMD_INVEN, OCMD_QUAFF, OCMD_ROOM, POS_SLEEPING, PRF_NOHASSLE, REV_DIR, SCRIPT_ERROR_CODE, Uid,
+    uid_text,
 };
 
 /// What dispatch needs from the world beyond the shared primitives. Position,
@@ -96,12 +97,6 @@ pub trait DispatchHost {
 
 /// `cmd_door[]` (`act.movement.c`), indexed by `SCMD_OPEN`..`SCMD_PICK`.
 const CMD_DOOR: [&str; 5] = ["open", "close", "unlock", "lock", "pick"];
-
-/// `PRF_NOHASSLE`: a bit of the preference flags.
-const PRF_NOHASSLE: u32 = 8;
-
-/// `POS_SLEEPING`: `AWAKE(ch)` is `GET_POS(ch) > POS_SLEEPING`.
-const POS_SLEEPING: i32 = 4;
 
 /// `skill_name(num)` (`spell_parser.c`).
 fn skill_name<H: DgHost + ?Sized>(host: &H, num: i32) -> String {

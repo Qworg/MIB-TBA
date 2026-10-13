@@ -72,12 +72,9 @@ use crate::fields_char::CharHost;
 use crate::host::{BaseHost, WorldHost};
 use crate::script::Program;
 use crate::types::{
-    AttachType, Kind, LVL_GRGOD, LVL_IMMORT, MOB_ID_BASE, MudTime, OBJ_ID_BASE, ROOM_ID_BASE,
-    Script, ScriptMemory, TrigProto, Uid, VmState, trig::asciiflag_conv,
+    AttachType, Kind, LVL_GRGOD, LVL_IMMORT, MOB_ID_BASE, MudTime, OBJ_ID_BASE, PRF_NOHASSLE,
+    ROOM_ID_BASE, Script, ScriptMemory, TrigProto, Uid, VmState, trig::asciiflag_conv,
 };
-
-/// `PRF_NOHASSLE`: a bit of the preference flags.
-const PRF_NOHASSLE: u32 = 8;
 
 mod chars;
 mod commands;

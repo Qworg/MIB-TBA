@@ -60,22 +60,12 @@ use crate::lookup::{NUM_WEARS, find_eq_pos_script};
 use crate::lookup::{c_vnum, get_object_in_equip, item_in_list};
 use crate::magic::find_skill_num;
 use crate::types::{
-    AttachType, LVL_GRGOD, LVL_IMMORT, PULSE_VIOLENCE, ROOM_ID_BASE, Uid, uid_text,
+    AttachType, LVL_GRGOD, LVL_IMMORT, MOB_ISNPC, MOB_NOTDEADYET, PLR_KILLER, PLR_NOTDEADYET,
+    PLR_THIEF, POS_SLEEPING, POS_STANDING, PULSE_VIOLENCE, ROOM_ID_BASE, Uid, uid_text,
 };
 
 /// `PULSE_VIOLENCE / 2`: pulses per unit of `wait(<n>)`.
 const WAIT_UNIT: i32 = (PULSE_VIOLENCE / 2) as i32;
-/// `POS_SLEEPING` and `POS_STANDING`: the range `pos(<name>)` can set.
-const POS_SLEEPING: i32 = 4;
-const POS_STANDING: i32 = 8;
-/// `MOB_ISNPC`, `MOB_NOTDEADYET` and `PLR_NOTDEADYET` (`structs.h`).
-const MOB_ISNPC: u32 = 3;
-const MOB_NOTDEADYET: u32 = 19;
-const PLR_NOTDEADYET: u32 = 16;
-/// `PLR_KILLER` and `PLR_THIEF`.
-const PLR_KILLER: u32 = 0;
-const PLR_THIEF: u32 = 1;
-
 /// `pc_class_types` (`class.c`).
 pub const PC_CLASS_TYPES: &[&str] = &["Magic User", "Cleric", "Thief", "Warrior"];
 /// `genders` (`constants.c`).

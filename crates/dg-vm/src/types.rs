@@ -503,6 +503,57 @@ pub const PULSE_VIOLENCE: i64 = 2 * PASSES_PER_SEC;
 /// truncated to one byte less.
 pub const MAX_INPUT_LENGTH: usize = 512;
 
+// ---- Numbers a host interprets ---------------------------------------------
+//
+// Flag and position numbers the VM passes to the host's primitives. `structs.h`
+// is the reference; the host maps each to its own representation.
+
+/// `POS_*`: `GET_POS` values (`CharStat::Pos`).
+pub const POS_DEAD: i32 = 0;
+pub const POS_MORTALLYW: i32 = 1;
+pub const POS_INCAP: i32 = 2;
+pub const POS_STUNNED: i32 = 3;
+/// `AWAKE(ch)` is `GET_POS(ch) > POS_SLEEPING`.
+pub const POS_SLEEPING: i32 = 4;
+pub const POS_RESTING: i32 = 5;
+pub const POS_SITTING: i32 = 6;
+pub const POS_FIGHTING: i32 = 7;
+pub const POS_STANDING: i32 = 8;
+
+/// Act-array bit numbers (`char_act_flagged`, `char_set_act_flag`).
+/// `PLR_KILLER` and `PLR_THIEF`.
+pub const PLR_KILLER: u32 = 0;
+pub const PLR_THIEF: u32 = 1;
+/// `MOB_ISNPC`: read through `WorldHost::is_npc`, never `char_act_flagged`.
+pub const MOB_ISNPC: u32 = 3;
+/// `PLR_WRITING`.
+pub const PLR_WRITING: u32 = 4;
+/// `PLR_NOTDEADYET`: read through `WorldHost::is_dead`.
+pub const PLR_NOTDEADYET: u32 = 16;
+/// `MOB_NOTDEADYET`: read through `WorldHost::is_dead`.
+pub const MOB_NOTDEADYET: u32 = 19;
+
+/// Preference-array bit numbers (`char_pref_flagged`).
+/// `PRF_NOHASSLE`.
+pub const PRF_NOHASSLE: u32 = 8;
+/// `PRF_COLOR_1`.
+pub const PRF_COLOR_1: u32 = 13;
+/// `PRF_COLOR_2`.
+pub const PRF_COLOR_2: u32 = 14;
+
+/// `AFF_CHARM`: the affect-array bit `CmdHost::cmd_is_charmed` stands for.
+pub const AFF_CHARM: u32 = 22;
+
+/// Room-flag numbers (`RoomHost::room_flagged`).
+/// `ROOM_INDOORS`: suppresses weather.
+pub const ROOM_INDOORS: usize = 3;
+/// `ROOM_PRIVATE`.
+pub const ROOM_PRIVATE: usize = 9;
+/// `ROOM_GODROOM`.
+pub const ROOM_GODROOM: usize = 10;
+/// `ROOM_HOUSE`.
+pub const ROOM_HOUSE: usize = 11;
+
 /// `mudlog` types (`utils.h`): the lowest log setting that receives the line.
 pub const MUDLOG_OFF: i32 = 0;
 /// `BRF`: only the most important messages.

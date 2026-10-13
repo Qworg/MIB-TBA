@@ -5,12 +5,7 @@ use super::comm::{TO_CHAR, TO_ROOM, act};
 use super::shared::{color_level, pos};
 use crate::fields_char::CharStat;
 use crate::host::DgHost;
-use crate::types::{LVL_IMMORT, MUDLOG_BRF, Uid};
-
-const POS_DEAD: i32 = 0;
-const POS_MORTALLYW: i32 = 1;
-const POS_INCAP: i32 = 2;
-const POS_STUNNED: i32 = 3;
+use crate::types::{LVL_IMMORT, MUDLOG_BRF, POS_DEAD, POS_INCAP, POS_MORTALLYW, POS_STUNNED, Uid};
 
 /// `KRED` / `KNRM` (`screen.h`).
 const KRED: &str = "\x1B[0;31m";

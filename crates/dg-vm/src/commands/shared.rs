@@ -17,23 +17,11 @@ use crate::lookup::{
     get_obj, get_obj_by_obj, get_obj_in_room, get_obj_near_obj, get_obj_vis, get_room, idx_vnum,
     obj_room,
 };
-use crate::types::{DIRS, ITEM_CONTAINER, LVL_GRGOD, UID_CHAR, Uid, uid_text};
-
-/// `ROOM_PRIVATE`, `ROOM_GODROOM`, `ROOM_HOUSE` (`structs.h`).
-const ROOM_PRIVATE: usize = 9;
-const ROOM_GODROOM: usize = 10;
-const ROOM_HOUSE: usize = 11;
-
-/// `PLR_WRITING` (a bit of the player's act flags).
-pub(crate) const PLR_WRITING: u32 = 4;
-/// `PRF_NOHASSLE`, `PRF_COLOR_1` and `PRF_COLOR_2` (bits of the preference
-/// flags).
-pub(crate) const PRF_NOHASSLE: u32 = 8;
-const PRF_COLOR_1: u32 = 13;
-const PRF_COLOR_2: u32 = 14;
-
-/// `POS_SLEEPING`; `AWAKE(ch)` is `GET_POS(ch) > POS_SLEEPING`.
-pub(crate) const POS_SLEEPING: i32 = 4;
+use crate::types::{
+    DIRS, ITEM_CONTAINER, LVL_GRGOD, PRF_COLOR_1, PRF_COLOR_2, ROOM_GODROOM, ROOM_HOUSE,
+    ROOM_PRIVATE, UID_CHAR, Uid, uid_text,
+};
+pub(crate) use crate::types::{PLR_WRITING, POS_SLEEPING, PRF_NOHASSLE};
 
 /// `ITEM_WEAR_TAKE`: bit 0 of the wear flags.
 const ITEM_WEAR_TAKE: u32 = 1;
