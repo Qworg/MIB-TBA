@@ -2940,6 +2940,7 @@ name = "mib-tba"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "dg-vm",
  "mib-content",
  "mib-core",
  "mib-host",
@@ -4605,6 +4606,7 @@ dependencies = [
 name = "tbaport"
 version = "0.1.0"
 dependencies = [
+ "dg-vm",
  "mib-content",
  "mib-core",
  "mib-stdlib",

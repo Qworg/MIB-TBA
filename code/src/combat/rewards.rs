@@ -24,7 +24,7 @@ use super::model::{TbaAlignment, TbaCombatant, TbaGold, TbaProgress};
 use super::progression::level_for_xp;
 use crate::content::Position;
 
-/// A `TbaRound`/spell/skill damage application (issue #15, Phase 5).
+/// A `TbaRound`/spell/skill damage application.
 ///
 /// Emitted wherever a combatant's hit points drop, so the trigger intake can
 /// fire `damage` records without every damage site knowing about triggers. The

@@ -16,6 +16,8 @@ mib-stdlib.workspace = true
 # published engine dep), so it is referenced by path rather than through
 # `workspace.dependencies`.
 mib-tba = { path = "../../code" }
+# The DG script VM's static analysis states what the emitted corpus contains.
+dg-vm = { path = "../../crates/dg-vm" }
 mib-core.workspace = true
 mib-content.workspace = true
 serde.workspace = true

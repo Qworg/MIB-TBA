@@ -215,23 +215,18 @@ pub struct TriggerTriage {
     pub by_zone: BTreeMap<u32, usize>,
 }
 
-/// Parser coverage for every emitted script.
+/// What `dg-vm` can state about the emitted scripts.
+///
+/// Construct-level coverage (which constructs the corpus uses and which the
+/// VM does not implement) comes from `dg_vm::analyze`, to be filled in later.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize)]
 pub struct TriggerCoverage {
     /// Emitted records.
     pub records: usize,
-    /// Records whose script parsed without a structural error.
-    pub parsed: usize,
-    /// Records whose script had a structural error (a named drop each).
-    pub parse_failures: usize,
-    /// Records containing at least one unsupported construct.
-    pub records_with_unsupported: usize,
-    /// AST node kind -> occurrences.
-    pub construct_counts: BTreeMap<String, usize>,
-    /// Unsupported construct kind -> occurrences.
-    pub unsupported_counts: BTreeMap<String, usize>,
-    /// Unknown `%…%` token -> occurrences.
-    pub unknown_tokens: BTreeMap<String, usize>,
+    /// Script lines, as `dg_vm::script::Program::parse` splits them.
+    pub script_lines: usize,
+    /// The record's `attach_type` (`mob`, `obj`, `wld`) -> records.
+    pub by_attach_type: BTreeMap<String, usize>,
 }
 
 /// One classified `.trg` record in the report.
@@ -540,26 +535,14 @@ impl DropReport {
         );
 
         let coverage = &self.trigger_coverage;
-        let _ = writeln!(out, "\n## DG trigger parse coverage (#15)\n");
+        let _ = writeln!(out, "\n## DG trigger corpus (#15)\n");
         let _ = writeln!(out, "- emitted records: {}", coverage.records);
-        let _ = writeln!(out, "- parsed: {}", coverage.parsed);
-        let _ = writeln!(out, "- parse failures: {}", coverage.parse_failures);
-        let _ = writeln!(
-            out,
-            "- records with unsupported constructs: {}",
-            coverage.records_with_unsupported
-        );
-        let _ = writeln!(out, "\n### Emitted constructs\n");
-        let _ = writeln!(out, "| construct | count |");
+        let _ = writeln!(out, "- script lines: {}", coverage.script_lines);
+        let _ = writeln!(out, "\n### Records by attach type\n");
+        let _ = writeln!(out, "| attach type | count |");
         let _ = writeln!(out, "|---|---:|");
-        for (kind, count) in &coverage.construct_counts {
-            let _ = writeln!(out, "| `{kind}` | {count} |");
-        }
-        let _ = writeln!(out, "\n### Unsupported constructs (named drops)\n");
-        let _ = writeln!(out, "| construct | count |");
-        let _ = writeln!(out, "|---|---:|");
-        for (kind, count) in &coverage.unsupported_counts {
-            let _ = writeln!(out, "| `{kind}` | {count} |");
+        for (attach_type, count) in &coverage.by_attach_type {
+            let _ = writeln!(out, "| `{attach_type}` | {count} |");
         }
 
         let _ = writeln!(out, "\n## Global permanent drops\n");

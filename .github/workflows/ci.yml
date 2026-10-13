@@ -61,10 +61,15 @@ jobs:
         run: |
           cargo clippy -p mib-tba --lib --tests -- -D warnings
           cargo clippy -p tbaport --all-targets -- -D warnings
+          cargo clippy -p dg-vm --all-targets -- -D warnings
 
       - name: Test the pack
         working-directory: MIB-TBA
         run: cargo test -p mib-tba
+
+      - name: Test the DG VM (corpus tests read tbaMUD via TBAMUD_SOURCE)
+        working-directory: MIB-TBA
+        run: cargo test -p dg-vm
 
       - name: Test the converter (full-conversion validation)
         working-directory: MIB-TBA

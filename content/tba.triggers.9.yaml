@@ -3,7 +3,8 @@ triggers:
   tba_trig_901:
     vnum: 901
     name: snarl with glee
-    attach: ''
+    attach_type: mob
+    flags: g
     types:
     - greet
     narg: 100
@@ -14,7 +15,8 @@ triggers:
   tba_trig_902:
     vnum: 902
     name: glare
-    attach: ''
+    attach_type: mob
+    flags: g
     types:
     - greet
     narg: 100
@@ -25,7 +27,8 @@ triggers:
   tba_trig_907:
     vnum: 907
     name: Flash Light
-    attach: ''
+    attach_type: mob
+    flags: g
     types:
     - greet
     narg: 100

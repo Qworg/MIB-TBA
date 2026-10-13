@@ -3,7 +3,8 @@ triggers:
   tba_trig_6400:
     vnum: 6400
     name: Near Death Trap - 6406
-    attach: npc:tba_npc_6406
+    attach_type: mob
+    flags: g
     types:
     - greet
     narg: 100
@@ -16,3 +17,6 @@ triggers:
       %send% %actor% %self.name% makes a slight gesture with %self.hisher% right hand.
       set stunned %actor.hitp%
       %damage% %actor% %stunned%
+attachments:
+  npc:tba_npc_6406:
+  - tba_trig_6400

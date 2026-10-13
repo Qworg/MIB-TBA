@@ -3,7 +3,8 @@ triggers:
   tba_trig_500:
     vnum: 500
     name: Bunny - 500
-    attach: npc:tba_npc_500
+    attach_type: mob
+    flags: g
     types:
     - greet
     narg: 100
@@ -14,20 +15,59 @@ triggers:
         wait 1 s
         say The SAY command is used to speak. Say hello to the other animals in the Newbie Farm to learn how to play.
       end
+  tba_trig_501:
+    vnum: 501
+    name: NOT USED
+    attach_type: wld
+    flags: b
+    types:
+    - random
+    narg: 5
+    arglist: ''
+    script: |
+      %echo% An apple falls...
+      wait 5
+      %force% reallyweirdalias say look out!
+      if !%self.catched%
+         %echo% ...on the ground.
+         %load% obj 501
+      end
+      set catched 0
+      remote catched %self.id%
   tba_trig_502:
     vnum: 502
     name: Mouse teach scan - 502
-    attach: npc:tba_npc_502
+    attach_type: mob
+    flags: d
     types:
     - speech
     narg: 100
     arglist: hello hi
     script: |
       say A mouse always SCANS before moving around, to avoid the creatures that can kill us.
+  tba_trig_503:
+    vnum: 503
+    name: Catching Apple - 501
+    attach_type: mob
+    flags: b
+    types:
+    - random
+    narg: 1
+    arglist: ''
+    script: |
+      %echo% An apple falls...
+      if %self.eq(wield)%
+        wait 1 ses
+        %echo% With a fast sword movement, %self.name% pierces the apple in mid-air.
+        %load% obj 501
+        wait 2
+        %echo% %self.name% takes the apple from the sword.
+      end
   tba_trig_504:
     vnum: 504
     name: Rooster teach kill - 504
-    attach: npc:tba_npc_504
+    attach_type: mob
+    flags: d
     types:
     - speech
     narg: 100
@@ -37,10 +77,23 @@ triggers:
       %force% %actor% con rooster
       wait 2 s
       say You think you can KILL me?
+  tba_trig_505:
+    vnum: 505
+    name: Apple purge - 501
+    attach_type: obj
+    flags: f
+    types:
+    - timer
+    narg: 100
+    arglist: ''
+    script: |
+      %echo% The farmer grabs the apple and adds it to his collection.
+      %purge% %self%
   tba_trig_520:
     vnum: 520
     name: Farmer Welcome - 520
-    attach: npc:tba_npc_520
+    attach_type: mob
+    flags: g
     types:
     - greet
     narg: 100
@@ -52,7 +105,8 @@ triggers:
   tba_trig_526:
     vnum: 526
     name: Helen Welcome - 526
-    attach: npc:tba_npc_526
+    attach_type: mob
+    flags: g
     types:
     - greet
     narg: 100
@@ -67,7 +121,8 @@ triggers:
   tba_trig_555:
     vnum: 555
     name: Bat Warning - 555
-    attach: npc:tba_npc_555
+    attach_type: mob
+    flags: g
     types:
     - greet
     narg: 100
@@ -80,10 +135,30 @@ triggers:
         wait 2 s
         say Turn back while you still can.
       end
+  tba_trig_574:
+    vnum: 574
+    name: Climb Up - 574
+    attach_type: wld
+    flags: c
+    types:
+    - command
+    narg: 100
+    arglist: climb
+    script: |
+      if %arg% == up
+        %send% %actor% You climb up.
+        %echoaround% %actor% %actor.name% starts climbing up out of the hole.
+        %teleport% %actor% 573
+        %force% %actor% look
+        %echoaround% %actor% %actor.name% climbs out of the hole.
+      else
+        %send% %actor% Climb where?!
+      end
   tba_trig_584:
     vnum: 584
     name: Arthur Welcome - 584
-    attach: npc:tba_npc_584
+    attach_type: mob
+    flags: d
     types:
     - speech
     narg: 100
@@ -94,3 +169,24 @@ triggers:
       emote gestures for you to sit down.
       wait 2 s
       emote smiles happily.
+attachments:
+  item:tba_item_501:
+  - tba_trig_505
+  npc:tba_npc_500:
+  - tba_trig_500
+  npc:tba_npc_501:
+  - tba_trig_503
+  npc:tba_npc_502:
+  - tba_trig_502
+  npc:tba_npc_504:
+  - tba_trig_504
+  npc:tba_npc_520:
+  - tba_trig_520
+  npc:tba_npc_526:
+  - tba_trig_526
+  npc:tba_npc_555:
+  - tba_trig_555
+  npc:tba_npc_584:
+  - tba_trig_584
+  room:tba.574:
+  - tba_trig_574
