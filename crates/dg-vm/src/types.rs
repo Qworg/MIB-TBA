@@ -593,12 +593,6 @@ pub const LVL_GRGOD: i32 = 33;
 /// `LVL_IMPL`.
 pub const LVL_IMPL: i32 = 34;
 
-/// `DG_CASTER_PROXY`: the vnum of the mob that casts on behalf of an object
-/// or room.
-pub const DG_CASTER_PROXY: i32 = 1;
-/// `DG_SPELL_LEVEL`: the level an object's or room's `dg_cast` is cast at.
-pub const DG_SPELL_LEVEL: i32 = 25;
-
 /// `OCMD_EQUIP`: an object command trigger fires when the object is worn.
 pub const OCMD_EQUIP: i32 = 1 << 0;
 /// `OCMD_INVEN`: … when it is carried.

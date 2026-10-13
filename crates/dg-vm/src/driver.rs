@@ -23,7 +23,7 @@
 //!
 //! - Per-line `loops` and `original` live in [`RunState`], per instance (the
 //!   C shares them across every instance of a prototype).
-//! - The C's `static int depth` is [`BaseHost::depth_mut`].
+//! - The C's `static int depth` is [`crate::types::VmState::depth`].
 //! - Statements the C would run with `sc` NULL (an owner without a script)
 //!   are skipped. Waits are never queued for an instance that was detached
 //!   (`check_in` fails).

@@ -32,7 +32,7 @@
 //!   `var_subst`, and a chained reference runs `eval`, which substitutes
 //!   again. A variable whose value reproduces its own reference makes that
 //!   loop forever. [`MAX_NESTING`] bounds the nesting and [`MAX_WORK`] the
-//!   total number of nested substitutions under one top-level call; when
+//!   total number of nested substitutions under one top-level call (both counted in [`crate::types::VmState`]); when
 //!   either trips, one log line is written and the whole top-level line
 //!   substitutes to nothing. Once a limit trips no further reference on the
 //!   line is evaluated (no `find_replacement`, no `eval`).
@@ -44,7 +44,7 @@
 //! - The vnum arguments of `%people%`, `%findmob%` and the room of
 //!   `%findobj%` are narrowed to `IDXTYPE` (`u16`) as the C does, so `65535`
 //!   is `NOBODY` and `68537` is `3001`. So is the object vnum of `%findobj%`
-//!   (`fields_obj::item_in_list_c`).
+//!   ([`crate::lookup::item_in_list`]).
 //! - `%global.name%` reads the script of `world[0]`; the port takes that to
 //!   be room vnum 0 (`real_room(0)`), the void the rest of the C names by
 //!   `r->number == 0`.

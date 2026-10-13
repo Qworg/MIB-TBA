@@ -7,8 +7,8 @@
 //! its own first letter in the C).
 //!
 //! Also ported from `dg_variables.c`: `skill_percent` and `char_has_item`
-//! (with [`crate::fields_obj::item_in_list_c`]
-//! and [`crate::fields_obj::get_object_in_equip_c`]). From `spell_parser.c`:
+//! (with [`crate::lookup::item_in_list`]
+//! and [`crate::lookup::get_object_in_equip`]). From `spell_parser.c`:
 //! `find_skill_num` lives in [`crate::magic`], over the host's spell-name
 //! table.
 //!

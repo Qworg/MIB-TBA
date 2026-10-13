@@ -21,7 +21,7 @@
 //!   not overflow the stack of whatever thread runs it. The refusal poisons
 //!   the whole top-level evaluation: it is logged and the result is the empty
 //!   string (false), like the over-length refusal. The counter and the
-//!   poison flag are thread-wide, so an evaluation that [`var_subst`]
+//!   poison flag are in [`crate::types::VmState`], so an evaluation that [`var_subst`]
 //!   re-enters through `process_eval` (a chained `%a.b.c%` reference) shares
 //!   them with the expression it is a leaf of.
 //! - A rejected `eval` variable name (`add_var`'s `strchr(name, '.')` case)
