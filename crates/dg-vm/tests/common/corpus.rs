@@ -288,15 +288,10 @@ pub fn find(records: &[Record], vnum: i32) -> Option<&Record> {
     records.iter().find(|r| r.vnum == vnum)
 }
 
-/// The whole corpus, read once per test binary. `None` when it is absent.
-pub fn cached() -> Option<&'static [Record]> {
-    static CORPUS: std::sync::OnceLock<Option<Vec<Record>>> = std::sync::OnceLock::new();
-    CORPUS.get_or_init(load_corpus).as_deref()
-}
-
-/// One real trigger by vnum, from the cached corpus.
+/// One real trigger by vnum, read from the corpus on disk. `None` when the
+/// corpus or the vnum is absent.
 pub fn trigger(vnum: i32) -> Option<Record> {
-    cached().and_then(|records| find(records, vnum).cloned())
+    find(&load_corpus()?, vnum).cloned()
 }
 
 /// Fetch a real trigger or make the calling test print the skip message and

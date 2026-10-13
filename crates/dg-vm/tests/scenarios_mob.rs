@@ -4,8 +4,8 @@
 //! Each expectation is worked out by hand from the C (`dg_scripts.c`,
 //! `dg_variables.c`, `dg_mobcmd.c`, `dg_comm.c`) for the world and event set
 //! up in the test, not read back from the VM. The reasoning is in the comment
-//! above each test. Events are fired the way `dg_triggers.c` would: the
-//! event's variables go onto the instance, then `script_driver` runs it.
+//! above each test. Each event is fired through the dispatch function the
+//! game calls for it (`dg_triggers.c`).
 #![allow(clippy::expect_used, clippy::unwrap_used)]
 
 mod common;

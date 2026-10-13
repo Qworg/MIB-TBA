@@ -6,8 +6,9 @@
 //! `dg_variables.c`, `dg_mobcmd.c`, `dg_objcmd.c`, `dg_wldcmd.c`,
 //! `dg_misc.c`, `dg_comm.c`) for the world and event set up in the test, not
 //! read back from the VM. The reasoning is in the comment above each test.
-//! Events are fired the way `dg_triggers.c` would: the event's variables go
-//! onto the instance, then `script_driver` runs it.
+//! Each event is fired through the dispatch function the game calls for it
+//! (`dg_triggers.c`), so the type tests, the percent roll and the event
+//! variables are the ones of the real path.
 //!
 //! The standard cast (see `common::scene`): room 3001 holds "Tester" (male
 //! player, level 10), "Watcher" (a second player), the guard mob "a city

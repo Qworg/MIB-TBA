@@ -5,6 +5,7 @@
 //! Expectations come from walking the C by hand (`dg_scripts.c`,
 //! `dg_misc.c`, `dg_mobcmd.c`, `dg_objcmd.c`, `dg_wldcmd.c`, `dg_comm.c`);
 //! the reasoning is above each test. See `scenarios_lang.rs` for the cast.
+//! Each event is fired through the dispatch function the game calls for it.
 #![allow(clippy::expect_used, clippy::unwrap_used)]
 
 mod common;
