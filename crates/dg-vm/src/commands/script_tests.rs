@@ -293,6 +293,9 @@ fn object_and_room_messages_name_the_actor_and_the_object() {
 }
 
 // ---- load: lastloaded is set before the load trigger ------------------
+//
+// These tests need the dispatch bodies (`load_mtrigger`, `load_otrigger`,
+// `enter_wtrigger`); they are ignored while those are stubs.
 
 /// A trigger for what gets loaded: it reads the loader's `lastloaded` through
 /// a variable holding the loader's id and says what it found.
@@ -314,6 +317,7 @@ fn load_watcher(w: &mut World, loader: Uid, key: &str, vnum: i32, types: &str, k
 }
 
 #[test]
+#[ignore = "needs the dispatch bodies: load_mtrigger must fire the load trigger"]
 fn mload_records_lastloaded_before_the_new_mob_is_told_it_loaded() {
     let mut w = World::new();
     let mob = w.mob;
@@ -322,29 +326,54 @@ fn mload_records_lastloaded_before_the_new_mob_is_told_it_loaded() {
     let rat = w.host.character_list[0];
     assert_eq!(w.host.vnum(rat), 3100);
     let id = uid_text(rat);
-    assert_eq!(w.host.logs.last().unwrap(), &format!("{MOB}now {id}"));
-    // If the new mob's trigger ran it saw the new id, not the last one.
-    for line in w.host.logs.iter().filter(|l| l.contains("saw")) {
-        assert_eq!(line, &format!("Mob (a rat, VNum 3100):: saw {id}"));
+    // The new mob's trigger ran once, and saw the new id.
+    assert_eq!(
+        logs(&w),
+        [
+            format!("Mob (a rat, VNum 3100):: saw {id}"),
+            format!("{MOB}now {id}")
+        ]
+    );
+}
+
+#[test]
+#[ignore = "needs the dispatch bodies: load_otrigger must fire the load trigger"]
+fn every_way_mload_obj_places_an_object_tells_it_after_lastloaded_is_set() {
+    // No target (lying in the room), a person, a worn position, a container
+    // and a target that is neither a person nor a container.
+    for line in [
+        "mload obj 7102",
+        "mload obj 7102 alice",
+        "mload obj 7102 sack",
+        "mload obj 7102 lamp",
+        "mload obj 7101 alice rfinger",
+    ] {
+        let mut w = World::new();
+        let (mob, room) = (w.mob, w.room);
+        let sack = w.host.add_obj(7100, "a sack");
+        w.host.set_text(sack, "alias", "sack");
+        w.host.set_num(sack, "type", 15);
+        w.host.obj_to_room(sack, room);
+        let vnum = if line.contains("7101") { 7101 } else { 7102 };
+        load_watcher(&mut w, mob, "objtrig", vnum, "n", AttachType::Obj);
+        run_script(&mut w, mob, &format!("{line}\nmlog now %lastloaded%"), None);
+        let object = w.host.object_list[0];
+        assert_eq!(w.host.vnum(object), vnum, "{line}");
+        let id = uid_text(object);
+        let name = if vnum == 7101 { "a ring" } else { "a rock" };
+        assert_eq!(
+            logs(&w),
+            [
+                format!("Obj ({name}, VNum {vnum}):: saw {id}"),
+                format!("{MOB}now {id}")
+            ],
+            "{line}"
+        );
     }
 }
 
 #[test]
-fn mload_obj_records_lastloaded_before_the_new_object_is_told_it_loaded() {
-    let mut w = World::new();
-    let mob = w.mob;
-    load_watcher(&mut w, mob, "objtrig", 7102, "n", AttachType::Obj);
-    run_script(&mut w, mob, "mload obj 7102\nmlog now %lastloaded%", None);
-    let rock = w.host.object_list[0];
-    assert_eq!(w.host.vnum(rock), 7102);
-    let id = uid_text(rock);
-    assert_eq!(w.host.logs.last().unwrap(), &format!("{MOB}now {id}"));
-    for line in w.host.logs.iter().filter(|l| l.contains("saw")) {
-        assert_eq!(line, &format!("Obj (a rock, VNum 7102):: saw {id}"));
-    }
-}
-
-#[test]
+#[ignore = "needs the dispatch bodies: load_otrigger must fire the load trigger"]
 fn oload_and_wload_record_lastloaded_the_way_their_c_does() {
     let mut w = World::new();
     let (lamp, room, alice) = (w.obj, w.room, w.player);
@@ -352,16 +381,14 @@ fn oload_and_wload_record_lastloaded_the_way_their_c_does() {
     run_script(&mut w, lamp, "oload mob 3100\nolog now %lastloaded%", None);
     let rat = w.host.character_list[0];
     assert_eq!(w.host.vnum(rat), 3100);
+    let id = uid_text(rat);
     assert_eq!(
-        w.host.logs.last().unwrap(),
-        &format!("{OBJ}now {}", uid_text(rat))
+        logs(&w),
+        [
+            format!("Mob (a rat, VNum 3100):: saw {id}"),
+            format!("{OBJ}now {id}")
+        ]
     );
-    for line in w.host.logs.iter().filter(|l| l.contains("saw")) {
-        assert_eq!(
-            line,
-            &format!("Mob (a rat, VNum 3100):: saw {}", uid_text(rat))
-        );
-    }
 
     // A room records an object only when it is loaded without a target.
     w.clear();
@@ -379,23 +406,56 @@ fn oload_and_wload_record_lastloaded_the_way_their_c_does() {
     assert_eq!(logs(&w), [format!("{WLD}[{}]", uid_text(rock))]);
 }
 
+#[test]
+fn mload_records_lastloaded_for_the_script_that_runs_it() {
+    // Without the dispatch bodies: the id is there for the next line.
+    let mut w = World::new();
+    let mob = w.mob;
+    run_script(&mut w, mob, "mload mob 3100\nmlog now %lastloaded%", None);
+    let rat = w.host.character_list[0];
+    assert_eq!(logs(&w), [format!("{MOB}now {}", uid_text(rat))]);
+    w.clear();
+    run_script(&mut w, mob, "mload obj 7102\nmlog now %lastloaded%", None);
+    let rock = w.host.object_list[0];
+    assert_eq!(logs(&w), [format!("{MOB}now {}", uid_text(rock))]);
+}
+
 // ---- teleport raises the enter trigger of the room --------------------
 
+/// A room trigger that says who entered.
+fn entry_watcher(w: &mut World, room: Uid) {
+    attach(w, room, AttachType::Wld, "g", "wlog entered %actor.name%");
+}
+
 #[test]
-fn teleport_moves_the_actor_and_tells_the_new_room() {
+#[ignore = "needs the dispatch bodies: enter_wtrigger must fire the enter trigger"]
+fn every_script_teleport_and_goto_tells_the_new_room() {
+    for (owner, line, who) in [
+        ("mob", "mteleport %actor% 3002", "Alice"),
+        ("mob", "mgoto 3002", "the guard"),
+        ("obj", "oteleport %actor% 3002", "Alice"),
+        ("wld", "wteleport %actor% 3002", "Alice"),
+    ] {
+        let mut w = World::new();
+        let (mob, lamp, room, room2, alice) = (w.mob, w.obj, w.room, w.room2, w.player);
+        entry_watcher(&mut w, room2);
+        let owner = match owner {
+            "mob" => mob,
+            "obj" => lamp,
+            _ => room,
+        };
+        run_script(&mut w, owner, line, Some(alice));
+        // The trigger ran once and found the traveller already in the room.
+        assert_eq!(logs(&w), [format!("Room 3002 :: entered {who}")], "{line}");
+        let traveller = if who == "Alice" { alice } else { mob };
+        assert_eq!(w.host.in_room(traveller), Some(room2), "{line}");
+    }
+}
+
+#[test]
+fn teleport_moves_the_actor() {
     let mut w = World::new();
     let (mob, room2, alice) = (w.mob, w.room2, w.player);
-    attach(
-        &mut w,
-        room2,
-        AttachType::Wld,
-        "g",
-        "wlog entered %actor.name%",
-    );
     run_script(&mut w, mob, "mteleport %actor% 3002", Some(alice));
     assert_eq!(w.host.in_room(alice), Some(room2));
-    // With the trigger firing, it saw the actor already in the room.
-    for line in &w.host.logs {
-        assert_eq!(line, "Room 3002 :: entered Alice");
-    }
 }

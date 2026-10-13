@@ -14,7 +14,8 @@ use crate::host::DgHost;
 use crate::lookup::{
     FIND_INDEX_LAST, Where, can_wear_on_pos, find_eq_pos_script, get_char, get_char_by_obj,
     get_char_in_room, get_char_near_obj, get_char_room_vis, get_char_vis, get_number, get_obj,
-    get_obj_by_obj, get_obj_in_room, get_obj_near_obj, get_obj_vis, get_room, obj_room,
+    get_obj_by_obj, get_obj_in_room, get_obj_near_obj, get_obj_vis, get_player_vis, get_room,
+    obj_room,
 };
 use crate::types::{DIRS, LVL_GRGOD, UID_CHAR, Uid, uid_text};
 
@@ -118,7 +119,7 @@ pub(crate) fn awake<H: DgHost + ?Sized>(host: &H, ch: Uid) -> bool {
 
 /// `ch->desc != NULL`.
 pub(crate) fn has_desc<H: DgHost + ?Sized>(host: &H, ch: Uid) -> bool {
-    host.cmd_desc_original_level(ch).is_some()
+    host.cmd_desc(ch).is_some()
 }
 
 /// `COLOR_LEV(ch)` (`_clrlevel`, `screen.h`): 0 for an NPC, else the
@@ -555,7 +556,7 @@ fn room_of_name<H: DgHost + ?Sized>(host: &H, ch: Uid, roomstr: &str) -> Result<
     let target_mob = if never_matches {
         (str_eq(name, "self") || str_eq(name, "me")).then_some(ch)
     } else {
-        get_char_vis(host, ch, &counted(num, name), Where::World)
+        char_world_vis(host, ch, &counted(num, name))
     };
     if let Some(target_mob) = target_mob {
         return host
@@ -585,6 +586,21 @@ fn room_of_name<H: DgHost + ?Sized>(host: &H, ch: Uid, roomstr: &str) -> Result<
         .ok_or("That object is currently not in a room.\r\n")
 }
 
+/// `get_char_vis(ch, name, NULL, FIND_CHAR_WORLD)` with the buffer the C
+/// leaves behind: for a `0.` count the room pass has already stripped the
+/// inner `N.` of `0.N.name`, so the world pass looks for the bare name
+/// (`lookup::get_char_world_vis` hands it the unstripped name).
+pub(crate) fn char_world_vis<H: DgHost + ?Sized>(host: &H, ch: Uid, arg: &str) -> Option<Uid> {
+    let (num, rest) = get_number(arg);
+    if num != 0 {
+        return get_char_vis(host, ch, arg, Where::World);
+    }
+    if let Some(found) = get_char_room_vis(host, ch, arg) {
+        return Some(found);
+    }
+    get_player_vis(host, ch, get_number(rest).1, false)
+}
+
 /// `N.name` with the count spelled the way `get_number` reads it.
 fn counted(num: i32, name: &str) -> String {
     if num == FIND_INDEX_LAST {
@@ -602,9 +618,7 @@ fn remaining_count<H: DgHost + ?Sized>(host: &H, ch: Uid, num: i32, name: &str) 
         return num;
     }
     let mut matches = 0;
-    while matches < num - 1
-        && get_char_vis(host, ch, &counted(matches + 1, name), Where::World).is_some()
-    {
+    while matches < num - 1 && char_world_vis(host, ch, &counted(matches + 1, name)).is_some() {
         matches += 1;
     }
     num - matches

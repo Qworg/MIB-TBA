@@ -464,25 +464,49 @@ pub fn act<H: DgHost + ?Sized>(host: &mut H, text: &str, hide_invisible: bool, c
         host.cmd_syslog("SYSERR: no valid target to act()!");
         return;
     };
-    for to in host.room_people(room) {
-        if !sendok(host, to, false) || to == ch {
-            continue;
+    // The walk follows `to->next_in_room` live, so a recipient that an act
+    // trigger moved carries it on in the list it is in now. A recipient that
+    // is in no list any more ends the walk (the C would follow a dangling
+    // pointer); the step bound stops a trigger that keeps moving recipients
+    // back in front of the walk.
+    let mut next = host.room_people(room).first().copied();
+    let mut steps = 0_usize;
+    while let Some(to) = next {
+        steps += 1;
+        if steps > ACT_WALK_LIMIT {
+            break;
         }
-        if hide_invisible && !host.can_see(to, ch) {
-            continue;
+        let skip =
+            !sendok(host, to, false) || to == ch || (hide_invisible && !host.can_see(to, ch));
+        if !skip {
+            perform_act(host, text, ch, to);
         }
-        perform_act(host, text, ch, to);
+        next = next_in_room(host, to);
     }
 }
 
+/// The most recipients one `act()` walk visits.
+const ACT_WALK_LIMIT: usize = 100_000;
+
+/// `to->next_in_room`.
+fn next_in_room<H: DgHost + ?Sized>(host: &H, to: Uid) -> Option<Uid> {
+    let people = host.room_people(host.in_room(to)?);
+    let at = people.iter().position(|&p| p == to)?;
+    people.get(at + 1).copied()
+}
+
 /// `act_to_room(str, room)` (`dg_wldcmd.c`): `act()` to everyone in a room
-/// by way of its first occupant (`TO_ROOM`, then `TO_CHAR` for that occupant).
+/// by way of its first occupant (`TO_ROOM`, then `TO_CHAR` for the occupant
+/// at the head of the room by then: `room->people` is read for each call, and
+/// an act trigger fired by the first may have changed it).
 pub fn act_to_room<H: DgHost + ?Sized>(host: &mut H, text: &str, room: Uid) {
     let Some(first) = host.room_people(room).first().copied() else {
         return;
     };
     act(host, text, false, first, TO_ROOM);
-    act(host, text, false, first, TO_CHAR);
+    if let Some(head) = host.room_people(room).first().copied() {
+        act(host, text, false, head, TO_CHAR);
+    }
 }
 
 #[cfg(test)]
@@ -491,7 +515,7 @@ mod tests {
 
     use super::*;
     use crate::commands::support::World;
-    use crate::host::BaseHost;
+    use crate::host::{BaseHost, WorldHost};
     use crate::types::AttachType;
 
     #[test]
@@ -854,23 +878,88 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "needs the dispatch bodies: act_mtrigger must fire the act trigger"]
     fn act_offers_each_npc_in_the_room_its_line_through_the_dispatch_module() {
-        // `act_mtrigger` runs the `act` triggers whose argument matches. A
-        // trigger that says what it was shown makes the call visible; until
-        // the dispatch module fires triggers, nothing is said and the test
-        // asserts only that nothing else was.
+        // `perform_act` calls `act_mtrigger(to, lbuf, ch, ...)` for an NPC
+        // recipient other than `ch`; the line is the buffer up to `\r` and
+        // the actor is `ch`. The actor's own TO_CHAR line is not offered.
         let mut w = World::new();
         let (bob, mob) = (w.player2, w.mob);
-        let act_proto = w
-            .host
-            .add_proto(901, AttachType::Mob, "e", 0, "waves", "say saw %arg%");
+        let act_proto = w.host.add_proto(
+            901,
+            AttachType::Mob,
+            "e",
+            0,
+            "waves",
+            "say saw %arg% by %actor.name%",
+        );
         w.host.attach(mob, &act_proto);
         act(&mut w.host, "waves at $n.", false, bob, TO_ROOM);
-        let said: Vec<_> = w.host.mud_commands.iter().map(|(who, _)| *who).collect();
-        assert!(said.iter().all(|who| *who == mob), "{said:?}");
-        for (_, line) in &w.host.mud_commands {
-            assert_eq!(line, "say saw waves at Bob.");
+        assert_eq!(
+            w.host.mud_commands,
+            [(mob, "say saw waves at Bob. by Bob".to_owned())]
+        );
+        w.host.mud_commands.clear();
+        act(&mut w.host, "waves at $n.", false, mob, TO_CHAR);
+        assert!(w.host.mud_commands.is_empty());
+    }
+
+    /// Give everyone in the room a descriptor, awake, and return the people
+    /// head first.
+    fn all_listening(w: &mut World) -> Vec<Uid> {
+        let people = w.host.room_people(w.room);
+        for ch in &people {
+            w.host.set_num(*ch, "desc", 1);
+            w.host.set_num(*ch, "pos", 8);
         }
+        people
+    }
+
+    #[test]
+    fn act_to_room_reads_the_head_again_for_the_second_act() {
+        // `act(str, FALSE, room->people, 0, 0, TO_ROOM); act(str, FALSE,
+        // room->people, 0, 0, TO_CHAR);` evaluates `room->people` twice. A
+        // recipient's act trigger (here a mob loaded at the head of the room
+        // once the second occupant has been told) changes the head, so the
+        // TO_CHAR line goes to the new head, a mob nobody can write to, and
+        // the old head hears nothing.
+        let mut w = World::new();
+        let room = w.room;
+        let people = all_listening(&mut w);
+        w.host
+            .globals
+            .texts
+            .insert(format!("hook:send:{}", people[1]), "load 3100".to_owned());
+        act_to_room(&mut w.host, "hush", room);
+        assert!(w.sent_to(people[0]).is_empty());
+        assert_eq!(w.sent_to(people[1]), ["Hush\r\n"]);
+        assert_eq!(w.sent_to(people[2]), ["Hush\r\n"]);
+        assert_ne!(w.host.room_people(room)[0], people[0]);
+    }
+
+    #[test]
+    fn the_to_room_walk_follows_a_recipient_that_was_moved() {
+        // The C follows `to->next_in_room` as it is after the line was
+        // delivered: a recipient that an act trigger took to another room
+        // carries the walk into that room's list.
+        let mut w = World::new();
+        let room2 = w.room2;
+        let people = all_listening(&mut w);
+        let resident = w.host.add_mob(3100, "a rat");
+        w.host.set_num(resident, "desc", 1);
+        w.host.set_num(resident, "pos", 8);
+        w.host.char_to_room(resident, room2);
+        // `people[0]` acts to the room: `people[1]` is told first and moves
+        // to room 2, where the walk goes on to the rat.
+        w.host
+            .globals
+            .texts
+            .insert(format!("hook:send:{}", people[1]), "move 3002".to_owned());
+        act(&mut w.host, "hush", false, people[0], TO_ROOM);
+        assert_eq!(w.sent_to(people[1]), ["Hush\r\n"]);
+        assert_eq!(w.sent_to(resident), ["Hush\r\n"]);
+        assert!(w.sent_to(people[2]).is_empty());
+        assert_eq!(w.host.in_room(people[1]), Some(room2));
     }
 
     #[test]

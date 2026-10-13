@@ -8,13 +8,14 @@
 //!
 //! | entity | key | meaning (C) |
 //! |---|---|---|
-//! | char | `nums["desc_original_level"]` | `GET_LEVEL(ch->desc->original)`; absent = the character's own level (the C dereferences NULL for a descriptor that is not switched) |
+//! | char | `links["desc_original"]` | `ch->desc->original`; absent = the descriptor is not switched |
 //! | char | `nums["invis_level"]` | `GET_INVIS_LEV` |
 //! | char | `links["hunting"]` | `HUNTING(ch)` |
 //! | world | `texts["huh"]` | `CONFIG_HUH` (default `Huh?!?\r\n`) |
 //! | world | `nums["house_enter:<vnum>"]` | `House_can_enter(ch, vnum)` |
 //! | world | `nums["objproto:<vnum>:wear"]`, `nums["objproto:<vnum>:type"]` | a loadable object's wear flags and type |
 //! | world | `nums["zone:<n>:bot"]`, `nums["zone:<n>:top"]` | a zone's vnum range |
+//! | world | `texts["hook:send:<ch>"]`, `texts["hook:arrive:<ch>"]` | a test hook, run once and removed: after the next text delivered to `<ch>` (what an `act` trigger of `<ch>` would do) or after the next time `<ch>` is put into a room (what the command of an `at` would do). `load <mob vnum>` puts a new mob at the head of `<ch>`'s room, `move <room vnum>` takes `<ch>` to that room |
 //! | world | `nums["mobtrig:<vnum>"]`, `nums["objtrig:<vnum>"]` | a trigger (a `protos` key) that `read_mobile` / `read_object` attach to what they build, as the prototype's trigger list does |
 //!
 //! A character is on `descriptor_list` playing when it has `desc` and its
@@ -45,6 +46,34 @@ impl MockHost {
     fn has_exit(&self, room: Uid, dir: usize) -> bool {
         self.link(room, &Self::exit_key(dir, "")).is_some()
             || self.num(room, &Self::exit_key(dir, "nowhere")) != 0
+    }
+
+    /// Run the one-shot test hook `key` for `ch` (see the module table).
+    fn run_hook(&mut self, key: &str, ch: Uid) {
+        let Some(spec) = self.globals.texts.remove(key) else {
+            return;
+        };
+        let mut words = spec.split_whitespace();
+        let (Some(action), Some(vnum)) = (words.next(), words.next()) else {
+            return;
+        };
+        let Ok(vnum) = vnum.parse::<i32>() else {
+            return;
+        };
+        match action {
+            "load" => {
+                if let (Some(mob), Some(room)) = (self.cmd_read_mobile(vnum), self.in_room(ch)) {
+                    self.char_to_room(mob, room);
+                }
+            }
+            "move" => {
+                if let Some(room) = self.real_room(vnum) {
+                    self.char_from_room(ch);
+                    self.char_to_room(ch, room);
+                }
+            }
+            _ => {}
+        }
     }
 
     /// Attach the trigger the world key names (a vnum in `protos`) to `uid`.
@@ -82,18 +111,12 @@ impl CmdHost for MockHost {
     fn cmd_send(&mut self, ch: Uid, text: &str) {
         if self.num(ch, "desc") != 0 {
             self.effect(format!("send {ch}: {text}"));
+            self.run_hook(&format!("hook:send:{ch}"), ch);
         }
     }
 
-    fn cmd_desc_original_level(&self, ch: Uid) -> Option<i32> {
-        (self.num(ch, "desc") != 0).then(|| {
-            self.entity(ch)
-                .and_then(|entity| entity.nums.get("desc_original_level"))
-                .map_or_else(
-                    || self.level(ch),
-                    |level| i32::try_from(*level).unwrap_or(0),
-                )
-        })
+    fn cmd_desc(&self, ch: Uid) -> Option<Option<Uid>> {
+        (self.num(ch, "desc") != 0).then(|| self.link(ch, "desc_original"))
     }
 
     fn cmd_mudlog(&mut self, level: i32, text: &str) {
@@ -235,6 +258,7 @@ impl CmdHost for MockHost {
 
     fn cmd_char_to_room(&mut self, ch: Uid, room: Uid) {
         self.char_to_room(ch, room);
+        self.run_hook(&format!("hook:arrive:{ch}"), ch);
     }
 
     fn cmd_obj_to_room(&mut self, obj: Uid, room: Uid) {

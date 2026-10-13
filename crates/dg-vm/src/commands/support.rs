@@ -127,6 +127,18 @@ impl World {
         self.set_bit(ch, "pref", 8, on);
     }
 
+    /// Make `ch` a switched character whose `desc->original` is a level
+    /// `level` player (the same one on every call, so a test can change the
+    /// level).
+    pub fn switch_behind(&mut self, ch: Uid, level: i64) {
+        let original = self.host.link(ch, "desc_original").unwrap_or_else(|| {
+            let original = self.host.add_player("Behind");
+            self.host.set_link(ch, "desc_original", Some(original));
+            original
+        });
+        self.host.set_num(original, "level", level);
+    }
+
     /// Set or clear `PLR_WRITING`.
     pub fn set_writing(&mut self, ch: Uid, on: bool) {
         self.set_bit(ch, "act", 4, on);

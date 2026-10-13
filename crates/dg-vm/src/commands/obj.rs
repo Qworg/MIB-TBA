@@ -863,6 +863,53 @@ mod tests {
     }
 
     #[test]
+    fn oforce_refuses_the_highest_gods_and_oteleport_does_not() {
+        // A level 33 player is found by the lookup (it allows gods), refused
+        // by `oforce` (`valid_dg_target(ch, 0)`) and accepted by
+        // `oteleport` (`DG_ALLOW_GODS`), in the single and the `all` form.
+        let mut w = World::new();
+        let (alice, bob, mob, room2) = (w.player, w.player2, w.mob, w.room2);
+        w.host.set_num(alice, "level", 33);
+        run(&mut w, "oforce alice look");
+        assert!(w.host.mud_commands.is_empty());
+        run(&mut w, "oforce all look");
+        assert_eq!(
+            w.host.mud_commands,
+            [(bob, " look".to_owned()), (mob, " look".to_owned())]
+        );
+        run(&mut w, "oteleport alice 3002");
+        assert_eq!(w.host.in_room(alice), Some(room2));
+
+        let mut w = World::new();
+        let (alice, bob, room2) = (w.player, w.player2, w.room2);
+        w.host.set_num(alice, "level", 33);
+        run(&mut w, "oteleport all 3002");
+        assert_eq!(w.host.in_room(alice), Some(room2));
+        assert_eq!(w.host.in_room(bob), Some(room2));
+    }
+
+    #[test]
+    fn oforce_and_oteleport_skip_a_god_with_nohassle() {
+        let mut w = World::new();
+        let (alice, bob, mob, room) = (w.player, w.player2, w.mob, w.room);
+        w.host.set_num(alice, "level", 32);
+        run(&mut w, "oforce alice look");
+        assert_eq!(w.host.mud_commands, [(alice, " look".to_owned())]);
+        w.host.mud_commands.clear();
+        w.set_nohassle(alice, true);
+        run(&mut w, "oforce alice look");
+        run(&mut w, "oforce all look");
+        assert_eq!(
+            w.host.mud_commands,
+            [(bob, " look".to_owned()), (mob, " look".to_owned())]
+        );
+        run(&mut w, "oteleport alice 3002");
+        run(&mut w, "oteleport all 3002");
+        assert_eq!(w.host.in_room(alice), Some(room));
+        assert_eq!(w.host.in_room(bob), Some(w.room2));
+    }
+
+    #[test]
     fn oteleport_errors() {
         let mut w = World::new();
         run(&mut w, "oteleport");

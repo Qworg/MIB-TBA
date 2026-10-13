@@ -12,8 +12,8 @@
 use super::comm::{TO_CHAR, TO_ROOM, sub_write, sub_write_in};
 use super::misc::script_damage;
 use super::shared::{
-    Owner, PRF_NOHASSLE, dir_count, door, exit_to_room, find_target_room, has_desc, load, recho,
-    shown, shown_after_char, starts_with_digit, teleport, vnum16, zoneecho,
+    Owner, PRF_NOHASSLE, char_world_vis, dir_count, door, exit_to_room, find_target_room, has_desc,
+    load, recho, shown, shown_after_char, starts_with_digit, teleport, vnum16, zoneecho,
 };
 use crate::cstr::{atoi, one_argument, skip_spaces, str_eq, two_arguments};
 use crate::host::DgHost;
@@ -107,8 +107,11 @@ pub fn run<H: DgHost + ?Sized>(host: &mut H, ch: Uid, command: MobCommand, argum
 
 /// `ch->desc && GET_LEVEL(ch->desc->original) < LVL_IMPL`.
 fn desc_below_impl<H: DgHost + ?Sized>(host: &H, ch: Uid) -> bool {
-    host.cmd_desc_original_level(ch)
-        .is_some_and(|level| level < LVL_IMPL)
+    // A descriptor that is not switched has no `original` (the C
+    // dereferences NULL): the character's own level stands in, so an
+    // ordinary player is refused and an implementor is not.
+    host.cmd_desc(ch)
+        .is_some_and(|original| host.level(original.unwrap_or(ch)) < LVL_IMPL)
 }
 
 /// `MOB_OR_IMPL(ch)`.
@@ -146,7 +149,7 @@ fn victim_in_world<H: DgHost + ?Sized>(host: &H, ch: Uid, arg: &str) -> Option<U
     if arg.starts_with(UID_CHAR) {
         get_char(host, arg)
     } else {
-        get_char_vis(host, ch, arg, Where::World)
+        char_world_vis(host, ch, arg)
     }
 }
 
@@ -925,15 +928,31 @@ mod tests {
     }
 
     #[test]
+    fn an_unswitched_descriptor_is_judged_by_the_characters_own_level() {
+        // `ch->desc->original` is NULL in the C; the character's own level
+        // stands in.
+        let mut w = World::new();
+        let mob = bare_mob(&mut w);
+        w.host.set_num(mob, "desc", 1);
+        w.host.set_num(mob, "level", 33);
+        assert!(w.run_mob(mob, "mecho hi"));
+        assert_eq!(w.sent_to(mob), ["Huh?!?\r\n"]);
+        w.clear();
+        w.host.set_num(mob, "level", 34);
+        assert!(w.run_mob(mob, "mecho hi"));
+        assert_eq!(w.sent_to(w.player), ["hi\n\r"]);
+    }
+
+    #[test]
     fn a_switched_npc_needs_an_implementor_behind_it() {
         let mut w = World::new();
         let mob = bare_mob(&mut w);
         w.host.set_num(mob, "desc", 1);
-        w.host.set_num(mob, "desc_original_level", 33);
+        w.switch_behind(mob, 33);
         assert!(w.run_mob(mob, "mecho hi"));
         assert_eq!(w.sent_to(mob), ["Huh?!?\r\n"]);
         w.clear();
-        w.host.set_num(mob, "desc_original_level", 34);
+        w.switch_behind(mob, 34);
         assert!(w.run_mob(mob, "mecho hi"));
         assert_eq!(w.sent_to(w.player), ["hi\n\r"]);
         // With no descriptor at all an NPC is fine.
@@ -1552,7 +1571,7 @@ mod tests {
         let mut w = World::new();
         let mob = w.mob;
         w.host.set_num(mob, "desc", 1);
-        w.host.set_num(mob, "desc_original_level", 33);
+        w.switch_behind(mob, 33);
         run(&mut w, "mload mob 3100");
         run(&mut w, "mpurge");
         run(&mut w, "mforce alice look");
@@ -1563,7 +1582,7 @@ mod tests {
         assert_eq!(w.host.list(w.room, "people").len(), 3);
         assert!(w.host.mud_commands.is_empty());
         assert!(w.host.script_mem(mob).is_empty());
-        w.host.set_num(mob, "desc_original_level", 34);
+        w.switch_behind(mob, 34);
         run(&mut w, "mload mob 3100");
         assert_eq!(w.host.list(w.room, "people").len(), 4);
     }
@@ -1661,6 +1680,14 @@ mod tests {
         w.clear();
         run(&mut w, "mgoto 1.alice");
         assert_eq!(w.host.in_room(mob), Some(w.room));
+        // `self` and `me` are answered before the count is looked at: the
+        // mob "goes" to its own room and nothing is logged.
+        w.host.char_to_room(mob, room2);
+        w.clear();
+        run(&mut w, "mgoto 4294967294.self");
+        run(&mut w, "mgoto 4294967294.me");
+        assert!(w.host.logs.is_empty());
+        assert_eq!(w.host.in_room(mob), Some(room2));
     }
 
     #[test]
@@ -1676,6 +1703,24 @@ mod tests {
         run(&mut w, "mgoto 3002");
         log_is(&w, "mgoto: invalid location");
         assert_eq!(w.host.in_room(mob), Some(w.room));
+    }
+
+    #[test]
+    fn mat_leaves_the_mob_where_the_command_put_it() {
+        // `if (IN_ROOM(ch) == location)`: when the command took the mob
+        // somewhere else (`at XXXX quit`), it is not put back. The mock's
+        // `hook:arrive` stands in for the command and moves the mob on to a
+        // third room as it arrives.
+        let mut w = World::new();
+        let mob = w.mob;
+        let room3 = w.host.add_room(3003, "The Cellar");
+        w.host
+            .globals
+            .texts
+            .insert(format!("hook:arrive:{mob}"), "move 3003".to_owned());
+        run(&mut w, "mat 3002 look");
+        assert_eq!(w.host.mud_commands, [(mob, " look".to_owned())]);
+        assert_eq!(w.host.in_room(mob), Some(room3));
     }
 
     #[test]
@@ -1910,7 +1955,7 @@ mod tests {
         let mut w = World::new();
         let mob = w.mob;
         w.host.set_num(mob, "desc", 1);
-        w.host.set_num(mob, "desc_original_level", 34);
+        w.switch_behind(mob, 34);
         run(&mut w, "mtransform 3100");
         assert_eq!(
             w.sent_to(mob),
@@ -1961,6 +2006,12 @@ mod tests {
         log_is(&w, "mdoor: invalid door target (arg == 9999)");
         assert_eq!(w.host.link(room, "exit:1"), None);
         assert_eq!(w.host.num(room, "exit:1:nowhere"), 1);
+        // The exit that leads nowhere is still an exit: a later field set does
+        // not make a new one pointing at room number 0.
+        run(&mut w, "mdoor 3001 east flags a");
+        assert_eq!(w.host.link(room, "exit:1"), None);
+        assert_eq!(w.host.num(room, "exit:1:nowhere"), 1);
+        assert_eq!(w.host.num(room, "exit:1:flags"), 1);
     }
 
     #[test]
@@ -2230,6 +2281,29 @@ mod tests {
     // ---- the buffer after a `0.` count ------------------------------------
 
     #[test]
+    fn a_zero_count_world_search_looks_for_the_bare_name() {
+        // `0.2.bob`: the room pass strips `2.` from the buffer and finds no
+        // such player in the room; the world pass then asks for the player
+        // `bob`, count 1 (handler.c `get_char_world_vis`).
+        let mut w = World::new();
+        let (mob, bob, room2) = (w.mob, w.player2, w.room2);
+        w.host.char_to_room(bob, room2);
+        run(&mut w, "mhunt 0.2.bob");
+        assert!(w.host.logs.is_empty());
+        assert_eq!(w.effects("hunt "), [format!("hunt {mob} {bob}")]);
+        run(&mut w, "mgoto 0.2.bob");
+        assert!(w.host.logs.is_empty());
+        assert_eq!(w.host.in_room(mob), Some(room2));
+        // With Bob in the mob's room the room pass (count 2) still finds no
+        // second Bob, and the world pass finds the first.
+        let mut w = World::new();
+        let (mob, bob) = (w.mob, w.player2);
+        run(&mut w, "mhunt 0.2.bob");
+        assert!(w.host.logs.is_empty());
+        assert_eq!(w.effects("hunt "), [format!("hunt {mob} {bob}")]);
+    }
+
+    #[test]
     fn a_zero_count_strips_the_name_a_second_time_in_the_buffer() {
         // `get_char_room_vis` sends `0.<name>` to `get_player_vis`, which runs
         // `get_number` on the same buffer again; a failed world search does so
@@ -2260,6 +2334,8 @@ mod tests {
                 "mteleport 0.1.2.zed 3002",
                 "mteleport: victim (zed) does not exist",
             ),
+            // `last.` is a count of its own: it strips once and is never zero.
+            ("mkill last.2.zed", "mkill: victim (2.zed) not found"),
             // Not a number: the count is 0 as well.
             ("mkill x.2.zed", "mkill: victim (zed) not found"),
             // A real count strips once.
@@ -2316,7 +2392,7 @@ mod tests {
         let rat = bare_mob(&mut w);
         w.host.set_text(rat, "alias", "rat");
         w.host.set_num(mob, "desc", 1);
-        w.host.set_num(mob, "desc_original_level", 33);
+        w.switch_behind(mob, 33);
         let remembered = ScriptMemory {
             id: alice,
             cmd: None,
@@ -2344,7 +2420,7 @@ mod tests {
         assert_eq!(w.host.list(w.room, "people").len(), 4);
 
         // The same lines work for an implementor.
-        w.host.set_num(mob, "desc_original_level", 34);
+        w.switch_behind(mob, 34);
         for line in [
             "mpurge rat",
             "mhunt alice",
@@ -2368,7 +2444,7 @@ mod tests {
     }
 
     #[test]
-    fn a_player_with_triggers_is_not_held_to_the_switched_mob_level() {
+    fn a_player_with_triggers_is_judged_by_their_own_level() {
         // A descriptor with no `original` is answered with the character's
         // own level, which is below LVL_IMPL for an ordinary player.
         let mut w = World::new();
@@ -2431,7 +2507,7 @@ mod tests {
         let mut w = World::new();
         let (alice, mob) = (w.player, w.mob);
         w.host.set_num(mob, "desc", 1);
-        w.host.set_num(mob, "desc_original_level", 34);
+        w.switch_behind(mob, 34);
         // Bit 4 of an NPC's act flags is MOB_AWARE, not PLR_WRITING.
         w.set_writing(mob, true);
         w.set_writing(alice, true);

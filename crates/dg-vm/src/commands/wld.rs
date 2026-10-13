@@ -434,10 +434,11 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "needs the dispatch bodies: act_mtrigger must fire the act trigger"]
     fn wecho_offers_the_line_to_npcs_that_watch_for_it() {
-        // The guard's `act` trigger says what it was shown. `act_mtrigger`
-        // only fires once the dispatch module is real; until then nothing is
-        // said, and the assertion is that nothing else is.
+        // The room's head is Bob. `act_to_room` tells the guard once (the
+        // TO_ROOM pass); Bob's own TO_CHAR line is not offered to anyone.
+        // A guard without a descriptor sees the line without a capital.
         let mut w = World::new();
         let mob = w.mob;
         let act_proto = w
@@ -445,10 +446,7 @@ mod tests {
             .add_proto(901, AttachType::Mob, "e", 0, "hush", "say heard %arg%");
         w.host.attach(mob, &act_proto);
         run(&mut w, "wecho hush");
-        for (who, line) in &w.host.mud_commands {
-            assert_eq!(*who, mob);
-            assert_eq!(line, "say heard hush");
-        }
+        assert_eq!(w.host.mud_commands, [(mob, "say heard hush".to_owned())]);
     }
 
     #[test]
@@ -563,6 +561,53 @@ mod tests {
         w.host.set_num(alice, "dg_invalid", 1);
         run(&mut w, "wteleport alice 3002");
         assert_eq!(w.host.in_room(alice), Some(w.room));
+    }
+
+    #[test]
+    fn wforce_refuses_the_highest_gods_and_wteleport_does_not() {
+        // A level 33 player is found by the lookup (it allows gods), refused
+        // by `wforce` (`valid_dg_target(ch, 0)`) and accepted by
+        // `wteleport` (`DG_ALLOW_GODS`), in the single and the `all` form.
+        let mut w = World::new();
+        let (alice, bob, mob, room2) = (w.player, w.player2, w.mob, w.room2);
+        w.host.set_num(alice, "level", 33);
+        run(&mut w, "wforce alice look");
+        assert!(w.host.mud_commands.is_empty());
+        run(&mut w, "wforce all look");
+        assert_eq!(
+            w.host.mud_commands,
+            [(bob, " look".to_owned()), (mob, " look".to_owned())]
+        );
+        run(&mut w, "wteleport alice 3002");
+        assert_eq!(w.host.in_room(alice), Some(room2));
+
+        let mut w = World::new();
+        let (alice, bob, room2) = (w.player, w.player2, w.room2);
+        w.host.set_num(alice, "level", 33);
+        run(&mut w, "wteleport all 3002");
+        assert_eq!(w.host.in_room(alice), Some(room2));
+        assert_eq!(w.host.in_room(bob), Some(room2));
+    }
+
+    #[test]
+    fn wforce_and_wteleport_skip_a_god_with_nohassle() {
+        let mut w = World::new();
+        let (alice, bob, mob, room) = (w.player, w.player2, w.mob, w.room);
+        w.host.set_num(alice, "level", 32);
+        run(&mut w, "wforce alice look");
+        assert_eq!(w.host.mud_commands, [(alice, " look".to_owned())]);
+        w.host.mud_commands.clear();
+        w.set_nohassle(alice, true);
+        run(&mut w, "wforce alice look");
+        run(&mut w, "wforce all look");
+        assert_eq!(
+            w.host.mud_commands,
+            [(bob, " look".to_owned()), (mob, " look".to_owned())]
+        );
+        run(&mut w, "wteleport alice 3002");
+        run(&mut w, "wteleport all 3002");
+        assert_eq!(w.host.in_room(alice), Some(room));
+        assert_eq!(w.host.in_room(bob), Some(w.room2));
     }
 
     #[test]

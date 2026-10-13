@@ -67,8 +67,17 @@
 //!   not in a room are approximations of the C text: the C prints a pointer
 //!   and the room number, which the VM does not have.
 //! - `GET_LEVEL(ch->desc->original)` of a descriptor that is not switched
-//!   dereferences NULL in the C; the host answers with the character's own
-//!   level ([`CmdHost::cmd_desc_original_level`]).
+//!   dereferences NULL in the C; the VM uses the character's own level
+//!   instead ([`CmdHost::cmd_desc`] reports only the descriptor and its
+//!   `original`).
+//! - `act()` to a room follows `to->next_in_room` live, as the C does, so an
+//!   act trigger that moves a recipient carries the walk into the list it is
+//!   in now. A recipient that is in no room any more ends the walk (the C
+//!   would follow a dangling pointer), and a walk is cut off after 100000
+//!   recipients.
+//! - `get_char_world_vis` is called through `shared::char_world_vis`, which
+//!   gives the world pass of a `0.N.name` argument the name the room pass
+//!   left in the C's buffer (`lookup.rs` hands it the unstripped name).
 //! - `sub_write` takes the room to work in as a parameter rather than reading
 //!   `IN_ROOM(ch)`, so `do_masound`'s temporary reassignment of the mob's room
 //!   needs no host support.
@@ -142,16 +151,12 @@ pub trait CmdHost {
     /// connection. Does nothing for a character with no descriptor.
     fn cmd_send(&mut self, ch: Uid, text: &str);
 
-    /// `ch->desc != NULL`, and with it `GET_LEVEL(ch->desc->original)`: the
-    /// level of the player behind a switched mob. `None` when `ch->desc` is
-    /// `NULL`; the VM reads descriptor presence as `is_some()`.
-    ///
-    /// A descriptor that is not switched has no `original` (the C
-    /// dereferences NULL); the host returns the level of the character
-    /// itself, so an ordinary player below `LVL_IMPL` is refused the commands
-    /// that test it and an implementor playing a script-bearing character is
-    /// not.
-    fn cmd_desc_original_level(&self, ch: Uid) -> Option<i32>;
+    /// `ch->desc`: `None` when `ch->desc` is `NULL`, else `Some` of
+    /// `ch->desc->original`, the player behind a switched mob (`None` inside
+    /// when the descriptor is not switched). The VM reads descriptor
+    /// presence from the outer `Option` and applies the policy for an
+    /// unswitched descriptor itself.
+    fn cmd_desc(&self, ch: Uid) -> Option<Option<Uid>>;
 
     /// `mudlog(BRF, level, TRUE, "%s", text)`.
     fn cmd_mudlog(&mut self, level: i32, text: &str);
