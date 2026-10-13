@@ -471,7 +471,7 @@ fn player_vis<H: WorldHost + ?Sized>(
             last = Some(i);
             continue;
         }
-        *number -= 1;
+        *number = number.wrapping_sub(1);
         if *number == 0 {
             return Some(i);
         }
@@ -510,7 +510,7 @@ fn nth_visible(
         if *number == FIND_INDEX_LAST {
             last = Some(entry);
         } else {
-            *number -= 1;
+            *number = number.wrapping_sub(1);
             if *number == 0 {
                 return Some(entry);
             }
@@ -563,7 +563,7 @@ pub fn get_char_world_vis<H: WorldHost + ?Sized>(host: &H, ch: Uid, name: &str) 
         if host.in_room(i) == room || !isname(name, &host.keywords(i)) || !host.can_see(ch, i) {
             continue;
         }
-        number -= 1;
+        number = number.wrapping_sub(1);
         if number == 0 {
             return Some(i);
         }
@@ -643,7 +643,7 @@ pub fn get_obj_pos_in_equip_vis<H: WorldHost + ?Sized>(
         if number == FIND_INDEX_LAST {
             last = Some(pos);
         } else {
-            number -= 1;
+            number = number.wrapping_sub(1);
             if number == 0 {
                 return Some(pos);
             }
@@ -771,6 +771,19 @@ mod tests {
         host.set_num(sword, "wear", 1 << 13);
         assert!(can_wear_on_pos(&host, sword, WEAR_WIELD));
         assert!(!can_wear_on_pos(&host, sword, WEAR_HEAD));
+    }
+
+    #[test]
+    fn a_count_that_wraps_to_int_min_does_not_panic() {
+        let (host, _, guard, _, bob, _) = world();
+        // atoi wraps 2147483648 to i32::MIN; the C's `--(*number)` wraps too.
+        assert_eq!(get_char_room_vis(&host, guard, "2147483648.bob"), None);
+        assert_eq!(get_char_world_vis(&host, guard, "2147483648.bob"), None);
+        assert_eq!(get_obj_vis(&host, bob, "2147483648.sword"), None);
+        assert_eq!(
+            get_obj_pos_in_equip_vis(&host, bob, bob, "2147483648.sword"),
+            None
+        );
     }
 
     #[test]

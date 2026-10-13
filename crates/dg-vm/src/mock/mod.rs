@@ -21,7 +21,10 @@
 //! | char | `nums["is_npc"]` | `IS_NPC` |
 //! | char | `nums["level"]` | `GET_LEVEL` |
 //! | char | `nums["dead"]` | `DEAD(ch)`: extracted, awaiting [`MockHost::sweep_dead`] |
-//! | char | `nums["dg_invalid"]` | non-zero makes `valid_dg_target` false |
+//! | char | `nums["dg_invalid"]` | non-zero makes `valid_dg_target` false outright |
+//! | char | `nums["desc"]` | `ch->desc != NULL` |
+//! | char | `nums["con_state"]` | `STATE(ch->desc)`; `0` is `CON_PLAYING` |
+//! | char | `nums["nohassle"]` | `PRF_FLAGGED(ch, PRF_NOHASSLE)` |
 //! | char | `lists["cannot_see"]` | entities this character fails `CAN_SEE` for |
 //! | char | `nums["pos"]` | `GET_POS` (`0` dead … `8` standing) |
 //! | char | `nums["hit"]`, `nums["max_hit"]`, `nums["mana"]`, `nums["max_mana"]`, `nums["move"]`, `nums["max_move"]` | the point pools |
@@ -39,7 +42,8 @@
 //! | obj | `nums["val0"]`..`nums["val3"]`, `nums["timer"]`, `nums["cost"]`, `nums["weight"]` | `GET_OBJ_VAL` and the same-named `GET_OBJ_*` |
 //! | room, obj | `lists["contents"]` | `room->contents` / `obj->contains` |
 //! | room | `lists["people"]` | `room->people`, head first |
-//! | room | `links["exit:<dir>"]` | `R_EXIT(room, dir)->to_room`, `<dir>` the direction number; absent = no exit |
+//! | room | `links["exit:<dir>"]` | `R_EXIT(room, dir)->to_room`, `<dir>` the direction number |
+//! | room | `nums["exit:<dir>:nowhere"]` | non-zero: the exit exists but leads to `NOWHERE`. An exit exists when either this or the link is present |
 //! | room | `nums["exit:<dir>:flags"]`, `nums["exit:<dir>:key"]` | `exit_info`, `key` |
 //! | room | `texts["exit:<dir>:keyword"]`, `texts["exit:<dir>:desc"]` | `keyword`, `general_description` |
 //! | room | `nums["zone"]`, `nums["sector"]` | zone number, `sector_type` |
@@ -64,8 +68,8 @@ use std::sync::Arc;
 use crate::host::{BaseHost, WorldHost};
 use crate::script::Program;
 use crate::types::{
-    AttachType, Kind, MOB_ID_BASE, MudTime, OBJ_ID_BASE, ROOM_ID_BASE, Script, ScriptMemory,
-    TrigProto, Uid, trig::asciiflag_conv,
+    AttachType, Kind, LVL_GRGOD, LVL_IMMORT, MOB_ID_BASE, MudTime, OBJ_ID_BASE, ROOM_ID_BASE,
+    Script, ScriptMemory, TrigProto, Uid, trig::asciiflag_conv,
 };
 
 mod chars;
@@ -560,8 +564,25 @@ impl WorldHost for MockHost {
         self.num(ch, "is_npc") != 0
     }
 
-    fn valid_dg_target(&self, ch: Uid, _allow_gods: bool) -> bool {
-        self.num(ch, "dg_invalid") == 0
+    fn valid_dg_target(&self, ch: Uid, allow_gods: bool) -> bool {
+        if self.num(ch, "dg_invalid") != 0 {
+            return false;
+        }
+        // `valid_dg_target` (`dg_misc.c`), test for test.
+        if self.is_npc(ch) {
+            return true;
+        }
+        if self.num(ch, "desc") != 0 && self.num(ch, "con_state") != 0 {
+            return false;
+        }
+        let level = self.level(ch);
+        if level < LVL_IMMORT {
+            return true;
+        }
+        if !allow_gods && level >= LVL_GRGOD {
+            return false;
+        }
+        self.num(ch, "nohassle") == 0
     }
 
     fn name(&self, uid: Uid) -> String {
@@ -697,6 +718,14 @@ mod tests {
         assert!(!host.exists(mob));
         assert!(!host.exists(sword));
         assert!(host.list(other, "people").is_empty());
+
+        // Gods are script targets only on request, and never with nohassle.
+        let god = host.add_player("Zeus");
+        host.set_num(god, "level", 33);
+        assert!(host.valid_dg_target(god, true));
+        assert!(!host.valid_dg_target(god, false));
+        host.set_num(god, "nohassle", 1);
+        assert!(!host.valid_dg_target(god, true));
 
         // Room contents are oldest first; an object goes at once.
         let (a, b) = (host.add_obj(1, "a"), host.add_obj(2, "b"));

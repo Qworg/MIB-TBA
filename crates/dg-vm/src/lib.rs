@@ -32,6 +32,7 @@
 //! - [`commands`] — the script command interpreters (`m*`/`o*`/`w*`).
 //! - [`magic`] — `dg_cast` and `dg_affect`.
 //! - [`dispatch`] — `dg_triggers.c`: which trigger fires for which event.
+//! - [`analyze`] — static coverage of a script body, for the converter.
 //! - [`mock`] — the in-memory host.
 //!
 //! # Call graph
@@ -51,6 +52,7 @@
 //! A script command can fire further triggers (`mload` fires `load`), so the
 //! graph is re-entrant through the host; [`types::MAX_SCRIPT_DEPTH`] bounds it.
 
+pub mod analyze;
 pub mod commands;
 pub mod cstr;
 pub mod dispatch;

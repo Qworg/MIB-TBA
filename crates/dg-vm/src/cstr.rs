@@ -93,15 +93,20 @@ pub fn is_number(text: &str) -> bool {
     !digits.is_empty() && digits.chars().all(|c| c.is_ascii_digit())
 }
 
-/// `utils.c` `str_cmp`: ASCII case-insensitive comparison. Returns the
-/// difference of the first differing pair of lowercased characters (`0` when
-/// equal), which is the value `eval_op` prints for `!=` on strings.
+/// `str_cmp`: ASCII case-insensitive comparison. Returns the difference of
+/// the first differing pair of lowercased bytes (`0` when equal), which is the
+/// value `eval_op` prints for `!=` on strings.
+///
+/// The reference is the configured Linux build, where `sysdep.h` maps
+/// `str_cmp` to `strcasecmp`: bytes compare as **unsigned**, so a byte above
+/// `0x7F` sorts after every ASCII character. (`utils.c`'s own fallback loop
+/// compares signed `char`s and would order them first.)
 pub fn str_cmp(a: &str, b: &str) -> i32 {
     let (a, b) = (a.as_bytes(), b.as_bytes());
     for index in 0..a.len().max(b.len()) {
-        // Past the end the C reads the terminating NUL. `char` is signed.
-        let x = i32::from(a.get(index).copied().unwrap_or(0).to_ascii_lowercase() as i8);
-        let y = i32::from(b.get(index).copied().unwrap_or(0).to_ascii_lowercase() as i8);
+        // Past the end the C reads the terminating NUL.
+        let x = i32::from(a.get(index).copied().unwrap_or(0).to_ascii_lowercase());
+        let y = i32::from(b.get(index).copied().unwrap_or(0).to_ascii_lowercase());
         if x != y {
             return x - y;
         }
@@ -109,14 +114,14 @@ pub fn str_cmp(a: &str, b: &str) -> i32 {
     0
 }
 
-/// `utils.c` `strn_cmp`: as [`str_cmp`] over at most the first `n` bytes.
+/// `strn_cmp` (`strncasecmp` in the reference build): as [`str_cmp`] over at
+/// most the first `n` bytes.
 pub fn strn_cmp(a: &str, b: &str, n: usize) -> i32 {
     let (a, b) = (a.as_bytes(), b.as_bytes());
     for index in 0..n {
         let x = a.get(index).copied().unwrap_or(0);
         let y = b.get(index).copied().unwrap_or(0);
-        let diff =
-            i32::from(x.to_ascii_lowercase() as i8) - i32::from(y.to_ascii_lowercase() as i8);
+        let diff = i32::from(x.to_ascii_lowercase()) - i32::from(y.to_ascii_lowercase());
         if diff != 0 {
             return diff;
         }
@@ -361,6 +366,8 @@ mod tests {
         assert_eq!(str_cmp("b", "a"), 1);
         assert_eq!(strn_cmp("WAIT 5", "wait until", 5), 0);
         assert!(strn_cmp("wai", "wait", 4) < 0);
+        // Unsigned bytes, as strcasecmp: a high byte sorts after ASCII.
+        assert_eq!(str_cmp("\u{e9}", "a"), 0xc3 - i32::from(b'a'));
     }
 
     #[test]

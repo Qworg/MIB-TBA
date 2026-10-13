@@ -27,3 +27,20 @@ pub fn enter_wtrigger<H: DgHost + ?Sized>(
 ) -> i32 {
     1
 }
+
+/// `act_mtrigger(ch, str, actor, victim, object, target, arg)`: the mob `ch`
+/// was shown the line `text` by `act()`. Fires its `act` triggers whose
+/// argument matches. The message formatter in `commands` calls this for
+/// every NPC recipient, as `perform_act` does.
+#[allow(clippy::too_many_arguments)]
+pub fn act_mtrigger<H: DgHost + ?Sized>(
+    _host: &mut H,
+    _ch: Uid,
+    _text: &str,
+    _actor: Option<Uid>,
+    _victim: Option<Uid>,
+    _object: Option<Uid>,
+    _target: Option<Uid>,
+    _arg: Option<&str>,
+) {
+}
