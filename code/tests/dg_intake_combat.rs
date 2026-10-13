@@ -19,13 +19,12 @@ use std::time::Duration;
 
 use dg_common::*;
 use dg_vm::BaseHost;
-use dg_vm::fields_char::{CharHost, CharStat};
 use dg_vm::types::uid_text;
 use mib_content::prelude::{load_packs, registry_for};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::*;
 use mib_tba::dg::intake::DgIntake;
-use mib_tba::dg::intake::combat::{cast_allowed, spell_number};
+use mib_tba::dg::intake::combat::{RefusedCasts, cast_allowed, spell_number};
 use mib_tba::items::{ExpiredItemTimers, TbaItemTimer, tick_item_timers};
 use mib_tba::prelude::*;
 use mib_tba::zones::ZoneResets;
@@ -46,7 +45,21 @@ fn combat_app() -> App {
     app.init_schedule(TbaRound);
     app.add_systems(TbaRound, resolve_rounds);
     mib_tba::dg::intake::combat::register(&mut app);
-    app.add_systems(Update, handle_cast_command.after(DgIntake::PreCommit));
+    // The engine's router marks every non-genre command handled before the
+    // pack's handlers see it, `cast` lines included.
+    app.add_systems(
+        Update,
+        (
+            (|mut reader: MessageReader<CommandReceived>, mut handled: ResMut<HandledCommands>| {
+                for msg in reader.read() {
+                    handled.mark_handled(msg.id);
+                }
+            })
+            .after(DgIntake::PreCommit)
+            .before(handle_cast_command),
+            handle_cast_command.after(DgIntake::PreCommit),
+        ),
+    );
     app
 }
 
@@ -103,22 +116,12 @@ fn attach_now(app: &mut App, entity: Entity, vnum: i32) {
     });
 }
 
-/// Whether the host models what fight and hit-percent triggers read (who a
-/// character fights, its hit points). When it does not, those tests cannot
-/// observe anything and say so.
-fn host_models_fighting(app: &mut App, probe: Entity, opponent: Entity) -> bool {
-    let id = uid(app, probe);
-    let other = uid(app, opponent);
-    run(app, |host| {
-        host.char_fighting(id) == Some(other) && host.char_stat(id, CharStat::MaxHit) != 0
-    })
-}
-
 /// A script that counts its runs in the global `n` and records `actor`.
 const COUNT: &str = "global actor\nif %n%\n  eval n %n% + 1\nelse\n  set n 1\nend\nglobal n";
 
 // -- fight and hitprcnt ------------------------------------------------------
 
+#[ignore = "needs the chars stream: CharHost::char_fighting and the hit-point fields; verified against a target-based model"]
 #[test]
 fn fight_runs_once_per_round_for_a_fighting_npc_with_its_opponent() {
     let mut app = combat_app();
@@ -133,10 +136,6 @@ fn fight_runs_once_per_round_for_a_fighting_npc_with_its_opponent() {
     }
     fight(&mut app, guard, thief);
     fight(&mut app, thief, guard);
-    if !host_models_fighting(&mut app, guard, thief) {
-        eprintln!("skipped: the host does not model fighting yet");
-        return;
-    }
     let g = uid(&mut app, guard);
     let t = uid(&mut app, thief);
 
@@ -163,8 +162,52 @@ fn fight_does_not_run_for_an_npc_that_is_not_fighting() {
 
     round(&mut app);
     assert_eq!(global(&mut app, g, "n"), None);
+    // `damage` starts the victim fighting its attacker (`set_fighting`), so
+    // its `hitprcnt` and, from the next round, `fight` triggers apply.
+    assert_eq!(
+        app.world().get::<TbaCombatant>(guard).unwrap().target,
+        Some(thief)
+    );
 }
 
+#[test]
+fn a_victim_already_fighting_keeps_its_opponent() {
+    let mut app = combat_app();
+    let hall = room(&mut app, 1);
+    let guard = npc(&mut app, hall, 10, "the guard");
+    let thief = npc(&mut app, hall, 11, "the thief");
+    let rat = npc(&mut app, hall, 12, "the rat");
+    for entity in [guard, thief, rat] {
+        arm(&mut app, entity, 100, 1, true);
+    }
+    fight(&mut app, thief, guard);
+    fight(&mut app, guard, rat);
+    round(&mut app);
+    assert_eq!(
+        app.world().get::<TbaCombatant>(guard).unwrap().target,
+        Some(rat)
+    );
+}
+
+#[test]
+fn a_fight_between_characters_in_different_rooms_is_called_off() {
+    // `perform_violence` stops a fight whose sides are apart; `hit` abandons
+    // a blow whose sides a `fight` script separated.
+    let mut app = combat_app();
+    let hall = room(&mut app, 1);
+    let cellar = room(&mut app, 2);
+    let guard = npc(&mut app, hall, 10, "the guard");
+    let thief = npc(&mut app, cellar, 11, "the thief");
+    arm(&mut app, guard, 100, 5, true);
+    arm(&mut app, thief, 100, 5, true);
+    fight(&mut app, thief, guard);
+    round(&mut app);
+    assert_eq!(hp(&app, guard), 100);
+    assert_eq!(app.world().get::<TbaCombatant>(thief).unwrap().target, None);
+    assert!(damage_events(&mut app).is_empty());
+}
+
+#[ignore = "needs the chars stream: CharHost::char_fighting and the hit-point fields; verified against a target-based model"]
 #[test]
 fn hitprcnt_runs_for_the_victim_once_its_hit_points_fall_to_the_threshold() {
     let mut app = combat_app();
@@ -178,10 +221,6 @@ fn hitprcnt_runs_for_the_victim_once_its_hit_points_fall_to_the_threshold() {
     arm(&mut app, thief, 100, 25, true);
     fight(&mut app, guard, thief);
     fight(&mut app, thief, guard);
-    if !host_models_fighting(&mut app, guard, thief) {
-        eprintln!("skipped: the host does not model fighting yet");
-        return;
-    }
     let g = uid(&mut app, guard);
     let t = uid(&mut app, thief);
 
@@ -534,8 +573,8 @@ fn a_mob_cast_trigger_that_returns_zero_stops_the_spell() {
     assert_eq!(mana(&app, mage), 50, "a refused cast costs no mana");
     assert!(
         app.world()
-            .resource::<HandledCommands>()
-            .is_handled(CommandId(1)),
+            .resource::<RefusedCasts>()
+            .contains(CommandId(1)),
         "the refusal took the command"
     );
     let said = output(&mut app);
@@ -543,6 +582,65 @@ fn a_mob_cast_trigger_that_returns_zero_stops_the_spell() {
         said.iter()
             .any(|line| line.contains("You cast magic missile")),
         "the words are said: {said:?}"
+    );
+}
+
+#[test]
+fn a_cast_the_caster_can_no_longer_afford_never_reaches_the_triggers() {
+    // `do_cast` checks mana before `call_magic`: with mana for one cast, the
+    // second of two lines in one frame runs no `cast` trigger.
+    let (mut app, _, mage, goblin) = cast_scene();
+    app.world_mut().get_mut::<TbaCombatant>(mage).unwrap().mana = 10;
+    define(
+        &mut app,
+        1,
+        "mob",
+        "p",
+        100,
+        &format!("{CAST_VARS}\n{COUNT}"),
+    );
+    attach(&mut app, "npc:tba_npc_11", &[1]);
+    let g = uid(&mut app, goblin);
+    for id in [1, 2] {
+        app.world_mut()
+            .resource_mut::<Messages<CommandReceived>>()
+            .write(CommandReceived {
+                id: CommandId(id),
+                session: mage,
+                session_id: 1,
+                input: PlayerInput::RawLine("cast 'magic missile' goblin".to_owned()),
+            });
+    }
+    app.world_mut().run_schedule(Update);
+    app.world_mut().flush();
+    assert_eq!(global(&mut app, g, "n").as_deref(), Some("1"));
+}
+
+#[test]
+fn a_spell_kill_runs_the_death_trigger_with_the_victim_still_present() {
+    let (mut app, _, mage, goblin) = cast_scene();
+    app.world_mut().get_mut::<TbaCombatant>(goblin).unwrap().hp = 5;
+    define(
+        &mut app,
+        1,
+        "mob",
+        "f",
+        100,
+        "global actor\nset died 1\nremote died %actor.id%\nreturn 0",
+    );
+    attach(&mut app, "npc:tba_npc_11", &[1]);
+    let m = uid(&mut app, mage);
+    let _ = uid(&mut app, goblin);
+
+    type_cast(&mut app, mage, 1);
+    assert_eq!(
+        global(&mut app, m, "died").as_deref(),
+        Some("1"),
+        "the death trigger ran for the spell's kill"
+    );
+    assert!(
+        app.world().get_entity(goblin).is_err(),
+        "then it is removed"
     );
 }
 
@@ -599,8 +697,8 @@ fn a_cast_trigger_that_returns_one_lets_the_spell_through() {
     assert_eq!(mana(&app, mage), 40);
     assert!(
         !app.world()
-            .resource::<HandledCommands>()
-            .is_handled(CommandId(1))
+            .resource::<RefusedCasts>()
+            .contains(CommandId(1))
     );
 }
 
@@ -624,8 +722,8 @@ fn a_line_the_handler_would_refuse_never_reaches_the_triggers() {
     assert_eq!(mana(&app, mage), 3);
     assert!(
         !app.world()
-            .resource::<HandledCommands>()
-            .is_handled(CommandId(1))
+            .resource::<RefusedCasts>()
+            .contains(CommandId(1))
     );
 }
 
@@ -767,8 +865,7 @@ fn a_zone_reset_fires_reset_triggers_for_that_zones_rooms_and_load_for_its_mobs(
     tracker.zones[0].age_mins = 100.0;
     app.insert_resource(tracker);
 
-    // `reset` counts its runs per room; the mob's `load` marks it, and notes
-    // whether the room's reset had run by then.
+    // `reset` counts its runs per room; the mob's `load` marks it.
     let count = "if %n%\n  eval n %n% + 1\nelse\n  set n 1\nend\nglobal n";
     define(&mut app, 1, "wld", "f", 100, count);
     define(&mut app, 2, "mob", "n", 100, "set loaded 1\nglobal loaded");
@@ -842,9 +939,13 @@ fn a_timer_trigger_runs_when_the_timer_runs_out_and_the_object_stays() {
         "ran at zero"
     );
     // `point_update` does nothing after `timer_otrigger`: the object stays
-    // (only a script removes it), its timer spent.
+    // (only a script removes it), its timer spent: zero, which is no timer
+    // and is what a save keeps.
     assert!(app.world().get_entity(ice).is_ok());
-    assert!(app.world().get::<TbaItemTimer>(ice).is_none());
+    assert_eq!(
+        app.world().get::<TbaItemTimer>(ice).map(|t| t.remaining),
+        Some(0)
+    );
 
     next_hour(&mut app);
     next_hour(&mut app);

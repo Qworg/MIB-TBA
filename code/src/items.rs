@@ -190,6 +190,11 @@ pub fn tick_item_timers(
     // opening hours and the day/night predicate share the timer clock.
     clock.advance(hours);
     for (entity, mut timer, script) in &mut timers {
+        // A spent timer stays at zero, which is no timer (`point_update` ages
+        // only a positive `GET_OBJ_TIMER`): it neither fires nor decays again.
+        if timer.remaining == 0 {
+            continue;
+        }
         timer.remaining = timer.remaining.saturating_sub(hours);
         if timer.remaining != 0 {
             continue;

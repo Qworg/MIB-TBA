@@ -472,16 +472,16 @@ pub fn handle_cast_command(
     ),
     mut commands: Commands,
     mut output: MessageWriter<OutputEvent>,
-    handled: Option<Res<HandledCommands>>,
+    refused: Option<Res<crate::dg::intake::combat::RefusedCasts>>,
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
 
     for msg in reader.read() {
         // A `cast` trigger that refused the spell has already taken the line.
-        if handled
+        if refused
             .as_ref()
-            .is_some_and(|handled| handled.is_handled(msg.id))
+            .is_some_and(|refused| refused.contains(msg.id))
         {
             continue;
         }

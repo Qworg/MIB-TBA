@@ -21,7 +21,7 @@
 //! observes to repopulate the world.
 
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{Npc, NpcId, NpcKey, Player, PlayerDefeated};
+use mib_stdlib::prelude::{Location, Npc, NpcId, NpcKey, Player, PlayerDefeated};
 
 use crate::content::{Position, TbaItemKind};
 use crate::dg::host::EcsHost;
@@ -119,17 +119,43 @@ fn live_target(world: &World, attacker: Entity) -> Option<Entity> {
     is_live(world, target).then_some(target)
 }
 
+/// Whether the two characters are in different rooms (`perform_violence` and
+/// `hit` both stop a fight whose sides are apart). A character with no
+/// location is never apart.
+fn apart(world: &World, a: Entity, b: Entity) -> bool {
+    match (world.get::<Location>(a), world.get::<Location>(b)) {
+        (Some(a), Some(b)) => a.room != b.room,
+        _ => false,
+    }
+}
+
+/// `stop_fighting(attacker)`.
+fn stop_fighting(world: &mut World, attacker: Entity) {
+    if let Some(mut combatant) = world.get_mut::<TbaCombatant>(attacker) {
+        combatant.target = None;
+    }
+}
+
 /// One attacker's blow (`hit`), from its `fight` trigger to the victim's
 /// `hitprcnt` trigger.
 fn blow(host: &mut EcsHost<'_>, attacker: Entity) {
-    if live_target(host.world, attacker).is_none() {
+    let Some(first) = live_target(host.world, attacker) else {
+        return;
+    };
+    if apart(host.world, attacker, first) {
+        stop_fighting(host.world, attacker);
         return;
     }
     dg_combat::fight(host, attacker);
-    // A `fight` script may have killed, moved or purged either side.
+    // A `fight` script may have killed, moved or purged either side, and `hit`
+    // abandons the blow when they are no longer in one room.
     let Some(victim) = live_target(host.world, attacker) else {
         return;
     };
+    if apart(host.world, attacker, victim) {
+        stop_fighting(host.world, attacker);
+        return;
+    }
 
     let dam = swing(host.world, attacker, victim);
     let Some(dam) = dg_combat::damage(host, attacker, victim, dam) else {
@@ -140,11 +166,23 @@ fn blow(host: &mut EcsHost<'_>, attacker: Entity) {
     if !is_live(host.world, victim) {
         return;
     }
+    // `damage` starts the victim fighting back once the blow was not cancelled.
+    start_fighting(host.world, victim, attacker);
     let lethal = dam > 0 && apply_blow(host.world, attacker, victim, dam);
     if lethal {
         defeat(host, victim, attacker);
     } else {
         dg_combat::hitprcnt(host, victim);
+    }
+}
+
+/// `set_fighting(victim, attacker)` for a victim not already fighting.
+fn start_fighting(world: &mut World, victim: Entity, attacker: Entity) {
+    if let Some(mut combatant) = world.get_mut::<TbaCombatant>(victim)
+        && combatant.is_alive()
+        && combatant.target.is_none()
+    {
+        combatant.target = Some(attacker);
     }
 }
 

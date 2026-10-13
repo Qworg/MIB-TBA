@@ -15,9 +15,10 @@ use dg_vm::dispatch::{reset_wtrigger, timer_otrigger};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::Room;
 
+use crate::dg::ids;
 use crate::dg::waits::dg_pulse_system;
 use crate::dg::with_host;
-use crate::items::{ExpiredItemTimers, TbaItemTimer, tick_item_timers};
+use crate::items::{ExpiredItemTimers, tick_item_timers};
 use crate::zones::{ZoneResets, zone_reset_system};
 
 /// Register this module's systems.
@@ -30,6 +31,9 @@ pub fn register(app: &mut App) {
             .chain()
             .after(zone_reset_system)
             .after(tick_item_timers)
+            .after(ids::stamp_placement_order)
+            .after(mib_stdlib::prelude::maintain_room_occupants)
+            .after(crate::party::cleanup_parties_on_logout)
             .before(dg_pulse_system),
     );
 }
@@ -67,9 +71,10 @@ pub fn zone_reset_triggers(world: &mut World) {
 /// `FixedUpdate`, after the item timers aged: run the `timer` triggers of the
 /// items whose timer ran out. The C calls `timer_otrigger` and nothing
 /// follows: the object stays unless a script removed it, with its timer at
-/// zero, which means no timer. An item still in the world after its trigger
-/// and still at zero therefore loses its timer; one a script gave a new timer
-/// keeps it.
+/// zero, which means no timer. The component stays at zero as the persisted
+/// "spent" state ([`tick_item_timers`] skips it, and a restored item is not
+/// re-armed from its prototype); a script that gave the item a new timer has
+/// replaced the zero.
 pub fn item_timer_triggers(world: &mut World) {
     let items: Vec<Entity> = match world.get_resource_mut::<ExpiredItemTimers>() {
         Some(mut expired) => std::mem::take(&mut expired.items),
@@ -85,12 +90,4 @@ pub fn item_timer_triggers(world: &mut World) {
             }
         }
     });
-    for item in items {
-        let spent = world
-            .get::<TbaItemTimer>(item)
-            .is_some_and(|timer| timer.remaining == 0);
-        if spent {
-            world.entity_mut(item).remove::<TbaItemTimer>();
-        }
-    }
 }

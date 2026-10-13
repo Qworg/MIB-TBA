@@ -20,29 +20,44 @@
 //! death runs just the player's own `death` triggers (those attached to the
 //! player; the dispatcher finds none on an ordinary player).
 //!
-//! Kills made outside the combat round (a damage spell) reach [`finish_kill`],
-//! which the spell handler queues in place of removing the victim itself.
+//! Kills made by a damage spell reach [`finish_kill`], which the spell handler
+//! queues in place of removing the victim itself.
 //!
 //! # Cast
 //!
 //! `call_magic` runs `cast_wtrigger`, `cast_otrigger` and `cast_mtrigger`
 //! before the spell takes effect, and a refusal ends the cast: [`cast_gate`]
 //! does this for the player `cast` command, resolving the spell and target the
-//! handler will and marking the command handled on a refusal. [`cast_allowed`]
-//! is the same three calls for any other caster.
+//! handler will and recording a refusal in [`RefusedCasts`] (and marking the
+//! command handled), which the handler honours. [`cast_allowed`] is the same
+//! three calls for any other caster.
 //!
-//! Losses against the C: the pack has no `death_cry`, so `death_mtrigger`'s
-//! return value has nothing to decide; a spell's damage does not call
-//! `damage_mtrigger` (the spell handler is not an exclusive system); and the
-//! pack's blow has no weapon attack type, so `%attacktype%` is the C's
-//! `TYPE_HIT` slot, which the C names `UNDEFINED`.
+//! # Losses against the C
+//!
+//! - The pack has no `death_cry`, so `death_mtrigger`'s return value has
+//!   nothing to decide.
+//! - `damage_mtrigger` runs for melee round blows only. A spell's damage (the
+//!   spell handler is not an exclusive system) and a skill's damage (`kick`,
+//!   `bash`, `backstab`: `skills.rs` `deal_damage`) do not call it.
+//! - A kill made by a skill does not run `death_mtrigger`: `deal_damage`
+//!   despawns the victim itself. It should route through [`finish_kill`].
+//! - `cast_otrigger` never fires from gameplay: the pack's `cast` resolves no
+//!   object target (`cast 'bless' sword` is refused), so the gate passes none.
+//!   [`cast_allowed`] takes one for callers that have it.
+//! - A trigger that refuses a cast is judged against the line as planned at
+//!   the start of the frame; a target an earlier command of the same frame
+//!   killed or moved is still passed to the trigger.
+//! - The zone reset's `E` command equips without `wear_otrigger` (`reset_zone`
+//!   runs it and, on a refusal, leaves the item in the inventory).
+
+use std::collections::{HashMap, HashSet};
 
 use bevy::ecs::system::SystemState;
-use dg_vm::Uid;
 use dg_vm::dispatch::{
     cast_mtrigger, cast_otrigger, cast_wtrigger, damage_mtrigger, death_mtrigger, fight_mtrigger,
     hitprcnt_mtrigger,
 };
+use dg_vm::{BaseHost, Uid};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{Location, Npc, Player, Session, SessionState};
 
@@ -66,6 +81,7 @@ pub const TYPE_HIT: i32 = 300;
 
 /// Register this module's systems.
 pub fn register(app: &mut App) {
+    app.init_resource::<RefusedCasts>();
     app.add_systems(Update, cast_gate.in_set(DgIntake::PreCommit));
 }
 
@@ -114,6 +130,7 @@ pub fn death(host: &mut EcsHost<'_>, victim: Entity, killer: Entity) -> bool {
         .filter(|combatant| combatant.position == Position::Dead)
         .map(|mut combatant| combatant.position = Position::Standing)
         .is_some();
+    host.unsupported("death_cry", "the pack has no death cry to decide");
     let result = death_mtrigger(host, dying, killer);
     if was_dead
         && let Some(mut combatant) = host.world.get_mut::<TbaCombatant>(victim)
@@ -161,7 +178,27 @@ struct PendingCast {
     victim: Option<Entity>,
     spellnum: i32,
     spell_name: String,
+    cost: i32,
     room: Option<Entity>,
+}
+
+/// The `cast` lines [`cast_gate`] took over this frame: a `cast` trigger
+/// refused the spell, or a `command` trigger had already taken the line.
+/// Cleared at the start of every gate run; the spell handler skips these.
+///
+/// A separate record rather than `HandledCommands`, because the engine's
+/// router marks every non-genre command (a `cast` line included) handled
+/// before the pack's handlers run.
+#[derive(Resource, Default, Debug)]
+pub struct RefusedCasts {
+    ids: HashSet<CommandId>,
+}
+
+impl RefusedCasts {
+    /// Whether the gate took this command.
+    pub fn contains(&self, id: CommandId) -> bool {
+        self.ids.contains(&id)
+    }
 }
 
 type GateParams = (
@@ -183,14 +220,19 @@ type GateParams = (
 /// [`plan_cast`], so a line the handler would refuse (unknown spell, no mana,
 /// no such target) is left to it. For a line it would carry out, the triggers
 /// run as `call_magic` runs them, before mana is spent or any effect applied;
-/// when one refuses, the command is marked handled, so the handler skips it.
+/// when one refuses, the command is recorded in [`RefusedCasts`] (and marked
+/// handled), so the handler skips it.
 /// As in the C, the words are said (the caster and the room see the cast
 /// announced) and nothing else happens. The target is the victim for a
 /// single-target spell; an area spell or one without a target passes none,
 /// as `do_cast` passes no `cvict` for `TAR_IGNORE`.
 pub fn cast_gate(world: &mut World, mut state: Local<Option<SystemState<GateParams>>>) {
     let state = state.get_or_insert_with(|| SystemState::new(world));
+    if let Some(mut refused) = world.get_resource_mut::<RefusedCasts>() {
+        refused.ids.clear();
+    }
     let mut pending: Vec<PendingCast> = Vec::new();
+    let mut taken: Vec<CommandId> = Vec::new();
     {
         let Ok((
             mut reader,
@@ -205,15 +247,19 @@ pub fn cast_gate(world: &mut World, mut state: Local<Option<SystemState<GatePara
             _,
         )) = state.get_mut(world)
         else {
+            tracing::warn!(target: "dg", "cast triggers disabled: the cast gate's queries conflict");
             return;
         };
         let empty = TbaContent::default();
         let content = content.as_deref().unwrap_or(&empty);
         for msg in reader.read() {
+            // At this point in the frame only a `command` trigger can have
+            // marked the line handled.
             if handled
                 .as_ref()
                 .is_some_and(|handled| handled.is_handled(msg.id))
             {
+                taken.push(msg.id);
                 continue;
             }
             let playing = sessions
@@ -250,24 +296,49 @@ pub fn cast_gate(world: &mut World, mut state: Local<Option<SystemState<GatePara
                 victim: single.then(|| plan.targets.first().copied()).flatten(),
                 spellnum,
                 spell_name: plan.spell.name.clone(),
+                cost: i32::try_from(plan.cost).unwrap_or(i32::MAX),
                 room: plan.room,
             });
         }
+    }
+    if !taken.is_empty()
+        && let Some(mut refused) = world.get_resource_mut::<RefusedCasts>()
+    {
+        refused.ids.extend(taken);
     }
     if pending.is_empty() {
         return;
     }
 
+    // Lines are planned against the mana as the frame began; the handler
+    // spends it as it carries the casts out, so a cast the caster can no
+    // longer afford once the earlier ones went through is left to the
+    // handler's refusal, as `do_cast`'s mana check precedes `call_magic`.
+    let mut committed: HashMap<Entity, i32> = HashMap::new();
     let mut refused: Vec<PendingCast> = Vec::new();
     for cast in pending {
+        let mana = world
+            .get::<TbaCombatant>(cast.caster)
+            .map_or(0, |combatant| combatant.mana);
+        let spent = committed.get(&cast.caster).copied().unwrap_or(0);
+        if mana.saturating_sub(spent) < cast.cost {
+            continue;
+        }
         let allowed = with_host(world, |host| {
             let Some(caster) = host.uid(cast.caster) else {
                 return true;
             };
             let victim = cast.victim.and_then(|victim| host.uid(victim));
+            host.unsupported(
+                "cast_otrigger.no_object_target",
+                "the pack's cast resolves no object target",
+            );
             cast_allowed(host, caster, victim, None, cast.spellnum)
         });
-        if !allowed {
+        if allowed {
+            let entry = committed.entry(cast.caster).or_insert(0);
+            *entry = entry.saturating_add(cast.cost);
+        } else {
             refused.push(cast);
         }
     }
@@ -275,6 +346,12 @@ pub fn cast_gate(world: &mut World, mut state: Local<Option<SystemState<GatePara
         return;
     }
 
+    // Without the record the handler would cast anyway: leave the line alone.
+    let Some(mut record) = world.get_resource_mut::<RefusedCasts>() else {
+        tracing::warn!(target: "dg", "cast refusal dropped: RefusedCasts is missing");
+        return;
+    };
+    record.ids.extend(refused.iter().map(|cast| cast.id));
     if let Some(mut handled) = world.get_resource_mut::<HandledCommands>() {
         for cast in &refused {
             handled.mark_handled(cast.id);
