@@ -14,6 +14,17 @@
 //! abbreviation means. Commands that do nothing for an NPC in the C, and
 //! those the pack has no model for, are rows too; the latter are counted
 //! under `mobcmd.<command>` in the [`DgLog`](super::DgLog).
+//!
+//! # What the pack does not model
+//!
+//! Skipped where the C consults them: carrying capacity (count and weight),
+//! the strength a weapon needs, a container's weight and its open/locked
+//! state, furniture occupancy, movement points for NPCs, death-trap and
+//! indoor rooms, houses and zone restrictions, charm and `AFF_*` bits on
+//! characters, and colour codes. `eat`, `drink`, `use` and their kin, `order`,
+//! `group` and `leave` are counted gaps. The first blow of `hit` is left to
+//! the pack's combat round. Pronouns render neutral (`they`, `them`,
+//! `their`), as the pack's socials do.
 
 use dg_vm::cstr::{any_one_arg, skip_spaces};
 use dg_vm::dispatch::{command_mtrigger, command_otrigger, command_wtrigger};
@@ -39,6 +50,7 @@ mod world;
 
 use table::{COMMANDS, Handler};
 
+pub use fight::{add_follower, circle_follow, stop_follower};
 pub use world::TbaNpcGold;
 
 /// `command_interpreter(ch, line)`: have `ch` perform an ordinary game command.
