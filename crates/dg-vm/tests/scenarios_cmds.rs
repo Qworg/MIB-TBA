@@ -11,11 +11,14 @@
 mod common;
 
 use common::corpus::Record;
-use common::scene::{Scene, assert_clean, heard, heard_raw, other_effects, said, vnums};
+use common::scene::{
+    Scene, act_line, assert_clean, echo_all, echo_lines, heard, heard_raw, other_effects, said,
+    sub_line, vnums,
+};
 use common::world::{PERCENT_ROLL, global_var, install, install_record, make_proto, run_waits};
 use dg_vm::dispatch;
 use dg_vm::driver::resume;
-use dg_vm::host::BaseHost;
+use dg_vm::host::{BaseHost, WorldHost};
 use dg_vm::mock::MockHost;
 use dg_vm::types::{AttachType, ROOM_ID_BASE, Uid};
 
@@ -90,6 +93,20 @@ fn trigger_65_curses_the_killer_and_vanishes() {
     assert!(!scene.fx.host.list(room, "people").contains(&mob));
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
+    // msend to the killer, then mecho (everyone, the mob at the head of the
+    // room's people last in the C's TO_ROOM / TO_CHAR split): Watcher, Tester.
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(
+                player,
+                "a goblin curses at you before drawing his final breath."
+            ),
+            sub_line(watcher, "a goblin's body fades out of existence."),
+            sub_line(player, "a goblin's body fades out of existence."),
+        ]
+    );
+    assert!(scene.fx.host.waits.is_empty());
 }
 
 // ---------------------------------------------------------------------
@@ -136,6 +153,16 @@ fn trigger_2_reloads_the_mob_and_drops_the_wings() {
         .filter(|ch| **ch != mob && scene.fx.host.num(**ch, "vnum") == 7002)
         .collect();
     assert_eq!(copies.len(), 1, "one fresh copy of the mob");
+    // The copy stands at the head of the people of the room.
+    assert_eq!(
+        people,
+        vec![*copies[0], mob, scene.watcher, scene.guard(), player]
+    );
+    assert_eq!(
+        vnums(&scene.fx.host, &scene.fx.host.list(room, "contents")),
+        vec![3020]
+    );
+    assert!(scene.fx.host.waits.is_empty());
     // Loading sends nothing to anyone.
     assert!(scene.fx.host.effects.is_empty());
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
@@ -185,6 +212,7 @@ fn trigger_70_casts_once_then_rests_for_thirty_seconds() {
 
     fight_round(scene.host(), mob);
     assert_eq!(scene.fx.host.effects, vec![cast.clone(), cast]);
+    assert!(scene.fx.host.mud_commands.is_empty());
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
 }
@@ -330,19 +358,19 @@ fn trigger_332_rewards_an_offering_by_its_worth() {
         let dagger = scene.fx.inventory[0];
         assert_eq!(heard(&scene.fx.host, player), vec![message], "cost {cost}");
         let proxy = proxy_of(&scene.fx.host);
-        let mut want: Vec<String> = spells
-            .iter()
-            .flat_map(|spell| {
-                [
-                    call_magic(*spell, 25, proxy, player, room),
-                    format!("extract_char {proxy}"),
-                ]
-            })
-            .collect();
+        let mut want: Vec<String> = vec![sub_line(player, message)];
+        want.extend(spells.iter().flat_map(|spell| {
+            [
+                call_magic(*spell, 25, proxy, player, room),
+                format!("extract_char {proxy}"),
+            ]
+        }));
         if purged {
             want.push(format!("extract_obj {dagger}"));
         }
-        assert_eq!(other_effects(&scene.fx.host), want, "cost {cost}");
+        assert_eq!(scene.fx.host.effects, want, "cost {cost}");
+        assert!(scene.fx.host.mud_commands.is_empty());
+        assert!(scene.fx.host.waits.is_empty());
         let in_room = scene.fx.host.list(room, "contents").contains(&dagger);
         assert_eq!(in_room, !purged, "cost {cost}");
         // The proxy named itself after the gods: only the unknown spell of
@@ -387,6 +415,21 @@ fn trigger_5304_breathes_fire_for_the_victims_level() {
         vec!["an efreeti engulfs Tester with a hot breath of fire."]
     );
     assert_eq!(scene.fx.host.num(player, "hit"), 90);
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(
+                player,
+                "You are engulfed in fire as an efreeti breathes on you."
+            ),
+            sub_line(
+                watcher,
+                "an efreeti engulfs Tester with a hot breath of fire."
+            ),
+        ]
+    );
+    assert!(scene.fx.host.mud_commands.is_empty());
+    assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
 }
@@ -426,6 +469,8 @@ fn trigger_1114_blinds_and_sleeps_itself() {
     assert_eq!(scene.fx.host.num(mob, "aff:15"), 1);
     assert_eq!(heard(&scene.fx.host, player), vec!["sleeping now"]);
     assert_eq!(heard(&scene.fx.host, watcher), vec!["sleeping now"]);
+    assert!(scene.fx.host.mud_commands.is_empty());
+    assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
 }
@@ -490,6 +535,22 @@ fn trigger_1936_blinds_the_newcomer_and_attacks() {
     );
     assert_eq!(said(&scene.fx.host).len(), 2);
     assert_eq!(said(&scene.fx.host)[1], (mob, "kill Tester".to_owned()));
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            format!("affect_to_char {player} location=0 modifier=0 duration=0 bit=1"),
+            sub_line(
+                player,
+                "A dark mist suddenly swirls around you, the chittering of many spiders filling your ears!"
+            ),
+            sub_line(
+                watcher,
+                "A dark mist suddenly swirls around Tester, the chittering of spiders filling the air!"
+            ),
+            sub_line(player, "You have been blinded!"),
+            sub_line(watcher, "Tester has been blinded."),
+        ]
+    );
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
 }
@@ -520,6 +581,8 @@ fn trigger_1113_puts_every_mob_to_sleep() {
     );
     assert_eq!(scene.fx.host.num(guard, "aff:15"), 1);
     assert_eq!(scene.fx.host.num(player, "aff:15"), 0);
+    assert!(scene.fx.host.mud_commands.is_empty());
+    assert!(scene.fx.host.waits.is_empty());
     assert_eq!(
         scene.fx.host.logs,
         vec!["Room 3001 :: no target found for wsend"; 6]
@@ -559,7 +622,13 @@ fn trigger_2700_lets_shackle_wearers_through() {
         });
         assert_eq!(ret, 1, "slot {slot}");
         assert_eq!(heard(&scene.fx.host, scene.player()), vec![pass]);
+        assert_eq!(
+            scene.fx.host.effects,
+            vec![sub_line(scene.player(), pass)],
+            "slot {slot}"
+        );
         assert!(scene.fx.host.mud_commands.is_empty());
+        assert!(scene.fx.host.logs.is_empty());
     }
     let (scene, ret) = shackle_scene(&record, |scene| {
         let player = scene.player();
@@ -571,7 +640,8 @@ fn trigger_2700_lets_shackle_wearers_through() {
             .add_var("Zn27_shacklepass", "1", 0);
     });
     assert_eq!(ret, 1);
-    assert_eq!(heard(&scene.fx.host, scene.player()), vec![pass]);
+    assert_eq!(scene.fx.host.effects, vec![sub_line(scene.player(), pass)]);
+    assert!(scene.fx.host.mud_commands.is_empty());
     assert_clean(&scene.fx.host);
 }
 
@@ -591,6 +661,13 @@ fn trigger_2700_repels_everyone_else_and_makes_them_sit() {
         vec!["A powerful force seems to repel you, preventing you from entering."]
     );
     assert_eq!(said(&scene.fx.host), vec![(player, " sit".to_owned())]);
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![sub_line(
+            player,
+            "A powerful force seems to repel you, preventing you from entering."
+        )]
+    );
     assert_eq!(
         global_var(&scene.fx.host, player, "Zn27_shacklereject").as_deref(),
         Some("1")
@@ -633,6 +710,14 @@ fn trigger_19_echoes_into_another_room() {
         vec!["At'd to a room", "At'd to Rumble"]
     );
     assert!(heard(&scene.fx.host, scene.player()).is_empty());
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            act_line(rumble, "At'd to a room"),
+            act_line(rumble, "At'd to Rumble"),
+        ]
+    );
+    assert!(scene.fx.host.mud_commands.is_empty());
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
 }
@@ -641,7 +726,7 @@ fn trigger_19_echoes_into_another_room() {
 fn trigger_20_relays_speech_from_the_rumbles_room() {
     let record = real!(20);
     let mut scene = Scene::new();
-    let rumble = rumble(&mut scene);
+    rumble(&mut scene);
     let (player, room) = (scene.player(), scene.room());
     let mob = scene.add_owner_mob(7005, "a spy");
     install_record(scene.host(), mob, &record);
@@ -662,7 +747,7 @@ fn trigger_20_relays_speech_from_the_rumbles_room() {
             .list(ROOM_ID_BASE + 33, "people")
             .contains(&mob)
     );
-    assert!(heard(&scene.fx.host, rumble).is_empty());
+    assert!(scene.fx.host.effects.is_empty());
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
 }
@@ -707,6 +792,20 @@ fn trigger_11838_shoots_the_person_next_door() {
         vec!["You are suddenly shot by Tester."]
     );
     assert_eq!(scene.fx.host.num(victim, "hit"), 80);
+    // osend to Victim; oat clones the crossbow into room 3002 to run the
+    // damage there and extracts the clone again; osend to the shooter and
+    // oechoaround for the rest of the room.
+    let clone = scene.fx.host.effects.get(1).cloned().unwrap_or_default();
+    assert!(clone.starts_with("extract_obj "), "{clone}");
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(victim, "You are suddenly shot by Tester."),
+            clone,
+            sub_line(player, "You shoot Victim and damage him."),
+            sub_line(watcher, "Tester shoots Victim and damages him"),
+        ]
+    );
     assert_eq!(
         heard(&scene.fx.host, player),
         vec!["You shoot Victim and damage him."]
@@ -735,6 +834,13 @@ fn trigger_11838_wants_a_direction() {
     assert_eq!(
         heard(&scene.fx.host, player),
         vec!["You must specify a direction - north, east, west, south, up, or down."]
+    );
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![sub_line(
+            player,
+            "You must specify a direction - north, east, west, south, up, or down."
+        )]
     );
 }
 
@@ -780,11 +886,14 @@ fn trigger_13_puts_the_sleeper_in_the_bed() {
             global_var(&scene.fx.host, player, "laying_in_comfy_bed_14").as_deref(),
             Some("1")
         );
+        assert!(scene.fx.host.effects.is_empty());
+        assert!(scene.fx.host.waits.is_empty());
         assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
         assert_clean(&scene.fx.host);
     }
     let (scene, player) = comfy_bed(&record, "chair");
     assert!(scene.fx.host.mud_commands.is_empty());
+    assert!(scene.fx.host.effects.is_empty());
     assert_eq!(
         global_var(&scene.fx.host, player, "laying_in_comfy_bed_14"),
         None
@@ -825,11 +934,31 @@ fn trigger_52_lets_the_dog_out_from_under_the_bridge() {
     assert_eq!(people.len(), 4);
     assert_eq!(scene.fx.host.num(people[0], "vnum"), 207);
     assert_eq!(scene.fx.host.waits, vec![(room, id, 10)]);
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(
+                player,
+                "As you look at the bridge a small form staggers out from underneath it."
+            ),
+            sub_line(
+                watcher,
+                "As Tester peers under the bridge a small form emerges."
+            ),
+        ]
+    );
 
     run_waits(scene.host(), 5);
     let line = "A filthy dog crawls out from underneath the bridge. It is covered in MUD.";
     assert_eq!(heard(&scene.fx.host, player)[1..], [line]);
     assert_eq!(heard(&scene.fx.host, watcher)[1..], [line]);
+    // The dog (no descriptor) now heads the room's people, so the echo reaches
+    // Watcher, then Tester.
+    assert_eq!(
+        scene.fx.host.effects[2..],
+        echo_lines(&scene.fx.host, room, line, "\r\n")
+    );
+    assert_eq!(scene.fx.host.effects.len(), 4);
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
 
@@ -872,6 +1001,26 @@ fn trigger_30_demonstrates_the_text_functions() {
             "CHARAT 3:   l",
         ]
     );
+    assert_eq!(
+        scene.fx.host.effects,
+        echo_all(
+            &scene.fx.host,
+            room,
+            &[
+                "SPEECH:     hello big test world",
+                "STRLEN:     20",
+                "TRIM:       hello big test world",
+                "CAR:        hello",
+                "CDR:        big test world",
+                "MUDCOMMAND: ",
+                "CONTAINS:   1",
+                "CHARAT 3:   l",
+            ],
+            "\r\n"
+        )
+    );
+    assert!(scene.fx.host.mud_commands.is_empty());
+    assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.logs.is_empty());
 }
 
@@ -886,6 +1035,16 @@ fn trigger_30_demonstrates_the_text_functions() {
 // `detach 48 %self.id%` removes the trigger. Missing items or the wrong room
 // only send a refusal.
 // ---------------------------------------------------------------------
+/// The id of the object `otransform` read from the prototype and extracted
+/// again: the target of the second `extract_obj` effect.
+fn temporary_object(host: &MockHost) -> Uid {
+    host.effects
+        .get(2)
+        .and_then(|effect| effect.strip_prefix("extract_obj "))
+        .and_then(|text| text.parse().ok())
+        .expect("the temporary object is extracted")
+}
+
 fn join_scene(
     record: &Record,
     in_room_133: bool,
@@ -932,21 +1091,24 @@ fn trigger_48_joins_the_orb_onto_the_staff() {
     // over the staff and ends in `extract_obj(o)`), osend (to the actor),
     // oechoaround (the others in room 133; sub_write ends in "\n\r"), then
     // the detach, which is silent.
-    let effects = &scene.fx.host.effects;
-    assert_eq!(effects.len(), 5, "{effects:?}");
-    assert_eq!(effects[0], format!("extract_obj {orb}"));
-    assert_eq!(effects[1], format!("transform_obj {staff} 12"));
-    let temp: Uid = effects[2]
-        .strip_prefix("extract_obj ")
-        .and_then(|text| text.parse().ok())
-        .expect("the temporary object is extracted");
+    let temp = temporary_object(&scene.fx.host);
     assert!(temp != staff && temp != orb);
     assert_eq!(
-        effects[3..],
-        [
-            format!("send {player}: As you join the orb to the staff it clicks into place.\n\r"),
-            format!("send {friend}: Tester places an orb onto his staff.\n\r"),
+        scene.fx.host.effects,
+        vec![
+            format!("extract_obj {orb}"),
+            format!("transform_obj {staff} 12"),
+            format!("extract_obj {temp}"),
+            sub_line(
+                player,
+                "As you join the orb to the staff it clicks into place."
+            ),
+            sub_line(friend, "Tester places an orb onto his staff."),
         ]
+    );
+    assert_eq!(
+        vnums(&scene.fx.host, &scene.fx.host.carrying(player)),
+        vec![12, 3021, 3022]
     );
     assert_eq!(scene.fx.host.num(staff, "vnum"), 12);
     assert_eq!(
@@ -968,8 +1130,26 @@ fn trigger_48_joins_the_orb_onto_the_staff() {
 #[test]
 fn trigger_48_breaks_the_staff_on_the_other_roll() {
     let record = real!(48);
-    let (scene, staff, _, friend, _) = join_scene(&record, true, true, 2);
+    let (scene, staff, orb, friend, _) = join_scene(&record, true, true, 2);
     assert_eq!(scene.fx.host.num(staff, "vnum"), 192);
+    let (player, temp) = (scene.player(), temporary_object(&scene.fx.host));
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            format!("extract_obj {orb}"),
+            format!("transform_obj {staff} 192"),
+            format!("extract_obj {temp}"),
+            sub_line(
+                player,
+                "As you try to join the orb to the staff it turns in your hands and snaps in half."
+            ),
+            sub_line(
+                friend,
+                "Tester tries to place an orb onto his staff until the staff twists in his hands and snaps in half."
+            ),
+        ]
+    );
+    assert!(scene.fx.host.script(staff).is_none());
     assert_eq!(
         heard(&scene.fx.host, scene.player()),
         vec!["As you try to join the orb to the staff it turns in your hands and snaps in half."]
@@ -990,12 +1170,20 @@ fn trigger_48_refuses_without_the_orb_or_the_room() {
         heard(&scene.fx.host, scene.player()),
         vec!["You do not have the required items to do this."]
     );
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![sub_line(
+            scene.player(),
+            "You do not have the required items to do this."
+        )]
+    );
     assert!(scene.fx.host.script(staff).unwrap().trigger(id).is_some());
     let (scene, _, _, _, _) = join_scene(&record, false, true, 1);
     assert_eq!(
-        heard(&scene.fx.host, scene.player()),
-        vec!["You can not do that here."]
+        scene.fx.host.effects,
+        vec![sub_line(scene.player(), "You can not do that here.")]
     );
+    assert_eq!(scene.fx.host.rolls.len(), 1, "the roll is never taken");
     assert!(other_effects(&scene.fx.host).is_empty());
 }
 
@@ -1054,6 +1242,7 @@ fn trigger_1916_attaches_the_web_and_attacks_over_three_waits() {
             "kill Tester",
         ]
     );
+    assert!(scene.fx.host.effects.is_empty());
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
 }
@@ -1108,6 +1297,10 @@ fn trigger_50_opens_and_closes_the_shop_by_the_clock() {
         "the named sign is purged"
     );
     assert_eq!(scene.fx.host.list(shop, "contents"), vec![sign]);
+    let open = "The butcher's assistant steps out of the shop to the North and turns the sign over from \"closed\" to \"open.\"";
+    let mut effects = echo_lines(&scene.fx.host, room, open, "\r\n");
+    effects.push(format!("extract_obj {closed}"));
+    assert_eq!(scene.fx.host.effects, effects);
 
     assert!(step(scene.host()).is_empty());
     assert_eq!(heard(&scene.fx.host, player).len(), 2);
@@ -1115,6 +1308,9 @@ fn trigger_50_opens_and_closes_the_shop_by_the_clock() {
         heard(&scene.fx.host, player)[1],
         "The butcher's assistant steps out of the shop to the North and turns the sign over from \"open\" to \"closed.\""
     );
+    let shut = "The butcher's assistant steps out of the shop to the North and turns the sign over from \"open\" to \"closed.\"";
+    effects.extend(echo_lines(&scene.fx.host, room, shut, "\r\n"));
+    assert_eq!(scene.fx.host.effects, effects);
     let contents = scene.fx.host.list(room, "contents");
     assert_eq!(vnums(&scene.fx.host, &contents), vec![3020, 69, 70]);
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
@@ -1192,6 +1388,21 @@ fn trapdoor_case(record: &Record, arg: &str) {
         host.text(lower, "exit:4:desc"),
         "A wooden ladder leads up into a storeroom.\r\n"
     );
+    assert_eq!(
+        host.effects,
+        vec![
+            sub_line(
+                player,
+                "You move the chest across the floor, revealing a trapdoor underneath!!"
+            ),
+            sub_line(
+                watcher,
+                "Tester has discovered a hidden trapdoor under a chest!"
+            ),
+        ]
+    );
+    assert!(host.mud_commands.is_empty());
+    assert!(host.waits.is_empty());
     // nothing else was touched
     assert!(host.link(upper, "exit:4").is_none());
     assert!(host.link(lower, "exit:5").is_none());
@@ -1215,7 +1426,12 @@ fn trigger_17_builds_nothing_for_another_argument() {
         1
     );
     assert_eq!(heard(&scene.fx.host, player), vec!["Move what ?!"]);
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![sub_line(player, "Move what ?!")]
+    );
     assert!(scene.fx.host.link(upper, "exit:5").is_none());
+    assert!(scene.fx.host.logs.is_empty());
 }
 
 // ---------------------------------------------------------------------
@@ -1266,6 +1482,22 @@ fn trigger_23840_opens_a_trapdoor_for_a_minute_then_purges_it() {
         "The trap door slams itself closed as if by magic.\r\n"
     );
     assert!(scene.fx.host.link(room, "exit:4").is_none());
+    let slam = "The trap door slams itself closed as if by magic.";
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(
+                player,
+                "The torch turns easily in your hand revealing a trap door."
+            ),
+            sub_line(
+                watcher,
+                "As Tester pulls the torch a trap door swings open leading upwards."
+            ),
+            act_line(player, slam),
+            act_line(watcher, slam),
+        ]
+    );
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
 }
@@ -1297,6 +1529,13 @@ fn trigger_23400_logs_a_door_to_a_room_that_does_not_exist() {
     assert!(scene.fx.host.link(room, "exit:3").is_none());
     assert_ne!(scene.fx.host.num(room, "exit:3:nowhere"), 0);
     assert_eq!(
+        scene.fx.host.effects,
+        vec![sub_line(
+            player,
+            "You push the button, and reveal a secret door!"
+        )]
+    );
+    assert_eq!(
         scene.fx.host.logs,
         vec!["Room 23441 :: wdoor: invalid door target (arg == 23471)"]
     );
@@ -1326,6 +1565,11 @@ fn trigger_23402_purges_the_secret_doors_after_two_seconds() {
         heard(&scene.fx.host, player),
         vec!["A wall slams down shut!"]
     );
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![act_line(player, "A wall slams down shut!")]
+    );
+    assert!(scene.fx.host.logs.is_empty());
 }
 
 // ---------------------------------------------------------------------
@@ -1382,6 +1626,7 @@ fn trigger_23700_waits_until_dawn_across_midnight_then_one_hour() {
         global_var(&scene.fx.host, trader, "trader_leaving").as_deref(),
         Some("1")
     );
+    assert!(scene.fx.host.effects.is_empty());
     // `context %self.id%` set sc->context to the mob's id and
     // `process_global(.., sc->context)` stored the global under it.
     let script = scene.fx.host.script(trader).unwrap();
@@ -1436,6 +1681,8 @@ fn a_new_run_resets_the_context_of_globals() {
     scene.host().rolls.push_back(PERCENT_ROLL);
     dispatch::random_mtrigger(scene.host(), mob);
     assert_eq!(common::world::commands(&scene.fx.host), vec!["say hidden"]);
+    assert!(scene.fx.host.effects.is_empty());
+    assert!(scene.fx.host.logs.is_empty());
     assert_eq!(scene.fx.host.script(mob).unwrap().context, 0);
     assert_clean(&scene.fx.host);
 }
@@ -1464,5 +1711,7 @@ fn trigger_23700_falls_through_empty_cases() {
     assert!(common::world::commands(&scene.fx.host).is_empty());
     assert!(step(scene.host()).is_empty());
     assert_eq!(common::world::commands(&scene.fx.host), vec!["south"]);
+    assert!(scene.fx.host.effects.is_empty());
+    assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
 }
