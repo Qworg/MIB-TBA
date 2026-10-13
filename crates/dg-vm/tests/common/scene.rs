@@ -91,6 +91,46 @@ pub fn heard_raw(host: &MockHost, ch: Uid) -> Vec<String> {
         .collect()
 }
 
+/// The effect `act()` records for a message to `ch`: the line ends in `"\r\n"`
+/// (`perform_act`).
+pub fn act_line(ch: Uid, text: &str) -> String {
+    format!("send {ch}: {text}\r\n")
+}
+
+/// The effect `sub_write` records for a message to `ch`: the line ends in
+/// `"\n\r"` (`sub_write_to_char`).
+pub fn sub_line(ch: Uid, text: &str) -> String {
+    format!("send {ch}: {text}\n\r")
+}
+
+/// What `act_to_room` and the `*echo` commands (`sub_write` to the room)
+/// record for one line said to everyone in `room`: they act `TO_ROOM` from the
+/// head of the room's people (everyone but the head, in list order), then
+/// `TO_CHAR` to the head. Only characters with a descriptor hear it. `end` is
+/// the line end of the writer (`"\r\n"` for `act`, `"\n\r"` for `sub_write`).
+pub fn echo_lines(host: &MockHost, room: Uid, text: &str, end: &str) -> Vec<String> {
+    let people = host.list(room, "people");
+    let has_descriptor = |ch: &Uid| host.num(*ch, "desc") != 0;
+    let (head, rest) = match people.split_first() {
+        Some((head, rest)) => (Some(*head), rest),
+        None => (None, &[][..]),
+    };
+    rest.iter()
+        .copied()
+        .chain(head)
+        .filter(has_descriptor)
+        .map(|ch| format!("send {ch}: {text}{end}"))
+        .collect()
+}
+
+/// `echo_lines` for several lines in a row.
+pub fn echo_all(host: &MockHost, room: Uid, texts: &[&str], end: &str) -> Vec<String> {
+    texts
+        .iter()
+        .flat_map(|text| echo_lines(host, room, text, end))
+        .collect()
+}
+
 /// The `mud_command` log as `(owner, line)`.
 pub fn said(host: &MockHost) -> Vec<(Uid, String)> {
     host.mud_commands.clone()
@@ -115,4 +155,30 @@ pub fn assert_clean(host: &MockHost) {
 /// The `vnum` of each entity.
 pub fn vnums(host: &MockHost, list: &[Uid]) -> Vec<i64> {
     list.iter().map(|uid| host.num(*uid, "vnum")).collect()
+}
+
+/// The scenario ran no command through the game interpreter (`mud_command`).
+pub fn assert_no_commands(host: &MockHost) {
+    assert!(host.mud_commands.is_empty(), "{:?}", host.mud_commands);
+}
+
+/// The scenario wrote nothing to the script log.
+pub fn assert_no_logs(host: &MockHost) {
+    assert!(host.logs.is_empty(), "{:?}", host.logs);
+}
+
+/// No wait is pending.
+pub fn assert_no_waits(host: &MockHost) {
+    assert!(host.waits.is_empty(), "{:?}", host.waits);
+}
+
+/// The end of a scenario that does nothing but produce `effects`: exactly
+/// those effects, no interpreter command, no log line, no pending wait, and
+/// the clean end state of [`assert_clean`].
+pub fn assert_ended_with(host: &MockHost, effects: &[String]) {
+    assert_eq!(host.effects, effects);
+    assert_no_commands(host);
+    assert_no_logs(host);
+    assert_no_waits(host);
+    assert_clean(host);
 }

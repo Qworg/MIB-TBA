@@ -1,17 +1,25 @@
 //! Mock worlds and the way triggers are fired at them.
 //!
-//! Trigger dispatch (`dg_triggers.c`) is not under test here, so an event is
-//! fired the way dispatch does it: attach the trigger to its owner, add the
-//! event's variables to the instance (`ADD_UID_VAR` / `add_var`), and call
-//! `script_driver`. A `wait` is resumed with `driver::resume`.
+//! A scenario attaches its triggers with [`install`] / [`install_record`] and
+//! fires them by calling the dispatch function of the event
+//! (`dg_vm::dispatch`). The corpus smoke test does the same for every record
+//! and falls back to adding the event variables by hand with
+//! [`set_event_vars`] and calling `script_driver` only for a trigger no
+//! dispatch function runs. A `wait` is resumed with `driver::resume`.
 
 use std::sync::Arc;
 
-use dg_vm::driver::{Mode, resume, script_driver};
+use dg_vm::driver::resume;
 use dg_vm::host::BaseHost;
 use dg_vm::mock::MockHost;
 use dg_vm::script::Program;
 use dg_vm::types::{AttachType, TrigProto, Uid, trig::asciiflag_conv, uid_text};
+
+/// A scripted `rand_number` result that wins every percent roll the dispatch
+/// functions make (`rand_number(1, 100) <= narg`) for a trigger whose `narg`
+/// is at least 1. A dispatch function that rolls takes it before the script's
+/// own `%random%` rolls.
+pub const PERCENT_ROLL: i64 = 1;
 
 /// The usual cast of a scenario: a central room with an exit each way, a
 /// player with an inventory and equipment, another mob, and objects.
@@ -184,12 +192,6 @@ pub fn set_event_vars(host: &mut MockHost, owner: Uid, id: u64, vars: &[(&str, S
             trigger.vars.add_var(name, value, 0);
         }
     }
-}
-
-/// Fire a trigger: add its event variables and run it from the top.
-pub fn fire(host: &mut MockHost, owner: Uid, id: u64, vars: &[(&str, String)]) -> i32 {
-    set_event_vars(host, owner, id, vars);
-    script_driver(host, owner, id, Mode::New)
 }
 
 /// `ADD_UID_VAR` value for an entity.
