@@ -32,7 +32,7 @@ use dg_vm::{BaseHost, Kind, Script, TrigProto, Uid, WorldHost};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{
     CarriedBy, ContainedBy, GroundItem, Item, Location, Npc, NpcKey, PendingBundleRestore,
-    PendingHolder, Perceiver, Perception, Player, Room, Session, SessionState, perceive,
+    Perceiver, Perception, Player, Room, Session, SessionState, perceive,
 };
 
 use super::script::{DgDead, DgMemory, DgProtos, DgScript};
@@ -588,7 +588,8 @@ impl WorldHost for EcsHost<'_> {
     fn obj_in_obj(&self, obj: Uid) -> Option<Uid> {
         let entity = self.entity(obj)?;
         let container = self.world.get::<ContainedBy>(entity)?.0;
-        self.uid(container)
+        let uid = self.uid(container)?;
+        self.entity(uid).map(|_| uid)
     }
 
     fn character_list(&self) -> Vec<Uid> {
@@ -603,7 +604,7 @@ impl WorldHost for EcsHost<'_> {
         let present = self
             .all_with::<Item>()
             .into_iter()
-            .filter(|entity| self.world.get::<PendingHolder>(*entity).is_none());
+            .filter(|entity| !super::ids::is_parked(self.world, *entity));
         self.ordered(present, Self::birth, true)
     }
 

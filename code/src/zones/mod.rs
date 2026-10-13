@@ -23,6 +23,7 @@ use mib_stdlib::prelude::{
 };
 
 use crate::content::{DoorReset, ResetMode, WearSlot, ZoneCommandKind, ZoneDef};
+use crate::dg::ids::stamp_spawn;
 use crate::equipment::TbaEquipment;
 
 /// Per-zone reset age, keyed in the same order as [`TbaContent::zones`].
@@ -149,7 +150,11 @@ fn execute_command(
         } => {
             let succeeded = under_limit(*max_in_world, || live_npc_count(world, mob));
             let spawned = if succeeded {
-                spawn_npc_from_content(world, room, mob)
+                let npc = spawn_npc_from_content(world, room, mob);
+                if let Some(npc) = npc {
+                    stamp_spawn(world, npc);
+                }
+                npc
             } else {
                 None
             };
@@ -163,7 +168,9 @@ fn execute_command(
         } => {
             let spawned = under_limit(*max_in_world, || live_item_count(world, item))
                 && if let Some(def) = find_item_def(world, item) {
-                    spawn_item_in_room(world, room, item, &def);
+                    if let Some(entity) = spawn_item_in_room(world, room, item, &def) {
+                        stamp_spawn(world, entity);
+                    }
                     true
                 } else {
                     false
@@ -174,7 +181,8 @@ fn execute_command(
             let mob_entity = (*last_mob)?;
             let succeeded = under_limit(*max_in_world, || live_item_count(world, item))
                 && if let Some(def) = find_item_def(world, item) {
-                    spawn_item_carried_by_entity(world, mob_entity, item, &def);
+                    let entity = spawn_item_carried_by_entity(world, mob_entity, item, &def);
+                    stamp_spawn(world, entity);
                     true
                 } else {
                     false
@@ -195,6 +203,7 @@ fn execute_command(
             let succeeded = under_limit(*max_in_world, || live_item_count(world, item))
                 && if let Some(def) = find_item_def(world, item) {
                     let item_entity = spawn_item_carried_by_entity(world, mob_entity, item, &def);
+                    stamp_spawn(world, item_entity);
                     equip_mob_item(world, mob_entity, *slot, item_entity);
                     true
                 } else {
@@ -212,7 +221,9 @@ fn execute_command(
             }
             let container_entity = find_container_entity(world, container)?;
             let spawned = if let Some(def) = find_item_def(world, item) {
-                spawn_item_in_container(world, container_entity, item, &def);
+                if let Some(entity) = spawn_item_in_container(world, container_entity, item, &def) {
+                    stamp_spawn(world, entity);
+                }
                 true
             } else {
                 false

@@ -144,6 +144,25 @@ pub fn vnum_from_id(id: &str) -> Option<i32> {
     (0..=65_534).contains(&vnum).then_some(vnum)
 }
 
+/// Whether an item is out of the game because it, or the container it sits in
+/// (at any depth), is parked for an offline holder (`PendingHolder`). The C
+/// extracts a quitting player's whole inventory tree; the pack keeps it aside
+/// and re-links it at the next login.
+pub fn is_parked(world: &World, entity: Entity) -> bool {
+    let mut at = entity;
+    // The bound only guards against a containment cycle.
+    for _ in 0..64 {
+        if world.get::<PendingHolder>(at).is_some() {
+            return true;
+        }
+        match world.get::<ContainedBy>(at) {
+            Some(container) => at = container.0,
+            None => return false,
+        }
+    }
+    false
+}
+
 /// What kind of entity is getting its first id.
 enum Fresh {
     Player(u64),
@@ -166,6 +185,10 @@ pub fn ensure_ids(world: &mut World) {
             .map(|(entity, room)| (entity, room.num))
             .collect();
         for (entity, num) in fresh_rooms {
+            if num > 65_534 {
+                tracing::debug!("room {num} is outside the vnum range and gets no script id");
+                continue;
+            }
             let uid = ROOM_ID_BASE.saturating_add(Uid::from(num));
             if ids.taken(world, uid, entity) {
                 // Two rooms with one vnum: the second is unreachable by id.
@@ -175,8 +198,10 @@ pub fn ensure_ids(world: &mut World) {
             world.entity_mut(entity).insert(DgId(uid));
         }
 
-        // Characters and items created together are stamped in entity order,
-        // which is creation order for entities made in one run of the game.
+        // Characters and items stamped at their spawn site (`stamp_spawn`) are
+        // given ids in that order. The rest were created by code that does not
+        // stamp; they follow, in entity-index order, which is creation order
+        // only until the allocator recycles an index.
         let mut fresh: Vec<(Entity, Fresh)> = Vec::new();
         let mut players = world.query_filtered::<(Entity, &Player), Without<DgId>>();
         fresh.extend(
@@ -188,7 +213,10 @@ pub fn ensure_ids(world: &mut World) {
         fresh.extend(npcs.iter(world).map(|entity| (entity, Fresh::Npc)));
         let mut items = world.query_filtered::<Entity, (With<Item>, Without<DgId>)>();
         fresh.extend(items.iter(world).map(|entity| (entity, Fresh::Item)));
-        fresh.sort_unstable_by_key(|(entity, _)| (entity.index(), entity.to_bits()));
+        fresh.sort_by_key(|(entity, _)| {
+            let birth = world.get::<DgBirth>(*entity).map_or(u64::MAX, |b| b.0);
+            (birth, entity.index(), entity.to_bits())
+        });
 
         for (entity, what) in fresh {
             let uid = match what {
@@ -216,14 +244,30 @@ pub fn ensure_ids(world: &mut World) {
             };
             let stamp = ids.stamp();
             ids.insert(uid, entity);
-            world
-                .entity_mut(entity)
-                .insert((DgId(uid), DgOrder(stamp), DgBirth(stamp)));
+            let mut fresh_entity = world.entity_mut(entity);
+            fresh_entity.insert(DgId(uid));
+            if fresh_entity.get::<DgBirth>().is_none() {
+                fresh_entity.insert(DgBirth(stamp));
+            }
+            if fresh_entity.get::<DgOrder>().is_none() {
+                fresh_entity.insert(DgOrder(stamp));
+            }
         }
         // Placement changes the game makes after this pass are newer than the
         // stamps it just gave.
         world.increment_change_tick();
     });
+}
+
+/// Record the moment a character or item was created, for code that spawns
+/// several in one run: their ids and list order follow the order they were
+/// stamped in, however the entity allocator numbered them.
+pub fn stamp_spawn(world: &mut World, entity: Entity) {
+    let stamp = world.get_resource_or_insert_with(DgIds::default).stamp();
+    if let Ok(mut spawned) = world.get_entity_mut(entity) {
+        spawned.insert((DgBirth(stamp), DgOrder(stamp)));
+    }
+    world.increment_change_tick();
 }
 
 /// Entities whose placement changed.
@@ -234,7 +278,8 @@ type MovedQuery<'w, 's> = Query<
     'w,
     's,
     (
-        &'static mut DgOrder,
+        Entity,
+        Ref<'static, DgOrder>,
         Option<Ref<'static, Location>>,
         Option<Ref<'static, CarriedBy>>,
         Option<Ref<'static, ContainedBy>>,
@@ -251,8 +296,9 @@ type MovedQuery<'w, 's> = Query<
 /// restamps it. A worn item taken off is restamped too, because unequipping
 /// puts it at the head of `carrying` (`obj_to_char`).
 ///
-/// Moves made between two runs of this system are stamped in query order, not
-/// move order. A dispatch run outside `FixedUpdate` straight after a game move
+/// Moves made between two runs of this system are stamped oldest change tick
+/// first; moves within one tick (one system run, or the stretch between two
+/// tick bumps) share a tick and are stamped in entity order. A dispatch run outside `FixedUpdate` straight after a game move
 /// must call [`EcsHost::stamp_order`] on the mover first.
 pub fn stamp_placement_order(
     mut ids: ResMut<DgIds>,
@@ -262,17 +308,27 @@ pub fn stamp_placement_order(
     holders: Query<(Entity, &TbaEquipment), Changed<TbaEquipment>>,
     mut worn_before: Local<HashMap<Entity, Vec<Entity>>>,
 ) {
-    for (mut order, location, carried, contained) in &mut queries.p0() {
+    let mut moved: Vec<(u32, Entity)> = Vec::new();
+    for (entity, order, location, carried, contained) in &queries.p0() {
         let stamped = order.last_changed();
-        let newest_move = [
+        let newest = [
             location.map(|r| r.last_changed()),
             carried.map(|r| r.last_changed()),
             contained.map(|r| r.last_changed()),
         ]
         .into_iter()
         .flatten()
-        .any(|tick| tick.is_newer_than(stamped, ticks.this_run()));
-        if newest_move {
+        .filter(|tick| tick.is_newer_than(stamped, ticks.this_run()))
+        .map(|tick| ticks.this_run().get().wrapping_sub(tick.get()))
+        .min();
+        if let Some(age) = newest {
+            moved.push((age, entity));
+        }
+    }
+    // Oldest move first, so the newest arrival gets the highest stamp.
+    moved.sort_by_key(|(age, entity)| (std::cmp::Reverse(*age), entity.index()));
+    for (_, entity) in moved {
+        if let Ok(mut order) = queries.p1().get_mut(entity) {
             order.0 = ids.stamp();
         }
     }
@@ -294,10 +350,17 @@ impl EcsHost<'_> {
     pub fn entity(&self, uid: Uid) -> Option<Entity> {
         let entity = self.world.get_resource::<DgIds>()?.get(uid)?;
         self.world.get_entity(entity).ok()?;
-        // An item parked for an offline holder is not in the game.
-        if self.world.get::<PendingHolder>(entity).is_some() {
+        if is_parked(self.world, entity) {
             return None;
         }
+        (self.world.get::<DgId>(entity)?.0 == uid).then_some(entity)
+    }
+
+    /// The entity a script id names, whether or not it is parked for an
+    /// offline holder.
+    pub fn entity_or_parked(&self, uid: Uid) -> Option<Entity> {
+        let entity = self.world.get_resource::<DgIds>()?.get(uid)?;
+        self.world.get_entity(entity).ok()?;
         (self.world.get::<DgId>(entity)?.0 == uid).then_some(entity)
     }
 

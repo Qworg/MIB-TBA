@@ -21,8 +21,9 @@ use dg_vm::{BaseHost, Kind, WorldHost};
 use mib_content::prelude::{MibModule, SectionRegistry, registry_for};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::*;
+use mib_tba::dg::host::EcsHost;
 use mib_tba::dg::host::{item_type_number, item_wear_bit, npc_keywords, wear_position, wear_slot};
-use mib_tba::dg::ids::{DgIds, vnum_from_id};
+use mib_tba::dg::ids::{DgBirth, DgId, DgIds, vnum_from_id};
 use mib_tba::dg::script::{DgDead, DgProtos, DgScript, init_entity};
 use mib_tba::dg::vars::TbaTriggerVars;
 use mib_tba::dg::waits::{DgPulse, DgWaits};
@@ -1735,4 +1736,302 @@ fn a_player_without_a_session_is_a_valid_target() {
     app.world_mut().entity_mut(alice).remove::<Session>();
     let a = uid(&mut app, alice);
     run(&mut app, |host| assert!(host.valid_dg_target(a, false)));
+}
+
+// -- second review round ------------------------------------------------------
+
+/// The engine parks a quitting player's carried items (`PendingHolder`) and
+/// re-links the same entity at the next login. The C extracts and reloads
+/// them; either way a trigger suspended in `wait` must run again after return.
+#[test]
+fn a_wait_of_an_item_parked_and_returned_still_resumes() {
+    let mut app = app();
+    define(
+        &mut app,
+        700,
+        "obj",
+        "g",
+        0,
+        "wait 1 s\nset after 1\nglobal after",
+    );
+    attach(&mut app, "item:tba_item_1", &[700]);
+    let temple = room(&mut app, 1);
+    let alice = player(&mut app, temple, "Alice", 1);
+    let coin = item_carried(&mut app, alice, 1, "a coin");
+    let c = uid(&mut app, coin);
+    run_trigger(&mut app, c, 700);
+    assert_eq!(app.world().resource::<DgWaits>().waits.len(), 1);
+
+    app.world_mut().entity_mut(coin).remove::<CarriedBy>();
+    app.world_mut()
+        .entity_mut(coin)
+        .insert(PendingHolder("alice".into()));
+    tick_pulses(&mut app, 10);
+    assert_eq!(app.world().resource::<DgWaits>().waits.len(), 1, "kept");
+    assert_eq!(global(&mut app, c, "after"), None);
+
+    app.world_mut().entity_mut(coin).remove::<PendingHolder>();
+    app.world_mut().entity_mut(coin).insert(CarriedBy(alice));
+    tick_pulses(&mut app, 1);
+    assert_eq!(global(&mut app, c, "after").as_deref(), Some("1"));
+}
+
+#[test]
+fn a_parked_items_wait_survives_the_orphan_sweep() {
+    let mut app = app();
+    define(
+        &mut app,
+        701,
+        "obj",
+        "g",
+        0,
+        "wait 20 s\nset after 1\nglobal after",
+    );
+    attach(&mut app, "item:tba_item_1", &[701]);
+    let temple = room(&mut app, 1);
+    let alice = player(&mut app, temple, "Alice", 1);
+    let coin = item_carried(&mut app, alice, 1, "a coin");
+    let c = uid(&mut app, coin);
+    run_trigger(&mut app, c, 701);
+    app.world_mut().entity_mut(coin).remove::<CarriedBy>();
+    app.world_mut()
+        .entity_mut(coin)
+        .insert(PendingHolder("alice".into()));
+    tick_pulses(&mut app, 130);
+    assert_eq!(app.world().resource::<DgWaits>().waits.len(), 1);
+
+    app.world_mut().entity_mut(coin).remove::<PendingHolder>();
+    app.world_mut().entity_mut(coin).insert(CarriedBy(alice));
+    tick_pulses(&mut app, 80);
+    assert_eq!(global(&mut app, c, "after").as_deref(), Some("1"));
+}
+
+/// The C extracts a quitting player's whole inventory tree, so what sits in a
+/// parked bag is out of the game with it.
+#[test]
+fn the_contents_of_a_parked_container_are_parked_too() {
+    let mut app = app();
+    define(&mut app, 702, "obj", "b", 100, "set ran 1\nglobal ran");
+    attach(&mut app, "item:tba_item_3", &[702]);
+    let temple = room(&mut app, 1);
+    let alice = player(&mut app, temple, "Alice", 1);
+    let bag = item_carried(&mut app, alice, 2, "a bag");
+    let coin = item_inside(&mut app, bag, 3, "a coin");
+    let (b, c) = (uid(&mut app, bag), uid(&mut app, coin));
+    app.world_mut().entity_mut(bag).remove::<CarriedBy>();
+    app.world_mut()
+        .entity_mut(bag)
+        .insert(PendingHolder("alice".into()));
+    tick_pulses(&mut app, 130);
+    run(&mut app, |host| {
+        assert!(!host.exists(b));
+        assert!(!host.exists(c));
+        assert!(!host.object_list().contains(&c));
+        assert_eq!(host.obj_in_obj(c), None);
+    });
+    assert_eq!(global(&mut app, c, "ran"), None);
+}
+
+/// The entity allocator recycles indices, so index order is not creation
+/// order. Entities stamped at their spawn site get ids and list order in the
+/// order they were stamped.
+#[test]
+fn spawns_after_a_despawn_batch_keep_creation_order() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let room_id = uid(&mut app, temple);
+    let batch: Vec<Entity> = (0..500).map(|_| npc(&mut app, temple, 1, "rat")).collect();
+    tick(&mut app, Duration::from_millis(100));
+    for entity in batch {
+        app.world_mut().despawn(entity);
+    }
+    tick(&mut app, Duration::from_millis(100));
+
+    let spawned: Vec<Entity> = ["x", "y", "z"]
+        .into_iter()
+        .map(|name| {
+            let entity = npc(&mut app, temple, 2, name);
+            mib_tba::dg::ids::stamp_spawn(app.world_mut(), entity);
+            entity
+        })
+        .collect();
+    tick(&mut app, Duration::from_millis(100));
+    let [x, y, z] = [spawned[0], spawned[1], spawned[2]].map(|e| uid(&mut app, e));
+    assert!(x < y && y < z, "ids count up in creation order");
+    run(&mut app, |host| {
+        assert_eq!(host.room_people(room_id), vec![z, y, x]);
+        assert_eq!(&host.character_list()[..3], &[z, y, x]);
+    });
+}
+
+/// Two moves by the game between runs of the stamp system: the later move is
+/// the head, whatever the table order.
+#[test]
+fn moves_are_stamped_in_move_order_not_table_order() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let altar = room(&mut app, 2);
+    let follower = player(&mut app, altar, "Fol", 1);
+    let leader = player(&mut app, altar, "Lead", 2);
+    let room_id = uid(&mut app, temple);
+    let (f, l) = (uid(&mut app, follower), uid(&mut app, leader));
+    tick(&mut app, Duration::from_millis(100));
+
+    app.world_mut().get_mut::<Location>(leader).unwrap().room = temple;
+    app.world_mut().increment_change_tick();
+    app.world_mut().get_mut::<Location>(follower).unwrap().room = temple;
+    tick(&mut app, Duration::from_millis(100));
+    run(&mut app, |host| {
+        assert_eq!(host.room_people(room_id), vec![f, l]);
+    });
+}
+
+/// `ensure_ids` stamps outside any system boundary; a game move straight after
+/// it must still count as newer.
+#[test]
+fn a_game_move_right_after_ensure_ids_is_newer_than_the_stamp() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let altar = room(&mut app, 2);
+    let alice = player(&mut app, altar, "Alice", 1);
+    let guard = npc(&mut app, temple, 1, "guard");
+    mib_tba::dg::ids::ensure_ids(app.world_mut());
+    app.world_mut().get_mut::<Location>(alice).unwrap().room = temple;
+    let [room_id, guard_uid, alice_uid] = [temple, guard, alice].map(|e| uid(&mut app, e));
+    tick(&mut app, Duration::from_millis(100));
+    run(&mut app, |host| {
+        assert_eq!(host.room_people(room_id), vec![alice_uid, guard_uid]);
+    });
+}
+
+/// `stamp_order` called directly (no with-host call after it) then a game
+/// move of the same entity.
+#[test]
+fn a_game_move_right_after_stamp_order_is_newer_than_the_stamp() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let altar = room(&mut app, 2);
+    let alice = player(&mut app, altar, "Alice", 1);
+    let room_id = uid(&mut app, temple);
+    let a = uid(&mut app, alice);
+    tick(&mut app, Duration::from_millis(100));
+
+    EcsHost {
+        world: app.world_mut(),
+    }
+    .stamp_order(alice);
+    app.world_mut().get_mut::<Location>(alice).unwrap().room = temple;
+    let late = npc(&mut app, temple, 1, "late guard");
+    mib_tba::dg::ids::ensure_ids(app.world_mut());
+    let l = uid(&mut app, late);
+    tick(&mut app, Duration::from_millis(100));
+    run(&mut app, |host| {
+        assert_eq!(host.room_people(room_id), vec![a, l]);
+    });
+}
+
+/// Two movers stamped by the host in an order that differs from table order
+/// keep those stamps.
+#[test]
+fn host_stamped_movers_keep_the_host_order() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let altar = room(&mut app, 2);
+    let first = npc(&mut app, altar, 1, "first");
+    let second = npc(&mut app, altar, 2, "second");
+    let room_id = uid(&mut app, temple);
+    let (f, s) = (uid(&mut app, first), uid(&mut app, second));
+    tick(&mut app, Duration::from_millis(100));
+
+    app.world_mut().get_mut::<Location>(first).unwrap().room = temple;
+    app.world_mut().get_mut::<Location>(second).unwrap().room = temple;
+    let mut host = EcsHost {
+        world: app.world_mut(),
+    };
+    host.stamp_order(second);
+    host.stamp_order(first);
+    tick(&mut app, Duration::from_millis(100));
+    run(&mut app, |host| {
+        assert_eq!(host.room_people(room_id), vec![f, s]);
+    });
+}
+
+/// The real plugin: a zone reset's NPCs get their ids, scripts and stamps in
+/// the same tick (the runtime runs after the reset), and the pulse system is
+/// ordered inside the plugin's fixed chain.
+#[test]
+fn the_runtime_runs_after_the_zone_reset_in_the_real_plugin() {
+    let mut app = boot();
+    app.insert_resource(Time::<Fixed>::from_hz(10.0));
+    app.world_mut()
+        .resource_mut::<Time<Fixed>>()
+        .advance_by(Duration::from_secs(36_000));
+    app.world_mut().run_schedule(FixedUpdate);
+    let mut npcs = app.world_mut().query_filtered::<Entity, With<Npc>>();
+    let all: Vec<Entity> = npcs.iter(app.world()).collect();
+    assert!(!all.is_empty(), "the first tick resets the zones");
+    for entity in all {
+        assert!(app.world().get::<DgId>(entity).is_some());
+        assert!(app.world().get::<DgBirth>(entity).is_some());
+    }
+}
+
+/// `add_var` refuses dotted names; a saved one is carried through unchanged.
+#[test]
+fn a_saved_variable_the_script_cannot_hold_survives_a_write() {
+    let mut app = app();
+    define(&mut app, 703, "mob", "g", 0, "set d 4\nremote d 5");
+    attach(&mut app, "npc:tba_npc_1", &[703]);
+    let temple = room(&mut app, 1);
+    let alice = player(&mut app, temple, "Alice", 5);
+    let mut saved = TbaTriggerVars::default();
+    saved.remote.insert("zone.quest".into(), "1".into());
+    saved.remote.insert("ok".into(), "1".into());
+    app.world_mut().entity_mut(alice).insert(saved);
+    let guard = npc(&mut app, temple, 1, "guard");
+    let g = uid(&mut app, guard);
+    run(&mut app, |_| {});
+    run_trigger(&mut app, g, 703);
+    let vars = app.world().get::<TbaTriggerVars>(alice).unwrap();
+    assert_eq!(vars.remote.get("zone.quest").map(String::as_str), Some("1"));
+    assert_eq!(vars.remote.get("ok").map(String::as_str), Some("1"));
+    assert_eq!(vars.remote.get("d").map(String::as_str), Some("4"));
+}
+
+/// A room number outside the 16-bit vnum range gets no id, so it cannot land
+/// in the object id range.
+#[test]
+fn a_room_outside_the_vnum_range_gets_no_id() {
+    let mut app = app();
+    let bad = room(&mut app, 10_000_001);
+    let edge = room(&mut app, 65_535);
+    let good = room(&mut app, 65_534);
+    run(&mut app, |_| {});
+    assert!(app.world().get::<DgId>(bad).is_none());
+    assert!(app.world().get::<DgId>(edge).is_none());
+    assert_eq!(
+        app.world().get::<DgId>(good).map(|id| id.0),
+        Some(ROOM_ID_BASE + 65_534)
+    );
+}
+
+/// A player whose script did not change is not re-mirrored: a persisted value
+/// edited by someone else between dispatches is left alone, and a later script
+/// write still reaches the persisted map.
+#[test]
+fn an_unchanged_player_is_skipped_and_a_changed_one_is_mirrored() {
+    let mut app = app();
+    define(&mut app, 704, "mob", "g", 0, "set q 1\nremote q 5");
+    attach(&mut app, "npc:tba_npc_1", &[704]);
+    let temple = room(&mut app, 1);
+    let alice = player(&mut app, temple, "Alice", 5);
+    let guard = npc(&mut app, temple, 1, "guard");
+    let g = uid(&mut app, guard);
+    for _ in 0..3 {
+        run(&mut app, |_| {});
+    }
+    assert!(app.world().get::<TbaTriggerVars>(alice).is_none());
+    run_trigger(&mut app, g, 704);
+    let vars = app.world().get::<TbaTriggerVars>(alice).unwrap();
+    assert_eq!(vars.remote.get("q").map(String::as_str), Some("1"));
 }

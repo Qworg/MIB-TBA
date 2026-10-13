@@ -143,22 +143,33 @@ pub fn dg_pulse_system(world: &mut World) {
 }
 
 /// Resume every wait due by `pulse`, earliest first. A wait whose owner or
-/// trigger instance is gone is dropped.
+/// trigger instance is gone is dropped; one whose owner is parked for an
+/// offline holder stays queued and resumes after the holder returns.
 fn resume_due(host: &mut EcsHost<'_>, pulse: i64) {
+    // Waits of items parked for an offline holder, put back when the loop ends
+    // so they resume once the holder is back.
+    let mut parked = Vec::new();
     for _ in 0..MAX_RESUMES_PER_TICK {
         let Some(wait) = host
             .world
             .get_resource_mut::<DgWaits>()
             .and_then(|mut waits| waits.pop_due(pulse))
         else {
-            return;
+            break;
         };
+        if host.entity(wait.owner).is_none() && host.entity_or_parked(wait.owner).is_some() {
+            parked.push(wait);
+            continue;
+        }
         let alive = dg_vm::BaseHost::exists(&*host, wait.owner)
             && dg_vm::BaseHost::script(&*host, wait.owner)
                 .is_some_and(|script| script.trigger(wait.trigger).is_some());
         if alive {
             resume(host, wait.owner, wait.trigger);
         }
+    }
+    if let Some(mut waits) = host.world.get_resource_mut::<DgWaits>() {
+        waits.waits.extend(parked);
     }
 }
 
@@ -172,7 +183,7 @@ fn drop_orphan_waits(host: &mut EcsHost<'_>) {
         .waits
         .iter()
         .map(|wait| wait.owner)
-        .filter(|owner| host.entity(*owner).is_none())
+        .filter(|owner| host.entity_or_parked(*owner).is_none())
         .collect();
     if let Some(mut waits) = host.world.get_resource_mut::<DgWaits>() {
         waits.waits.retain(|wait| !gone.contains(&wait.owner));

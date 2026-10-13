@@ -18,6 +18,7 @@
 
 use std::collections::BTreeMap;
 
+use bevy::ecs::change_detection::Tick;
 use dg_vm::Script;
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{PendingBundleRestore, Player, QuestEvent};
@@ -123,7 +124,9 @@ fn adopt_late_vars(
 ) {
     let late: Vec<(String, String)> = seeded_vars(world.get::<TbaTriggerVars>(entity))
         .into_iter()
-        .filter(|(name, _)| !before.contains_key(name) && !current.contains_key(name))
+        .filter(|(name, _)| {
+            holdable(name) && !before.contains_key(name) && !current.contains_key(name)
+        })
         .collect();
     if late.is_empty() {
         return;
@@ -138,51 +141,100 @@ fn adopt_late_vars(
     }
 }
 
+/// The tick of the last [`sync_player_vars`] pass: a player whose script and
+/// persisted variables have not changed since is skipped.
+#[derive(Resource, Debug, Default)]
+pub struct DgVarClock(Option<Tick>);
+
+/// Whether a script can hold a variable of this name (`add_var` refuses
+/// dotted names).
+fn holdable(name: &str) -> bool {
+    !name.contains('.')
+}
+
 /// Mirror every player's changed globals into [`TbaTriggerVars`] and emit the
 /// quest flags that became truthy.
 pub fn sync_player_vars(world: &mut World) {
-    let mut players = world.query_filtered::<Entity, (With<Player>, With<DgScript>)>();
-    let all: Vec<Entity> = players.iter(world).collect();
-    for entity in all {
-        let Some(script) = world.get::<DgScript>(entity) else {
-            continue;
-        };
-        let mut current = context_zero_globals(&script.0);
-        let mut before = match world.get::<DgVarSync>(entity) {
-            Some(sync) => sync.0.clone(),
-            None => {
-                world.entity_mut(entity).insert(DgVarSync(current));
-                continue;
-            }
-        };
-        adopt_late_vars(world, entity, &mut before, &mut current);
-        if current == before {
-            continue;
-        }
-
-        if world.get::<TbaTriggerVars>(entity).is_none() {
-            world.entity_mut(entity).insert(TbaTriggerVars::default());
-        }
-        if let Some(mut vars) = world.get_mut::<TbaTriggerVars>(entity) {
-            vars.remote = current.clone();
-            vars.global.clear();
-        }
-
-        let raised: Vec<&String> = current
-            .iter()
-            .filter(|(name, value)| {
-                truthy(value) && !before.get(*name).is_some_and(|old| truthy(old))
-            })
-            .map(|(name, _)| name)
-            .collect();
-        if let Some(mut events) = world.get_resource_mut::<Messages<QuestEvent>>() {
-            for name in raised {
-                events.write(QuestEvent::FlagSet {
-                    player: entity,
-                    flag: name.as_str().into(),
-                });
-            }
-        }
-        world.entity_mut(entity).insert(DgVarSync(current));
+    world.init_resource::<DgVarClock>();
+    let last = world.resource::<DgVarClock>().0;
+    let now = world.read_change_tick();
+    let mut players = world.query_filtered::<(
+        Entity,
+        Ref<DgScript>,
+        Option<Ref<TbaTriggerVars>>,
+        Has<DgVarSync>,
+    ), With<Player>>();
+    let dirty: Vec<Entity> = players
+        .iter(world)
+        .filter(|(_, script, vars, synced)| {
+            let Some(last) = last else {
+                return true;
+            };
+            !*synced
+                || script.last_changed().is_newer_than(last, now)
+                || vars
+                    .as_ref()
+                    .is_some_and(|vars| vars.last_changed().is_newer_than(last, now))
+        })
+        .map(|(entity, ..)| entity)
+        .collect();
+    for entity in dirty {
+        sync_player(world, entity);
     }
+    // Changes made from here on are newer than this pass.
+    world.increment_change_tick();
+    let end = world.read_change_tick();
+    world.resource_mut::<DgVarClock>().0 = Some(end);
+    world.increment_change_tick();
+}
+
+/// Mirror one player's globals.
+fn sync_player(world: &mut World, entity: Entity) {
+    let Some(script) = world.get::<DgScript>(entity) else {
+        return;
+    };
+    let mut current = context_zero_globals(&script.0);
+    let mut before = match world.get::<DgVarSync>(entity) {
+        Some(sync) => sync.0.clone(),
+        None => {
+            world.entity_mut(entity).insert(DgVarSync(current));
+            return;
+        }
+    };
+    adopt_late_vars(world, entity, &mut before, &mut current);
+    if current == before {
+        return;
+    }
+
+    if world.get::<TbaTriggerVars>(entity).is_none() {
+        world.entity_mut(entity).insert(TbaTriggerVars::default());
+    }
+    if let Some(mut vars) = world.get_mut::<TbaTriggerVars>(entity) {
+        // Saved names a script cannot hold are carried through unchanged.
+        let kept: Vec<(String, String)> = vars
+            .global
+            .iter()
+            .chain(vars.remote.iter())
+            .filter(|(name, _)| !holdable(name))
+            .map(|(name, value)| (name.clone(), value.clone()))
+            .collect();
+        vars.remote = current.clone();
+        vars.remote.extend(kept);
+        vars.global.clear();
+    }
+
+    let raised: Vec<&String> = current
+        .iter()
+        .filter(|(name, value)| truthy(value) && !before.get(*name).is_some_and(|old| truthy(old)))
+        .map(|(name, _)| name)
+        .collect();
+    if let Some(mut events) = world.get_resource_mut::<Messages<QuestEvent>>() {
+        for name in raised {
+            events.write(QuestEvent::FlagSet {
+                player: entity,
+                flag: name.as_str().into(),
+            });
+        }
+    }
+    world.entity_mut(entity).insert(DgVarSync(current));
 }
