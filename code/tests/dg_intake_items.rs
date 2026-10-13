@@ -115,7 +115,16 @@ fn items_app() -> App {
     app.init_resource::<GateTakesEverything>();
     app.add_message::<CommandReceived>();
     app.configure_sets(Update, (CommandSet::PreRoute, CommandSet::Route).chain());
-    mib_tba::dg::intake::register(&mut app);
+    app.configure_sets(
+        Update,
+        (
+            mib_tba::dg::intake::DgIntake::CommandGate,
+            mib_tba::dg::intake::DgIntake::PreCommit,
+        )
+            .chain()
+            .in_set(CommandSet::PreRoute),
+    );
+    mib_tba::dg::intake::items::register(&mut app);
     app.add_systems(
         Update,
         (
@@ -1726,4 +1735,427 @@ fn a_command_forced_before_the_stage_reads_is_gated_with_the_rest() {
     say(&mut s.app, s.alice, "look");
     assert!(seen(&mut s.app, sword, "actor").is_some());
     assert_eq!(carried_by(&s.app, sword), Some(s.alice));
+}
+
+// -- review round 2 ----------------------------------------------------------------------------
+
+fn typed(app: &mut App, who: Entity, input: PlayerInput) -> String {
+    let id = app.world_mut().resource_mut::<CommandSequence>().next_id();
+    app.world_mut()
+        .resource_mut::<Messages<CommandReceived>>()
+        .write(CommandReceived::new(id, who, 1, input));
+    app.world_mut().run_schedule(Update);
+    app.world_mut().flush();
+    output(app).join("\n")
+}
+
+#[test]
+fn put_refuses_a_cursed_object_for_a_container_on_the_floor() {
+    let mut s = scene();
+    let chest = item_on_ground(&mut s.app, s.temple, 7, "a wooden chest");
+    s.app.world_mut().entity_mut(chest).insert(Container {
+        capacity: 10,
+        contents: vec![],
+    });
+    let sword = item_carried(&mut s.app, s.alice, 5, "a rusty sword");
+    define_item(&mut s.app, 5, TbaItemKind::Weapon, &[], &["sword"]);
+    s.app
+        .world_mut()
+        .resource_mut::<TbaContent>()
+        .items
+        .get_mut(&ItemId::from("tba_item_5"))
+        .unwrap()
+        .extra_flags
+        .push(ItemExtraFlag::NoDrop);
+    let said = say(&mut s.app, s.alice, "put sword in chest");
+    assert!(
+        said.contains("You can't get a rusty sword out of your hand."),
+        "{said}"
+    );
+    assert_eq!(carried_by(&s.app, sword), Some(s.alice));
+    assert!(s.app.world().get::<ContainedBy>(sword).is_none());
+}
+
+#[test]
+fn put_of_a_cursed_object_into_a_carried_bag_is_counted_as_unmodelled() {
+    let mut s = scene();
+    let bag = item_carried(&mut s.app, s.alice, 7, "a leather bag");
+    s.app.world_mut().entity_mut(bag).insert(Container {
+        capacity: 10,
+        contents: vec![],
+    });
+    let sword = item_carried(&mut s.app, s.alice, 5, "a rusty sword");
+    define_item(&mut s.app, 5, TbaItemKind::Weapon, &[], &["sword"]);
+    s.app
+        .world_mut()
+        .resource_mut::<TbaContent>()
+        .items
+        .get_mut(&ItemId::from("tba_item_5"))
+        .unwrap()
+        .extra_flags
+        .push(ItemExtraFlag::NoDrop);
+    say(&mut s.app, s.alice, "put sword in bag");
+    assert_eq!(
+        s.app.world().get::<ContainedBy>(sword).map(|c| c.0),
+        Some(bag)
+    );
+    assert_eq!(
+        s.app
+            .world()
+            .resource::<DgLog>()
+            .count("put_curse_container"),
+        1
+    );
+}
+
+#[test]
+fn put_into_a_full_container_is_refused() {
+    let mut s = scene();
+    let chest = item_on_ground(&mut s.app, s.temple, 7, "a wooden chest");
+    let gem = item_inside(&mut s.app, chest, 8, "a green gem");
+    s.app.world_mut().entity_mut(chest).insert(Container {
+        capacity: 1,
+        contents: vec![gem],
+    });
+    let sword = item_carried(&mut s.app, s.alice, 5, "a rusty sword");
+    let said = say(&mut s.app, s.alice, "put sword in chest");
+    assert!(said.contains("can't hold any more"), "{said}");
+    assert_eq!(carried_by(&s.app, sword), Some(s.alice));
+    assert_eq!(
+        s.app.world().get::<Container>(chest).unwrap().contents,
+        vec![gem]
+    );
+}
+
+#[test]
+fn get_from_a_container_empties_its_contents_and_tells_the_quests() {
+    let mut s = scene();
+    let chest = item_on_ground(&mut s.app, s.temple, 7, "a wooden chest");
+    let gem = item_inside(&mut s.app, chest, 8, "a green gem");
+    s.app.world_mut().entity_mut(chest).insert(Container {
+        capacity: 10,
+        contents: vec![gem],
+    });
+    say(&mut s.app, s.alice, "get gem from chest");
+    assert_eq!(carried_by(&s.app, gem), Some(s.alice));
+    assert!(s.app.world().get::<ContainedBy>(gem).is_none());
+    assert!(
+        s.app
+            .world()
+            .get::<Container>(chest)
+            .unwrap()
+            .contents
+            .is_empty()
+    );
+    let events: Vec<QuestEvent> = s
+        .app
+        .world_mut()
+        .resource_mut::<Messages<QuestEvent>>()
+        .drain()
+        .collect();
+    assert!(
+        events
+            .iter()
+            .any(|event| matches!(event, QuestEvent::Collected { .. })),
+        "{events:?}"
+    );
+}
+
+#[test]
+fn drop_stamps_the_time_the_object_landed() {
+    let mut s = scene();
+    let ball = item_carried(&mut s.app, s.alice, 6, "a red ball");
+    tick_pulses(&mut s.app, 30);
+    say(&mut s.app, s.alice, "drop ball");
+    let at = s.app.world().get::<GroundItem>(ball).unwrap().spawned_at;
+    assert!((at - 3.0).abs() < 0.01, "{at}");
+}
+
+#[test]
+fn structured_commands_and_the_grab_verb_reach_the_intake() {
+    let mut s = scene();
+    let sword = item_carried(&mut s.app, s.alice, 5, "a rusty sword");
+    let said = typed(
+        &mut s.app,
+        s.alice,
+        PlayerInput::Command(Command::Give {
+            item: "sword".to_owned(),
+            to: "guard".to_owned(),
+        }),
+    );
+    assert_eq!(carried_by(&s.app, sword), Some(s.guard), "{said}");
+
+    let said = typed(
+        &mut s.app,
+        s.alice,
+        PlayerInput::Command(Command::Give {
+            item: "20 coins".to_owned(),
+            to: "guard".to_owned(),
+        }),
+    );
+    assert_eq!(
+        s.app.world().get::<TbaGold>(s.alice).unwrap().0,
+        80,
+        "{said}"
+    );
+    assert_eq!(s.app.world().get::<DgNpcGold>(s.guard).unwrap().0, 20);
+
+    let ball = item_on_ground(&mut s.app, s.temple, 6, "a red ball");
+    typed(
+        &mut s.app,
+        s.alice,
+        PlayerInput::Command(Command::Get {
+            item: "ball".to_owned(),
+            from: None,
+        }),
+    );
+    assert_eq!(carried_by(&s.app, ball), Some(s.alice));
+
+    gear(&mut s.app);
+    let torch = item_carried(&mut s.app, s.alice, 32, "a twisted wand");
+    let said = typed(
+        &mut s.app,
+        s.alice,
+        PlayerInput::Command(Command::Custom {
+            verb: "grab".to_owned(),
+            args: vec!["wand".to_owned()],
+        }),
+    );
+    assert!(said.contains("You grab a twisted wand"), "{said}");
+    assert_eq!(worn(&s.app, s.alice, WearSlot::Hold), Some(torch));
+}
+
+#[test]
+fn a_command_written_during_the_stage_is_read_in_the_same_stage() {
+    let mut s = scene();
+    let sword = item_carried(&mut s.app, s.alice, 5, "a rusty sword");
+    let ball = item_carried(&mut s.app, s.alice, 6, "a red ball");
+    obj_trigger(&mut s.app, 100, "h", 5, REFUSE);
+    obj_trigger(&mut s.app, 101, "h", 6, ALLOW);
+    // The first command is the player's; once it has run, a "force" writes the
+    // second, which must pass the triggers in this very stage.
+    let alice = s.alice;
+    let mut cursor = bevy::ecs::message::MessageCursor::<CommandReceived>::default();
+    let mut forced = false;
+    s.app
+        .world_mut()
+        .resource_mut::<Messages<CommandReceived>>();
+    let id = s
+        .app
+        .world_mut()
+        .resource_mut::<CommandSequence>()
+        .next_id();
+    s.app
+        .world_mut()
+        .resource_mut::<Messages<CommandReceived>>()
+        .write(CommandReceived::new(
+            id,
+            alice,
+            1,
+            PlayerInput::RawLine("drop sword".to_owned()),
+        ));
+    mib_tba::dg::intake::items::run_stage(s.app.world_mut(), &mut cursor, &mut |world| {
+        if !forced {
+            forced = true;
+            let id = world.resource_mut::<CommandSequence>().next_id();
+            world
+                .resource_mut::<Messages<CommandReceived>>()
+                .write(CommandReceived::new(
+                    id,
+                    alice,
+                    1,
+                    PlayerInput::RawLine("drop ball".to_owned()),
+                ));
+        }
+    });
+    assert!(seen(&mut s.app, sword, "actor").is_some());
+    assert!(
+        seen(&mut s.app, ball, "actor").is_some(),
+        "the forced command ran its trigger"
+    );
+    assert_eq!(carried_by(&s.app, sword), Some(s.alice));
+    assert!(on_ground(&s.app, ball));
+}
+
+#[test]
+fn commands_still_arriving_after_the_last_round_are_marked_handled() {
+    let mut s = scene();
+    let alice = s.alice;
+    let mut cursor = bevy::ecs::message::MessageCursor::<CommandReceived>::default();
+    let mut last = None;
+    let id = s
+        .app
+        .world_mut()
+        .resource_mut::<CommandSequence>()
+        .next_id();
+    s.app
+        .world_mut()
+        .resource_mut::<Messages<CommandReceived>>()
+        .write(CommandReceived::new(
+            id,
+            alice,
+            1,
+            PlayerInput::RawLine("look".to_owned()),
+        ));
+    mib_tba::dg::intake::items::run_stage(s.app.world_mut(), &mut cursor, &mut |world| {
+        let id = world.resource_mut::<CommandSequence>().next_id();
+        last = Some(id);
+        world
+            .resource_mut::<Messages<CommandReceived>>()
+            .write(CommandReceived::new(
+                id,
+                alice,
+                1,
+                PlayerInput::RawLine("look".to_owned()),
+            ));
+    });
+    let last = last.unwrap();
+    assert!(s.app.world().resource::<HandledCommands>().is_handled(last));
+}
+
+#[test]
+fn commands_over_the_rate_cap_are_dropped() {
+    let mut s = scene();
+    let mut config = Config::default();
+    config.game.command_rate_per_sec = 0.001;
+    config.game.command_burst = 2;
+    s.app.insert_resource(config);
+    s.app
+        .world_mut()
+        .entity_mut(s.alice)
+        .insert(CommandRate::new());
+    let a = item_carried(&mut s.app, s.alice, 5, "a rusty sword");
+    let b = item_carried(&mut s.app, s.alice, 6, "a red ball");
+    let c = item_carried(&mut s.app, s.alice, 9, "a green gem");
+    say(&mut s.app, s.alice, "drop sword");
+    say(&mut s.app, s.alice, "drop ball");
+    let said = say(&mut s.app, s.alice, "drop gem");
+    assert!(on_ground(&s.app, a) && on_ground(&s.app, b));
+    assert_eq!(
+        carried_by(&s.app, c),
+        Some(s.alice),
+        "over the cap: dropped"
+    );
+    assert!(said.contains("too quickly"), "{said}");
+}
+
+#[test]
+fn a_hidden_actor_is_not_named_to_the_room() {
+    let mut s = scene();
+    let bob = player(&mut s.app, s.temple, "Bob", 2);
+    s.app.world_mut().entity_mut(s.alice).insert(Concealment {
+        invisible: true,
+        ..Default::default()
+    });
+    provisions(&mut s.app);
+    item_carried(&mut s.app, s.alice, 50, "a loaf of bread");
+    send(&mut s.app, s.alice, "eat bread");
+    let events: Vec<OutputEvent> = s
+        .app
+        .world_mut()
+        .resource_mut::<Messages<OutputEvent>>()
+        .drain()
+        .collect();
+    let heard: Vec<String> = events
+        .into_iter()
+        .filter(|event| event.session == bob)
+        .filter_map(|event| match event.payload {
+            OutboundPayload::Text { body, .. } => Some(body.render_plain()),
+            _ => None,
+        })
+        .collect();
+    assert!(
+        heard.iter().all(|line| !line.contains("Alice")),
+        "{heard:?}"
+    );
+}
+
+#[test]
+fn a_visible_actor_is_named_to_the_room() {
+    let mut s = scene();
+    let bob = player(&mut s.app, s.temple, "Bob", 2);
+    provisions(&mut s.app);
+    item_carried(&mut s.app, s.alice, 50, "a loaf of bread");
+    send(&mut s.app, s.alice, "eat bread");
+    let heard: Vec<String> = s
+        .app
+        .world_mut()
+        .resource_mut::<Messages<OutputEvent>>()
+        .drain()
+        .filter(|event| event.session == bob)
+        .filter_map(|event| match event.payload {
+            OutboundPayload::Text { body, .. } => Some(body.render_plain()),
+            _ => None,
+        })
+        .collect();
+    assert!(
+        heard.iter().any(|line| line.contains("Alice eats")),
+        "{heard:?}"
+    );
+}
+
+#[test]
+fn give_all_in_the_structured_form_gives_everything() {
+    let mut s = scene();
+    let a = item_carried(&mut s.app, s.alice, 5, "a rusty sword");
+    let b = item_carried(&mut s.app, s.alice, 6, "a red ball");
+    typed(
+        &mut s.app,
+        s.alice,
+        PlayerInput::Command(Command::Give {
+            item: "all".to_owned(),
+            to: "guard".to_owned(),
+        }),
+    );
+    assert_eq!(carried_by(&s.app, a), Some(s.guard));
+    assert_eq!(carried_by(&s.app, b), Some(s.guard));
+}
+
+#[test]
+fn the_missing_count_message_drops_the_ordinal() {
+    let mut s = scene();
+    let said = say(&mut s.app, s.alice, "give 2 3.sword guard");
+    assert!(
+        said.contains("You don't seem to have any swords."),
+        "{said}"
+    );
+}
+
+#[test]
+fn last_dot_name_prefers_the_carried_object() {
+    let mut s = scene();
+    provisions(&mut s.app);
+    let lying = item_on_ground(&mut s.app, s.temple, 52, "a stone fountain");
+    let held = item_carried(&mut s.app, s.alice, 51, "a stone flask");
+    obj_trigger(&mut s.app, 100, "s", 51, ALLOW);
+    obj_trigger(&mut s.app, 101, "s", 52, ALLOW);
+    say(&mut s.app, s.alice, "drink last.stone");
+    assert!(seen(&mut s.app, held, "actor").is_some());
+    assert!(seen(&mut s.app, lying, "actor").is_none());
+}
+
+#[test]
+fn a_potion_casts_up_to_three_spells_at_its_level() {
+    use mib_tba::dg::intake::items::consume::potion_spells;
+    assert_eq!(
+        potion_spells([12, 3, 4, 5]),
+        vec![(3, 12), (4, 12), (5, 12)]
+    );
+    assert_eq!(potion_spells([12, 3, 0, 5]), vec![(3, 12)]);
+    assert_eq!(potion_spells([12, 0, 4, 5]), Vec::<(i32, i32)>::new());
+}
+
+/// Type a line and run a frame, leaving the output to be read.
+fn send(app: &mut App, who: Entity, line: &str) {
+    let id = app.world_mut().resource_mut::<CommandSequence>().next_id();
+    app.world_mut()
+        .resource_mut::<Messages<CommandReceived>>()
+        .write(CommandReceived::new(
+            id,
+            who,
+            1,
+            PlayerInput::RawLine(line.to_owned()),
+        ));
+    app.world_mut().run_schedule(Update);
+    app.world_mut().flush();
 }

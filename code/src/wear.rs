@@ -10,7 +10,7 @@
 //! weight refusals do not exist here.
 
 use dg_vm::dispatch::{remove_otrigger, wear_otrigger};
-use dg_vm::{Uid, WorldHost};
+use dg_vm::{BaseHost, Uid, WorldHost};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::Item;
 
@@ -481,6 +481,7 @@ fn perform_remove(host: &mut EcsHost<'_>, ch: Entity, slot: WearSlot) {
     if remove_otrigger(host, obj, ch_uid) == 0 {
         return;
     }
+    host.unsupported("carry_limit", "the pack has no carrying capacity or weight");
     // The script may have taken it off or destroyed it.
     if host
         .world

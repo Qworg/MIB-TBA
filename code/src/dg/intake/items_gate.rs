@@ -12,6 +12,7 @@
 //! marked handled.
 
 use bevy::prelude::{Fixed, Time};
+use dg_vm::BaseHost;
 use dg_vm::dispatch::{drop_otrigger, drop_wtrigger, get_otrigger, remove_otrigger, wear_otrigger};
 use dg_vm::{Uid, WorldHost};
 use mib_core::prelude::*;
@@ -193,6 +194,7 @@ fn get(host: &mut EcsHost<'_>, actor: Entity, room: Entity, item: &str, from: Op
         prompt(host.world, actor);
         return;
     }
+    host.unsupported("carry_limit", "the pack has no carrying capacity or weight");
     take_into_hand(host, target, actor);
     collected(host.world, actor, target);
     let name = item_name(host, target);
@@ -295,6 +297,24 @@ fn put(host: &mut EcsHost<'_>, actor: Entity, room: Entity, item: &str, into: &s
     if drop_otrigger(host, obj, ch) == 0 || !alive(host, obj) {
         prompt(host.world, actor);
         return;
+    }
+    if has_extra_flag(host, target, ItemExtraFlag::NoDrop) {
+        if host.world.get::<Location>(container).is_some() {
+            // A cursed object cannot be left in a container on the floor.
+            let name = item_name(host, target);
+            deny(
+                host.world,
+                actor,
+                format!("You can't get {name} out of your hand."),
+            );
+            return;
+        }
+        // The C curses a carried container that takes it; the pack keeps no
+        // per-instance flags.
+        host.unsupported(
+            "put_curse_container",
+            "the pack keeps no per-instance ITEM_NODROP to set on the container",
+        );
     }
     // The script may have emptied or destroyed the container.
     let Some(mut contents) = host.world.get::<Container>(container).cloned() else {

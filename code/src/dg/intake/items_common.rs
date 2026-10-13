@@ -4,7 +4,10 @@
 
 use dg_vm::{Uid, WorldHost};
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{CarriedBy, ContainedBy, Container, Item, Location, Player};
+use mib_stdlib::prelude::{
+    CarriedBy, Concealment, ContainedBy, Container, Item, Location, Perceiver, Perception, Player,
+    perceive,
+};
 
 use crate::dg::host::EcsHost;
 use crate::dg::out;
@@ -357,15 +360,34 @@ pub fn tell(world: &mut World, ch: Entity, text: &str) {
     out::send_to_char(world, ch, &cap(text));
 }
 
-/// `act(..., TO_ROOM)`: a line to everyone in the actor's room but the actor
-/// and `also`.
+/// `act(..., TO_ROOM)` with `hide_invisible` TRUE: a line to everyone in the
+/// actor's room but the actor and `also`, who can see the actor (the pack's
+/// perception rule over `Concealment` and `Perception`, as `WorldHost::can_see`).
 pub fn tell_room(world: &mut World, ch: Entity, text: &str, also: &[Entity]) {
     let Some(room) = world.get::<Location>(ch).map(|location| location.room) else {
         return;
     };
-    let mut except = vec![ch];
-    except.extend_from_slice(also);
-    out::send_to_room(world, room, &cap(text), &except);
+    let concealment = world.get::<Concealment>(ch).copied().unwrap_or_default();
+    let mut players =
+        world.query_filtered::<(Entity, &Location, Option<&Perception>), With<Player>>();
+    let listeners: Vec<Entity> = players
+        .iter(world)
+        .filter(|(entity, location, _)| {
+            location.room == room && *entity != ch && !also.contains(entity)
+        })
+        .filter(|(_, _, perception)| {
+            perceive(
+                &Perceiver::from_perception(*perception, false),
+                &concealment,
+                false,
+            )
+        })
+        .map(|(entity, _, _)| entity)
+        .collect();
+    let text = cap(text);
+    for listener in listeners {
+        out::send_to_char(world, listener, &text);
+    }
 }
 
 /// The prompt that ends every command.

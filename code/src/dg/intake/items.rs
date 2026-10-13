@@ -7,15 +7,20 @@
 //! - `get`, `drop`, `put`, `equip` and `unequip` exist in the engine and the
 //!   equipment module. They are carried out here ([`gate`]) on the object the
 //!   engine's name matching resolves, with the engine's messages, so the object
-//!   a trigger approved is the one that moves.
+//!   a trigger approved is the one that moves. The router and the equipment
+//!   module are told to skip them.
 //! - `give` (an object or coins, to a player or an NPC), `wear`, `wield`,
 //!   `hold`, `remove`, `eat`, `taste`, `drink`, `sip` and `quaff` do not exist
 //!   in the engine. They are carried out here in full ([`give`], [`wear`],
 //!   [`consume`]).
 //!
 //! Every command carried out is marked handled, so the router never answers it
-//! again, and the commands of one frame run in the order they were typed. A
-//! character who is not at least resting is refused as the interpreter does.
+//! again, and the item verbs of one frame run in the order they were typed.
+//! Commands the router or another handler carries out run after all of them,
+//! whatever their place in the frame. Each command first passes the router's
+//! per-session rate cap. A character who is not at least resting is refused as
+//! the interpreter does. Commands a script forces while the stage runs are
+//! read again in the same stage (they have not passed the command gate).
 
 #[path = "items_common.rs"]
 pub mod common;
@@ -30,7 +35,7 @@ pub mod wear;
 
 use bevy::ecs::message::MessageCursor;
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{Location, Player, Session, SessionState};
+use mib_stdlib::prelude::{CommandRate, Location, Player, RateVerdict, Session, SessionState};
 
 use super::DgIntake;
 use crate::combat::TbaCombatant;
@@ -43,8 +48,7 @@ use gate::Gated;
 /// What a command asks of the item intake.
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum Action {
-    /// An action the engine or the equipment module carries out after the
-    /// router; only its trigger runs here.
+    /// An action of the engine's verbs, trigger and commit both done here.
     Gated(Gated),
     /// `give` with the C's grammar.
     Give(String),
@@ -178,6 +182,38 @@ fn position_refusal(world: &World, session: Entity) -> Option<&'static str> {
     })
 }
 
+/// The router's per-session command rate cap (`route_commands`), consulted for
+/// the commands the intake carries out in the router's place: a command over
+/// the cap is dropped, with the one notice per interval. Without the config, the
+/// clock or the bucket there is no cap.
+fn within_rate(world: &mut World, session: Entity) -> bool {
+    let Some((rate, burst)) = world
+        .get_resource::<Config>()
+        .map(|config| (config.game.command_rate_per_sec, config.game.command_burst))
+    else {
+        return true;
+    };
+    let now = world
+        .get_resource::<Time<Fixed>>()
+        .map_or(0.0, |time| f64::from(time.elapsed_secs()));
+    let verdict = match world.get_mut::<CommandRate>(session) {
+        Some(mut budget) => budget.check(rate, burst, now),
+        None => RateVerdict::Allow,
+    };
+    match verdict {
+        RateVerdict::Allow => true,
+        RateVerdict::Drop => false,
+        RateVerdict::DropNotice => {
+            common::tell(
+                world,
+                session,
+                "You are sending commands too quickly. Slow down.",
+            );
+            false
+        }
+    }
+}
+
 /// How many times the stage looks again for commands written while it ran
 /// (by a script's `force`), so a script that forces forever cannot hold the
 /// frame.
@@ -187,6 +223,16 @@ const MAX_ROUNDS: usize = 32;
 /// order they were typed. Commands a script forces while the stage runs are
 /// taken in the same stage, so they pass the same triggers.
 pub fn items_intake(world: &mut World, mut cursor: Local<MessageCursor<CommandReceived>>) {
+    run_stage(world, &mut cursor, &mut |_| {});
+}
+
+/// The stage with a hook run after each round of commands, where a script's
+/// `force` would write more.
+pub fn run_stage(
+    world: &mut World,
+    cursor: &mut MessageCursor<CommandReceived>,
+    after_round: &mut dyn FnMut(&mut World),
+) {
     if let Some(mut vetoes) = world.get_resource_mut::<EquipmentVetoes>() {
         vetoes.clear();
     }
@@ -202,7 +248,49 @@ pub fn items_intake(world: &mut World, mut cursor: Local<MessageCursor<CommandRe
         for msg in messages {
             intake_command(world, &msg);
         }
+        after_round(world);
     }
+    // Still arriving after the last round: the router would route what is left
+    // without the triggers, and the next frame would read it again. Drop it.
+    let rest: Vec<CommandId> = match world.get_resource::<Messages<CommandReceived>>() {
+        Some(messages) => cursor.read(messages).map(|msg| msg.id).collect(),
+        None => return,
+    };
+    for id in rest {
+        mark_handled(world, id);
+    }
+}
+
+/// Carry an action out for a player who is in the game, refusing as the
+/// interpreter does when the position forbids it.
+fn carry_out(world: &mut World, session: Entity, room: Entity, action: &Action) {
+    if let Some(refusal) = position_refusal(world, session) {
+        common::tell(world, session, refusal);
+        common::prompt(world, session);
+        return;
+    }
+    with_host(world, |host| match action {
+        Action::Gated(command) => gate::perform(host, session, room, command),
+        other => {
+            run_own(host, session, other);
+            common::prompt(host.world, session);
+        }
+    });
+}
+
+/// Run a player's command line now, as if typed, when it is one of the item
+/// verbs; the entry point for a script's `force` of a player. Returns whether
+/// the line was an item verb (and so was carried out). The command gate and the
+/// rate cap are not consulted.
+pub fn interpret(world: &mut World, session: Entity, line: &str) -> bool {
+    let Some(room) = playing_room(world, session) else {
+        return false;
+    };
+    let Some(action) = parse(&PlayerInput::RawLine(line.to_owned())) else {
+        return false;
+    };
+    carry_out(world, session, room, &action);
+    true
 }
 
 /// One command of the frame.
@@ -224,18 +312,12 @@ fn intake_command(world: &mut World, msg: &CommandReceived) {
         return;
     };
     let session = msg.session;
-    if let Some(refusal) = position_refusal(world, session) {
-        common::tell(world, session, refusal);
-        common::prompt(world, session);
-    } else {
-        with_host(world, |host| match &action {
-            Action::Gated(command) => gate::perform(host, session, room, command),
-            other => {
-                run_own(host, session, other);
-                common::prompt(host.world, session);
-            }
-        });
+    if !within_rate(world, session) {
+        // Dropped as the router drops it; nothing was carried out.
+        mark_handled(world, msg.id);
+        return;
     }
+    carry_out(world, session, room, &action);
     // Everything here was carried out, so neither the router nor the equipment
     // module may answer it again.
     mark_handled(world, msg.id);

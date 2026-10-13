@@ -88,10 +88,10 @@ pub struct TbaEquipmentSave {
 ///
 /// The engine's router marks every raw line handled once it has run, including
 /// the `equip` family it leaves to this module, so [`HandledCommands`] cannot
-/// tell "refused before routing" from "routed". The stages in front of the
-/// router (the command gate and the wear and remove triggers) record the
-/// commands they took over here instead, and [`handle_equipment_commands`]
-/// skips each of them once.
+/// tell "refused before routing" from "routed". The item intake in front of the
+/// router records every `equip` or `unequip` it carried out or that the command
+/// gate took over here instead, and [`handle_equipment_commands`] skips each of
+/// them once.
 #[derive(Debug, Default, Resource)]
 pub struct EquipmentVetoes {
     taken: Vec<(CommandId, Entity, PlayerInput)>,

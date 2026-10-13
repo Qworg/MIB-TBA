@@ -22,7 +22,7 @@ use super::gate::{has_extra_flag, item_name};
 use crate::combat::TbaGold;
 use crate::content::ItemExtraFlag;
 use crate::dg::host::EcsHost;
-use dg_vm::WorldHost;
+use dg_vm::{BaseHost, WorldHost};
 
 /// The coins a non-player character carries.
 ///
@@ -103,15 +103,12 @@ pub fn do_give_typed(host: &mut EcsHost<'_>, ch: Entity, item: &str, to: &str) {
     let Some(victim) = find_victim(host, ch, to) else {
         return;
     };
-    give_objects(
-        host,
-        ch,
-        victim,
-        &Gift::Objects {
-            name: item.trim().to_lowercase(),
-            count: None,
-        },
-    );
+    let name = item.trim().to_lowercase();
+    let gift = match find_all_dots(&name) {
+        Dots::Indiv => Gift::Objects { name, count: None },
+        every => Gift::Every(every),
+    };
+    give_objects(host, ch, victim, &gift);
 }
 
 /// `give_find_vict`.
@@ -145,7 +142,7 @@ fn give_objects(host: &mut EcsHost<'_>, ch: Entity, victim: Entity, gift: &Gift)
                         bare(name)
                     )
                 } else {
-                    format!("You don't seem to have any {name}s.")
+                    format!("You don't seem to have any {}s.", bare(name))
                 };
                 tell(host.world, ch, &message);
                 return;
@@ -216,7 +213,7 @@ fn perform_give(host: &mut EcsHost<'_>, ch: Entity, victim: Entity, obj: Uid) {
         );
         return;
     }
-    // Hands-full and weight limits are not modelled by the pack.
+    host.unsupported("carry_limit", "the pack has no carrying capacity or weight");
     host.world
         .entity_mut(item)
         .remove::<(Location, GroundItem, ContainedBy)>()

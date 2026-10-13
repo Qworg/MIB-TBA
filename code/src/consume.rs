@@ -18,7 +18,7 @@ use mib_stdlib::content::Sector;
 use mib_stdlib::prelude::{Item, Location, Room};
 
 use super::common::{
-    article, bare, carrying, find_obj, names_thing, pick, split_number, tell, tell_room,
+    Number, article, bare, carrying, find_obj, names_thing, pick, split_number, tell, tell_room,
 };
 use crate::content::{TbaItemDef, TbaItemKind, WearSlot};
 use crate::dg::host::EcsHost;
@@ -198,9 +198,17 @@ pub fn do_drink(host: &mut EcsHost<'_>, ch: Entity, args: &str, sip: bool) {
         .map(|uid| (uid, false))
         .chain(lying.into_iter().map(|uid| (uid, true)))
         .collect();
-    let Some((temp, on_ground)) = pick(all.iter().copied(), number, |(uid, _)| {
-        names_thing(name, &host.name(uid), &host.keywords(uid))
-    }) else {
+    let matches = |(uid, _): (Uid, bool)| names_thing(name, &host.name(uid), &host.keywords(uid));
+    // `last.name` is the last match of the carried list, and only without one
+    // there the last of the room's.
+    let picked = match number {
+        Number::Last => {
+            let (carried, lying): (Vec<_>, Vec<_>) = all.iter().copied().partition(|(_, g)| !g);
+            pick(carried, number, matches).or_else(|| pick(lying, number, matches))
+        }
+        _ => pick(all.iter().copied(), number, matches),
+    };
+    let Some((temp, on_ground)) = picked else {
         tell(host.world, ch, "You can't find it!");
         return;
     };
@@ -327,13 +335,27 @@ pub fn do_quaff(host: &mut EcsHost<'_>, ch: Entity, args: &str) {
     // `CAST_POTION` call; a spell that fails does not stop the ones after it,
     // because the seam does not report whether it took effect.
     if let Some(values) = def_of(host, potion).map(|def| def.values) {
-        let level = values[0];
-        for spell in values.iter().skip(1).take(3).copied() {
-            if spell <= 0 {
-                break;
-            }
+        for (spell, level) in potion_spells(values) {
             host.magic_call_magic(ch_uid, Some(ch_uid), None, spell, level);
         }
     }
+    host.unsupported(
+        "quaff_wait_state",
+        "the pack keeps no WAIT_STATE for the quaffer or action_description for the potion",
+    );
     extract_obj(host, potion);
+}
+
+/// The spells a potion casts at its drinker, with the level: `values[0]` is
+/// the level and up to three spell numbers follow, the list ending at the first
+/// slot with no spell (`mag_objectmagic`).
+pub fn potion_spells(values: [i32; 4]) -> Vec<(i32, i32)> {
+    values
+        .iter()
+        .skip(1)
+        .take(3)
+        .copied()
+        .take_while(|spell| *spell > 0)
+        .map(|spell| (spell, values[0]))
+        .collect()
 }
