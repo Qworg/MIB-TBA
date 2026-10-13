@@ -1,0 +1,479 @@
+//! Whole-corpus tests: read all 1,461 real tbaMUD triggers and run each one.
+//!
+//! The corpus is found through `TBAMUD_SOURCE` (default
+//! `/home/qworg/Development/tbamud`); without it every test here prints a
+//! skip message and passes. Run `cargo test -p dg-vm --test corpus --
+//! --nocapture` for the summary of what the VM still mishandles.
+#![allow(clippy::expect_used, clippy::unwrap_used)]
+
+mod common;
+
+use std::collections::{BTreeMap, BTreeSet};
+use std::panic::{AssertUnwindSafe, catch_unwind};
+use std::sync::Arc;
+use std::sync::mpsc;
+use std::time::Duration;
+
+use common::corpus::{self, EXPECTED_RECORDS, Record};
+use common::events::{Cast, event_vars};
+use common::world::{Fixture, checked_out, make_proto, run_waits, set_event_vars};
+use dg_vm::driver::{Mode, script_driver};
+use dg_vm::host::WorldHost;
+use dg_vm::mock::MockHost;
+use dg_vm::types::{AttachType, TrigProto, Uid};
+
+#[test]
+fn the_corpus_reader_reads_every_record() {
+    let Some(records) = corpus::load_corpus() else {
+        corpus::skip_message("the_corpus_reader_reads_every_record");
+        return;
+    };
+    assert_eq!(records.len(), EXPECTED_RECORDS);
+
+    let count = |attach: i32| records.iter().filter(|r| r.attach_type == attach).count();
+    // docs/design/triggers.md section 1: mob 795, world 384, object 282.
+    assert_eq!(count(0), 795);
+    assert_eq!(count(1), 282);
+    assert_eq!(count(2), 384);
+
+    // Vnums are unique.
+    let vnums: BTreeSet<i32> = records.iter().map(|r| r.vnum).collect();
+    assert_eq!(vnums.len(), EXPECTED_RECORDS);
+
+    // Trigger 9 of the tutorial zone: "snarl with glee".
+    let snarl = corpus::find(&records, 901).expect("trigger 901");
+    assert_eq!(snarl.name, "snarl with glee");
+    assert_eq!(snarl.attach_type, 0);
+    assert_eq!(snarl.flags, "g");
+    assert_eq!(snarl.narg, 100);
+    assert_eq!(snarl.arglist, "");
+    assert_eq!(snarl.body, "wait 1 s\r\nsnarl\r\n");
+}
+
+#[test]
+fn a_tilde_inside_a_line_does_not_end_the_string() {
+    // fread_string strips only a trailing '~' (db.c).
+    let text = "#7\nname~\n0 d 1\n*~\nsay small bit of fun~ I am all that.\nsay two\n~\n$~\n";
+    let records = corpus::parse_file("t.trg", text).unwrap();
+    assert_eq!(records.len(), 1);
+    assert_eq!(
+        records[0].body,
+        "say small bit of fun~ I am all that.\r\nsay two\r\n"
+    );
+    assert_eq!(records[0].arglist, "*");
+    assert_eq!(records[0].narg, 1);
+}
+
+#[test]
+fn at_signs_become_tabs_unless_doubled() {
+    // parse_at (db.c): '@' not followed by '@' is replaced by a tab.
+    let text = "#8\nn~\n1 b 0\n~\nsay @Rred@n @@ x~\n$~\n";
+    let records = corpus::parse_file("t.trg", text).unwrap();
+    assert_eq!(records[0].body, "say \tRred\tn @@ x");
+}
+
+/// Vnums and spell names a script's lines refer to, so the mock world can
+/// hold what the script expects to find.
+#[derive(Default)]
+struct Refs {
+    mobs: BTreeSet<i32>,
+    objs: BTreeSet<i32>,
+    rooms: BTreeSet<i32>,
+    spells: BTreeSet<String>,
+}
+
+fn referenced_vnums(record: &Record) -> Refs {
+    let mut refs = Refs::default();
+    for line in record.body.lines() {
+        let words: Vec<&str> = line.split_whitespace().collect();
+        let Some(first) = words.first().map(|w| w.to_ascii_lowercase()) else {
+            continue;
+        };
+        // `%load%`, `mload`, `wload`… are the same command.
+        let command = first.trim_matches('%');
+        let command = command
+            .strip_prefix(['m', 'o', 'w'])
+            .filter(|rest| {
+                matches!(
+                    *rest,
+                    "load" | "at" | "teleport" | "door" | "transform" | "goto"
+                )
+            })
+            .unwrap_or(command);
+        let numbers: Vec<i32> = words
+            .iter()
+            .skip(1)
+            .filter(|w| !w.is_empty() && w.chars().all(|c| c.is_ascii_digit()))
+            .filter_map(|w| w.parse().ok())
+            .collect();
+        let has = |word: &str| words.iter().any(|w| w.eq_ignore_ascii_case(word));
+        match command {
+            "load" => {
+                for n in numbers {
+                    if has("obj") {
+                        refs.objs.insert(n);
+                    } else {
+                        refs.mobs.insert(n);
+                    }
+                }
+            }
+            "at" | "teleport" | "door" | "goto" => refs.rooms.extend(numbers),
+            "dg_cast" => {
+                if let Some(open) = line.find('\'')
+                    && let Some(len) = line[open + 1..].find('\'')
+                {
+                    refs.spells
+                        .insert(line[open + 1..open + 1 + len].to_ascii_lowercase());
+                }
+            }
+            _ => {}
+        }
+    }
+    refs
+}
+
+/// How the owner is placed: objects rotate through lying in the room,
+/// carried by the player and worn by the player.
+fn build(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: usize) -> BuiltWorld {
+    let mut fx = Fixture::new();
+    fx.host.protos = protos.clone();
+    let proto = Arc::clone(&protos[&record.vnum]);
+    // `DG_CASTER_PROXY`: the mob that casts for objects and rooms.
+    fx.host
+        .globals
+        .texts
+        .insert("mobproto:1".to_owned(), "a caster proxy".to_owned());
+    let refs = referenced_vnums(record);
+    for vnum in &refs.mobs {
+        fx.host
+            .globals
+            .texts
+            .insert(format!("mobproto:{vnum}"), "a loaded mob".to_owned());
+    }
+    for vnum in &refs.objs {
+        fx.host
+            .globals
+            .texts
+            .insert(format!("objproto:{vnum}"), "a loaded object".to_owned());
+    }
+    for (number, name) in refs.spells.iter().enumerate() {
+        // TAR_CHAR_ROOM | TAR_FIGHT_VICT, MAG_DAMAGE
+        fx.host
+            .add_spell(name, 1 + number as i32, (1 << 1) | (1 << 4), 1);
+    }
+    for vnum in &refs.rooms {
+        if (0..100_000).contains(vnum) && fx.host.real_room(*vnum).is_none() {
+            fx.host.add_room(*vnum, &format!("Room {vnum}"));
+        }
+    }
+    let attach = AttachType::from_index(record.attach_type).unwrap_or(AttachType::Mob);
+    let owner = match attach {
+        AttachType::Mob => {
+            let mob = fx.host.add_mob(3000, "the owner");
+            fx.host.set_text(mob, "alias", "owner");
+            common::world::dress_mob(&mut fx.host, mob, 30);
+            fx.host.char_to_room(mob, fx.room);
+            let item = fx.host.add_obj(3030, "a key");
+            fx.host.set_text(item, "alias", "key");
+            fx.host.obj_to_char(item, mob);
+            mob
+        }
+        AttachType::Obj => {
+            let obj = fx.host.add_obj(3031, "the owner object");
+            fx.host.set_text(obj, "alias", "owner object");
+            match index % 3 {
+                0 => fx.host.obj_to_room(obj, fx.room),
+                1 => fx.host.obj_to_char(obj, fx.player),
+                _ => fx.host.equip_char(fx.player, obj, 5),
+            }
+            obj
+        }
+        AttachType::Wld => fx.room,
+    };
+    let id = fx.host.attach(owner, &proto).expect("owner exists");
+    let cast = Cast {
+        actor: dg_vm::types::uid_text(fx.player),
+        victim: dg_vm::types::uid_text(fx.guard),
+        object: dg_vm::types::uid_text(fx.bench),
+        target: dg_vm::types::uid_text(fx.guard),
+    };
+    let vars = event_vars(record, attach, &cast);
+    let vars: Vec<(&str, String)> = vars.iter().map(|(k, v)| (k.as_str(), v.clone())).collect();
+    set_event_vars(&mut fx.host, owner, id, &vars);
+    BuiltWorld {
+        host: fx.host,
+        owner,
+        id,
+    }
+}
+
+struct BuiltWorld {
+    host: MockHost,
+    owner: Uid,
+    id: u64,
+}
+
+/// What one record's run left behind.
+struct Outcome {
+    vnum: i32,
+    logs: Vec<String>,
+    unsupported: Vec<String>,
+    commands: Vec<String>,
+    resumes: usize,
+    problems: Vec<String>,
+}
+
+fn proto_table(records: &[Record]) -> BTreeMap<i32, Arc<TrigProto>> {
+    let mut scratch = MockHost::new();
+    records
+        .iter()
+        .map(|record| {
+            let proto = make_proto(
+                &mut scratch,
+                record.vnum,
+                &record.name,
+                AttachType::from_index(record.attach_type).unwrap_or(AttachType::Mob),
+                &record.flags,
+                record.narg,
+                &record.arglist,
+                &record.body,
+            );
+            (record.vnum, proto)
+        })
+        .collect()
+}
+
+fn run_record(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: usize) -> Outcome {
+    let mut world = build(record, protos, index);
+    let mut problems = Vec::new();
+    script_driver(&mut world.host, world.owner, world.id, Mode::New);
+    let resumes = run_waits(&mut world.host, 25);
+    if world.host.depth != 0 {
+        problems.push(format!("depth counter is {}", world.host.depth));
+    }
+    let stuck = checked_out(&world.host);
+    if !stuck.is_empty() {
+        problems.push(format!("left checked out: {stuck:?}"));
+    }
+    Outcome {
+        vnum: record.vnum,
+        logs: std::mem::take(&mut world.host.logs),
+        unsupported: world
+            .host
+            .unsupported
+            .iter()
+            .map(|(what, _)| what.clone())
+            .collect(),
+        commands: world
+            .host
+            .mud_commands
+            .iter()
+            .map(|(_, line)| line.clone())
+            .collect(),
+        resumes,
+        problems,
+    }
+}
+
+/// Reduce a script_log line to its shape: drop the `Trigger: name, VNum N.`
+/// prefix, digits become `#`, quoted text becomes `'..'`.
+fn log_shape(message: &str) -> String {
+    let rest = message
+        .strip_prefix("Trigger: ")
+        .and_then(|m| m.find(", VNum ").map(|at| &m[at + 7..]))
+        .map(|m| m.trim_start_matches(|c: char| c.is_ascii_digit()))
+        .map(|m| {
+            m.strip_prefix(". ")
+                .or_else(|| m.strip_prefix('.'))
+                .unwrap_or(m)
+        })
+        .unwrap_or(message);
+    let mut out = String::new();
+    let mut in_quote = false;
+    let mut last_digit = false;
+    for c in rest.chars() {
+        if c == '\'' {
+            if in_quote {
+                out.push_str("..'");
+            } else {
+                out.push('\'');
+            }
+            in_quote = !in_quote;
+            last_digit = false;
+        } else if in_quote {
+            continue;
+        } else if c.is_ascii_digit() {
+            if !last_digit {
+                out.push('#');
+            }
+            last_digit = true;
+        } else {
+            out.push(c);
+            last_digit = false;
+        }
+    }
+    out
+}
+
+fn top<K: Clone + Ord>(counts: &BTreeMap<K, usize>, n: usize) -> Vec<(K, usize)> {
+    let mut rows: Vec<(K, usize)> = counts.iter().map(|(k, v)| (k.clone(), *v)).collect();
+    rows.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+    rows.truncate(n);
+    rows
+}
+
+#[test]
+fn every_corpus_trigger_runs_to_completion() {
+    let Some(records) = corpus::load_corpus() else {
+        corpus::skip_message("every_corpus_trigger_runs_to_completion");
+        return;
+    };
+    assert_eq!(records.len(), EXPECTED_RECORDS);
+
+    // A worker thread so one runaway script fails the test rather than
+    // hanging it.
+    let (tx, rx) = mpsc::channel::<Result<Outcome, (i32, String)>>();
+    let work = records.clone();
+    let protos = proto_table(&records);
+    std::thread::Builder::new()
+        .stack_size(16 * 1024 * 1024)
+        .spawn(move || {
+            for (index, record) in work.iter().enumerate() {
+                let result = catch_unwind(AssertUnwindSafe(|| run_record(record, &protos, index)))
+                    .map_err(|panic| {
+                        let message = panic
+                            .downcast_ref::<String>()
+                            .cloned()
+                            .or_else(|| panic.downcast_ref::<&str>().map(|s| (*s).to_owned()))
+                            .unwrap_or_default();
+                        (record.vnum, message)
+                    });
+                if tx.send(result).is_err() {
+                    return;
+                }
+            }
+        })
+        .expect("spawn worker");
+
+    let mut outcomes = Vec::new();
+    let mut failures: Vec<String> = Vec::new();
+    for record in &records {
+        match rx.recv_timeout(Duration::from_secs(60)) {
+            Ok(Ok(outcome)) => {
+                for problem in &outcome.problems {
+                    failures.push(format!("trigger {}: {problem}", outcome.vnum));
+                }
+                outcomes.push(outcome);
+            }
+            Ok(Err((vnum, message))) => {
+                failures.push(format!("trigger {vnum} panicked: {message}"))
+            }
+            Err(_) => {
+                failures.push(format!(
+                    "trigger {} did not terminate within 60s",
+                    record.vnum
+                ));
+                break;
+            }
+        }
+    }
+
+    print_summary(&outcomes, &failures);
+    assert!(
+        failures.is_empty(),
+        "{} failures: {failures:#?}",
+        failures.len()
+    );
+}
+
+fn print_summary(outcomes: &[Outcome], failures: &[String]) {
+    let mut shapes: BTreeMap<String, usize> = BTreeMap::new();
+    let mut shape_vnums: BTreeMap<String, BTreeSet<i32>> = BTreeMap::new();
+    let mut shape_sample: BTreeMap<String, String> = BTreeMap::new();
+    let mut unsupported: BTreeMap<String, usize> = BTreeMap::new();
+    let mut words: BTreeMap<String, usize> = BTreeMap::new();
+    let mut word_vnums: BTreeMap<String, BTreeSet<i32>> = BTreeMap::new();
+    let mut total_logs = 0;
+    let mut total_commands = 0;
+    let mut resumes = 0;
+    for outcome in outcomes {
+        resumes += outcome.resumes;
+        for message in &outcome.logs {
+            total_logs += 1;
+            let shape = log_shape(message);
+            *shapes.entry(shape.clone()).or_default() += 1;
+            shape_sample
+                .entry(shape.clone())
+                .or_insert_with(|| message.clone());
+            shape_vnums.entry(shape).or_default().insert(outcome.vnum);
+        }
+        for key in &outcome.unsupported {
+            *unsupported.entry(key.clone()).or_default() += 1;
+        }
+        for line in &outcome.commands {
+            total_commands += 1;
+            let word = line
+                .split_whitespace()
+                .next()
+                .unwrap_or("")
+                .to_ascii_lowercase();
+            word_vnums
+                .entry(word.clone())
+                .or_default()
+                .insert(outcome.vnum);
+            *words.entry(word).or_default() += 1;
+        }
+    }
+
+    println!("=== corpus smoke summary ===");
+    println!(
+        "records run: {}  resumed waits: {resumes}  failures: {}",
+        outcomes.len(),
+        failures.len()
+    );
+    println!(
+        "script_log messages: {total_logs} in {} shapes",
+        shapes.len()
+    );
+    for (shape, count) in top(&shapes, 100) {
+        println!("  {count:5}  {shape}  [e.g. {}]", shape_sample[&shape]);
+    }
+    println!("vnums behind the 20 most frequent log shapes:");
+    for (shape, count) in top(&shapes, 20) {
+        let vnums: Vec<String> = shape_vnums[&shape]
+            .iter()
+            .take(12)
+            .map(|v| v.to_string())
+            .collect();
+        let more = shape_vnums[&shape].len().saturating_sub(12);
+        let tail = if more > 0 {
+            format!(" (+{more} more)")
+        } else {
+            String::new()
+        };
+        println!(
+            "  {count:5}  {shape}\n         vnums: {}{tail}\n         e.g. {}",
+            vnums.join(" "),
+            shape_sample[&shape]
+        );
+    }
+    println!("BaseHost::unsupported keys: {} distinct", unsupported.len());
+    for (key, count) in top(&unsupported, 40) {
+        println!("  {count:5}  {key}");
+    }
+    println!(
+        "mud_command first words: {total_commands} commands, {} distinct",
+        words.len()
+    );
+    for (word, count) in top(&words, 40) {
+        let vnums: Vec<String> = word_vnums[&word]
+            .iter()
+            .take(8)
+            .map(|v| v.to_string())
+            .collect();
+        println!("  {count:5}  {word}  [vnums {}]", vnums.join(" "));
+    }
+    for failure in failures {
+        println!("FAILURE {failure}");
+    }
+}
