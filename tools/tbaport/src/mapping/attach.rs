@@ -40,6 +40,12 @@ use crate::ids;
 use crate::report::{TriggerVariableDrop, ZoneReport, ZoneTriggerLink};
 use crate::source::zone::{RawCommand, RawZone};
 
+/// `NOWHERE` of the unsigned-index build (`structs.h:35`).
+const NOWHERE: i32 = 65535;
+
+/// `NUM_WEARS` (`structs.h:361`): an `E` command's wear position must be below it.
+const NUM_WEARS: i32 = 18;
+
 /// `attach_type` of a trigger record, by the owner kinds that match it
 /// (`MOB_TRIGGER` 0, `OBJ_TRIGGER` 1, `WLD_TRIGGER` 2; `dg_scripts.h:20`).
 fn owner_attach_type(owner: AttachCandidate) -> i32 {
@@ -83,8 +89,11 @@ impl Entities<'_> {
         let (a1, a2, a3) = (command.arg1, command.arg2, command.arg3);
         match command.code {
             'M' => self.npcs.contains(&ids::npc_id(a1)) && self.room(a3),
-            // An `O` with room -1 (`NOWHERE`) is not renumbered.
-            'O' => self.item(a1) && (a3 == -1 || self.room(a3)),
+            // An `O` naming `NOWHERE` is not renumbered. The checked-out
+            // tbaMUD builds with `CIRCLE_UNSIGNED_INDEX 1`, so `NOWHERE` is
+            // 65535 (`structs.h:35`); the zone file's `-1` is an `int` that
+            // `real_room` fails to find, which disables the command.
+            'O' => self.item(a1) && (a3 == NOWHERE || self.room(a3)),
             'G' | 'E' => self.item(a1),
             'P' => self.item(a1) && self.item(a3),
             'D' => self.room(a1),
@@ -124,9 +133,15 @@ pub(super) struct ResetScript<'a> {
 /// (`arg1 == 2`) is the room in `arg3`. A command `renum_zone_table` disabled
 /// only clears `last_cmd`, leaving `tmob` and `tobj` as they were, and a
 /// command with a non-zero `if_flag` is skipped while `last_cmd` is clear.
+/// A `G` or `E` with no `M` having loaded a mob earlier (`reset_zone`'s local
+/// `mob` is still NULL) is logged and rewritten to `*`, which leaves the
+/// targets alone and clears `last_cmd` on every later pass; an `E` with a wear
+/// position outside `0..NUM_WEARS` is logged and likewise leaves the targets
+/// alone (and, as the C does, `last_cmd` too). An `O` naming `NOWHERE` loads
+/// the object without a room and still becomes the `T` target.
 /// The walk is static, so it assumes every load succeeds (the C skips a load
-/// that would exceed its `max`) and so that `last_cmd` is set after every
-/// command that runs.
+/// that would exceed its `max`, and a `P` whose container is not loaded) and
+/// so that `last_cmd` is set after every command that runs.
 pub(super) fn reset_scripts<'a>(
     zone: &'a RawZone,
     entities: &Entities<'_>,
@@ -135,6 +150,8 @@ pub(super) fn reset_scripts<'a>(
     let mut mob: Option<i32> = None;
     let mut obj: Option<i32> = None;
     let mut last_cmd = false;
+    // The C's `mob` local: set by the first `M` that runs, never cleared.
+    let mut mob_loaded = false;
     for (index, command) in zone.commands.iter().enumerate() {
         let script = matches!(command.code, 'T' | 'V');
         let fate = if command.if_flag != 0 && !last_cmd {
@@ -158,9 +175,12 @@ pub(super) fn reset_scripts<'a>(
         match command.code {
             'M' => {
                 mob = Some(command.arg1);
+                mob_loaded = true;
                 obj = None;
                 last_cmd = true;
             }
+            'G' | 'E' if !mob_loaded => last_cmd = false,
+            'E' if !(0..NUM_WEARS).contains(&command.arg3) => {}
             'O' | 'G' | 'E' | 'P' => {
                 obj = Some(command.arg1);
                 mob = None;
@@ -258,13 +278,13 @@ pub(super) fn attach_prototype_lines(
                 .map(|room| (AttachCandidate::Room(room.vnum), &room.trigger_vnums)),
         );
     for (owner, lines) in owners {
-        for trigger in lines {
+        for (ordinal, trigger) in lines.iter().enumerate() {
             match kinds.get(trigger) {
                 Some(kind) => push_link(bundle, zr, owner, source.number, *trigger, *kind),
                 None => push_dangling(
                     zr,
                     "dangling_trigger_ref",
-                    &format!("{} T line", owner.label()),
+                    &format!("{} T line {}", owner.label(), ordinal + 1),
                     &format!("trigger {trigger}"),
                 ),
             }
@@ -296,7 +316,7 @@ pub(super) fn fold_reset_scripts(
         };
         if command.code == 'V' {
             zr.trigger_variables
-                .push(variable_drop(source.number, index, command, target));
+                .push(variable_drop(source.number, index, command, &fate, target));
             continue;
         }
 
@@ -306,8 +326,8 @@ pub(super) fn fold_reset_scripts(
                 &from,
                 "zone_trigger_skipped",
                 &format!("trigger {}", command.arg2),
-                "the command follows a disabled command and has a non-zero if_flag, so \
-                 reset_zone skips it",
+                "the command has a non-zero if_flag and last_cmd is clear (no earlier \
+                 command in the reset ran), so reset_zone skips it",
             ),
             ResetFate::Disabled if !entities.triggers.contains_key(&command.arg2) => push_dangling(
                 zr,
@@ -359,7 +379,10 @@ pub(super) fn fold_reset_scripts(
     }
 }
 
-/// The report entry for one `V` reset command.
+/// The report entry for one `V` reset command. `fate` records whether the
+/// command runs at all, so an empty `target` can be told apart: a command that
+/// runs with no target, one skipped by the `if_flag` gate and one disabled at
+/// boot.
 ///
 /// `context` and `room` are the command's raw `arg2` and `arg3`; the C passes
 /// `arg3` (the room's rnum after `renum_zone_table`) as the variable's context
@@ -370,6 +393,7 @@ fn variable_drop(
     zone: u32,
     index: usize,
     command: &RawCommand,
+    fate: &ResetFate,
     target: Option<AttachCandidate>,
 ) -> TriggerVariableDrop {
     TriggerVariableDrop {
@@ -378,6 +402,12 @@ fn variable_drop(
         command: index,
         line: command.line,
         if_flag: command.if_flag,
+        fate: match fate {
+            ResetFate::Runs(_) => "runs",
+            ResetFate::Skipped => "skipped",
+            ResetFate::Disabled => "disabled",
+        }
+        .to_owned(),
         attach: match command.arg1 {
             0 => "mob",
             1 => "object",

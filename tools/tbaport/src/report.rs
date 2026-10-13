@@ -151,10 +151,14 @@ pub struct TriggerVariableDrop {
     /// Source line of the command.
     pub line: usize,
     pub if_flag: i32,
+    /// What `reset_zone` does with the command: `runs`, `skipped` (the
+    /// `if_flag`/`last_cmd` gate) or `disabled` (`renum_zone_table` found a
+    /// missing vnum). Only a `runs` command with a `target` can be applied.
+    pub fate: String,
     /// Which kind of entity the command targets: `mob`, `object`, `world`.
     pub attach: String,
     /// The target the reset script resolves to (`npc tba_npc_3`, …), or
-    /// `None` when the C would find none.
+    /// `None` when the C would find none or the command never runs (see `fate`).
     pub target: Option<String>,
     /// The context field as written in the zone file (`arg2`, the builder's
     /// "Global's context" prompt). For a room target the C passes it to

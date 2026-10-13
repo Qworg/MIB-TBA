@@ -196,21 +196,14 @@ impl PackSection for TriggersSection {
                     ),
                 );
             }
-            // `asciiflag_conv` reads a field made only of digits and `-` as a
-            // number (so `-1` is legal), anything else as type letters.
-            if !trigger
-                .flags
-                .chars()
-                .all(|c| c.is_ascii_alphanumeric() || c == '-')
-                || (trigger.flags.contains('-')
-                    && !trigger
-                        .flags
-                        .chars()
-                        .all(|c| c.is_ascii_digit() || c == '-'))
-            {
+            // The record's type field is one whitespace-free token in the
+            // `.trg`; `asciiflag_conv` accepts any characters in it (letters
+            // set bits, a field of digits and `-` is a number, everything else
+            // is ignored), so only an embedded blank is malformed.
+            if trigger.flags.chars().any(char::is_whitespace) {
                 ctx.error_at(
                     format!("{field}.flags"),
-                    format!("flags `{}` must be type letters or a number", trigger.flags),
+                    format!("flags `{}` must be a single token", trigger.flags),
                 );
             }
             if trigger.attach.trim().is_empty() {

@@ -1128,3 +1128,153 @@ fn variable_command_strings_follow_the_sscanf_fields() {
     assert_eq!(value_of("name").as_deref(), Some("value   "));
     assert_eq!(value_of("other"), Some("x".repeat(79)));
 }
+
+/// The owner label of the `T` commands folded in a scratch conversion.
+fn folded_owners(conversion: &tbaport::Conversion) -> Vec<String> {
+    conversion.report.zones[0]
+        .zone_trigger_links
+        .iter()
+        .map(|link| link.owner.clone())
+        .collect()
+}
+
+/// `renum_zone_table` leaves an `O` whose room is `NOWHERE` alone; with
+/// `CIRCLE_UNSIGNED_INDEX 1` that is 65535, and `reset_zone` still loads the
+/// object and makes it `tobj`.
+#[test]
+fn an_o_command_at_nowhere_still_loads_and_takes_the_trigger() {
+    let conversion = convert_zone_30("o-nowhere", "O 0 3000 1 65535\nT 1 1 3000 3001\n", true);
+    assert_eq!(folded_owners(&conversion), ["item tba_item_3000"]);
+    assert_eq!(
+        conversion.bundle.triggers.attachments["item:tba_item_3000"],
+        ids(&[3000])
+    );
+}
+
+/// A `-1` room is an `int` that `real_room` cannot find, so the `O` is
+/// disabled at boot and `tobj` stays on the earlier object.
+#[test]
+fn an_o_command_at_minus_one_is_disabled() {
+    let conversion = convert_zone_30(
+        "o-minus-one",
+        "O 0 3000 1 3001\nO 0 3001 1 -1\nT 0 1 3000 3001\n",
+        true,
+    );
+    assert_eq!(folded_owners(&conversion), ["item tba_item_3000"]);
+    assert!(
+        !conversion
+            .bundle
+            .triggers
+            .attachments
+            .contains_key("item:tba_item_3001")
+    );
+}
+
+/// `G` and `E` with no mob loaded earlier are rewritten to `*` before they
+/// touch `tobj`; an `E` with a wear position past `NUM_WEARS` also leaves it.
+#[test]
+fn g_and_e_that_cannot_load_leave_the_target_alone() {
+    let before_any_mob = convert_zone_30(
+        "g-no-mob",
+        "O 0 3000 1 3001\nG 0 3001 1 -1\nT 0 1 3000 3001\n",
+        true,
+    );
+    assert_eq!(folded_owners(&before_any_mob), ["item tba_item_3000"]);
+    let bad_position = convert_zone_30(
+        "e-bad-pos",
+        "M 0 3000 1 3001\nO 0 3000 1 3001\nE 0 3001 1 18\nT 0 1 3000 3001\n",
+        true,
+    );
+    assert_eq!(folded_owners(&bad_position), ["item tba_item_3000"]);
+    let good_position = convert_zone_30(
+        "e-good-pos",
+        "M 0 3000 1 3001\nO 0 3000 1 3001\nE 0 3001 1 17\nT 0 1 3000 3001\n",
+        true,
+    );
+    assert_eq!(folded_owners(&good_position), ["item tba_item_3001"]);
+}
+
+/// A reset `T` naming a trigger that does not exist is disabled at boot.
+#[test]
+fn a_zone_trigger_naming_a_missing_trigger_is_dangling() {
+    let conversion = convert_zone_30("zone-t-missing", "M 0 3000 1 3001\nT 0 0 9999 3001\n", true);
+    let zone = &conversion.report.zones[0];
+    assert!(zone.dangling.iter().any(|entry| {
+        entry.kind == "dangling_zone_trigger" && entry.from == "zone 30 command 1 (T)"
+    }));
+    assert!(conversion.bundle.triggers.attachments.is_empty());
+}
+
+/// A `V` carries a `fate` telling a command that never runs from one that
+/// runs without a target.
+#[test]
+fn variable_drops_say_whether_the_command_runs() {
+    let conversion = convert_zone_30(
+        "v-fates",
+        "M 0 9999 1 3001\nV 1 0 4 3001 skipped a\nM 0 3000 1 3001\nV 0 0 4 9999 disabled b\n\
+         V 0 3 4 3001 untargeted c\nV 0 0 4 3001 runs d\n",
+        false,
+    );
+    let fate = |name: &str| {
+        let drop = conversion.report.zones[0]
+            .trigger_variables
+            .iter()
+            .find(|variable| variable.name == name)
+            .expect("variable reported");
+        (drop.fate.clone(), drop.target.clone())
+    };
+    assert_eq!(fate("skipped"), ("skipped".to_owned(), None));
+    assert_eq!(fate("disabled"), ("disabled".to_owned(), None));
+    assert_eq!(fate("untargeted"), ("runs".to_owned(), None));
+    assert_eq!(
+        fate("runs"),
+        ("runs".to_owned(), Some("npc tba_npc_3000".to_owned()))
+    );
+}
+
+/// A first command with a non-zero `if_flag` is skipped because `last_cmd`
+/// starts clear, not because a command was disabled.
+#[test]
+fn the_skipped_message_names_the_last_cmd_gate() {
+    let conversion = convert_zone_30("first-skipped", "T 1 2 3000 3001\n", true);
+    let entry = conversion.report.zones[0]
+        .unmapped
+        .iter()
+        .find(|entry| entry.kind == "zone_trigger_skipped")
+        .expect("skipped command reported");
+    assert!(
+        entry.detail.contains("last_cmd is clear"),
+        "{}",
+        entry.detail
+    );
+}
+
+/// Each skipped `T` line is its own report entry, so two lines naming the
+/// same missing trigger count twice (`dg_read_trigger` logs each).
+#[test]
+fn repeated_dangling_t_lines_are_counted_separately() {
+    let root = scratch_world("dangling-twice", "", false);
+    let wld = root.join("lib/world/wld/30.wld");
+    let text = std::fs::read_to_string(&wld).expect("read wld");
+    assert_eq!(text.matches("T 9999\n").count(), 1);
+    std::fs::write(&wld, text.replace("T 9999\n", "T 9999\nT 9999\n")).expect("write wld");
+    std::fs::write(
+        root.join("lib/world/zon/30.zon"),
+        format!("{ZONE_HEAD}S\n$\n"),
+    )
+    .expect("write zon");
+    let conversion = convert(&ConvertOptions {
+        source_root: root.clone(),
+        only: Some(30),
+        start_room: Some(DEFAULT_START_ROOM),
+    })
+    .expect("scratch world converts");
+    let _ = std::fs::remove_dir_all(&root);
+    let lines: Vec<&str> = conversion.report.zones[0]
+        .dangling
+        .iter()
+        .filter(|entry| entry.kind == "dangling_trigger_ref")
+        .map(|entry| entry.from.as_str())
+        .collect();
+    assert_eq!(lines, ["room tba.3000 T line 2", "room tba.3000 T line 3"]);
+}

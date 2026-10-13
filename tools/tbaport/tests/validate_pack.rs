@@ -166,7 +166,7 @@ fn fixture_conversion_validates_clean() {
 #[test]
 fn fixture_validation_rejects_each_bad_field() {
     type Mutation<'a> = &'a dyn Fn(&mut OutputBundle);
-    let cases: [(&str, Mutation, &str); 6] = [
+    let cases: [(&str, Mutation, &str); 5] = [
         (
             "unknown-owner",
             &|b| {
@@ -209,19 +209,10 @@ fn fixture_validation_rejects_each_bad_field() {
             "bad-flags",
             &|b| {
                 for def in b.triggers.triggers.values_mut() {
-                    def.flags = "g!".to_owned();
+                    def.flags = "g b".to_owned();
                 }
             },
-            "flags `g!`",
-        ),
-        (
-            "mixed-flags",
-            &|b| {
-                for def in b.triggers.triggers.values_mut() {
-                    def.flags = "1-g".to_owned();
-                }
-            },
-            "flags `1-g`",
+            "flags `g b`",
         ),
     ];
     for (tag, mutate, expected) in cases {
@@ -235,19 +226,23 @@ fn fixture_validation_rejects_each_bad_field() {
     }
 }
 
-/// `asciiflag_conv` reads a field of digits and `-` as a number, so a `-1`
-/// type field is legal (`db.c`/`utils.c`); the converter's output for it must
-/// validate.
+/// `asciiflag_conv` (`db.c`) reads a field of digits and `-` as a number and
+/// ignores characters that are neither letters nor part of a number, so `-1`,
+/// `g.` and `1-g` are all legal type fields; the converter's output for them
+/// must validate.
 #[test]
-fn numeric_trigger_flags_with_a_sign_are_legal() {
-    let mut conversion = fixture_conversion();
-    for def in conversion.bundle.triggers.triggers.values_mut() {
-        def.flags = "-1".to_owned();
+fn any_single_token_trigger_flags_are_legal() {
+    for flags in ["-1", "g.", "1-g"] {
+        let mut conversion = fixture_conversion();
+        for def in conversion.bundle.triggers.triggers.values_mut() {
+            def.flags = flags.to_owned();
+        }
+        assert_eq!(
+            validation_issues(&conversion.bundle, "token-flags"),
+            Vec::<String>::new(),
+            "flags `{flags}`"
+        );
     }
-    assert_eq!(
-        validation_issues(&conversion.bundle, "numeric-flags"),
-        Vec::<String>::new()
-    );
 }
 
 /// An owner key in two shards of the merged section is a duplicate key.
