@@ -8,6 +8,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
+use dg_vm::script::Program;
 use mib_content::prelude::SmolStr;
 use mib_stdlib::content::{
     AreaDef, ContainerDef, DoorDef, ExitDef, ExtraDescDef, ItemDef, ItemId, ItemTag,
@@ -20,9 +21,7 @@ use mib_tba::content::{
     ResetMode, ShopDef, ShopHours, ShopTrade, SocialDef, TbaItemDef, TbaItemKind, TbaNpcStats,
     WearSlot, ZoneCommand, ZoneCommandKind, ZoneDef,
 };
-use mib_tba::triggers::ast::parse_script;
 use mib_tba::triggers::content::{TriggerDef, TriggerId, TriggersFile};
-use mib_tba::triggers::context::unknown_tokens_excluding;
 
 mod attach;
 
@@ -446,7 +445,6 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
     // Zone-reset `T` commands fold into the prototype lists only after every
     // zone's own `T` lines are in, so a folded trigger always follows the
     // target's own lines even when the target lives in another zone.
-    set_legacy_attach(&mut bundle.triggers);
     let entities = attach::Entities {
         rooms: &room_ids,
         npcs: &npc_ids,
@@ -478,7 +476,6 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
     for (source, zr) in sources.iter().zip(zones.iter_mut()) {
         attach::fold_reset_scripts(source, &entities, &mut bundle, zr);
     }
-    set_legacy_attach(&mut bundle.triggers);
 
     // The death penalty's gold prototype is a genre rule, not a world object:
     // no tbaMUD source file defines it, so the converter always adds it. A
@@ -499,7 +496,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         .start_room
         .filter(|vnum| bundle.rooms.rooms.contains_key(&ids::room_id(*vnum as i32)));
 
-    let trigger_coverage = parser_based_trigger_coverage(&bundle.triggers);
+    let trigger_coverage = trigger_coverage(&bundle.triggers);
     let trigger_attachments = summarise_attachments(&bundle.triggers);
 
     let mut report = DropReport {
@@ -2319,15 +2316,13 @@ fn attach_type_name(attach_type: i32) -> &'static str {
 
 /// Emit every trigger record of one zone into `tba.triggers`.
 ///
-/// The legacy `attach` field is filled afterwards from the attachment lists
-/// ([`set_legacy_attach`]); which triggers an entity carries, and in what
-/// order, is those lists ([`attach`]).
+/// Which triggers an entity carries, and in what order, is the attachment
+/// lists ([`attach`]).
 fn map_triggers(source: &ZoneSource, bundle: &mut OutputBundle) {
     for trigger in &source.triggers {
         let def = TriggerDef {
             vnum: trigger.vnum,
             name: trigger.name.clone(),
-            attach: String::new(),
             attach_type: attach_type_name(trigger.attach_type).to_owned(),
             flags: trigger.flags.clone(),
             types: trigger
@@ -2346,49 +2341,19 @@ fn map_triggers(source: &ZoneSource, bundle: &mut OutputBundle) {
     }
 }
 
-/// Give every trigger without a legacy `attach` the first owner (in
-/// `attachments` key order: items, mobs, rooms) whose list contains it. The
-/// field therefore never names an owner the lists omit. Called once after the
-/// prototype `T` lines and once after the zone-reset fold, so an owner from a
-/// `T` line is preferred to one from a reset command.
-fn set_legacy_attach(triggers: &mut TriggersFile) {
-    for (owner, list) in &triggers.attachments {
-        for id in list {
-            if let Some(def) = triggers.triggers.get_mut(id)
-                && def.attach.is_empty()
-            {
-                def.attach = owner.clone();
-            }
-        }
-    }
-}
-
-/// Parse coverage for every emitted script (per construct and per record).
+/// Record, script-line and attach-type counts for every emitted script.
 ///
-/// This runs the Phase-1 parser from `mib_tba::triggers::ast`; it is kept
-/// behind this one function so it can be replaced by the DG VM's analysis.
-fn parser_based_trigger_coverage(triggers: &TriggersFile) -> TriggerCoverage {
+/// The script lines are the lines `dg_vm::script::Program::parse` keeps, which
+/// is what the VM executes.
+fn trigger_coverage(triggers: &TriggersFile) -> TriggerCoverage {
     let mut coverage = TriggerCoverage::default();
     for def in triggers.triggers.values() {
         coverage.records += 1;
-        let program = parse_script(&def.script);
-        if program.error.is_some() {
-            coverage.parse_failures += 1;
-        } else {
-            coverage.parsed += 1;
-        }
-        if !program.unsupported.is_empty() {
-            coverage.records_with_unsupported += 1;
-        }
-        for (kind, count) in &program.constructs {
-            *coverage.construct_counts.entry(kind.clone()).or_default() += count;
-        }
-        for (kind, count) in &program.unsupported {
-            *coverage.unsupported_counts.entry(kind.clone()).or_default() += count;
-        }
-        for (token, count) in unknown_tokens_excluding(&program.referenced_text(), &program.vars) {
-            *coverage.unknown_tokens.entry(token).or_default() += count;
-        }
+        coverage.script_lines += Program::parse(&def.script).lines.len();
+        *coverage
+            .by_attach_type
+            .entry(def.attach_type.clone())
+            .or_default() += 1;
     }
     coverage
 }

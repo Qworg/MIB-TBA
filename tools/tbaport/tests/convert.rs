@@ -70,21 +70,35 @@ fn fixture_bundle_is_schema_exact_and_deterministic() {
     assert_eq!(first.report.totals.triggers_converted, 1);
 
     // Every record is emitted with its own attach_type and raw type letters;
-    // the legacy `attach` is the first resolvable owner in label order (the
-    // bag's `T` line sorts before mob 3001's).
+    // the owners that list it are in `attachments`.
     let emitted = first
         .bundle
         .triggers
         .triggers
         .get(&mib_tba::triggers::content::TriggerId::from_vnum(3000))
         .expect("fixture trigger emitted");
-    assert_eq!(emitted.attach, "item:tba_item_3001");
+    assert!(
+        first.bundle.triggers.attachments["item:tba_item_3001"]
+            .contains(&mib_tba::triggers::content::TriggerId::from_vnum(3000)),
+        "the bag lists the trigger"
+    );
     assert_eq!(emitted.attach_type, "mob");
     assert_eq!(emitted.flags, "q");
     assert_eq!(emitted.types, vec!["leave"]);
     assert!(emitted.script.contains("Hello from a DG trigger."));
     assert_eq!(first.report.trigger_coverage.records, 1);
-    assert_eq!(first.report.trigger_coverage.parsed, 1);
+    assert_eq!(
+        first.report.trigger_coverage.script_lines,
+        emitted
+            .script
+            .split(['\n', '\r'])
+            .filter(|line| !line.is_empty())
+            .count()
+    );
+    assert_eq!(
+        first.report.trigger_coverage.by_attach_type.get("mob"),
+        Some(&1)
+    );
 
     // The trigger layer is classified as well as emitted. The fixture trigger
     // (`0 q 100`, mob) is a `GatekeeperTransport`.
@@ -622,49 +636,48 @@ where
     assert_eq!(body, again, "round-trip must be byte-stable");
 }
 
-/// The Phase-1 parser reads every record the converter emits. A handful of
-/// source scripts are structurally broken (an unmatched `end`/`done`), so the
-/// coverage counts their failures by name; none of them may be essential.
+/// The coverage counts every emitted record, its script lines (a line ends at
+/// `\n` or `\r`, empty lines are dropped, as `parse_trigger` does) and its
+/// attach type.
 #[test]
-fn every_essential_trigger_parses() {
+fn trigger_coverage_counts_the_emitted_corpus() {
     let Some(root) = real_tbamud() else {
         eprintln!("skipping: tbaMUD source not checked out (set TBAMUD_SOURCE)");
         return;
     };
-    let options = ConvertOptions {
+    let conversion = convert(&ConvertOptions {
         source_root: root,
         only: None,
         start_room: Some(DEFAULT_START_ROOM),
-    };
-    let conversion = convert(&options).expect("full conversion");
-    let essential: std::collections::BTreeSet<i32> = tbaport::build_triage(&options)
-        .expect("full triage")
-        .records
-        .iter()
-        .filter(|record| record.essential)
-        .map(|record| record.vnum)
-        .collect();
-    assert_eq!(essential.len(), 133);
-
-    let mut failures = Vec::new();
-    for def in conversion.bundle.triggers.triggers.values() {
-        let program = mib_tba::triggers::ast::parse_script(&def.script);
-        if program.error.is_some() {
-            assert!(
-                !essential.contains(&def.vnum),
-                "essential trigger {} must parse",
-                def.vnum
-            );
-            failures.push(def.vnum);
-        }
-    }
+    })
+    .expect("full conversion");
     let coverage = &conversion.report.trigger_coverage;
     assert_eq!(
         coverage.records, 1461,
         "coverage spans every emitted record"
     );
-    assert_eq!(coverage.parse_failures, failures.len(), "coverage agrees");
-    assert_eq!(coverage.parsed + coverage.parse_failures, coverage.records);
+    let lines: usize = conversion
+        .bundle
+        .triggers
+        .triggers
+        .values()
+        .map(|def| {
+            def.script
+                .split(['\n', '\r'])
+                .filter(|line| !line.is_empty())
+                .count()
+        })
+        .sum();
+    assert_eq!(coverage.script_lines, lines);
+    assert_eq!(
+        coverage.by_attach_type,
+        std::collections::BTreeMap::from([
+            ("mob".to_owned(), 795),
+            ("obj".to_owned(), 282),
+            ("wld".to_owned(), 384)
+        ]),
+        "the 795/282/384 split of the triage"
+    );
 }
 
 fn ids(vnums: &[i32]) -> Vec<mib_tba::triggers::content::TriggerId> {
@@ -1043,14 +1056,11 @@ fn a_dependent_trigger_after_a_disabled_command_is_skipped() {
 }
 
 /// A reset `T` whose room is missing is disabled at boot, so the trigger is
-/// attached nowhere: the legacy `attach` field agrees with the lists.
+/// attached nowhere.
 #[test]
-fn legacy_attach_never_names_an_owner_the_lists_omit() {
-    let conversion = convert_zone_30("legacy-attach", "M 0 3000 1 3001\nT 0 0 3000 9999\n", true);
-    let bundle = &conversion.bundle;
-    assert!(bundle.triggers.attachments.is_empty());
-    let def = &bundle.triggers.triggers[&mib_tba::triggers::content::TriggerId::from_vnum(3000)];
-    assert_eq!(def.attach, "");
+fn a_disabled_reset_trigger_is_unattached() {
+    let conversion = convert_zone_30("unattached", "M 0 3000 1 3001\nT 0 0 3000 9999\n", true);
+    assert!(conversion.bundle.triggers.attachments.is_empty());
     assert_eq!(
         conversion.report.trigger_attachments.unattached,
         [3000],
@@ -1058,13 +1068,14 @@ fn legacy_attach_never_names_an_owner_the_lists_omit() {
     );
 }
 
-/// With a reset-folded owner, `attach` names it.
+/// A reset `T` naming an existing room folds into that owner's list.
 #[test]
-fn legacy_attach_follows_a_folded_owner() {
-    let conversion = convert_zone_30("legacy-folded", "M 0 3000 1 3001\nT 0 0 3000 3001\n", true);
-    let def = &conversion.bundle.triggers.triggers
-        [&mib_tba::triggers::content::TriggerId::from_vnum(3000)];
-    assert_eq!(def.attach, "npc:tba_npc_3000");
+fn a_reset_trigger_folds_into_its_owner() {
+    let conversion = convert_zone_30("folded", "M 0 3000 1 3001\nT 0 0 3000 3001\n", true);
+    assert_eq!(
+        conversion.bundle.triggers.attachments["npc:tba_npc_3000"],
+        ids(&[3000])
+    );
 }
 
 /// A zone may span more than 100 vnums; the owner list goes to its zone's
