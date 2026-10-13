@@ -2947,19 +2947,7 @@ mod tests {
         host.char_to_room(mob, room);
         let owner = host.add_obj(9, "orb");
         host.obj_to_char(owner, mob);
-        let proto = host.add_proto(
-            6,
-            AttachType::Obj,
-            "b",
-            100,
-            "",
-            "makeuid r room x\nsay %r%",
-        );
-        let id = host.attach(owner, &proto).unwrap();
-        // The mob needs a script for say to reach mud_command? No: an object
-        // owner's `say` goes to obj_command_interpreter; read the variable
-        // back through remote instead.
-        let _ = id;
+        // An object owner cannot `say`; read the variable back via remote.
         let proto = host.add_proto(
             7,
             AttachType::Obj,
