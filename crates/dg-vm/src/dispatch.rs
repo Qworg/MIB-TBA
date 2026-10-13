@@ -18,10 +18,17 @@
 //!   can change (attach, detach, purge of its own owner). Here each walk takes
 //!   a snapshot of [`Script::trigger_ids`] and re-fetches every instance by
 //!   id, so a trigger detached by an earlier run is skipped and the run state
-//!   tested is always current. The same goes for the room people, room
-//!   contents and memory lists the C walks with a saved `next` pointer.
-//! - "The owner was purged" (`!obj` after `script_driver` NULLs `go_adress`,
-//!   `has_obj_by_uid_in_lookup_table`) is `!host.exists(obj)`; a purged
+//!   tested is always current, and a trigger attached by an earlier run in
+//!   the same walk is not examined (the C reaches it through `t->next`). The
+//!   room people, room contents and memory lists the C walks with a saved
+//!   `next` pointer are snapshots too. `greet_mtrigger`,
+//!   `greet_memory_mtrigger` and `entry_memory_mtrigger` are the exception:
+//!   the C reads `ch->next_in_room` after the run, so they advance through
+//!   the live list (a character a script moved carries the walk into its
+//!   new room), ending after `LIVE_WALK_LIMIT` characters.
+//! - "The owner was purged" (`!obj` after `script_driver` NULLs `go_adress`)
+//!   is `dg_owner_purged` as the run returned, or `!host.exists(obj)`;
+//!   `has_obj_by_uid_in_lookup_table` is `!host.exists(obj)`; a purged
 //!   character is `DEAD(ch)`, [`WorldHost::is_dead`].
 //! - The `SYSERR: … Trigger #%d has no text argument!` lines are `mudlog(NRM,
 //!   LVL_BUILDER, …)` in the C. The host's only `mudlog` primitive
@@ -60,16 +67,10 @@ use crate::types::{
 
 /// What dispatch needs from the world beyond the shared primitives. Position,
 /// fighting, hit points, charm, visibility, the people / contents /
-/// equipment / inventory lists, room zones, spell names, memory lists and
-/// the room table are all read through [`crate::host::WorldHost`],
+/// equipment / inventory lists, room zones, the playing characters, spell
+/// names, memory lists and the room table are all read through [`crate::host::WorldHost`],
 /// [`crate::fields_char::CharHost`] and [`crate::commands::CmdHost`].
 pub trait DispatchHost {
-    /// `is_empty(world[room].zone)` (`db.c`): no player is in the zone the
-    /// room belongs to (no `CON_PLAYING` descriptor whose character is in a
-    /// room of that zone). Gates the random and time triggers of anything
-    /// that does not carry the `GLOBAL` type bit.
-    fn disp_zone_empty(&self, room: Uid) -> bool;
-
     /// `free_proto_script(&mob_proto[GET_MOB_RNUM(ch)], MOB_TRIGGER)` /
     /// `free_proto_script(&obj_proto[GET_OBJ_RNUM(obj)], OBJ_TRIGGER)`: drop
     /// the script from the prototype of this mob or object, so nothing
@@ -99,6 +100,21 @@ fn skill_name<H: DgHost + ?Sized>(host: &H, num: i32) -> String {
     } else {
         "UNDEFINED".to_owned()
     }
+}
+
+/// `is_empty(world[room].zone)` (`db.c`): no `CON_PLAYING` character stands in
+/// a room of the zone, not counting an immortal with `PRF_NOHASSLE`
+/// (`!IS_NPC && GET_LEVEL >= LVL_IMMORT && PRF_FLAGGED(PRF_NOHASSLE)`).
+/// Gates the random and time triggers of anything without the `GLOBAL` bit.
+fn zone_empty<H: DgHost + ?Sized>(host: &H, room: Uid) -> bool {
+    let zone = host.cmd_room_zone(room);
+    !host.cmd_playing_characters().into_iter().any(|ch| {
+        let Some(here) = room_of(host, ch) else {
+            return false;
+        };
+        host.cmd_room_zone(here) == zone
+            && !(!host.is_npc(ch) && host.level(ch) >= LVL_IMMORT && host.cmd_nohassle(ch))
+    })
 }
 
 /// `SCRIPT_CHECK(go, type)`.
@@ -194,9 +210,20 @@ fn set_uid_var<H: DgHost + ?Sized>(host: &mut H, go: Uid, id: u64, name: &str, u
     set_var(host, go, id, name, &uid_text(uid));
 }
 
-/// `script_driver(&go, t, type, TRIG_NEW)`.
+/// `script_driver(&go, t, type, TRIG_NEW)`. `dg_owner_purged` is cleared first
+/// so that [`object_gone`] reads what this run left, whichever way the driver
+/// returned.
 fn run<H: DgHost + ?Sized>(host: &mut H, go: Uid, id: u64) -> i32 {
+    *host.owner_purged_mut() = false;
     script_driver(host, go, id, Mode::New)
+}
+
+/// The C's `!obj` after `script_driver(&obj, ...)`: the driver NULLs `obj`
+/// when `dg_owner_purged` is set as it returns, and a nested script that
+/// purged its own owner leaves the flag set, so it counts for the outer
+/// object too. An object that no longer exists counts as well.
+fn object_gone<H: DgHost + ?Sized>(host: &mut H, obj: Uid) -> bool {
+    *host.owner_purged_mut() || !host.exists(obj)
 }
 
 /// The first trigger with this type bit that is not running and wins its
@@ -272,6 +299,23 @@ fn text_matches(narg: i32, arg: &str, text: &str) -> bool {
 fn room_of<H: DgHost + ?Sized>(host: &H, ch: Uid) -> Option<Uid> {
     host.in_room(ch).filter(|room| host.exists(*room))
 }
+
+/// `ch->next_in_room` read from the live list, after whatever the last run
+/// did to it: the entry after `ch` in the people of the room `ch` is in now
+/// (a character a script moved continues in its new room's list, as the C's
+/// pointer does). `None` at the end of the list, or for a character that is
+/// gone or in no room, where the C would follow a dangling pointer.
+fn next_in_room<H: DgHost + ?Sized>(host: &H, ch: Uid) -> Option<Uid> {
+    let room = room_of(host, ch)?;
+    let people = host.room_people(room);
+    let index = people.iter().position(|other| *other == ch)?;
+    people.get(index + 1).copied()
+}
+
+/// Bound on the steps of a live-list walk: a script that keeps moving the
+/// walked character into a list it has not yet left would loop for ever in
+/// the C; here the walk ends after this many characters.
+const LIVE_WALK_LIMIT: usize = 100_000;
 
 /// Remove one memory entry from a mob's `SCRIPT_MEM` list (the unlink loop
 /// of `greet_memory_mtrigger` / `entry_memory_mtrigger`). Does nothing when
@@ -410,42 +454,64 @@ pub fn greet_memory_mtrigger<H: DgHost + ?Sized>(host: &mut H, actor: Uid) {
         return;
     };
     let mut command_performed = false;
-    for ch in host.room_people(room) {
-        if !host.exists(ch)
-            || host.script_mem(ch).is_empty()
-            || !awake(host, ch)
-            || fighting(host, ch)
-            || ch == actor
-            || charmed(host, ch)
-        {
+    let mut cur = host.room_people(room).first().copied();
+    let mut steps = 0;
+    while let Some(ch) = cur {
+        steps += 1;
+        if steps > LIVE_WALK_LIMIT {
+            break;
+        }
+        cur = greet_memory_visit(host, actor, ch, &mut command_performed)
+            .then(|| next_in_room(host, ch))
+            .flatten();
+    }
+}
+
+/// The body of the [`greet_memory_mtrigger`] walk for one mob; `false` when
+/// the walk cannot go on (the mob is gone).
+fn greet_memory_visit<H: DgHost + ?Sized>(
+    host: &mut H,
+    actor: Uid,
+    ch: Uid,
+    command_performed: &mut bool,
+) -> bool {
+    if !host.exists(ch) {
+        return false;
+    }
+    if host.script_mem(ch).is_empty()
+        || !awake(host, ch)
+        || fighting(host, ch)
+        || ch == actor
+        || charmed(host, ch)
+    {
+        return true;
+    }
+    for mem in host.script_mem(ch) {
+        let current = host.script_mem(ch);
+        if current.is_empty() {
+            break;
+        }
+        if mem.id != actor || !current.contains(&mem) {
             continue;
         }
-        for mem in host.script_mem(ch) {
-            let current = host.script_mem(ch);
-            if current.is_empty() {
-                break;
-            }
-            if mem.id != actor || !current.contains(&mem) {
-                continue;
-            }
-            if let Some(cmd) = &mem.cmd {
-                host.mud_command(ch, cmd);
-                command_performed = true;
-                break;
-            }
-            if !command_performed {
-                for id in trigger_ids(host, ch) {
-                    let (has_type, idle, narg) = trig_state(host, ch, id, MTRIG_MEMORY);
-                    if has_type && host.can_see(ch, actor) && idle && roll(host, narg) {
-                        set_uid_var(host, ch, id, "actor", actor);
-                        run(host, ch, id);
-                        break;
-                    }
+        if let Some(cmd) = &mem.cmd {
+            host.mud_command(ch, cmd);
+            *command_performed = true;
+            break;
+        }
+        if !*command_performed {
+            for id in trigger_ids(host, ch) {
+                let (has_type, idle, narg) = trig_state(host, ch, id, MTRIG_MEMORY);
+                if has_type && host.can_see(ch, actor) && idle && roll(host, narg) {
+                    set_uid_var(host, ch, id, "actor", actor);
+                    run(host, ch, id);
+                    break;
                 }
             }
-            forget(host, ch, &mem);
         }
+        forget(host, ch, &mem);
     }
+    true
 }
 
 /// `greet_mtrigger(actor, dir)`: runs **every** `greet` trigger (that the mob
@@ -466,28 +532,36 @@ pub fn greet_mtrigger<H: DgHost + ?Sized>(host: &mut H, actor: Uid, dir: i32) ->
         return 1;
     };
     let mut final_ret = 1;
-    for ch in host.room_people(room) {
-        if !host.exists(ch)
-            || !script_check(host, ch, MTRIG_GREET | MTRIG_GREET_ALL)
-            || !awake(host, ch)
-            || fighting(host, ch)
-            || ch == actor
-            || charmed(host, ch)
-        {
-            continue;
+    let mut cur = host.room_people(room).first().copied();
+    let mut steps = 0;
+    while let Some(ch) = cur {
+        steps += 1;
+        if steps > LIVE_WALK_LIMIT {
+            break;
         }
-        for id in trigger_ids(host, ch) {
-            let (greet, idle, narg) = trig_state(host, ch, id, MTRIG_GREET);
-            let (greet_all, _, _) = trig_state(host, ch, id, MTRIG_GREET_ALL);
-            if ((greet && host.can_see(ch, actor)) || greet_all) && idle && roll(host, narg) {
-                let direction = direction_text(host, dir, true);
-                set_var(host, ch, id, "direction", direction);
-                set_uid_var(host, ch, id, "actor", actor);
-                if run(host, ch, id) == 0 {
-                    final_ret = 0;
+        if !host.exists(ch) {
+            break;
+        }
+        if script_check(host, ch, MTRIG_GREET | MTRIG_GREET_ALL)
+            && awake(host, ch)
+            && !fighting(host, ch)
+            && ch != actor
+            && !charmed(host, ch)
+        {
+            for id in trigger_ids(host, ch) {
+                let (greet, idle, narg) = trig_state(host, ch, id, MTRIG_GREET);
+                let (greet_all, _, _) = trig_state(host, ch, id, MTRIG_GREET_ALL);
+                if ((greet && host.can_see(ch, actor)) || greet_all) && idle && roll(host, narg) {
+                    let direction = direction_text(host, dir, true);
+                    set_var(host, ch, id, "direction", direction);
+                    set_uid_var(host, ch, id, "actor", actor);
+                    if run(host, ch, id) == 0 {
+                        final_ret = 0;
+                    }
                 }
             }
         }
+        cur = next_in_room(host, ch);
     }
     final_ret
 }
@@ -506,29 +580,32 @@ pub fn entry_memory_mtrigger<H: DgHost + ?Sized>(host: &mut H, ch: Uid) {
     let Some(room) = room_of(host, ch) else {
         return;
     };
-    for actor in host.room_people(room) {
-        if host.script_mem(ch).is_empty() {
+    let mut cur = host.room_people(room).first().copied();
+    let mut steps = 0;
+    while let Some(actor) = cur {
+        steps += 1;
+        if steps > LIVE_WALK_LIMIT || host.script_mem(ch).is_empty() || !host.exists(actor) {
             break;
         }
-        if actor == ch || !host.exists(actor) {
-            continue;
+        if actor != ch {
+            for mem in host.script_mem(ch) {
+                let current = host.script_mem(ch);
+                if current.is_empty() {
+                    break;
+                }
+                if mem.id != actor || !current.contains(&mem) {
+                    continue;
+                }
+                if let Some(cmd) = &mem.cmd {
+                    host.mud_command(ch, cmd);
+                } else if let Some(id) = find_rolled(host, ch, MTRIG_MEMORY) {
+                    set_uid_var(host, ch, id, "actor", actor);
+                    run(host, ch, id);
+                }
+                forget(host, ch, &mem);
+            }
         }
-        for mem in host.script_mem(ch) {
-            let current = host.script_mem(ch);
-            if current.is_empty() {
-                break;
-            }
-            if mem.id != actor || !current.contains(&mem) {
-                continue;
-            }
-            if let Some(cmd) = &mem.cmd {
-                host.mud_command(ch, cmd);
-            } else if let Some(id) = find_rolled(host, ch, MTRIG_MEMORY) {
-                set_uid_var(host, ch, id, "actor", actor);
-                run(host, ch, id);
-            }
-            forget(host, ch, &mem);
-        }
+        cur = next_in_room(host, actor);
     }
 }
 
@@ -992,8 +1069,10 @@ pub fn random_otrigger<H: DgHost + ?Sized>(host: &mut H, obj: Uid) {
 /// (no roll), stopping if a script purged the object.
 ///
 /// Called from `point_update` (`limits.c`) when an object's timer counts down
-/// to zero. The result is ignored; the caller goes on to the timeout handling
-/// (the object's decay) unless the object was purged.
+/// to zero (`else if (GET_OBJ_TIMER(j) > 0) { GET_OBJ_TIMER(j)--; if
+/// (!GET_OBJ_TIMER(j)) timer_otrigger(j); }`). The result is ignored and
+/// nothing follows the call: the object stays unless a script purged it (the
+/// decay of corpses is a separate branch of `point_update`).
 pub fn timer_otrigger<H: DgHost + ?Sized>(host: &mut H, obj: Uid) {
     if !script_check(host, obj, OTRIG_TIMER) {
         return;
@@ -1001,7 +1080,7 @@ pub fn timer_otrigger<H: DgHost + ?Sized>(host: &mut H, obj: Uid) {
     for id in trigger_ids(host, obj) {
         if checked(host, obj, id, OTRIG_TIMER).is_some() {
             run(host, obj, id);
-            if !host.exists(obj) {
+            if object_gone(host, obj) {
                 return;
             }
         }
@@ -1024,7 +1103,7 @@ pub fn get_otrigger<H: DgHost + ?Sized>(host: &mut H, obj: Uid, actor: Uid) -> i
     };
     set_uid_var(host, obj, id, "actor", actor);
     let ret_val = run(host, obj, id);
-    if host.is_dead(actor) || !host.exists(obj) {
+    if host.is_dead(actor) || object_gone(host, obj) {
         0
     } else {
         ret_val
@@ -1071,7 +1150,7 @@ pub fn cmd_otrig<H: DgHost + ?Sized>(
             if run(host, obj, id) != 0 {
                 return 1;
             }
-            if !host.exists(obj) {
+            if object_gone(host, obj) {
                 return 0;
             }
         }
@@ -1151,9 +1230,10 @@ pub fn command_otrigger<H: DgHost + ?Sized>(
 /// the script's result; `1` if none ran.
 ///
 /// Called from `perform_wear` (`act.item.c`) before the object is worn, from
-/// `reset_zone` (`db.c`) for `E` commands, and from `load_char` (`players.c`)
-/// when restoring equipment; a `0` return keeps the object off (zone reset
-/// puts it in the mob's inventory). `_where` is unused, as in the C.
+/// `reset_zone` (`db.c`) for `E` commands, and from `save_char` (`players.c`)
+/// when it re-equips the character after writing the file; a `0` return
+/// keeps the object off (both of those put it in the carrier's inventory
+/// with `obj_to_char`). `_where` is unused, as in the C.
 pub fn wear_otrigger<H: DgHost + ?Sized>(host: &mut H, obj: Uid, actor: Uid, _where: i32) -> i32 {
     if !script_check(host, obj, OTRIG_WEAR) {
         return 1;
@@ -1162,7 +1242,7 @@ pub fn wear_otrigger<H: DgHost + ?Sized>(host: &mut H, obj: Uid, actor: Uid, _wh
         if checked(host, obj, id, OTRIG_WEAR).is_some() {
             set_uid_var(host, obj, id, "actor", actor);
             let ret_val = run(host, obj, id);
-            return if host.exists(obj) { ret_val } else { 0 };
+            return if !object_gone(host, obj) { ret_val } else { 0 };
         }
     }
     1
@@ -1185,7 +1265,7 @@ pub fn remove_otrigger<H: DgHost + ?Sized>(host: &mut H, obj: Uid, actor: Uid) -
         if checked(host, obj, id, OTRIG_REMOVE).is_some() {
             set_uid_var(host, obj, id, "actor", actor);
             let ret_val = run(host, obj, id);
-            return if host.exists(obj) { ret_val } else { 0 };
+            return if !object_gone(host, obj) { ret_val } else { 0 };
         }
     }
     1
@@ -1207,7 +1287,7 @@ pub fn drop_otrigger<H: DgHost + ?Sized>(host: &mut H, obj: Uid, actor: Uid) -> 
     };
     set_uid_var(host, obj, id, "actor", actor);
     let ret_val = run(host, obj, id);
-    if host.exists(obj) { ret_val } else { 0 }
+    if !object_gone(host, obj) { ret_val } else { 0 }
 }
 
 /// `give_otrigger(obj, actor, victim)`: runs the first `give` trigger that
@@ -1228,7 +1308,7 @@ pub fn give_otrigger<H: DgHost + ?Sized>(host: &mut H, obj: Uid, actor: Uid, vic
     set_uid_var(host, obj, id, "actor", actor);
     set_uid_var(host, obj, id, "victim", victim);
     let ret_val = run(host, obj, id);
-    if !host.exists(obj) || host.obj_carried_by(obj) != Some(actor) {
+    if object_gone(host, obj) || host.obj_carried_by(obj) != Some(actor) {
         0
     } else {
         ret_val
@@ -1314,7 +1394,7 @@ pub fn leave_otrigger<H: DgHost + ?Sized>(host: &mut H, room: Uid, actor: Uid, d
                 if run(host, obj, id) == 0 {
                     final_ret = 0;
                 }
-                if !host.exists(obj) {
+                if object_gone(host, obj) {
                     break;
                 }
             }
@@ -1345,7 +1425,7 @@ pub fn consume_otrigger<H: DgHost + ?Sized>(host: &mut H, obj: Uid, actor: Uid, 
                 _ => {}
             }
             let ret_val = run(host, obj, id);
-            return if host.exists(obj) { ret_val } else { 0 };
+            return if !object_gone(host, obj) { ret_val } else { 0 };
         }
     }
     1
@@ -1499,9 +1579,11 @@ pub fn speech_wtrigger<H: DgHost + ?Sized>(host: &mut H, actor: Uid, str: &str) 
 /// result; `1` if none ran.
 ///
 /// Called from `perform_drop` (`act.item.c`) after `drop_otrigger`, for a
-/// plain drop (not junk or donate), and from `perform_drop_gold` when gold is
-/// donated; a `0` return keeps the object (the donate branch extracts the
-/// money object instead).
+/// plain drop (`SCMD_DROP`), and from `perform_drop_gold` (`act.item.c`) in
+/// its non-donate branch, for the coins about to be dropped (the donate and
+/// junk modes do not call it); a `0` return keeps the object, and for coins
+/// the caller extracts the money object if it still exists. (Coins are
+/// carried by nobody, so a `drop` trigger that ran always refuses them.)
 pub fn drop_wtrigger<H: DgHost + ?Sized>(host: &mut H, obj: Uid, actor: Uid) -> i32 {
     let Some(room) = room_of(host, actor) else {
         return 1;
@@ -1657,7 +1739,7 @@ pub fn script_trigger_check<H: DgHost + ?Sized>(host: &mut H) {
             continue;
         }
         if script_check(host, ch, WTRIG_RANDOM)
-            && (room_of(host, ch).is_some_and(|room| !host.disp_zone_empty(room))
+            && (room_of(host, ch).is_some_and(|room| !zone_empty(host, room))
                 || script_check(host, ch, WTRIG_GLOBAL))
         {
             random_mtrigger(host, ch);
@@ -1675,7 +1757,7 @@ pub fn script_trigger_check<H: DgHost + ?Sized>(host: &mut H) {
 
     for room in all_rooms(host) {
         if script_check(host, room, WTRIG_RANDOM)
-            && (!host.disp_zone_empty(room) || script_check(host, room, WTRIG_GLOBAL))
+            && (!zone_empty(host, room) || script_check(host, room, WTRIG_GLOBAL))
         {
             random_wtrigger(host, room);
         }
@@ -1693,7 +1775,7 @@ pub fn check_time_triggers<H: DgHost + ?Sized>(host: &mut H) {
             continue;
         }
         if script_check(host, ch, WTRIG_TIME)
-            && (room_of(host, ch).is_some_and(|room| !host.disp_zone_empty(room))
+            && (room_of(host, ch).is_some_and(|room| !zone_empty(host, room))
                 || script_check(host, ch, WTRIG_GLOBAL))
         {
             time_mtrigger(host, ch);
@@ -1711,7 +1793,7 @@ pub fn check_time_triggers<H: DgHost + ?Sized>(host: &mut H) {
 
     for room in all_rooms(host) {
         if script_check(host, room, WTRIG_TIME)
-            && (!host.disp_zone_empty(room) || script_check(host, room, WTRIG_GLOBAL))
+            && (!zone_empty(host, room) || script_check(host, room, WTRIG_GLOBAL))
         {
             time_wtrigger(host, room);
         }
@@ -1750,6 +1832,7 @@ mod tests {
             let guard = h.add_mob(3024, "the guard");
             h.set_num(alice, "level", 5);
             h.set_num(alice, "class", 1);
+            h.set_num(alice, "playing", 1);
             for ch in [alice, guard] {
                 h.set_num(ch, "pos", 8);
                 h.char_to_room(ch, room);
@@ -3718,8 +3801,10 @@ mod tests {
         assert_eq!(w.g(w.room, "actor"), Some(id(w.alice)));
         enter_wtrigger(&mut w.h, w.room, w.alice, -1);
         assert_eq!(w.g(w.room, "direction").as_deref(), Some("none"));
-        w.rolls(&[1]);
+        // No AFF_CHARM test on the actor.
         w.charm(w.alice);
+        w.rolls(&[1]);
+        assert_eq!(enter_wtrigger(&mut w.h, w.room, w.alice, 0), 0);
         // Roll lost: 1, and the first-rolled trigger only.
         let mut w = W::new();
         w.trig(w.room, 1, "g", 10, "", "return 0");
@@ -3966,7 +4051,7 @@ mod tests {
     fn random_sweep_needs_an_occupied_zone_or_the_global_bit() {
         let mut w = W::new();
         w.h.set_num(w.room, "zone", 30);
-        w.h.globals.nums.insert("zone:30:empty".to_owned(), 1);
+        w.h.set_num(w.alice, "playing", 0);
         let orb = w.obj(10, "an orb");
         w.trig(w.guard, 3, "b", 100, "", RAN);
         w.trig(w.room, 2, "b", 100, "", RAN);
@@ -3984,7 +4069,6 @@ mod tests {
         // An occupied zone needs no bit.
         let mut w = W::new();
         w.h.set_num(w.room, "zone", 30);
-        w.h.globals.nums.insert("zone:30:empty".to_owned(), 0);
         w.trig(w.guard, 3, "b", 100, "", RAN);
         script_trigger_check(&mut w.h);
         assert!(w.ran(w.guard));
@@ -4035,7 +4119,7 @@ mod tests {
     fn time_sweep_zone_rules() {
         let mut w = W::new();
         w.h.set_num(w.room, "zone", 7);
-        w.h.globals.nums.insert("zone:7:empty".to_owned(), 1);
+        w.h.set_num(w.alice, "playing", 0);
         w.trig(w.guard, 3, "t", 5, "", RAN);
         w.trig(w.room, 2, "t", 5, "", RAN);
         w.h.time.hours = 5;
@@ -4045,5 +4129,607 @@ mod tests {
         w.trig(w.room, 5, "a", 5, "", "set g 1\nglobal g");
         check_time_triggers(&mut w.h);
         assert!(w.ran(w.guard) && w.ran(w.room));
+    }
+
+    // ---- follow-ups from the review ------------------------------------------------
+
+    /// Alice as a level-33 (`LVL_GRGOD`) god without nohassle: a valid target
+    /// only when the C passes `DG_ALLOW_GODS`.
+    fn grgod(w: &mut W) {
+        w.h.set_num(w.alice, "level", 33);
+    }
+
+    fn mem_of(ch: Uid) -> Vec<ScriptMemory> {
+        vec![ScriptMemory { id: ch, cmd: None }]
+    }
+
+    #[test]
+    fn allow_gods_is_passed_where_the_c_passes_it() {
+        // DG_ALLOW_GODS: greet, greet_memory and the three leave triggers.
+        let mut w = W::new();
+        grgod(&mut w);
+        w.trig(w.guard, 1, "g", 100, "", &greet_script(0));
+        assert_eq!(greet_mtrigger(&mut w.h, w.alice, 0), 0);
+        // A god with nohassle is not a target either way.
+        w.h.set_num(w.alice, "nohassle", 1);
+        assert_eq!(greet_mtrigger(&mut w.h, w.alice, 0), 1);
+
+        let mut w = W::new();
+        grgod(&mut w);
+        w.trig(w.guard, 1, "o", 100, "", RAN);
+        w.h.set_script_mem(w.guard, mem_of(w.alice));
+        greet_memory_mtrigger(&mut w.h, w.alice);
+        assert!(w.ran(w.guard));
+
+        let mut w = W::new();
+        grgod(&mut w);
+        w.trig(w.guard, 1, "q", 100, "", "return 0");
+        assert_eq!(leave_mtrigger(&mut w.h, w.alice, 0), 0);
+
+        let mut w = W::new();
+        grgod(&mut w);
+        let rock = w.obj(1, "a rock");
+        w.h.obj_to_room(rock, w.room);
+        w.trig(rock, 1, "q", 100, "", "return 0");
+        assert_eq!(leave_otrigger(&mut w.h, w.room, w.alice, 0), 0);
+
+        let mut w = W::new();
+        grgod(&mut w);
+        w.trig(w.room, 1, "q", 100, "", "return 0");
+        assert_eq!(leave_wtrigger(&mut w.h, w.room, w.alice, 0), 0);
+    }
+
+    #[test]
+    fn allow_gods_is_not_passed_to_the_command_and_remove_triggers() {
+        // valid_dg_target(actor, 0): a level-33 god is not a target.
+        let mut w = W::new();
+        grgod(&mut w);
+        w.trig(w.guard, 1, "c", 0, "*", RAN);
+        assert_eq!(command_mtrigger(&mut w.h, w.alice, "x", ""), 0);
+        assert!(!w.ran(w.guard));
+
+        let mut w = W::new();
+        grgod(&mut w);
+        let rock = w.obj(1, "a rock");
+        w.h.obj_to_room(rock, w.room);
+        w.trig(rock, 1, "c", OCMD_ROOM, "*", "return 1");
+        assert_eq!(command_otrigger(&mut w.h, w.alice, "x", ""), 0);
+
+        let mut w = W::new();
+        grgod(&mut w);
+        let ring = w.obj(1, "a ring");
+        w.trig(ring, 1, "l", 100, "", "return 0");
+        assert_eq!(remove_otrigger(&mut w.h, ring, w.alice), 1);
+        w.h.set_num(w.alice, "level", 5);
+        assert_eq!(remove_otrigger(&mut w.h, ring, w.alice), 0);
+
+        let mut w = W::new();
+        grgod(&mut w);
+        w.trig(w.room, 1, "c", 0, "*", "return 1");
+        assert_eq!(command_wtrigger(&mut w.h, w.alice, "x", ""), 0);
+        w.h.set_num(w.alice, "level", 5);
+        assert_eq!(command_wtrigger(&mut w.h, w.alice, "x", ""), 1);
+    }
+
+    #[test]
+    fn greet_memory_wants_a_valid_target_and_a_mob_that_is_not_fighting() {
+        let mut w = W::new();
+        w.trig(w.guard, 1, "o", 100, "", RAN);
+        w.h.set_script_mem(w.guard, mem_of(w.alice));
+        w.h.set_num(w.alice, "dg_invalid", 1);
+        greet_memory_mtrigger(&mut w.h, w.alice);
+        assert!(!w.ran(w.guard));
+        assert_eq!(w.h.script_mem(w.guard).len(), 1);
+
+        let mut w = W::new();
+        w.trig(w.guard, 1, "o", 100, "", RAN);
+        w.h.set_script_mem(w.guard, mem_of(w.alice));
+        w.h.set_link(w.guard, "fighting", Some(w.alice));
+        greet_memory_mtrigger(&mut w.h, w.alice);
+        assert!(!w.ran(w.guard));
+        assert_eq!(w.h.script_mem(w.guard).len(), 1);
+    }
+
+    /// Mutations of a mob that make `leave` and `door` skip it, and the actor
+    /// each is run with.
+    fn mob_skip_cases(w: &mut W, case: usize) -> Uid {
+        match case {
+            0 => w.sleep(w.guard),
+            1 => w.h.set_link(w.guard, "fighting", Some(w.alice)),
+            2 => w.charm(w.guard),
+            _ => return w.guard,
+        }
+        w.alice
+    }
+
+    #[test]
+    fn leave_and_door_skip_sleeping_fighting_charmed_mobs_and_the_actor() {
+        let script = "set ran 1\nglobal ran\nreturn 0";
+        // Controls: both run.
+        let mut w = W::new();
+        w.trig(w.guard, 1, "q", 100, "", script);
+        assert_eq!(leave_mtrigger(&mut w.h, w.alice, 0), 0);
+        let mut w = W::new();
+        w.trig(w.guard, 1, "r", 100, "", script);
+        assert_eq!(door_mtrigger(&mut w.h, w.alice, 0, 0), 0);
+        for case in 0..4 {
+            let mut w = W::new();
+            w.trig(w.guard, 1, "q", 100, "", script);
+            let actor = mob_skip_cases(&mut w, case);
+            assert_eq!(leave_mtrigger(&mut w.h, actor, 0), 1, "leave {case}");
+            assert!(!w.ran(w.guard), "leave {case}");
+
+            let mut w = W::new();
+            w.trig(w.guard, 1, "r", 100, "", script);
+            let actor = mob_skip_cases(&mut w, case);
+            assert_eq!(door_mtrigger(&mut w.h, actor, 0, 0), 1, "door {case}");
+            assert!(!w.ran(w.guard), "door {case}");
+        }
+    }
+
+    #[test]
+    fn speech_is_heard_by_a_fighting_mob_and_load_runs_on_a_charmed_one() {
+        let mut w = W::new();
+        w.trig(w.guard, 1, "d", 0, "hi", RAN);
+        w.h.set_link(w.guard, "fighting", Some(w.alice));
+        speech_mtrigger(&mut w.h, w.alice, "hi");
+        assert!(w.ran(w.guard));
+
+        let mut w = W::new();
+        w.trig(w.guard, 1, "n", 100, "", RAN);
+        w.charm(w.guard);
+        load_mtrigger(&mut w.h, w.guard);
+        assert!(w.ran(w.guard));
+    }
+
+    #[test]
+    fn command_mtrigger_answers_one_whatever_non_zero_the_script_returned() {
+        let mut w = W::new();
+        w.trig(w.guard, 1, "c", 0, "*", "return 5");
+        assert_eq!(command_mtrigger(&mut w.h, w.alice, "x", ""), 1);
+    }
+
+    #[test]
+    fn command_wtrigger_skips_leading_spaces_of_the_command_and_argument() {
+        let mut w = W::new();
+        w.trig(w.room, 1, "c", 0, "*", "global arg\nglobal cmd\nreturn 1");
+        assert_eq!(command_wtrigger(&mut w.h, w.alice, "  look", "  at me"), 1);
+        assert_eq!(w.g(w.room, "cmd").as_deref(), Some("look"));
+        assert_eq!(w.g(w.room, "arg").as_deref(), Some("at me"));
+    }
+
+    #[test]
+    fn a_star_counts_only_as_the_first_character_of_the_argument() {
+        assert!(!word_check("hello", "a*"));
+        assert!(!word_check("hello", "x *"));
+        assert!(word_check("hello", "*x"));
+        let mut w = W::new();
+        w.trig(w.guard, 1, "c", 0, "a*", RAN);
+        assert_eq!(command_mtrigger(&mut w.h, w.alice, "bob", ""), 0);
+        assert!(!w.ran(w.guard));
+        let ball = w.obj(1, "a ball");
+        w.h.obj_to_room(ball, w.room);
+        w.trig(ball, 2, "c", OCMD_ROOM, "a*", RAN);
+        assert_eq!(command_otrigger(&mut w.h, w.alice, "bob", ""), 0);
+        assert!(!w.ran(ball));
+        w.trig(w.room, 3, "c", 0, "a*", RAN);
+        assert_eq!(command_wtrigger(&mut w.h, w.alice, "bob", ""), 0);
+        assert!(!w.ran(w.room));
+    }
+
+    #[test]
+    fn time_wtrigger_wants_the_hour_to_equal_narg() {
+        for (hours, fires) in [(3, false), (5, true), (7, false)] {
+            let mut w = W::new();
+            w.trig(w.room, 1, "t", 5, "", RAN);
+            w.h.time.hours = hours;
+            time_wtrigger(&mut w.h, w.room);
+            assert_eq!(w.ran(w.room), fires, "hour {hours}");
+        }
+    }
+
+    #[test]
+    fn death_answers_one_when_the_roll_is_lost() {
+        let mut w = W::new();
+        w.trig(w.guard, 1, "f", 50, "", "return 0");
+        w.rolls(&[51]);
+        assert_eq!(death_mtrigger(&mut w.h, w.guard, Some(w.alice)), 1);
+        w.rolls(&[50]);
+        assert_eq!(death_mtrigger(&mut w.h, w.guard, Some(w.alice)), 0);
+    }
+
+    #[test]
+    fn time_sweep_skips_a_character_in_no_room() {
+        let mut w = W::new();
+        w.trig(w.guard, 3, "t", 5, "", RAN);
+        w.h.char_from_room(w.guard);
+        w.h.time.hours = 5;
+        check_time_triggers(&mut w.h);
+        assert!(!w.ran(w.guard));
+    }
+
+    #[test]
+    fn command_otrigger_walks_the_equipment_positions_upwards() {
+        let mut w = W::new();
+        let high = w.obj(1, "a cloak");
+        let low = w.obj(2, "a ring");
+        w.h.equip_char(w.alice, high, 9);
+        w.h.equip_char(w.alice, low, 2);
+        w.trig(high, 1, "c", OCMD_EQUIP, "*", &cmd_script("ran", 1));
+        w.trig(low, 2, "c", OCMD_EQUIP, "*", &cmd_script("ran", 1));
+        assert_eq!(command_otrigger(&mut w.h, w.alice, "x", ""), 1);
+        assert!(w.ran(low));
+        assert!(!w.ran(high));
+    }
+
+    #[test]
+    fn skill_name_zero_is_undefined() {
+        let mut w = W::new();
+        w.h.globals
+            .texts
+            .insert("spell:0".to_owned(), "reserved".to_owned());
+        w.h.globals
+            .texts
+            .insert("spell:7".to_owned(), "fireball".to_owned());
+        w.trig(w.guard, 1, "p", 100, "", "global spellname");
+        cast_mtrigger(&mut w.h, w.alice, Some(w.guard), 0);
+        assert_eq!(w.g(w.guard, "spellname").as_deref(), Some("UNDEFINED"));
+    }
+
+    #[test]
+    fn a_purge_flag_left_by_a_run_means_the_object_is_gone() {
+        let mut w = W::new();
+        let orb = w.obj(10, "an orb");
+        w.trig(orb, 1, "g", 100, "", "return 1");
+        // A stale flag from an earlier run does not count: the run clears it.
+        w.h.owner_purged = true;
+        assert_eq!(get_otrigger(&mut w.h, orb, w.alice), 1);
+        assert!(!object_gone(&mut w.h, orb));
+        // The flag as a run leaves it does, whether or not the object is
+        // still listed.
+        w.h.owner_purged = true;
+        assert!(object_gone(&mut w.h, orb));
+    }
+
+    #[test]
+    fn zone_emptiness_ignores_nohassle_immortals_and_players_elsewhere() {
+        let fires = |setup: &dyn Fn(&mut W)| {
+            let mut w = W::new();
+            w.trig(w.guard, 3, "b", 100, "", RAN);
+            setup(&mut w);
+            script_trigger_check(&mut w.h);
+            w.ran(w.guard)
+        };
+        // A mortal counts, with or without nohassle.
+        assert!(fires(&|_| {}));
+        assert!(fires(&|w| w.h.set_num(w.alice, "nohassle", 1)));
+        // An immortal counts unless nohassle is on.
+        assert!(fires(&|w| w.h.set_num(w.alice, "level", 32)));
+        assert!(!fires(&|w| {
+            w.h.set_num(w.alice, "level", 32);
+            w.h.set_num(w.alice, "nohassle", 1);
+        }));
+        // A player in another zone, or not playing, does not.
+        assert!(!fires(&|w| {
+            w.h.set_num(w.room2, "zone", 9);
+            w.h.char_to_room(w.alice, w.room2);
+        }));
+        assert!(!fires(&|w| w.h.set_num(w.alice, "playing", 0)));
+    }
+
+    #[test]
+    fn greet_walk_follows_a_mob_a_script_moved_into_another_room() {
+        // C: `ch = ch->next_in_room` is read after the run, so the mob that
+        // went to the Altar carries the walk on to the Altar's people.
+        let mut w = W::new();
+        let mover = w.mob(3030, "the mover");
+        let far = w.h.add_mob(3031, "the far mob");
+        w.h.set_num(far, "pos", 8);
+        w.h.char_to_room(far, w.room2);
+        w.trig(mover, 1, "g", 100, "", "mgoto 3002");
+        w.trig(w.guard, 2, "g", 100, "", RAN);
+        w.trig(far, 3, "h", 100, "", RAN);
+        assert_eq!(greet_mtrigger(&mut w.h, w.alice, 0), 1);
+        assert_eq!(w.h.in_room(mover), Some(w.room2));
+        assert!(!w.ran(w.guard));
+        assert!(w.ran(far));
+    }
+
+    #[test]
+    fn entry_memory_walk_follows_an_actor_a_script_moved_away() {
+        let mut w = W::new();
+        let bob = w.mob(3030, "bob");
+        w.trig(w.guard, 1, "o", 100, "", "mteleport %actor% 3002");
+        w.h.set_script_mem(
+            w.guard,
+            vec![
+                ScriptMemory { id: bob, cmd: None },
+                ScriptMemory {
+                    id: w.alice,
+                    cmd: None,
+                },
+            ],
+        );
+        // Room order [bob, guard, alice]. Bob is sent to the Altar, where
+        // his `next_in_room` is the end of the list: Alice is never reached
+        // and her entry stays.
+        entry_memory_mtrigger(&mut w.h, w.guard);
+        assert_eq!(w.h.in_room(bob), Some(w.room2));
+        assert_eq!(w.h.in_room(w.alice), Some(w.room));
+        assert_eq!(w.h.script_mem(w.guard), mem_of(w.alice));
+    }
+
+    // ---- more corpus records -------------------------------------------------------
+
+    /// Alice with a descriptor, and Bob, another player in the Temple, so that
+    /// `%send%` and `%echoaround%` leave effects.
+    fn watched() -> (W, Uid) {
+        let mut w = W::new();
+        w.h.globals
+            .texts
+            .insert("commands".to_owned(), "north look enter".to_owned());
+        w.h.set_num(w.alice, "desc", 1);
+        let bob = w.h.add_player("Bob");
+        w.h.set_num(bob, "desc", 1);
+        w.h.set_num(bob, "pos", 8);
+        w.h.char_to_room(bob, w.room);
+        (w, bob)
+    }
+
+    #[test]
+    fn corpus_guild_guards_stop_the_wrong_class_on_their_own_side() {
+        // Triggers 3001 (Cleric, north), 3002 (Thief, east), 3003 (Warrior,
+        // east), each `0 q 100`.
+        let template = |dir: &str, class: &str| {
+            format!(
+                "* Check the direction the player must go to enter the guild.\n\
+                 if %direction% == {dir}\n\
+                 \x20 * Stop them if they are not the appropriate class.\n\
+                 \x20 if %actor.class% != {class}\n\
+                 \x20   return 0\n\
+                 \x20   %send% %actor% The guard humiliates you, and blocks your way.\n\
+                 \x20   %echoaround% %actor% The guard humiliates %actor.name%, and blocks %actor.hisher% way.\n\
+                 \x20 end\n\
+                 end"
+            )
+        };
+        for (vnum, dir, class, dir_num) in [
+            (3001, "north", "Cleric", 0),
+            (3002, "east", "Thief", 1),
+            (3003, "east", "Warrior", 1),
+        ] {
+            let (mut w, bob) = watched();
+            w.trig(w.guard, vnum, "q", 100, "", &template(dir, class));
+            // Alice is a Cleric (class 1).
+            let passes = class == "Cleric";
+            let expected = i32::from(passes);
+            assert_eq!(
+                leave_mtrigger(&mut w.h, w.alice, dir_num),
+                expected,
+                "{vnum}"
+            );
+            if passes {
+                assert!(w.h.effects.is_empty(), "{vnum}");
+            } else {
+                assert_eq!(
+                    w.h.effects,
+                    [
+                        format!(
+                            "send {}: The guard humiliates you, and blocks your way.\n\r",
+                            w.alice
+                        ),
+                        format!("send {bob}: The guard humiliates Alice, and blocks its way.\n\r"),
+                    ],
+                    "{vnum}"
+                );
+            }
+            // The other way out is not guarded.
+            w.h.effects.clear();
+            assert_eq!(leave_mtrigger(&mut w.h, w.alice, 3), 1, "{vnum}");
+            assert!(w.h.effects.is_empty(), "{vnum}");
+        }
+    }
+
+    #[test]
+    fn corpus_mob_command_example_lets_other_commands_continue() {
+        // Trigger 62, "Mob Command Example", `0 c 100`, argument `l`.
+        let body = "* does not work for level 32 and above.\n\
+            * Make sure the command is look, check for any abbrev of orb\n\
+            if %cmd.mudcommand% == look && orb /= %arg%\n\
+              %send% %actor% As you look at the orb a feeling of peace and serenity comes over you.\n\
+            else\n\
+              * If it doesn't match let the command continue.\n\
+              return 0\n\
+            end";
+        let (mut w, _) = watched();
+        w.trig(w.guard, 62, "c", 0, "l", body);
+        // `look orb` is claimed: the script's default return of 1 stands.
+        assert_eq!(command_mtrigger(&mut w.h, w.alice, "look", "orb"), 1);
+        assert_eq!(
+            w.h.effects,
+            [format!(
+                "send {}: As you look at the orb a feeling of peace and serenity comes over you.\n\r",
+                w.alice
+            )]
+        );
+        // `look floor` and `north` are not: the script returns 0, and the
+        // walk ends with 0.
+        w.h.effects.clear();
+        assert_eq!(command_mtrigger(&mut w.h, w.alice, "look", "floor"), 0);
+        assert_eq!(command_mtrigger(&mut w.h, w.alice, "north", ""), 0);
+        assert!(w.h.effects.is_empty());
+    }
+
+    #[test]
+    fn corpus_object_get_drop_and_wear_triggers() {
+        // Trigger 169, "Quest Token check if player is on quest", `1 g 100`.
+        let get = "if !%actor.varexists(on_quest_zone_1)%\n\
+              %send% %actor% You are not on a quest, don't steal other peoples quest items!\n\
+              return 0\n\
+            end";
+        let (mut w, _) = watched();
+        let token = w.obj(1, "a token");
+        w.h.obj_to_room(token, w.room);
+        w.trig(token, 169, "g", 100, "", get);
+        assert_eq!(get_otrigger(&mut w.h, token, w.alice), 0);
+        assert_eq!(
+            w.h.effects,
+            [format!(
+                "send {}: You are not on a quest, don't steal other peoples quest items!\n\r",
+                w.alice
+            )]
+        );
+        // On the quest: the script says nothing and the get goes ahead.
+        w.h.effects.clear();
+        let marker = w.h.add_proto(900, AttachType::Mob, "b", 0, "", "nop 0");
+        w.h.attach(w.alice, &marker).unwrap();
+        w.h.script_mut(w.alice)
+            .unwrap()
+            .global_vars
+            .add_var("on_quest_zone_1", "1", 0);
+        assert_eq!(get_otrigger(&mut w.h, token, w.alice), 1);
+        assert!(w.h.effects.is_empty());
+
+        // Trigger 84, "Obj Drop Example", `1 h 100`.
+        let drop = "if %actor.level% < 31\n\
+              %send% %actor% You fail to drop %self.shortdesc%.\n\
+              return 0\n\
+            else\n\
+              %send% %actor% %self.shortdesc% glows a bright yellow, then explodes.\n\
+              %purge% %self%\n\
+            end";
+        let (mut w, _) = watched();
+        let ball = w.obj(2, "a ball");
+        w.h.obj_to_char(ball, w.alice);
+        w.trig(ball, 84, "h", 100, "", drop);
+        assert_eq!(drop_otrigger(&mut w.h, ball, w.alice), 0);
+        assert_eq!(
+            w.h.effects,
+            [format!("send {}: You fail to drop a ball.\n\r", w.alice)]
+        );
+        // A level-31 immortal drops it and it explodes: purged, so 0.
+        w.h.effects.clear();
+        w.h.set_num(w.alice, "level", 31);
+        assert_eq!(drop_otrigger(&mut w.h, ball, w.alice), 0);
+        assert_eq!(
+            w.h.effects[0],
+            format!(
+                "send {}: a ball glows a bright yellow, then explodes.\n\r",
+                w.alice
+            )
+        );
+        assert!(!w.h.exists(ball));
+    }
+
+    #[test]
+    fn corpus_straitjacket_wear_attaches_the_remove_trigger() {
+        // Triggers 1345 (`1 j 100`), 1346 (`1 c 7`, argument `untie`) and
+        // 1347 (`1 l 7`).
+        let (mut w, bob) = watched();
+        let jacket = w.obj(1330, "a straitjacket");
+        w.trig(jacket, 1345, "j", 100, "", "attach 1347 %self.id%");
+        let remove = "%echoaround% %actor% %actor.name% struggles to get out of the straitjacket.\n\
+            %send% %actor% You can't get out of it. Maybe you should untie it first.\n\
+            return 0";
+        w.h.add_proto(1347, AttachType::Obj, "l", 7, "", remove);
+        let untie = "%echoaround% %actor% %actor.name% unties the straitjacket.\n\
+            %send% %actor% You untie the jacket, maybe now you can remove it.\n\
+            detach 1347 %self.id%";
+        w.trig(jacket, 1346, "c", 7, "untie", untie);
+        // Wearing it is allowed (no return) and attaches the remove trigger.
+        assert_eq!(wear_otrigger(&mut w.h, jacket, w.alice, 3), 1);
+        w.h.equip_char(w.alice, jacket, 3);
+        assert!(script_check(&w.h, jacket, OTRIG_REMOVE));
+        // It cannot come off.
+        assert_eq!(remove_otrigger(&mut w.h, jacket, w.alice), 0);
+        assert_eq!(
+            w.h.effects,
+            [
+                format!("send {bob}: Alice struggles to get out of the straitjacket.\n\r"),
+                format!(
+                    "send {}: You can't get out of it. Maybe you should untie it first.\n\r",
+                    w.alice
+                ),
+            ]
+        );
+        // `untie` (worn counts: the narg has OCMD_EQUIP) detaches it.
+        w.h.effects.clear();
+        assert_eq!(command_otrigger(&mut w.h, w.alice, "untie", ""), 1);
+        assert!(!script_check(&w.h, jacket, OTRIG_REMOVE));
+        assert_eq!(remove_otrigger(&mut w.h, jacket, w.alice), 1);
+    }
+
+    #[test]
+    fn corpus_room_enter_drop_and_command_examples() {
+        // Trigger 55, "Room Enter Example", `2 g 100`.
+        let enter = "if %actor.is_pc%\n\
+              if %actor.sex% == male\n\
+                return 0\n\
+                %send% %actor% An invisible barrier blocks you. A voice rings out \"No men allowed.\"\n\
+              elseif %actor.sex% == female\n\
+                %echo% Ladies are always welcome!\n\
+              else * must be neutral.\n\
+                return 0\n\
+                %send% %actor% An invisible barrier blocks you. A voice rings out \"No... things allowed.\"\n\
+              end\n\
+            end";
+        let (mut w, _) = watched();
+        w.trig(w.room, 55, "g", 100, "", enter);
+        w.h.set_num(w.alice, "sex", 1);
+        assert_eq!(enter_wtrigger(&mut w.h, w.room, w.alice, 0), 0);
+        assert_eq!(
+            w.h.effects,
+            [format!(
+                "send {}: An invisible barrier blocks you. A voice rings out \"No men allowed.\"\n\r",
+                w.alice
+            )]
+        );
+        w.h.effects.clear();
+        w.h.set_num(w.alice, "sex", 2);
+        assert_eq!(enter_wtrigger(&mut w.h, w.room, w.alice, 0), 1);
+        assert_eq!(w.h.effects.len(), 2, "both players hear the echo");
+        assert!(w.h.effects[0].contains("Ladies are always welcome!"));
+
+        // Trigger 56, "Room Drop Example", `2 h 100`.
+        let drop = "if %object.type% == TRASH\n\
+              %send% %actor% Magical forces prevent you from dropping %object.shortdesc%.\n\
+              %send% %actor% No Littering! Drop your trash somewhere else.\n\
+              return 0\n\
+            end";
+        let (mut w, _) = watched();
+        let can = w.obj(5, "a can");
+        w.h.set_num(can, "type", 13);
+        w.h.obj_to_char(can, w.alice);
+        w.trig(w.room, 56, "h", 100, "", drop);
+        assert_eq!(drop_wtrigger(&mut w.h, can, w.alice), 0);
+        assert_eq!(w.h.effects.len(), 2);
+        assert!(w.h.effects[0].contains("Magical forces prevent you from dropping a can."));
+        // Not trash: the script is silent and its default return stands.
+        w.h.effects.clear();
+        w.h.set_num(can, "type", 9);
+        assert_eq!(drop_wtrigger(&mut w.h, can, w.alice), 1);
+        assert!(w.h.effects.is_empty());
+
+        // Trigger 1452, "Room Command Example", `2 c 100`, argument `l`.
+        let look = "if %cmd.mudcommand% == look && test /= %arg%\n\
+              %echo% The trigger works!\n\
+              %force% %actor% applaud\n\
+            else\n\
+              %send% %actor% Look at what?\n\
+            end";
+        let (mut w, _) = watched();
+        w.trig(w.room, 1452, "c", 0, "l", look);
+        assert_eq!(command_wtrigger(&mut w.h, w.alice, "look", "te"), 1);
+        // `do_wforce` hands `command_interpreter` what `one_argument` left,
+        // with its leading space.
+        assert_eq!(w.h.mud_commands, [(w.alice, " applaud".to_owned())]);
+        w.h.effects.clear();
+        assert_eq!(command_wtrigger(&mut w.h, w.alice, "look", "x"), 1);
+        assert_eq!(
+            w.h.effects,
+            [format!("send {}: Look at what?\n\r", w.alice)]
+        );
+        // `north` does not start with `l`.
+        assert_eq!(command_wtrigger(&mut w.h, w.alice, "north", ""), 0);
     }
 }
