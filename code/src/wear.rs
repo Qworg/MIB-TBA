@@ -12,14 +12,14 @@
 use dg_vm::dispatch::{remove_otrigger, wear_otrigger};
 use dg_vm::{Uid, WorldHost};
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{CarriedBy, Item};
+use mib_stdlib::prelude::Item;
 
 use super::common::{
-    Dots, article, carrying, find_all_dots, find_obj, matches_after, names_thing, one_argument,
-    pick, split_number, tell, tell_room,
+    Dots, article, bare, carrying, find_all_dots, find_obj, matches_after, names_thing,
+    one_argument, pick, split_number, tell, tell_room,
 };
 use super::gate::{has_extra_flag, item_name};
-use crate::combat::{BASE_ATTRIBUTE, TbaCombatant, TbaProgress};
+use crate::combat::{BASE_ATTRIBUTE, TbaCombatant};
 use crate::content::{ItemExtraFlag, TbaItemKind, WearSlot};
 use crate::dg::host::{EcsHost, item_wear_bit, wear_position};
 use crate::equipment::{TbaEquipment, clear_worn, set_worn};
@@ -150,11 +150,8 @@ fn too_inexperienced(host: &EcsHost<'_>, ch: Entity, obj: Uid) -> bool {
         return false;
     };
     let needed = def_of(host, entity).map_or(0, |def| def.min_level);
-    let level = host
-        .world
-        .get::<TbaProgress>(ch)
-        .map_or(0, |progress| progress.level);
-    level < needed
+    let level = host.uid(ch).map_or(0, |uid| host.level(uid));
+    i64::from(level) < i64::from(needed)
 }
 
 /// `find_eq_pos`: the position a `wear` argument names for the object, or
@@ -218,8 +215,9 @@ fn perform_wear(host: &mut EcsHost<'_>, ch: Entity, obj: Uid, mut slot: WearSlot
         return;
     };
     if wear_otrigger(host, obj, ch_uid, wear_position(slot)) == 0
-        || host.world.get::<CarriedBy>(entity).map(|carried| carried.0) != Some(ch)
+        || host.obj_carried_by(obj) != Some(ch_uid)
         || host.entity(obj).is_none()
+        || worn(host, slot).is_some()
     {
         return;
     }
@@ -317,7 +315,11 @@ pub fn do_wear(host: &mut EcsHost<'_>, ch: Entity, args: &str) {
                 tell(
                     host.world,
                     ch,
-                    &format!("You don't seem to have {} {arg1}.", article(&arg1)),
+                    &format!(
+                        "You don't seem to have {} {}.",
+                        article(bare(&arg1)),
+                        bare(&arg1)
+                    ),
                 );
                 return;
             };
@@ -363,7 +365,11 @@ pub fn do_wield(host: &mut EcsHost<'_>, ch: Entity, args: &str) {
         tell(
             host.world,
             ch,
-            &format!("You don't seem to have {} {arg}.", article(&arg)),
+            &format!(
+                "You don't seem to have {} {}.",
+                article(bare(&arg)),
+                bare(&arg)
+            ),
         );
         return;
     };
@@ -398,7 +404,11 @@ pub fn do_hold(host: &mut EcsHost<'_>, ch: Entity, args: &str) {
         tell(
             host.world,
             ch,
-            &format!("You don't seem to have {} {arg}.", article(&arg)),
+            &format!(
+                "You don't seem to have {} {}.",
+                article(bare(&arg)),
+                bare(&arg)
+            ),
         );
         return;
     };
@@ -534,7 +544,11 @@ pub fn do_remove(host: &mut EcsHost<'_>, ch: Entity, args: &str) {
                 None => tell(
                     host.world,
                     ch,
-                    &format!("You don't seem to be using {} {arg}.", article(&arg)),
+                    &format!(
+                        "You don't seem to be using {} {}.",
+                        article(bare(&arg)),
+                        bare(&arg)
+                    ),
                 ),
             }
         }

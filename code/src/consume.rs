@@ -10,6 +10,7 @@
 //! and a limited drink container is not emptied by drinking.
 
 use dg_vm::dispatch::consume_otrigger;
+use dg_vm::magic::MagicHost;
 use dg_vm::types::{OCMD_DRINK, OCMD_EAT, OCMD_QUAFF};
 use dg_vm::{BaseHost, Uid, WorldHost};
 use mib_core::prelude::*;
@@ -17,7 +18,7 @@ use mib_stdlib::content::Sector;
 use mib_stdlib::prelude::{Item, Location, Room};
 
 use super::common::{
-    article, carrying, find_obj, names_thing, pick, split_number, tell, tell_room,
+    article, bare, carrying, find_obj, names_thing, pick, split_number, tell, tell_room,
 };
 use crate::content::{TbaItemDef, TbaItemKind, WearSlot};
 use crate::dg::host::EcsHost;
@@ -81,7 +82,11 @@ pub fn do_eat(host: &mut EcsHost<'_>, ch: Entity, args: &str, taste: bool) {
         tell(
             host.world,
             ch,
-            &format!("You don't seem to have {} {arg}.", article(&arg)),
+            &format!(
+                "You don't seem to have {} {}.",
+                article(bare(&arg)),
+                bare(&arg)
+            ),
         );
         return;
     };
@@ -292,7 +297,11 @@ pub fn do_quaff(host: &mut EcsHost<'_>, ch: Entity, args: &str) {
                 tell(
                     host.world,
                     ch,
-                    &format!("You don't seem to have {} {arg}.", article(&arg)),
+                    &format!(
+                        "You don't seem to have {} {}.",
+                        article(bare(&arg)),
+                        bare(&arg)
+                    ),
                 );
                 return;
             };
@@ -313,9 +322,18 @@ pub fn do_quaff(host: &mut EcsHost<'_>, ch: Entity, args: &str) {
     let who = host.name(ch_uid);
     tell(host.world, ch, &format!("You quaff {name}."));
     tell_room(host.world, ch, &format!("{who} quaffs {name}."), &[]);
-    // The three spells a potion casts need a way to cast a spell by number at
-    // a given level, which the pack's spell system does not offer outside a
-    // typed `cast`.
-    host.unsupported("potion_spells", &format!("quaffing {name}"));
+    // `mag_objectmagic`: up to three spells at the potion's level, stopping at
+    // the first slot with no spell. The host's `call_magic` stands for the C's
+    // `CAST_POTION` call; a spell that fails does not stop the ones after it,
+    // because the seam does not report whether it took effect.
+    if let Some(values) = def_of(host, potion).map(|def| def.values) {
+        let level = values[0];
+        for spell in values.iter().skip(1).take(3).copied() {
+            if spell <= 0 {
+                break;
+            }
+            host.magic_call_magic(ch_uid, Some(ch_uid), None, spell, level);
+        }
+    }
     extract_obj(host, potion);
 }

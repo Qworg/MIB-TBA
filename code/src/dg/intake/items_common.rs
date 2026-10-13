@@ -73,6 +73,12 @@ pub fn split_number(name: &str) -> (Number, &str) {
     (Number::Nth(prefix.parse().unwrap_or(usize::MAX)), rest)
 }
 
+/// The name half of a typed `N.name`: what the C leaves in the argument buffer
+/// once `get_number` has cut the count off, and so what its messages repeat.
+pub fn bare(typed: &str) -> &str {
+    split_number(typed).1
+}
+
 /// How `find_all_dots` read an argument.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Dots {
@@ -216,8 +222,18 @@ pub fn find_char_in_room(host: &EcsHost<'_>, ch: Entity, typed: &str) -> Option<
     let room = host.world.get::<Location>(ch)?.room;
     let (ch_uid, room_uid) = (host.uid(ch)?, host.uid(room)?);
     let people = host.room_people(room_uid);
+    // `0.name` means a player by that name.
+    let (number, players_only) = match number {
+        Number::Nth(0) => (Number::Nth(1), true),
+        other => (other, false),
+    };
     let uid = pick(people.iter().copied(), number, |uid| {
-        names_thing(name, &host.name(uid), &host.keywords(uid)) && host.can_see(ch_uid, uid)
+        (!players_only
+            || host
+                .entity(uid)
+                .is_some_and(|entity| host.world.get::<Player>(entity).is_some()))
+            && names_thing(name, &host.name(uid), &host.keywords(uid))
+            && host.can_see(ch_uid, uid)
     })?;
     host.entity(uid)
 }
@@ -273,6 +289,14 @@ impl EngineView {
     /// `find_carried`: a carried item (worn or not) the typed name matches.
     pub fn carried(&self, actor: Entity, typed: &str) -> Option<Entity> {
         self.nth(typed, |row| row.carried_by == Some(actor))
+    }
+
+    /// `ch->carrying`: a carried item the actor does not wear, which is all
+    /// the C's `get_obj_in_list_vis(ch, name, ch->carrying)` looks at.
+    pub fn carried_unworn(&self, actor: Entity, typed: &str, worn: &[Entity]) -> Option<Entity> {
+        self.nth(typed, |row| {
+            row.carried_by == Some(actor) && !worn.contains(&row.entity)
+        })
     }
 
     /// `find_ground`: an item lying in `room`.

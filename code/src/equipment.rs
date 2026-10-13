@@ -498,11 +498,16 @@ fn name_matches(needle: &str, name: &str) -> bool {
     !needle.is_empty() && name.to_lowercase().contains(&needle)
 }
 
-/// The carried item matching `needle`, if any.
+/// The carried item matching `needle`, if any; `N.name` picks the Nth match.
 fn find_carried(actor: Entity, needle: &str, items: &CarriedQuery<'_, '_>) -> Option<Entity> {
-    items.iter().find_map(|(entity, item, carried)| {
-        (carried.0 == actor && name_matches(needle, &item.name)).then_some(entity)
-    })
+    let selector = TargetSelector::parse(needle);
+    items
+        .iter()
+        .filter(|(_, item, carried)| {
+            carried.0 == actor && name_matches(&selector.keyword, &item.name)
+        })
+        .nth(selector.ordinal.saturating_sub(1))
+        .map(|(entity, ..)| entity)
 }
 
 /// A system-channel notice plus the prompt.

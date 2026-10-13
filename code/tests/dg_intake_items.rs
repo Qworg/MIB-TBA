@@ -5,14 +5,14 @@
 //! from the dispatch notes in `dg-vm`, never from what the code returns.
 //!
 //! The app has the DG runtime, the item intake and a stand-in for the engine's
-//! router. The stand-in calls the engine's own `handle_get`, `handle_drop` and
-//! `handle_put` (the real item code, on the real components) for the commands
-//! the engine parses, skips handled commands and marks each command handled
-//! afterwards exactly as `route_commands` does for a raw line. The real router
-//! needs a connection, a session table and a dozen unrelated resources; the
-//! stand-in keeps the property the tests are about (the engine acts on what it
-//! resolves, after the intake stage) and the pack's `equip` handler runs as it
-//! does in the game.
+//! router. The intake carries out `get`, `drop`, `put`, `equip` and `unequip`
+//! itself and marks them handled; the stand-in calls the engine's own
+//! `handle_get`, `handle_drop` and `handle_put` (the real item code, on the real
+//! components) for whatever is left unhandled, skips handled commands and marks
+//! each command handled afterwards exactly as `route_commands` does for a raw
+//! line, so a command the intake failed to take over would be done twice and
+//! show. The real router needs a connection, a session table and a dozen
+//! unrelated resources. The pack's `equip` handler runs as it does in the game.
 //!
 //! Triggers prove they ran, and with what, by promoting their event variables
 //! to globals with `global`. Tests may unwrap/expect.
@@ -987,14 +987,8 @@ fn eating_runs_the_consume_trigger_then_uses_the_food_up() {
     let bread = item_carried(&mut s.app, s.alice, 50, "a loaf of bread");
     obj_trigger(&mut s.app, 100, "s", 50, ALLOW);
     let said = say(&mut s.app, s.alice, "eat bread");
-    let alice_id = id_of_after(&mut s.app, s.alice);
     assert!(said.contains("You eat a loaf of bread."), "{said}");
     assert!(s.app.world().get_entity(bread).is_err(), "eaten");
-    let _ = alice_id;
-}
-
-fn id_of_after(app: &mut App, entity: Entity) -> String {
-    id_of(app, entity)
 }
 
 #[test]
@@ -1094,7 +1088,7 @@ fn an_empty_container_is_empty_and_runs_no_trigger() {
 }
 
 #[test]
-fn quaffing_a_potion_consumes_it_and_records_the_spells_the_pack_cannot_cast() {
+fn quaffing_a_potion_consumes_it_and_casts_its_spells_through_the_host() {
     let mut s = scene();
     provisions(&mut s.app);
     let potion = item_carried(&mut s.app, s.alice, 53, "a bubbling potion");
@@ -1103,7 +1097,8 @@ fn quaffing_a_potion_consumes_it_and_records_the_spells_the_pack_cannot_cast() {
     assert_eq!(seen_gone(&mut s.app, potion), None);
     assert!(said.contains("You quaff a bubbling potion."), "{said}");
     assert!(s.app.world().get_entity(potion).is_err());
-    assert_eq!(s.app.world().resource::<DgLog>().count("potion_spells"), 1);
+    // The spells go to the host's `call_magic`, which another stream fills in.
+    assert_eq!(s.app.world().resource::<DgLog>().count("potion_spells"), 0);
 }
 
 /// The potion is gone, so a global cannot be read from it any more.
@@ -1214,4 +1209,521 @@ fn a_despawned_receiver_or_object_does_not_panic() {
     say(&mut s.app, s.alice, "give sword bob");
     say(&mut s.app, s.alice, "wear all");
     say(&mut s.app, s.alice, "remove all");
+}
+
+// -- ordering, resolution and the rest of the review ----------------------------------------------
+
+/// Type several lines in one frame, as a client that sends a packet of them.
+fn say_all(app: &mut App, who: Entity, lines: &[&str]) -> String {
+    for line in lines {
+        let id = app.world_mut().resource_mut::<CommandSequence>().next_id();
+        app.world_mut()
+            .resource_mut::<Messages<CommandReceived>>()
+            .write(CommandReceived::new(
+                id,
+                who,
+                1,
+                PlayerInput::RawLine((*line).to_owned()),
+            ));
+    }
+    app.world_mut().run_schedule(Update);
+    app.world_mut().flush();
+    output(app).join("\n")
+}
+
+fn give_save_id(app: &mut App, item: Entity, id: &str) {
+    app.world_mut()
+        .entity_mut(item)
+        .insert(SaveId(smol_str::SmolStr::new(id)));
+}
+
+fn saved_worn(app: &App, holder: Entity) -> Vec<(WearSlot, String)> {
+    app.world()
+        .get::<TbaEquipmentSave>(holder)
+        .map(|save| save.worn.iter().map(|(k, v)| (*k, v.clone())).collect())
+        .unwrap_or_default()
+}
+
+fn combatant_at(position: Position) -> TbaCombatant {
+    TbaCombatant {
+        hp: 10,
+        max_hp: 10,
+        mana: 0,
+        max_mana: 0,
+        move_points: 10,
+        max_move_points: 10,
+        hitroll: 0,
+        damroll: 0,
+        armor_class: 0,
+        thaco: 20,
+        attributes: TbaAttributes::neutral(),
+        saves: TbaSaves::default(),
+        position,
+        target: None,
+    }
+}
+
+#[test]
+fn commands_of_one_frame_run_in_the_order_they_were_typed() {
+    let mut s = scene();
+    provisions(&mut s.app);
+    gear(&mut s.app);
+    let bread = item_on_ground(&mut s.app, s.temple, 50, "a loaf of bread");
+    let said = say_all(&mut s.app, s.alice, &["get bread", "eat bread"]);
+    assert!(said.contains("You pick up a loaf of bread."), "{said}");
+    assert!(said.contains("You eat a loaf of bread."), "{said}");
+    assert!(s.app.world().get_entity(bread).is_err());
+
+    let sword = item_on_ground(&mut s.app, s.temple, 30, "a long sword");
+    say_all(&mut s.app, s.alice, &["get sword", "wield sword"]);
+    assert_eq!(worn(&s.app, s.alice, WearSlot::Wield), Some(sword));
+
+    let potion = item_on_ground(&mut s.app, s.temple, 53, "a bubbling potion");
+    say_all(&mut s.app, s.alice, &["get potion", "quaff potion"]);
+    assert!(s.app.world().get_entity(potion).is_err());
+
+    // Equip is in the same order, and a drop after an equip finds nothing to drop.
+    let vest = item_on_ground(&mut s.app, s.temple, 20, "a leather vest");
+    let said = say_all(
+        &mut s.app,
+        s.alice,
+        &["get vest", "equip vest", "drop vest"],
+    );
+    assert_eq!(worn(&s.app, s.alice, WearSlot::Body), Some(vest));
+    assert!(said.contains("You aren't carrying that."), "{said}");
+    assert_eq!(carried_by(&s.app, vest), Some(s.alice));
+
+    let ball = item_on_ground(&mut s.app, s.temple, 6, "a red ball");
+    say_all(&mut s.app, s.alice, &["get ball", "give ball guard"]);
+    assert_eq!(carried_by(&s.app, ball), Some(s.guard));
+}
+
+#[test]
+fn the_object_that_was_asked_is_the_object_that_moves() {
+    // Two matching swords on the floor: the trigger of the second refuses and
+    // the first is untouched, then the first is taken and the second is still
+    // there; `drop` and `put` count the same way.
+    let mut s = scene();
+    gear(&mut s.app);
+    let first = item_carried(&mut s.app, s.alice, 5, "a rusty sword");
+    let second = item_carried(&mut s.app, s.alice, 6, "a rusty sword");
+    obj_trigger(&mut s.app, 100, "h", 6, REFUSE);
+    obj_trigger(&mut s.app, 101, "h", 5, ALLOW);
+    say(&mut s.app, s.alice, "drop 2.sword");
+    assert!(seen(&mut s.app, second, "actor").is_some());
+    assert!(seen(&mut s.app, first, "actor").is_none());
+    assert_eq!(carried_by(&s.app, second), Some(s.alice));
+    assert_eq!(carried_by(&s.app, first), Some(s.alice));
+    say(&mut s.app, s.alice, "drop sword");
+    assert!(seen(&mut s.app, first, "actor").is_some());
+    assert!(on_ground(&s.app, first));
+
+    let bag = item_carried(&mut s.app, s.alice, 7, "a leather bag");
+    s.app.world_mut().entity_mut(bag).insert(Container {
+        capacity: 5,
+        contents: Vec::new(),
+    });
+    let a = item_carried(&mut s.app, s.alice, 8, "a green gem");
+    let b = item_carried(&mut s.app, s.alice, 9, "a green gem");
+    obj_trigger(&mut s.app, 102, "h", 9, REFUSE);
+    say(&mut s.app, s.alice, "put 2.gem in bag");
+    assert!(seen(&mut s.app, b, "actor").is_some());
+    assert!(seen(&mut s.app, a, "actor").is_none());
+    assert_eq!(carried_by(&s.app, b), Some(s.alice));
+    say(&mut s.app, s.alice, "put gem in bag");
+    assert_eq!(s.app.world().get::<ContainedBy>(a).map(|c| c.0), Some(bag));
+    assert_eq!(
+        s.app.world().get::<Container>(bag).unwrap().contents,
+        vec![a]
+    );
+}
+
+#[test]
+fn equip_and_wear_count_the_way_the_command_does() {
+    let mut s = scene();
+    gear(&mut s.app);
+    let first = item_carried(&mut s.app, s.alice, 21, "a jade ring");
+    let second = item_carried(&mut s.app, s.alice, 22, "a ruby ring");
+    obj_trigger(&mut s.app, 100, "j", 22, ALLOW);
+    obj_trigger(&mut s.app, 101, "j", 21, REFUSE);
+    say(&mut s.app, s.alice, "equip 2.ring");
+    assert!(seen(&mut s.app, second, "actor").is_some());
+    assert!(seen(&mut s.app, first, "actor").is_none());
+    assert_eq!(worn(&s.app, s.alice, WearSlot::FingerR), Some(second));
+    // `equip 3.ring` finds nothing, and no trigger runs for it.
+    let said = say(&mut s.app, s.alice, "equip 3.ring");
+    assert!(said.contains("You aren't carrying that."), "{said}");
+    assert!(seen(&mut s.app, first, "actor").is_none());
+    // `wear 2.ring` counts the same way: it is not the ring `wear 1.ring` takes.
+    let mut s = scene();
+    gear(&mut s.app);
+    item_carried(&mut s.app, s.alice, 21, "a jade ring");
+    item_carried(&mut s.app, s.alice, 22, "a ruby ring");
+    say(&mut s.app, s.alice, "wear 2.ring");
+    let by_count = worn(&s.app, s.alice, WearSlot::FingerR).unwrap();
+    say(&mut s.app, s.alice, "wear 1.ring");
+    let other = worn(&s.app, s.alice, WearSlot::FingerL).unwrap();
+    assert_ne!(by_count, other);
+}
+
+#[test]
+fn eat_counts_with_a_prefix() {
+    let mut s = scene();
+    provisions(&mut s.app);
+    let first = item_carried(&mut s.app, s.alice, 50, "a loaf of bread");
+    let second = item_carried(&mut s.app, s.alice, 50, "a loaf of bread");
+    let _ = first;
+    say(&mut s.app, s.alice, "eat 2.bread");
+    let gone = [first, second]
+        .iter()
+        .filter(|entity| s.app.world().get_entity(**entity).is_err())
+        .count();
+    assert_eq!(gone, 1);
+}
+
+#[test]
+fn put_takes_an_object_from_the_floor_through_its_triggers() {
+    let mut s = scene();
+    let bag = item_carried(&mut s.app, s.alice, 7, "a leather bag");
+    s.app.world_mut().entity_mut(bag).insert(Container {
+        capacity: 5,
+        contents: Vec::new(),
+    });
+    let gem = item_on_ground(&mut s.app, s.temple, 8, "a green gem");
+    obj_trigger(&mut s.app, 100, "g", 8, REFUSE);
+    say(&mut s.app, s.alice, "put gem in bag");
+    assert!(seen(&mut s.app, gem, "actor").is_some(), "get ran");
+    assert!(on_ground(&s.app, gem));
+    assert!(s.app.world().get::<ContainedBy>(gem).is_none());
+
+    let ring = item_on_ground(&mut s.app, s.temple, 9, "a gold ring");
+    obj_trigger(&mut s.app, 101, "h", 9, REFUSE);
+    say(&mut s.app, s.alice, "put ring in bag");
+    assert!(seen(&mut s.app, ring, "actor").is_some(), "drop ran");
+    assert!(on_ground(&s.app, ring));
+
+    let coin = item_on_ground(&mut s.app, s.temple, 10, "a silver cup");
+    let said = say(&mut s.app, s.alice, "put cup in bag");
+    assert_eq!(
+        s.app.world().get::<ContainedBy>(coin).map(|c| c.0),
+        Some(bag)
+    );
+    assert!(
+        said.contains("You put a silver cup in a leather bag."),
+        "{said}"
+    );
+    let said = say(&mut s.app, s.alice, "put bag in bag");
+    assert!(said.contains("can't put something inside itself"), "{said}");
+}
+
+#[test]
+fn a_worn_object_cannot_be_dropped_or_put() {
+    let mut s = scene();
+    gear(&mut s.app);
+    let sword = item_worn(&mut s.app, s.alice, WearSlot::Wield, 30, "a long sword");
+    obj_trigger(&mut s.app, 100, "h", 30, ALLOW);
+    let said = say(&mut s.app, s.alice, "drop sword");
+    assert!(said.contains("You aren't carrying that."), "{said}");
+    assert!(
+        seen(&mut s.app, sword, "actor").is_none(),
+        "no drop trigger"
+    );
+    assert_eq!(carried_by(&s.app, sword), Some(s.alice));
+    assert_eq!(worn(&s.app, s.alice, WearSlot::Wield), Some(sword));
+}
+
+#[test]
+fn a_handled_equipment_listing_is_not_answered() {
+    let mut s = scene();
+    gear(&mut s.app);
+    item_worn(&mut s.app, s.alice, WearSlot::Body, 20, "a leather vest");
+    let said = say(&mut s.app, s.alice, "equipment");
+    assert!(said.contains("a leather vest"), "{said}");
+    s.app.world_mut().resource_mut::<GateTakesEverything>().0 = true;
+    let said = say(&mut s.app, s.alice, "equipment");
+    assert!(!said.contains("a leather vest"), "{said}");
+}
+
+#[test]
+fn unequip_cannot_take_a_cursed_object_off() {
+    let mut s = scene();
+    gear(&mut s.app);
+    let ring = item_worn(&mut s.app, s.alice, WearSlot::FingerR, 21, "a jade ring");
+    s.app
+        .world_mut()
+        .resource_mut::<TbaContent>()
+        .items
+        .get_mut(&ItemId::from("tba_item_21"))
+        .unwrap()
+        .extra_flags
+        .push(ItemExtraFlag::NoDrop);
+    obj_trigger(&mut s.app, 100, "l", 21, ALLOW);
+    let said = say(&mut s.app, s.alice, "unequip finger");
+    assert!(said.contains("it must be CURSED"), "{said}");
+    assert_eq!(worn(&s.app, s.alice, WearSlot::FingerR), Some(ring));
+    assert!(seen(&mut s.app, ring, "actor").is_none());
+}
+
+#[test]
+fn messages_repeat_the_name_without_its_count() {
+    let mut s = scene();
+    gear(&mut s.app);
+    provisions(&mut s.app);
+    for line in [
+        "wear 2.sword",
+        "wield 2.sword",
+        "hold 2.sword",
+        "eat 2.sword",
+        "quaff 2.sword",
+    ] {
+        let said = say(&mut s.app, s.alice, line);
+        assert!(
+            said.contains("You don't seem to have a sword."),
+            "{line}: {said}"
+        );
+    }
+    let said = say(&mut s.app, s.alice, "give 2.sword guard");
+    assert!(said.contains("You don't seem to have a sword."), "{said}");
+    let said = say(&mut s.app, s.alice, "remove 2.sword");
+    assert!(
+        said.contains("You don't seem to be using a sword."),
+        "{said}"
+    );
+}
+
+#[test]
+fn zero_dot_name_finds_the_player() {
+    let mut s = scene();
+    let bob = player(&mut s.app, s.temple, "Bob", 2);
+    let sword = item_carried(&mut s.app, s.alice, 5, "a rusty sword");
+    // An NPC with the same keyword is first in the room, but `0.` skips it.
+    let said = say(&mut s.app, s.alice, "give sword 0.bob");
+    assert_eq!(carried_by(&s.app, sword), Some(bob), "{said}");
+}
+
+#[test]
+fn a_character_below_resting_can_do_none_of_it() {
+    let mut s = scene();
+    gear(&mut s.app);
+    s.app
+        .world_mut()
+        .entity_mut(s.alice)
+        .insert(combatant_at(Position::Sleeping));
+    let sword = item_carried(&mut s.app, s.alice, 30, "a long sword");
+    obj_trigger(&mut s.app, 100, "j", 30, ALLOW);
+    let said = say(&mut s.app, s.alice, "wield sword");
+    assert!(said.contains("In your dreams, or what?"), "{said}");
+    assert!(seen(&mut s.app, sword, "actor").is_none());
+    s.app
+        .world_mut()
+        .get_mut::<TbaCombatant>(s.alice)
+        .unwrap()
+        .position = Position::Stunned;
+    let said = say(&mut s.app, s.alice, "drop sword");
+    assert!(said.contains("think about the stars"), "{said}");
+    assert_eq!(carried_by(&s.app, sword), Some(s.alice));
+    s.app
+        .world_mut()
+        .get_mut::<TbaCombatant>(s.alice)
+        .unwrap()
+        .position = Position::Resting;
+    say(&mut s.app, s.alice, "wield sword");
+    assert_eq!(worn(&s.app, s.alice, WearSlot::Wield), Some(sword));
+}
+
+#[test]
+fn worn_state_reaches_the_persisted_shadow() {
+    let mut s = scene();
+    gear(&mut s.app);
+    provisions(&mut s.app);
+    let vest = item_carried(&mut s.app, s.alice, 20, "a leather vest");
+    give_save_id(&mut s.app, vest, "item:vest");
+    say(&mut s.app, s.alice, "wear vest");
+    assert_eq!(
+        saved_worn(&s.app, s.alice),
+        vec![(WearSlot::Body, "item:vest".to_owned())]
+    );
+    say(&mut s.app, s.alice, "remove vest");
+    assert!(saved_worn(&s.app, s.alice).is_empty());
+    say(&mut s.app, s.alice, "equip vest");
+    assert_eq!(saved_worn(&s.app, s.alice).len(), 1);
+    say(&mut s.app, s.alice, "unequip body");
+    assert!(saved_worn(&s.app, s.alice).is_empty());
+
+    let potion = item_carried(&mut s.app, s.alice, 53, "a bubbling potion");
+    give_save_id(&mut s.app, potion, "item:potion");
+    say(&mut s.app, s.alice, "hold potion");
+    assert_eq!(saved_worn(&s.app, s.alice).len(), 1);
+    say(&mut s.app, s.alice, "quaff potion");
+    assert!(s.app.world().get_entity(potion).is_err());
+    assert!(saved_worn(&s.app, s.alice).is_empty());
+}
+
+#[test]
+fn necklaces_and_bracelets_take_their_second_position_too() {
+    let mut s = scene();
+    gear(&mut s.app);
+    define_item(
+        &mut s.app,
+        26,
+        TbaItemKind::Armor,
+        &[WearSlot::Neck1, WearSlot::Neck2],
+        &["amulet"],
+    );
+    let n1 = item_carried(&mut s.app, s.alice, 26, "a bone amulet");
+    let n2 = item_carried(&mut s.app, s.alice, 26, "a jade amulet");
+    let n3 = item_carried(&mut s.app, s.alice, 26, "a gold amulet");
+    say(&mut s.app, s.alice, "wear bone");
+    say(&mut s.app, s.alice, "wear jade");
+    assert_eq!(worn(&s.app, s.alice, WearSlot::Neck1), Some(n1));
+    assert_eq!(worn(&s.app, s.alice, WearSlot::Neck2), Some(n2));
+    let said = say(&mut s.app, s.alice, "wear gold");
+    assert!(
+        said.contains("You can't wear anything else around your neck."),
+        "{said}"
+    );
+    assert_eq!(carried_by(&s.app, n3), Some(s.alice));
+
+    let b1 = item_carried(&mut s.app, s.alice, 25, "a silver bracelet");
+    let b2 = item_carried(&mut s.app, s.alice, 25, "a copper bracelet");
+    say(&mut s.app, s.alice, "wear silver");
+    say(&mut s.app, s.alice, "wear copper");
+    assert_eq!(worn(&s.app, s.alice, WearSlot::WristR), Some(b1));
+    assert_eq!(worn(&s.app, s.alice, WearSlot::WristL), Some(b2));
+}
+
+#[test]
+fn a_bare_wear_takes_the_last_position_the_object_fits() {
+    let mut s = scene();
+    gear(&mut s.app);
+    define_item(
+        &mut s.app,
+        27,
+        TbaItemKind::Armor,
+        &[WearSlot::Head, WearSlot::Legs],
+        &["hood"],
+    );
+    item_carried(&mut s.app, s.alice, 27, "a long hood");
+    say(&mut s.app, s.alice, "wear hood");
+    assert!(worn(&s.app, s.alice, WearSlot::Legs).is_some());
+    assert!(worn(&s.app, s.alice, WearSlot::Head).is_none());
+}
+
+#[test]
+fn a_weapon_above_the_wielders_level_is_refused() {
+    let mut s = scene();
+    gear(&mut s.app);
+    define_item(
+        &mut s.app,
+        35,
+        TbaItemKind::Weapon,
+        &[WearSlot::Wield],
+        &["blade"],
+    );
+    s.app
+        .world_mut()
+        .resource_mut::<TbaContent>()
+        .items
+        .get_mut(&ItemId::from("tba_item_35"))
+        .unwrap()
+        .min_level = 50;
+    let blade = item_carried(&mut s.app, s.alice, 35, "a fine blade");
+    let said = say(&mut s.app, s.alice, "wield blade");
+    assert!(said.contains("not experienced enough"), "{said}");
+    assert!(worn(&s.app, s.alice, WearSlot::Wield).is_none());
+    assert_eq!(carried_by(&s.app, blade), Some(s.alice));
+}
+
+#[test]
+fn a_cursed_object_is_not_given_away() {
+    let mut s = scene();
+    let sword = item_carried(&mut s.app, s.alice, 5, "a rusty sword");
+    define_item(&mut s.app, 5, TbaItemKind::Weapon, &[], &["sword"]);
+    s.app
+        .world_mut()
+        .resource_mut::<TbaContent>()
+        .items
+        .get_mut(&ItemId::from("tba_item_5"))
+        .unwrap()
+        .extra_flags
+        .push(ItemExtraFlag::NoDrop);
+    let said = say(&mut s.app, s.alice, "give sword guard");
+    assert!(
+        said.contains("You can't let go of a rusty sword!!  Yeech!"),
+        "{said}"
+    );
+    assert_eq!(carried_by(&s.app, sword), Some(s.alice));
+}
+
+#[test]
+fn eating_poisoned_food_says_so_and_a_keyword_alone_names_a_thing() {
+    let mut s = scene();
+    provisions(&mut s.app);
+    s.app
+        .world_mut()
+        .resource_mut::<TbaContent>()
+        .items
+        .get_mut(&ItemId::from("tba_item_50"))
+        .unwrap()
+        .values = [4, 0, 0, 1];
+    // "loaf" is a keyword and not part of the short description.
+    let bread = item_carried(&mut s.app, s.alice, 50, "a golden crust");
+    let said = say(&mut s.app, s.alice, "eat loaf");
+    assert!(said.contains("Oops, that tasted rather strange!"), "{said}");
+    assert!(s.app.world().get_entity(bread).is_err());
+}
+
+#[test]
+fn drinking_looks_through_the_carried_objects_before_the_room() {
+    let mut s = scene();
+    provisions(&mut s.app);
+    let lying = item_on_ground(&mut s.app, s.temple, 52, "a stone fountain");
+    let held = item_carried(&mut s.app, s.alice, 51, "a stone flask");
+    obj_trigger(&mut s.app, 100, "s", 51, ALLOW);
+    obj_trigger(&mut s.app, 101, "s", 52, ALLOW);
+    say(&mut s.app, s.alice, "drink stone");
+    assert!(seen(&mut s.app, held, "actor").is_some());
+    assert!(seen(&mut s.app, lying, "actor").is_none());
+    say(&mut s.app, s.alice, "drink 2.stone");
+    assert!(seen(&mut s.app, lying, "actor").is_some());
+}
+
+#[test]
+fn removal_ends_when_the_trigger_took_the_object_off_itself() {
+    // A trigger that refuses is already covered; this one allows and the object
+    // is still worn afterwards, so it comes off.
+    let mut s = scene();
+    gear(&mut s.app);
+    let vest = item_worn(&mut s.app, s.alice, WearSlot::Body, 20, "a leather vest");
+    obj_trigger(&mut s.app, 100, "l", 20, ALLOW);
+    let said = say(&mut s.app, s.alice, "remove vest");
+    assert!(said.contains("You stop using a leather vest."), "{said}");
+    assert_eq!(worn(&s.app, s.alice, WearSlot::Body), None);
+    assert_eq!(carried_by(&s.app, vest), Some(s.alice));
+}
+
+#[test]
+fn a_command_forced_before_the_stage_reads_is_gated_with_the_rest() {
+    // A system in front of the item intake writes a command, as a script's
+    // `force` does; it passes the same triggers before the router sees it.
+    let mut s = scene();
+    let sword = item_carried(&mut s.app, s.alice, 5, "a rusty sword");
+    obj_trigger(&mut s.app, 100, "h", 5, REFUSE);
+    let alice = s.alice;
+    s.app.add_systems(
+        Update,
+        (move |mut seq: ResMut<CommandSequence>, mut writer: MessageWriter<CommandReceived>| {
+            writer.write(CommandReceived::new(
+                seq.next_id(),
+                alice,
+                1,
+                PlayerInput::RawLine("drop sword".to_owned()),
+            ));
+        })
+        .before(mib_tba::dg::intake::items::items_intake)
+        .in_set(mib_tba::dg::intake::DgIntake::PreCommit),
+    );
+    say(&mut s.app, s.alice, "look");
+    assert!(seen(&mut s.app, sword, "actor").is_some());
+    assert_eq!(carried_by(&s.app, sword), Some(s.alice));
 }

@@ -15,7 +15,7 @@ use mib_stdlib::prelude::{
 };
 
 use super::common::{
-    Dots, article, atoi, carrying, find_all_dots, find_char_in_room, find_obj, is_number,
+    Dots, article, atoi, bare, carrying, find_all_dots, find_char_in_room, find_obj, is_number,
     matches_after, money_desc, names_thing, one_argument, split_number, tell, tell_room,
 };
 use super::gate::{has_extra_flag, item_name};
@@ -139,7 +139,11 @@ fn give_objects(host: &mut EcsHost<'_>, ch: Entity, victim: Entity, gift: &Gift)
         Gift::Objects { name, count } => {
             let Some(first) = find_obj(host, &list, name) else {
                 let message = if count.is_none() {
-                    format!("You don't seem to have {} {name}.", article(name))
+                    format!(
+                        "You don't seem to have {} {}.",
+                        article(bare(name)),
+                        bare(name)
+                    )
                 } else {
                     format!("You don't seem to have any {name}s.")
                 };
@@ -200,9 +204,7 @@ fn perform_give(host: &mut EcsHost<'_>, ch: Entity, victim: Entity, obj: Uid) {
     let Some(item) = host.entity(obj) else {
         return;
     };
-    if host.world.get::<CarriedBy>(item).map(|carried| carried.0) != Some(ch)
-        || host.entity(victim_uid).is_none()
-    {
+    if host.obj_carried_by(obj) != Some(ch_uid) || host.entity(victim_uid).is_none() {
         return;
     }
     let name = item_name(host, item);
