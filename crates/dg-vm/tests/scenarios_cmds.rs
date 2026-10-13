@@ -1715,3 +1715,54 @@ fn trigger_23700_falls_through_empty_cases() {
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
 }
+
+// `detach <vnum> <id>` removes one trigger from its owner; process_detach ends
+// in `if (!TRIGGERS(SCRIPT(m))) extract_script(m, MOB_TRIGGER)`, so the
+// script, with its global variables, goes with the owner's last trigger. The
+// mob below carries a random trigger and a speech trigger that each detach
+// themselves: after the first the script survives with the speech trigger
+// (and the global the random trigger left), after the second nothing is left.
+#[test]
+fn a_detach_frees_the_script_with_its_last_trigger() {
+    let mut scene = Scene::new();
+    let (mob, player) = (scene.add_owner_mob(3400, "a clerk"), scene.player());
+    install(
+        scene.host(),
+        mob,
+        9201,
+        AttachType::Mob,
+        "b",
+        100,
+        "",
+        "set seen 1\nglobal seen\ndetach 9201 %self.id%",
+    );
+    install(
+        scene.host(),
+        mob,
+        9202,
+        AttachType::Mob,
+        "d",
+        100,
+        "hello",
+        "say bye\ndetach 9202 %self.id%",
+    );
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    dispatch::random_mtrigger(scene.host(), mob);
+    let script = scene.fx.host.script(mob).expect("one trigger is left");
+    assert!(!script.is_attached(9201));
+    assert!(script.is_attached(9202));
+    assert_eq!(script.trigger_ids().len(), 1);
+    assert_eq!(
+        global_var(&scene.fx.host, mob, "seen").as_deref(),
+        Some("1")
+    );
+    assert!(scene.fx.host.mud_commands.is_empty());
+
+    dispatch::speech_mtrigger(scene.host(), player, "hello");
+    assert_eq!(common::world::commands(&scene.fx.host), vec!["say bye"]);
+    assert!(scene.fx.host.script(mob).is_none());
+    assert_eq!(global_var(&scene.fx.host, mob, "seen"), None);
+    assert!(scene.fx.host.effects.is_empty());
+    assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
+    assert_clean(&scene.fx.host);
+}

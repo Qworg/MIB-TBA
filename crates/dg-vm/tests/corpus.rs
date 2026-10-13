@@ -256,6 +256,9 @@ fn candidate_numbers(body: &str) -> BTreeSet<i32> {
         for run in text.split(|c: char| !c.is_ascii_digit()) {
             if run.len() >= shortest
                 && let Ok(number) = run.parse::<i32>()
+                // Room 0 is the void, where a variable holding 0 reads its
+                // globals: scripts that compute 0 do not mean that room.
+                && number > 0
             {
                 found.insert(number);
             }
@@ -719,6 +722,17 @@ fn log_shape(message: &str) -> String {
             last_digit = false;
         }
     }
+    // The names the C formats print in parentheses (`victim (%s) does not
+    // exist`, `location not found (%s)`) are the script's text, not part of
+    // the message.
+    for marker in ["victim (", "location not found ("] {
+        if let Some(at) = out.find(marker) {
+            let start = at + marker.len();
+            if let Some(end) = out[start..].find(')') {
+                out.replace_range(start..start + end, "..");
+            }
+        }
+    }
     out
 }
 
@@ -738,6 +752,59 @@ fn top<K: Clone + Ord>(counts: &BTreeMap<K, usize>, n: usize) -> Vec<(K, usize)>
     rows.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
     rows.truncate(n);
     rows
+}
+
+#[test]
+fn log_shapes_keep_distinct_c_messages_apart() {
+    // Different formats of script_driver stay different, as do the error
+    // numbers of one format.
+    let distinct = [
+        "Trigger VNum 4601 has 'else' without 'if'.",
+        "Trigger VNum 4601 has 'end' without 'if'.",
+        "Trigger VNum 1385 has 'if' without 'end'. (error 2)",
+        "Trigger VNum 1338 has 'if' without 'end'. (error 5)",
+        "Mob (a, VNum 3000):: mteleport: victim (visconti) does not exist",
+        "Mob (a, VNum 3000):: mteleport target is an invalid room",
+        "Room 3001 :: wat: location not found (2301)",
+        "Room 3001 :: wat: invalid location",
+    ];
+    let shapes: BTreeSet<String> = distinct.iter().map(|m| log_shape(m)).collect();
+    assert_eq!(shapes.len(), distinct.len(), "{shapes:?}");
+
+    // One format with different arguments is one shape, whichever way the C
+    // spells the prefix.
+    let same = [
+        "Trigger: a, VNum 12, type: 1. unknown object field: 'inventory'",
+        "Trigger: b c, VNum 3. unknown object field: 'x'y'",
+    ];
+    assert_eq!(log_shape(same[0]), log_shape(same[1]));
+    let same = [
+        "Mob (a, VNum 3000):: msend: victim (sword) does not exist",
+        "Mob (a, VNum 3000):: msend: victim (Rumble) does not exist",
+    ];
+    assert_eq!(log_shape(same[0]), log_shape(same[1]));
+    let same = [
+        "Trigger: x, Vnum 1926, type 0. Trying to access Global var list of void. Apparently this has not been set up!",
+        "Trigger: y z, Vnum 7, type 0. Trying to access Global var list of void. Apparently this has not been set up!",
+    ];
+    assert_eq!(log_shape(same[0]), log_shape(same[1]));
+}
+
+#[test]
+fn constants_a_script_computes_are_found() {
+    let body = "eval num %random.99% + 2300\nset zone 211\nmgoto %zone%02\n\
+                eval present %random.27%\neval present2 %present% * 1000\n\
+                eval present3 %present2% + %random.4%\n* 777\nset zero 0\n";
+    let found = candidate_numbers(body);
+    // The first roll is 1.
+    for number in [2300, 2301, 211, 21102, 1000, 1001] {
+        assert!(found.contains(&number), "{number} in {found:?}");
+    }
+    assert!(!found.contains(&777), "a comment is not read");
+    assert!(!found.contains(&0), "0 is the void");
+    assert_eq!(evaluate_constants("2 + 3 * 4 - 8 / 2"), Some(10));
+    assert_eq!(evaluate_constants("1 / 0"), None);
+    assert_eq!(evaluate_constants("x + 1"), None);
 }
 
 #[test]
