@@ -1,10 +1,10 @@
 //! `dg_cast` and `dg_affect` (`dg_misc.c`): [`do_dg_cast`] and
 //! [`do_dg_affect`].
 //!
-//! Everything about spells themselves (`find_skill_num`, `spell_info[]`,
-//! `call_magic`, the affect list) is the host's, reached through
-//! [`MagicHost`]. The VM keeps the argument parsing, target resolution,
-//! caster selection and the property tables.
+//! Everything about spells themselves (`spell_info[]`, `call_magic`, the
+//! affect list) is the host's, reached through [`MagicHost`]. The VM keeps the
+//! argument parsing, [`find_skill_num`], target resolution, caster selection
+//! and the property tables.
 //!
 //! # Deviations from the C
 //!
@@ -12,10 +12,12 @@
 //!   buffers (`orig_cmd`, `buf2`) have no length checks and are not
 //!   reproduced.
 //! - The proxy caster is loaded, placed at the head of the room's people,
-//!   used and extracted through three host calls rather than by touching the
-//!   room's list directly.
+//!   used and extracted through the command module's `read_mobile`,
+//!   `char_to_room` and `extract_char` primitives rather than by touching the
+//!   room's list directly (for a character just loaded, `char_to_room` and
+//!   the C's open-coded insertion are the same).
 
-use crate::cstr::{atoi, half_chop, one_argument, skip_spaces, str_eq};
+use crate::cstr::{any_one_arg, atoi, half_chop, is_abbrev, one_argument, skip_spaces, str_eq};
 use crate::host::{Cx, DgHost};
 use crate::lookup::{dg_room_of_obj, get_char, get_obj};
 use crate::types::{AttachType, Uid};
@@ -29,6 +31,9 @@ pub const DG_SPELL_LEVEL: i32 = 25;
 
 /// `MAX_SPELLS` (`spells.h`): spell numbers run `1..=MAX_SPELLS`.
 pub const MAX_SPELLS: i32 = 130;
+
+/// `TOP_SPELL_DEFINE` (`spells.h`): the last slot of `spell_info[]`.
+pub const TOP_SPELL_DEFINE: i32 = 299;
 
 /// `SPELL_DG_AFFECT` (`spells.h`): the spell number every `dg_affect` affect
 /// carries, so `off` can remove exactly those.
@@ -47,70 +52,20 @@ pub const TAR_OBJ_EQUIP: u32 = 1 << 10;
 /// refused.
 pub const MAG_GROUPS: u32 = 1 << 5;
 
-/// `apply_types[]` (`constants.c`), without the `"\n"` terminator. The index
-/// is the `APPLY_*` number.
-pub const APPLY_TYPES: &[&str] = &[
-    "NONE",
-    "STR",
-    "DEX",
-    "INT",
-    "WIS",
-    "CON",
-    "CHA",
-    "CLASS",
-    "LEVEL",
-    "AGE",
-    "CHAR_WEIGHT",
-    "CHAR_HEIGHT",
-    "MAXMANA",
-    "MAXHIT",
-    "MAXMOVE",
-    "GOLD",
-    "EXP",
-    "ARMOR",
-    "HITROLL",
-    "DAMROLL",
-    "SAVING_PARA",
-    "SAVING_ROD",
-    "SAVING_PETRI",
-    "SAVING_BREATH",
-    "SAVING_SPELL",
-];
-
-/// `affected_bits[]` (`constants.c`), without the `"\n"` terminator. The
-/// index is the `AFF_*` bit number; entry 0 is the empty string the C keeps
-/// there.
-pub const AFFECTED_BITS: &[&str] = &[
-    "",
-    "BLIND",
-    "INVIS",
-    "DET-ALIGN",
-    "DET-INVIS",
-    "DET-MAGIC",
-    "SENSE-LIFE",
-    "WATWALK",
-    "SANCT",
-    "GROUP",
-    "CURSE",
-    "INFRA",
-    "POISON",
-    "PROT-EVIL",
-    "PROT-GOOD",
-    "SLEEP",
-    "NO_TRACK",
-    "FLY",
-    "SCUBA",
-    "SNEAK",
-    "HIDE",
-    "UNUSED",
-    "CHARM",
-];
+pub use crate::fields_obj::{AFFECTED_BITS, APPLY_TYPES};
 
 /// The spell and affect primitives.
+///
+/// Spell *names* are data: [`find_skill_num`] does the matching over
+/// [`MagicHost::magic_spell_name`]. The caster mob an object or room casts
+/// through is made with the command module's `cmd_read_mobile`,
+/// `cmd_char_to_room` and `cmd_extract_char`, and named with
+/// [`crate::fields_char::CharHost::char_set_short_descr`].
 pub trait MagicHost {
-    /// `find_skill_num(name)`: the spell number `name` names, or `-1`.
-    /// The VM range-checks the result against `1..=MAX_SPELLS`.
-    fn magic_find_skill_num(&self, name: &str) -> i32;
+    /// `spell_info[spellnum].name` for `spellnum` in `1..=TOP_SPELL_DEFINE`;
+    /// `None` for a slot the host does not define (read as `"!UNUSED!"`, the
+    /// C's name for an unused slot).
+    fn magic_spell_name(&self, spellnum: i32) -> Option<String>;
 
     /// `spell_info[spellnum].targets`: the `TAR_*` bits. `0` for a spell the
     /// host does not know.
@@ -133,43 +88,54 @@ pub trait MagicHost {
         level: i32,
     );
 
-    /// The temporary caster for an object or room:
-    /// `caster = read_mobile(vnum, VIRTUAL)` (`vnum` is [`DG_CASTER_PROXY`]),
-    /// then `caster->player.short_descr = strdup(short_descr)`, then
-    /// `caster->next_in_room = room->people; room->people = caster;
-    /// caster->in_room = real_room(room->number)`. `None` when the mob cannot
-    /// be loaded. (The host may implement the last step with its own
-    /// `char_to_room`; the C open-codes it.)
-    fn magic_load_caster_proxy(&mut self, vnum: i32, room: Uid, short_descr: &str) -> Option<Uid>;
-
-    /// (To be unified with the command module's `read_mobile` / `extract_char`
-    /// primitives at merge; the proxy calls are specialisations of them.)
-    ///
-    /// `extract_char(caster)` for the proxy made by
-    /// [`Self::magic_load_caster_proxy`].
-    fn magic_extract_caster_proxy(&mut self, proxy: Uid);
-
     /// `affect_from_char(ch, spell)` (`spell` is [`SPELL_DG_AFFECT`]): remove
     /// every affect of that spell from the character.
     fn magic_remove_dg_affects(&mut self, ch: Uid, spell: i32);
 
-    /// `modifier` is already narrowed by the VM to the C's `sbyte`
-    /// (`-128..=127`) and `duration` to `sh_int` (`-32768..=32767`); the host
-    /// stores them as given.
-    ///
     /// `new_affect(&af); af.spell = spell; af.duration = duration;
     /// af.modifier = modifier; af.location = location;` then, when `bit` is
     /// given, `SET_BIT_AR(af.bitvector, bit)`; `affect_to_char(ch, &af)`.
-    /// `location` is `APPLY_NONE` (`0`) for a bit affect.
+    /// `location` is `APPLY_NONE` (`0`) for a bit affect. The VM has already
+    /// narrowed `modifier` to the C's `sbyte` and `duration` to its `sh_int`.
     fn magic_add_dg_affect(
         &mut self,
         ch: Uid,
         spell: i32,
         location: i32,
-        modifier: i32,
-        duration: i32,
+        modifier: i8,
+        duration: i16,
         bit: Option<u32>,
     );
+}
+
+/// `unused_spellname` (`spell_parser.c`), the name of an undefined spell slot.
+const UNUSED_SPELLNAME: &str = "!UNUSED!";
+
+/// `find_skill_num(name)` (`spell_parser.c`): the spell whose name `name`
+/// abbreviates, whole or word by word; `-1` when none.
+pub fn find_skill_num<H: MagicHost + ?Sized>(host: &H, name: &str) -> i32 {
+    for index in 1..=TOP_SPELL_DEFINE {
+        let spell = host
+            .magic_spell_name(index)
+            .unwrap_or_else(|| UNUSED_SPELLNAME.to_owned());
+        if is_abbrev(name, &spell) {
+            return index;
+        }
+        let mut ok = true;
+        let (mut first, mut temp) = any_one_arg(&spell);
+        let (mut first2, mut temp2) = any_one_arg(name);
+        while !first.is_empty() && !first2.is_empty() && ok {
+            if !is_abbrev(&first2, &first) {
+                ok = false;
+            }
+            (first, temp) = any_one_arg(temp);
+            (first2, temp2) = any_one_arg(temp2);
+        }
+        if ok && first2.is_empty() {
+            return index;
+        }
+    }
+    -1
 }
 
 /// What `strtok(cmd, "'")` / `strtok(NULL, "'")` / `strtok(NULL, "\0")` give
@@ -249,7 +215,7 @@ pub fn do_dg_cast<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, cmd: &str) {
         CastParts::Parts(spell, rest) => (spell, rest),
     };
 
-    let spellnum = cx.host.magic_find_skill_num(spell);
+    let spellnum = find_skill_num(&*cx.host, spell);
     if !(1..=MAX_SPELLS).contains(&spellnum) {
         cx.log(&format!("dg_cast: invalid spell name ({cmd})"));
         return;
@@ -297,16 +263,15 @@ pub fn do_dg_cast<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, cmd: &str) {
         AttachType::Obj => cx.host.name(owner),
         _ => "The gods".to_owned(),
     };
-    let Some(proxy) = cx
-        .host
-        .magic_load_caster_proxy(DG_CASTER_PROXY, room, &short_descr)
-    else {
+    let Some(proxy) = cx.host.cmd_read_mobile(DG_CASTER_PROXY) else {
         cx.host.script_log("dg_cast: Cannot load the caster mob!");
         return;
     };
+    cx.host.char_set_short_descr(proxy, &short_descr);
+    cx.host.cmd_char_to_room(proxy, room);
     cx.host
         .magic_call_magic(proxy, victim, target_obj, spellnum, DG_SPELL_LEVEL);
-    cx.host.magic_extract_caster_proxy(proxy);
+    cx.host.cmd_extract_char(proxy);
 }
 
 /// Which table a `dg_affect` property was found in.
@@ -373,8 +338,8 @@ pub fn do_dg_affect<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, cmd: &str) {
 
     // `af.modifier` is an `sbyte` and `af.duration` an `sh_int` (structs.h),
     // so the C narrows both before `affect_to_char`.
-    let value = i32::from(value as i8);
-    let duration = i32::from(duration.wrapping_sub(1) as i16);
+    let value = value as i8;
+    let duration = duration.wrapping_sub(1) as i16;
     match found {
         Property::Apply(index) => {
             let location = i32::try_from(index).unwrap_or(0);
@@ -422,6 +387,9 @@ mod tests {
         host.char_to_room(mob, room);
         host.char_to_room(bob, room);
         host.obj_to_room(sword, room);
+        host.globals
+            .texts
+            .insert("mobproto:1".to_owned(), "Puff".to_owned());
         host.add_spell(
             "magic missile",
             MAGIC_MISSILE,
@@ -430,9 +398,6 @@ mod tests {
         );
         host.add_spell("sanctuary", SANCTUARY, TAR_CHAR_ROOM | TAR_SELF_ONLY, 0);
         host.add_spell("armor", ARMOR, TAR_CHAR_ROOM, 0);
-        host.globals
-            .texts
-            .insert("mobproto:1".to_owned(), "Puff".to_owned());
         host.add_spell(
             "identify",
             IDENTIFY,
@@ -801,17 +766,6 @@ mod tests {
     }
 
     #[test]
-    fn name_tables_match_the_c() {
-        assert_eq!(APPLY_TYPES.len(), 25);
-        assert_eq!(APPLY_TYPES[17], "ARMOR");
-        assert_eq!(APPLY_TYPES[24], "SAVING_SPELL");
-        assert_eq!(AFFECTED_BITS.len(), 23);
-        assert_eq!(AFFECTED_BITS[0], "");
-        assert_eq!(AFFECTED_BITS[8], "SANCT");
-        assert_eq!(AFFECTED_BITS[22], "CHARM");
-    }
-
-    #[test]
     fn an_apply_affect() {
         let mut w = world();
         affect(&mut w, "dg_affect bob armor -20 5");
@@ -951,6 +905,142 @@ mod tests {
         let mut w = world();
         affect(&mut w, "dg_affect   bob    Saving_Spell   -2    9");
         assert!(w.host.effects[0].contains("location=24 modifier=-2 duration=8"));
+    }
+
+    #[test]
+    fn dg_affect_checks_in_the_c_order() {
+        let mut w = world();
+        // Usage, then duration, then property, then target.
+        affect(&mut w, "dg_affect nobody bogus 1 0");
+        affect(&mut w, "dg_affect nobody str 1 0");
+        affect(&mut w, "dg_affect nobody bogus 1 5");
+        affect(&mut w, "dg_affect nobody str 1 5");
+        assert_eq!(
+            w.host.logs,
+            vec![
+                "Trigger: trigger 9, VNum 9. dg_affect: need positive duration!",
+                "Line was: dg_affect nobody bogus 1 0 (0)",
+                "Trigger: trigger 9, VNum 9. dg_affect: need positive duration!",
+                "Line was: dg_affect nobody str 1 0 (0)",
+                "Trigger: trigger 9, VNum 9. dg_affect: unknown property 'bogus'!",
+                "Trigger: trigger 9, VNum 9. dg_affect: cannot locate target!",
+            ]
+        );
+        assert!(w.host.effects.is_empty());
+    }
+
+    #[test]
+    fn dg_affect_property_names_are_exact() {
+        let mut w = world();
+        // str_cmp, not is_abbrev: "sav" is not SAVING_PARA, "sanc" not SANCT.
+        affect(&mut w, "dg_affect bob sav 1 5");
+        affect(&mut w, "dg_affect bob sanc 1 5");
+        affect(&mut w, "dg_affect bob st 1 5");
+        assert!(w.host.effects.is_empty());
+        assert_eq!(w.host.logs.len(), 3);
+        assert!(w.host.logs[0].ends_with("unknown property 'sav'!"));
+        affect(&mut w, "dg_affect bob SAVING_PARA 1 5");
+        assert_eq!(w.host.effects.len(), 1);
+    }
+
+    #[test]
+    fn a_spell_that_targets_characters_anywhere_finds_a_character() {
+        let mut w = world();
+        let bob = w.bob;
+        // TAR_CHAR_WORLD alone is enough to look for a character.
+        w.host.add_spell("summon", 40, TAR_CHAR_WORLD, 0);
+        cast_as_mob(&mut w, "dg_cast 'summon' bob");
+        assert!(w.host.effects[0].contains(&format!("victim={bob} obj=-")));
+        // ...and not an object.
+        let before = w.host.effects.len();
+        cast_as_mob(&mut w, "dg_cast 'summon' sword");
+        assert_eq!(w.host.effects.len(), before);
+        assert!(w.host.logs[0].contains("target not found"));
+    }
+
+    #[test]
+    fn each_object_target_bit_finds_an_object() {
+        let mut w = world();
+        let sword = w.sword;
+        for (name, num, bit) in [
+            ("hide", 41, TAR_OBJ_INV),
+            ("polish", 42, TAR_OBJ_EQUIP),
+            ("sharpen", 43, TAR_OBJ_ROOM),
+            ("enchant", 44, TAR_OBJ_WORLD),
+        ] {
+            w.host.effects.clear();
+            w.host.logs.clear();
+            w.host.add_spell(name, num, bit, 0);
+            cast_as_mob(&mut w, &format!("dg_cast '{name}' sword"));
+            assert_eq!(w.host.effects.len(), 1, "{name}");
+            assert!(
+                w.host.effects[0].contains(&format!("victim=- obj={sword}")),
+                "{name}"
+            );
+            assert!(w.host.logs.is_empty(), "{name}");
+        }
+    }
+
+    #[test]
+    fn the_proxy_is_named_by_the_short_description_not_the_keywords() {
+        let mut w = world();
+        let sword = w.sword;
+        w.host.set_text(sword, "name", "a gleaming blade");
+        assert_eq!(w.host.keywords(sword), "sword");
+        run(&mut w, sword, AttachType::Obj, |cx| {
+            do_dg_cast(cx, "dg_cast 'magic missile' bob");
+        });
+        let proxy = w.host.character_list[0];
+        assert_eq!(w.host.name(proxy), "a gleaming blade");
+        // The keywords stay the prototype's.
+        assert_eq!(w.host.keywords(proxy), "Puff");
+    }
+
+    #[test]
+    fn group_spells_are_refused_for_object_and_room_casters_too() {
+        let mut w = world();
+        let (sword, room) = (w.sword, w.room);
+        let before = w.host.character_list.len();
+        run(&mut w, sword, AttachType::Obj, |cx| {
+            do_dg_cast(cx, "dg_cast 'group heal'");
+        });
+        run(&mut w, room, AttachType::Wld, |cx| {
+            do_dg_cast(cx, "dg_cast 'group heal'");
+        });
+        assert!(w.host.effects.is_empty());
+        assert_eq!(w.host.logs.len(), 2);
+        assert!(
+            w.host
+                .logs
+                .iter()
+                .all(|l| l.contains("group spells not permitted"))
+        );
+        // Refused before a proxy is made.
+        assert_eq!(w.host.character_list.len(), before);
+    }
+
+    #[test]
+    fn spell_names_match_by_abbreviation_through_the_host_table() {
+        let mut w = world();
+        let bob = w.bob;
+        cast_as_mob(&mut w, "dg_cast 'mag mis' bob");
+        cast_as_mob(&mut w, "dg_cast 'MAGIC' bob");
+        assert_eq!(w.host.effects.len(), 2);
+        assert!(w.host.effects.iter().all(|e| e.contains("spell=32")));
+        assert!(w.host.effects[0].contains(&format!("victim={bob}")));
+        assert_eq!(find_skill_num(&w.host, "sanct"), SANCTUARY);
+        assert_eq!(find_skill_num(&w.host, "magic missile extra"), -1);
+        assert_eq!(find_skill_num(&w.host, "zork"), -1);
+    }
+
+    #[test]
+    fn the_scan_reaches_top_spell_define() {
+        // spell_parser.c: `for (skindex = 1; skindex <= TOP_SPELL_DEFINE; ...)`.
+        let mut w = world();
+        w.host.add_spell("zzlast", TOP_SPELL_DEFINE, 0, 0);
+        w.host.add_spell("zzbeyond", TOP_SPELL_DEFINE + 1, 0, 0);
+        assert_eq!(find_skill_num(&w.host, "zzlast"), TOP_SPELL_DEFINE);
+        assert_eq!(find_skill_num(&w.host, "zzbeyond"), -1);
     }
 
     #[test]

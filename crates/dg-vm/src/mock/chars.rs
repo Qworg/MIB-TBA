@@ -16,22 +16,34 @@
 //! | `nums["save:<0..4>"]` | `GET_SAVE`, indexed by `SAVING_PARA` 0, `ROD` 1, `PETRI` 2, `BREATH` 3, `SPELL` 4 |
 //! | `nums["abil:<name>"]`, `nums["rabil:<name>"]` | `aff_abils` / `real_abils`; `name` is `str`, `stradd`, `int`, `wis`, `dex`, `con`, `cha`. `affect_total` copies real to aff (the mock has no affects that change abilities) |
 //! | `nums["skill:<n>"]` | `GET_SKILL` |
-//! | `nums["act"]`, `nums["pref"]` | the act / preference bitvectors (bit `n` = flag `n`); `IS_NPC` is the shared `nums["is_npc"]`, not act bit 3 (the VM reads that through `is_npc`) |
+//! | `nums["act"]`, `nums["pref"]` | the act / preference bitvectors (bit `n` = flag `n`; preference bit 8 is the shared `nums["nohassle"]`); `IS_NPC` is the shared `nums["is_npc"]`, not act bit 3 (the VM reads that through `is_npc`) |
 //! | `globals.nums["dummy:<key>"]` | the C's shared `dummy_mob` record: `prac`, `qp`, `cond:<n>` and `skill:<n>` of every NPC live here, not on the mob |
 //! | `texts["title"]` | `GET_TITLE`; absent = NULL |
 //! | `nums["quest"]` | `GET_QUEST`; absent = `NOTHING` (`-1`) |
 //! | `nums["quest_done:<vnum>"]` | `is_complete(ch, vnum)` |
-//! | `globals.texts["spell:<n>"]` | `spell_info[n].name`; absent = undefined slot; the top is the highest key present |
 //! | `globals.nums["quest:<vnum>"]` | `real_quest(vnum) != NOTHING` |
+//!
+//! `DEAD(ch)` is the shared `nums["dead"]` and is never read from or written
+//! to `nums["act"]`: the VM asks `is_dead`, so an act bit 19 (NPC) or 16
+//! (player) is only an ordinary bit of the array. Likewise `PRF_NOHASSLE`
+//! (preference bit 8) is the shared `nums["nohassle"]`, not a bit of
+//! `nums["pref"]`.
 //!
 //! `gain_exp` models only the parts of the C that do not need the level
 //! tables: an NPC adds, a player below level 1 or at an immortal level is
-//! unchanged, gains add (no level-up, no cap), losses floor the total at 0.
+//! unchanged, a zero gain changes nothing, gains add (capped at the default
+//! `CONFIG_MAX_EXP_GAIN`, no level-up), losses are capped at the default
+//! `CONFIG_MAX_EXP_LOSS` and floor the total at 0.
 
 use crate::fields_char::{CharAbil, CharFact, CharHost, CharStat};
 use crate::mock::MockHost;
 use crate::types::Uid;
 
+/// `CONFIG_MAX_EXP_GAIN` and `CONFIG_MAX_EXP_LOSS` at their `config.c` defaults.
+const MAX_EXP_GAIN: i32 = 100_000;
+const MAX_EXP_LOSS: i32 = 500_000;
+/// `PRF_NOHASSLE`: the preference bit the shared `nums["nohassle"]` stands for.
+const PRF_NOHASSLE: u32 = 8;
 /// `MAX_GOLD`.
 const MAX_GOLD: i32 = 2_140_000_000;
 
@@ -45,8 +57,8 @@ fn stat_key(stat: CharStat) -> &'static str {
         CharStat::Mana => "mana",
         CharStat::MaxMana => "max_mana",
         CharStat::Move => "move",
-        CharStat::MaxMove => "max_move",
         CharStat::Sex => "sex",
+        CharStat::MaxMove => "max_move",
         CharStat::Class => "class",
         CharStat::Pos => "pos",
         CharStat::Practices => "prac",
@@ -210,9 +222,11 @@ impl CharHost for MockHost {
         } else if !(1..31).contains(&level) {
             return;
         } else if gain > 0 {
-            exp.wrapping_add(gain)
+            exp.wrapping_add(gain.min(MAX_EXP_GAIN))
+        } else if gain < 0 {
+            exp.wrapping_add(gain.max(-MAX_EXP_LOSS)).max(0)
         } else {
-            exp.wrapping_add(gain).max(0)
+            return;
         };
         self.set_num(ch, "exp", i64::from(value));
     }
@@ -254,19 +268,6 @@ impl CharHost for MockHost {
         self.num(ch, &format!("spell:{spell}")) != 0
     }
 
-    fn char_top_spell(&self) -> i32 {
-        self.globals
-            .texts
-            .keys()
-            .filter_map(|key| key.strip_prefix("spell:")?.parse::<i32>().ok())
-            .max()
-            .unwrap_or(0)
-    }
-
-    fn char_spell_name(&self, spell: i32) -> Option<String> {
-        self.globals.texts.get(&format!("spell:{spell}")).cloned()
-    }
-
     fn char_skill(&self, ch: Uid, skill: i32) -> i32 {
         self.shared_get(ch, &format!("skill:{skill}"))
     }
@@ -286,7 +287,14 @@ impl CharHost for MockHost {
     }
 
     fn char_pref_flagged(&self, ch: Uid, bit: u32) -> bool {
+        if bit == PRF_NOHASSLE {
+            return self.num(ch, "nohassle") != 0;
+        }
         (self.num(ch, "pref") >> bit.min(62)) & 1 != 0
+    }
+
+    fn char_set_short_descr(&mut self, ch: Uid, text: &str) {
+        self.set_text(ch, "name", text);
     }
 
     fn char_title(&self, ch: Uid) -> Option<String> {

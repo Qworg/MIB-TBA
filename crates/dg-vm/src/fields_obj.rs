@@ -26,12 +26,12 @@
 //! - `weight`, `cost` and `cost_per_day` writes use wrapping `int` arithmetic
 //!   as the C does; the object's carried weight is not adjusted, exactly as in
 //!   the C, which assigns the field directly.
-//! - An `oset apply` modifier is stored in a signed byte and the location in
-//!   a `byte`, also signed (`struct obj_affected_type`; 0..24 fits either
-//!   way), so the sum wraps to `i8`.
+//! - An `oset apply` modifier is a signed byte in the C, so the sum wraps to
+//!   `i8`. The location is a `byte` there too; [`ObjHost::obj_apply`] hands
+//!   it over as `u8`, which holds every apply number (0..24) the same.
 //! - `GET_OBJ_VNUM` of an object with no prototype is `NOTHING`, 65535 in
 //!   this tree (`CIRCLE_UNSIGNED_INDEX`). A host may report any negative
-//!   number for such an object (the mock reports -1); [`obj_vnum`] maps it to
+//!   number for such an object (the mock reports -1); `obj_vnum` maps it to
 //!   65535, so `%corpse.vnum(65535)%` is 1 as stock scripts (30.trg:208)
 //!   expect.
 //!
@@ -39,16 +39,75 @@
 //! [`AFFECTED_BITS`], [`APPLY_TYPES`]. (`wear_bits` is not used by this
 //! table: `wearflag` goes through `can_wear_on_pos`.)
 
-use crate::cstr::{atoi, is_abbrev, one_argument, skip_spaces, sprinttype, str_eq};
+use crate::cstr::{atoi, is_abbrev, is_number, one_argument, skip_spaces, sprinttype, str_eq};
+use crate::host::WorldHost;
 use crate::host::{Cx, DgHost};
-use crate::lookup::{can_wear_on_pos, find_eq_pos_script, item_in_list, obj_room};
-use crate::types::{MAX_INPUT_LENGTH, Uid, uid_text};
+use crate::lookup::{
+    NUM_WEARS, can_wear_on_pos, find_eq_pos_script, get_object_in_equip, item_in_list, obj_room,
+};
+use crate::types::{MAX_INPUT_LENGTH, Uid, parse_uid, uid_text};
 
-/// `GET_OBJ_VNUM(obj)`: the host's vnum, with a negative answer (no
-/// prototype) rendered as `NOTHING`, 65535 in this tree.
-pub(crate) fn obj_vnum<H: DgHost + ?Sized>(host: &H, obj: Uid) -> i32 {
-    let vnum = host.vnum(obj);
+/// A vnum as the C holds it: `IDXTYPE` is `ush_int` in this tree, so
+/// `NOTHING` is 65535. A host reports it as any negative number (the mock as
+/// -1); every other vnum is passed through, so one above 65535, which the C
+/// cannot hold, is out of contract but not mistaken for `NOTHING`. Numeric
+/// comparisons against a script's number narrow both sides to 16 bits
+/// ([`vnum_is`]).
+pub(crate) fn c_vnum(vnum: i32) -> i32 {
     if vnum < 0 { 65535 } else { vnum }
+}
+
+/// Whether a host vnum equals a number a script gave, as the C compares
+/// them: `obj_vnum ovnum = atoi(item)` narrows the script's number to the
+/// unsigned 16-bit `IDXTYPE`, and `GET_OBJ_VNUM` is one already.
+fn vnum_is(vnum: i32, wanted: i32) -> bool {
+    c_vnum(vnum) as u16 == wanted as u16
+}
+
+/// `item_in_list(item, list)` (`dg_variables.c`) with the vnum comparison
+/// of the C: both sides are `IDXTYPE`, so a prototype-less object (host
+/// vnum negative) is 65535. Ids and keywords go through
+/// [`crate::lookup::item_in_list`], which does the rest of the C function.
+pub(crate) fn item_in_list_c<H: WorldHost + ?Sized>(host: &H, item: &str, list: &[Uid]) -> i32 {
+    fn count<H: WorldHost + ?Sized>(host: &H, list: &[Uid], wanted: i32, depth: u32) -> i32 {
+        let mut total = 0;
+        for obj in list.iter().copied() {
+            if vnum_is(host.vnum(obj), wanted) {
+                total += 1;
+            }
+            // The bound only guards against a corrupt containment cycle.
+            if depth < 64 && host.is_container(obj) {
+                total += count(host, &host.obj_contains(obj), wanted, depth + 1);
+            }
+        }
+        total
+    }
+    if !item.is_empty() && parse_uid(item).is_none() && is_number(item) {
+        count(host, list, atoi(item), 0)
+    } else {
+        item_in_list(host, item, list)
+    }
+}
+
+/// `get_object_in_equip(ch, name)` (`dg_scripts.c`) with the same vnum
+/// comparison as [`item_in_list_c`].
+pub(crate) fn get_object_in_equip_c<H: WorldHost + ?Sized>(
+    host: &H,
+    ch: Uid,
+    name: &str,
+) -> Option<Uid> {
+    if parse_uid(name).is_none() && is_number(name) {
+        let wanted = atoi(name);
+        return (0..NUM_WEARS)
+            .filter_map(|pos| host.equipment(ch, pos))
+            .find(|obj| vnum_is(host.vnum(*obj), wanted));
+    }
+    get_object_in_equip(host, ch, name)
+}
+
+/// `GET_OBJ_VNUM(obj)`: the host's vnum through [`c_vnum`].
+pub(crate) fn obj_vnum<H: DgHost + ?Sized>(host: &H, obj: Uid) -> i32 {
+    c_vnum(host.vnum(obj))
 }
 
 /// `item_types[]` (`constants.c`), without the `"\n"` terminator.
@@ -417,7 +476,7 @@ pub fn obj_field<H: DgHost + ?Sized>(
             .unwrap_or_default()
     } else if is("count") {
         if host.is_container(obj) {
-            item_in_list(&*host, subfield, &host.obj_contains(obj)).to_string()
+            item_in_list_c(&*host, subfield, &host.obj_contains(obj)).to_string()
         } else {
             "0".to_owned()
         }
@@ -431,7 +490,7 @@ pub fn obj_field<H: DgHost + ?Sized>(
         }
     } else if is("has_in") {
         if host.is_container(obj) {
-            let found = item_in_list(&*host, subfield, &host.obj_contains(obj)) != 0;
+            let found = item_in_list_c(&*host, subfield, &host.obj_contains(obj)) != 0;
             u8::from(found).to_string()
         } else {
             "0".to_owned()
@@ -509,6 +568,7 @@ mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
 
     use super::*;
+    use crate::host::BaseHost;
     use crate::mock::MockHost;
     use crate::types::{AttachType, ROOM_ID_BASE, TrigInstance};
 
@@ -810,6 +870,29 @@ mod tests {
         let o = sword(&mut h);
         assert_eq!(f(&mut h, o, "oset", "alias  \tfoo"), "1");
         assert_eq!(h.text(o, "alias"), "\tfoo");
+    }
+
+    #[test]
+    fn oset_shortdesc_and_longdesc_keep_a_leading_tab_too() {
+        let mut h = MockHost::new();
+        let o = sword(&mut h);
+        assert_eq!(f(&mut h, o, "oset", "shortdesc \tfoo bar"), "1");
+        assert_eq!(h.text(o, "name"), "\tfoo bar");
+        assert_eq!(f(&mut h, o, "oset", "longdesc   \tlies here"), "1");
+        assert_eq!(h.text(o, "longdesc"), "\tlies here");
+        // Spaces before the tab are skipped, and only those.
+        assert_eq!(f(&mut h, o, "oset", "alias  \t foo"), "1");
+        assert_eq!(h.text(o, "alias"), "\t foo");
+    }
+
+    #[test]
+    fn hasattached_counts_the_running_trigger() {
+        let mut h = MockHost::new();
+        let o = sword(&mut h);
+        let proto = h.add_proto(7, AttachType::Obj, "g", 100, "", "nop");
+        let id = h.attach(o, &proto).unwrap();
+        let _running = h.script_mut(o).unwrap().check_out(id).unwrap();
+        assert_eq!(f(&mut h, o, "hasattached", "7"), "1");
     }
 
     #[test]

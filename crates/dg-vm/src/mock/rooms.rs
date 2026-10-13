@@ -7,10 +7,15 @@
 //! |---|---|
 //! | `globals.nums["sky"]` | `weather_info.sky` |
 //!
-//! An exit exists (`R_EXIT(room, dir) != NULL`) exactly when
-//! `links["exit:<dir>"]` is present, as the shared table says. A link to an
-//! entity that does not exist is an exit whose `to_room` is `NOWHERE`. The zone number
-//! is `nums["zone"]` and its name `globals.texts["zone:<number>:name"]`.
+//! An exit exists (`R_EXIT(room, dir) != NULL`) when `links["exit:<dir>"]`
+//! (to an existing entity) or `nums["exit:<dir>:nowhere"]` is present, as the
+//! shared table says. Its
+//! `to_room` is the link, or `NOWHERE` when the link is absent or `nowhere`
+//! is set. An exit with no `exit:<dir>:key` has key 0, the calloc'd value of
+//! an exit a script just created; a test that models a world-file exit
+//! without a key sets `exit:<dir>:key` to 65535 (`NOTHING`). The zone is
+//! `nums["zone"]`, the zone's *number* (`zone_table[r->zone].number`, not
+//! its index), and its name `globals.texts["zone:<number>:name"]`.
 
 use crate::fields_room::{RoomExit, RoomHost};
 use crate::mock::MockHost;
@@ -20,10 +25,18 @@ impl RoomHost for MockHost {
     fn room_exit(&self, room: Uid, dir: usize) -> Option<RoomExit> {
         let prefix = format!("exit:{dir}");
         let entity = self.entity(room)?;
-        let exists = entity.links.contains_key(&prefix);
+        let nowhere = self.num(room, &format!("{prefix}:nowhere")) != 0;
+        let exists = self.link(room, &prefix).is_some() || nowhere;
         exists.then(|| RoomExit {
-            to_room: self.link(room, &prefix),
-            key: i32::try_from(self.num(room, &format!("{prefix}:key"))).unwrap_or(0),
+            to_room: if nowhere {
+                None
+            } else {
+                self.link(room, &prefix)
+            },
+            key: entity
+                .nums
+                .get(&format!("{prefix}:key"))
+                .map_or(0, |key| i32::try_from(*key).unwrap_or(0)),
             info: u32::try_from(self.num(room, &format!("{prefix}:flags"))).unwrap_or(0),
         })
     }
