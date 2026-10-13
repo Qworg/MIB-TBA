@@ -721,23 +721,17 @@ fn structure(lines: &[Line]) -> Vec<StructuralError> {
                 line: at_line,
                 kind: StructuralErrorKind::ElseWithoutIf,
             }),
-            Some("end") => {
-                if open_ifs.pop().is_none() {
-                    errors.push(StructuralError {
-                        line: at_line,
-                        kind: StructuralErrorKind::EndWithoutIf,
-                    });
-                }
-            }
+            // The guard pops the block this line closes.
+            Some("end") if open_ifs.pop().is_none() => errors.push(StructuralError {
+                line: at_line,
+                kind: StructuralErrorKind::EndWithoutIf,
+            }),
             Some("while" | "switch") => open_loops.push(index),
-            Some("done") => {
-                if open_loops.pop().is_none() {
-                    errors.push(StructuralError {
-                        line: at_line,
-                        kind: StructuralErrorKind::DoneWithoutLoop,
-                    });
-                }
-            }
+            // The guard pops the block this line closes.
+            Some("done") if open_loops.pop().is_none() => errors.push(StructuralError {
+                line: at_line,
+                kind: StructuralErrorKind::DoneWithoutLoop,
+            }),
             _ => {}
         }
     }
