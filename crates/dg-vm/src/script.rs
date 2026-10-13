@@ -12,6 +12,16 @@ pub struct Line {
     pub cmd: String,
 }
 
+impl Line {
+    /// The line without its leading whitespace: the `p` that every
+    /// `for (p = c->cmd; *p && isspace(*p); p++);` in `dg_scripts.c` points
+    /// at, and what `script_driver` and the `find_*` scans test their
+    /// keywords against.
+    pub fn body(&self) -> &str {
+        self.cmd.trim_start_matches(crate::cstr::is_space)
+    }
+}
+
 /// A parsed script body (`trig_data::cmdlist`).
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct Program {
@@ -32,5 +42,45 @@ impl Program {
                 })
                 .collect(),
         }
+    }
+}
+
+impl Program {
+    /// The line at `index`, if the script has one (`cl` non-NULL).
+    pub fn line(&self, index: usize) -> Option<&Line> {
+        self.lines.get(index)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #![allow(clippy::expect_used, clippy::unwrap_used)]
+
+    use super::*;
+
+    #[test]
+    fn parse_splits_on_either_terminator_and_drops_empty_lines() {
+        let program = Program::parse("a\r\nb\n\n\rc\n   \n");
+        let cmds: Vec<&str> = program.lines.iter().map(|l| l.cmd.as_str()).collect();
+        assert_eq!(cmds, vec!["a", "b", "c", "   "]);
+        assert!(Program::parse("").lines.is_empty());
+        assert!(Program::parse("\n\r\n").lines.is_empty());
+    }
+
+    #[test]
+    fn body_skips_leading_whitespace_only() {
+        let program = Program::parse("  \t if x \n\x0b\x0cend\n   \n\u{a0}caf\u{e9}");
+        assert_eq!(program.lines[0].body(), "if x ");
+        assert_eq!(program.lines[1].body(), "end");
+        assert_eq!(program.lines[2].body(), "");
+        // Non-ASCII whitespace is not isspace in the C locale.
+        assert_eq!(program.lines[3].body(), "\u{a0}caf\u{e9}");
+    }
+
+    #[test]
+    fn line_is_none_past_the_end() {
+        let program = Program::parse("a\nb");
+        assert_eq!(program.line(1).map(|l| l.cmd.as_str()), Some("b"));
+        assert!(program.line(2).is_none());
     }
 }
