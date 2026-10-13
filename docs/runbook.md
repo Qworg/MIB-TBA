@@ -263,8 +263,15 @@ reason the item count is one higher than the source object count.
 | `sync_concealment`, `sync_perception` | `Update`, `BridgeSet::Game` (after the genre command chain) | Mirror the pack's private `TbaHidden`/`TbaSneaking` into the engine `Concealment` and the pack's `TbaTrueSight` into the engine `Perception`, removing each carrier when its pack state clears. This is how the pack drives the engine's observer-aware projection. |
 | `tick_true_sight` | `TbaRound` | Ages the pack's `TbaTrueSight` true-sight grant one combat round; `sync_perception` then drops the engine `Perception`. |
 | `follow_system` | `FixedUpdate` (after `maintain_room_occupants`) | Drags a follower into the leader's new room only when the follower was standing in the leader's previous room, so a follower who wandered off is never teleported. |
-| `trigger_command_system` | `Update`, `BridgeSet::Game`, after `route_commands` | Issue #15: the `speech`/`command`/`act` DG trigger intake. It reads the same `CommandReceived` stream the router does, matches the trigger `arglist`, and evaluates the supported subset (`say`/`emote`/`echo`/`%send%`/`%echoaround%`, `if`/`switch`/`while`, conditions, `set`/`eval`/`unset`/`remote`/`global`/`local`/`rdelete`, `%load%`/`%purge%`) with `%…%` substitution. It only queues effects; `wait`, `dg_cast`, `%teleport%` and the rest are parsed-but-deferred and counted in the runtime drop log. |
-| `trigger_effects_system` | `Update` (`BridgeSet::Game`) and `FixedUpdate`, after the trigger intake | Issue #15 Phase 3: the exclusive drain for `%load%`/`%purge%` (routing through the stdlib `spawn_item_on_ground`/`spawn_item_carried_by_entity`/`spawn_npc_from_content` helpers, which take `&mut World`) and for `remote`/`global` variable writes (`TbaTriggerVars`). It also forwards a satisfied objective's flag to the stdlib as `QuestEvent::FlagSet` and accumulates runtime named drops in `TriggerDropLog`. |
+| `trigger_command_system` | `Update`, `BridgeSet::Game`, after `route_commands` | Issue #15: the `speech`/`command`/`act` DG trigger intake. It reads the same `CommandReceived` stream the router does, matches the trigger `arglist`, and evaluates the supported subset (`say`/`emote`/`echo`/`%send%`/`%echoaround%`, `if`/`switch`/`while`, conditions, `set`/`eval`/`unset`/`remote`/`global`/`local`/`rdelete`, `%load%`/`%purge%`) with `%…%` substitution. It only queues effects; the drain, the timer system and `apply_trigger_casts` below apply them. A construct outside the supported subset (#28) is counted in the runtime drop log. |
+| `trigger_leave_system` | `Update`, `CommandSet::PreRoute` (before `route_commands`) | Issue #15 Phase 4: runs `leave` triggers before movement commits. A record that `return 0`s marks the command handled so the move never applies (DG's `leave_wtrigger`/`leave_mtrigger` gate). |
+| `trigger_timer_system` | `FixedUpdate`, before the effect drain | Issue #15 Phase 4: resumes every due `wait` (`wait N sec|tick`, `wait until HH:MM`) from `TriggerTimers`. Timers are runtime-only and do not survive a restart (DG parity). |
+| `trigger_periodic_system` | `FixedUpdate`, after `trigger_greet_system` | Issue #15 Phase 5: the periodic `random`/`global`/`timer`/`time` heartbeats. |
+| `trigger_round_system` | `TbaRound`, after `resolve_rounds` | Issue #15 Phase 5: enqueues `fight`/`hitprcnt` records once per fighting owner per round. |
+| `trigger_damage_system`, `trigger_death_system`, `trigger_death_reset_system` | `Update` around `run_due_round`; `trigger_death_system` also on `TbaRound` | Issue #15 Phase 5: `damage` fires once per hit-point loss and `death` once per defeated NPC. The `TbaRound` instance of the death reader runs before the round's despawn applies; the `Update` instance covers spell/skill kills, and `TriggerDeathSeen` (cleared each frame by the reset system) keeps the two from firing twice. |
+| `trigger_queue_system` | `Update` (`BridgeSet::Game`, after the drain) and `FixedUpdate` | Issue #15 Phase 5: drains the serialized `TriggerQueue` and dispatches each event in order, so nested and per-round firings never interleave. |
+| `apply_trigger_casts` | `Update` (`BridgeSet::Game`, between the intake and the drain) and `FixedUpdate` | Issue #15 Phase 5: resolves a queued `dg_cast` against `tba.spells`. A spell the catalog does not carry is a `dg_cast_spell` named drop. `dg_cast` spends no mana and has no class gate. |
+| `trigger_effects_system` | `Update` (`BridgeSet::Game`) and `FixedUpdate`, after the trigger intake | Issue #15 Phase 3: the exclusive drain for `%load%`/`%purge%` (routing through the stdlib `spawn_item_on_ground`/`spawn_item_carried_by_entity`/`spawn_npc_from_content` helpers, which take `&mut World`), for `remote`/`global` variable writes (`TbaTriggerVars`), and for the Phase 4/5 world effects (`%teleport%`, `%door%`, `%force%`, `%damage%`). It also forwards a satisfied objective's flag to the stdlib as `QuestEvent::FlagSet` and accumulates runtime named drops in `TriggerDropLog`. |
 | `trigger_quest_bridge_system` | `Update`, after `award_kill_rewards` | Issue #15 Phase 3: translates each TBA native kill (`NpcDefeated`) into a stdlib `QuestEvent::Killed`, so `stdlib.quests` `Kill` steps advance. The prototype id rides on the message because the victim is despawned the same frame. `stdlib.quests` owns objective persistence, the journal, and rewards. |
 | `trigger_greet_system` | `FixedUpdate`, after `maintain_room_occupants` | Issue #15: the `greet`/`greet-all`/`entry` DG trigger intake on a player room change (`Changed<Location>`), with `%direction%` derived from the exit graph. |
 | `apply_death_penalty` | `Update`, `.before(handle_player_death)` | 25% of current-level XP (floored); converts `TbaGold` to a carried `tba_gold` item so the stdlib corpse sweep lands it in the corpse. |
@@ -272,9 +279,10 @@ reason the item count is one higher than the source object count.
 
 Persistent player state (`SaveRegistry`, `DocKind::Player`): `TbaProgress`,
 `TbaCombatant`, `TbaGold`, `TbaEquipmentSave` (equipment is relinked to live item
-entities on restore), `TbaTriggerVars` (DG `remote`/`global` quest variables).
-Buffs are transient. Parties and the follow state are runtime-only
-components/resources; they do not survive a restart.
+entities on restore), `TbaTriggerVars` (DG `remote`/`global` quest variables)
+and `TbaBuffs` (active spell buffs and their remaining rounds). Parties, the
+follow state and trigger `wait` timers are runtime-only components/resources;
+they do not survive a restart.
 
 Progression uses Circle's real tables: per-class `xp_table` / `thaco_table` in
 `content/tba.classes.yaml`, transcribed from `tbamud/src/class.c`
@@ -298,11 +306,16 @@ No TBA-specific environment variables exist. The pack's tunables are content
 
 These are recorded, not silent:
 
-- **DG triggers (TBA-E20)** are ported through Phase 3. The essential
-  133-record set is emitted into `tba.triggers.<zone>.yaml` and evaluated
-  natively: text/control (Phase 2) plus variables, `%load%`/`%purge%`, and the
-  `stdlib.quests` bridge (Phase 3). `wait`/timers, doors/gates/teleport, and
-  combat triggers are Phase 4/5 and stay named drops. Every trigger is
+- **DG triggers (TBA-E20)** are ported for the essential 133-record set
+  (#15, Phases 1–5). It is emitted into `tba.triggers.<zone>.yaml` and
+  evaluated natively: text/control, variables, `%load%`/`%purge%`, the
+  `stdlib.quests` bridge, `wait`/timers, doors/gates/teleport, and the combat
+  and periodic events. Three things stay deferred: the other 1,328 triggers
+  (#27); the unsupported constructs and the event types with no intake —
+  `receive`, `wear`, `drop`, `get`, `bribe`, `zone reset`, `remove`,
+  `consume`, `memory`, `give`, `login` — which include 12 essential records
+  that are emitted but never fire (#28); and the full DG VM (#29). Every
+  trigger is
   itemised in [`reports/drop-report.json`](../reports/drop-report.json)
   (grouped in [`reports/drop-report.summary.md`](../reports/drop-report.summary.md))
   and classified (attach, expanded type, interactivity bucket, script size) in
@@ -319,18 +332,21 @@ These are recorded, not silent:
   `social <name> [target] [body part]` and `socials`. MIB models no sex, so the
   `$e`/`$m`/`$s` pronouns render as neutral singular *they/them/their*, and the
   source's stray `$i` code is a named global drop.
-- **30 of 54 spells** are `Utility`: they cost mana and report "nothing happens
-  yet"; their Circle routines (flags, summons, object/room, group, debuffs) are
-  not modelled. Buffs are transient (not persisted) with a fixed round duration.
-- **Affect locations with no combatant field** (the six attributes and the five
-  saves) are carried on items and persisted, but not applied.
+- **26 of 54 spells** are `Utility`: they cost mana and report the catalog's
+  `unsupported` reason ("You cast <spell>, but <reason>."); their Circle
+  routines are not modelled. Buffs take their duration from the spell's
+  source `duration` and persist across a restart (`TbaBuffs`).
+- **Affect locations**: the six attributes and the five saves are applied to
+  `TbaCombatant` from worn items and buffs. The `APPLY_CLASS`/`LEVEL`/`AGE`/
+  `CHAR_WEIGHT`/`CHAR_HEIGHT`/`GOLD`/`EXP` locations have no `AffectLocation`
+  variant and are permanent `affect_location` drops.
 - **Multi-room pursuit** is a single adjacent step, not a pathfinder.
-- **Weather** (pressure, sky, the `SUN_RISE`/`SUN_SET` phases) is out of scope;
+- **Weather** (pressure, sky, the `SUN_RISE`/`SUN_SET` phases) is deferred (#30);
   only the binary day/night predicate that `apply_night_darkness` needs is
   modelled. The clock itself is runtime-only (Circle persists MUD time to a
   `time` file; MIB has no generic resource-persistence slot for it).
 - **Mail and the friends list** are MIB engine features (D-06/D-07), separate
-  from the Circle group model, and are out of scope for the party work.
+  from the Circle group model, and are deferred (#33).
 - The stdlib `look` darkness check reads `Room::tags` rather than
   `Room::effective_flags`, so a night-written `RoomState.flags[Dark]` override
   persists and is the runtime authority but is not yet what `look` consults.
@@ -379,14 +395,15 @@ These are recorded, not silent:
     and not observer-aware, so `mib_tba::visibility::intercept_who` runs in
     `CommandSet::PreRoute`, marks `who` handled, and reproduces the stdlib line
     with the engine `perceive` predicate applied (see §6).
-  - MIB has no `practice` system, so a granted skill is treated as fully
+  - MIB has no `practice` system (#32), so a granted skill is treated as fully
     learned (`SKILL_LEARNED` = 100); Circle's DEX `dex_app_skill` bonus is not
     modelled, so `pick_lock` uses 100 as the skill level.
   - `kick`/`bash` deduct `SKILL_MOVE_COST` (10) movement and refuse at zero.
     This tbaMUD revision's `do_kick`/`do_bash` no longer contains the `GET_MOVE`
     check; the pack reinstates the classic Circle cost.
-- **`MOB_SPEC` special procedures** are a non-goal (#15); the flag is a named
-  `mob_flag` drop in the report.
+- **`MOB_SPEC` special procedures** are a non-goal (#31); the flag is a named
+  `mob_flag` drop in the report. NPC e-specs (`mob_espec`) are tracked there
+  too.
 - The converter's drop report lists every unmapped source flag and field, with
   its disposition documented in `docs/05-converter.md` §8.
 

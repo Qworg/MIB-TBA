@@ -48890,7 +48890,7 @@
           "object": "npc tba_npc_3000",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3000",
@@ -48914,7 +48914,7 @@
           "object": "npc tba_npc_3001",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3001",
@@ -48938,7 +48938,7 @@
           "object": "npc tba_npc_3002",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3002",
@@ -48962,7 +48962,7 @@
           "object": "npc tba_npc_3003",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3003",
@@ -48986,7 +48986,7 @@
           "object": "npc tba_npc_3004",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3004",
@@ -49022,7 +49022,7 @@
           "object": "npc tba_npc_3005",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3005",
@@ -49046,7 +49046,7 @@
           "object": "npc tba_npc_3006",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3006",
@@ -49076,7 +49076,7 @@
           "object": "npc tba_npc_3008",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3008",
@@ -49100,7 +49100,7 @@
           "object": "npc tba_npc_3009",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3009",
@@ -49232,7 +49232,7 @@
           "object": "npc tba_npc_3020",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3020",
@@ -49256,7 +49256,7 @@
           "object": "npc tba_npc_3021",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3021",
@@ -49280,7 +49280,7 @@
           "object": "npc tba_npc_3022",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3022",
@@ -49298,7 +49298,7 @@
           "object": "npc tba_npc_3023",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3023",
@@ -49808,7 +49808,7 @@
           "object": "npc tba_npc_3095",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3095",
@@ -51258,7 +51258,7 @@
           "object": "npc tba_npc_3100",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3100",
@@ -51336,7 +51336,7 @@
           "object": "npc tba_npc_3105",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_3105",
@@ -71096,7 +71096,7 @@
           "object": "npc tba_npc_5400",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_5400",
@@ -71120,7 +71120,7 @@
           "object": "npc tba_npc_5401",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_5401",
@@ -71144,7 +71144,7 @@
           "object": "npc tba_npc_5402",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_5402",
@@ -71168,7 +71168,7 @@
           "object": "npc tba_npc_5403",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_5403",
@@ -71192,7 +71192,7 @@
           "object": "npc tba_npc_5404",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_5404",
@@ -113648,7 +113648,7 @@
           "object": "npc tba_npc_15000",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15000",
@@ -113672,7 +113672,7 @@
           "object": "npc tba_npc_15001",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15001",
@@ -113714,7 +113714,7 @@
           "object": "npc tba_npc_15003",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15003",
@@ -113732,7 +113732,7 @@
           "object": "npc tba_npc_15004",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15004",
@@ -113750,7 +113750,7 @@
           "object": "npc tba_npc_15005",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15005",
@@ -113768,7 +113768,7 @@
           "object": "npc tba_npc_15006",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15006",
@@ -113786,7 +113786,7 @@
           "object": "npc tba_npc_15007",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15007",
@@ -113804,7 +113804,7 @@
           "object": "npc tba_npc_15008",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15008",
@@ -113822,7 +113822,7 @@
           "object": "npc tba_npc_15009",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15009",
@@ -113840,7 +113840,7 @@
           "object": "npc tba_npc_15010",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15010",
@@ -113858,7 +113858,7 @@
           "object": "npc tba_npc_15011",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15011",
@@ -113876,7 +113876,7 @@
           "object": "npc tba_npc_15012",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15012",
@@ -113894,7 +113894,7 @@
           "object": "npc tba_npc_15013",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15013",
@@ -113948,7 +113948,7 @@
           "object": "npc tba_npc_15016",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15016",
@@ -113966,7 +113966,7 @@
           "object": "npc tba_npc_15017",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15017",
@@ -113996,7 +113996,7 @@
           "object": "npc tba_npc_15019",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15019",
@@ -114020,7 +114020,7 @@
           "object": "npc tba_npc_15020",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15020",
@@ -114044,7 +114044,7 @@
           "object": "npc tba_npc_15021",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15021",
@@ -114092,7 +114092,7 @@
           "object": "npc tba_npc_15024",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15024",
@@ -114116,7 +114116,7 @@
           "object": "npc tba_npc_15025",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15025",
@@ -114134,7 +114134,7 @@
           "object": "npc tba_npc_15026",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15026",
@@ -114152,7 +114152,7 @@
           "object": "npc tba_npc_15027",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15027",
@@ -114170,7 +114170,7 @@
           "object": "npc tba_npc_15028",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15028",
@@ -114188,7 +114188,7 @@
           "object": "npc tba_npc_15029",
           "kind": "mob_flag",
           "name": "SPEC",
-          "detail": "special procedures are a non-goal (see #15)"
+          "detail": "special procedures are a non-goal (see #31)"
         },
         {
           "object": "npc tba_npc_15029",
