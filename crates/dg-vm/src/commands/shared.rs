@@ -5,21 +5,35 @@
 use super::ExitField;
 use super::comm::{send_to_range, send_to_zone};
 use crate::cstr::{
-    any_one_arg, atoi, is_abbrev, is_number, one_argument, search_block, skip_spaces, two_arguments,
+    any_one_arg, atoi, is_abbrev, is_number, one_argument, search_block, skip_spaces, str_eq,
+    two_arguments,
 };
 use crate::dispatch::{enter_wtrigger, load_mtrigger, load_otrigger};
+use crate::fields_char::CharStat;
 use crate::host::DgHost;
 use crate::lookup::{
     FIND_INDEX_LAST, Where, can_wear_on_pos, find_eq_pos_script, get_char, get_char_by_obj,
     get_char_in_room, get_char_near_obj, get_char_room_vis, get_char_vis, get_number, get_obj,
-    get_obj_by_obj, get_obj_in_room, get_obj_near_obj, get_obj_vis, get_room, obj_room,
+    get_obj_by_obj, get_obj_in_room, get_obj_near_obj, get_obj_vis, get_player_vis, get_room,
+    obj_room,
 };
 use crate::types::{DIRS, LVL_GRGOD, UID_CHAR, Uid, uid_text};
 
 /// `ROOM_PRIVATE`, `ROOM_GODROOM`, `ROOM_HOUSE` (`structs.h`).
-const ROOM_PRIVATE: i32 = 9;
-const ROOM_GODROOM: i32 = 10;
-const ROOM_HOUSE: i32 = 11;
+const ROOM_PRIVATE: usize = 9;
+const ROOM_GODROOM: usize = 10;
+const ROOM_HOUSE: usize = 11;
+
+/// `PLR_WRITING` (a bit of the player's act flags).
+pub(crate) const PLR_WRITING: u32 = 4;
+/// `PRF_NOHASSLE`, `PRF_COLOR_1` and `PRF_COLOR_2` (bits of the preference
+/// flags).
+pub(crate) const PRF_NOHASSLE: u32 = 8;
+const PRF_COLOR_1: u32 = 13;
+const PRF_COLOR_2: u32 = 14;
+
+/// `POS_SLEEPING`; `AWAKE(ch)` is `GET_POS(ch) > POS_SLEEPING`.
+pub(crate) const POS_SLEEPING: i32 = 4;
 
 /// `ITEM_WEAR_TAKE`: bit 0 of the wear flags.
 const ITEM_WEAR_TAKE: u32 = 1;
@@ -90,6 +104,61 @@ impl Owner {
             Owner::Wld(room) => format!("Room {} :: {message}", host.vnum(room)),
         };
         host.script_log(&line);
+    }
+}
+
+/// `GET_POS(ch)`.
+pub(crate) fn pos<H: DgHost + ?Sized>(host: &H, ch: Uid) -> i32 {
+    host.char_stat(ch, CharStat::Pos)
+}
+
+/// `AWAKE(ch)`.
+pub(crate) fn awake<H: DgHost + ?Sized>(host: &H, ch: Uid) -> bool {
+    pos(host, ch) > POS_SLEEPING
+}
+
+/// `ch->desc != NULL`.
+pub(crate) fn has_desc<H: DgHost + ?Sized>(host: &H, ch: Uid) -> bool {
+    host.cmd_desc(ch).is_some()
+}
+
+/// `COLOR_LEV(ch)` (`_clrlevel`, `screen.h`): 0 for an NPC, else the
+/// `PRF_COLOR_1` and `PRF_COLOR_2` bits as a number.
+pub(crate) fn color_level<H: DgHost + ?Sized>(host: &H, ch: Uid) -> i32 {
+    if host.is_npc(ch) {
+        return 0;
+    }
+    i32::from(host.char_pref_flagged(ch, PRF_COLOR_1))
+        + 2 * i32::from(host.char_pref_flagged(ch, PRF_COLOR_2))
+}
+
+/// `DIR_COUNT`: 6, or 10 with `CONFIG_DIAGONAL_DIRS`.
+pub(crate) fn dir_count<H: DgHost + ?Sized>(host: &H) -> usize {
+    if host.subst_diagonal_dirs() { 10 } else { 6 }
+}
+
+/// `world[room].dir_option[dir]->to_room`, `None` when there is no such exit
+/// or it leads to `NOWHERE`.
+pub(crate) fn exit_to_room<H: DgHost + ?Sized>(host: &H, room: Uid, dir: usize) -> Option<Uid> {
+    host.room_exit(room, dir).and_then(|exit| exit.to_room)
+}
+
+/// What the buffer holds after a failed `get_char_room_vis` / `get_char_vis`
+/// on a name without a UID. A `0.` count sends the lookup to
+/// `get_player_vis(ch, name, NULL, ...)`, which runs `get_number` on the same
+/// buffer again, and a world search that fails does so once more.
+pub(crate) fn shown_after_char(arg: &str, scope: Where) -> String {
+    if arg.starts_with(UID_CHAR) {
+        return arg.to_owned();
+    }
+    let (count, bare) = get_number(arg);
+    if count != 0 {
+        return bare.to_owned();
+    }
+    let once = get_number(bare).1;
+    match scope {
+        Where::Room => once.to_owned(),
+        Where::World => get_number(once).1.to_owned(),
     }
 }
 
@@ -385,7 +454,7 @@ pub(crate) fn load<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument: &st
                     get_obj(host, &name)
                 } else {
                     // `get_char_room_vis` has already stripped any `N.`.
-                    get_obj_vis(host, ch, get_number(&name).1)
+                    get_obj_vis(host, ch, &shown_after_char(&name, Where::Room))
                 }
             }
             Owner::Obj(obj) => get_obj_near_obj(host, obj, &name),
@@ -444,15 +513,14 @@ pub(crate) fn find_target_room<H: DgHost + ?Sized>(
         return Some(location);
     }
 
-    if host.cmd_room_flagged(location, ROOM_GODROOM) {
+    if host.room_flagged(location, ROOM_GODROOM) {
         host.cmd_send(ch, "You are not godly enough to use that room!\r\n");
-    } else if host.cmd_room_flagged(location, ROOM_PRIVATE) && host.room_people(location).len() > 1
-    {
+    } else if host.room_flagged(location, ROOM_PRIVATE) && host.room_people(location).len() > 1 {
         host.cmd_send(
             ch,
             "There's a private conversation going on in that room.\r\n",
         );
-    } else if host.cmd_room_flagged(location, ROOM_HOUSE)
+    } else if host.room_flagged(location, ROOM_HOUSE)
         && !host.cmd_house_can_enter(ch, host.vnum(location))
     {
         host.cmd_send(ch, "That's private property -- no trespassing!\r\n");
@@ -464,9 +532,21 @@ pub(crate) fn find_target_room<H: DgHost + ?Sized>(
 
 /// The room of the visible character or object `roomstr` names, or what
 /// `find_target_room` says when there is none.
+///
+/// The C reads the count once (`num = get_number(&mobobjstr)`) and hands
+/// `&num` to both lookups, so the second carries on from what the first left.
 fn room_of_name<H: DgHost + ?Sized>(host: &H, ch: Uid, roomstr: &str) -> Result<Uid, &'static str> {
     let (num, name) = get_number(roomstr);
-    if let Some(target_mob) = get_char_vis(host, ch, &counted(num, name), Where::World) {
+    // A negative count other than `last.` is counted further from zero by
+    // every match and so never finds anything; only `self` / `me`, which the
+    // character lookup tests before it looks at the count, still answer.
+    let never_matches = num < 0 && num != FIND_INDEX_LAST;
+    let target_mob = if never_matches {
+        (str_eq(name, "self") || str_eq(name, "me")).then_some(ch)
+    } else {
+        char_world_vis(host, ch, &counted(num, name))
+    };
+    if let Some(target_mob) = target_mob {
         return host
             .in_room(target_mob)
             .ok_or("That character is currently lost.\r\n");
@@ -474,7 +554,12 @@ fn room_of_name<H: DgHost + ?Sized>(host: &H, ch: Uid, roomstr: &str) -> Result<
     // `get_char_vis` counted `num` down as it passed matches; the object
     // search carries on from what is left.
     let left = remaining_count(host, ch, num, name);
-    let Some(target_obj) = get_obj_vis(host, ch, &counted(left, name)) else {
+    let target_obj = if never_matches {
+        None
+    } else {
+        get_obj_vis(host, ch, &counted(left, name))
+    };
+    let Some(target_obj) = target_obj else {
         return Err("Nothing exists by that name.\r\n");
     };
     host.in_room(target_obj)
@@ -487,6 +572,21 @@ fn room_of_name<H: DgHost + ?Sized>(host: &H, ch: Uid, roomstr: &str) -> Result<
                 .and_then(|wearer| host.in_room(wearer))
         })
         .ok_or("That object is currently not in a room.\r\n")
+}
+
+/// `get_char_vis(ch, name, NULL, FIND_CHAR_WORLD)` with the buffer the C
+/// leaves behind: for a `0.` count the room pass has already stripped the
+/// inner `N.` of `0.N.name`, so the world pass looks for the bare name
+/// (`lookup::get_char_world_vis` hands it the unstripped name).
+pub(crate) fn char_world_vis<H: DgHost + ?Sized>(host: &H, ch: Uid, arg: &str) -> Option<Uid> {
+    let (num, rest) = get_number(arg);
+    if num != 0 {
+        return get_char_vis(host, ch, arg, Where::World);
+    }
+    if let Some(found) = get_char_room_vis(host, ch, arg) {
+        return Some(found);
+    }
+    get_player_vis(host, ch, get_number(rest).1, false)
 }
 
 /// `N.name` with the count spelled the way `get_number` reads it.
@@ -506,9 +606,7 @@ fn remaining_count<H: DgHost + ?Sized>(host: &H, ch: Uid, num: i32, name: &str) 
         return num;
     }
     let mut matches = 0;
-    while matches < num - 1
-        && get_char_vis(host, ch, &counted(matches + 1, name), Where::World).is_some()
-    {
+    while matches < num - 1 && char_world_vis(host, ch, &counted(matches + 1, name)).is_some() {
         matches += 1;
     }
     num - matches
@@ -536,11 +634,10 @@ pub(crate) fn find_obj_target_room<H: DgHost + ?Sized>(
         host.in_room(get_obj_by_obj(host, obj, &roomstr)?)?
     };
 
-    if host.cmd_room_flagged(location, ROOM_GODROOM) || host.cmd_room_flagged(location, ROOM_HOUSE)
-    {
+    if host.room_flagged(location, ROOM_GODROOM) || host.room_flagged(location, ROOM_HOUSE) {
         return None;
     }
-    if host.cmd_room_flagged(location, ROOM_PRIVATE) && host.room_people(location).len() > 1 {
+    if host.room_flagged(location, ROOM_PRIVATE) && host.room_people(location).len() > 1 {
         return None;
     }
     Some(location)

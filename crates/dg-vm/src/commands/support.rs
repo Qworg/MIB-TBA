@@ -41,7 +41,6 @@ impl World {
         }
         for ch in [player, player2] {
             host.set_num(ch, "desc", 1);
-            host.set_num(ch, "playing", 1);
         }
         host.obj_to_room(obj, room);
         host.globals
@@ -118,6 +117,39 @@ impl World {
         self.cx_run(room, AttachType::Wld, |cx| {
             super::wld_command_interpreter(cx, line);
         });
+    }
+
+    /// Set or clear `PRF_NOHASSLE`, in both places the mock reads it
+    /// (`valid_dg_target` reads the shared `nohassle` key, `char_pref_flagged`
+    /// the `pref` bit vector).
+    pub fn set_nohassle(&mut self, ch: Uid, on: bool) {
+        self.host.set_num(ch, "nohassle", i64::from(on));
+        self.set_bit(ch, "pref", 8, on);
+    }
+
+    /// Make `ch` a switched character whose `desc->original` is a level
+    /// `level` player (the same one on every call, so a test can change the
+    /// level).
+    pub fn switch_behind(&mut self, ch: Uid, level: i64) {
+        let original = self.host.link(ch, "desc_original").unwrap_or_else(|| {
+            let original = self.host.add_player("Behind");
+            self.host.set_link(ch, "desc_original", Some(original));
+            original
+        });
+        self.host.set_num(original, "level", level);
+    }
+
+    /// Set or clear `PLR_WRITING`.
+    pub fn set_writing(&mut self, ch: Uid, on: bool) {
+        self.set_bit(ch, "act", 4, on);
+    }
+
+    /// Set or clear one bit of a bit-vector number.
+    pub fn set_bit(&mut self, ch: Uid, key: &str, bit: u32, on: bool) {
+        let bits = self.host.num(ch, key);
+        let mask = 1i64 << bit;
+        self.host
+            .set_num(ch, key, if on { bits | mask } else { bits & !mask });
     }
 
     /// Every text delivered to `ch` so far.

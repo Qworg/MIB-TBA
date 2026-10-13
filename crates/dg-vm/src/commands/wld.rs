@@ -6,9 +6,12 @@
 //! has no trailing space, so only the full word `wlog` reaches it: `wl` and
 //! `wlo` select `wload` (which comes first), and `wlogs` matches nothing.
 
-use super::comm::{TO_CHAR, TO_ROOM, act_to_room, sub_write};
+use super::comm::{TO_CHAR, TO_ROOM, act_to_room, for_each_occupant, sub_write};
 use super::misc::script_damage;
-use super::shared::{Owner, door, load, recho, starts_with_digit, teleport, vnum16, zoneecho};
+use super::shared::{
+    Owner, dir_count, door, exit_to_room, load, recho, starts_with_digit, teleport, vnum16,
+    zoneecho,
+};
 use super::strncmp_lookup;
 use crate::cstr::{any_one_arg, atoi, one_argument, skip_spaces, str_eq, two_arguments};
 use crate::host::DgHost;
@@ -123,8 +126,8 @@ fn do_wasound<H: DgHost + ?Sized>(host: &mut H, room: Uid, argument: &str) {
         return;
     }
 
-    for door in 0..host.cmd_dir_count() {
-        if let Some(to) = host.cmd_exit_to_room(room, door)
+    for door in 0..dir_count(host) {
+        if let Some(to) = exit_to_room(host, room, door)
             && to != room
         {
             act_to_room(host, argument, to);
@@ -191,11 +194,11 @@ fn do_wteleport<H: DgHost + ?Sized>(host: &mut H, room: Uid, argument: &str) {
             log.log(host, "wteleport all target is itself");
             return;
         }
-        for ch in host.room_people(room) {
-            if host.exists(ch) && host.valid_dg_target(ch, true) {
+        for_each_occupant(host, room, |host, ch| {
+            if host.valid_dg_target(ch, true) {
                 teleport(host, ch, target);
             }
-        }
+        });
     } else if let Some(ch) = get_char_by_room(host, room, &arg1) {
         if host.valid_dg_target(ch, true) {
             teleport(host, ch, target);
@@ -215,11 +218,11 @@ fn do_wforce<H: DgHost + ?Sized>(host: &mut H, room: Uid, argument: &str) {
     }
 
     if str_eq(&arg1, "all") {
-        for ch in host.room_people(room) {
-            if host.exists(ch) && host.valid_dg_target(ch, false) {
+        for_each_occupant(host, room, |host, ch| {
+            if host.valid_dg_target(ch, false) {
                 host.mud_command(ch, line);
             }
-        }
+        });
     } else if let Some(ch) = get_char_by_room(host, room, &arg1) {
         if host.valid_dg_target(ch, false) {
             host.mud_command(ch, line);
@@ -431,18 +434,19 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "needs the dispatch bodies: act_mtrigger must fire the act trigger"]
     fn wecho_offers_the_line_to_npcs_that_watch_for_it() {
+        // The room's head is Bob. `act_to_room` tells the guard once (the
+        // TO_ROOM pass); Bob's own TO_CHAR line is not offered to anyone.
+        // A guard without a descriptor sees the line without a capital.
         let mut w = World::new();
-        let (mob, bob) = (w.mob, w.player2);
+        let mob = w.mob;
         let act_proto = w
             .host
-            .add_proto(901, AttachType::Mob, "e", 100, "", "say hi");
+            .add_proto(901, AttachType::Mob, "e", 0, "hush", "say heard %arg%");
         w.host.attach(mob, &act_proto);
         run(&mut w, "wecho hush");
-        assert_eq!(
-            w.effects("act_trigger"),
-            [format!("act_trigger {mob} {bob}: hush\r\n")]
-        );
+        assert_eq!(w.host.mud_commands, [(mob, "say heard hush".to_owned())]);
     }
 
     #[test]
@@ -467,6 +471,19 @@ mod tests {
         w.host.set_link(room, "exit:7", Some(room2));
         run(&mut w, "wasound x");
         assert_eq!(w.host.effects.len(), 2);
+    }
+
+    #[test]
+    fn wasound_skips_an_exit_back_into_the_same_room() {
+        let mut w = World::new();
+        let (alice, bob, room, room2) = (w.player, w.player2, w.room, w.room2);
+        w.host.char_to_room(bob, room2);
+        w.host.set_link(room, "exit:1", Some(room));
+        w.host.set_link(room, "exit:2", Some(room2));
+        run(&mut w, "wasound Hush");
+        // The room echo is a TO_ROOM and a TO_CHAR for the head of the room.
+        assert_eq!(w.sent_to(bob), ["Hush\r\n", "Hush\r\n"]);
+        assert!(w.sent_to(alice).is_empty());
     }
 
     #[test]
@@ -544,6 +561,53 @@ mod tests {
         w.host.set_num(alice, "dg_invalid", 1);
         run(&mut w, "wteleport alice 3002");
         assert_eq!(w.host.in_room(alice), Some(w.room));
+    }
+
+    #[test]
+    fn wforce_refuses_the_highest_gods_and_wteleport_does_not() {
+        // A level 33 player is found by the lookup (it allows gods), refused
+        // by `wforce` (`valid_dg_target(ch, 0)`) and accepted by
+        // `wteleport` (`DG_ALLOW_GODS`), in the single and the `all` form.
+        let mut w = World::new();
+        let (alice, bob, mob, room2) = (w.player, w.player2, w.mob, w.room2);
+        w.host.set_num(alice, "level", 33);
+        run(&mut w, "wforce alice look");
+        assert!(w.host.mud_commands.is_empty());
+        run(&mut w, "wforce all look");
+        assert_eq!(
+            w.host.mud_commands,
+            [(bob, " look".to_owned()), (mob, " look".to_owned())]
+        );
+        run(&mut w, "wteleport alice 3002");
+        assert_eq!(w.host.in_room(alice), Some(room2));
+
+        let mut w = World::new();
+        let (alice, bob, room2) = (w.player, w.player2, w.room2);
+        w.host.set_num(alice, "level", 33);
+        run(&mut w, "wteleport all 3002");
+        assert_eq!(w.host.in_room(alice), Some(room2));
+        assert_eq!(w.host.in_room(bob), Some(room2));
+    }
+
+    #[test]
+    fn wforce_and_wteleport_skip_a_god_with_nohassle() {
+        let mut w = World::new();
+        let (alice, bob, mob, room) = (w.player, w.player2, w.mob, w.room);
+        w.host.set_num(alice, "level", 32);
+        run(&mut w, "wforce alice look");
+        assert_eq!(w.host.mud_commands, [(alice, " look".to_owned())]);
+        w.host.mud_commands.clear();
+        w.set_nohassle(alice, true);
+        run(&mut w, "wforce alice look");
+        run(&mut w, "wforce all look");
+        assert_eq!(
+            w.host.mud_commands,
+            [(bob, " look".to_owned()), (mob, " look".to_owned())]
+        );
+        run(&mut w, "wteleport alice 3002");
+        run(&mut w, "wteleport all 3002");
+        assert_eq!(w.host.in_room(alice), Some(room));
+        assert_eq!(w.host.in_room(bob), Some(w.room2));
     }
 
     #[test]
@@ -774,10 +838,12 @@ mod tests {
     #[test]
     fn wat_accepts_the_nesting_a_c_line_can_hold() {
         let mut w = World::new();
+        w.host.add_room(1, "A closet");
         let line = format!("{}wlog deep", "wat 1 ".repeat(70));
         assert!(line.len() < 512);
         run(&mut w, &line);
-        assert!(w.host.logs.iter().all(|l| !l.contains("too deeply")));
+        assert_eq!(w.host.logs.len(), 1);
+        assert_eq!(w.log(), "Room 1 :: deep");
     }
 
     #[test]
@@ -853,6 +919,8 @@ mod tests {
             "x".repeat(20_000),
             "99999999999999999999 99999999999999999999".to_owned(),
             "-2147483648 -2147483648 x".to_owned(),
+            "2147483648.bob".to_owned(),
+            "2147483648.lamp".to_owned(),
         ];
         for (command, _) in WLD_CMD_INFO {
             let command = command.trim_end();
@@ -863,5 +931,14 @@ mod tests {
                 run(&mut w, &format!("{command} {arg} 3001 {arg}"));
             }
         }
+    }
+
+    #[test]
+    fn wsend_reaches_a_sleeping_victim() {
+        let mut w = World::new();
+        let bob = w.player2;
+        w.host.set_num(bob, "pos", 4);
+        run(&mut w, "wsend bob hi");
+        assert_eq!(w.sent_to(bob), ["hi\n\r"]);
     }
 }

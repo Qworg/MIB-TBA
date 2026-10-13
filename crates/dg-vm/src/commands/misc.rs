@@ -2,6 +2,8 @@
 //! (`valid_dg_target` is [`crate::host::WorldHost::valid_dg_target`].)
 
 use super::comm::{TO_CHAR, TO_ROOM, act};
+use super::shared::{color_level, pos};
+use crate::fields_char::CharStat;
 use crate::host::DgHost;
 use crate::types::{LVL_IMMORT, Uid};
 
@@ -16,7 +18,7 @@ const KNRM: &str = "\x1B[0m";
 
 /// `send_char_pos(ch, dam)`: tell `ch` and the room how a hit left them.
 pub fn send_char_pos<H: DgHost + ?Sized>(host: &mut H, ch: Uid, dam: i32) {
-    match host.cmd_pos(ch) {
+    match pos(host, ch) {
         POS_MORTALLYW => {
             act(
                 host,
@@ -61,13 +63,13 @@ pub fn send_char_pos<H: DgHost + ?Sized>(host: &mut H, ch: Uid, dam: i32) {
             host.cmd_send(ch, "You are dead!  Sorry...\r\n");
         }
         _ => {
-            let quarter = host.cmd_max_hit(ch) >> 2;
+            let quarter = host.char_stat(ch, CharStat::MaxHit) >> 2;
             if dam > quarter {
                 act(host, "That really did HURT!", false, ch, TO_CHAR);
             }
-            if host.cmd_hit(ch) < quarter {
+            if host.char_stat(ch, CharStat::Hit) < quarter {
                 // CCRED / CCNRM at C_SPR: colour when the level is at least 1.
-                let on = host.cmd_color_level(ch) >= 1;
+                let on = color_level(host, ch) >= 1;
                 let (red, normal) = if on { (KRED, KNRM) } else { ("", "") };
                 host.cmd_send(
                     ch,
@@ -83,7 +85,7 @@ pub fn send_char_pos<H: DgHost + ?Sized>(host: &mut H, ch: Uid, dam: i32) {
 /// `script_damage(vict, dam)`: hurt `vict` for `dam` hit points.
 ///
 /// Hit points are a `sh_int` in the C: the subtraction wraps at 16 bits,
-/// which `cmd_set_hit` receives as the already-truncated value.
+/// which `char_set_stat` receives as the already-truncated value.
 pub fn script_damage<H: DgHost + ?Sized>(host: &mut H, vict: Uid, dam: i32) {
     if host.level(vict) >= LVL_IMMORT && dam > 0 {
         host.cmd_send(
@@ -93,14 +95,14 @@ pub fn script_damage<H: DgHost + ?Sized>(host: &mut H, vict: Uid, dam: i32) {
         return;
     }
 
-    let hit = host.cmd_hit(vict).wrapping_sub(dam) as i16;
-    let hit = i32::from(hit).min(host.cmd_max_hit(vict));
-    host.cmd_set_hit(vict, hit);
+    let hit = host.char_stat(vict, CharStat::Hit).wrapping_sub(dam) as i16;
+    let hit = i32::from(hit).min(host.char_stat(vict, CharStat::MaxHit));
+    host.char_set_stat(vict, CharStat::Hit, hit);
 
-    host.cmd_update_pos(vict);
+    host.char_update_pos(vict);
     send_char_pos(host, vict, dam);
 
-    if host.cmd_pos(vict) == POS_DEAD {
+    if pos(host, vict) == POS_DEAD {
         if !host.is_npc(vict) {
             let place = match host.in_room(vict) {
                 Some(room) => host.name(room),
@@ -167,6 +169,16 @@ mod tests {
     }
 
     #[test]
+    fn hit_points_at_the_quarter_mark_do_not_bleed() {
+        let mut w = World::new();
+        let alice = w.player;
+        // 20 - 15 = 5 is not below 20 >> 2 = 5.
+        script_damage(&mut w.host, alice, 15);
+        assert_eq!(hit(&w, alice), 5);
+        assert_eq!(w.sent_to(alice), ["That really did HURT!\r\n"]);
+    }
+
+    #[test]
     fn low_hit_points_bleed_in_colour_when_colour_is_on() {
         let mut w = World::new();
         let alice = w.player;
@@ -181,11 +193,32 @@ mod tests {
         );
         w.clear();
         w.host.set_num(alice, "hit", 20);
-        w.host.set_num(alice, "color", 1);
+        // PRF_COLOR_1 alone is sparse colour, which is enough.
+        w.set_bit(alice, "pref", 13, true);
         script_damage(&mut w.host, alice, 16);
+        let coloured =
+            "\x1B[0;31mYou wish that your wounds would stop BLEEDING so much!\x1B[0m\r\n";
+        assert_eq!(w.sent_to(alice)[1], coloured);
+        // So is PRF_COLOR_2 alone (normal colour); neither bit is none.
+        for (low, high, on) in [(false, true, true), (false, false, false)] {
+            w.clear();
+            w.host.set_num(alice, "hit", 20);
+            w.set_bit(alice, "pref", 13, low);
+            w.set_bit(alice, "pref", 14, high);
+            script_damage(&mut w.host, alice, 16);
+            assert_eq!(w.sent_to(alice)[1] == coloured, on, "{low} {high}");
+        }
+        // An NPC never has colour, whatever its preference bits say.
+        w.clear();
+        let mob = w.mob;
+        w.host.set_num(mob, "desc", 1);
+        w.host.set_num(mob, "pref", 3 << 13);
+        w.host.set_num(mob, "hit", 20);
+        w.host.set_num(mob, "max_hit", 20);
+        script_damage(&mut w.host, mob, 16);
         assert_eq!(
-            w.sent_to(alice)[1],
-            "\x1B[0;31mYou wish that your wounds would stop BLEEDING so much!\x1B[0m\r\n"
+            w.sent_to(mob)[1],
+            "You wish that your wounds would stop BLEEDING so much!\r\n"
         );
     }
 

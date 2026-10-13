@@ -9,10 +9,11 @@
 //! `mhunt`, `mremember`, `mforget`) also refuse a switched player below
 //! `LVL_IMPL`.
 
-use super::comm::{TO_CHAR, TO_ROOM, sub_write, sub_write_in};
+use super::comm::{TO_CHAR, TO_ROOM, for_each_occupant, sub_write, sub_write_in};
 use super::misc::script_damage;
 use super::shared::{
-    Owner, door, find_target_room, load, recho, starts_with_digit, teleport, vnum16, zoneecho,
+    Owner, PRF_NOHASSLE, char_world_vis, dir_count, door, exit_to_room, find_target_room, has_desc,
+    load, recho, shown_after_char, starts_with_digit, teleport, vnum16, zoneecho,
 };
 use crate::cstr::{atoi, one_argument, skip_spaces, str_eq, two_arguments};
 use crate::host::DgHost;
@@ -106,8 +107,11 @@ pub fn run<H: DgHost + ?Sized>(host: &mut H, ch: Uid, command: MobCommand, argum
 
 /// `ch->desc && GET_LEVEL(ch->desc->original) < LVL_IMPL`.
 fn desc_below_impl<H: DgHost + ?Sized>(host: &H, ch: Uid) -> bool {
-    host.cmd_desc_original_level(ch)
-        .is_some_and(|level| level < LVL_IMPL)
+    // A descriptor that is not switched has no `original` (the C
+    // dereferences NULL): the character's own level stands in, so an
+    // ordinary player is refused and an implementor is not.
+    host.cmd_desc(ch)
+        .is_some_and(|original| host.level(original.unwrap_or(ch)) < LVL_IMPL)
 }
 
 /// `MOB_OR_IMPL(ch)`.
@@ -131,18 +135,6 @@ fn gate<H: DgHost + ?Sized>(host: &mut H, ch: Uid, charm_check: bool) -> bool {
     !(charm_check && host.cmd_is_charmed(ch))
 }
 
-/// What the C's `arg` buffer holds after a lookup: the `*_vis` functions
-/// call `get_number`, which removes the `N.` / `last.` prefix in place, so
-/// later uses (log messages, a second lookup) see the bare name. A UID
-/// argument never reaches `get_number` and is left alone.
-fn shown(arg: &str) -> String {
-    if arg.starts_with(UID_CHAR) {
-        arg.to_owned()
-    } else {
-        get_number(arg).1.to_owned()
-    }
-}
-
 /// `if (*arg == UID_CHAR) get_char(arg) else get_char_room_vis(ch, arg)`.
 fn victim_in_room<H: DgHost + ?Sized>(host: &H, ch: Uid, arg: &str) -> Option<Uid> {
     if arg.starts_with(UID_CHAR) {
@@ -157,7 +149,7 @@ fn victim_in_world<H: DgHost + ?Sized>(host: &H, ch: Uid, arg: &str) -> Option<U
     if arg.starts_with(UID_CHAR) {
         get_char(host, arg)
     } else {
-        get_char_vis(host, ch, arg, Where::World)
+        char_world_vis(host, ch, arg)
     }
 }
 
@@ -176,8 +168,8 @@ fn do_masound<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     let Some(was_in_room) = host.in_room(ch) else {
         return;
     };
-    for door in 0..host.cmd_dir_count() {
-        if let Some(to) = host.cmd_exit_to_room(was_in_room, door)
+    for door in 0..dir_count(host) {
+        if let Some(to) = exit_to_room(host, was_in_room, door)
             && to != was_in_room
         {
             sub_write_in(host, argument, ch, Some(to), true, TO_ROOM);
@@ -198,18 +190,24 @@ fn do_mkill<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         return;
     }
     let Some(victim) = victim_in_room(host, ch, &arg) else {
-        log.log(host, &format!("mkill: victim ({}) not found", shown(&arg)));
+        log.log(
+            host,
+            &format!(
+                "mkill: victim ({}) not found",
+                shown_after_char(&arg, Where::Room)
+            ),
+        );
         return;
     };
     if victim == ch {
         log.log(host, "mkill: victim is self");
         return;
     }
-    if !host.is_npc(victim) && host.cmd_nohassle(victim) {
+    if !host.is_npc(victim) && host.char_pref_flagged(victim, PRF_NOHASSLE) {
         log.log(host, "mkill: target has nohassle on");
         return;
     }
-    if host.cmd_fighting(ch).is_some() {
+    if host.char_fighting(ch).is_some() {
         log.log(host, "mkill: already fighting");
         return;
     }
@@ -290,8 +288,9 @@ fn do_mjunk<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
             host.cmd_extract_obj(obj);
             return;
         }
-        // The equipment lookup has stripped any `N.` from the buffer.
-        let bare = shown(&junk.word);
+        // The equipment lookup has stripped any `N.` from the buffer, whatever
+        // its first byte (`do_mjunk` has no UID branch).
+        let bare = get_number(&junk.word).1.to_owned();
         if let Some(obj) = get_obj_in_list_vis(host, ch, &bare, &host.carrying(ch)) {
             host.cmd_extract_obj(obj);
         }
@@ -308,7 +307,7 @@ fn do_mjunk<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     let mut word = junk.word.clone();
     for _ in 0..NUM_WEARS {
         let found = get_obj_pos_in_equip_vis(host, ch, ch, &word);
-        word = shown(&word);
+        word = get_number(&word).1.to_owned();
         let Some(pos) = found else {
             break;
         };
@@ -336,7 +335,10 @@ fn do_msend<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str, around: b
     let Some(victim) = victim_in_room(host, ch, &arg) else {
         Owner::Mob(ch).log(
             host,
-            &format!("{name}: victim ({}) does not exist", shown(&arg)),
+            &format!(
+                "{name}: victim ({}) does not exist",
+                shown_after_char(&arg, Where::Room)
+            ),
         );
         return;
     };
@@ -441,7 +443,7 @@ fn do_mpurge<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
             get_obj(host, &arg)
         } else {
             // `get_char_room_vis` has already stripped any `N.` from `arg`.
-            get_obj_vis(host, ch, &shown(&arg))
+            get_obj_vis(host, ch, &shown_after_char(&arg, Where::Room))
         };
         match obj {
             Some(obj) => host.cmd_extract_obj(obj),
@@ -476,7 +478,7 @@ fn do_mgoto<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         return;
     };
 
-    if host.cmd_fighting(ch).is_some() {
+    if host.char_fighting(ch).is_some() {
         host.cmd_stop_fighting(ch);
     }
     host.cmd_char_from_room(ch);
@@ -541,16 +543,19 @@ fn do_mteleport<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
             log.log(host, "mteleport all target is itself");
             return;
         }
-        for vict in host.room_people(here) {
-            if host.exists(vict) && host.valid_dg_target(vict, true) {
+        for_each_occupant(host, here, |host, vict| {
+            if host.valid_dg_target(vict, true) {
                 teleport(host, vict, target);
             }
-        }
+        });
     } else {
         let Some(vict) = victim_in_world(host, ch, &arg1) else {
             log.log(
                 host,
-                &format!("mteleport: victim ({}) does not exist", shown(&arg1)),
+                &format!(
+                    "mteleport: victim ({}) does not exist",
+                    shown_after_char(&arg1, Where::World)
+                ),
             );
             return;
         };
@@ -575,7 +580,10 @@ fn do_mdamage<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     let Some(vict) = victim_in_room(host, ch, &name) else {
         Owner::Mob(ch).log(
             host,
-            &format!("mdamage: victim ({}) does not exist", shown(&name)),
+            &format!(
+                "mdamage: victim ({}) does not exist",
+                shown_after_char(&name, Where::Room)
+            ),
         );
         return;
     };
@@ -653,13 +661,16 @@ fn do_mhunt<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         Owner::Mob(ch).log(host, "mhunt called with no argument");
         return;
     }
-    if host.cmd_fighting(ch).is_some() {
+    if host.char_fighting(ch).is_some() {
         return;
     }
     let Some(victim) = victim_in_world(host, ch, &arg) else {
         Owner::Mob(ch).log(
             host,
-            &format!("mhunt: victim ({}) does not exist", shown(&arg)),
+            &format!(
+                "mhunt: victim ({}) does not exist",
+                shown_after_char(&arg, Where::World)
+            ),
         );
         return;
     };
@@ -683,7 +694,10 @@ fn do_mremember<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     let Some(victim) = victim_in_world(host, ch, &arg) else {
         Owner::Mob(ch).log(
             host,
-            &format!("mremember: victim ({}) does not exist", shown(&arg)),
+            &format!(
+                "mremember: victim ({}) does not exist",
+                shown_after_char(&arg, Where::World)
+            ),
         );
         return;
     };
@@ -715,7 +729,10 @@ fn do_mforget<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     let Some(victim) = victim_in_world(host, ch, &arg) else {
         Owner::Mob(ch).log(
             host,
-            &format!("mforget: victim ({}) does not exist", shown(&arg)),
+            &format!(
+                "mforget: victim ({}) does not exist",
+                shown_after_char(&arg, Where::World)
+            ),
         );
         return;
     };
@@ -730,7 +747,7 @@ fn do_mtransform<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     if !gate(host, ch, true) {
         return;
     }
-    if host.cmd_has_desc(ch) {
+    if has_desc(host, ch) {
         host.cmd_send(
             ch,
             "You've got no VNUM to return to, dummy! try 'switch'\r\n",
@@ -806,7 +823,10 @@ fn do_mfollow<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         if found.is_none() {
             log.log(
                 host,
-                &format!("mfollow: victim ({}) not found", shown(&buf)),
+                &format!(
+                    "mfollow: victim ({}) not found",
+                    shown_after_char(&buf, Where::Room)
+                ),
             );
             return;
         }
@@ -816,7 +836,7 @@ fn do_mfollow<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         return;
     };
 
-    if host.cmd_master(ch) == Some(leader) {
+    if host.char_master(ch) == Some(leader) {
         // Already following.
         return;
     }
@@ -824,7 +844,7 @@ fn do_mfollow<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     // left at the gate.)
 
     // Stop following someone else first.
-    if host.cmd_master(ch).is_some() {
+    if host.char_master(ch).is_some() {
         host.cmd_unfollow(ch);
     }
     if ch == leader {
@@ -845,7 +865,7 @@ fn circle_follow<H: DgHost + ?Sized>(host: &H, ch: Uid, victim: Uid) -> bool {
     for _ in 0..host.character_list().len().saturating_add(1) {
         match k {
             Some(i) if i == ch => return true,
-            Some(i) => k = host.cmd_master(i),
+            Some(i) => k = host.char_master(i),
             None => return false,
         }
     }
@@ -857,6 +877,7 @@ mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
 
     use super::*;
+    use crate::commands::CmdHost;
     use crate::commands::support::World;
     use crate::host::{BaseHost, WorldHost};
     use crate::types::{AttachType, uid_text};
@@ -908,15 +929,31 @@ mod tests {
     }
 
     #[test]
+    fn an_unswitched_descriptor_is_judged_by_the_characters_own_level() {
+        // `ch->desc->original` is NULL in the C; the character's own level
+        // stands in.
+        let mut w = World::new();
+        let mob = bare_mob(&mut w);
+        w.host.set_num(mob, "desc", 1);
+        w.host.set_num(mob, "level", 33);
+        assert!(w.run_mob(mob, "mecho hi"));
+        assert_eq!(w.sent_to(mob), ["Huh?!?\r\n"]);
+        w.clear();
+        w.host.set_num(mob, "level", 34);
+        assert!(w.run_mob(mob, "mecho hi"));
+        assert_eq!(w.sent_to(w.player), ["hi\n\r"]);
+    }
+
+    #[test]
     fn a_switched_npc_needs_an_implementor_behind_it() {
         let mut w = World::new();
         let mob = bare_mob(&mut w);
         w.host.set_num(mob, "desc", 1);
-        w.host.set_num(mob, "desc_original_level", 33);
+        w.switch_behind(mob, 33);
         assert!(w.run_mob(mob, "mecho hi"));
         assert_eq!(w.sent_to(mob), ["Huh?!?\r\n"]);
         w.clear();
-        w.host.set_num(mob, "desc_original_level", 34);
+        w.switch_behind(mob, 34);
         assert!(w.run_mob(mob, "mecho hi"));
         assert_eq!(w.sent_to(w.player), ["hi\n\r"]);
         // With no descriptor at all an NPC is fine.
@@ -1049,8 +1086,13 @@ mod tests {
         w.host.set_link(room, "exit:6", Some(room2));
         run(&mut w, "masound again");
         assert_eq!(w.sent_to(bob), ["again\n\r"]);
+        // The self-loop exit does not speak into the mob's own room.
+        assert!(w.sent_to(alice).is_empty());
         w.clear();
-        w.host.globals.nums.insert("dir_count".to_owned(), 10);
+        w.host
+            .globals
+            .nums
+            .insert("config:diagonal_dirs".to_owned(), 1);
         run(&mut w, "masound twice");
         assert_eq!(w.sent_to(bob), ["twice\n\r", "twice\n\r"]);
         run(&mut w, "masound");
@@ -1161,7 +1203,7 @@ mod tests {
         log_is(&w, "mkill: victim is self");
         run(&mut w, "mkill guard");
         log_is(&w, "mkill: victim is self");
-        w.host.set_num(alice, "nohassle", 1);
+        w.set_nohassle(alice, true);
         run(&mut w, "mkill alice");
         log_is(&w, "mkill: target has nohassle on");
         assert!(w.effects("hit").is_empty());
@@ -1176,7 +1218,7 @@ mod tests {
         let mut w = World::new();
         let rat = bare_mob(&mut w);
         w.host.set_text(rat, "alias", "rat");
-        w.host.set_num(rat, "nohassle", 1);
+        w.set_nohassle(rat, true);
         run(&mut w, "mkill rat");
         assert_eq!(w.effects("hit").len(), 1);
     }
@@ -1530,7 +1572,7 @@ mod tests {
         let mut w = World::new();
         let mob = w.mob;
         w.host.set_num(mob, "desc", 1);
-        w.host.set_num(mob, "desc_original_level", 33);
+        w.switch_behind(mob, 33);
         run(&mut w, "mload mob 3100");
         run(&mut w, "mpurge");
         run(&mut w, "mforce alice look");
@@ -1541,7 +1583,7 @@ mod tests {
         assert_eq!(w.host.list(w.room, "people").len(), 3);
         assert!(w.host.mud_commands.is_empty());
         assert!(w.host.script_mem(mob).is_empty());
-        w.host.set_num(mob, "desc_original_level", 34);
+        w.switch_behind(mob, 34);
         run(&mut w, "mload mob 3100");
         assert_eq!(w.host.list(w.room, "people").len(), 4);
     }
@@ -1622,6 +1664,34 @@ mod tests {
     }
 
     #[test]
+    fn mgoto_with_a_negative_count_finds_nothing() {
+        // atoi wraps 4294967294 to -2: every match counts it further from
+        // zero, so neither the character nor the object search returns.
+        let mut w = World::new();
+        let (mob, room2) = (w.mob, w.room2);
+        w.host.char_to_room(mob, room2);
+        run(&mut w, "mgoto 4294967294.alice");
+        log_is(&w, "mgoto: invalid location");
+        assert_eq!(w.host.in_room(mob), Some(room2));
+        w.clear();
+        run(&mut w, "mgoto 4294967294.lamp");
+        log_is(&w, "mgoto: invalid location");
+        assert_eq!(w.host.in_room(mob), Some(room2));
+        // The same name with a count that is still positive does move it.
+        w.clear();
+        run(&mut w, "mgoto 1.alice");
+        assert_eq!(w.host.in_room(mob), Some(w.room));
+        // `self` and `me` are answered before the count is looked at: the
+        // mob "goes" to its own room and nothing is logged.
+        w.host.char_to_room(mob, room2);
+        w.clear();
+        run(&mut w, "mgoto 4294967294.self");
+        run(&mut w, "mgoto 4294967294.me");
+        assert!(w.host.logs.is_empty());
+        assert_eq!(w.host.in_room(mob), Some(room2));
+    }
+
+    #[test]
     fn mgoto_to_a_private_room_with_company_is_refused() {
         let mut w = World::new();
         let (mob, room2, bob, alice) = (w.mob, w.room2, w.player2, w.player);
@@ -1634,6 +1704,24 @@ mod tests {
         run(&mut w, "mgoto 3002");
         log_is(&w, "mgoto: invalid location");
         assert_eq!(w.host.in_room(mob), Some(w.room));
+    }
+
+    #[test]
+    fn mat_leaves_the_mob_where_the_command_put_it() {
+        // `if (IN_ROOM(ch) == location)`: when the command took the mob
+        // somewhere else (`at XXXX quit`), it is not put back. The mock's
+        // `hook:arrive` stands in for the command and moves the mob on to a
+        // third room as it arrives.
+        let mut w = World::new();
+        let mob = w.mob;
+        let room3 = w.host.add_room(3003, "The Cellar");
+        w.host
+            .globals
+            .texts
+            .insert(format!("hook:arrive:{mob}"), "move 3003".to_owned());
+        run(&mut w, "mat 3002 look");
+        assert_eq!(w.host.mud_commands, [(mob, " look".to_owned())]);
+        assert_eq!(w.host.in_room(mob), Some(room3));
     }
 
     #[test]
@@ -1868,7 +1956,7 @@ mod tests {
         let mut w = World::new();
         let mob = w.mob;
         w.host.set_num(mob, "desc", 1);
-        w.host.set_num(mob, "desc_original_level", 34);
+        w.switch_behind(mob, 34);
         run(&mut w, "mtransform 3100");
         assert_eq!(
             w.sent_to(mob),
@@ -1919,6 +2007,12 @@ mod tests {
         log_is(&w, "mdoor: invalid door target (arg == 9999)");
         assert_eq!(w.host.link(room, "exit:1"), None);
         assert_eq!(w.host.num(room, "exit:1:nowhere"), 1);
+        // The exit that leads nowhere is still an exit: a later field set does
+        // not make a new one pointing at room number 0.
+        run(&mut w, "mdoor 3001 east flags a");
+        assert_eq!(w.host.link(room, "exit:1"), None);
+        assert_eq!(w.host.num(room, "exit:1:nowhere"), 1);
+        assert_eq!(w.host.num(room, "exit:1:flags"), 1);
     }
 
     #[test]
@@ -2035,6 +2129,11 @@ mod tests {
             long,
             "99999999999999999999 99999999999999999999".to_owned(),
             "-2147483648 -2147483648 x".to_owned(),
+            // `atoi` wraps to `i32::MIN`; the count decrement must not
+            // overflow when a target of that name is present.
+            "2147483648.bob".to_owned(),
+            "2147483648.lamp".to_owned(),
+            "4294967294.alice".to_owned(),
         ];
         for (command, _) in MOB_SCRIPT_COMMANDS {
             for arg in &nasty {
@@ -2183,5 +2282,319 @@ mod tests {
         assert_eq!(w.host.equipment(mob, 3), Some(lamp));
         assert_eq!(w.host.vnum(mob), 3000);
         assert_eq!(w.effects("extract_char").len(), 1);
+    }
+
+    // ---- the buffer after a `0.` count ------------------------------------
+
+    #[test]
+    fn a_zero_count_world_search_looks_for_the_bare_name() {
+        // `0.2.bob`: the room pass strips `2.` from the buffer and finds no
+        // such player in the room; the world pass then asks for the player
+        // `bob`, count 1 (handler.c `get_char_world_vis`).
+        let mut w = World::new();
+        let (mob, bob, room2) = (w.mob, w.player2, w.room2);
+        w.host.char_to_room(bob, room2);
+        run(&mut w, "mhunt 0.2.bob");
+        assert!(w.host.logs.is_empty());
+        assert_eq!(w.effects("hunt "), [format!("hunt {mob} {bob}")]);
+        run(&mut w, "mgoto 0.2.bob");
+        assert!(w.host.logs.is_empty());
+        assert_eq!(w.host.in_room(mob), Some(room2));
+        // With Bob in the mob's room the room pass (count 2) still finds no
+        // second Bob, and the world pass finds the first.
+        let mut w = World::new();
+        let (mob, bob) = (w.mob, w.player2);
+        run(&mut w, "mhunt 0.2.bob");
+        assert!(w.host.logs.is_empty());
+        assert_eq!(w.effects("hunt "), [format!("hunt {mob} {bob}")]);
+    }
+
+    #[test]
+    fn a_zero_count_strips_the_name_a_second_time_in_the_buffer() {
+        // `get_char_room_vis` sends `0.<name>` to `get_player_vis`, which runs
+        // `get_number` on the same buffer again; a failed world search does so
+        // once more. The log lines and the follow-up lookups see what is left.
+        let mut w = World::new();
+        for (line, text) in [
+            ("mkill 0.2.zed", "mkill: victim (zed) not found"),
+            ("msend 0.2.zed hi", "msend: victim (zed) does not exist"),
+            (
+                "mechoaround 0.2.zed hi",
+                "mechoaround: victim (zed) does not exist",
+            ),
+            ("mdamage 0.2.zed 5", "mdamage: victim (zed) does not exist"),
+            ("mfollow 0.2.zed", "mfollow: victim (zed) not found"),
+            (
+                "mteleport 0.2.zed 3002",
+                "mteleport: victim (zed) does not exist",
+            ),
+            ("mhunt 0.2.zed", "mhunt: victim (zed) does not exist"),
+            (
+                "mremember 0.2.zed",
+                "mremember: victim (zed) does not exist",
+            ),
+            ("mforget 0.2.zed", "mforget: victim (zed) does not exist"),
+            // The world search strips a third time.
+            ("mhunt 0.1.2.zed", "mhunt: victim (zed) does not exist"),
+            (
+                "mteleport 0.1.2.zed 3002",
+                "mteleport: victim (zed) does not exist",
+            ),
+            // `last.` is a count of its own: it strips once and is never zero.
+            ("mkill last.2.zed", "mkill: victim (2.zed) not found"),
+            // Not a number: the count is 0 as well.
+            ("mkill x.2.zed", "mkill: victim (zed) not found"),
+            // A real count strips once.
+            ("mkill 2.1.zed", "mkill: victim (1.zed) not found"),
+        ] {
+            w.clear();
+            run(&mut w, line);
+            log_is(&w, text);
+        }
+    }
+
+    #[test]
+    fn a_zero_count_leaves_the_bare_name_for_the_object_lookup() {
+        let mut w = World::new();
+        let mob = w.mob;
+        let mut swords = Vec::new();
+        for _ in 0..2 {
+            let sword = w.host.add_obj(7000, "a sword");
+            w.host.set_text(sword, "alias", "sword");
+            w.host.obj_to_char(sword, mob);
+            swords.push(sword);
+        }
+        // Carried head first: the first in the list is the one added last.
+        let (first, second) = (w.host.carrying(mob)[0], w.host.carrying(mob)[1]);
+        run(&mut w, "mpurge 0.2.sword");
+        assert!(!w.host.exists(first));
+        assert!(w.host.exists(second));
+        assert_eq!(w.log(), "");
+    }
+
+    #[test]
+    fn a_zero_count_leaves_the_bare_name_for_the_container_lookup() {
+        let mut w = World::new();
+        let mut sacks = Vec::new();
+        for _ in 0..2 {
+            let sack = w.host.add_obj(7100, "a sack");
+            w.host.set_text(sack, "alias", "sack");
+            w.host.set_num(sack, "type", 15);
+            w.host.obj_to_room(sack, w.room);
+            sacks.push(sack);
+        }
+        run(&mut w, "mload obj 7102 0.2.sack");
+        let rock = w.host.object_list()[0];
+        assert_eq!(w.host.vnum(rock), 7102);
+        assert_eq!(w.host.obj_in_obj(rock), Some(sacks[0]));
+    }
+
+    // ---- commands a switched mob below LVL_IMPL may not give --------------
+
+    #[test]
+    fn a_switched_mob_below_impl_is_refused_by_each_world_changing_command() {
+        let mut w = World::new();
+        let (mob, alice, bob, lamp) = (w.mob, w.player, w.player2, w.obj);
+        let rat = bare_mob(&mut w);
+        w.host.set_text(rat, "alias", "rat");
+        w.host.set_num(mob, "desc", 1);
+        w.switch_behind(mob, 33);
+        let remembered = ScriptMemory {
+            id: alice,
+            cmd: None,
+        };
+        w.host.set_script_mem(mob, vec![remembered.clone()]);
+        let lines = [
+            "mpurge",
+            "mpurge rat",
+            "mpurge lamp",
+            "mhunt alice",
+            "mremember bob",
+            "mforget alice",
+            "mforce alice look",
+            "mload mob 3100",
+        ];
+        for line in lines {
+            run(&mut w, line);
+        }
+        assert!(w.host.logs.is_empty());
+        assert!(!w.host.is_dead(rat));
+        assert!(w.host.exists(lamp));
+        assert!(w.effects("hunt").is_empty());
+        assert_eq!(w.host.script_mem(mob), [remembered]);
+        assert!(w.host.mud_commands.is_empty());
+        assert_eq!(w.host.list(w.room, "people").len(), 4);
+
+        // The same lines work for an implementor.
+        w.switch_behind(mob, 34);
+        for line in [
+            "mpurge rat",
+            "mhunt alice",
+            "mremember bob",
+            "mforget alice",
+            "mforce alice look",
+            "mload mob 3100",
+        ] {
+            run(&mut w, line);
+        }
+        assert!(w.host.is_dead(rat));
+        assert_eq!(w.effects("hunt").len(), 1);
+        assert_eq!(
+            w.host.script_mem(mob),
+            [ScriptMemory { id: bob, cmd: None }]
+        );
+        assert_eq!(w.host.mud_commands, [(alice, " look".to_owned())]);
+        assert_eq!(w.host.list(w.room, "people").len(), 5);
+        run(&mut w, "mpurge");
+        assert!(!w.host.exists(lamp));
+    }
+
+    #[test]
+    fn a_player_with_triggers_is_judged_by_their_own_level() {
+        // A descriptor with no `original` is answered with the character's
+        // own level, which is below LVL_IMPL for an ordinary player.
+        let mut w = World::new();
+        let (alice, proto) = (w.player, w.proto.clone());
+        w.host.attach(alice, &proto);
+        run_as(&mut w, alice, "mload mob 3100");
+        assert_eq!(w.host.list(w.room, "people").len(), 3);
+        w.host.set_num(alice, "level", 34);
+        run_as(&mut w, alice, "mload mob 3100");
+        assert_eq!(w.host.list(w.room, "people").len(), 4);
+    }
+
+    fn run_as(w: &mut World, ch: Uid, line: &str) {
+        assert!(w.run_mob(ch, line));
+    }
+
+    // ---- DG_ALLOW_GODS ----------------------------------------------------
+
+    #[test]
+    fn force_refuses_the_highest_gods_and_teleport_does_not() {
+        let mut w = World::new();
+        let (alice, room2) = (w.player, w.room2);
+        w.host.set_num(alice, "level", 33);
+        // `mforce` passes 0, `mteleport` DG_ALLOW_GODS.
+        run(&mut w, "mforce alice look");
+        assert!(w.host.mud_commands.is_empty());
+        run(&mut w, "mteleport alice 3002");
+        assert_eq!(w.host.in_room(alice), Some(room2));
+        // One level lower is forced like a mortal unless nohassle is on.
+        w.host.set_num(alice, "level", 32);
+        run(&mut w, "mteleport alice 3001");
+        assert_eq!(w.host.in_room(alice), Some(w.room));
+        run(&mut w, "mforce alice look");
+        assert_eq!(w.host.mud_commands.len(), 1);
+        w.set_nohassle(alice, true);
+        run(&mut w, "mforce alice look");
+        run(&mut w, "mteleport alice 3002");
+        assert_eq!(w.host.mud_commands.len(), 1);
+        assert_eq!(w.host.in_room(alice), Some(w.room));
+    }
+
+    #[test]
+    fn force_all_and_teleport_all_apply_the_same_rule() {
+        let mut w = World::new();
+        let (alice, bob, mob, room2) = (w.player, w.player2, w.mob, w.room2);
+        w.host.set_num(alice, "level", 33);
+        w.host.set_num(mob, "level", 40);
+        run(&mut w, "mforce all look");
+        // Bob only: Alice is a high god and the rest are not lower level.
+        assert_eq!(w.host.mud_commands, [(bob, " look".to_owned())]);
+        run(&mut w, "mteleport all 3002");
+        assert_eq!(w.host.in_room(alice), Some(room2));
+        assert_eq!(w.host.in_room(bob), Some(room2));
+    }
+
+    // ---- sendok, damage and following boundaries --------------------------
+
+    #[test]
+    fn writing_blocks_players_but_not_mobs() {
+        let mut w = World::new();
+        let (alice, mob) = (w.player, w.mob);
+        w.host.set_num(mob, "desc", 1);
+        w.switch_behind(mob, 34);
+        // Bit 4 of an NPC's act flags is MOB_AWARE, not PLR_WRITING.
+        w.set_writing(mob, true);
+        w.set_writing(alice, true);
+        run(&mut w, "mecho hi");
+        assert_eq!(w.sent_to(mob), ["hi\n\r"]);
+        assert!(w.sent_to(alice).is_empty());
+    }
+
+    #[test]
+    fn already_following_the_leader_changes_nothing() {
+        let mut w = World::new();
+        let (alice, mob) = (w.player, w.mob);
+        let rat = bare_mob(&mut w);
+        w.host.set_text(rat, "alias", "rat");
+        w.host.cmd_follow(mob, alice);
+        w.host.cmd_follow(rat, alice);
+        assert_eq!(w.host.list(alice, "followers"), [rat, mob]);
+        run(&mut w, "mfollow alice");
+        // Leaving and rejoining would put the mob at the head of the list.
+        assert_eq!(w.host.list(alice, "followers"), [rat, mob]);
+        assert!(w.host.logs.is_empty());
+    }
+
+    // ---- branches the earlier tests left unpinned --------------------------
+
+    #[test]
+    fn msend_reaches_a_sleeping_victim() {
+        // `sub_write` has `to_sleeping = 1`.
+        let mut w = World::new();
+        let bob = w.player2;
+        w.host.set_num(bob, "pos", 4);
+        run(&mut w, "msend bob hi");
+        assert_eq!(w.sent_to(bob), ["hi\n\r"]);
+    }
+
+    #[test]
+    fn mzoneecho_and_mdoor_narrow_their_room_numbers_to_sixteen_bits() {
+        let mut w = World::new();
+        let (alice, room, room2) = (w.player, w.room, w.room2);
+        w.host.globals.nums.insert("zone:3:bot".to_owned(), 3000);
+        w.host.globals.nums.insert("zone:3:top".to_owned(), 3099);
+        w.host.set_num(room, "zone", 3);
+        // 68537 is 65536 + 3001.
+        run(&mut w, "mzoneecho 68537 hello");
+        assert_eq!(w.sent_to(alice), ["hello\r\n"]);
+        assert!(w.host.logs.is_empty());
+        // The room a door leads to is narrowed too (68538 is 65536 + 3002).
+        run(&mut w, "mdoor 3001 east room 68538");
+        assert_eq!(w.host.link(room, "exit:1"), Some(room2));
+        assert!(w.host.logs.is_empty());
+    }
+
+    #[test]
+    fn mtransform_puts_the_temporary_mob_in_the_room_of_the_mob() {
+        // `char_to_room(m, IN_ROOM(ch))` before the struct copy.
+        let mut w = World::new();
+        let (mob, room) = (w.mob, w.room);
+        run(&mut w, "mtransform 3100");
+        let extracted = w.effects("extract_char");
+        assert_eq!(extracted.len(), 1);
+        let temp: Uid = extracted[0]
+            .strip_prefix("extract_char ")
+            .and_then(|uid| uid.parse().ok())
+            .unwrap();
+        assert_ne!(temp, mob);
+        assert_eq!(w.host.in_room(temp), Some(room));
+    }
+
+    #[test]
+    fn mjunk_strips_the_count_from_a_word_that_starts_with_the_uid_character() {
+        // `do_mjunk` has no UID branch: `get_number` strips the buffer
+        // whatever its first byte, so the lookups see `sword`.
+        let mut w = World::new();
+        let (mob, lamp) = (w.mob, w.obj);
+        let sword = w.host.add_obj(7200, "a sword");
+        w.host.set_text(sword, "alias", "sword");
+        w.host.obj_to_char(sword, mob);
+        w.host.equip_char(mob, lamp, 16);
+        run(&mut w, "mjunk all.}1.sword");
+        assert_eq!(w.effects("extract_obj"), [format!("extract_obj {sword}")]);
+        assert!(!w.host.exists(sword));
+        assert!(w.host.exists(lamp));
     }
 }

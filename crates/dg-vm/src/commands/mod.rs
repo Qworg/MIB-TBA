@@ -61,7 +61,30 @@
 //!   that selects the NULL `RESERVED` table entry, a trailing `$` in `act`,
 //!   the fixed-size `sprintf` buffers of the zone echoes, `wmove` of an object
 //!   that is not lying in a room, and the unbounded recursion of `oat`/`wat`
-//!   (nesting is capped at 64 levels).
+//!   (nesting is capped at [`obj::MAX_NEST`] levels, 256).
+//! - The `SYSERR` lines written when an object or mob is placed in `NOWHERE`
+//!   (`obj_to_room`, `char_to_room`) and when `wmove` finds an object that is
+//!   not in a room are approximations of the C text: the C prints a pointer
+//!   and the room number, which the VM does not have.
+//! - `GET_LEVEL(ch->desc->original)` of a descriptor that is not switched
+//!   dereferences NULL in the C; the VM uses the character's own level
+//!   instead ([`CmdHost::cmd_desc`] reports only the descriptor and its
+//!   `original`).
+//! - `act()` to a room follows `to->next_in_room` live, as the C does, so an
+//!   act trigger that moves a recipient carries the walk into the list it is
+//!   in now. A recipient that is in no room any more ends the walk, as in the
+//!   C (`char_from_room` leaves its `next_in_room` NULL). The `all` forms of
+//!   `oforce`, `wforce`, `mteleport`, `oteleport` and `wteleport` save
+//!   `next_ch` before their body and follow it the same way
+//!   ([`comm::for_each_occupant`]). Both walks are cut off after 100000
+//!   steps, which the C does not do.
+//! - `dg_act_check`, the static of `comm.c` that every `act()` overwrites, is
+//!   host state ([`CmdHost::cmd_act_check`]) so that the `act()` of the game
+//!   and this one share it: an `act` trigger that makes the game say
+//!   something switches it off for the rest of the outer walk.
+//! - `get_char_world_vis` is called through `shared::char_world_vis`, which
+//!   gives the world pass of a `0.N.name` argument the name the room pass
+//!   left in the C's buffer (`lookup.rs` hands it the unstripped name).
 //! - `sub_write` takes the room to work in as a parameter rather than reading
 //!   `IN_ROOM(ch)`, so `do_masound`'s temporary reassignment of the mob's room
 //!   needs no host support.
@@ -73,10 +96,8 @@
 //!   never reused).
 //! - `send_to_char` is [`CmdHost::cmd_send`]: a character with no descriptor
 //!   receives nothing, as in the C. `sub_write` never offers its text to an
-//!   NPC's `act` triggers; `act()` does, through [`CmdHost::cmd_act_trigger`]
-//!   (the dispatch module has no `act_mtrigger` to call).
-//!   This is a seam: once `dispatch` exposes `act_mtrigger`, `act()` should
-//!   call it and `cmd_act_trigger` goes away.
+//!   NPC's `act` triggers; `act()` does, through
+//!   [`crate::dispatch::act_mtrigger`].
 //! - Vnum arguments are wrapped to 16 bits (`room_vnum`, `mob_vnum` and
 //!   `obj_vnum` are `ush_int`) where the C passes them on; `NOBODY` and
 //!   `NOTHING` print as 65535 in `mob_log` / `obj_log`.
@@ -94,6 +115,8 @@ pub mod obj;
 pub mod shared;
 pub mod wld;
 
+#[cfg(test)]
+mod script_tests;
 #[cfg(test)]
 mod support;
 
@@ -135,19 +158,12 @@ pub trait CmdHost {
     /// connection. Does nothing for a character with no descriptor.
     fn cmd_send(&mut self, ch: Uid, text: &str);
 
-    /// `ch->desc != NULL`.
-    fn cmd_has_desc(&self, ch: Uid) -> bool;
-
-    /// `ch->desc ? GET_LEVEL(ch->desc->original) : none`: the level of the
-    /// player behind a switched mob, `None` when `ch->desc` is `NULL`.
-    fn cmd_desc_original_level(&self, ch: Uid) -> Option<i32>;
-
-    /// `PLR_FLAGGED(ch, PLR_WRITING)`.
-    fn cmd_is_writing(&self, ch: Uid) -> bool;
-
-    /// `act_mtrigger(to, text, actor, NULL, NULL, NULL, NULL)`: offer a line
-    /// `act()` just showed `to` to its `act` triggers.
-    fn cmd_act_trigger(&mut self, to: Uid, text: &str, actor: Uid);
+    /// `ch->desc`: `None` when `ch->desc` is `NULL`, else `Some` of
+    /// `ch->desc->original`, the player behind a switched mob (`None` inside
+    /// when the descriptor is not switched). The VM reads descriptor
+    /// presence from the outer `Option` and applies the policy for an
+    /// unswitched descriptor itself.
+    fn cmd_desc(&self, ch: Uid) -> Option<Option<Uid>>;
 
     /// `mudlog(BRF, level, TRUE, "%s", text)`.
     fn cmd_mudlog(&mut self, level: i32, text: &str);
@@ -160,45 +176,29 @@ pub trait CmdHost {
     /// (`i->character` for each `!i->connected`), in list order.
     fn cmd_playing_characters(&self) -> Vec<Uid>;
 
+    // ---- act() ---------------------------------------------------------
+
+    /// The static `dg_act_check` of `comm.c`, which `act()` and the `act()`
+    /// of the game share: whether the `act()` call in progress (the latest
+    /// one, nested calls included) offers its lines to `act` triggers.
+    fn cmd_act_check(&self) -> bool;
+
+    /// `dg_act_check = on`: what `act()` does on entry (`on` is
+    /// `!IS_SET(type, DG_NO_TRIG)`).
+    fn cmd_set_act_check(&mut self, on: bool);
+
     // ---- character facts -----------------------------------------------
-
-    /// `GET_POS(ch)` (`POS_DEAD` 0 .. `POS_STANDING` 8).
-    fn cmd_pos(&self, ch: Uid) -> i32;
-
-    /// `GET_SEX(ch)` (`SEX_NEUTRAL` 0, `SEX_MALE` 1, `SEX_FEMALE` 2).
-    fn cmd_sex(&self, ch: Uid) -> i32;
-
-    /// `COLOR_LEV(ch)` (`_clrlevel`): 0 off, 1 sparse, 2 normal, 3 complete.
-    fn cmd_color_level(&self, ch: Uid) -> i32;
 
     /// `AFF_FLAGGED(ch, AFF_CHARM)`.
     fn cmd_is_charmed(&self, ch: Uid) -> bool;
 
-    /// `PRF_FLAGGED(ch, PRF_NOHASSLE)`.
-    fn cmd_nohassle(&self, ch: Uid) -> bool;
-
     /// `GET_INVIS_LEV(ch)`.
     fn cmd_invis_level(&self, ch: Uid) -> i32;
-
-    /// `GET_HIT(ch)`.
-    fn cmd_hit(&self, ch: Uid) -> i32;
-
-    /// `GET_MAX_HIT(ch)`.
-    fn cmd_max_hit(&self, ch: Uid) -> i32;
-
-    /// `GET_HIT(ch) = hit`.
-    fn cmd_set_hit(&mut self, ch: Uid, hit: i32);
-
-    /// `update_pos(ch)`: recompute `GET_POS` from `GET_HIT`.
-    fn cmd_update_pos(&mut self, ch: Uid);
 
     /// `die(ch, NULL)`.
     fn cmd_die(&mut self, ch: Uid);
 
     // ---- combat and following ------------------------------------------
-
-    /// `FIGHTING(ch)`.
-    fn cmd_fighting(&self, ch: Uid) -> Option<Uid>;
 
     /// `stop_fighting(ch)`.
     fn cmd_stop_fighting(&mut self, ch: Uid);
@@ -208,9 +208,6 @@ pub trait CmdHost {
 
     /// `HUNTING(ch) = victim`.
     fn cmd_set_hunting(&mut self, ch: Uid, victim: Uid);
-
-    /// `ch->master`.
-    fn cmd_master(&self, ch: Uid) -> Option<Uid>;
 
     /// The "stop following someone else first" block of `do_mfollow`: remove
     /// `ch`'s entry from `ch->master->followers` and set `ch->master = NULL`.
@@ -223,13 +220,6 @@ pub trait CmdHost {
 
     // ---- rooms ---------------------------------------------------------
 
-    /// `DIR_COUNT`: 6, or 10 when `CONFIG_DIAGONAL_DIRS`.
-    fn cmd_dir_count(&self) -> usize;
-
-    /// `world[room].dir_option[dir]->to_room`, or `None` when there is no
-    /// such exit or it leads to `NOWHERE`.
-    fn cmd_exit_to_room(&self, room: Uid, dir: usize) -> Option<Uid>;
-
     /// `do_mdoor` "purge": free the exit if there is one
     /// (`rm->dir_option[dir] = NULL`).
     fn cmd_exit_purge(&mut self, room: Uid, dir: usize);
@@ -239,18 +229,15 @@ pub trait CmdHost {
     /// (the first room in the world table), not `NOWHERE`.
     fn cmd_exit_set(&mut self, room: Uid, dir: usize, field: ExitField);
 
-    /// `ROOM_FLAGGED(room, flag)`.
-    fn cmd_room_flagged(&self, room: Uid, flag: i32) -> bool;
-
     /// `House_can_enter(ch, room_vnum)`.
     fn cmd_house_can_enter(&self, ch: Uid, room_vnum: i32) -> bool;
 
     /// `real_zone_by_thing(vnum)`: the zone whose vnum range holds `vnum`,
-    /// `None` for `NOWHERE`.
+    /// `None` for `NOWHERE`. The zone is named by its number
+    /// (`zone_table[zone].number`), the value `RoomHost::room_zone_number`
+    /// reports, rather than by its table index; the two are in one-to-one
+    /// correspondence, so comparing them selects the same rooms.
     fn cmd_zone_of_vnum(&self, vnum: i32) -> Option<i32>;
-
-    /// `world[room].zone`.
-    fn cmd_room_zone(&self, room: Uid) -> i32;
 
     /// The rooms whose vnum is in `start..=finish`, in world-table order.
     fn cmd_rooms_in_range(&self, start: i32, finish: i32) -> Vec<Uid>;
