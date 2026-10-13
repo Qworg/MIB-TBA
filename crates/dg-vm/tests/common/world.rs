@@ -2,9 +2,10 @@
 //!
 //! A scenario attaches its triggers with [`install`] / [`install_record`] and
 //! fires them by calling the dispatch function of the event
-//! (`dg_vm::dispatch`). The corpus smoke test, which runs a trigger whatever
-//! its type, adds the event variables by hand with [`set_event_vars`] and
-//! calls `script_driver`. A `wait` is resumed with `driver::resume`.
+//! (`dg_vm::dispatch`). The corpus smoke test does the same for every record
+//! and falls back to adding the event variables by hand with
+//! [`set_event_vars`] and calling `script_driver` only for a trigger no
+//! dispatch function runs. A `wait` is resumed with `driver::resume`.
 
 use std::sync::Arc;
 

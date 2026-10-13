@@ -260,27 +260,45 @@ fn corpus_files(dir: &std::path::Path) -> Option<Vec<PathBuf>> {
     Some(files)
 }
 
-/// Read every file of the corpus index in order. `None` when the corpus
-/// directory is absent.
-pub fn load_corpus() -> Option<Vec<Record>> {
-    let dir = corpus_dir();
+/// Read every file of the corpus index in order. `Err` says why the corpus
+/// cannot be read: the directory is absent, a file its index lists is missing
+/// or unreadable, or a file does not parse.
+pub fn read_corpus() -> Result<Vec<Record>, String> {
+    read_corpus_from(&corpus_dir())
+}
+
+/// [`read_corpus`] for the `trg` directory `dir`.
+pub fn read_corpus_from(dir: &std::path::Path) -> Result<Vec<Record>, String> {
     if !dir.is_dir() {
-        return None;
+        return Err(format!(
+            "trigger corpus not found at {} (set TBAMUD_SOURCE)",
+            dir.display()
+        ));
     }
+    let files = corpus_files(dir).ok_or_else(|| format!("{}: cannot list", dir.display()))?;
     let mut records = Vec::new();
-    for path in corpus_files(&dir)? {
+    for path in files {
         let name = path
             .file_name()
             .map(|n| n.to_string_lossy().into_owned())
             .unwrap_or_default();
-        let bytes = std::fs::read(&path).unwrap_or_else(|e| panic!("{}: {e}", path.display()));
+        let bytes = std::fs::read(&path).map_err(|e| format!("{}: {e}", path.display()))?;
         let text = String::from_utf8_lossy(&bytes);
-        match parse_file(&name, &text) {
-            Ok(mut parsed) => records.append(&mut parsed),
-            Err(error) => panic!("corpus parse error: {error}"),
-        }
+        records.append(&mut parse_file(&name, &text)?);
     }
-    Some(records)
+    Ok(records)
+}
+
+/// The corpus for the whole-corpus tests: `None` when the directory is absent
+/// (they print the skip message), a panic when it is present but unreadable.
+pub fn load_corpus() -> Option<Vec<Record>> {
+    if !corpus_present() {
+        return None;
+    }
+    match read_corpus() {
+        Ok(records) => Some(records),
+        Err(error) => panic!("corpus unreadable: {error}"),
+    }
 }
 
 /// Find one record by vnum.
@@ -288,21 +306,25 @@ pub fn find(records: &[Record], vnum: i32) -> Option<&Record> {
     records.iter().find(|r| r.vnum == vnum)
 }
 
-/// One real trigger by vnum, read from the corpus on disk. `None` when the
-/// corpus or the vnum is absent.
-pub fn trigger(vnum: i32) -> Option<Record> {
-    find(&load_corpus()?, vnum).cloned()
+/// One real trigger by vnum, read from the corpus on disk. `Err` holds the
+/// reason a scenario cannot run: no corpus, an unreadable corpus, or a corpus
+/// without that vnum.
+pub fn trigger(vnum: i32) -> Result<Record, String> {
+    let records = read_corpus()?;
+    find(&records, vnum)
+        .cloned()
+        .ok_or_else(|| format!("trigger {vnum} is not in the corpus"))
 }
 
-/// Fetch a real trigger or make the calling test print the skip message and
-/// pass.
+/// Fetch a real trigger or make the calling test print the skip message with
+/// the reason and pass.
 #[macro_export]
 macro_rules! real {
     ($vnum:expr) => {
         match $crate::common::corpus::trigger($vnum) {
-            Some(record) => record,
-            None => {
-                $crate::common::corpus::skip_message(&format!("trigger {}", $vnum));
+            Ok(record) => record,
+            Err(reason) => {
+                println!("SKIP trigger {}: {reason}", $vnum);
                 return;
             }
         }

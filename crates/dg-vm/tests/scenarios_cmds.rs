@@ -12,8 +12,8 @@ mod common;
 
 use common::corpus::Record;
 use common::scene::{
-    Scene, act_line, assert_clean, echo_all, echo_lines, heard, heard_raw, other_effects, said,
-    sub_line, vnums,
+    Scene, act_line, assert_clean, assert_ended_with, assert_no_commands, assert_no_logs,
+    assert_no_waits, echo_all, echo_lines, heard, heard_raw, other_effects, said, sub_line, vnums,
 };
 use common::world::{PERCENT_ROLL, global_var, install, install_record, make_proto, run_waits};
 use dg_vm::dispatch;
@@ -274,6 +274,8 @@ fn trigger_5001_picks_a_spell_by_level() {
             .collect();
         assert_eq!(scene.fx.host.effects, want, "level {level} align {align}");
         assert!(scene.fx.host.logs.is_empty(), "level {level}");
+        assert_no_commands(&scene.fx.host);
+        assert_no_waits(&scene.fx.host);
         assert_clean(&scene.fx.host);
     }
 }
@@ -384,10 +386,13 @@ fn trigger_332_rewards_an_offering_by_its_worth() {
 #[test]
 fn trigger_332_logs_the_spell_the_game_does_not_have() {
     let (scene, _) = drop_offering(&real!(332), 150);
+    assert_eq!(scene.fx.host.logs.len(), 2, "{:?}", scene.fx.host.logs);
     assert_eq!(
         scene.fx.host.logs[1],
         "Trigger: Room Drop - Dg_cast for dropping objects by cost, VNum 332. dg_cast: invalid spell name (dg_cast 'clot minor' }1)"
     );
+    assert_no_commands(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -643,6 +648,7 @@ fn trigger_2700_lets_shackle_wearers_through() {
     assert_eq!(scene.fx.host.effects, vec![sub_line(scene.player(), pass)]);
     assert!(scene.fx.host.mud_commands.is_empty());
     assert_clean(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 #[test]
@@ -674,6 +680,7 @@ fn trigger_2700_repels_everyone_else_and_makes_them_sit() {
     );
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -720,6 +727,7 @@ fn trigger_19_echoes_into_another_room() {
     assert!(scene.fx.host.mud_commands.is_empty());
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 #[test]
@@ -750,6 +758,7 @@ fn trigger_20_relays_speech_from_the_rumbles_room() {
     assert!(scene.fx.host.effects.is_empty());
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -817,6 +826,8 @@ fn trigger_11838_shoots_the_person_next_door() {
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert!(scene.fx.host.list(room, "people").contains(&player));
     assert_clean(&scene.fx.host);
+    assert_no_commands(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 #[test]
@@ -842,6 +853,9 @@ fn trigger_11838_wants_a_direction() {
             "You must specify a direction - north, east, west, south, up, or down."
         )]
     );
+    assert_no_commands(&scene.fx.host);
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -897,6 +911,70 @@ fn trigger_13_puts_the_sleeper_in_the_bed() {
     assert_eq!(
         global_var(&scene.fx.host, player, "laying_in_comfy_bed_14"),
         None
+    );
+}
+
+// cmd_otrig: narg 4 is "in the room", so a bed the actor carries does not
+// hear the command.
+#[test]
+fn trigger_13_does_not_hear_a_bed_that_is_carried() {
+    let record = real!(13);
+    let mut scene = Scene::new();
+    let player = scene.player();
+    let bed = scene.fx.host.add_obj(1401, "a comfy bed");
+    scene.host().set_text(bed, "alias", "bed");
+    scene.host().obj_to_char(bed, player);
+    install_record(scene.host(), bed, &record);
+    assert_eq!(
+        dispatch::command_otrigger(scene.host(), player, "sl", " bed"),
+        0
+    );
+    assert_eq!(
+        global_var(&scene.fx.host, player, "laying_in_comfy_bed_14"),
+        None
+    );
+    assert_ended_with(&scene.fx.host, &[]);
+}
+
+// Trigger 11838 has narg 1 ("worn"): the same crossbow carried in the pack
+// hears nothing and the command goes on to the game.
+#[test]
+fn trigger_11838_does_not_hear_a_crossbow_that_is_only_carried() {
+    let record = real!(11838);
+    let mut scene = Scene::new();
+    let player = scene.player();
+    let gun = scene.fx.host.add_obj(3800, "a crossbow");
+    scene.host().obj_to_char(gun, player);
+    install_record(scene.host(), gun, &record);
+    assert_eq!(
+        dispatch::command_otrigger(scene.host(), player, "shoot", " north"),
+        0
+    );
+    assert_ended_with(&scene.fx.host, &[]);
+}
+
+// perform_drop's `obj->carried_by != actor` test: a drop trigger whose object
+// is not in the actor's hands any more (here it never was) returns 0 whatever
+// the script returned, and the script has run all the same.
+#[test]
+fn drop_wtrigger_returns_zero_for_an_object_the_actor_does_not_carry() {
+    let mut scene = Scene::new();
+    let (room, player, bench) = (scene.room(), scene.player(), scene.fx.bench);
+    install(
+        scene.host(),
+        room,
+        9101,
+        AttachType::Wld,
+        "h",
+        100,
+        "",
+        "%echo% dropped",
+    );
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    assert_eq!(dispatch::drop_wtrigger(scene.host(), bench, player), 0);
+    assert_ended_with(
+        &scene.fx.host,
+        &echo_all(&scene.fx.host, room, &["Dropped"], "\r\n"),
     );
 }
 
@@ -971,6 +1049,7 @@ fn trigger_52_lets_the_dog_out_from_under_the_bridge() {
         0
     );
     assert!(scene.fx.host.effects.is_empty());
+    assert_no_commands(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -1125,6 +1204,8 @@ fn trigger_48_joins_the_orb_onto_the_staff() {
     );
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
+    assert_no_commands(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 #[test]
@@ -1160,6 +1241,9 @@ fn trigger_48_breaks_the_staff_on_the_other_roll() {
             "Tester tries to place an orb onto his staff until the staff twists in his hands and snaps in half."
         ]
     );
+    assert_no_commands(&scene.fx.host);
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 #[test]
@@ -1185,6 +1269,9 @@ fn trigger_48_refuses_without_the_orb_or_the_room() {
     );
     assert_eq!(scene.fx.host.rolls.len(), 1, "the roll is never taken");
     assert!(other_effects(&scene.fx.host).is_empty());
+    assert_no_commands(&scene.fx.host);
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -1315,6 +1402,7 @@ fn trigger_50_opens_and_closes_the_shop_by_the_clock() {
     assert_eq!(vnums(&scene.fx.host, &contents), vec![3020, 69, 70]);
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
+    assert_no_commands(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -1432,6 +1520,8 @@ fn trigger_17_builds_nothing_for_another_argument() {
     );
     assert!(scene.fx.host.link(upper, "exit:5").is_none());
     assert!(scene.fx.host.logs.is_empty());
+    assert_no_commands(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -1500,6 +1590,7 @@ fn trigger_23840_opens_a_trapdoor_for_a_minute_then_purges_it() {
     );
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
+    assert_no_commands(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -1539,6 +1630,8 @@ fn trigger_23400_logs_a_door_to_a_room_that_does_not_exist() {
         scene.fx.host.logs,
         vec!["Room 23441 :: wdoor: invalid door target (arg == 23471)"]
     );
+    assert_no_commands(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // Trigger 23402, room enter: `wdoor 23471 east purge 0` in two other rooms.
@@ -1570,6 +1663,7 @@ fn trigger_23402_purges_the_secret_doors_after_two_seconds() {
         vec![act_line(player, "A wall slams down shut!")]
     );
     assert!(scene.fx.host.logs.is_empty());
+    assert_no_commands(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -1685,6 +1779,7 @@ fn a_new_run_resets_the_context_of_globals() {
     assert!(scene.fx.host.logs.is_empty());
     assert_eq!(scene.fx.host.script(mob).unwrap().context, 0);
     assert_clean(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // Trigger 23700 in room 23602 with the global already set: `case 23602` waits
@@ -1765,4 +1860,5 @@ fn a_detach_frees_the_script_with_its_last_trigger() {
     assert!(scene.fx.host.effects.is_empty());
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }

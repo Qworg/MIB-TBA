@@ -11,15 +11,15 @@
 mod common;
 
 use common::scene::Scene as CommonScene;
-use common::scene::sub_line;
+use common::scene::{assert_no_commands, assert_no_logs, assert_no_waits, sub_line};
 use common::world::{
-    PERCENT_ROLL, commands, global_var, install_record, local_var, run_waits, uid,
+    PERCENT_ROLL, commands, global_var, install, install_record, local_var, run_waits, uid,
 };
 use dg_vm::dispatch;
 use dg_vm::driver::{Mode, script_driver};
 use dg_vm::host::{BaseHost, WorldHost};
 use dg_vm::mock::MockHost;
-use dg_vm::types::Uid;
+use dg_vm::types::{AttachType, Uid};
 
 /// The standard scene plus a mob that carries the trigger.
 struct Scene {
@@ -301,6 +301,7 @@ fn tutorial_10_gives_the_hint_over_three_waits() {
     assert!(!trigger.is_busy());
     assert_eq!(say_all(&scene.fx.host).len(), 2);
     assert!(scene.fx.host.effects.is_empty());
+    assert_no_logs(&scene.fx.host);
 }
 
 // Trigger 10 with the quest already solved: `!1` is 0, the whole body is
@@ -327,6 +328,7 @@ fn tutorial_10_stays_silent_once_the_quest_is_solved() {
             .is_busy()
     );
     assert!(scene.fx.host.effects.is_empty());
+    assert_no_logs(&scene.fx.host);
 }
 
 // Trigger 11, `0 j 100`: the player hands over object 47. perform_give runs
@@ -427,6 +429,7 @@ fn tutorial_11_refuses_any_other_object() {
     assert!(scene.fx.host.exists(lantern));
     assert_eq!(scene.fx.host.link(lantern, "carried_by"), Some(player));
     assert!(scene.fx.host.effects.is_empty());
+    assert_no_logs(&scene.fx.host);
 }
 
 // Trigger 11 for a player who has already solved the quest: `!1 && …` is
@@ -452,6 +455,8 @@ fn tutorial_11_refuses_the_ball_a_second_time() {
     );
     assert!(scene.fx.host.exists(ball));
     assert!(scene.fx.host.effects.is_empty());
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // Trigger 11 with a mob as the actor, a character that has no script at all
@@ -579,6 +584,8 @@ fn questmaster_asks_after_a_recent_quest() {
         Some("5 13")
     );
     assert!(scene.fx.host.effects.is_empty());
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // Trigger 138 when the quest began at "1 3": start_ticks = (1/24)+3 = 3,
@@ -600,6 +607,8 @@ fn questmaster_expires_an_old_quest_on_greet() {
         vec!["say Welcome Tester, are you interested in a simple quest?"]
     );
     assert!(scene.fx.host.effects.is_empty());
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // Trigger 138 with 50 quest points (`50 < 50` is false), and with a mob as the
@@ -672,6 +681,7 @@ fn questmaster_prompts_after_yes() {
             "{speech}"
         );
         assert!(scene.fx.host.logs.is_empty());
+        assert_no_waits(&scene.fx.host);
     }
 }
 
@@ -826,6 +836,8 @@ fn questmaster_walks_the_words_of_the_speech() {
             .unwrap()
             .is_busy()
     );
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // Trigger 139 refusals, all silent `halt`s (every PC owns a script, so the
@@ -879,6 +891,37 @@ fn questmaster_clears_an_expired_flag_before_assigning() {
         vec!["say Very well Tester. Would you like to find an object or hunt a mobile?"]
     );
     assert!(scene.fx.host.effects.is_empty());
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
+}
+
+// receive_mtrigger's `obj->carried_by != actor` test is the only object test
+// besides the purge check: an object the actor does not carry (here it lies in
+// the room) makes the call return 0 although the script, which ran, returned
+// the default 1.
+#[test]
+fn receive_mtrigger_returns_zero_for_an_object_the_actor_does_not_carry() {
+    let mut scene = Scene::new(3300, "a receiver");
+    let (owner, player, bench) = (scene.owner, scene.player(), scene.fx.bench);
+    install(
+        scene.host(),
+        owner,
+        9102,
+        AttachType::Mob,
+        "j",
+        100,
+        "",
+        "say thanks",
+    );
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    assert_eq!(
+        dispatch::receive_mtrigger(scene.host(), owner, player, bench),
+        0
+    );
+    assert_eq!(commands(&scene.fx.host), vec!["say thanks"]);
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 /// The quest item is handed over by the player: it is still in the player's
@@ -916,6 +959,7 @@ fn questmaster_refuses_a_gift_from_a_stranger() {
     assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.exists(item));
     assert!(scene.fx.host.effects.is_empty());
+    assert_no_logs(&scene.fx.host);
 }
 
 // Trigger 143 for a quester handing over object 15 (or 17): `wait 1 sec`
@@ -980,6 +1024,7 @@ fn questmaster_return_zero_comes_too_late_to_refuse_the_gift() {
         Some("5 14")
     );
     assert!(scene.fx.host.effects.is_empty());
+    assert_no_logs(&scene.fx.host);
 }
 
 // Trigger 144 (`0 n 100`): the quest mob loads, `%load% obj 17` is `mload obj
@@ -1014,6 +1059,8 @@ fn quest_mob_loads_its_head() {
     );
     assert!(scene.fx.host.mud_commands.is_empty());
     assert!(scene.fx.host.effects.is_empty());
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // Trigger 144 with an object that cannot be taken (no ITEM_WEAR_TAKE): do_mload
@@ -1050,4 +1097,7 @@ fn quest_mob_loads_an_untakeable_head_into_the_room() {
         Some(uid(head))
     );
     assert!(scene.fx.host.effects.is_empty());
+    assert_no_commands(&scene.fx.host);
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }

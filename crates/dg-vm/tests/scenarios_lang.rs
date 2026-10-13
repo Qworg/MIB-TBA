@@ -20,7 +20,8 @@ mod common;
 
 use common::corpus::Record;
 use common::scene::{
-    Scene, act_line, assert_clean, echo_all, heard, heard_raw, other_effects, said, sub_line, vnums,
+    Scene, act_line, assert_clean, assert_ended_with, assert_no_commands, assert_no_logs,
+    assert_no_waits, echo_all, heard, heard_raw, other_effects, said, sub_line, vnums,
 };
 use common::world::{
     PERCENT_ROLL, commands, global_var, install, install_record, local_var, run_waits,
@@ -107,9 +108,14 @@ fn flip(record: &Record, arg: &str, roll: i64) -> (Scene, i32) {
 
 #[test]
 fn trigger_37_flips_a_coin_to_heads_or_tails() {
-    for (roll, face) in [(1, "heads"), (2, "tails")] {
+    // A prefix of "quarter" also matches.
+    for (arg, roll, face) in [
+        ("coin", 1, "heads"),
+        ("coin", 2, "tails"),
+        ("quar", 1, "heads"),
+    ] {
         let record = real!(37);
-        let (scene, ret) = flip(&record, "coin", roll);
+        let (scene, ret) = flip(&record, arg, roll);
         assert_eq!(ret, 1);
         let landed =
             format!("The coin falls to the ground, bounces, rolls, and ends up showing {face}!");
@@ -141,10 +147,6 @@ fn trigger_37_flips_a_coin_to_heads_or_tails() {
         assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
         assert_clean(&scene.fx.host);
     }
-    // A prefix of "quarter" also matches.
-    let (scene, ret) = flip(&real!(37), "quar", 1);
-    assert_eq!(ret, 1);
-    assert_eq!(heard(&scene.fx.host, scene.player()).len(), 2);
 }
 
 #[test]
@@ -157,6 +159,32 @@ fn trigger_37_refuses_to_flip_anything_else() {
         vec![sub_line(scene.player(), "flip What?")]
     );
     assert!(scene.fx.host.rolls.len() == 1, "no roll is taken");
+    assert_no_commands(&scene.fx.host);
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
+}
+
+// cmd_otrig offers the command to objects by place: narg 2 is "in the
+// character's carried inventory", so a quarter lying on the floor or worn
+// does not hear it and the command goes on to the game (return 0).
+#[test]
+fn trigger_37_does_not_hear_a_quarter_that_is_not_carried() {
+    let record = real!(37);
+    for place in ["floor", "worn"] {
+        let mut scene = Scene::new();
+        let (player, room) = (scene.player(), scene.room());
+        let quarter = scene.fx.host.add_obj(3500, "a quarter");
+        match place {
+            "floor" => scene.host().obj_to_room(quarter, room),
+            _ => scene.host().equip_char(player, quarter, 17),
+        }
+        install_record(scene.host(), quarter, &record);
+        scene.host().rolls.push_back(1);
+        let ret = dispatch::command_otrigger(scene.host(), player, "flip", " coin");
+        assert_eq!(ret, 0, "{place}");
+        assert_eq!(scene.fx.host.rolls.len(), 1, "{place}: no roll is taken");
+        assert_ended_with(&scene.fx.host, &[]);
+    }
 }
 
 // ---------------------------------------------------------------------
@@ -276,6 +304,8 @@ fn trigger_3010_ignores_a_room_without_a_corpse() {
     assert!(scene.fx.host.effects.is_empty());
     assert_eq!(scene.fx.host.list(scene.room(), "contents").len(), 2);
     assert_clean(&scene.fx.host);
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -310,6 +340,7 @@ fn trigger_1376_lists_what_a_container_holds() {
     assert!(scene.fx.host.mud_commands.is_empty());
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // Trigger 1376 once more with the line ends as written. `oecho` is two
@@ -329,6 +360,9 @@ fn oecho_lines_end_in_newline_return() {
         scene.fx.host.effects,
         vec![sub_line(player, "firing"), sub_line(watcher, "firing")]
     );
+    assert_no_commands(&scene.fx.host);
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // Trigger 53 with the line ends as written. wecho is act_to_room(), whose
@@ -363,6 +397,9 @@ fn wecho_lines_end_in_return_newline() {
         effects.push(act_line(watcher, text));
     }
     assert_eq!(scene.fx.host.effects, effects);
+    assert_no_commands(&scene.fx.host);
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -433,6 +470,7 @@ fn trigger_189_loads_the_ball_and_drops_it_on_the_newcomer() {
     assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
+    assert_no_commands(&scene.fx.host);
 }
 
 #[test]
@@ -443,9 +481,24 @@ fn trigger_189_does_not_load_a_second_ball() {
     run_waits(scene.host(), 5);
     assert_eq!(scene.fx.host.num(scene.player(), "hit"), 96);
     assert_eq!(scene.fx.host.list(room, "contents").len(), 1);
-    assert_eq!(scene.fx.host.effects.len(), 2);
+    // wechoaround (all but the actor), wsend: the same two lines as with a
+    // freshly loaded ball.
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(
+                scene.watcher,
+                "A magic eight ball drops from the sky striking Tester on the head."
+            ),
+            sub_line(
+                scene.player(),
+                "A magic eight ball drops from the sky striking you on the head."
+            ),
+        ]
+    );
     assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.logs.is_empty());
+    assert_no_commands(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -498,6 +551,7 @@ fn trigger_12_drops_the_ball_on_the_head() {
     assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
+    assert_no_commands(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -668,6 +722,7 @@ fn trigger_25_catches_looking_at_the_window() {
     assert!(scene.fx.host.mud_commands.is_empty());
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 #[test]
@@ -686,6 +741,7 @@ fn trigger_25_lets_every_other_command_through() {
         assert!(scene.fx.host.effects.is_empty(), "{cmd} {arg}");
         assert!(scene.fx.host.mud_commands.is_empty(), "{cmd} {arg}");
         assert!(scene.fx.host.logs.is_empty(), "{cmd} {arg}");
+        assert_no_waits(&scene.fx.host);
     }
 }
 
@@ -741,6 +797,8 @@ fn trigger_26_lets_followers_and_players_in() {
     assert_eq!(ret, 1);
     assert_eq!(scene.fx.host.logs, TRIGGER_26_HEADER);
     assert!(scene.fx.host.effects.is_empty());
+    assert_no_commands(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -810,6 +868,7 @@ fn trigger_34_tells_players_mobs_and_objects_apart() {
         )
     );
     assert!(scene.fx.host.logs.is_empty());
+    assert_no_waits(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -899,6 +958,8 @@ fn trigger_55_bars_men_and_neutrals_and_welcomes_women() {
         ]
     );
     assert!(scene.fx.host.logs.is_empty());
+    assert_no_commands(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -956,6 +1017,8 @@ fn trigger_59_drenches_the_first_opener_once() {
     );
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
+    assert_no_commands(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 #[test]
@@ -968,6 +1031,8 @@ fn trigger_59_ignores_other_door_commands() {
     assert!(scene.fx.host.effects.is_empty());
     assert!(scene.fx.host.script(room).unwrap().trigger(id).is_some());
     assert!(other_effects(&scene.fx.host).is_empty());
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -1189,6 +1254,7 @@ fn trigger_1396_yields_on_the_thirtieth_pass_of_a_loop() {
     assert_eq!(local_var(&scene.fx.host, room, id, "i"), None);
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
+    assert_no_commands(&scene.fx.host);
 }
 
 // ---------------------------------------------------------------------
@@ -1299,6 +1365,8 @@ fn comparisons_and_contains_ignore_case() {
     );
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
+    assert_no_commands(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
 }
 
 // A loop that never ends: `while 1` and a `global n` that records how far it
@@ -1323,28 +1391,36 @@ fn a_loop_that_never_ends_is_stopped_at_a_hundred_passes() {
         "set n 0\nwhile 1\neval n %n%+1\nglobal n\ndone\n%echo% finished",
     );
     let player = scene.player();
-    assert_eq!(dispatch::enter_wtrigger(scene.host(), room, player, 0), 1);
-    for expected in ["30", "60", "90"] {
-        assert_eq!(scene.fx.host.waits, vec![(room, id, 1)]);
+    // TRIG_NEW resets GET_TRIG_LOOPS (so the second firing is not stopped at
+    // once by the 100 of the first) but not the `done` line's own count, which
+    // the cap left at 10: the second run's passes 20, 50 and 80 are the ones
+    // that reach 30.
+    for (run, waits) in [(1, ["30", "60", "90"]), (2, ["20", "50", "80"])] {
+        assert_eq!(dispatch::enter_wtrigger(scene.host(), room, player, 0), 1);
+        for expected in waits {
+            assert_eq!(scene.fx.host.waits, vec![(room, id, 1)], "run {run}");
+            assert_eq!(
+                global_var(&scene.fx.host, room, "n").as_deref(),
+                Some(expected),
+                "run {run}"
+            );
+            assert_eq!(scene.fx.host.logs.len(), run - 1);
+            let due = std::mem::take(&mut scene.host().waits);
+            for (owner, id, _) in due {
+                resume(scene.host(), owner, id);
+            }
+        }
+        assert!(scene.fx.host.waits.is_empty());
         assert_eq!(
             global_var(&scene.fx.host, room, "n").as_deref(),
-            Some(expected)
+            Some("100")
         );
-        assert!(scene.fx.host.logs.is_empty());
-        let due = std::mem::take(&mut scene.host().waits);
-        for (owner, id, _) in due {
-            resume(scene.host(), owner, id);
-        }
+        assert_eq!(
+            scene.fx.host.logs,
+            vec!["Trigger VNum 9001 has looped 100 times!!!"; run]
+        );
     }
-    assert!(scene.fx.host.waits.is_empty());
-    assert_eq!(
-        global_var(&scene.fx.host, room, "n").as_deref(),
-        Some("100")
-    );
-    assert_eq!(
-        scene.fx.host.logs,
-        vec!["Trigger VNum 9001 has looped 100 times!!!"]
-    );
     assert!(scene.fx.host.effects.is_empty());
     assert_clean(&scene.fx.host);
+    assert_no_commands(&scene.fx.host);
 }

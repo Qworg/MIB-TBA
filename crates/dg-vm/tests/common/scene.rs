@@ -156,3 +156,29 @@ pub fn assert_clean(host: &MockHost) {
 pub fn vnums(host: &MockHost, list: &[Uid]) -> Vec<i64> {
     list.iter().map(|uid| host.num(*uid, "vnum")).collect()
 }
+
+/// The scenario ran no command through the game interpreter (`mud_command`).
+pub fn assert_no_commands(host: &MockHost) {
+    assert!(host.mud_commands.is_empty(), "{:?}", host.mud_commands);
+}
+
+/// The scenario wrote nothing to the script log.
+pub fn assert_no_logs(host: &MockHost) {
+    assert!(host.logs.is_empty(), "{:?}", host.logs);
+}
+
+/// No wait is pending.
+pub fn assert_no_waits(host: &MockHost) {
+    assert!(host.waits.is_empty(), "{:?}", host.waits);
+}
+
+/// The end of a scenario that does nothing but produce `effects`: exactly
+/// those effects, no interpreter command, no log line, no pending wait, and
+/// the clean end state of [`assert_clean`].
+pub fn assert_ended_with(host: &MockHost, effects: &[String]) {
+    assert_eq!(host.effects, effects);
+    assert_no_commands(host);
+    assert_no_logs(host);
+    assert_no_waits(host);
+    assert_clean(host);
+}
