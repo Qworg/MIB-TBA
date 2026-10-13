@@ -135,7 +135,7 @@ impl MockEntity {
 #[derive(Debug, Default)]
 pub struct MockHost {
     /// Queued [`MockHook`]s, run by [`BaseHost::mud_command`] (see
-    /// [`hooks`]).
+    /// `hooks.rs`).
     pub hooks: VecDeque<MockHook>,
     pub entities: BTreeMap<Uid, MockEntity>,
     /// World-level facts (see the module table). Its `kind` is meaningless.

@@ -16,7 +16,7 @@
 //!
 //! - The C walks `t = t->next` through a trigger list that a running script
 //!   can change (attach, detach, purge of its own owner). Here each walk takes
-//!   a snapshot of [`Script::trigger_ids`] and re-fetches every instance by
+//!   a snapshot of [`crate::types::Script::trigger_ids`] and re-fetches every instance by
 //!   id, so a trigger detached by an earlier run is skipped and the run state
 //!   tested is always current. The walks that carry on after a run
 //!   (`greet_mtrigger`, `command_mtrigger`, `timer_otrigger`, `cmd_otrig`,
@@ -35,12 +35,16 @@
 //!   steps, with one `script_log` line: two mobs that keep putting
 //!   themselves back at the head of a list would loop for ever in the C.
 //! - "The owner was purged" (`!obj` after `script_driver` NULLs `go_adress`)
-//!   is `!host.exists(obj)`, as the doc of [`script_driver`] says. The C NULLs
-//!   the pointer only when the script purged its own owner, which extracts
-//!   it; `dg_owner_purged` is not read, because a nested script under a
-//!   `dg_cast` or `dg_affect` line can leave it set while the outer object is
-//!   alive. `has_obj_by_uid_in_lookup_table` is `!host.exists(obj)` too; a
-//!   purged character is `DEAD(ch)`, [`WorldHost::is_dead`].
+//!   is `!host.exists(obj)`, as the doc of [`script_driver`] says. The C
+//!   NULLs the pointer whenever `dg_owner_purged` is set after a command of
+//!   an object's script, and that global is also left set by a nested script
+//!   that purged *its own* owner (an `mload` whose load trigger purges the
+//!   new mob, a `dg_cast` or `dg_affect` line); there the C reports a live
+//!   object as purged. Here the flag ([`crate::types::VmState::owner_purged`])
+//!   still ends the script that sees it, as the C does, but dispatch asks
+//!   whether the object exists. `has_obj_by_uid_in_lookup_table` is
+//!   `!host.exists(obj)` too, and a purged character is `DEAD(ch)`,
+//!   [`crate::host::WorldHost::is_dead`].
 //! - Where the C would read out of bounds, the nearest safe thing happens:
 //!   an actor or owner with no room is skipped where the C indexes
 //!   `world[NOWHERE]`; a door sub-command outside `cmd_door[]` is the empty
@@ -225,11 +229,8 @@ fn run<H: DgHost + ?Sized>(host: &mut H, go: Uid, id: u64) -> i32 {
     script_driver(host, go, id, Mode::New)
 }
 
-/// The C's `!obj` after `script_driver(&obj, ...)`: the driver NULLs `obj`
-/// when the script purged its own owner, which is an object that no longer
-/// exists (`script_driver` documents `!host.exists(owner)` as the test). The
-/// `dg_owner_purged` flag is not read: a nested script that purged its own
-/// owner under a `dg_cast` line leaves it set while this object is alive.
+/// The C's `!obj` after `script_driver(&obj, ...)`, as `!host.exists(obj)`
+/// (see the module notes: the `dg_owner_purged` flag is not read here).
 fn object_gone<H: DgHost + ?Sized>(host: &H, obj: Uid) -> bool {
     !host.exists(obj)
 }

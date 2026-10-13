@@ -229,7 +229,7 @@ pub(crate) fn sub_write_in<H: DgHost + ?Sized>(
                 // A backslash at the very end escapes nothing; the C steps
                 // over it and stops (its comment explains the overrun it
                 // would otherwise cause).
-                rest = &rest[1..];
+                rest = &rest[c.len_utf8()..];
                 if let Some(escaped) = rest.chars().next() {
                     if let Some(token) = tokens.last_mut() {
                         token.push(escaped);

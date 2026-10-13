@@ -763,10 +763,9 @@ fn do_mtransform<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         log.log(host, "mtransform: bad argument");
     } else {
         // A leading `-` keeps the old hit points out of the new mob.
-        let (vnum, keep_hp) = if starts_with_digit(&arg) {
-            (idx_vnum(atoi(&arg)), true)
-        } else {
-            (idx_vnum(atoi(&arg[1..])), false)
+        let (vnum, keep_hp) = match arg.strip_prefix('-') {
+            Some(digits) => (idx_vnum(atoi(digits)), false),
+            None => (idx_vnum(atoi(&arg)), true),
         };
         let Some(new_mob) = host.cmd_read_mobile(vnum) else {
             log.log(host, "mtransform: bad mobile vnum");
