@@ -15,8 +15,13 @@
 //!   the empty string (false) here, and the lone byte `0xC3` (true) in the C;
 //!   `!(\u{e9}` is `1` here and `0` in the C.
 //! - Expressions nest at most [`MAX_DEPTH`] levels deep. Deeper input is
-//!   refused (logged, empty result) where the C recurses up to its 511-byte
-//!   limit; the VM must not overflow the stack of whatever thread runs it.
+//!   refused where the C recurses up to its 511-byte limit; the VM must not
+//!   overflow the stack of whatever thread runs it. The refusal poisons the
+//!   whole top-level evaluation: it is logged and the result is the empty
+//!   string (false), like the over-length refusal.
+//! - A rejected `eval` variable name (`add_var`'s `strchr(name, '.')` case)
+//!   is reported through `script_log`, so builders see it; the C writes it
+//!   to the syslog only.
 //! - `INT_MIN / -1` wraps instead of trapping, and `*`, `+`, `-` wrap as C
 //!   `int` arithmetic does in practice.
 //! - [`eval_op`] with an operator not in the table yields the empty string;
@@ -35,6 +40,9 @@ pub const MAX_DEPTH: usize = 256;
 thread_local! {
     /// Current `eval_expr` nesting on this thread.
     static DEPTH: std::cell::Cell<usize> = const { std::cell::Cell::new(0) };
+    /// Set when a level past [`MAX_DEPTH`] was refused; the outermost
+    /// `eval_expr` then answers the empty string.
+    static POISONED: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
 }
 
 /// Decrements [`DEPTH`] when an `eval_expr` level ends.
@@ -62,8 +70,23 @@ pub fn eval_expr<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
         depth.get()
     });
     let _guard = DepthGuard;
+    if level == 1 {
+        POISONED.with(|poisoned| poisoned.set(false));
+    }
+    let result = eval_level(cx, line, level);
+    if level == 1 && POISONED.with(std::cell::Cell::get) {
+        POISONED.with(|poisoned| poisoned.set(false));
+        return String::new();
+    }
+    result
+}
+
+/// One level of [`eval_expr`]; `level` is its nesting depth.
+fn eval_level<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str, level: usize) -> String {
     if level > MAX_DEPTH {
-        cx.log(&format!("Expression nested over {MAX_DEPTH} levels deep."));
+        if !POISONED.with(|poisoned| poisoned.replace(true)) {
+            cx.log(&format!("Expression nested over {MAX_DEPTH} levels deep."));
+        }
         return String::new();
     }
     let line = line.trim_start_matches(is_space);
@@ -224,7 +247,7 @@ pub fn process_eval<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, cmd: &str) {
     let value = eval_expr(cx, expr);
     let context = cx.context();
     if !cx.trig.vars.add_var(&name, &value, context) {
-        // The C logs this to the syslog; there is no such primitive.
+        // The C logs this to the syslog only; see the module deviations.
         cx.host
             .script_log(&format!("add_var() : Attempt to add illegal var: {name}"));
     }
@@ -443,6 +466,25 @@ mod tests {
     }
 
     #[test]
+    fn over_long_log_reports_the_attach_type() {
+        let long = "9".repeat(MAX_INPUT_LENGTH + 5);
+        for (attach, number) in [(AttachType::Obj, 1), (AttachType::Wld, 2)] {
+            let mut host = MockHost::new();
+            let owner = host.add_mob(1, "a mob");
+            let proto = host.add_proto(7, attach, "g", 100, "", "say hi");
+            let mut trig = TrigInstance::new(1, proto);
+            let mut cx = Cx {
+                host: &mut host,
+                owner,
+                attach,
+                trig: &mut trig,
+            };
+            assert_eq!(eval_expr(&mut cx, &long), "");
+            assert!(host.logs[0].contains(&format!("VNum 7, type: {number}. ")));
+        }
+    }
+
+    #[test]
     fn an_unbalanced_paren_ending_in_a_multibyte_character_loses_it() {
         // Documented deviation: the C keeps the lone byte 0xC3 (true).
         assert_eq!(eval("(\u{e9}"), "");
@@ -468,7 +510,12 @@ mod tests {
             .unwrap()
             .join()
             .unwrap();
-        assert!(result.1 >= 1);
+        assert_eq!(result.1, 1);
+        assert_eq!(result.0, "");
+        // 258 negations of 1: the C answers 1 (even count); the refusal
+        // fails closed instead.
+        let deep = format!("{}1", "!".repeat(258));
+        assert_eq!(eval(&deep), "");
         let ok = format!("{}1", "!".repeat(MAX_DEPTH - 2));
         assert!(!eval(&ok).is_empty());
     }

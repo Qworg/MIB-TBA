@@ -15,7 +15,7 @@
 //!   used and extracted through three host calls rather than by touching the
 //!   room's list directly.
 
-use crate::cstr::{atoi, half_chop, one_argument, skip_spaces, str_cmp, str_eq};
+use crate::cstr::{atoi, half_chop, one_argument, skip_spaces, str_eq};
 use crate::host::{Cx, DgHost};
 use crate::lookup::{dg_room_of_obj, get_char, get_obj};
 use crate::types::{AttachType, Uid};
@@ -142,6 +142,9 @@ pub trait MagicHost {
     /// `char_to_room`; the C open-codes it.)
     fn magic_load_caster_proxy(&mut self, vnum: i32, room: Uid, short_descr: &str) -> Option<Uid>;
 
+    /// (To be unified with the command module's `read_mobile` / `extract_char`
+    /// primitives at merge; the proxy calls are specialisations of them.)
+    ///
     /// `extract_char(caster)` for the proxy made by
     /// [`Self::magic_load_caster_proxy`].
     fn magic_extract_caster_proxy(&mut self, proxy: Uid);
@@ -150,6 +153,10 @@ pub trait MagicHost {
     /// every affect of that spell from the character.
     fn magic_remove_dg_affects(&mut self, ch: Uid, spell: i32);
 
+    /// `modifier` is already narrowed by the VM to the C's `sbyte`
+    /// (`-128..=127`) and `duration` to `sh_int` (`-32768..=32767`); the host
+    /// stores them as given.
+    ///
     /// `new_affect(&af); af.spell = spell; af.duration = duration;
     /// af.modifier = modifier; af.location = location;` then, when `bit` is
     /// given, `SET_BIT_AR(af.bitvector, bit)`; `affect_to_char(ch, &af)`.
@@ -317,7 +324,7 @@ fn find_property(property: &str) -> Option<Property> {
     }
     AFFECTED_BITS
         .iter()
-        .position(|name| str_cmp(name, property) == 0)
+        .position(|name| str_eq(name, property))
         .map(Property::Affect)
 }
 
@@ -364,7 +371,10 @@ pub fn do_dg_affect<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, cmd: &str) {
         return;
     }
 
-    let duration = duration.wrapping_sub(1);
+    // `af.modifier` is an `sbyte` and `af.duration` an `sh_int` (structs.h),
+    // so the C narrows both before `affect_to_char`.
+    let value = i32::from(value as i8);
+    let duration = i32::from(duration.wrapping_sub(1) as i16);
     match found {
         Property::Apply(index) => {
             let location = i32::try_from(index).unwrap_or(0);
@@ -698,6 +708,48 @@ mod tests {
             )
         );
         assert_eq!(w.host.name(proxy), "The gods");
+    }
+
+    #[test]
+    fn the_proxy_keeps_the_prototype_keywords() {
+        let mut w = world();
+        let room = w.room;
+        run(&mut w, room, AttachType::Wld, |cx| {
+            do_dg_cast(cx, "dg_cast 'magic missile' bob");
+        });
+        let proxy = w.host.character_list[0];
+        // player.short_descr is replaced, player.name is not.
+        assert_eq!(w.host.name(proxy), "The gods");
+        assert_eq!(w.host.keywords(proxy), "Puff");
+    }
+
+    #[test]
+    fn affect_value_and_duration_narrow_like_sbyte_and_sh_int() {
+        // (value, duration) -> (modifier, duration) after
+        // `sbyte modifier = value; sh_int duration = duration - 1`.
+        for (value, duration, modifier, ticks) in [
+            (200, 10, -56, 9),
+            (-200, 10, 56, 9),
+            (128, 10, -128, 9),
+            (127, 10, 127, 9),
+            (1, 40000, 1, -25537),
+            (1, 65536, 1, -1),
+            (1, 32768, 1, 32767),
+        ] {
+            let mut w = world();
+            affect(&mut w, &format!("dg_affect bob maxmana {value} {duration}"));
+            assert_eq!(
+                w.host.effects,
+                vec![format!(
+                    "affect_to_char {} location=12 modifier={modifier} duration={ticks} bit=-",
+                    w.bob
+                )],
+                "{value} {duration}"
+            );
+        }
+        let mut w = world();
+        affect(&mut w, "dg_affect bob SANCT 300 10");
+        assert!(w.host.effects[0].contains("modifier=44 duration=9 bit=8"));
     }
 
     #[test]

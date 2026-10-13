@@ -9,7 +9,7 @@
 //! | char | `texts["dg_aff_bits"]` | comma-separated `AFF_*` numbers set by `dg_affect` (so `off` can clear them) |
 //!
 //! `read_mobile(vnum)` succeeds when `texts["mobproto:<vnum>"]` exists (the
-//! shared key); the mob is named from it. `dg_affect` sets the shared
+//! shared key); the mob's keywords (`alias`) come from it and only its `name` (short_descr) is replaced. `dg_affect` sets the shared
 //! `nums["spell:<n>"]` and `nums["aff:<n>"]` keys.
 //!
 //! Effects recorded: `call_magic …`, `extract_char <uid>`,
@@ -84,8 +84,10 @@ impl MagicHost for MockHost {
 
     fn magic_load_caster_proxy(&mut self, vnum: i32, room: Uid, short_descr: &str) -> Option<Uid> {
         // Absent prototype: read_mobile fails.
-        let _proto = self.globals.texts.get(&format!("mobproto:{vnum}"))?;
-        let proxy = self.add_mob(vnum, short_descr);
+        let proto = self.globals.texts.get(&format!("mobproto:{vnum}"))?.clone();
+        let proxy = self.add_mob(vnum, &proto);
+        // Only short_descr is replaced; the keywords stay the prototype's.
+        self.set_text(proxy, "name", short_descr);
         self.char_to_room(proxy, room);
         Some(proxy)
     }
