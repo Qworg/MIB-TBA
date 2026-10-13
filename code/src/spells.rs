@@ -297,6 +297,160 @@ fn add_buff(
     }
 }
 
+/// A `cast` line resolved up to the point where mana is spent: the spell, the
+/// caster and the entities the spell will affect.
+pub(crate) struct CastPlan<'a> {
+    pub spell_id: SmolStr,
+    pub spell: &'a SpellDef,
+    pub caster_level: u32,
+    /// The mana the cast costs.
+    pub cost: u32,
+    pub room: Option<Entity>,
+    /// The targets, in the order the effects apply.
+    pub targets: Vec<Entity>,
+}
+
+/// What [`plan_cast`] made of a line.
+pub(crate) enum CastOutcome<'a> {
+    /// The line is not a `cast` command.
+    NotCast,
+    /// The cast is refused before anything happens, with the message to show.
+    Denied(String),
+    Plan(CastPlan<'a>),
+}
+
+/// Resolve a `cast` line the way `do_cast` does before `cast_spell`: the spell,
+/// whether the caster may cast it now, its cost and its targets. Nothing is
+/// spent or changed. [`handle_cast_command`] applies the plan; the DG `cast`
+/// trigger gate resolves the same plan to learn the spell and target the
+/// handler will use.
+#[allow(clippy::too_many_arguments)]
+pub(crate) fn plan_cast<'a>(
+    session: Entity,
+    line: &str,
+    content: &'a TbaContent,
+    progress: &Query<&TbaProgress>,
+    combatants: &Query<&mut TbaCombatant>,
+    players: &Query<(Entity, &Player, &Location)>,
+    npcs: &Query<(Entity, &Npc, &Location)>,
+    hidden: &StealthView<'_, '_>,
+) -> CastOutcome<'a> {
+    let Some(parsed) = parse_cast_line(line) else {
+        return CastOutcome::NotCast;
+    };
+
+    // Resolve the spell id. Quoted form resolves the phrase directly; the
+    // unquoted form greedily peels the longest known spell off the front.
+    let resolved = if parsed.quoted {
+        resolve_spell(content, &parsed.spell).map(|(id, def)| (id.clone(), def, parsed.target))
+    } else {
+        split_unquoted(content, &parsed.spell).map(|(id, def, target)| (id.clone(), def, target))
+    };
+    let Some((spell_id, spell, target_arg)) = resolved else {
+        return CastOutcome::Denied("Cast what?!".to_owned());
+    };
+    let spell_name = spell.name.clone();
+
+    let Ok(caster_progress) = progress.get(session) else {
+        return CastOutcome::Denied("You have no spellcasting knowledge.".to_owned());
+    };
+    let caster_class = caster_progress.class.clone();
+    let caster_level = caster_progress.level.max(1);
+    let Ok(caster) = combatants.get(session) else {
+        return CastOutcome::Denied("You have no combat state.".to_owned());
+    };
+    if !caster.is_alive() {
+        return CastOutcome::Denied("You can't cast spells while dead.".to_owned());
+    }
+    if caster.position < spell.min_position {
+        return CastOutcome::Denied("You can't concentrate enough to cast that.".to_owned());
+    }
+    let mana = caster.mana;
+
+    // The class gate. `granted_skills` is the same vocabulary as the spell
+    // ids, so a mismatch is denied by name.
+    let class = content
+        .classes
+        .get(&caster_class)
+        .cloned()
+        .unwrap_or_else(default_class);
+    let known = class
+        .granted_skills
+        .iter()
+        .any(|skill| normalize(skill) == normalize(&spell_id));
+    if !known {
+        return CastOutcome::Denied(format!("You do not know the spell '{spell_name}'."));
+    }
+
+    // Level-scaled cost (`mag_manacost`, spell_parser.c:58-62).
+    let cost = mana_cost(spell, &caster_class, caster_level);
+    if mana < cost as i32 {
+        return CastOutcome::Denied("You haven't the energy to cast that spell.".to_owned());
+    }
+
+    let room = players
+        .get(session)
+        .map(|(_, _, location)| location.room)
+        .ok();
+
+    // Resolve the target list. A hostile spell needs a real victim; a
+    // non-violent character spell with no argument defaults to the caster,
+    // as tbaMUD's `do_cast` does.
+    let targets: Vec<Entity> = match spell.target {
+        SpellTarget::Caster => vec![session],
+        SpellTarget::None => Vec::new(),
+        SpellTarget::Room => {
+            let mut in_room: Vec<Entity> = players
+                .iter()
+                .filter(|(entity, _, location)| *entity != session && Some(location.room) == room)
+                .map(|(entity, _, _)| entity)
+                .collect();
+            in_room.extend(
+                npcs.iter()
+                    .filter(|(_, _, location)| Some(location.room) == room)
+                    .map(|(entity, _, _)| entity),
+            );
+            if !is_hostile(spell) {
+                in_room.push(session);
+            }
+            in_room
+        }
+        SpellTarget::Victim => match target_arg.as_deref() {
+            Some(name) => {
+                if let Some(target) = find_target_in_room(session, name, players, npcs, hidden) {
+                    vec![target]
+                } else {
+                    let own_name = players
+                        .get(session)
+                        .map(|(_, player, _)| player.name.to_lowercase())
+                        .unwrap_or_default();
+                    let needle = name.to_lowercase();
+                    return CastOutcome::Denied(
+                        if !needle.is_empty() && own_name.contains(&needle) {
+                            "You shouldn't cast that on yourself.".to_owned()
+                        } else {
+                            format!("You don't see {name} here.")
+                        },
+                    );
+                }
+            }
+            None if is_hostile(spell) => {
+                return CastOutcome::Denied("Upon whom should the spell be cast?".to_owned());
+            }
+            None => vec![session],
+        },
+    };
+
+    CastOutcome::Plan(CastPlan {
+        spell_id,
+        spell,
+        caster_level,
+        cost,
+        room,
+        targets,
+    })
+}
+
 /// `BridgeSet::Game`: translate `cast '<spell>' [target]` into a spell effect.
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn handle_cast_command(
@@ -311,16 +465,26 @@ pub fn handle_cast_command(
     mut buffs: Query<&mut TbaBuffs>,
     mut rng: ResMut<TbaRng>,
     keys: Query<&NpcKey>,
-    mut defeated: MessageWriter<PlayerDefeated>,
-    mut npc_defeated: MessageWriter<NpcDefeated>,
-    mut damage_events: MessageWriter<TbaDamage>,
+    (mut defeated, mut npc_defeated, mut damage_events): (
+        MessageWriter<PlayerDefeated>,
+        MessageWriter<NpcDefeated>,
+        MessageWriter<TbaDamage>,
+    ),
     mut commands: Commands,
     mut output: MessageWriter<OutputEvent>,
+    handled: Option<Res<HandledCommands>>,
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
 
     for msg in reader.read() {
+        // A `cast` trigger that refused the spell has already taken the line.
+        if handled
+            .as_ref()
+            .is_some_and(|handled| handled.is_handled(msg.id))
+        {
+            continue;
+        }
         let session = msg.session;
         let playing = sessions
             .get(session)
@@ -332,138 +496,32 @@ pub fn handle_cast_command(
         let PlayerInput::RawLine(line) = &msg.input else {
             continue;
         };
-        let Some(parsed) = parse_cast_line(line) else {
-            continue;
-        };
-
-        // Resolve the spell id. Quoted form resolves the phrase directly; the
-        // unquoted form greedily peels the longest known spell off the front.
-        let resolved = if parsed.quoted {
-            resolve_spell(content, &parsed.spell)
-                .map(|(id, def)| (id.clone(), def, parsed.target.clone()))
-        } else {
-            split_unquoted(content, &parsed.spell)
-                .map(|(id, def, target)| (id.clone(), def, target))
-        };
-        let Some((spell_id, spell, target_arg)) = resolved else {
-            deny(&mut output, session, "Cast what?!");
-            continue;
-        };
-        let spell_name = spell.name.clone();
-
-        let Ok(caster_progress) = progress.get(session) else {
-            deny(&mut output, session, "You have no spellcasting knowledge.");
-            continue;
-        };
-        let caster_class = caster_progress.class.clone();
-        let caster_level = caster_progress.level.max(1);
-        let Ok(caster) = combatants.get(session) else {
-            deny(&mut output, session, "You have no combat state.");
-            continue;
-        };
-        if !caster.is_alive() {
-            deny(&mut output, session, "You can't cast spells while dead.");
-            continue;
-        }
-        let position = caster.position;
-        let mana = caster.mana;
-
-        if position < spell.min_position {
-            deny(
-                &mut output,
-                session,
-                "You can't concentrate enough to cast that.",
-            );
-            continue;
-        }
-
-        // The class gate. `granted_skills` is the same vocabulary as the spell
-        // ids, so a mismatch is denied by name.
-        let class = content
-            .classes
-            .get(&caster_class)
-            .cloned()
-            .unwrap_or_else(default_class);
-        let known = class
-            .granted_skills
-            .iter()
-            .any(|skill| normalize(skill) == normalize(&spell_id));
-        if !known {
-            deny(
-                &mut output,
-                session,
-                format!("You do not know the spell '{spell_name}'."),
-            );
-            continue;
-        }
-
-        // Level-scaled cost (`mag_manacost`, spell_parser.c:58-62).
-        let cost = mana_cost(spell, &caster_class, caster_level);
-        if mana < cost as i32 {
-            deny(
-                &mut output,
-                session,
-                "You haven't the energy to cast that spell.",
-            );
-            continue;
-        }
-
-        let room = players
-            .get(session)
-            .map(|(_, _, location)| location.room)
-            .ok();
-
-        // Resolve the target list. A hostile spell needs a real victim; a
-        // non-violent character spell with no argument defaults to the caster,
-        // as tbaMUD's `do_cast` does.
-        let targets: Vec<Entity> = match spell.target {
-            SpellTarget::Caster => vec![session],
-            SpellTarget::None => Vec::new(),
-            SpellTarget::Room => {
-                let mut in_room: Vec<Entity> = players
-                    .iter()
-                    .filter(|(entity, _, location)| {
-                        *entity != session && Some(location.room) == room
-                    })
-                    .map(|(entity, _, _)| entity)
-                    .collect();
-                in_room.extend(
-                    npcs.iter()
-                        .filter(|(_, _, location)| Some(location.room) == room)
-                        .map(|(entity, _, _)| entity),
-                );
-                if !is_hostile(spell) {
-                    in_room.push(session);
-                }
-                in_room
+        let plan = match plan_cast(
+            session,
+            line,
+            content,
+            &progress,
+            &combatants,
+            &players,
+            &npcs,
+            &hidden,
+        ) {
+            CastOutcome::NotCast => continue,
+            CastOutcome::Denied(message) => {
+                deny(&mut output, session, message);
+                continue;
             }
-            SpellTarget::Victim => match target_arg.as_deref() {
-                Some(name) => {
-                    if let Some(target) =
-                        find_target_in_room(session, name, &players, &npcs, &hidden)
-                    {
-                        vec![target]
-                    } else {
-                        let own_name = players
-                            .get(session)
-                            .map(|(_, player, _)| player.name.to_lowercase())
-                            .unwrap_or_default();
-                        let needle = name.to_lowercase();
-                        if !needle.is_empty() && own_name.contains(&needle) {
-                            deny(&mut output, session, "You shouldn't cast that on yourself.");
-                        } else {
-                            deny(&mut output, session, format!("You don't see {name} here."));
-                        }
-                        continue;
-                    }
-                }
-                None if is_hostile(spell) => {
-                    deny(&mut output, session, "Upon whom should the spell be cast?");
-                    continue;
-                }
-                None => vec![session],
-            },
+            CastOutcome::Plan(plan) => plan,
         };
+        let CastPlan {
+            spell_id,
+            spell,
+            caster_level,
+            cost,
+            room,
+            targets,
+        } = plan;
+        let spell_name = spell.name.clone();
 
         // Every check passed: spend the mana once and announce the casting.
         if cost > 0
@@ -698,6 +756,11 @@ pub fn handle_cast_command(
             }
 
             if lethal {
+                // The `death` trigger runs with the victim still in the world;
+                // an NPC is removed once it has.
+                commands.queue(move |world: &mut World| {
+                    crate::dg::intake::combat::finish_kill(world, target, session);
+                });
                 if players.get(target).is_ok() {
                     defeated.write(PlayerDefeated { player: target });
                 } else if npcs.get(target).is_ok() {
@@ -723,7 +786,6 @@ pub fn handle_cast_command(
                         gold,
                         alignment,
                     });
-                    commands.entity(target).despawn();
                 }
             }
         }

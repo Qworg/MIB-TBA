@@ -27,10 +27,12 @@
 //! already has [`TbaItemTimer`] is left alone, so a save always beats the
 //! prototype default.
 
+use dg_vm::types::trig::OTRIG_TIMER;
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{Item, SaveRegistry};
 use serde::{Deserialize, Serialize};
 
+use crate::dg::script::DgScript;
 use crate::module::TbaContent;
 
 /// Real seconds in one MUD hour (Circle's `SECS_PER_MUD_HOUR`,
@@ -47,6 +49,15 @@ pub const MUD_HOUR_SECONDS: f32 = 75.0;
 pub struct TbaItemTimer {
     /// Whole MUD hours left before the item decays.
     pub remaining: u32,
+}
+
+/// The items whose timer ran out in the latest [`tick_item_timers`] run and
+/// that carry a DG `timer` trigger, left in the world for the DG intake to run
+/// `timer_otrigger` on. Cleared by its consumer. Absent when no DG intake is
+/// installed, in which case every expired item decays.
+#[derive(Resource, Debug, Default)]
+pub struct ExpiredItemTimers {
+    pub items: Vec<Entity>,
 }
 
 /// Frame-time accumulator that converts the fixed tick into whole MUD hours.
@@ -167,7 +178,8 @@ pub fn attach_item_timers(
 pub fn tick_item_timers(
     time: Res<Time<Fixed>>,
     mut clock: ResMut<TbaObjectClock>,
-    mut timers: Query<(Entity, &mut TbaItemTimer)>,
+    mut timers: Query<(Entity, &mut TbaItemTimer, Option<&DgScript>)>,
+    mut expired: Option<ResMut<ExpiredItemTimers>>,
     mut commands: Commands,
 ) {
     let hours = clock.due_hours(time.delta_secs());
@@ -177,10 +189,19 @@ pub fn tick_item_timers(
     // Advance the whole MUD calendar alongside the object timers, so shop
     // opening hours and the day/night predicate share the timer clock.
     clock.advance(hours);
-    for (entity, mut timer) in &mut timers {
+    for (entity, mut timer, script) in &mut timers {
         timer.remaining = timer.remaining.saturating_sub(hours);
-        if timer.remaining == 0 {
-            commands.entity(entity).despawn();
+        if timer.remaining != 0 {
+            continue;
+        }
+        // An item with a DG `timer` trigger is Circle's timed object: the
+        // trigger decides its fate (`point_update` calls `timer_otrigger` and
+        // nothing follows). It is handed to the DG intake instead of decaying.
+        match (&mut expired, script) {
+            (Some(expired), Some(script)) if script.0.check(OTRIG_TIMER) => {
+                expired.items.push(entity);
+            }
+            _ => commands.entity(entity).despawn(),
         }
     }
 }

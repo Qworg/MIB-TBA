@@ -54,6 +54,16 @@ pub struct ZoneState {
     pub age_mins: f32,
 }
 
+/// The room-number bounds `(bot, top)` of the zones that reset during the
+/// latest [`zone_reset_system`] run, in zone order. Replaced at the start of
+/// every run, so a consumer ordered after the system sees exactly this tick's
+/// resets (the DG `reset` triggers, which `reset_zone` fires once the reset
+/// commands have run).
+#[derive(Resource, Debug, Default)]
+pub struct ZoneResets {
+    pub zones: Vec<(u32, u32)>,
+}
+
 /// `FixedUpdate`: age zones and run the resets that are due.
 pub fn zone_reset_system(world: &mut World) {
     let delta_secs = world
@@ -65,6 +75,8 @@ pub fn zone_reset_system(world: &mut World) {
     // Take the tracker out so the body can hold `&mut World` freely; it is
     // always put back, so a reset never loses the resource.
     let mut tracker = world.remove_resource::<ZoneTracker>().unwrap_or_default();
+    let mut resets = world.remove_resource::<ZoneResets>().unwrap_or_default();
+    resets.zones.clear();
 
     for zone in &mut tracker.zones {
         zone.age_mins += delta_mins;
@@ -83,10 +95,12 @@ pub fn zone_reset_system(world: &mut World) {
             continue;
         }
         execute_zone(world, &zone.def);
+        resets.zones.push((zone.def.bot, zone.def.top));
         zone.age_mins = 0.0;
     }
 
     world.insert_resource(tracker);
+    world.insert_resource(resets);
 }
 
 /// Is any player inside the zone's `[bot, top]` room-number bounds?

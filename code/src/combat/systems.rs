@@ -24,6 +24,9 @@ use mib_core::prelude::*;
 use mib_stdlib::prelude::{Npc, NpcId, NpcKey, Player, PlayerDefeated};
 
 use crate::content::{Position, TbaItemKind};
+use crate::dg::host::EcsHost;
+use crate::dg::intake::combat::{self as dg_combat, is_live};
+use crate::dg::with_host;
 use crate::module::TbaContent;
 
 use super::model::{TbaAttackDice, TbaCombatant, WieldedWeapon};
@@ -82,111 +85,160 @@ pub fn combat_dice(
 
 /// Resolve one melee round for every living combatant with a target.
 ///
-/// Two phases over one [`ParamSet`]: read every attacker/target pair and roll
-/// the swing, then apply the queued damage. Splitting the phases avoids
-/// aliasing `TbaCombatant` while a target is also an attacker.
-#[allow(clippy::type_complexity, clippy::too_many_arguments)] // ECS system params.
-pub fn resolve_rounds(
-    mut rng: ResMut<TbaRng>,
-    content: Option<Res<TbaContent>>,
-    mut combatants: ParamSet<(
-        Query<(
-            Entity,
-            &TbaCombatant,
-            Option<&WieldedWeapon>,
-            Option<&TbaAttackDice>,
-        )>,
-        Query<&mut TbaCombatant>,
-    )>,
-    players: Query<(), With<Player>>,
-    npcs: Query<(), With<Npc>>,
-    keys: Query<&NpcKey>,
-    mut defeated: MessageWriter<PlayerDefeated>,
-    mut npc_defeated: MessageWriter<NpcDefeated>,
-    mut damage_events: MessageWriter<TbaDamage>,
-    mut commands: Commands,
-) {
-    let content = content.as_deref();
-    let mut damage_queue: Vec<(Entity, Entity, i32)> = Vec::new();
-    {
-        let read = combatants.p0();
-        let intents: Vec<(Entity, Entity, Dice)> = read
-            .iter()
-            .filter(|(_, combatant, _, _)| combatant.is_alive())
-            .filter_map(|(entity, combatant, wielded, npc_attack)| {
-                combatant
-                    .target
-                    .map(|target| (entity, target, combat_dice(wielded, content, npc_attack)))
-            })
-            .collect();
-
-        for (attacker, target, weapon) in intents {
-            let (Ok((_, att, _, _)), Ok((_, def, _, _))) = (read.get(attacker), read.get(target))
-            else {
-                continue;
-            };
-            if !att.is_alive() || !def.is_alive() {
-                continue;
-            }
-            let roll = rng.d20() + att.hitroll + att.attributes.to_hit_bonus();
-            if roll < att.needed_to_hit(def.armor_class) {
-                continue;
-            }
-            let damage = (rng.roll(&weapon) + att.damroll).max(1);
-            damage_queue.push((attacker, target, damage));
-        }
+/// An exclusive system: attackers act one after another, as `perform_violence`
+/// does, so a blow that kills stops its victim from striking back this round,
+/// and the DG triggers (`fight`, `damage`, `death`, `hitprcnt`; see
+/// [`crate::dg::intake::combat`]) run at the C's points, with the world as the
+/// previous blows left it. A miss is a blow of zero damage, which the victim's
+/// `damage` trigger sees.
+pub fn resolve_rounds(world: &mut World) {
+    let order: Vec<Entity> = {
+        let mut query = world.query::<(Entity, &TbaCombatant)>();
+        query
+            .iter(world)
+            .filter(|(_, combatant)| combatant.is_alive() && combatant.target.is_some())
+            .map(|(entity, _)| entity)
+            .collect()
+    };
+    if order.is_empty() || !world.contains_resource::<TbaRng>() {
+        return;
     }
-
-    let mut defeated_entities: Vec<(Entity, Entity)> = Vec::new();
-    {
-        let mut write = combatants.p1();
-        for (attacker, target, damage) in damage_queue {
-            let Ok(mut combatant) = write.get_mut(target) else {
-                continue;
-            };
-            if !combatant.is_alive() {
-                continue;
-            }
-            combatant.hp = (combatant.hp - damage).max(0);
-            damage_events.write(TbaDamage {
-                attacker,
-                victim: target,
-                damage,
-                lethal: combatant.hp == 0,
-            });
-            if combatant.hp == 0 {
-                combatant.position = Position::Dead;
-                combatant.target = None;
-                defeated_entities.push((target, attacker));
-            }
+    with_host(world, |host| {
+        for attacker in order {
+            blow(host, attacker);
         }
-    }
+    });
+}
 
-    for (victim, killer) in defeated_entities {
-        if players.get(victim).is_ok() {
+/// The target `attacker` can strike now: both alive and neither extracted.
+fn live_target(world: &World, attacker: Entity) -> Option<Entity> {
+    if !is_live(world, attacker) {
+        return None;
+    }
+    let target = world.get::<TbaCombatant>(attacker)?.target?;
+    is_live(world, target).then_some(target)
+}
+
+/// One attacker's blow (`hit`), from its `fight` trigger to the victim's
+/// `hitprcnt` trigger.
+fn blow(host: &mut EcsHost<'_>, attacker: Entity) {
+    if live_target(host.world, attacker).is_none() {
+        return;
+    }
+    dg_combat::fight(host, attacker);
+    // A `fight` script may have killed, moved or purged either side.
+    let Some(victim) = live_target(host.world, attacker) else {
+        return;
+    };
+
+    let dam = swing(host.world, attacker, victim);
+    let Some(dam) = dg_combat::damage(host, attacker, victim, dam) else {
+        dg_combat::hitprcnt(host, victim);
+        return;
+    };
+    // A `damage` script may have killed, moved or purged either side.
+    if !is_live(host.world, victim) {
+        return;
+    }
+    let lethal = dam > 0 && apply_blow(host.world, attacker, victim, dam);
+    if lethal {
+        defeat(host, victim, attacker);
+    } else {
+        dg_combat::hitprcnt(host, victim);
+    }
+}
+
+/// Roll one swing: zero on a miss, else the weapon dice plus damroll (at least
+/// one).
+fn swing(world: &mut World, attacker: Entity, victim: Entity) -> i32 {
+    let (Some(att), Some(def)) = (
+        world.get::<TbaCombatant>(attacker).cloned(),
+        world.get::<TbaCombatant>(victim).cloned(),
+    ) else {
+        return 0;
+    };
+    let dice = {
+        let content = world.get_resource::<TbaContent>();
+        combat_dice(
+            world.get::<WieldedWeapon>(attacker),
+            content,
+            world.get::<TbaAttackDice>(attacker),
+        )
+    };
+    let Some(mut rng) = world.get_resource_mut::<TbaRng>() else {
+        return 0;
+    };
+    let roll = rng.d20() + att.hitroll + att.attributes.to_hit_bonus();
+    if roll < att.needed_to_hit(def.armor_class) {
+        return 0;
+    }
+    (rng.roll(&dice) + att.damroll).max(1)
+}
+
+/// Take `damage` hit points from the victim and report the blow. Returns
+/// whether it was lethal.
+fn apply_blow(world: &mut World, attacker: Entity, victim: Entity, damage: i32) -> bool {
+    let Some(mut combatant) = world.get_mut::<TbaCombatant>(victim) else {
+        return false;
+    };
+    if !combatant.is_alive() {
+        return false;
+    }
+    combatant.hp = (combatant.hp - damage).max(0);
+    let lethal = combatant.hp == 0;
+    if lethal {
+        combatant.position = Position::Dead;
+        combatant.target = None;
+    }
+    if let Some(mut events) = world.get_resource_mut::<Messages<TbaDamage>>() {
+        events.write(TbaDamage {
+            attacker,
+            victim,
+            damage,
+            lethal,
+        });
+    }
+    lethal
+}
+
+/// A character `killer` has just reduced to zero hit points: its `death`
+/// trigger runs while it is still in the world, then a player is reported
+/// defeated and an NPC is rewarded for and removed.
+fn defeat(host: &mut EcsHost<'_>, victim: Entity, killer: Entity) {
+    dg_combat::death(host, victim, killer);
+    let world = &mut *host.world;
+    if world.get_entity(victim).is_err() {
+        return;
+    }
+    if world.get::<Player>(victim).is_some() {
+        if let Some(mut defeated) = world.get_resource_mut::<Messages<PlayerDefeated>>() {
             defeated.write(PlayerDefeated { player: victim });
-        } else if npcs.get(victim).is_ok() {
-            // The reward data is read here, before the despawn applies, so the
-            // consumer never races the dropped entity.
-            let key = keys.get(victim).ok();
-            let (experience, gold) = key
-                .and_then(|key| content.map(|content| reward_for(content, key)))
-                .unwrap_or((0, 0));
-            let alignment = key
-                .and_then(|key| content.map(|content| alignment_for(content, key)))
-                .unwrap_or(0);
-            npc_defeated.write(NpcDefeated {
-                victim,
-                killer,
-                npc: key
-                    .map(|key| key.0.clone())
-                    .unwrap_or_else(|| NpcId::from("")),
-                experience,
-                gold,
-                alignment,
-            });
-            commands.entity(victim).despawn();
         }
+    } else if world.get::<Npc>(victim).is_some() {
+        // The reward data is read here, before the despawn applies, so the
+        // consumer never races the dropped entity.
+        let key = world.get::<NpcKey>(victim).map(|key| NpcKey(key.0.clone()));
+        let content = world.get_resource::<TbaContent>();
+        let (experience, gold) = key
+            .as_ref()
+            .and_then(|key| content.map(|content| reward_for(content, key)))
+            .unwrap_or((0, 0));
+        let alignment = key
+            .as_ref()
+            .and_then(|key| content.map(|content| alignment_for(content, key)))
+            .unwrap_or(0);
+        let message = NpcDefeated {
+            victim,
+            killer,
+            npc: key.map(|key| key.0).unwrap_or_else(|| NpcId::from("")),
+            experience,
+            gold,
+            alignment,
+        };
+        if let Some(mut defeated) = world.get_resource_mut::<Messages<NpcDefeated>>() {
+            defeated.write(message);
+        }
+        world.despawn(victim);
     }
 }
 
