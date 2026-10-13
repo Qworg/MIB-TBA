@@ -18,11 +18,14 @@
 //!   can change (attach, detach, purge of its own owner). Here each walk takes
 //!   a snapshot of [`Script::trigger_ids`] and re-fetches every instance by
 //!   id, so a trigger detached by an earlier run is skipped and the run state
-//!   tested is always current, and a trigger attached by an earlier run in
-//!   the same walk is not examined (the C reaches it through `t->next`); the
-//!   trigger-id snapshot is the host contract's way of surviving a run that
-//!   attaches or detaches. The memory lists the C walks with a saved `next`
-//!   pointer are snapshots too.
+//!   tested is always current. The walks that carry on after a run
+//!   (`greet_mtrigger`, `command_mtrigger`, `timer_otrigger`, `cmd_otrig`,
+//!   `leave_otrigger`) take the successor of the trigger just run from the
+//!   live list, as `t->next` does, so a trigger an earlier run attached is
+//!   reached (`greet_mtrigger` reads it before the run, as the C's `next_trig`
+//!   does); the snapshot serves only when the current trigger has left the
+//!   list. Such a walk ends after `TRIGGER_WALK_LIMIT` steps. The memory lists
+//!   the C walks with a saved `next` pointer are snapshots.
 //! - The room walks of `greet_mtrigger`, `greet_memory_mtrigger`,
 //!   `entry_memory_mtrigger` (the C reads `ch->next_in_room` after the run)
 //!   and of `command_mtrigger`, `speech_mtrigger` (`ch_next` saved before
@@ -32,16 +35,12 @@
 //!   steps, with one `script_log` line: two mobs that keep putting
 //!   themselves back at the head of a list would loop for ever in the C.
 //! - "The owner was purged" (`!obj` after `script_driver` NULLs `go_adress`)
-//!   is `dg_owner_purged` as the run returned, or `!host.exists(obj)`. The C
-//!   NULLs the pointer only when the driver returns through its final
-//!   `if (dg_owner_purged)` test; the flag a nested script left set under a
-//!   `dg_cast` or `dg_affect` line (which have no such test) also reads as
-//!   "gone" here, so a get/wear/remove/drop/give/consume/command/timer/leave
-//!   trigger of an object whose cast target purged itself returns `0` where
-//!   the C returns the script's result. The driver does not report how it
-//!   returned; fixing this needs that from its owner.
-//!   `has_obj_by_uid_in_lookup_table` is `!host.exists(obj)`; a purged
-//!   character is `DEAD(ch)`, [`WorldHost::is_dead`].
+//!   is `!host.exists(obj)`, as the doc of [`script_driver`] says. The C NULLs
+//!   the pointer only when the script purged its own owner, which extracts
+//!   it; `dg_owner_purged` is not read, because a nested script under a
+//!   `dg_cast` or `dg_affect` line can leave it set while the outer object is
+//!   alive. `has_obj_by_uid_in_lookup_table` is `!host.exists(obj)` too; a
+//!   purged character is `DEAD(ch)`, [`WorldHost::is_dead`].
 //! - The `SYSERR: … Trigger #%d has no text argument!` lines are `mudlog(NRM,
 //!   LVL_BUILDER, …)` in the C. The host's only `mudlog` primitive
 //!   ([`crate::commands::CmdHost::cmd_mudlog`]) is `BRF`, so they go out at
@@ -223,20 +222,87 @@ fn set_uid_var<H: DgHost + ?Sized>(host: &mut H, go: Uid, id: u64, name: &str, u
     set_var(host, go, id, name, &uid_text(uid));
 }
 
-/// `script_driver(&go, t, type, TRIG_NEW)`. `dg_owner_purged` is cleared first
-/// so that [`object_gone`] reads what this run left, whichever way the driver
-/// returned.
+/// `script_driver(&go, t, type, TRIG_NEW)`.
 fn run<H: DgHost + ?Sized>(host: &mut H, go: Uid, id: u64) -> i32 {
-    *host.owner_purged_mut() = false;
     script_driver(host, go, id, Mode::New)
 }
 
 /// The C's `!obj` after `script_driver(&obj, ...)`: the driver NULLs `obj`
-/// when `dg_owner_purged` is set as it returns, and a nested script that
-/// purged its own owner leaves the flag set, so it counts for the outer
-/// object too. An object that no longer exists counts as well.
-fn object_gone<H: DgHost + ?Sized>(host: &mut H, obj: Uid) -> bool {
-    *host.owner_purged_mut() || !host.exists(obj)
+/// when the script purged its own owner, which is an object that no longer
+/// exists (`script_driver` documents `!host.exists(owner)` as the test). The
+/// `dg_owner_purged` flag is not read: a nested script that purged its own
+/// owner under a `dg_cast` line leaves it set while this object is alive.
+fn object_gone<H: DgHost + ?Sized>(host: &H, obj: Uid) -> bool {
+    !host.exists(obj)
+}
+
+/// Bound on the steps of a trigger-list walk (no real list is near it).
+const TRIGGER_WALK_LIMIT: usize = 1_000;
+
+/// A walk over an owner's trigger list as the C's `t = t->next` makes it: the
+/// successor of the trigger just run is read from the list as it is now, so a
+/// trigger an earlier run attached is reached, and one detached is not. The
+/// snapshot taken at the start serves only when the current trigger has left
+/// the list itself. Ends after [`TRIGGER_WALK_LIMIT`] steps (a script that
+/// attaches a trigger each time it runs would never end in the C).
+struct TriggerWalk {
+    snapshot: Vec<u64>,
+    started: bool,
+    prev: Option<u64>,
+    locked: Option<Option<u64>>,
+    steps: usize,
+}
+
+impl TriggerWalk {
+    fn new<H: DgHost + ?Sized>(host: &H, go: Uid) -> Self {
+        Self {
+            snapshot: trigger_ids(host, go),
+            started: false,
+            prev: None,
+            locked: None,
+            steps: 0,
+        }
+    }
+
+    /// The trigger after the one last returned, in the live list.
+    fn following<H: DgHost + ?Sized>(&self, host: &H, go: Uid) -> Option<u64> {
+        let prev = self.prev?;
+        let live = trigger_ids(host, go);
+        if let Some(index) = live.iter().position(|id| *id == prev) {
+            return live.get(index + 1).copied();
+        }
+        let index = self.snapshot.iter().position(|id| *id == prev)?;
+        self.snapshot.get(index + 1).copied()
+    }
+
+    /// `next_trig = t->next`, read before the current trigger runs; the next
+    /// call to [`TriggerWalk::next`] goes there.
+    fn lock_successor<H: DgHost + ?Sized>(&mut self, host: &H, go: Uid) {
+        self.locked = Some(self.following(host, go));
+    }
+
+    /// The next trigger id to examine, `None` at the end of the list.
+    fn next<H: DgHost + ?Sized>(&mut self, host: &mut H, go: Uid, what: &str) -> Option<u64> {
+        let id = if self.started {
+            match self.locked.take() {
+                Some(locked) => locked,
+                None => self.following(host, go),
+            }
+        } else {
+            self.started = true;
+            self.snapshot.first().copied()
+        };
+        self.prev = id;
+        let id = id?;
+        self.steps += 1;
+        if self.steps > TRIGGER_WALK_LIMIT {
+            host.script_log(&format!(
+                "{what} walk stopped after {TRIGGER_WALK_LIMIT} triggers (a script keeps attaching triggers)."
+            ));
+            return None;
+        }
+        Some(id)
+    }
 }
 
 /// The first trigger with this type bit that is not running and wins its
@@ -332,12 +398,12 @@ const LIVE_WALK_LIMIT: usize = 100_000;
 
 /// Counts one step of a live-list walk; `true` (after one `script_log` line)
 /// when the walk has gone past [`LIVE_WALK_LIMIT`] and must end.
-fn walk_exhausted<H: DgHost + ?Sized>(host: &mut H, steps: usize, what: &str) -> bool {
+fn walk_exhausted<H: DgHost + ?Sized>(host: &mut H, steps: usize, what: &str, unit: &str) -> bool {
     if steps <= LIVE_WALK_LIMIT {
         return false;
     }
     host.script_log(&format!(
-        "SCRIPT ERROR: {what} walk stopped after {LIVE_WALK_LIMIT} characters (a script keeps moving the walked character)."
+        "{what} walk stopped after {LIVE_WALK_LIMIT} {unit} (a script keeps changing the list being walked)."
     ));
     true
 }
@@ -503,7 +569,7 @@ pub fn greet_memory_mtrigger<H: DgHost + ?Sized>(host: &mut H, actor: Uid) {
     let mut steps = 0;
     while let Some(ch) = cur {
         steps += 1;
-        if walk_exhausted(host, steps, "greet_memory_mtrigger") {
+        if walk_exhausted(host, steps, "greet_memory_mtrigger", "characters") {
             break;
         }
         cur = greet_memory_visit(host, actor, ch, &mut command_performed)
@@ -581,7 +647,7 @@ pub fn greet_mtrigger<H: DgHost + ?Sized>(host: &mut H, actor: Uid, dir: i32) ->
     let mut steps = 0;
     while let Some(ch) = cur {
         steps += 1;
-        if walk_exhausted(host, steps, "greet_mtrigger") {
+        if walk_exhausted(host, steps, "greet_mtrigger", "characters") {
             break;
         }
         if !host.exists(ch) {
@@ -593,7 +659,10 @@ pub fn greet_mtrigger<H: DgHost + ?Sized>(host: &mut H, actor: Uid, dir: i32) ->
             && ch != actor
             && !charmed(host, ch)
         {
-            for id in trigger_ids(host, ch) {
+            let mut walk = TriggerWalk::new(host, ch);
+            while let Some(id) = walk.next(host, ch, "greet_mtrigger") {
+                // `next_trig = t->next`, read before the trigger runs.
+                walk.lock_successor(host, ch);
                 let (greet, idle, narg) = trig_state(host, ch, id, MTRIG_GREET);
                 let (greet_all, _, _) = trig_state(host, ch, id, MTRIG_GREET_ALL);
                 if ((greet && host.can_see(ch, actor)) || greet_all) && idle && roll(host, narg) {
@@ -629,7 +698,7 @@ pub fn entry_memory_mtrigger<H: DgHost + ?Sized>(host: &mut H, ch: Uid) {
     let mut steps = 0;
     while let Some(actor) = cur {
         steps += 1;
-        if walk_exhausted(host, steps, "entry_memory_mtrigger")
+        if walk_exhausted(host, steps, "entry_memory_mtrigger", "characters")
             || host.script_mem(ch).is_empty()
             || !host.exists(actor)
         {
@@ -707,7 +776,7 @@ pub fn command_mtrigger<H: DgHost + ?Sized>(
     let mut steps = 0;
     while let Some(ch) = cur {
         steps += 1;
-        if walk_exhausted(host, steps, "command_mtrigger") || !host.exists(ch) {
+        if walk_exhausted(host, steps, "command_mtrigger", "characters") || !host.exists(ch) {
             break;
         }
         // `ch_next = ch->next_in_room`, read before the mob's triggers run.
@@ -719,7 +788,8 @@ pub fn command_mtrigger<H: DgHost + ?Sized>(
         {
             continue;
         }
-        for id in trigger_ids(host, ch) {
+        let mut walk = TriggerWalk::new(host, ch);
+        while let Some(id) = walk.next(host, ch, "command_mtrigger") {
             if checked(host, ch, id, MTRIG_COMMAND).is_none() {
                 continue;
             }
@@ -752,8 +822,9 @@ pub fn command_mtrigger<H: DgHost + ?Sized>(
 ///
 /// Called from `do_say` (`act.comm.c`) last, after the speaker's own message,
 /// and unconditionally: also for a bare `say`, with the `skip_spaces`'d
-/// argument empty, so a trigger whose argument starts with `*` (or a
-/// non-zero narg with `*`) still fires. Followed by `speech_wtrigger`. The
+/// argument empty, so a trigger with a non-zero narg and an argument
+/// starting with `*` still fires (with narg `0` the `*` is looked for as a
+/// word, and an empty line has none). Followed by `speech_wtrigger`. The
 /// result is ignored.
 pub fn speech_mtrigger<H: DgHost + ?Sized>(host: &mut H, actor: Uid, str: &str) {
     let Some(room) = room_of(host, actor) else {
@@ -763,7 +834,7 @@ pub fn speech_mtrigger<H: DgHost + ?Sized>(host: &mut H, actor: Uid, str: &str) 
     let mut steps = 0;
     while let Some(ch) = cur {
         steps += 1;
-        if walk_exhausted(host, steps, "speech_mtrigger") || !host.exists(ch) {
+        if walk_exhausted(host, steps, "speech_mtrigger", "characters") || !host.exists(ch) {
             break;
         }
         // `ch_next = ch->next_in_room`, read before the mob's triggers run.
@@ -1148,7 +1219,8 @@ pub fn timer_otrigger<H: DgHost + ?Sized>(host: &mut H, obj: Uid) {
     if !script_check(host, obj, OTRIG_TIMER) {
         return;
     }
-    for id in trigger_ids(host, obj) {
+    let mut walk = TriggerWalk::new(host, obj);
+    while let Some(id) = walk.next(host, obj, "timer_otrigger") {
         if checked(host, obj, id, OTRIG_TIMER).is_some() {
             run(host, obj, id);
             if object_gone(host, obj) {
@@ -1201,7 +1273,8 @@ pub fn cmd_otrig<H: DgHost + ?Sized>(
         return 0;
     }
     let (mut cmd, mut argument) = (cmd, argument);
-    for id in trigger_ids(host, obj) {
+    let mut walk = TriggerWalk::new(host, obj);
+    while let Some(id) = walk.next(host, obj, "cmd_otrig") {
         if checked(host, obj, id, OTRIG_COMMAND).is_none() {
             continue;
         }
@@ -1458,7 +1531,7 @@ pub fn leave_otrigger<H: DgHost + ?Sized>(host: &mut H, room: Uid, actor: Uid, d
     let mut steps = 0;
     while let Some(obj) = cur {
         steps += 1;
-        if walk_exhausted(host, steps, "leave_otrigger") || !host.exists(obj) {
+        if walk_exhausted(host, steps, "leave_otrigger", "objects") || !host.exists(obj) {
             break;
         }
         // `obj_next = obj->next_content`, read before the triggers run.
@@ -1467,7 +1540,8 @@ pub fn leave_otrigger<H: DgHost + ?Sized>(host: &mut H, room: Uid, actor: Uid, d
         if !script_check(host, obj, OTRIG_LEAVE) {
             continue;
         }
-        for id in trigger_ids(host, obj) {
+        let mut walk = TriggerWalk::new(host, obj);
+        while let Some(id) = walk.next(host, obj, "leave_otrigger") {
             let Some(narg) = checked(host, obj, id, OTRIG_LEAVE) else {
                 continue;
             };
@@ -4466,18 +4540,19 @@ mod tests {
     }
 
     #[test]
-    fn a_purge_flag_left_by_a_run_means_the_object_is_gone() {
+    fn only_an_object_that_no_longer_exists_is_gone() {
         let mut w = W::new();
         let orb = w.obj(10, "an orb");
         w.trig(orb, 1, "g", 100, "", "return 1");
-        // A stale flag from an earlier run does not count: the run clears it.
+        // A flag a nested script left set does not make a live object gone
+        // (C: `go_adress` is NULLed only when the script purged its owner).
         w.h.owner_purged = true;
         assert_eq!(get_otrigger(&mut w.h, orb, w.alice), 1);
-        assert!(!object_gone(&mut w.h, orb));
-        // The flag as a run leaves it does, whether or not the object is
-        // still listed.
         w.h.owner_purged = true;
-        assert!(object_gone(&mut w.h, orb));
+        assert!(!object_gone(&w.h, orb));
+        // An extracted object is gone.
+        w.h.extract_obj(orb);
+        assert!(object_gone(&w.h, orb));
     }
 
     #[test]
@@ -5044,5 +5119,163 @@ mod tests {
                 .iter()
                 .any(|line| line.contains("greet_mtrigger walk stopped"))
         );
+    }
+
+    #[test]
+    fn command_mtrigger_reaches_a_trigger_an_earlier_run_attached() {
+        // C: after the first run `t->next` is trigger 99, which claims it.
+        let mut w = W::new();
+        w.trig(w.guard, 1, "c", 0, "*", "attach 99 %self.id%\nreturn 0");
+        w.h.add_proto(99, AttachType::Mob, "c", 0, "*", "return 1");
+        assert_eq!(command_mtrigger(&mut w.h, w.alice, "x", ""), 1);
+    }
+
+    #[test]
+    fn cmd_otrig_reaches_a_trigger_an_earlier_run_attached() {
+        let mut w = W::new();
+        let ball = w.obj(47, "a ball");
+        w.trig(
+            ball,
+            1,
+            "c",
+            OCMD_ROOM,
+            "*",
+            "attach 99 %self.id%\nreturn 0",
+        );
+        w.h.add_proto(99, AttachType::Obj, "c", OCMD_ROOM, "*", "return 1");
+        assert_eq!(cmd_otrig(&mut w.h, ball, w.alice, "x", "", OCMD_ROOM), 1);
+    }
+
+    #[test]
+    fn timer_otrigger_reaches_a_trigger_an_earlier_run_attached() {
+        let mut w = W::new();
+        let orb = w.obj(10, "an orb");
+        w.trig(orb, 1, "f", 1, "", "attach 99 %self.id%");
+        w.h.add_proto(99, AttachType::Obj, "f", 1, "", RAN);
+        timer_otrigger(&mut w.h, orb);
+        assert!(w.ran(orb));
+    }
+
+    #[test]
+    fn leave_otrigger_reaches_a_trigger_an_earlier_run_attached() {
+        // C: the attached trigger is `t->next` after the first run; it
+        // returns 0, so the walk's result is 0.
+        let mut w = W::new();
+        let a = w.obj(1, "a rock");
+        w.h.obj_to_room(a, w.room);
+        w.trig(a, 1, "q", 100, "", "attach 99 %self.id%\nreturn 1");
+        w.h.add_proto(99, AttachType::Obj, "q", 100, "", "return 0");
+        assert_eq!(leave_otrigger(&mut w.h, w.room, w.alice, 0), 0);
+    }
+
+    #[test]
+    fn greet_mtrigger_reads_the_next_trigger_just_before_each_run() {
+        // [A, B]: A attaches 99 (the tail) before B's turn starts, so B's
+        // `next_trig` is 99, which returns 0. B attaches 100 during its own
+        // run, after B's `next_trig` was read, but 99's `next_trig` (read
+        // when 99's turn starts) is 100, so 100 runs too.
+        let mut w = W::new();
+        w.trig(w.guard, 1, "g", 100, "", "attach 99 %self.id%\nreturn 1");
+        w.trig(w.guard, 2, "g", 100, "", "attach 100 %self.id%\nreturn 1");
+        w.h.add_proto(99, AttachType::Mob, "g", 100, "", "return 0");
+        w.h.add_proto(100, AttachType::Mob, "g", 100, "", RAN);
+        assert_eq!(greet_mtrigger(&mut w.h, w.alice, 0), 0);
+        assert!(w.ran(w.guard));
+        // A trigger attached by the last run is not examined.
+        let mut w = W::new();
+        w.trig(w.guard, 1, "g", 100, "", "attach 99 %self.id%\nreturn 1");
+        w.h.add_proto(99, AttachType::Mob, "g", 100, "", "return 0");
+        assert_eq!(greet_mtrigger(&mut w.h, w.alice, 0), 1);
+    }
+
+    #[test]
+    fn a_trigger_that_keeps_attaching_itself_ends_the_walk() {
+        let mut w = W::new();
+        w.trig(w.guard, 1, "c", 0, "*", "attach 1 %self.id%\nreturn 0");
+        w.h.add_proto(
+            1,
+            AttachType::Mob,
+            "c",
+            0,
+            "*",
+            "attach 1 %self.id%\nreturn 0",
+        );
+        assert_eq!(command_mtrigger(&mut w.h, w.alice, "x", ""), 0);
+        assert!(
+            w.h.logs
+                .iter()
+                .any(|l| l.contains("command_mtrigger walk stopped")
+                    && !l.starts_with("SCRIPT ERROR"))
+        );
+    }
+
+    #[test]
+    fn next_content_follows_carried_and_contained_objects() {
+        let mut w = W::new();
+        let a = w.obj(1, "a rock");
+        let b = w.obj(2, "a coin");
+        w.h.obj_to_char(a, w.alice);
+        w.h.obj_to_char(b, w.alice);
+        let carried = w.h.carrying(w.alice);
+        let first = carried[0];
+        assert_eq!(next_content(&w.h, first), Some(carried[1]));
+        assert_eq!(next_content(&w.h, carried[1]), None);
+        let bag = w.obj(3, "a bag");
+        let x = w.obj(4, "a gem");
+        let y = w.obj(5, "a pearl");
+        w.h.obj_to_obj(x, bag);
+        w.h.obj_to_obj(y, bag);
+        let inside = w.h.obj_contains(bag);
+        assert_eq!(next_content(&w.h, inside[0]), Some(inside[1]));
+        assert_eq!(next_content(&w.h, inside[1]), None);
+    }
+
+    #[test]
+    fn greet_memory_stops_at_the_first_remembered_command() {
+        // C: `command_performed = 1; break;` ends the walk of this mob's
+        // memory, so the second command entry for the actor never runs.
+        let mut w = W::new();
+        w.h.set_script_mem(
+            w.guard,
+            vec![
+                ScriptMemory {
+                    id: w.alice,
+                    cmd: Some("bow".to_owned()),
+                },
+                ScriptMemory {
+                    id: w.alice,
+                    cmd: Some("wave".to_owned()),
+                },
+            ],
+        );
+        let alice = w.alice;
+        greet_memory_mtrigger(&mut w.h, alice);
+        assert_eq!(w.say_log(), vec!["bow".to_owned()]);
+    }
+
+    #[test]
+    fn cmd_otrig_any_non_zero_result_claims_the_command() {
+        let mut w = W::new();
+        let ball = w.obj(47, "a ball");
+        w.trig(ball, 1, "c", OCMD_ROOM, "*", "return 2");
+        assert_eq!(cmd_otrig(&mut w.h, ball, w.alice, "x", "", OCMD_ROOM), 1);
+    }
+
+    #[test]
+    fn skill_name_only_minus_one_is_unused() {
+        let w = W::new();
+        assert_eq!(skill_name(&w.h, -1), "UNUSED");
+        assert_eq!(skill_name(&w.h, -2), "UNDEFINED");
+    }
+
+    #[test]
+    fn word_check_cuts_the_list_one_byte_short_of_the_buffer() {
+        // 'a ' * 255 is 510 bytes, then 'zz': bytes 510..512 hold the word.
+        // strcpy into char[MAX_INPUT_LENGTH] keeps 511 bytes, so the word
+        // is cut to 'z' and still matches 'z' but not 'zz'.
+        let list = format!("{}zz", "a ".repeat(255));
+        assert_eq!(list.len(), 512);
+        assert!(word_check("z", &list));
+        assert!(!word_check("zz", &list));
     }
 }
