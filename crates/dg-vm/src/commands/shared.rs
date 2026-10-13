@@ -393,49 +393,23 @@ pub(crate) fn find_target_room<H: DgHost + ?Sized>(
         return None;
     }
 
-    let location;
-    if starts_with_digit(&roomstr) && !roomstr.contains('.') {
-        let Some(room) = host.real_room(atoi(&roomstr)) else {
-            host.cmd_send(ch, "No room exists with that number.\r\n");
-            return None;
-        };
-        location = room;
-    } else {
-        let (num, name) = get_number(&roomstr);
-        let mut found = None;
-        if let Some(target_mob) = get_char_vis(host, ch, &counted(num, name), Where::World) {
-            match host.in_room(target_mob) {
-                Some(room) => found = Some(room),
-                None => {
-                    host.cmd_send(ch, "That character is currently lost.\r\n");
-                    return None;
-                }
-            }
-        } else {
-            // `get_char_vis` counted `num` down as it passed matches; the
-            // object search carries on from what is left.
-            let left = remaining_count(host, ch, num, name);
-            if let Some(target_obj) = get_obj_vis(host, ch, &counted(left, name)) {
-                found = host.in_room(target_obj).or_else(|| {
-                    host.obj_carried_by(target_obj)
-                        .and_then(|holder| host.in_room(holder))
-                        .or_else(|| {
-                            host.obj_worn_by(target_obj)
-                                .and_then(|wearer| host.in_room(wearer))
-                        })
-                });
-                if found.is_none() {
-                    host.cmd_send(ch, "That object is currently not in a room.\r\n");
-                    return None;
-                }
+    let location = if starts_with_digit(&roomstr) && !roomstr.contains('.') {
+        match host.real_room(atoi(&roomstr)) {
+            Some(room) => room,
+            None => {
+                host.cmd_send(ch, "No room exists with that number.\r\n");
+                return None;
             }
         }
-        let Some(room) = found else {
-            host.cmd_send(ch, "Nothing exists by that name.\r\n");
-            return None;
-        };
-        location = room;
-    }
+    } else {
+        match room_of_name(host, ch, &roomstr) {
+            Ok(room) => room,
+            Err(refusal) => {
+                host.cmd_send(ch, refusal);
+                return None;
+            }
+        }
+    };
 
     // A location has been found; from LVL_GRGOD up there are no restrictions.
     if host.level(ch) >= LVL_GRGOD {
@@ -458,6 +432,33 @@ pub(crate) fn find_target_room<H: DgHost + ?Sized>(
         return Some(location);
     }
     None
+}
+
+/// The room of the visible character or object `roomstr` names, or what
+/// `find_target_room` says when there is none.
+fn room_of_name<H: DgHost + ?Sized>(host: &H, ch: Uid, roomstr: &str) -> Result<Uid, &'static str> {
+    let (num, name) = get_number(roomstr);
+    if let Some(target_mob) = get_char_vis(host, ch, &counted(num, name), Where::World) {
+        return host
+            .in_room(target_mob)
+            .ok_or("That character is currently lost.\r\n");
+    }
+    // `get_char_vis` counted `num` down as it passed matches; the object
+    // search carries on from what is left.
+    let left = remaining_count(host, ch, num, name);
+    let Some(target_obj) = get_obj_vis(host, ch, &counted(left, name)) else {
+        return Err("Nothing exists by that name.\r\n");
+    };
+    host.in_room(target_obj)
+        .or_else(|| {
+            host.obj_carried_by(target_obj)
+                .and_then(|holder| host.in_room(holder))
+        })
+        .or_else(|| {
+            host.obj_worn_by(target_obj)
+                .and_then(|wearer| host.in_room(wearer))
+        })
+        .ok_or("That object is currently not in a room.\r\n")
 }
 
 /// `N.name` with the count spelled the way `get_number` reads it.
@@ -503,10 +504,8 @@ pub(crate) fn find_obj_target_room<H: DgHost + ?Sized>(
     } else if let Some(target_mob) = get_char_by_obj(host, obj, &roomstr) {
         // A character in no room has no flags to read.
         host.in_room(target_mob)?
-    } else if let Some(target_obj) = get_obj_by_obj(host, obj, &roomstr) {
-        host.in_room(target_obj)?
     } else {
-        return None;
+        host.in_room(get_obj_by_obj(host, obj, &roomstr)?)?
     };
 
     if host.cmd_room_flagged(location, ROOM_GODROOM) || host.cmd_room_flagged(location, ROOM_HOUSE)
@@ -517,4 +516,180 @@ pub(crate) fn find_obj_target_room<H: DgHost + ?Sized>(
         return None;
     }
     Some(location)
+}
+
+#[cfg(test)]
+mod tests {
+    #![allow(clippy::expect_used, clippy::unwrap_used)]
+
+    use super::*;
+    use crate::commands::support::World;
+
+    fn find(w: &mut World, raw: &str) -> Option<Uid> {
+        let alice = w.player;
+        w.clear();
+        find_target_room(&mut w.host, alice, raw)
+    }
+
+    fn said(w: &World) -> Vec<String> {
+        w.sent_to(w.player)
+    }
+
+    #[test]
+    fn a_room_number_names_a_room() {
+        let mut w = World::new();
+        let room2 = w.room2;
+        assert_eq!(find(&mut w, "3002"), Some(room2));
+        assert!(said(&w).is_empty());
+        assert_eq!(find(&mut w, "9999"), None);
+        assert_eq!(said(&w), ["No room exists with that number.\r\n"]);
+        assert_eq!(find(&mut w, ""), None);
+        assert_eq!(said(&w), ["You must supply a room number or name.\r\n"]);
+        assert_eq!(find(&mut w, "   "), None);
+        // Only the first word is read, and a number with a dot is a name.
+        assert_eq!(find(&mut w, "3002 3001"), Some(room2));
+        assert_eq!(find(&mut w, "3.002"), None);
+        assert_eq!(said(&w), ["Nothing exists by that name.\r\n"]);
+        // atoi stops at the first non-digit.
+        assert_eq!(find(&mut w, "3002abc"), Some(room2));
+    }
+
+    #[test]
+    fn a_character_or_object_names_its_room() {
+        let mut w = World::new();
+        let (room, room2, bob, lamp) = (w.room, w.room2, w.player2, w.obj);
+        assert_eq!(find(&mut w, "bob"), Some(room));
+        w.host.char_to_room(bob, room2);
+        assert_eq!(find(&mut w, "bob"), Some(room2));
+        assert_eq!(find(&mut w, "lamp"), Some(room));
+        // Carried or worn: where the holder is.
+        w.host.obj_to_char(lamp, bob);
+        assert_eq!(find(&mut w, "lamp"), Some(room2));
+        w.host.equip_char(bob, lamp, 3);
+        assert_eq!(find(&mut w, "lamp"), Some(room2));
+        // In a container, the object is in no room.
+        let sack = w.host.add_obj(7100, "a sack");
+        w.host.obj_to_obj(lamp, sack);
+        w.host.obj_to_room(sack, room2);
+        assert_eq!(find(&mut w, "lamp"), None);
+        assert_eq!(said(&w), ["That object is currently not in a room.\r\n"]);
+        // A character in no room is lost.
+        w.host.char_from_room(bob);
+        assert_eq!(find(&mut w, "bob"), None);
+        assert_eq!(said(&w), ["That character is currently lost.\r\n"]);
+        assert_eq!(find(&mut w, "zed"), None);
+        assert_eq!(said(&w), ["Nothing exists by that name.\r\n"]);
+    }
+
+    #[test]
+    fn the_object_search_carries_on_counting_from_the_character_search() {
+        // `get_char_vis` counts the number off as it passes matches, and the
+        // object search starts from what is left.
+        let mut w = World::new();
+        let (room, room2) = (w.room, w.room2);
+        let statue = w.host.add_obj(1, "a guard statue");
+        w.host.set_text(statue, "alias", "guard statue");
+        w.host.obj_to_room(statue, room2);
+        // One guard (the mob) is passed over, then the first "guard" object.
+        assert_eq!(find(&mut w, "guard"), Some(room));
+        assert_eq!(find(&mut w, "1.guard"), Some(room));
+        assert_eq!(find(&mut w, "2.guard"), Some(room2));
+        assert_eq!(find(&mut w, "3.guard"), None);
+        assert_eq!(said(&w), ["Nothing exists by that name.\r\n"]);
+        // Zero and non-numeric counts are not counted down: a player of that
+        // name, or nothing; `last.` takes the last match.
+        assert_eq!(find(&mut w, "0.guard"), None);
+        assert_eq!(find(&mut w, "x.guard"), None);
+        assert_eq!(find(&mut w, "last.guard"), Some(room));
+        assert_eq!(find(&mut w, "0.bob"), Some(room));
+        // With a second guard the count is used up on characters.
+        let guard2 = w.host.add_mob(3000, "the other guard");
+        w.host.set_text(guard2, "alias", "guard");
+        w.host.char_to_room(guard2, room2);
+        assert_eq!(find(&mut w, "2.guard"), Some(room2));
+        assert_eq!(find(&mut w, "3.guard"), Some(room2));
+        assert_eq!(find(&mut w, "4.guard"), None);
+    }
+
+    #[test]
+    fn some_rooms_are_closed_to_all_but_the_highest_gods() {
+        let mut w = World::new();
+        let (room2, alice, bob) = (w.room2, w.player, w.player2);
+        w.host.set_num(room2, "flag:10", 1);
+        assert_eq!(find(&mut w, "3002"), None);
+        assert_eq!(said(&w), ["You are not godly enough to use that room!\r\n"]);
+        w.host.set_num(alice, "level", 32);
+        assert_eq!(find(&mut w, "3002"), None);
+        w.host.set_num(alice, "level", 33);
+        assert_eq!(find(&mut w, "3002"), Some(room2));
+        assert!(said(&w).is_empty());
+        w.host.set_num(alice, "level", 0);
+        w.host.set_num(room2, "flag:10", 0);
+
+        // Private rooms with company.
+        w.host.set_num(room2, "flag:9", 1);
+        w.host.char_to_room(bob, room2);
+        assert_eq!(find(&mut w, "3002"), Some(room2));
+        w.host.char_to_room(alice, room2);
+        assert_eq!(find(&mut w, "3002"), None);
+        assert_eq!(
+            said(&w),
+            ["There's a private conversation going on in that room.\r\n"]
+        );
+        w.host.set_num(room2, "flag:9", 0);
+
+        // Houses, by permission.
+        w.host.set_num(room2, "flag:11", 1);
+        assert_eq!(find(&mut w, "3002"), None);
+        assert_eq!(said(&w), ["That's private property -- no trespassing!\r\n"]);
+        w.host.globals.nums.insert("house_enter:3002".to_owned(), 1);
+        assert_eq!(find(&mut w, "3002"), Some(room2));
+    }
+
+    #[test]
+    fn the_god_room_test_comes_before_the_others() {
+        let mut w = World::new();
+        let room2 = w.room2;
+        for flag in [9, 10, 11] {
+            w.host.set_num(room2, &format!("flag:{flag}"), 1);
+        }
+        assert_eq!(find(&mut w, "3002"), None);
+        assert_eq!(said(&w), ["You are not godly enough to use that room!\r\n"]);
+    }
+
+    #[test]
+    fn contains_obj_walks_the_containers() {
+        let mut w = World::new();
+        let (a, b, c) = (
+            w.host.add_obj(1, "a"),
+            w.host.add_obj(2, "b"),
+            w.host.add_obj(3, "c"),
+        );
+        w.host.obj_to_obj(c, b);
+        w.host.obj_to_obj(b, a);
+        assert!(obj_contains_obj(&w.host, a, c));
+        assert!(obj_contains_obj(&w.host, b, c));
+        assert!(!obj_contains_obj(&w.host, c, a));
+        assert!(!obj_contains_obj(&w.host, c, c));
+        assert!(!obj_contains_obj(&w.host, w.obj, a));
+    }
+
+    #[test]
+    fn owner_log_prefixes() {
+        let mut w = World::new();
+        Owner::Mob(w.mob).log(&mut w.host, "m");
+        Owner::Obj(w.obj).log(&mut w.host, "o");
+        Owner::Wld(w.room).log(&mut w.host, "w");
+        assert_eq!(
+            w.host.logs,
+            [
+                "Mob (the guard, VNum 3000):: m",
+                "Obj (a lamp, VNum 7000):: o",
+                "Room 3001 :: w"
+            ]
+        );
+        assert_eq!(Owner::Mob(1).letter(), 'm');
+        assert_eq!(Owner::Obj(1).letter(), 'o');
+        assert_eq!(Owner::Wld(1).letter(), 'w');
+    }
 }

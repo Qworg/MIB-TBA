@@ -273,9 +273,15 @@ impl CmdHost for MockHost {
     }
 
     fn cmd_rooms_in_range(&self, start: i32, finish: i32) -> Vec<Uid> {
-        (start..=finish)
-            .filter_map(|vnum| self.real_room(vnum))
-            .collect()
+        let mut rooms: Vec<(i32, Uid)> = self
+            .entities
+            .iter()
+            .filter(|(_, entity)| entity.kind == Kind::Room)
+            .map(|(uid, _)| (self.vnum(*uid), *uid))
+            .filter(|(vnum, _)| start <= *vnum && *vnum <= finish)
+            .collect();
+        rooms.sort();
+        rooms.into_iter().map(|(_, uid)| uid).collect()
     }
 
     fn cmd_char_from_room(&mut self, ch: Uid) {

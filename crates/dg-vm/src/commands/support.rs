@@ -61,6 +61,9 @@ impl World {
         host.globals
             .texts
             .insert("objproto:7102".to_owned(), "a rock".to_owned());
+        host.globals
+            .texts
+            .insert("objproto:7000".to_owned(), "a lamp".to_owned());
         let proto = host.add_proto(900, AttachType::Mob, "g", 100, "", "say hi");
         for owner in [mob, obj, room] {
             host.attach(owner, &proto);

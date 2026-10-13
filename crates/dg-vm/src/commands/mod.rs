@@ -29,18 +29,56 @@
 //! never matches it, since the entry's terminator differs from the word's next
 //! byte.
 //!
+//! # Quirks kept
+//!
+//! - `mload`/`oload`/`wload` read the room target from the text *after* the
+//!   vnum with its leading space, so `isdigit(*target)` is asked of a space and
+//!   a room target is always refused; a trailing space counts as a target.
+//! - `wload` sets `lastloaded` for an object only when no target is given, and
+//!   says `mload: bad mob vnum`; `mzoneecho` and `mrecho` skip the charm test.
+//! - `mremember` keeps the command text with the space that followed the name;
+//!   `mforce`, `mat`, `oforce`, `wforce` pass their command on the same way, and
+//!   test it for emptiness *before* skipping that space, so a trailing space is
+//!   a command.
+//! - `mdoor` and its copies create a missing exit with every field zero, which
+//!   leaves it pointing at room number 0 until `room` is set.
+//! - `oset` is `osetval` (a prefix of `"osetval "`), `o` is `oasound`, and
+//!   `reserved` in any case is nothing.
+//! - `find_target_room` counts a `N.name` prefix down through the character
+//!   search and carries what is left into the object search.
+//! - `sub_write` reads a name with `any_one_name`, which stops at punctuation:
+//!   an id (`}123`) is therefore never a name there.
+//!
 //! # Deviations from the C
 //!
 //! - The C logs through `script_vlog` with the owner's name spliced into the
 //!   format string, so a `%` in a name is interpreted as a conversion. Here the
 //!   name is data.
-//! - Where the C would read or write out of bounds (a character in no room, a
-//!   `mjunk` word shorter than four bytes, a buffer overrun, an act code at the
-//!   end of a string) the code takes the nearest safe path and says so at the
-//!   place it happens.
-//! - Messages `act()` would offer to an NPC's `act` triggers are offered through
-//!   [`CmdHost::cmd_act_trigger`]; `sub_write` and `send_to_char` never do that
-//!   in the C and do not here.
+//! - Where the C would read or write out of bounds, crash, or overflow a
+//!   buffer, the code takes the nearest safe path and says so where it
+//!   happens: a character or object in no room (`world[NOWHERE]`), the `mjunk`
+//!   word shorter than four bytes (`arg[3]`, `arg+4`), the empty command word
+//!   that selects the NULL `RESERVED` table entry, a trailing `$` in `act`,
+//!   the fixed-size `sprintf` buffers of the zone echoes, `wmove` of an object
+//!   that is not lying in a room, and the unbounded recursion of `oat`/`wat`
+//!   (nesting is capped at 64 levels).
+//! - `sub_write` takes the room to work in as a parameter rather than reading
+//!   `IN_ROOM(ch)`, so `do_masound`'s temporary reassignment of the mob's room
+//!   needs no host support.
+//! - `mjunk` reproduces the C's clobbered buffer exactly (see
+//!   [`mob`]): `find_all_dots` rewrites `all.name` in place and the loop then
+//!   reads `arg[3]` and `arg+4` of it.
+//! - `do_oat`'s search of `object_list` for the duplicate and of the lookup
+//!   table for the owner are [`crate::host::BaseHost::exists`] tests (ids are
+//!   never reused).
+//! - `send_to_char` is [`CmdHost::cmd_send`]: a character with no descriptor
+//!   receives nothing, as in the C. `sub_write` never offers its text to an
+//!   NPC's `act` triggers; `act()` does, through [`CmdHost::cmd_act_trigger`]
+//!   (the dispatch module has no `act_mtrigger` to call).
+//! - `update_pos`, `die`, `hit`, `char_to_room` and the other `handler.c`
+//!   routines are host primitives; their internals are not ported here.
+//! - `sh_int` hit points: `script_damage` truncates to 16 bits as the C's
+//!   `GET_HIT(vict) -= dam` does.
 
 pub mod comm;
 pub mod misc;
@@ -329,6 +367,7 @@ mod tests {
 
     use super::support::*;
     use super::*;
+    use crate::host::WorldHost;
 
     #[test]
     fn strncmp_lookup_matches_prefixes_of_space_terminated_entries() {
@@ -544,6 +583,98 @@ mod tests {
                 "wlog"
             ]
         );
+    }
+
+    /// Lines as they reach the interpreters from the `.trg` corpus (after
+    /// `%…%` substitution): the `%load%` abbreviation `o`, `oset` for
+    /// `osetval`, escaped decoration in `%send%`, ids as targets.
+    #[test]
+    fn lines_from_the_trigger_corpus() {
+        let mut w = World::new();
+        let (mob, lamp, room, alice, bob) = (w.mob, w.obj, w.room, w.player, w.player2);
+        let id = |ch: Uid| crate::types::uid_text(ch);
+
+        // trg 0..: the guard that humiliates.
+        assert!(w.run_mob(
+            mob,
+            &format!(
+                "mechoaround {} The guard humiliates Alice, and blocks her way.",
+                id(alice)
+            )
+        ));
+        assert_eq!(
+            w.sent_to(bob),
+            ["The guard humiliates Alice, and blocks her way.\n\r"]
+        );
+        assert!(w.run_mob(
+            mob,
+            &format!("msend {} The guard humiliates you.", id(alice))
+        ));
+        assert_eq!(w.sent_to(alice), ["The guard humiliates you.\n\r"]);
+        // The backslash escapes of the ASCII-art `%send%` lines.
+        w.clear();
+        assert!(w.run_mob(
+            mob,
+            &format!("msend {} \\@w\\@0     \\|=\\|'    '\\|=\\|\\@n", id(alice))
+        ));
+        assert_eq!(w.sent_to(alice), ["@w@0     |=|'    '|=|@n\n\r"]);
+
+        // %force% %actor% look, %damage% %actor% 10 and -10, %teleport%.
+        assert!(w.run_mob(mob, &format!("mforce {} look", id(alice))));
+        assert_eq!(w.host.mud_commands, [(alice, " look".to_owned())]);
+        assert!(w.run_mob(mob, &format!("mdamage {} 10", id(alice))));
+        assert!(w.run_mob(mob, &format!("mdamage {} -10", id(alice))));
+        assert_eq!(w.host.num(alice, "hit"), 20);
+        assert!(w.run_mob(mob, &format!("mteleport {} 3002", id(alice))));
+        assert_eq!(w.host.in_room(alice), Some(w.room2));
+
+        // %door% 55577 west description You see trees.
+        assert!(w.run_mob(mob, "mdoor 3001 west description You see trees."));
+        assert_eq!(w.host.text(room, "exit:3:desc"), "You see trees.\r\n");
+        // %transform% -1, mgoto <vnum>, mkill by name.
+        assert!(w.run_mob(mob, "mgoto 3002"));
+        assert_eq!(w.host.in_room(mob), Some(w.room2));
+        assert!(w.run_mob(mob, "mgoto 3001"));
+
+        // %load% o 24129 %actor% inv: `o` abbreviates `obj`, `inv` is no place.
+        w.host
+            .globals
+            .texts
+            .insert("objproto:24129".to_owned(), "a pin".to_owned());
+        assert!(w.run_mob(mob, &format!("mload o 24129 {} inv", id(bob))));
+        assert_eq!(w.host.list(bob, "inventory").len(), 1);
+
+        // oset 0 4 is osetval 0 4; otimer 20; oecho with colour codes.
+        w.run_obj(lamp, "oset 0 4");
+        w.run_obj(lamp, "otimer 20");
+        assert_eq!(w.host.num(lamp, "val0"), 4);
+        assert_eq!(w.host.num(lamp, "timer"), 20);
+        w.host.char_to_room(alice, room);
+        w.clear();
+        w.run_obj(lamp, "oecho @o@gNo score!@n");
+        assert_eq!(w.sent_to(bob), ["@o@gNo score!@n\n\r"]);
+        w.clear();
+        w.run_obj(
+            lamp,
+            &format!("oechoaround {} Bob scores a @o@g3@n.", id(alice)),
+        );
+        assert_eq!(w.sent_to(bob), ["Bob scores a @o@g3@n.\n\r"]);
+        assert!(w.host.logs.is_empty());
+
+        // wsend %actor% ..., wechoaround.
+        w.run_wld(
+            room,
+            &format!("wsend {} You hack through the thicket!", id(bob)),
+        );
+        assert_eq!(
+            w.sent_to(bob).last().unwrap(),
+            "You hack through the thicket!\n\r"
+        );
+        w.run_wld(
+            room,
+            &format!("wechoaround {} Bob hacks down the thicket.", id(bob)),
+        );
+        assert!(w.host.logs.is_empty());
     }
 
     #[test]

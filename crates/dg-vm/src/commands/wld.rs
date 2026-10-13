@@ -357,3 +357,502 @@ fn do_wmove<H: DgHost + ?Sized>(host: &mut H, room: Uid, argument: &str) {
         log.log(host, "wmove: no target found");
     }
 }
+
+#[cfg(test)]
+mod tests {
+    #![allow(clippy::expect_used, clippy::unwrap_used)]
+
+    use super::*;
+    use crate::commands::support::World;
+    use crate::host::{BaseHost, WorldHost};
+    use crate::types::{AttachType, uid_text};
+
+    const PREFIX: &str = "Room 3001 :: ";
+
+    fn run(w: &mut World, line: &str) {
+        let room = w.room;
+        w.run_wld(room, line);
+    }
+
+    fn log_is(w: &World, text: &str) {
+        assert_eq!(w.log(), format!("{PREFIX}{text}"));
+    }
+
+    // ---- echoes ---------------------------------------------------------
+
+    #[test]
+    fn wecho_is_an_act_to_everyone_in_the_room() {
+        let mut w = World::new();
+        let (alice, bob) = (w.player, w.player2);
+        run(&mut w, "wecho  the ground trembles.");
+        assert_eq!(w.host.effects.len(), 2);
+        assert_eq!(
+            w.host.effects[0],
+            format!("send {alice}: The ground trembles.\r\n")
+        );
+        assert_eq!(
+            w.host.effects[1],
+            format!("send {bob}: The ground trembles.\r\n")
+        );
+        // $-codes are act's: $n is the room's first occupant (Bob).
+        w.clear();
+        run(&mut w, "wecho $n shivers; cost $$5 and $e");
+        assert_eq!(w.sent_to(alice), ["Bob shivers; cost $5 and it\r\n"]);
+        assert_eq!(w.sent_to(bob), ["Bob shivers; cost $5 and it\r\n"]);
+        // ~ and | are not act's: they stay as written.
+        w.clear();
+        run(&mut w, "wecho ~alice");
+        assert_eq!(w.sent_to(alice), ["~alice\r\n"]);
+    }
+
+    #[test]
+    fn wecho_errors_and_the_unlucky_dollar() {
+        let mut w = World::new();
+        run(&mut w, "wecho");
+        log_is(&w, "wecho called with no args");
+        run(&mut w, "wecho    ");
+        log_is(&w, "wecho called with no args");
+        w.clear();
+        run(&mut w, "wecho costs $5");
+        assert_eq!(w.sent_to(w.player), ["Costs \r\n"]);
+        assert_eq!(
+            w.effects("syslog"),
+            [
+                "syslog: SYSERR: Illegal $-code to act(): 5",
+                "syslog: SYSERR: 5"
+            ]
+            .repeat(2)
+        );
+        // An empty room is nobody to tell.
+        let mut w = World::new();
+        let room2 = w.room2;
+        w.run_wld(room2, "wecho hello");
+        assert!(w.host.effects.is_empty());
+    }
+
+    #[test]
+    fn wecho_offers_the_line_to_npcs_that_watch_for_it() {
+        let mut w = World::new();
+        let (mob, bob) = (w.mob, w.player2);
+        let act_proto = w
+            .host
+            .add_proto(901, AttachType::Mob, "e", 100, "", "say hi");
+        w.host.attach(mob, &act_proto);
+        run(&mut w, "wecho hush");
+        assert_eq!(
+            w.effects("act_trigger"),
+            [format!("act_trigger {mob} {bob}: hush\r\n")]
+        );
+    }
+
+    #[test]
+    fn wasound_goes_to_the_neighbours() {
+        let mut w = World::new();
+        let (alice, bob, room, room2) = (w.player, w.player2, w.room, w.room2);
+        w.host.char_to_room(alice, room2);
+        w.host.char_to_room(bob, room2);
+        w.host.set_link(room, "exit:1", Some(room));
+        run(&mut w, "wasound  a distant roar");
+        // Room 2's head is Bob.
+        assert_eq!(w.host.effects.len(), 2);
+        assert_eq!(
+            w.host.effects[0],
+            format!("send {alice}: A distant roar\r\n")
+        );
+        assert_eq!(w.host.effects[1], format!("send {bob}: A distant roar\r\n"));
+        run(&mut w, "wasound");
+        log_is(&w, "wasound called with no argument");
+        // Directions past DIR_COUNT are not heard.
+        w.clear();
+        w.host.set_link(room, "exit:7", Some(room2));
+        run(&mut w, "wasound x");
+        assert_eq!(w.host.effects.len(), 2);
+    }
+
+    #[test]
+    fn wsend_and_wechoaround() {
+        let mut w = World::new();
+        let (alice, bob, room2) = (w.player, w.player2, w.room2);
+        run(&mut w, "wsend alice  Psst ~alice");
+        assert_eq!(w.sent_to(alice), ["Psst you\n\r"]);
+        assert!(w.sent_to(bob).is_empty());
+        w.clear();
+        run(&mut w, "wechoaround alice ~alice sneezes");
+        assert_eq!(w.sent_to(bob), ["Alice sneezes\n\r"]);
+        assert!(w.sent_to(alice).is_empty());
+        // The target is looked for in the room first, then the world.
+        w.clear();
+        w.host.char_to_room(bob, room2);
+        run(&mut w, "wsend bob far away");
+        assert_eq!(w.sent_to(bob), ["far away\n\r"]);
+        run(&mut w, "wsend");
+        log_is(&w, "wsend called with no args");
+        run(&mut w, "wsend alice");
+        log_is(&w, "wsend called without a message");
+        run(&mut w, "wsend zed hi");
+        log_is(&w, "no target found for wsend");
+        run(&mut w, "wechoaround zed hi");
+        log_is(&w, "no target found for wsend");
+    }
+
+    #[test]
+    fn wlog_wzoneecho_wrecho_wdoor_wording() {
+        let mut w = World::new();
+        let (alice, room) = (w.player, w.room);
+        run(&mut w, "wlog");
+        assert!(w.host.logs.is_empty());
+        run(&mut w, "wlog   50% done");
+        log_is(&w, "50% done");
+        run(&mut w, "wrecho 3001 3001 Boom");
+        assert_eq!(w.sent_to(alice), ["Boom\r\n"]);
+        run(&mut w, "wrecho 3001");
+        log_is(&w, "wrecho: too few args");
+        w.host.globals.nums.insert("zone:3:bot".to_owned(), 3000);
+        w.host.globals.nums.insert("zone:3:top".to_owned(), 3099);
+        w.host.set_num(room, "zone", 3);
+        w.clear();
+        run(&mut w, "wzoneecho 3001 Tremor");
+        assert_eq!(w.sent_to(alice), ["Tremor\r\n"]);
+        run(&mut w, "wzoneecho 3001");
+        log_is(&w, "wzoneecho called with too few args");
+        run(&mut w, "wzoneecho 5000 x");
+        log_is(&w, "wzoneecho called for nonexistant zone");
+        run(&mut w, "wdoor 3001 north key 4");
+        assert_eq!(w.host.num(room, "exit:0:key"), 4);
+        run(&mut w, "wdoor 3001");
+        log_is(&w, "wdoor called with too few args");
+        run(&mut w, "wdoor 3001 north room 1");
+        log_is(&w, "wdoor: invalid door target (arg == 1)");
+    }
+
+    // ---- people ---------------------------------------------------------
+
+    #[test]
+    fn wteleport_one_or_all() {
+        let mut w = World::new();
+        let (alice, bob, mob, room2) = (w.player, w.player2, w.mob, w.room2);
+        run(&mut w, "wteleport alice 3002");
+        assert_eq!(w.host.in_room(alice), Some(room2));
+        run(&mut w, "wteleport all 3002");
+        assert_eq!(w.host.in_room(bob), Some(room2));
+        assert_eq!(w.host.in_room(mob), Some(room2));
+        // Anyone in the world can be named.
+        run(&mut w, "wteleport alice 3001");
+        assert_eq!(w.host.in_room(alice), Some(w.room));
+        assert!(w.host.logs.is_empty());
+        // The untargetable stay put.
+        w.host.set_num(alice, "dg_invalid", 1);
+        run(&mut w, "wteleport alice 3002");
+        assert_eq!(w.host.in_room(alice), Some(w.room));
+    }
+
+    #[test]
+    fn wteleport_errors() {
+        let mut w = World::new();
+        run(&mut w, "wteleport");
+        log_is(&w, "wteleport called with too few args");
+        run(&mut w, "wteleport alice");
+        log_is(&w, "wteleport called with too few args");
+        run(&mut w, "wteleport alice 9999");
+        log_is(&w, "wteleport target is an invalid room");
+        run(&mut w, "wteleport alice bob");
+        log_is(&w, "wteleport target is an invalid room");
+        run(&mut w, "wteleport zed 3002");
+        log_is(&w, "wteleport: no target found");
+        run(&mut w, "wteleport all 3001");
+        log_is(&w, "wteleport all target is itself");
+        // Single targets are not checked for being already there.
+        run(&mut w, "wteleport alice 3001");
+        assert_eq!(w.host.in_room(w.player), Some(w.room));
+    }
+
+    #[test]
+    fn wforce_one_or_all() {
+        let mut w = World::new();
+        let (alice, bob, mob) = (w.player, w.player2, w.mob);
+        run(&mut w, "wforce alice say hi");
+        assert_eq!(w.host.mud_commands, [(alice, " say hi".to_owned())]);
+        w.host.mud_commands.clear();
+        run(&mut w, "wforce all wave");
+        assert_eq!(
+            w.host.mud_commands,
+            [
+                (bob, " wave".to_owned()),
+                (alice, " wave".to_owned()),
+                (mob, " wave".to_owned())
+            ]
+        );
+        w.host.mud_commands.clear();
+        w.host.set_num(alice, "dg_invalid", 1);
+        run(&mut w, "wforce alice wave");
+        run(&mut w, "wforce all wave");
+        assert_eq!(w.host.mud_commands.len(), 2);
+        run(&mut w, "wforce");
+        log_is(&w, "wforce called with too few args");
+        run(&mut w, "wforce bob");
+        log_is(&w, "wforce called with too few args");
+        run(&mut w, "wforce zed wave");
+        log_is(&w, "wforce: no target found");
+    }
+
+    #[test]
+    fn wdamage_hurts() {
+        let mut w = World::new();
+        let alice = w.player;
+        run(&mut w, "wdamage alice 4");
+        assert_eq!(w.host.num(alice, "hit"), 16);
+        w.host.char_to_room(alice, w.room2);
+        run(&mut w, "wdamage alice 4");
+        assert_eq!(w.host.num(alice, "hit"), 12);
+        run(&mut w, "wdamage alice");
+        log_is(&w, "wdamage: bad syntax");
+        run(&mut w, "wdamage zed 4");
+        log_is(&w, "wdamage: target not found");
+    }
+
+    // ---- purging, loading, moving ---------------------------------------
+
+    #[test]
+    fn wpurge_everything_or_one_thing() {
+        let mut w = World::new();
+        let (mob, alice, lamp, room) = (w.mob, w.player, w.obj, w.room);
+        run(&mut w, "wpurge");
+        assert!(w.host.is_dead(mob) && !w.host.is_dead(alice));
+        assert!(!w.host.exists(lamp));
+        let rock = w.host.add_obj(1, "a rock");
+        w.host.set_text(rock, "alias", "rock");
+        w.host.obj_to_room(rock, room);
+        let rat = w.host.add_mob(3100, "a rat");
+        w.host.char_to_room(rat, room);
+        run(&mut w, "wpurge rock");
+        assert!(!w.host.exists(rock));
+        run(&mut w, "wpurge rat");
+        assert!(w.host.is_dead(rat));
+        run(&mut w, "wpurge alice");
+        log_is(&w, "wpurge: purging a PC");
+        run(&mut w, "wpurge zed");
+        log_is(&w, "wpurge: bad argument");
+        run(&mut w, "wpurge }999");
+        log_is(&w, "wpurge: bad argument");
+        // By id, from anywhere.
+        let far = w.host.add_obj(2, "a gem");
+        w.host.obj_to_room(far, w.room2);
+        run(&mut w, &format!("wpurge {}", uid_text(far)));
+        assert!(!w.host.exists(far));
+        // A character in another room is not found by name.
+        let other = w.host.add_mob(3100, "a bat");
+        w.host.char_to_room(other, w.room2);
+        w.host.set_text(other, "alias", "bat");
+        run(&mut w, "wpurge bat");
+        log_is(&w, "wpurge: bad argument");
+        run(&mut w, &format!("wpurge {}", uid_text(other)));
+        assert!(w.host.is_dead(other));
+    }
+
+    #[test]
+    fn wload_mob_and_obj_into_the_room() {
+        let mut w = World::new();
+        let (room, room2) = (w.room, w.room2);
+        run(&mut w, "wload mob 3100");
+        let rat = w.host.list(room, "people")[0];
+        assert_eq!(w.host.vnum(rat), 3100);
+        assert_eq!(
+            w.host
+                .script(room)
+                .unwrap()
+                .global_vars
+                .get("lastloaded")
+                .unwrap()
+                .value,
+            uid_text(rat)
+        );
+        run(&mut w, "wload obj 7102");
+        let rock = *w.host.list(room, "contents").last().unwrap();
+        assert_eq!(w.host.vnum(rock), 7102);
+        assert_eq!(
+            w.host
+                .script(room)
+                .unwrap()
+                .global_vars
+                .get("lastloaded")
+                .unwrap()
+                .value,
+            uid_text(rock)
+        );
+        // A target room is given as a number, but only the very first
+        // character counts, which is a space.
+        run(&mut w, "wload mob 3100 3002");
+        log_is(
+            &w,
+            "wload: room target vnum doesn't exist (loading mob vnum 3100 to room  3002)",
+        );
+        assert!(w.host.list(room2, "people").is_empty());
+    }
+
+    #[test]
+    fn wload_obj_onto_a_character_or_into_a_container_forgets_lastloaded() {
+        let mut w = World::new();
+        let (room, alice, room2) = (w.room, w.player, w.room2);
+        w.host.script_mut(room).unwrap().global_vars.vars.clear();
+        run(&mut w, "wload obj 7101 alice");
+        assert_eq!(w.host.list(alice, "inventory").len(), 1);
+        run(&mut w, "wload obj 7101 alice rfinger");
+        assert!(w.host.equipment(alice, 1).is_some());
+        let sack = w.host.add_obj(7100, "a sack");
+        w.host.set_text(sack, "alias", "sack");
+        w.host.set_num(sack, "type", 15);
+        w.host.obj_to_room(sack, room);
+        run(&mut w, "wload obj 7102 sack");
+        assert_eq!(w.host.list(sack, "contents").len(), 1);
+        // Only the no-target form sets the variable.
+        assert!(
+            w.host
+                .script(room)
+                .unwrap()
+                .global_vars
+                .get("lastloaded")
+                .is_none()
+        );
+        // Characters and containers are looked for in this room only.
+        let far = w.host.add_obj(7100, "a chest");
+        w.host.set_text(far, "alias", "chest");
+        w.host.set_num(far, "type", 15);
+        w.host.obj_to_room(far, room2);
+        let before = w.host.list(room, "contents").len();
+        run(&mut w, "wload obj 7102 chest");
+        assert!(w.host.list(far, "contents").is_empty());
+        assert_eq!(w.host.list(room, "contents").len(), before + 1);
+        // A script-less room still loads.
+        w.host.remove_script(room);
+        run(&mut w, "wload mob 3100");
+        assert!(w.host.script(room).is_none());
+    }
+
+    #[test]
+    fn wload_errors_with_the_c_wording() {
+        let mut w = World::new();
+        for line in ["wload", "wload mob", "wload mob x", "wload mob -1"] {
+            run(&mut w, line);
+            log_is(&w, "wload: bad syntax");
+        }
+        // (The C says "mload" here.)
+        run(&mut w, "wload mob 9999");
+        log_is(&w, "mload: bad mob vnum");
+        run(&mut w, "wload obj 9999");
+        log_is(&w, "wload: bad object vnum");
+        run(&mut w, "wload thing 1");
+        log_is(&w, "wload: bad type");
+    }
+
+    #[test]
+    fn wat_runs_a_command_as_another_room() {
+        let mut w = World::new();
+        let bob = w.player2;
+        w.host.char_to_room(bob, w.room2);
+        run(&mut w, "wat 3002 wecho Over here");
+        assert_eq!(w.sent_to(bob), ["Over here\r\n"]);
+        run(&mut w, "wat 3002 wlog from there");
+        assert_eq!(w.log(), "Room 3002 :: from there");
+        run(&mut w, "wat bob wlog by name");
+        assert_eq!(w.log(), "Room 3002 :: by name");
+        // Nested.
+        run(&mut w, "wat 3002 wat 3001 wlog back");
+        log_is(&w, "back");
+        run(&mut w, "wat");
+        log_is(&w, "wat called with no args");
+        run(&mut w, "wat 3002");
+        log_is(&w, "wat called without a command");
+        run(&mut w, "wat 9999 wlog x");
+        log_is(&w, "wat: location not found (9999)");
+        run(&mut w, "wat zed wlog x");
+        log_is(&w, "wat: location not found (zed)");
+        // An unknown command is the other room's complaint.
+        run(&mut w, "wat 3002 frob");
+        assert_eq!(w.log(), "Room 3002 :: Unknown world cmd: 'frob'");
+    }
+
+    #[test]
+    fn wat_nesting_is_bounded() {
+        let mut w = World::new();
+        let line = format!("{}wlog deep", "wat 3001 ".repeat(100));
+        run(&mut w, &line);
+        log_is(&w, "wat: commands nested too deeply");
+        assert_eq!(w.host.logs.len(), 1);
+    }
+
+    #[test]
+    fn wmove_moves_objects_between_rooms() {
+        let mut w = World::new();
+        let (lamp, room, room2) = (w.obj, w.room, w.room2);
+        let rock = w.host.add_obj(1, "a rock");
+        w.host.set_text(rock, "alias", "rock");
+        w.host.obj_to_room(rock, room);
+        run(&mut w, "wmove rock 3002");
+        assert_eq!(w.host.in_room(rock), Some(room2));
+        assert_eq!(w.host.in_room(lamp), Some(room));
+        run(&mut w, "wmove all 3002");
+        assert_eq!(w.host.in_room(lamp), Some(room2));
+        assert!(w.host.list(room, "contents").is_empty());
+        assert_eq!(w.host.list(room2, "contents"), [rock, lamp]);
+    }
+
+    #[test]
+    fn wmove_errors() {
+        let mut w = World::new();
+        run(&mut w, "wmove");
+        log_is(&w, "wmove called with too few args");
+        run(&mut w, "wmove lamp");
+        log_is(&w, "wmove called with too few args");
+        run(&mut w, "wmove lamp 9999");
+        log_is(&w, "wmove target is an invalid room");
+        run(&mut w, "wmove lamp 3001");
+        log_is(&w, "wmove target room is itself");
+        run(&mut w, "wmove all 3001");
+        log_is(&w, "wmove target room is itself");
+        run(&mut w, "wmove zed 3002");
+        log_is(&w, "wmove: no target found");
+        // An object found elsewhere in the world that is not lying in a room
+        // is left alone.
+        let ring = w.host.add_obj(1, "a ring");
+        w.host.set_text(ring, "alias", "ring");
+        w.host.obj_to_char(ring, w.player);
+        w.clear();
+        run(&mut w, "wmove ring 3002");
+        assert_eq!(w.host.obj_carried_by(ring), Some(w.player));
+        assert_eq!(
+            w.effects("syslog"),
+            ["syslog: SYSERR: NULL object or obj not in a room passed to obj_from_room"]
+        );
+    }
+
+    // ---- hostile input --------------------------------------------------
+
+    #[test]
+    fn hostile_arguments_do_not_panic() {
+        let mut w = World::new();
+        let nasty = [
+            String::new(),
+            " ".to_owned(),
+            "\u{e9}\u{e9}\u{e9}".to_owned(),
+            "}".to_owned(),
+            "}}}}999999999999999999999999".to_owned(),
+            "-".to_owned(),
+            "\\".to_owned(),
+            "$".to_owned(),
+            "~~~|||^^^&&&***```".to_owned(),
+            "\u{1f600} ~\u{1f600} `\u{1f600}".to_owned(),
+            "x".repeat(20_000),
+            "99999999999999999999 99999999999999999999".to_owned(),
+            "-2147483648 -2147483648 x".to_owned(),
+        ];
+        for (command, _) in WLD_CMD_INFO {
+            let command = command.trim_end();
+            for arg in &nasty {
+                run(&mut w, &format!("{command} {arg}"));
+                run(&mut w, &format!("{command} {arg} {arg} {arg}"));
+                run(&mut w, &format!("{command} 3001 {arg} {arg}"));
+                run(&mut w, &format!("{command} {arg} 3001 {arg}"));
+            }
+        }
+    }
+}
