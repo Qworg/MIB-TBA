@@ -19,7 +19,9 @@
 mod common;
 
 use common::corpus::Record;
-use common::scene::{Scene, assert_clean, heard, heard_raw, other_effects, said, vnums};
+use common::scene::{
+    Scene, act_line, assert_clean, echo_all, heard, heard_raw, other_effects, said, sub_line, vnums,
+};
 use common::world::{
     PERCENT_ROLL, commands, global_var, install, install_record, local_var, run_waits,
 };
@@ -71,6 +73,12 @@ fn trigger_53_walks_the_words_of_a_speech_with_car_and_cdr() {
     ];
     assert_eq!(heard(&scene.fx.host, player), expected);
     assert_eq!(heard(&scene.fx.host, watcher), expected);
+    // Every echo goes to Tester first and to the head of the room, Watcher, last.
+    assert_eq!(
+        scene.fx.host.effects,
+        echo_all(&scene.fx.host, room, &expected, "\r\n")
+    );
+    assert!(scene.fx.host.mud_commands.is_empty());
     assert!(scene.fx.host.logs.is_empty());
     assert!(scene.fx.host.waits.is_empty());
     assert_clean(&scene.fx.host);
@@ -116,14 +124,26 @@ fn trigger_37_flips_a_coin_to_heads_or_tails() {
             heard(&scene.fx.host, scene.watcher),
             vec![
                 "Tester flips a coin high up into the air.".to_owned(),
-                landed
+                landed.clone()
             ]
         );
+        // oechoaround (all but the flipper), osend, then oecho (the whole room).
+        let (player, watcher) = (scene.player(), scene.watcher);
+        let mut effects = vec![
+            sub_line(watcher, "Tester flips a coin high up into the air."),
+            sub_line(player, "You flip the coin up into the air."),
+        ];
+        effects.extend(echo_all(&scene.fx.host, scene.room(), &[&landed], "\n\r"));
+        assert_eq!(scene.fx.host.effects, effects);
+        assert!(scene.fx.host.rolls.is_empty());
+        assert!(scene.fx.host.mud_commands.is_empty());
+        assert!(scene.fx.host.waits.is_empty());
         assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
         assert_clean(&scene.fx.host);
     }
     // A prefix of "quarter" also matches.
-    let (scene, _) = flip(&real!(37), "quar", 1);
+    let (scene, ret) = flip(&real!(37), "quar", 1);
+    assert_eq!(ret, 1);
     assert_eq!(heard(&scene.fx.host, scene.player()).len(), 2);
 }
 
@@ -132,8 +152,10 @@ fn trigger_37_refuses_to_flip_anything_else() {
     let record = real!(37);
     let (scene, ret) = flip(&record, "sword", 1);
     assert_eq!(ret, 1);
-    assert_eq!(heard(&scene.fx.host, scene.player()), vec!["flip What?"]);
-    assert!(heard(&scene.fx.host, scene.watcher).is_empty());
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![sub_line(scene.player(), "flip What?")]
+    );
     assert!(scene.fx.host.rolls.len() == 1, "no roll is taken");
 }
 
@@ -178,6 +200,23 @@ fn trigger_45_shotgun_fires_twice_then_detaches() {
             global_var(&scene.fx.host, gun, "shotgun_rounds"),
             Some(shot.to_string())
         );
+        // oechoaround, osend; odamage deals 10 without a pain message.
+        assert_eq!(
+            scene.fx.host.effects,
+            vec![
+                sub_line(
+                    watcher,
+                    "Tester points a shotgun at a city guard and pulls the trigger."
+                ),
+                sub_line(
+                    player,
+                    "You point a shotgun at a city guard and pull the trigger."
+                ),
+            ]
+        );
+        assert!(scene.fx.host.mud_commands.is_empty());
+        assert!(scene.fx.host.waits.is_empty());
+        assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
         assert_clean(&scene.fx.host);
     }
 
@@ -218,6 +257,7 @@ fn trigger_3010_devours_a_corpse_in_the_room() {
     );
     assert_eq!(scene.fx.host.effects, vec![format!("extract_obj {corpse}")]);
     assert_eq!(scene.fx.host.list(scene.room(), "contents"), vec![bench]);
+    assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
 }
@@ -263,6 +303,11 @@ fn trigger_1376_lists_what_a_container_holds() {
     let expected = vec!["firing", "contains: 12", "contains: 11"];
     assert_eq!(heard(&scene.fx.host, player), expected);
     assert_eq!(heard(&scene.fx.host, watcher), expected);
+    assert_eq!(
+        scene.fx.host.effects,
+        echo_all(&scene.fx.host, scene.room(), &expected, "\n\r")
+    );
+    assert!(scene.fx.host.mud_commands.is_empty());
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
 }
@@ -280,6 +325,10 @@ fn oecho_lines_end_in_newline_return() {
     dispatch::command_otrigger(scene.host(), player, "testing", "");
     assert_eq!(heard_raw(&scene.fx.host, player), vec!["firing\n\r"]);
     assert_eq!(heard_raw(&scene.fx.host, watcher), vec!["firing\n\r"]);
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![sub_line(player, "firing"), sub_line(watcher, "firing")]
+    );
 }
 
 // Trigger 53 with the line ends as written. wecho is act_to_room(), whose
@@ -303,15 +352,17 @@ fn wecho_lines_end_in_return_newline() {
     assert_eq!(heard_raw(&scene.fx.host, watcher), expected);
     // act_to_room: `act(.., TO_ROOM)` reaches everyone but the head of
     // room->people (Watcher) first, then `act(.., TO_CHAR)` reaches the head.
-    assert_eq!(
-        scene.fx.host.effects[..4],
-        [
-            format!("send {player}: The first word is: go\r\n"),
-            format!("send {watcher}: The first word is: go\r\n"),
-            format!("send {player}: The rest of the string is: \r\n"),
-            format!("send {watcher}: The rest of the string is: \r\n"),
-        ]
-    );
+    let mut effects = Vec::new();
+    for text in [
+        "The first word is: go",
+        "The rest of the string is: ",
+        "The first word is: go",
+        "The remaining text is: ",
+    ] {
+        effects.push(act_line(player, text));
+        effects.push(act_line(watcher, text));
+    }
+    assert_eq!(scene.fx.host.effects, effects);
 }
 
 // ---------------------------------------------------------------------
@@ -365,6 +416,21 @@ fn trigger_189_loads_the_ball_and_drops_it_on_the_newcomer() {
         vec!["A magic eight ball drops from the sky striking Tester on the head."]
     );
     assert_eq!(scene.fx.host.num(player, "hit"), 96);
+    // wechoaround (all but the actor), wsend; wdamage 4 is too small to hurt.
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(
+                scene.watcher,
+                "A magic eight ball drops from the sky striking Tester on the head."
+            ),
+            sub_line(
+                player,
+                "A magic eight ball drops from the sky striking you on the head."
+            ),
+        ]
+    );
+    assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
 }
@@ -377,6 +443,8 @@ fn trigger_189_does_not_load_a_second_ball() {
     run_waits(scene.host(), 5);
     assert_eq!(scene.fx.host.num(scene.player(), "hit"), 96);
     assert_eq!(scene.fx.host.list(room, "contents").len(), 1);
+    assert_eq!(scene.fx.host.effects.len(), 2);
+    assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.logs.is_empty());
 }
 
@@ -414,6 +482,20 @@ fn trigger_12_drops_the_ball_on_the_head() {
     let contents = scene.fx.host.list(room, "contents");
     assert_eq!(vnums(&scene.fx.host, &contents), vec![3020, 1394]);
     assert_eq!(scene.fx.host.num(player, "hit"), 97);
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(
+                watcher,
+                "A magic eight ball drops from the sky striking Tester on the head."
+            ),
+            sub_line(
+                player,
+                "A magic eight ball drops from the sky striking you on the head."
+            ),
+        ]
+    );
+    assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
 }
@@ -450,15 +532,23 @@ fn trigger_21_transforms_into_the_rolled_mob() {
     );
     // do_mtransform sends no message: the transform, then `extract_char(m)`
     // of the fresh mob it copied from (never the mob itself).
-    let effects = &scene.fx.host.effects;
-    assert_eq!(effects.len(), 2, "{effects:?}");
-    assert_eq!(effects[0], format!("transform_mob {mob} 106 true"));
-    let temp: Uid = effects[1]
+    let extracted = scene.fx.host.effects.get(1).cloned().unwrap_or_default();
+    let temp: Uid = extracted
         .strip_prefix("extract_char ")
         .and_then(|text| text.parse().ok())
         .expect("the temporary mob is extracted");
     assert_ne!(temp, mob);
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            format!("transform_mob {mob} 106 true"),
+            format!("extract_char {temp}"),
+        ]
+    );
+    assert!(scene.fx.host.is_dead(temp));
     assert_eq!(scene.fx.host.text(mob, "name"), "a hill giant");
+    assert!(scene.fx.host.waits.is_empty());
+    assert!(scene.fx.host.rolls.is_empty());
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
 }
@@ -516,6 +606,29 @@ fn trigger_24_strikes_everyone_with_lightning_in_turn() {
             (player, " look".to_owned()),
         ]
     );
+    // Each line goes to the room as it is when the line runs: Watcher's turn
+    // (wsend "You are next!", then the echo, then the echoaround for Tester),
+    // the guard's turn (echo and echoaround for Tester only: the guard has no
+    // descriptor), and Tester's own turn.
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(watcher, "You are next!"),
+            act_line(player, "I am targetting Watcher."),
+            act_line(watcher, "I am targetting Watcher."),
+            sub_line(
+                player,
+                "Watcher is struck by a bolt of lightning. Leaving only a pile of ash."
+            ),
+            act_line(player, "I am targetting a city guard."),
+            sub_line(
+                player,
+                "a city guard is struck by a bolt of lightning. Leaving only a pile of ash."
+            ),
+            sub_line(player, "You are next!"),
+            act_line(player, "I am targetting Tester."),
+        ]
+    );
     assert!(scene.fx.host.list(room, "people").is_empty());
     let void = dg_vm::types::ROOM_ID_BASE + 3;
     assert_eq!(scene.fx.host.list(void, "people").len(), 3);
@@ -545,6 +658,15 @@ fn trigger_25_catches_looking_at_the_window() {
     let expected = vec!["Tester typed l to look at the window."];
     assert_eq!(heard(&scene.fx.host, player), expected);
     assert_eq!(heard(&scene.fx.host, watcher), expected);
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            act_line(player, "Tester typed l to look at the window."),
+            act_line(watcher, "Tester typed l to look at the window."),
+        ]
+    );
+    assert!(scene.fx.host.mud_commands.is_empty());
+    assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
 }
 
@@ -562,6 +684,8 @@ fn trigger_25_lets_every_other_command_through() {
             "{cmd} {arg}"
         );
         assert!(scene.fx.host.effects.is_empty(), "{cmd} {arg}");
+        assert!(scene.fx.host.mud_commands.is_empty(), "{cmd} {arg}");
+        assert!(scene.fx.host.logs.is_empty(), "{cmd} {arg}");
     }
 }
 
@@ -575,6 +699,15 @@ fn trigger_25_lets_every_other_command_through() {
 // follows nobody, and `return 0` blocks it. A follower, or a player, passes
 // (the default return of 1).
 // ---------------------------------------------------------------------
+/// The four descriptive lines that open trigger 26, each logged as an
+/// unknown world command.
+const TRIGGER_26_HEADER: [&str; 4] = [
+    "Room 3001 :: Unknown world cmd: 'Name: 'Blocks Mobs Not Following',  VNum: [   26], RNum: [   26]'",
+    "Room 3001 :: Unknown world cmd: 'Trigger Intended Assignment: Rooms'",
+    "Room 3001 :: Unknown world cmd: 'Trigger Type: Enter , Numeric Arg: 100, Arg list: None'",
+    "Room 3001 :: Unknown world cmd: 'Commands:'",
+];
+
 fn blocks_mobs(record: &Record, setup: impl FnOnce(&mut Scene) -> Uid) -> (Scene, i32) {
     let mut scene = Scene::new();
     let room = scene.room();
@@ -588,15 +721,10 @@ fn blocks_mobs(record: &Record, setup: impl FnOnce(&mut Scene) -> Uid) -> (Scene
 fn trigger_26_blocks_a_mob_that_follows_nobody() {
     let (scene, ret) = blocks_mobs(&real!(26), |scene| scene.guard());
     assert_eq!(ret, 0);
-    assert_eq!(
-        scene.fx.host.logs,
-        vec![
-            "Room 3001 :: Unknown world cmd: 'Name: 'Blocks Mobs Not Following',  VNum: [   26], RNum: [   26]'",
-            "Room 3001 :: Unknown world cmd: 'Trigger Intended Assignment: Rooms'",
-            "Room 3001 :: Unknown world cmd: 'Trigger Type: Enter , Numeric Arg: 100, Arg list: None'",
-            "Room 3001 :: Unknown world cmd: 'Commands:'",
-        ]
-    );
+    assert_eq!(scene.fx.host.logs, TRIGGER_26_HEADER);
+    assert!(scene.fx.host.effects.is_empty());
+    assert!(scene.fx.host.mud_commands.is_empty());
+    assert!(scene.fx.host.waits.is_empty());
 }
 
 #[test]
@@ -607,10 +735,12 @@ fn trigger_26_lets_followers_and_players_in() {
         guard
     });
     assert_eq!(ret, 1);
-    assert_eq!(scene.fx.host.logs.len(), 4);
+    assert_eq!(scene.fx.host.logs, TRIGGER_26_HEADER);
+    assert!(scene.fx.host.effects.is_empty());
     let (scene, ret) = blocks_mobs(&real!(26), |scene| scene.player());
     assert_eq!(ret, 1);
-    assert_eq!(scene.fx.host.logs.len(), 4);
+    assert_eq!(scene.fx.host.logs, TRIGGER_26_HEADER);
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 // ---------------------------------------------------------------------
@@ -649,12 +779,35 @@ fn trigger_34_tells_players_mobs_and_objects_apart() {
                 verdict.to_owned()
             ]
         );
+        // wecho: the whole room hears each line.
+        assert_eq!(
+            scene.fx.host.effects,
+            echo_all(
+                &scene.fx.host,
+                scene.room(),
+                &[
+                    &format!("Tester is targetting {arg} IS_PC: {flag}"),
+                    verdict
+                ],
+                "\r\n"
+            )
+        );
+        assert!(scene.fx.host.mud_commands.is_empty());
         assert!(scene.fx.host.logs.is_empty());
     }
     let scene = target(&real!(34), "bench");
     assert_eq!(
         heard(&scene.fx.host, scene.player()),
         vec!["Tester is targetting bench IS_PC: -1", "It is an object."]
+    );
+    assert_eq!(
+        scene.fx.host.effects,
+        echo_all(
+            &scene.fx.host,
+            scene.room(),
+            &["Tester is targetting bench IS_PC: -1", "It is an object."],
+            "\r\n"
+        )
     );
     assert!(scene.fx.host.logs.is_empty());
 }
@@ -690,6 +843,19 @@ fn trigger_55_bars_men_and_neutrals_and_welcomes_women() {
         heard(&scene.fx.host, scene.watcher),
         vec!["Tester walks into an invisible barrier and a voice booms \"No men allowed.\""]
     );
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(
+                scene.player(),
+                "An invisible barrier blocks you. A voice rings out \"No men allowed.\""
+            ),
+            sub_line(
+                scene.watcher,
+                "Tester walks into an invisible barrier and a voice booms \"No men allowed.\""
+            ),
+        ]
+    );
 
     let (scene, ret) = barrier(&record, 0);
     assert_eq!(ret, 0);
@@ -700,6 +866,19 @@ fn trigger_55_bars_men_and_neutrals_and_welcomes_women() {
     assert_eq!(
         heard(&scene.fx.host, scene.watcher),
         vec!["Tester walks into an invisible barrier and a voice booms \"No... things allowed.\""]
+    );
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(
+                scene.player(),
+                "An invisible barrier blocks you. A voice rings out \"No... things allowed.\""
+            ),
+            sub_line(
+                scene.watcher,
+                "Tester walks into an invisible barrier and a voice booms \"No... things allowed.\""
+            ),
+        ]
     );
 
     let (scene, ret) = barrier(&record, 2);
@@ -712,6 +891,14 @@ fn trigger_55_bars_men_and_neutrals_and_welcomes_women() {
         heard(&scene.fx.host, scene.watcher),
         vec!["Ladies are always welcome!"]
     );
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            act_line(scene.player(), "Ladies are always welcome!"),
+            act_line(scene.watcher, "Ladies are always welcome!"),
+        ]
+    );
+    assert!(scene.fx.host.logs.is_empty());
 }
 
 // ---------------------------------------------------------------------
@@ -746,6 +933,23 @@ fn trigger_59_drenches_the_first_opener_once() {
         ]
     );
     assert_eq!(scene.fx.host.num(player, "hit"), 99);
+    // wechoaround, two wsends, wdamage (1 point: no message), wecho.
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(
+                watcher,
+                "As Tester tries to open the door to the north a bucket of water dumps on his head."
+            ),
+            sub_line(player, "Splash!!"),
+            sub_line(
+                player,
+                "A bucket of water drops on top of your head as you open the door."
+            ),
+            act_line(player, "The door slams shut again."),
+            act_line(watcher, "The door slams shut again."),
+        ]
+    );
     assert!(
         scene.fx.host.script(room).is_none(),
         "the trigger is detached and the empty script freed"
@@ -788,6 +992,8 @@ fn greeted_by(record: &Record, scene: &mut Scene, mob: Uid, actor: Uid) -> Vec<S
     scene.host().rolls.push_back(PERCENT_ROLL);
     assert_eq!(dispatch::greet_mtrigger(scene.host(), actor, 0), 1);
     assert_clean(&scene.fx.host);
+    assert!(scene.fx.host.effects.is_empty());
+    assert!(scene.fx.host.waits.is_empty());
     commands(&scene.fx.host)
 }
 
@@ -904,16 +1110,31 @@ fn trigger_40_scatters_the_inventory_and_drops_the_equipment_text() {
     // wsend ends in "\n\r" (sub_write); script_damage's send_char_pos adds
     // "That really did HURT!" (dam 99 > max_hit >> 2, act: "\r\n") and, with
     // 1 hit point left (< 25), the BLEEDING line (no colour for this player).
+    // The purge of the inventory extracts the head each time: the dagger,
+    // then the lantern. Loading and teleporting log no effect, and nobody but
+    // the victim hears anything.
+    let [dagger, lantern] = scene.fx.inventory[..] else {
+        panic!("the fixture carries two items");
+    };
     assert_eq!(
-        heard_raw(host, player),
+        host.effects,
         vec![
-            "You feel you must not have been worthy when a powerful force hurls you back through the gates.\n\r",
-            "That really did HURT!\r\n",
-            "You wish that your wounds would stop BLEEDING so much!\r\n",
-            "You drop a cloak\n\r",
-            "You drop a sword\n\r",
+            sub_line(
+                player,
+                "You feel you must not have been worthy when a powerful force hurls you back through the gates."
+            ),
+            act_line(player, "That really did HURT!"),
+            act_line(
+                player,
+                "You wish that your wounds would stop BLEEDING so much!"
+            ),
+            format!("extract_obj {dagger}"),
+            format!("extract_obj {lantern}"),
+            sub_line(player, "You drop a cloak"),
+            sub_line(player, "You drop a sword"),
         ]
     );
+    assert!(heard(host, scene.watcher).is_empty());
     assert_eq!(
         host.logs,
         vec![
@@ -967,6 +1188,116 @@ fn trigger_1396_yields_on_the_thirtieth_pass_of_a_loop() {
     assert!(scene.fx.host.waits.is_empty());
     assert_eq!(local_var(&scene.fx.host, room, id, "i"), None);
     assert!(scene.fx.host.logs.is_empty());
+    assert_clean(&scene.fx.host);
+}
+
+// ---------------------------------------------------------------------
+// Trigger 1134, object command `map` (`1 c 3`): a 45-pass loop and a map.
+//
+// The first loop sets `x11`..`x55` to "." with `while %display% < 56` from
+// 11: 45 passes, 44 of which end in a `done` whose condition still holds.
+// The 30th such `done` has cl->loops == 30, so the run yields with `wait 1`
+// (cl->loops back to 0, GET_TRIG_LOOPS 30) and `display` is 41: x11..x40 are
+// set. The resumed run does the 14 remaining passes (cl->loops 14, no second
+// yield) and the `done` with display 56 ends the loop. Then four sections
+// read the exits of the room (`%here.north%` and the rest, `here` being the
+// room number 3001), each with a three-pass loop over the four directions
+// that records the sector of every room one step beyond: GET_TRIG_LOOPS ends
+// at 44 + 4 * 3 = 56, under the cap of 100. The sector name's first letter
+// goes to x23 / x34 / x43 / x32 (north City, east Field, south Mountains, west
+// Hills); the neighbours' only exit leads back to the centre, whose x33 is
+// overwritten with X. Five `%send%` lines (osend, "\n\r") show the 5x5 grid.
+// ---------------------------------------------------------------------
+#[test]
+fn trigger_1134_yields_after_thirty_passes_and_draws_the_map() {
+    let record = real!(1134);
+    let mut scene = Scene::new();
+    let (player, room) = (scene.player(), scene.room());
+    for (dir, sector) in [(0, 1), (1, 2), (2, 5), (3, 4)] {
+        let neighbour = scene.fx.neighbours[dir];
+        scene.host().set_num(neighbour, "sector", sector);
+    }
+    let map = scene.fx.host.add_obj(3510, "a map");
+    scene.host().obj_to_char(map, player);
+    let id = install_record(scene.host(), map, &record);
+    assert_eq!(
+        dispatch::command_otrigger(scene.host(), player, "map", ""),
+        1
+    );
+    assert_eq!(scene.fx.host.waits, vec![(map, id, 1)]);
+    assert_eq!(
+        local_var(&scene.fx.host, map, id, "display").as_deref(),
+        Some("41")
+    );
+    assert_eq!(
+        local_var(&scene.fx.host, map, id, "x40").as_deref(),
+        Some(".")
+    );
+    assert_eq!(local_var(&scene.fx.host, map, id, "x41"), None);
+    assert!(scene.fx.host.effects.is_empty());
+
+    assert_eq!(run_waits(scene.host(), 5), 1);
+    assert!(scene.fx.host.waits.is_empty());
+    let rows = [
+        ". . . . .",
+        ". . C . .",
+        ". H X F .",
+        ". . M . .",
+        ". . . . .",
+    ];
+    assert_eq!(
+        scene.fx.host.effects,
+        rows.iter()
+            .map(|row| sub_line(player, row))
+            .collect::<Vec<_>>()
+    );
+    assert!(scene.fx.host.mud_commands.is_empty());
+    assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
+    assert!(scene.fx.host.exists(room));
+    assert_clean(&scene.fx.host);
+}
+
+// `==` compares non-numbers with str_cmp, `/=` and `.contains()` search with
+// str_str: all ignore case (`LOWER`). The room trigger below is offered the
+// command `test HeLLo`; `hello == HeLLo` holds, so `!=` does not, `hello /=
+// HeLLo` holds (the right side occurs in the left), so does `HeLLo /= ELL`,
+// `.contains(HEL)` finds the text and `.contains(xyz)` does not. Numbers
+// still compare as numbers when both are all digits (`10 == 010` holds), and
+// as text when one is not (`10 == 10.0`: "10" and "10.0" differ).
+#[test]
+fn comparisons_and_contains_ignore_case() {
+    let mut scene = Scene::new();
+    let (room, player) = (scene.room(), scene.player());
+    install(
+        scene.host(),
+        room,
+        9002,
+        AttachType::Wld,
+        "c",
+        100,
+        "test",
+        "if %arg% == hello\n%send% %actor% eq\nend\n\
+         if %arg% != hello\n%send% %actor% ne\nend\n\
+         if hello /= %arg%\n%send% %actor% left-has-right\nend\n\
+         if %arg% /= ELL\n%send% %actor% has-ell\nend\n\
+         if %arg% /= xyz\n%send% %actor% has-xyz\nend\n\
+         if %arg.contains(HEL)%\n%send% %actor% contains\nend\n\
+         if %arg.contains(xyz)%\n%send% %actor% never\nend\n\
+         if 10 == 010\n%send% %actor% numeric\nend\n\
+         if 10 == 10.0\n%send% %actor% never-float\nend",
+    );
+    assert_eq!(
+        dispatch::command_wtrigger(scene.host(), player, "test", " HeLLo"),
+        1
+    );
+    assert_eq!(
+        scene.fx.host.effects,
+        ["eq", "left-has-right", "has-ell", "contains", "numeric"]
+            .iter()
+            .map(|text| sub_line(player, text))
+            .collect::<Vec<_>>()
+    );
+    assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
 }
 
