@@ -501,11 +501,6 @@ mod tests {
         assert_eq!(f(&mut h, r, "down", "vnum"), "65535");
         assert_eq!(f(&mut h, r, "down", "room"), "");
         assert_eq!(f(&mut h, r, "down", "key"), "65535");
-        // A link to an entity that no longer exists is the same exit.
-        h.set_link(r, "exit:4", Some(-77));
-        assert_eq!(f(&mut h, r, "up", "vnum"), "65535");
-        assert_eq!(f(&mut h, r, "up", "room"), "");
-
         // Every direction maps to its own number.
         for (i, dir) in ["north", "east", "south", "west", "up", "down"]
             .iter()
@@ -544,6 +539,11 @@ mod tests {
         assert_eq!(f(&mut h, r, "south", "key"), "5");
         h.set_num(r, "exit:2:nowhere", 0);
         assert_eq!(h.room_exit(r, 2), None);
+        // A link to an entity that no longer exists is no exit, as the
+        // commands mock reads it.
+        h.set_link(r, "exit:2", Some(-77));
+        assert_eq!(h.room_exit(r, 2), None);
+        assert_eq!(f(&mut h, r, "south", "vnum"), "");
     }
 
     #[test]

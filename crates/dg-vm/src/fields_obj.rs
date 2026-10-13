@@ -50,7 +50,9 @@ use crate::types::{MAX_INPUT_LENGTH, Uid, parse_uid, uid_text};
 /// A vnum as the C holds it: `IDXTYPE` is `ush_int` in this tree, so
 /// `NOTHING` is 65535. A host reports it as any negative number (the mock as
 /// -1); every other vnum is passed through, so one above 65535, which the C
-/// cannot hold, is out of contract but not mistaken for `NOTHING`.
+/// cannot hold, is out of contract but not mistaken for `NOTHING`. Numeric
+/// comparisons against a script's number narrow both sides to 16 bits
+/// ([`vnum_is`]).
 pub(crate) fn c_vnum(vnum: i32) -> i32 {
     if vnum < 0 { 65535 } else { vnum }
 }
@@ -59,7 +61,7 @@ pub(crate) fn c_vnum(vnum: i32) -> i32 {
 /// them: `obj_vnum ovnum = atoi(item)` narrows the script's number to the
 /// unsigned 16-bit `IDXTYPE`, and `GET_OBJ_VNUM` is one already.
 fn vnum_is(vnum: i32, wanted: i32) -> bool {
-    vnum as u16 == wanted as u16
+    c_vnum(vnum) as u16 == wanted as u16
 }
 
 /// `item_in_list(item, list)` (`dg_variables.c`) with the vnum comparison

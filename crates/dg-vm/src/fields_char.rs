@@ -7,8 +7,8 @@
 //! its own first letter in the C).
 //!
 //! Also ported from `dg_variables.c`: `skill_percent` and `char_has_item`
-//! (with [`crate::lookup::item_in_list`] and
-//! [`crate::lookup::get_object_in_equip`]). From `spell_parser.c`:
+//! (with [`crate::fields_obj::item_in_list_c`]
+//! and [`crate::fields_obj::get_object_in_equip_c`]). From `spell_parser.c`:
 //! `find_skill_num` lives in [`crate::magic`], over the host's spell-name
 //! table.
 //!
@@ -1278,6 +1278,24 @@ mod tests {
         assert_eq!(f.s(mob, "eq", "feet"), "");
         assert_eq!(f.s(mob, "eq", "nonsense"), "");
         assert_eq!(f.s(mob, "eq", "99"), "");
+    }
+
+    #[test]
+    fn has_item_finds_an_object_worn_only_in_the_last_position() {
+        // get_object_in_equip: `for (j = 0; j < NUM_WEARS; j++)`, WEAR_HOLD
+        // (17) included.
+        let mut f = fx();
+        let mob = f.mob;
+        let held = f.host.add_obj(104, "torch");
+        f.host.equip_char(mob, held, 17);
+        assert_eq!(f.s(mob, "has_item", "104"), "1");
+        assert_eq!(f.s(mob, "has_item", "105"), "0");
+        // A prototype-less object is 65535, and a script's number narrows
+        // to 16 bits: 68536 == 65535 + 1 is 0, 131071 is 65535.
+        let corpse = f.host.add_obj(-2, "corpse");
+        f.host.equip_char(mob, corpse, 3);
+        assert_eq!(f.s(mob, "has_item", "65535"), "1");
+        assert_eq!(f.s(mob, "has_item", "131071"), "1");
     }
 
     #[test]

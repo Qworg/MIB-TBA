@@ -63,7 +63,7 @@ use crate::expr::process_eval;
 use crate::host::{BaseHost, Cx, DgHost};
 use crate::lookup::{
     get_char, get_char_by_obj, get_char_by_room, get_char_in_room, get_obj, get_obj_by_obj,
-    get_obj_by_room, get_obj_in_list, get_object_in_equip, get_room, obj_room, trgvar_in_room,
+    get_obj_by_room, get_obj_in_list, get_room, obj_room, trgvar_in_room,
 };
 use crate::text::text_processed;
 use crate::types::{AttachType, DIRS, MAX_INPUT_LENGTH, NUM_OF_DIRS, ROOM_ID_BASE, Uid, uid_text};
@@ -811,7 +811,7 @@ fn random_var<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, attach: AttachType, field:
 fn resolve_name<H: DgHost + ?Sized>(host: &H, attach: AttachType, go: Uid, name: &str) -> Ent {
     match attach {
         AttachType::Mob => {
-            if let Some(o) = get_object_in_equip(host, go, name) {
+            if let Some(o) = fields_obj::get_object_in_equip_c(host, go, name) {
                 return Ent::Obj(o);
             }
             if let Some(o) = get_obj_in_list(host, name, &host.carrying(go)) {
@@ -1375,7 +1375,7 @@ mod tests {
     #[test]
     fn a_mob_names_the_character_in_its_own_room_before_any_elsewhere() {
         // find_replacement (mob): get_char_in_room(world[IN_ROOM(ch)], name)
-        // comes before get_char_vis / get_obj_vis over the whole world.
+        // comes before get_char / get_obj over the whole world.
         let mut w = world();
         let hall = w.host.add_room(1, "Hall");
         let far = w.host.add_mob(4000, "rat");
@@ -2120,6 +2120,28 @@ mod tests {
         let room = w.room;
         w.host.set_num(room, "exit:2:flags", 1);
         assert_eq!(sub(&mut w, "[%random.dir%]"), "[]");
+    }
+
+    #[test]
+    fn findobj_narrows_the_room_vnum_and_a_variable_names_worn_objects_by_vnum() {
+        let mut w = world();
+        // dg_variables.c findobj: real_room(atoi(field)) with a 16-bit vnum.
+        assert_eq!(
+            sub(&mut w, "%findobj.68537(3020)%"),
+            sub(&mut w, "%findobj.3001(3020)%")
+        );
+        assert_eq!(sub(&mut w, "%findobj.3001(3020)%"), "1");
+        // find_replacement (mob): get_object_in_equip(ch, name) with
+        // `obj_vnum ovnum = atoi(name)`, compared with an IDXTYPE.
+        let guard = w.guard;
+        let corpse = w.host.add_obj(-1, "corpse");
+        w.host.set_text(corpse, "name", "the corpse of a rat");
+        w.host.equip_char(guard, corpse, 3);
+        set_global(&mut w, guard, "x", "65535", 0);
+        assert_eq!(sub(&mut w, "%x.shortdesc%"), "the corpse of a rat");
+        assert_eq!(sub(&mut w, "%self.has_item(65535)%"), "1");
+        set_global(&mut w, guard, "x", "131071", 0);
+        assert_eq!(sub(&mut w, "%x.shortdesc%"), "the corpse of a rat");
     }
 
     #[test]
@@ -2929,7 +2951,7 @@ mod integration {
         // The weapon under /=: the leaf is substituted after the split.
         assert!(truth(&mut g, "%actor.eq(wield).shortdesc% /= sharp"));
         assert!(!truth(&mut g, "%actor.eq(wield).shortdesc% /= dull"));
-        // 30.trg:3011: a string and a numeric test joined by &&.
+        // 30.trg:229 (trigger 3011): a string and a numeric test joined by &&.
         g.trig.vars.add_var("item", &uid_text(g.lamp), 0);
         g.host.set_num(g.lamp, "cost", 10);
         assert!(truth(
@@ -3281,7 +3303,7 @@ end";
     #[test]
     fn a_zone_echo_line_and_the_dynamic_path_trick_substitute() {
         let mut g = game();
-        // 30.trg:3013 (the Newbie Tour Guide Loader).
+        // 30.trg:250 (trigger 3013, the Newbie Tour Guide Loader).
         g.trig.vars.add_var("inroom", &uid_text(g.temple), 0);
         assert_eq!(
             sub(
