@@ -240,7 +240,7 @@ fn knows_class_skill(class: &TbaClassDef, skill: &str) -> bool {
 }
 
 /// The class/level gate. `Some(message)` is a denial, `None` means allowed.
-fn skill_gate(
+pub(crate) fn skill_gate(
     content: &TbaContent,
     progress: &TbaProgress,
     skill: &str,

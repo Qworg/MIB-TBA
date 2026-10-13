@@ -10,7 +10,15 @@
 //! The pack handlers cannot test the engine's `HandledCommands` themselves:
 //! `route_commands` marks every command it routes handled (the genre commands
 //! excepted), so by the time a handler runs the mark says nothing about a
-//! trigger. [`DgClaimed`] holds only what the DG intake claimed this frame.
+//! trigger. [`DgClaimed`] therefore holds every command handled *before*
+//! routing, whoever marked it: [`fold_handled`] adds what other intake
+//! systems (an item or cast refusal in `PreCommit`) marked, so a handler
+//! that tests [`is_claimed`] honours all of them.
+//!
+//! The gate and the pre-commit triggers run before the router, which cannot
+//! be asked yet whether it will drop a command for the rate limit: a flooded
+//! line is offered to them as if it were run. The `speech` triggers run after
+//! the router and skip what it did not carry out.
 //!
 //! Every command received in a frame is offered to the gate (and to the
 //! pre-commit triggers in [`super::movement`]) before any is routed, so a
@@ -78,6 +86,28 @@ pub(super) fn claim(world: &mut World, msg: &CommandReceived) {
             session: msg.session,
             payload: OutboundPayload::text(TextChannel::Prompt, "> "),
         });
+    }
+}
+
+/// After `DgIntake::PreCommit` and before the router: record in [`DgClaimed`]
+/// every command that is already handled, whichever intake system marked it.
+pub fn fold_handled(world: &mut World, mut cursor: Local<MessageCursor<CommandReceived>>) {
+    let ids: Vec<CommandId> = {
+        let Some(messages) = world.get_resource::<Messages<CommandReceived>>() else {
+            return;
+        };
+        let Some(handled) = world.get_resource::<HandledCommands>() else {
+            return;
+        };
+        cursor
+            .read(messages)
+            .map(|msg| msg.id)
+            .filter(|id| handled.is_handled(*id))
+            .collect()
+    };
+    let mut claimed = world.get_resource_or_insert_with(DgClaimed::default);
+    for id in ids {
+        claimed.insert(id);
     }
 }
 
@@ -246,6 +276,11 @@ pub fn speech_and_acts(world: &mut World, mut cursor: Local<MessageCursor<Comman
             acts::social_acts(world, msg.session, &social);
             continue;
         }
+        // The router drops a command over the rate limit without marking it
+        // handled: nobody spoke.
+        if !routed(world, msg.id) {
+            continue;
+        }
         if let Some(Command::Say { text }) = typed_command(&msg.input) {
             say_triggers(world, msg.session, &text);
         } else if is_bare_say(&msg.input) {
@@ -255,14 +290,21 @@ pub fn speech_and_acts(world: &mut World, mut cursor: Local<MessageCursor<Comman
     }
 }
 
-/// Whether the input is `say` (or `'`) with nothing after it, which the
+/// Whether the router carried a command out (it marks each routed command
+/// handled). With no `HandledCommands` resource there is no router to ask.
+fn routed(world: &World, id: CommandId) -> bool {
+    world
+        .get_resource::<HandledCommands>()
+        .is_none_or(|handled| handled.is_handled(id))
+}
+
+/// Whether the input is `say` with nothing after it, which the
 /// grammar rejects but `do_say` still passes to the speech triggers.
 fn is_bare_say(input: &PlayerInput) -> bool {
     let PlayerInput::RawLine(line) = input else {
         return false;
     };
-    split_line(line)
-        .is_some_and(|(word, rest)| (word == "say" || word == "'") && rest.trim().is_empty())
+    split_line(line).is_some_and(|(word, rest)| word == "say" && rest.trim().is_empty())
 }
 
 /// `speech_mtrigger` and `speech_wtrigger` for what `speaker` said.
@@ -283,6 +325,12 @@ fn say_triggers(world: &mut World, speaker: Entity, text: &str) {
 pub fn register(app: &mut App) {
     app.init_resource::<DgClaimed>();
     app.add_systems(Update, command_gate.in_set(DgIntake::CommandGate));
+    app.add_systems(
+        Update,
+        fold_handled
+            .after(DgIntake::PreCommit)
+            .before(mib_stdlib::prelude::route_commands),
+    );
     // A `command` trigger sees `who` before the pack answers it.
     app.configure_sets(
         Update,

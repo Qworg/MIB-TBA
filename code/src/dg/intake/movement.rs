@@ -20,7 +20,15 @@
 //!   and `greet_memory_mtrigger` with the results ignored, as `spells.c` does,
 //!   and it is never undone. A walking NPC whose move was refused is not
 //!   offered the same move again for [`REFUSAL_COOLDOWN`] ticks (the C retries
-//!   a hunting mob once per `PULSE_MOBILE`); the move is put back silently.
+//!   a hunting mob once per `PULSE_MOBILE`); the move is put back silently,
+//!   and a player is shown the room they are held in. A leave trigger that
+//!   moves the character itself leaves it where the script put it
+//!   (`IN_ROOM(ch) != was_in`). A relocation along an exit that is no walk (a
+//!   death respawn into a neighbouring room) cannot be told from one and is
+//!   treated as a walk.
+//!
+//!   The pack's pursuit still announces `follows you!` on every tick of a
+//!   cooldown: it must consult [`DgRefusals::refused`] to stop.
 //! - [`player_logins`] (`DgIntake::PostRoute`): `enter_player_game` and `nanny`'s
 //!   `login_wtrigger`, `greet_mtrigger(-1)` and `greet_memory_mtrigger`.
 //!
@@ -34,7 +42,9 @@
 //! [`DgOrder`] straight after changing its `Location`. The C runs no
 //! `entry`/`greet` for those (a script `teleport` calls `enter_wtrigger` and
 //! nothing else), so [`observe_movement`] leaves a `Location` change alone when
-//! the character's `DgOrder` is at least as new as the change. A dispatch from
+//! the character's `DgOrder` is at least as new as the change. A character
+//! seen for the first time is only noted, so its first move gets no trigger.
+//! A dispatch from
 //! `Update` that stamps a character the game has just moved, before this
 //! system has seen the move, hides that move from it.
 //!
@@ -65,7 +75,8 @@ use crate::dg::host::EcsHost;
 use crate::dg::ids::DgOrder;
 use crate::dg::out::{is_playing, send_to_char};
 use crate::dg::with_host;
-use crate::skills::{SkillCommand, parse_skill_line};
+use crate::prelude::{Position, TbaCombatant, TbaContent, TbaProgress};
+use crate::skills::{SkillCommand, parse_skill_line, skill_gate};
 
 /// `SCMD_OPEN`, `SCMD_CLOSE`, `SCMD_UNLOCK`, `SCMD_LOCK`, `SCMD_PICK`.
 const SCMD_OPEN: i32 = 0;
@@ -272,8 +283,13 @@ pub fn precommit(world: &mut World, mut cursor: Local<MessageCursor<CommandRecei
         if let PlayerInput::RawLine(line) = &msg.input
             && let Some(SkillCommand::PickLock { direction }) = parse_skill_line(line)
         {
-            // The pack's own lock-picking verb is `do_gen_door`'s `pick`.
-            if !before_door(world, msg.session, SCMD_PICK, Some(&direction)) {
+            // The pack's own lock-picking verb is `do_gen_door`'s `pick`. The
+            // C reaches `do_doorcmd` only after `ok_pick` rolled a success; the
+            // roll cannot be anticipated here, so the triggers run for every
+            // attempt the handler's own checks would let as far as the roll.
+            if pick_reaches_the_roll(world, msg.session, &direction)
+                && !before_door(world, msg.session, SCMD_PICK, Some(&direction))
+            {
                 claim(world, &msg);
             }
             continue;
@@ -292,6 +308,24 @@ pub fn precommit(world: &mut World, mut cursor: Local<MessageCursor<CommandRecei
             claim(world, &msg);
         }
     }
+}
+
+/// Whether the pack's `pick_lock <direction>` gets as far as the skill roll:
+/// the skill is known at the character's level, the character stands, and a
+/// direction word is named (`handle_skill_commands` answers anything else
+/// before `ok_pick`).
+fn pick_reaches_the_roll(world: &World, mover: Entity, direction: &str) -> bool {
+    let (Some(content), Some(progress)) = (
+        world.get_resource::<TbaContent>(),
+        world.get::<TbaProgress>(mover),
+    ) else {
+        return false;
+    };
+    skill_gate(content, progress, "pick_lock", "").is_none()
+        && world
+            .get::<TbaCombatant>(mover)
+            .is_some_and(|combatant| combatant.position >= Position::Standing)
+        && ExitKey::from_word(&direction.to_lowercase()).is_some()
 }
 
 /// The leave triggers of a typed move; records the move when they pass. A
@@ -355,16 +389,12 @@ fn describe_room(world: &World, room: Entity) -> String {
     text
 }
 
-/// Put a character in `room` again after a move was undone: its `Location`,
-/// the engine's record of where the player is, its last-room record and its
-/// place in the room's people list. Does nothing for a despawned character.
-fn restore(world: &mut World, mover: Entity, room: Entity) {
+/// Record where a character now stands: its last-room record and the engine's
+/// record of where the player is. Does nothing for a despawned character.
+fn settle(world: &mut World, mover: Entity, room: Entity) {
     let Ok(mut entity) = world.get_entity_mut(mover) else {
         return;
     };
-    if let Some(mut location) = entity.get_mut::<Location>() {
-        location.room = room;
-    }
     entity.insert(DgLastRoom(room));
     if let Some(mut online) = world.get_resource_mut::<OnlinePlayers>() {
         for record in online.map.values_mut() {
@@ -373,16 +403,42 @@ fn restore(world: &mut World, mover: Entity, room: Entity) {
             }
         }
     }
-    with_host(world, |host| host.stamp_order(mover));
+}
+
+/// Put a character in `room` again after a move was undone: its `Location`,
+/// the engine's record of where the player is and its last-room record. An
+/// arrival that was undone stamps the character as the newest in the room it
+/// returns to (`char_to_room`); a character that never left keeps its place in
+/// the room's people list. Does nothing for a despawned character.
+fn restore(world: &mut World, mover: Entity, room: Entity, restamp: bool) {
+    let Ok(mut entity) = world.get_entity_mut(mover) else {
+        return;
+    };
+    if let Some(mut location) = entity.get_mut::<Location>() {
+        location.room = room;
+    }
+    if !restamp && let Some(mut order) = entity.get_mut::<DgOrder>() {
+        // The stamp is current again: placement stamping must not renew it.
+        order.set_changed();
+    }
+    settle(world, mover, room);
+    if restamp {
+        with_host(world, |host| host.stamp_order(mover));
+    }
 }
 
 /// Put a character back in the room it came from and, if it is a player, show
 /// it that room (`look_at_room`).
 fn send_back(world: &mut World, mover: Entity, was_in: Entity) {
-    restore(world, mover, was_in);
-    if world.get::<Player>(mover).is_some() {
-        let text = describe_room(world, was_in);
-        send_to_char(world, mover, &text);
+    restore(world, mover, was_in, true);
+    show_room(world, mover, was_in);
+}
+
+/// Show a player the room they stand in. NPCs see nothing.
+fn show_room(world: &mut World, who: Entity, room: Entity) {
+    if world.get::<Player>(who).is_some() {
+        let text = describe_room(world, room);
+        send_to_char(world, who, &text);
     }
 }
 
@@ -476,6 +532,19 @@ pub fn typed_arrivals(world: &mut World) {
     }
 }
 
+/// The characters [`game_moves`] looks at, and what it reads of each.
+type SeenQuery = QueryState<
+    (
+        Entity,
+        Ref<'static, Location>,
+        Option<Ref<'static, DgOrder>>,
+        Option<&'static DgLastRoom>,
+        Has<Player>,
+        Has<DgLoggedIn>,
+    ),
+    Or<(With<Npc>, With<Player>)>,
+>;
+
 /// A character that changed room on its own since movement intake last saw it.
 struct Mover {
     entity: Entity,
@@ -487,16 +556,9 @@ struct Mover {
 /// stamped: the characters whose `Location` the game changed since the last
 /// look, other than by a typed move (those are [`typed_arrivals`]) or a script
 /// (see the module docs). A character seen for the first time is only noted.
-fn game_moves(world: &mut World) -> Vec<Mover> {
+fn game_moves(world: &mut World, seen: &mut Option<SeenQuery>) -> Vec<Mover> {
     let this_run = world.read_change_tick();
-    let mut seen = world.query_filtered::<(
-        Entity,
-        Ref<Location>,
-        Option<Ref<DgOrder>>,
-        Option<&DgLastRoom>,
-        Has<Player>,
-        Has<DgLoggedIn>,
-    ), Or<(With<Npc>, With<Player>)>>();
+    let seen = seen.get_or_insert_with(|| world.query_filtered());
     let mut first_sight: Vec<(Entity, Entity)> = Vec::new();
     let mut moved: Vec<Mover> = Vec::new();
     let mut moved_by_host: Vec<(Entity, Entity)> = Vec::new();
@@ -555,7 +617,7 @@ impl DgRefusals {
     }
 
     /// Whether the move `from` to `to` was refused recently for `mover`.
-    fn refused(&self, mover: Entity, from: Entity, to: Entity) -> bool {
+    pub fn refused(&self, mover: Entity, from: Entity, to: Entity) -> bool {
         self.moves
             .get(&mover)
             .is_some_and(|(was, wanted, _)| *was == from && *wanted == to)
@@ -574,11 +636,11 @@ impl DgRefusals {
 /// the mover put back in the room it left, and a refusal leaves it there
 /// (`do_simple_move` returns before the character leaves). A move along no exit
 /// is a transport, which no trigger can refuse.
-pub fn observe_movement(world: &mut World) {
+pub fn observe_movement(world: &mut World, mut seen: Local<Option<SeenQuery>>) {
     world
         .get_resource_or_insert_with(DgRefusals::default)
         .advance();
-    for mover in game_moves(world) {
+    for mover in game_moves(world, &mut seen) {
         let Some(dir) = dir_between(world, mover.from, mover.to) else {
             arrive(world, mover.entity, mover.from, Travel::Jump);
             continue;
@@ -589,7 +651,7 @@ pub fn observe_movement(world: &mut World) {
                 .get_resource::<DgRefusals>()
                 .is_some_and(|refusals| refusals.refused(mover.entity, mover.from, mover.to));
         if cooling {
-            restore(world, mover.entity, mover.from);
+            restore(world, mover.entity, mover.from, false);
             continue;
         }
         if let Some(mut location) = world.get_mut::<Location>(mover.entity) {
@@ -604,8 +666,20 @@ pub fn observe_movement(world: &mut World) {
             }
             arrive(world, mover.entity, mover.from, Travel::Walk(dir))
         } else {
-            restore(world, mover.entity, mover.from);
-            true
+            // The character never left, unless a trigger moved it itself
+            // (`IN_ROOM(ch) != was_in`): then it stays where the script put it.
+            match room_of(world, mover.entity) {
+                Some(now) if now == mover.from => {
+                    restore(world, mover.entity, mover.from, false);
+                    show_room(world, mover.entity, mover.from);
+                    true
+                }
+                Some(now) => {
+                    settle(world, mover.entity, now);
+                    false
+                }
+                None => false,
+            }
         };
         if sent_back && is_npc {
             world

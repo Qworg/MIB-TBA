@@ -8,7 +8,7 @@
 //!
 //! The engine's router is not part of these apps: a stand-in system applies a
 //! typed `Move` the way `route_commands` does (it skips a command already
-//! marked handled and sets the mover's `Location` from the room's exits). The
+//! marked handled, marks each command it routes handled, and sets the mover's `Location` from the room's exits). The
 //! real router needs the engine's whole command stack and content, and adds
 //! nothing to what is tested here, which is the order of the intake systems
 //! around it. The pack handler checked is the real `intercept_who`.
@@ -50,7 +50,7 @@ fn uid_text(id: dg_vm::Uid) -> String {
 /// over puts the mover in the room the exit leads to.
 fn apply_moves(
     mut reader: MessageReader<CommandReceived>,
-    handled: Res<HandledCommands>,
+    mut handled: ResMut<HandledCommands>,
     exits: Query<&Exits>,
     mut locations: Query<&mut Location>,
 ) {
@@ -58,6 +58,14 @@ fn apply_moves(
         if handled.is_handled(msg.id) {
             continue;
         }
+        // The router drops a line over the rate limit without marking it.
+        if let PlayerInput::Command(Command::Say { text }) = &msg.input
+            && text.starts_with("flood")
+        {
+            continue;
+        }
+        // The router marks every command it routes handled.
+        handled.mark_handled(msg.id);
         let PlayerInput::Command(Command::Move { direction }) = &msg.input else {
             continue;
         };
@@ -82,7 +90,12 @@ fn intake_app() -> App {
     app.init_resource::<HandledCommands>();
     app.add_message::<CommandReceived>();
     mib_tba::dg::intake::register(&mut app);
-    app.add_systems(Update, apply_moves.after(DgIntake::PreCommit));
+    app.add_systems(
+        Update,
+        apply_moves
+            .after(DgIntake::PreCommit)
+            .after(mib_tba::dg::intake::commands::fold_handled),
+    );
     app.configure_sets(Update, DgIntake::PostRoute.after(apply_moves));
     app.add_systems(Update, intercept_who.after(DgIntake::CommandGate));
     app
@@ -244,7 +257,7 @@ fn the_gate_offers_a_command_to_world_then_mob_then_object() {
     let (mut app, alice, [a, guard, lamp]) = gate_world(&ran_then(0), &ran_then(0), &ran_then(0));
     send(&mut app, 1, alice, line("dance wildly"));
     assert!(ran(&mut app, a) && ran(&mut app, guard) && ran(&mut app, lamp));
-    assert!(!is_handled(&app, 1));
+    assert!(!claimed(&app, 1));
     assert!(!claimed(&app, 1));
 }
 
@@ -320,7 +333,7 @@ fn a_trigger_matches_the_command_it_names_and_no_other() {
     let alice = seated_player(&mut app, a);
     send(&mut app, 1, alice, line("look"));
     assert!(!ran(&mut app, guard));
-    assert!(!is_handled(&app, 1));
+    assert!(!claimed(&app, 1));
     // The trigger's word is a prefix of what was typed.
     send(&mut app, 2, alice, line("dance"));
     assert!(ran(&mut app, guard));
@@ -341,7 +354,7 @@ fn a_session_that_is_not_playing_is_not_offered_to_triggers() {
         .state = SessionState::Connected;
     send(&mut app, 1, alice, line("dance"));
     assert!(!ran(&mut app, guard));
-    assert!(!is_handled(&app, 1));
+    assert!(!claimed(&app, 1));
 }
 
 #[test]
@@ -400,7 +413,7 @@ fn a_say_is_offered_to_the_speech_triggers_of_the_room() {
         "the spoken text, without its leading spaces"
     );
     assert_eq!(global(&mut app, room_id, "actor"), Some(uid_text(alice_id)));
-    assert!(!is_handled(&app, 2), "speech does not take the say over");
+    assert!(!claimed(&app, 2), "speech does not take the say over");
 
     // A raw `say` line is the same.
     let mut app = intake_app();
@@ -605,7 +618,7 @@ fn a_leave_trigger_that_lets_go_does_not_stop_the_move() {
     send(&mut app, 1, alice, go_north());
     assert!(ran(&mut app, a));
     assert_eq!(room_of(&app, alice), b);
-    assert!(!is_handled(&app, 1));
+    assert!(!claimed(&app, 1));
 }
 
 #[test]
@@ -624,7 +637,7 @@ fn a_move_through_no_exit_runs_no_leave_trigger() {
         }),
     );
     assert!(!ran(&mut app, a));
-    assert!(!is_handled(&app, 1));
+    assert!(!claimed(&app, 1));
 }
 
 #[test]
@@ -701,7 +714,7 @@ fn a_move_nobody_refuses_runs_enter_with_the_direction_it_came_from() {
     let alice = seated_player(&mut app, a);
     send(&mut app, 1, alice, go_north());
     assert_eq!(room_of(&app, alice), b);
-    assert!(!is_handled(&app, 1));
+    assert!(!claimed(&app, 1));
     let (room_id, alice_id) = (uid(&mut app, b), uid(&mut app, alice));
     // Going north, the player arrives from the south.
     assert_eq!(
@@ -984,7 +997,7 @@ fn a_world_door_trigger_that_lets_go_leaves_the_command_to_the_engine() {
     attach(&mut app, "room:tba.1", &[51]);
     send(&mut app, 1, alice, open_north());
     assert!(ran(&mut app, a));
-    assert!(!is_handled(&app, 1));
+    assert!(!claimed(&app, 1));
 }
 
 #[test]
@@ -1095,7 +1108,7 @@ fn a_door_command_the_engine_would_refuse_runs_no_door_trigger() {
         }),
     );
     assert!(!ran(&mut app, a));
-    assert!(!is_handled(&app, 1) && !is_handled(&app, 2));
+    assert!(!claimed(&app, 1) && !claimed(&app, 2));
 }
 
 // -- login -------------------------------------------------------------------
@@ -1467,15 +1480,78 @@ fn locked_door_world() -> (App, Entity, Entity) {
     (app, a, alice)
 }
 
-#[test]
-fn the_packs_pick_lock_verb_is_offered_to_the_door_triggers_as_pick() {
+/// Make the player a thief who knows `pick_lock` and stands ready.
+fn make_thief(app: &mut App, who: Entity) {
+    let mut content = app.world_mut().resource_mut::<TbaContent>();
+    content.classes.insert(
+        "thief".into(),
+        mib_tba::content::TbaClassDef {
+            name: "thief".to_owned(),
+            description: String::new(),
+            hp_dice: Dice::new(1, 10, 0),
+            mana_dice: None,
+            xp_table: Vec::new(),
+            thaco_table: Vec::new(),
+            prime_attribute: None,
+            starting_items: Vec::new(),
+            granted_skills: vec!["pick_lock".into()],
+        },
+    );
+    app.world_mut().entity_mut(who).insert((
+        TbaProgress::new("thief"),
+        TbaCombatant {
+            hp: 10,
+            max_hp: 10,
+            mana: 0,
+            max_mana: 0,
+            move_points: 80,
+            max_move_points: 80,
+            hitroll: 0,
+            damroll: 0,
+            armor_class: 100,
+            thaco: 15,
+            attributes: TbaAttributes::neutral(),
+            saves: TbaSaves::default(),
+            position: Position::Standing,
+            target: None,
+        },
+    ));
+}
+
+/// The pick door trigger's mark in room 1 after `input`, with the player set up by `setup`.
+fn pick_cmd_seen(input: &str, setup: fn(&mut App, Entity)) -> (Option<String>, bool) {
     let (mut app, a, alice) = locked_door_world();
+    setup(&mut app, alice);
     define_arg(&mut app, 51, "wld", "r", 100, "*", &door_script(0));
     attach(&mut app, "room:tba.1", &[51]);
-    send(&mut app, 1, alice, line("pick_lock north"));
+    send(&mut app, 1, alice, line(input));
     let room_id = uid(&mut app, a);
-    assert_eq!(global(&mut app, room_id, "cmd").as_deref(), Some("pick"));
-    assert!(claimed(&app, 1));
+    (global(&mut app, room_id, "cmd"), claimed(&app, 1))
+}
+
+#[test]
+fn the_packs_pick_lock_verb_is_offered_to_the_door_triggers_as_pick() {
+    let (cmd, taken) = pick_cmd_seen("pick_lock north", make_thief);
+    assert_eq!(cmd.as_deref(), Some("pick"));
+    assert!(taken);
+}
+
+#[test]
+fn pick_lock_attempts_the_handler_answers_before_the_roll_run_no_door_trigger() {
+    // `ok_pick` (and so `do_doorcmd` and its triggers) is reached only by a
+    // character who knows the skill, stands, and names a direction.
+    let (cmd, taken) = pick_cmd_seen("pick_lock north", |_, _| {});
+    assert_eq!((cmd, taken), (None, false), "a warrior knows no pick_lock");
+    let (cmd, taken) = pick_cmd_seen("pick_lock gate", make_thief);
+    assert_eq!((cmd, taken), (None, false), "a door name is no direction");
+    let (cmd, taken) = pick_cmd_seen("pick_lock north", |app, who| {
+        make_thief(app, who);
+        app.world_mut()
+            .get_mut::<TbaCombatant>(who)
+            .expect("combatant")
+            .position = Position::Resting;
+    });
+    assert_eq!((cmd, taken), (None, false), "pick needs POS_STANDING");
 }
 
 #[test]
@@ -1491,6 +1567,7 @@ fn picking_a_lock_that_is_not_locked_runs_no_door_trigger() {
             target: Some("north".to_owned()),
         }),
     );
+    make_thief(&mut app, alice);
     send(&mut app, 2, alice, line("pick_lock north"));
     assert!(!ran(&mut app, a));
 }
@@ -1655,4 +1732,134 @@ fn the_combat_handler_skips_a_taken_over_command() {
         app.init_resource::<VisibilityPolicy>();
         app.init_resource::<RoomOccupants>();
     });
+}
+
+// -- review fixes ------------------------------------------------------------
+
+/// A player the game moved along an exit is told where they are held.
+#[test]
+fn a_player_held_back_by_a_leave_trigger_is_shown_the_room() {
+    let mut app = intake_app();
+    let (a, b) = two_rooms(&mut app);
+    define_arg(
+        &mut app,
+        40,
+        "wld",
+        "q",
+        100,
+        "*",
+        &with_return(DIRECTION, 0),
+    );
+    attach(&mut app, "room:tba.1", &[40]);
+    let alice = seated_player(&mut app, a);
+    tick_pulses(&mut app, 1);
+    let _ = shown(&mut app);
+    app.world_mut()
+        .get_mut::<Location>(alice)
+        .expect("location")
+        .room = b;
+    tick_pulses(&mut app, 1);
+    assert_eq!(room_of(&app, alice), a);
+    assert!(!shown(&mut app).is_empty(), "the player is told nothing");
+}
+
+/// A character that never left keeps its place among the room's people.
+#[test]
+fn a_refused_leave_keeps_the_walkers_place_in_the_room() {
+    let mut app = intake_app();
+    let (a, b) = two_rooms(&mut app);
+    define_arg(
+        &mut app,
+        40,
+        "wld",
+        "q",
+        100,
+        "*",
+        &with_return(DIRECTION, 0),
+    );
+    attach(&mut app, "room:tba.1", &[40]);
+    let walker = npc(&mut app, a, 7, "the walker");
+    let resident = npc(&mut app, a, 8, "the resident");
+    tick_pulses(&mut app, 1);
+    let room_id = uid(&mut app, a);
+    let before = run(&mut app, |host| host.room_people(room_id));
+    let stamp = app
+        .world()
+        .get::<mib_tba::dg::ids::DgOrder>(walker)
+        .copied();
+    app.world_mut()
+        .get_mut::<Location>(walker)
+        .expect("location")
+        .room = b;
+    tick_pulses(&mut app, 3);
+    assert_eq!(room_of(&app, walker), a);
+    let after = run(&mut app, |host| host.room_people(room_id));
+    assert_eq!(before, after, "{resident:?}");
+    assert_eq!(
+        app.world()
+            .get::<mib_tba::dg::ids::DgOrder>(walker)
+            .copied(),
+        stamp,
+        "a character that did not leave is not restamped"
+    );
+}
+
+/// Only a routed say is spoken: the router drops a flooded line unmarked.
+#[test]
+fn a_say_the_router_dropped_reaches_no_speech_trigger() {
+    let mut app = intake_app();
+    let a = room(&mut app, 1);
+    define_arg(&mut app, 20, "wld", "d", 100, "*", &ran_then(1));
+    attach(&mut app, "room:tba.1", &[20]);
+    let alice = seated_player(&mut app, a);
+    send(&mut app, 1, alice, say("flood password"));
+    assert!(!ran(&mut app, a), "a dropped line was spoken");
+    send(&mut app, 2, alice, say("password"));
+    assert!(ran(&mut app, a));
+}
+
+/// A refusal marked by any pre-commit system is a claim the pack handlers see.
+#[test]
+fn a_command_another_pre_commit_system_handled_is_claimed() {
+    let mut app = intake_app();
+    app.add_systems(
+        Update,
+        (|mut reader: MessageReader<CommandReceived>, mut handled: ResMut<HandledCommands>| {
+            for msg in reader.read() {
+                handled.mark_handled(msg.id);
+            }
+        })
+        .in_set(DgIntake::PreCommit),
+    );
+    let a = room(&mut app, 1);
+    let alice = seated_player(&mut app, a);
+    send(&mut app, 1, alice, line("look"));
+    assert!(claimed(&app, 1));
+}
+
+/// A command handled before the gate is not offered to `command` triggers.
+#[test]
+fn the_gate_skips_a_command_already_handled() {
+    let (mut app, alice, [a, ..]) = gate_world(&ran_then(0), &ran_then(0), &ran_then(0));
+    app.world_mut()
+        .resource_mut::<HandledCommands>()
+        .mark_handled(CommandId(1));
+    send(&mut app, 1, alice, line("look"));
+    assert!(!ran(&mut app, a));
+}
+
+/// A player still restoring their bundle has not entered the game.
+#[test]
+fn a_player_restoring_their_bundle_has_not_logged_in() {
+    let mut app = intake_app();
+    let a = room(&mut app, 1);
+    define_arg(&mut app, 60, "wld", "s", 100, "*", &ran_then(1));
+    attach(&mut app, "room:tba.1", &[60]);
+    let alice = player(&mut app, a, "Alice", 7);
+    app.world_mut()
+        .entity_mut(alice)
+        .insert(PendingBundleRestore);
+    app.update();
+    assert!(!ran(&mut app, a));
+    assert!(app.world().get::<DgLoggedIn>(alice).is_none());
 }

@@ -8,8 +8,12 @@
 //! the lines a social shows (the same ones `socials::run_social` writes) and
 //! offers each to the mobs that would have received it.
 //!
-//! The pack has no `emote` command, so socials are the only acts a player
-//! makes. A `say` is not one: `do_say` acts with `DG_NO_TRIG`.
+//! The pack has no `emote` command, so socials are the only acts offered here.
+//! A `say` is not one: `do_say` acts with `DG_NO_TRIG`. Not offered: the
+//! lines `do_simple_move` and `nanny` act to a room without `DG_NO_TRIG`
+//! (`$n leaves north.`, `$n has arrived.`, `$n has entered the game.`), which
+//! many mob `act` triggers in the corpus key on; they need an owner who can
+//! work out what each mob sees and where the movement intake stands.
 
 use dg_vm::dispatch::act_mtrigger;
 use dg_vm::{BaseHost, Uid, WorldHost};
