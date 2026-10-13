@@ -18,6 +18,20 @@
 use crate::cstr::{atoi, is_space, str_cmp, str_str};
 use crate::host::DgHost;
 
+/// Every name [`text_processed`] recognises as a string function, lower-cased
+/// and sorted. The converter's coverage analysis classifies script references
+/// against this list; a test fails if it and the function disagree.
+pub const TEXT_FUNCTIONS: &[&str] = &[
+    "car",
+    "cdr",
+    "charat",
+    "contains",
+    "mudcommand",
+    "strlen",
+    "toupper",
+    "trim",
+];
+
 /// `text_processed(field, subfield, vd, str, slen)`.
 ///
 /// `value` is the variable's value. Returns `Some(result)` when `field` is a
@@ -93,6 +107,27 @@ mod tests {
 
     use super::*;
     use crate::mock::MockHost;
+
+    #[test]
+    fn text_functions_match_the_function() {
+        let source = include_str!("text.rs");
+        let body = source.split("pub fn text_processed").nth(1).unwrap_or("");
+        let body = body.split("/// `charat`: the").next().unwrap_or("");
+        let mut arms: Vec<&str> = body
+            .split("str_cmp(field, \"")
+            .skip(1)
+            .filter_map(|rest| rest.split('"').next())
+            .collect();
+        arms.sort_unstable();
+        assert_eq!(TEXT_FUNCTIONS, arms.as_slice());
+        for name in TEXT_FUNCTIONS {
+            assert!(run(name, "", "abc").is_some(), "{name}");
+            assert!(
+                run(&name.to_ascii_uppercase(), "", "abc").is_some(),
+                "{name}"
+            );
+        }
+    }
 
     fn run(field: &str, subfield: &str, value: &str) -> Option<String> {
         let mut host = MockHost::new();

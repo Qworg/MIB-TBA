@@ -221,6 +221,28 @@ fn set_var<H: DgHost + ?Sized>(host: &mut H, go: Uid, id: u64, name: &str, value
     }
 }
 
+/// Every trigger-local variable the event dispatchers set before a script
+/// runs, sorted. Which of them a given trigger type sets varies; the converter's
+/// coverage analysis treats the whole list as provided. A test fails if it
+/// and the dispatchers disagree.
+pub const EVENT_VARIABLES: &[&str] = &[
+    "actor",
+    "amount",
+    "arg",
+    "attacktype",
+    "cmd",
+    "command",
+    "damdealt",
+    "direction",
+    "object",
+    "speech",
+    "spell",
+    "spellname",
+    "target",
+    "time",
+    "victim",
+];
+
 /// `ADD_UID_VAR(buf, t, id, name, 0)`: the entity's id as `}<id>` text.
 fn set_uid_var<H: DgHost + ?Sized>(host: &mut H, go: Uid, id: u64, name: &str, uid: Uid) {
     set_var(host, go, id, name, &uid_text(uid));
@@ -1989,6 +2011,27 @@ mod tests {
     use crate::magic::TAR_CHAR_ROOM;
     use crate::mock::{MockAction, MockHost};
     use crate::types::{AttachType, MAX_SCRIPT_DEPTH, ScriptMemory};
+
+    #[test]
+    fn event_variables_match_the_dispatchers() {
+        let source = include_str!("dispatch.rs");
+        let code = source.split("#[cfg(test)]").next().unwrap_or("");
+        let mut named: Vec<&str> = Vec::new();
+        for call in ["set_var(", "set_uid_var("] {
+            for part in code.split(call).skip(1) {
+                // The fourth argument is the variable's name.
+                if let Some(name) = part.split(',').nth(3).map(str::trim)
+                    && let Some(name) = name.strip_prefix('"')
+                    && let Some(name) = name.strip_suffix('"')
+                {
+                    named.push(name);
+                }
+            }
+        }
+        named.sort_unstable();
+        named.dedup();
+        assert_eq!(EVENT_VARIABLES, named.as_slice());
+    }
 
     /// A script that leaves a mark in its owner's globals.
     const RAN: &str = "set ran 1\nglobal ran";
