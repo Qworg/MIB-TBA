@@ -528,48 +528,53 @@ fn unknown_field<H: DgHost + ?Sized>(
     cx.host.script_log(&message);
 }
 
+/// The command variables of `find_replacement`'s no-field branch: `%send%`
+/// is `msend `, `osend ` or `wsend ` by the owner's type (`mob`, `obj`,
+/// `wld`), each word with its trailing space. Where an owner type has no such
+/// command the C substitutes the nearest one (`wecho` for a room's
+/// `%transform%`, `mecho` for a mob's `%move%`).
+pub const COMMAND_VARIABLES: &[(&str, [&str; 3])] = &[
+    ("door", ["mdoor ", "odoor ", "wdoor "]),
+    ("force", ["mforce ", "oforce ", "wforce "]),
+    ("load", ["mload ", "oload ", "wload "]),
+    ("purge", ["mpurge ", "opurge ", "wpurge "]),
+    ("teleport", ["mteleport ", "oteleport ", "wteleport "]),
+    ("damage", ["mdamage ", "odamage ", "wdamage "]),
+    ("send", ["msend ", "osend ", "wsend "]),
+    ("echo", ["mecho ", "oecho ", "wecho "]),
+    (
+        "echoaround",
+        ["mechoaround ", "oechoaround ", "wechoaround "],
+    ),
+    ("zoneecho", ["mzoneecho ", "ozoneecho ", "wzoneecho "]),
+    ("asound", ["masound ", "oasound ", "wasound "]),
+    ("at", ["mat ", "oat ", "wat "]),
+    ("transform", ["mtransform ", "otransform ", "wecho "]),
+    ("recho", ["mrecho ", "orecho ", "wrecho "]),
+    ("move", ["mecho ", "omove ", "wmove "]),
+    ("log", ["mlog ", "olog ", "wlog "]),
+];
+
+/// The variables `find_replacement` itself provides for a name that is not a
+/// script variable, beside [`COMMAND_VARIABLES`]. The event variables
+/// (`%actor%`, `%arg%`, …) are the triggers' own, set by
+/// [`crate::dispatch::EVENT_VARIABLES`].
+pub const SPECIAL_VARIABLES: &[&str] = &[
+    "findmob",
+    "findobj",
+    "global",
+    "happyhour",
+    "people",
+    "random",
+    "self",
+    "time",
+];
+
 /// The `!*field` branch of `find_replacement` for a name that is not a
 /// variable: `%self%`, `%global%` and the per-type command words.
 fn no_field_value<H: DgHost + ?Sized>(cx: &Cx<'_, H>, attach: AttachType, var: &str) -> String {
     let index = attach.index();
-    let words: Option<[&str; 3]> = if str_eq(var, "door") {
-        Some(["mdoor ", "odoor ", "wdoor "])
-    } else if str_eq(var, "force") {
-        Some(["mforce ", "oforce ", "wforce "])
-    } else if str_eq(var, "load") {
-        Some(["mload ", "oload ", "wload "])
-    } else if str_eq(var, "purge") {
-        Some(["mpurge ", "opurge ", "wpurge "])
-    } else if str_eq(var, "teleport") {
-        Some(["mteleport ", "oteleport ", "wteleport "])
-    } else if str_eq(var, "damage") {
-        Some(["mdamage ", "odamage ", "wdamage "])
-    } else if str_eq(var, "send") {
-        Some(["msend ", "osend ", "wsend "])
-    } else if str_eq(var, "echo") {
-        Some(["mecho ", "oecho ", "wecho "])
-    } else if str_eq(var, "echoaround") {
-        Some(["mechoaround ", "oechoaround ", "wechoaround "])
-    } else if str_eq(var, "zoneecho") {
-        Some(["mzoneecho ", "ozoneecho ", "wzoneecho "])
-    } else if str_eq(var, "asound") {
-        Some(["masound ", "oasound ", "wasound "])
-    } else if str_eq(var, "at") {
-        Some(["mat ", "oat ", "wat "])
-    } else if str_eq(var, "transform") {
-        // there is no such thing as wtransform, thus the wecho
-        Some(["mtransform ", "otransform ", "wecho "])
-    } else if str_eq(var, "recho") {
-        Some(["mrecho ", "orecho ", "wrecho "])
-    } else if str_eq(var, "move") {
-        // there is no such thing as mmove, thus the mecho
-        Some(["mecho ", "omove ", "wmove "])
-    } else if str_eq(var, "log") {
-        Some(["mlog ", "olog ", "wlog "])
-    } else {
-        None
-    };
-    if let Some(words) = words {
+    if let Some((_, words)) = COMMAND_VARIABLES.iter().find(|(name, _)| str_eq(var, name)) {
         return words.get(index).copied().unwrap_or("").to_owned();
     }
     if str_eq(var, "self") {
@@ -848,6 +853,20 @@ mod tests {
     use super::*;
     use crate::mock::MockHost;
     use crate::types::{TrigInstance, uid_text};
+
+    #[test]
+    fn special_variables_match_the_branch() {
+        let source = include_str!("subst.rs");
+        let branch = source.split("fn special_var<H").nth(1).unwrap_or("");
+        let branch = branch.split("fn random_var<H").next().unwrap_or("");
+        let mut named: Vec<&str> = branch
+            .split("str_eq(var, \"")
+            .skip(1)
+            .filter_map(|rest| rest.split('"').next())
+            .collect();
+        named.sort_unstable();
+        assert_eq!(SPECIAL_VARIABLES, named.as_slice());
+    }
 
     /// A mob `guard` (vnum 3000) in room 3001 with a second mob `thug`
     /// (vnum 3001) and an object `sword` (vnum 3020) lying there.

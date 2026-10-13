@@ -425,6 +425,22 @@ fn mload_records_lastloaded_for_the_script_that_runs_it() {
     assert_eq!(logs(&w), [format!("{MOB}now {}", uid_text(rock))]);
 }
 
+#[test]
+fn the_globals_a_load_sets_are_the_ones_the_analysis_provides() {
+    for name in crate::analyze::COMMAND_GLOBALS {
+        let mut w = World::new();
+        let mob = w.mob;
+        run_script(
+            &mut w,
+            mob,
+            &format!("mload mob 3100\nmlog now %{name}%"),
+            None,
+        );
+        let rat = w.host.character_list[0];
+        assert_eq!(logs(&w), [format!("{MOB}now {}", uid_text(rat))], "{name}");
+    }
+}
+
 // ---- teleport raises the enter trigger of the room --------------------
 
 /// A room trigger that says who entered.

@@ -331,6 +331,38 @@ fn run_lines<H: DgHost + ?Sized>(
     (Outcome::Finished, ret_val)
 }
 
+/// The keywords `script_driver` tests a line's start for before it substitutes
+/// the line, in the order it tests them (ASCII case-insensitively; a trailing
+/// space is part of the keyword). `elseif ` and `else` share one branch.
+pub const CONTROL_KEYWORDS: &[&str] = &[
+    "if ", "elseif ", "else", "while ", "switch ", "end", "done", "break", "case",
+];
+
+/// The statements `script_driver` handles itself, after substituting the line,
+/// in the order it tests them (ASCII case-insensitively; a trailing space is
+/// part of the keyword, and `halt` matches any line that starts with it).
+/// A line that matches none of them goes to the owner's command interpreter.
+pub const STATEMENT_KEYWORDS: &[&str] = &[
+    "eval ",
+    "nop ",
+    "extract ",
+    "dg_letter ",
+    "makeuid ",
+    "halt",
+    "dg_cast ",
+    "dg_affect ",
+    "global ",
+    "context ",
+    "remote ",
+    "rdelete ",
+    "return ",
+    "set ",
+    "unset ",
+    "wait ",
+    "attach ",
+    "detach ",
+];
+
 /// `p + n`: the text past a keyword whose first `n` bytes are known ASCII.
 fn after(text: &str, n: usize) -> &str {
     text.get(n..).unwrap_or("")
@@ -681,7 +713,7 @@ pub fn find_done(lines: &[Line], cl: usize) -> usize {
 
 /// `fields = sscanf(text, "%ld")`: skip whitespace, an optional sign, digits;
 /// out-of-range values saturate like `strtol`. Returns the value and the rest.
-fn scan_long(text: &str) -> Option<(i64, &str)> {
+pub(crate) fn scan_long(text: &str) -> Option<(i64, &str)> {
     let text = text.trim_start_matches(is_space);
     let (negative, digits) = match text.strip_prefix('-') {
         Some(rest) => (true, rest),
@@ -768,7 +800,7 @@ fn process_wait<H: DgHost + ?Sized>(
 
 /// `sscanf(arg, "until %ld:%ld")` falling back to `"until %ld"`: the hour (or
 /// the whole number) and, if a `:` and a second number follow, the minutes.
-fn scan_until(arg: &str) -> (Option<i64>, Option<i64>) {
+pub(crate) fn scan_until(arg: &str) -> (Option<i64>, Option<i64>) {
     let Some(rest) = arg.strip_prefix("until") else {
         return (None, None);
     };
@@ -1297,6 +1329,29 @@ mod tests {
 
     fn state(host: &MockHost, owner: Uid, id: u64) -> RunState {
         host.script(owner).unwrap().trigger(id).unwrap().run.clone()
+    }
+
+    /// The keywords of the `starts_with_ci(<var>, "…")` tests inside `section`
+    /// of the driver's source, in order.
+    fn keywords_tested(start: &str, end: &str, var: &str) -> Vec<String> {
+        let source = include_str!("driver.rs");
+        let section = source.split(start).nth(1).unwrap_or("");
+        let section = section.split(end).next().unwrap_or("");
+        let pattern = format!("starts_with_ci({var}, \"");
+        section
+            .split(pattern.as_str())
+            .skip(1)
+            .filter_map(|rest| rest.split('"').next())
+            .map(str::to_owned)
+            .collect()
+    }
+
+    #[test]
+    fn keyword_lists_match_the_driver() {
+        let control = keywords_tested("fn step<H", "fn done_line<H", "p");
+        assert_eq!(control, CONTROL_KEYWORDS);
+        let statements = keywords_tested("fn command_line<H", "pub fn find_end<H", "cmd");
+        assert_eq!(statements, STATEMENT_KEYWORDS);
     }
 
     fn lines_of(script: &str) -> Vec<Line> {

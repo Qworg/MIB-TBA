@@ -99,6 +99,15 @@ fn fixture_bundle_is_schema_exact_and_deterministic() {
         first.report.trigger_coverage.by_attach_type.get("mob"),
         Some(&1)
     );
+    // `say Hello from a DG trigger.` on a mob is a line for the game's
+    // command interpreter, and no word is supported yet.
+    let coverage = &first.report.trigger_coverage;
+    assert_eq!(coverage.lines_by_class.get("mud_command"), Some(&1));
+    assert_eq!(coverage.mud_commands.lines, 1);
+    assert_eq!(coverage.mud_commands.unsupported.get("say"), Some(&1));
+    assert!(coverage.mud_commands.supported.is_empty());
+    assert_eq!(coverage.structural_errors.count, 0);
+    assert!(coverage.unknown_object_commands.is_empty());
 
     // The trigger layer is classified as well as emitted. The fixture trigger
     // (`0 q 100`, mob) is a `GatekeeperTransport`.
@@ -1288,4 +1297,117 @@ fn repeated_dangling_t_lines_are_counted_separately() {
         .map(|entry| entry.from.as_str())
         .collect();
     assert_eq!(lines, ["room tba.3000 T line 2", "room tba.3000 T line 3"]);
+}
+
+/// The corpus totals of `dg_vm::analyze` reach the report. The expected
+/// numbers were counted from the `.trg` bodies with a separate line scan.
+#[test]
+fn trigger_coverage_reports_the_analysis_totals() {
+    let Some(root) = real_tbamud() else {
+        eprintln!("skipping: tbaMUD source not checked out (set TBAMUD_SOURCE)");
+        return;
+    };
+    let conversion = convert(&ConvertOptions {
+        source_root: root,
+        only: None,
+        start_room: Some(DEFAULT_START_ROOM),
+    })
+    .expect("full conversion");
+    let coverage = &conversion.report.trigger_coverage;
+    // A line scan of the emitted scripts: the first word of each non-empty
+    // line (a line ends at `\n` or `\r`).
+    let mut scanned = std::collections::BTreeMap::<String, usize>::new();
+    let mut lines = 0usize;
+    for def in conversion.bundle.triggers.triggers.values() {
+        for line in def.script.split(['\n', '\r']).filter(|l| !l.is_empty()) {
+            lines += 1;
+            let word = if line.trim_start().starts_with('*') {
+                "*"
+            } else {
+                line.split_whitespace().next().unwrap_or("")
+            };
+            *scanned.entry(word.to_ascii_lowercase()).or_default() += 1;
+        }
+    }
+    assert_eq!(coverage.script_lines, lines);
+    assert_eq!(
+        coverage.lines_by_class.values().sum::<usize>(),
+        coverage.script_lines
+    );
+    assert_eq!(coverage.lines_by_class["comment"], scanned["*"]);
+    assert_eq!(coverage.controls["if"], scanned["if"]);
+    assert_eq!(coverage.statements["wait"], scanned["wait"]);
+    assert_eq!(coverage.statements["set"], scanned["set"]);
+    assert_eq!(coverage.statements["eval"], scanned["eval"]);
+    assert_eq!(coverage.statements["dg_cast"], scanned["dg_cast"]);
+    assert_eq!(coverage.statements["dg_affect"], scanned["dg_affect"]);
+
+    let errors = &coverage.structural_errors;
+    assert_eq!(
+        errors.by_vnum.keys().copied().collect::<Vec<_>>(),
+        vec![
+            1106, 1133, 1292, 1324, 1338, 1385, 1939, 1959, 2737, 4601, 8315, 13005, 21101, 34302,
+            55513
+        ]
+    );
+    assert_eq!(errors.scripts, 15);
+    assert_eq!(
+        errors.count,
+        errors.by_vnum.values().map(Vec::len).sum::<usize>()
+    );
+    assert_eq!(errors.by_vnum[&1338], vec!["line 1: 'if' without 'end'"]);
+
+    // Every unknown command names the scripts that use it, sorted.
+    let unknown: usize = coverage
+        .unknown_object_commands
+        .values()
+        .chain(coverage.unknown_world_commands.values())
+        .map(|u| u.count)
+        .sum();
+    assert_eq!(unknown, coverage.lines_by_class["unknown_command"]);
+    for word in coverage
+        .unknown_object_commands
+        .values()
+        .chain(coverage.unknown_world_commands.values())
+    {
+        assert!(!word.vnums.is_empty());
+        assert!(word.vnums.windows(2).all(|pair| pair[0] < pair[1]));
+    }
+
+    // The game's word list is not wired in: every mob mud command is
+    // unsupported.
+    let mud = &coverage.mud_commands;
+    assert_eq!(mud.lines, coverage.lines_by_class["mud_command"]);
+    assert!(mud.supported.is_empty());
+    assert_eq!(mud.unsupported.values().sum::<usize>(), mud.lines);
+    // A line that does not start with a letter is keyed by its first
+    // character, as the game's command interpreter takes it.
+    assert!(mud.unsupported.contains_key("'"));
+    assert!(!mud.unsupported.contains_key("'but"));
+
+    assert_eq!(
+        coverage.dynamic_commands,
+        coverage.lines_by_class["dynamic_command"]
+    );
+    let fields = &coverage.field_references;
+    assert!(fields.text_functions.contains_key("strlen"));
+    assert!(fields.character.contains_key("name"));
+    assert!(fields.object.contains_key("shortdesc"));
+    assert!(fields.room.contains_key("vnum"));
+    assert!(fields.unknown_or_global.contains_key("tba_trial_vnum"));
+    assert!(!coverage.unknown_variable_heads.contains_key("actor"));
+
+    let summary = conversion.report.summary();
+    for heading in [
+        "### Lines by class",
+        "### Structural errors",
+        "### Unknown object commands",
+        "### Unknown world commands",
+        "### Mob commands for the game",
+        "### Substitution fields",
+    ] {
+        assert!(summary.contains(heading), "{heading}");
+    }
+    assert!(summary.contains("(top 15 of "));
+    assert!(summary.contains("| 1338 | line 1: 'if' without 'end' |"));
 }

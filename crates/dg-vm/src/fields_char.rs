@@ -437,6 +437,78 @@ fn table_name(index: i32, names: &[&str]) -> Option<String> {
     Some(sprinttype(index, names))
 }
 
+/// Every field name [`char_field`] recognises, lower-cased and sorted. The
+/// converter's coverage analysis classifies script references against this
+/// list; a test fails if it and the table disagree.
+pub const FIELD_NAMES: &[&str] = &[
+    "affect",
+    "alias",
+    "align",
+    "armor",
+    "canbeseen",
+    "cha",
+    "class",
+    "con",
+    "damroll",
+    "dex",
+    "drunk",
+    "eq",
+    "exp",
+    "fighting",
+    "follower",
+    "gold",
+    "has_item",
+    "hasattached",
+    "heshe",
+    "himher",
+    "hisher",
+    "hitp",
+    "hitroll",
+    "hunger",
+    "id",
+    "int",
+    "inventory",
+    "is_killer",
+    "is_pc",
+    "is_thief",
+    "level",
+    "mana",
+    "master",
+    "maxhitp",
+    "maxmana",
+    "maxmove",
+    "move",
+    "name",
+    "next_in_room",
+    "npcflag",
+    "pos",
+    "prac",
+    "pref",
+    "qp",
+    "qpnts",
+    "quest",
+    "questdone",
+    "questpoints",
+    "room",
+    "saving_breath",
+    "saving_para",
+    "saving_petri",
+    "saving_rod",
+    "saving_spell",
+    "sex",
+    "skill",
+    "skillset",
+    "str",
+    "stradd",
+    "thirst",
+    "title",
+    "varexists",
+    "vnum",
+    "wait",
+    "weight",
+    "wis",
+];
+
 /// The `if (c) { … }` branch of `find_replacement`: the value of
 /// `field(subfield)` on this character.
 ///
@@ -842,6 +914,84 @@ mod tests {
     use crate::host::{BaseHost, WorldHost};
     use crate::mock::MockHost;
     use crate::types::{TrigInstance, UID_CHAR};
+
+    /// The names of the `match` arms of `char_field`, read from its source.
+    fn arm_names() -> Vec<String> {
+        arm_names_of(include_str!("fields_char.rs"))
+    }
+
+    /// The quoted names in the pattern of each arm of the `match` in `source`,
+    /// whatever lines the alternation is wrapped over: an arm starts at a
+    /// string literal at the table's indentation and its pattern ends at `=>`
+    /// or at an `if` guard.
+    fn arm_names_of(source: &str) -> Vec<String> {
+        let table = source.split("match lowered.as_str()").nth(1).unwrap_or("");
+        let table = table.split("#[cfg(test)]").next().unwrap_or("");
+        let mut names = Vec::new();
+        let mut pattern: Option<String> = None;
+        for line in table.lines() {
+            if pattern.is_none() && line.starts_with("        \"") {
+                pattern = Some(String::new());
+            }
+            let Some(text) = pattern.as_mut() else {
+                continue;
+            };
+            text.push_str(line);
+            text.push(' ');
+            if let Some(end) = text.find("=>") {
+                let head = &text[..end];
+                let head = head.split(" if ").next().unwrap_or("");
+                names.extend(
+                    head.split('"')
+                        .skip(1)
+                        .step_by(2)
+                        .map(std::borrow::ToOwned::to_owned),
+                );
+                pattern = None;
+            }
+        }
+        names.sort();
+        names
+    }
+
+    #[test]
+    fn arm_names_are_read_across_wrapped_alternations() {
+        let source = "match lowered.as_str() {\n        \"a\" => 1,\n        \"b\"\n        | \"c\"\n        | \"d\" if x => 2,\n            \"deep\" => 3,\n        _ => 4,\n}\n#[cfg(test)]";
+        assert_eq!(arm_names_of(source), ["a", "b", "c", "d"]);
+    }
+
+    /// The list is compared with the `match` arms of the source text, so a
+    /// name answered outside those arms (before the `match`) is not seen: a
+    /// known limit, covered only by the corpus-names probe below.
+    #[test]
+    fn field_names_match_the_table() {
+        let mut listed: Vec<String> = FIELD_NAMES.iter().map(|n| (*n).to_owned()).collect();
+        let sorted = listed.clone();
+        listed.sort();
+        assert_eq!(sorted, listed, "FIELD_NAMES is sorted");
+        assert_eq!(listed, arm_names(), "FIELD_NAMES lists the match arms");
+
+        // Each listed name is answered by the table for some character and
+        // subfield; the few that answer nothing on some paths do so for the
+        // plain mob without a subfield.
+        let mut f = fx();
+        let (mob, pc) = (f.mob, f.pc);
+        f.host.set_num(pc, "abil:str", 18);
+        for name in FIELD_NAMES {
+            let recognised = [mob, pc].into_iter().any(|c| {
+                ["", "1"]
+                    .into_iter()
+                    .any(|sub| f.get(c, name, sub).is_some())
+            });
+            assert!(recognised, "{name} is not recognised");
+            let upper = name.to_ascii_uppercase();
+            assert!(
+                f.get(pc, &upper, "").is_some() || f.get(pc, &upper, "1").is_some(),
+                "{upper}"
+            );
+        }
+        assert_eq!(f.get(mob, "nosuch", ""), None);
+    }
 
     struct Fx {
         host: MockHost,

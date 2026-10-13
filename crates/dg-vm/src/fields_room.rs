@@ -123,6 +123,30 @@ pub trait RoomHost {
     fn room_sky(&self) -> i32;
 }
 
+/// Every field name [`room_field`] recognises, lower-cased and sorted: the
+/// table's names and the six exit directions. The converter's coverage
+/// analysis classifies script references against this list; a test fails if
+/// it and the table disagree.
+pub const FIELD_NAMES: &[&str] = &[
+    "contents",
+    "down",
+    "east",
+    "hasattached",
+    "id",
+    "name",
+    "north",
+    "people",
+    "roomflag",
+    "sector",
+    "south",
+    "up",
+    "vnum",
+    "weather",
+    "west",
+    "zonename",
+    "zonenumber",
+];
+
 /// The `if (r) { … }` branch of `find_replacement`: the value of
 /// `field(subfield)` on this room.
 ///
@@ -273,6 +297,34 @@ mod tests {
     use crate::host::{BaseHost, WorldHost};
     use crate::mock::MockHost;
     use crate::types::{AttachType, ROOM_ID_BASE, TrigInstance};
+
+    #[test]
+    fn field_names_match_the_table() {
+        let source = include_str!("fields_room.rs");
+        let table = source
+            .split("let out = if is(\"name\")")
+            .nth(1)
+            .unwrap_or("");
+        let table = table.split("#[cfg(test)]").next().unwrap_or("");
+        let mut arms: Vec<&str> = table
+            .split("is(\"")
+            .skip(1)
+            .filter_map(|rest| rest.split('"').next())
+            .collect();
+        arms.push("name");
+        arms.extend(DIRS[..FIELD_DIRS].iter().copied());
+        arms.sort_unstable();
+        assert_eq!(FIELD_NAMES, arms.as_slice(), "FIELD_NAMES lists the arms");
+
+        let mut h = MockHost::new();
+        let r = h.add_room(3001, "Temple");
+        for name in FIELD_NAMES {
+            assert!(field(&mut h, r, name, "").is_some(), "{name}");
+            let upper = name.to_ascii_uppercase();
+            assert!(field(&mut h, r, &upper, "").is_some(), "{upper}");
+        }
+        assert_eq!(field(&mut h, r, "nosuch", ""), None);
+    }
 
     fn field(host: &mut MockHost, room: Uid, name: &str, sub: &str) -> Option<String> {
         let proto = host.add_proto(5, AttachType::Wld, "a", 100, "", "nop");

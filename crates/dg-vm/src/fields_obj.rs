@@ -370,6 +370,39 @@ fn bump(current: i32, subfield: &str) -> i32 {
     atoi(subfield).wrapping_add(current).max(1)
 }
 
+/// Every field name [`obj_field`] recognises, lower-cased and sorted. The
+/// converter's coverage analysis classifies script references against this
+/// list; a test fails if it and the table disagree.
+pub const FIELD_NAMES: &[&str] = &[
+    "affects",
+    "carried_by",
+    "contents",
+    "cost",
+    "cost_per_day",
+    "count",
+    "extra",
+    "has_in",
+    "hasattached",
+    "id",
+    "is_inroom",
+    "is_pc",
+    "name",
+    "next_in_list",
+    "oset",
+    "room",
+    "shortdesc",
+    "timer",
+    "type",
+    "val0",
+    "val1",
+    "val2",
+    "val3",
+    "vnum",
+    "wearflag",
+    "weight",
+    "worn_by",
+];
+
 /// The `if (o) { … }` branch of `find_replacement`: the value of
 /// `field(subfield)` on this object.
 ///
@@ -513,6 +546,42 @@ mod tests {
     use crate::host::BaseHost;
     use crate::mock::MockHost;
     use crate::types::{AttachType, ROOM_ID_BASE, TrigInstance};
+
+    #[test]
+    fn field_names_match_the_table() {
+        let source = include_str!("fields_obj.rs");
+        let table = source
+            .split("let out = if is(\"affects\")")
+            .nth(1)
+            .unwrap_or("");
+        let table = table.split("#[cfg(test)]").next().unwrap_or("");
+        let mut arms: Vec<&str> = table
+            .split("is(\"")
+            .skip(1)
+            .filter_map(|rest| rest.split('"').next())
+            .collect();
+        arms.push("affects");
+        arms.sort_unstable();
+        assert_eq!(FIELD_NAMES, arms.as_slice(), "FIELD_NAMES lists the arms");
+
+        let mut h = MockHost::new();
+        let o = sword(&mut h);
+        let sorted: Vec<&str> = {
+            let mut names = FIELD_NAMES.to_vec();
+            names.sort_unstable();
+            names
+        };
+        assert_eq!(sorted.as_slice(), FIELD_NAMES, "FIELD_NAMES is sorted");
+        for name in FIELD_NAMES {
+            let recognised = ["", "1"]
+                .into_iter()
+                .any(|sub| field(&mut h, o, name, sub).is_some());
+            assert!(recognised, "{name} is not recognised");
+            let upper = name.to_ascii_uppercase();
+            assert!(field(&mut h, o, &upper, "1").is_some(), "{upper}");
+        }
+        assert_eq!(field(&mut h, o, "nosuch", ""), None);
+    }
 
     /// Run `obj_field` on a mock object, as an object-attached trigger would.
     fn field(host: &mut MockHost, obj: Uid, name: &str, sub: &str) -> Option<String> {
