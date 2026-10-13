@@ -11,7 +11,7 @@ mod common;
 
 use common::corpus::Record;
 use common::scene::{Scene, assert_clean, heard, heard_raw, other_effects, said, vnums};
-use common::world::{fire, global_var, install_record, make_proto, run_waits, uid};
+use common::world::{fire, global_var, install, install_record, make_proto, run_waits, uid};
 use dg_vm::driver::resume;
 use dg_vm::host::BaseHost;
 use dg_vm::mock::MockHost;
@@ -125,6 +125,8 @@ fn trigger_2_reloads_the_mob_and_drops_the_wings() {
         .filter(|ch| **ch != mob && scene.fx.host.num(**ch, "vnum") == 7002)
         .collect();
     assert_eq!(copies.len(), 1, "one fresh copy of the mob");
+    // Loading sends nothing to anyone.
+    assert!(scene.fx.host.effects.is_empty());
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
 }
@@ -265,7 +267,8 @@ fn drop_offering(record: &Record, cost: i64) -> (Scene, u64) {
     }
     let dagger = scene.fx.inventory[0];
     scene.host().set_num(dagger, "cost", cost);
-    scene.host().obj_to_room(dagger, room);
+    // perform_drop runs `drop_wtrigger` before `obj_from_char`, and the
+    // trigger tests `obj->carried_by != actor`: the dagger is still carried.
     let id = install_record(scene.host(), room, record);
     let vars = [("actor", uid(player)), ("object", uid(dagger))];
     assert_eq!(fire(scene.host(), room, id, &vars), 1);
@@ -277,6 +280,9 @@ fn drop_offering(record: &Record, cost: i64) -> (Scene, u64) {
             "Room 3001 :: Unknown world cmd: '%send% }1 As you drop the a dagger, a loud humming starts to come from the walls.'"
         ]
     );
+    assert_eq!(scene.fx.host.link(dagger, "carried_by"), Some(player));
+    // The first run returned 1 at the wait: the drop completes.
+    scene.host().obj_to_room(dagger, room);
     assert_eq!(run_waits(scene.host(), 5), 1);
     (scene, id)
 }
@@ -386,11 +392,16 @@ fn trigger_1114_blinds_and_sleeps_itself() {
     let mob = scene.add_owner_mob(1115, "a spider");
     let id = install_record(scene.host(), mob, &record);
     assert_eq!(fire(scene.host(), mob, id, &[]), 1);
+    // mecho is `sub_write(.., TO_ROOM)` then `TO_CHAR`: the room's people head
+    // first (the spider, then Watcher, the guard, Tester; sub_write ends in
+    // "\n\r"), and the spider has no descriptor.
     assert_eq!(
-        scene.fx.host.effects[..2],
-        [
+        scene.fx.host.effects,
+        vec![
             format!("affect_to_char {mob} location=0 modifier=0 duration=0 bit=1"),
             format!("affect_to_char {mob} location=0 modifier=0 duration=1 bit=15"),
+            format!("send {watcher}: sleeping now\n\r"),
+            format!("send {player}: sleeping now\n\r"),
         ]
     );
     assert_eq!(scene.fx.host.num(mob, "aff:1"), 1);
@@ -738,7 +749,7 @@ fn comfy_bed(record: &Record, arg: &str) -> (Scene, Uid) {
 #[test]
 fn trigger_13_puts_the_sleeper_in_the_bed() {
     let record = real!(13);
-    for arg in ["bed", "be"] {
+    for arg in ["bed", "be", "BED", "Be"] {
         let (scene, player) = comfy_bed(&record, arg);
         assert_eq!(
             said(&scene.fx.host),
@@ -905,13 +916,26 @@ fn join_scene(
 #[test]
 fn trigger_48_joins_the_orb_onto_the_staff() {
     let record = real!(48);
-    let (scene, staff, orb, friend, id) = join_scene(&record, true, true, 1);
+    let (scene, staff, orb, friend, _) = join_scene(&record, true, true, 1);
     let player = scene.player();
+    // opurge, otransform (which reads a fresh object `o`, moves its fields
+    // over the staff and ends in `extract_obj(o)`), osend (to the actor),
+    // oechoaround (the others in room 133; sub_write ends in "\n\r"), then
+    // the detach, which is silent.
+    let effects = &scene.fx.host.effects;
+    assert_eq!(effects.len(), 5, "{effects:?}");
+    assert_eq!(effects[0], format!("extract_obj {orb}"));
+    assert_eq!(effects[1], format!("transform_obj {staff} 12"));
+    let temp: Uid = effects[2]
+        .strip_prefix("extract_obj ")
+        .and_then(|text| text.parse().ok())
+        .expect("the temporary object is extracted");
+    assert!(temp != staff && temp != orb);
     assert_eq!(
-        scene.fx.host.effects[..2],
+        effects[3..],
         [
-            format!("extract_obj {orb}"),
-            format!("transform_obj {staff} 12")
+            format!("send {player}: As you join the orb to the staff it clicks into place.\n\r"),
+            format!("send {friend}: Tester places an orb onto his staff.\n\r"),
         ]
     );
     assert_eq!(scene.fx.host.num(staff, "vnum"), 12);
@@ -924,12 +948,8 @@ fn trigger_48_joins_the_orb_onto_the_staff() {
         vec!["Tester places an orb onto his staff."]
     );
     assert!(
-        scene
-            .fx
-            .host
-            .script(staff)
-            .is_none_or(|script| script.trigger(id).is_none()),
-        "the trigger detached itself"
+        scene.fx.host.script(staff).is_none(),
+        "the trigger detached itself and the empty script was freed"
     );
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
@@ -1109,9 +1129,17 @@ fn trigger_50_opens_and_closes_the_shop_by_the_clock() {
 // field is matched with search_block(field, door_field, FALSE): exact, so the
 // comment lines (`*`) do nothing. The trigger returns 1.
 // ---------------------------------------------------------------------
+// `if %arg% == chest` is eval_op `==` through str_cmp, which ignores case,
+// and %arg% keeps the player's case, so "Chest" opens the trapdoor too.
 #[test]
 fn trigger_17_builds_both_ends_of_a_trapdoor() {
     let record = real!(17);
+    for arg in ["chest", "Chest", "CHEST"] {
+        trapdoor_case(&record, arg);
+    }
+}
+
+fn trapdoor_case(record: &Record, arg: &str) {
     let mut scene = Scene::new();
     let (player, watcher) = (scene.player(), scene.watcher);
     let upper = scene.host().add_room(14520, "A Storeroom");
@@ -1119,13 +1147,13 @@ fn trigger_17_builds_both_ends_of_a_trapdoor() {
     for ch in [player, watcher] {
         scene.host().char_to_room(ch, upper);
     }
-    let id = install_record(scene.host(), upper, &record);
+    let id = install_record(scene.host(), upper, record);
     let vars = [
         ("actor", uid(player)),
-        ("arg", "chest".to_owned()),
+        ("arg", arg.to_owned()),
         ("cmd", "move".to_owned()),
     ];
-    assert_eq!(fire(scene.host(), upper, id, &vars), 1);
+    assert_eq!(fire(scene.host(), upper, id, &vars), 1, "{arg}");
 
     let host = &scene.fx.host;
     assert_eq!(
@@ -1186,7 +1214,8 @@ fn trigger_17_builds_nothing_for_another_argument() {
 // Trigger 23840, room command `pu` (`2 c 100`): door room, name with a space,
 // `wait 60s`, then `purge`.
 //
-// `pull /= %cmd%`: str_str("pull", "pu") finds it; `torch /= %arg%` likewise,
+// `pull /= %cmd%`: the player typed "pull" and str_str("pull", "pull") finds it
+// (so would the abbreviation "pu" that the argument list matches); `torch /= %arg%` likewise,
 // so the branch runs: wsend, wechoaround, `wdoor 23840 up room 23841` (the
 // exit is created with zero fields, then to_room = real_room(23841)),
 // `name trap door` (value is the rest of the line: "trap door"). `wait 60s`:
@@ -1348,7 +1377,58 @@ fn trigger_23700_waits_until_dawn_across_midnight_then_one_hour() {
         global_var(&scene.fx.host, trader, "trader_leaving").as_deref(),
         Some("1")
     );
+    // `context %self.id%` set sc->context to the mob's id and
+    // `process_global(.., sc->context)` stored the global under it.
+    let script = scene.fx.host.script(trader).unwrap();
+    assert_eq!(script.context, trader);
+    assert_eq!(
+        script.global_vars.get("trader_leaving").unwrap().context,
+        trader
+    );
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
+    assert_clean(&scene.fx.host);
+}
+
+// A global saved under a context is visible only while sc->context matches
+// (dg_variables.c get_local_var: `vd->context==0 || vd->context==sc->context`),
+// and script_driver resets `sc->context = 0` on every TRIG_NEW run. Trigger A
+// does `context 77`, `set v 5`, `global v`: v is stored under context 77 and
+// the script keeps context 77 when it ends. Trigger B (a new run) then starts
+// with context 0, so `%v%` does not resolve (77 is neither 0 nor 0) and it
+// takes the else branch; afterwards the script's context is still 0.
+#[test]
+fn a_new_run_resets_the_context_of_globals() {
+    let mut scene = Scene::new();
+    let mob = scene.add_owner_mob(3300, "a clerk");
+    let a = install(
+        scene.host(),
+        mob,
+        9101,
+        AttachType::Mob,
+        "g",
+        100,
+        "",
+        "context 77\nset v 5\nglobal v",
+    );
+    let b = install(
+        scene.host(),
+        mob,
+        9102,
+        AttachType::Mob,
+        "g",
+        100,
+        "",
+        "if %v%\nsay seen\nelse\nsay hidden\nend",
+    );
+    assert_eq!(fire(scene.host(), mob, a, &[]), 1);
+    let script = scene.fx.host.script(mob).unwrap();
+    assert_eq!(script.context, 77);
+    assert_eq!(script.global_vars.get("v").unwrap().context, 77);
+    assert_eq!(global_var(&scene.fx.host, mob, "v").as_deref(), Some("5"));
+
+    assert_eq!(fire(scene.host(), mob, b, &[]), 1);
+    assert_eq!(common::world::commands(&scene.fx.host), vec!["say hidden"]);
+    assert_eq!(scene.fx.host.script(mob).unwrap().context, 0);
     assert_clean(&scene.fx.host);
 }
 

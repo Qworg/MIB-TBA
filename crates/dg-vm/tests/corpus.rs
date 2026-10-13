@@ -167,6 +167,14 @@ fn scan_command(words: &[&str], line: &str, refs: &mut Refs) {
                 scan_command(&words[2..], line, refs);
             }
         }
+        // do_otransform / do_mtransform: the vnum of an object or mobile
+        // prototype (the owner's kind decides, so make both exist).
+        "transform" => {
+            if let Some(vnum) = words.get(1).and_then(|w| number(w)) {
+                refs.objs.insert(vnum);
+                refs.mobs.insert(vnum);
+            }
+        }
         "teleport" | "goto" => refs
             .rooms
             .extend(words.iter().skip(1).filter_map(|w| number(w))),
@@ -200,6 +208,19 @@ fn referenced_vnums(record: &Record) -> Refs {
         let words: Vec<&str> = line.split_whitespace().collect();
         scan_command(&words, line, &mut refs);
     }
+    // `%findobj.<room>(<vnum>)%` and `%findmob.<room>(<vnum>)%` look in a room
+    // by number (dg_variables.c findobj/findmob).
+    for key in ["findobj.", "findmob."] {
+        for (at, _) in record.body.match_indices(key) {
+            let digits: String = record.body[at + key.len()..]
+                .chars()
+                .take_while(char::is_ascii_digit)
+                .collect();
+            if let Ok(room) = digits.parse::<i32>() {
+                refs.rooms.insert(room);
+            }
+        }
+    }
     refs
 }
 
@@ -227,6 +248,26 @@ fn build(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: usize) 
             .texts
             .insert(format!("objproto:{vnum}"), "a loaded object".to_owned());
     }
+    // Every object and mob the fixture creates has a prototype in the game
+    // (the C's `read_object` succeeds for `%load% obj %item.vnum%`).
+    for vnum in [3020, 3021, 3022, 3023, 3024, 3030, 3031] {
+        fx.host
+            .globals
+            .texts
+            .insert(format!("objproto:{vnum}"), "a fixture object".to_owned());
+    }
+    fx.host
+        .globals
+        .texts
+        .insert("mobproto:3100".to_owned(), "a city guard".to_owned());
+    // One zone that covers every vnum, so `%zoneecho% <vnum>` finds it.
+    let nums = &mut fx.host.globals.nums;
+    nums.insert("zone:30:bot".to_owned(), 0);
+    nums.insert("zone:30:top".to_owned(), 99_999);
+    fx.host
+        .globals
+        .texts
+        .insert("zone:30:name".to_owned(), "The Test Zone".to_owned());
     // `%load% obj %self.vnum%` and the like clone the owner itself.
     fx.host
         .globals
@@ -245,6 +286,17 @@ fn build(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: usize) 
         if (0..100_000).contains(vnum) && fx.host.real_room(*vnum).is_none() {
             fx.host.add_room(*vnum, &format!("Room {vnum}"));
         }
+    }
+    let rooms: Vec<Uid> = std::iter::once(fx.room)
+        .chain(fx.neighbours.iter().copied())
+        .chain(
+            refs.rooms
+                .iter()
+                .filter_map(|vnum| fx.host.real_room(*vnum)),
+        )
+        .collect();
+    for room in rooms {
+        fx.host.set_num(room, "zone", 30);
     }
     let attach = AttachType::from_index(record.attach_type).unwrap_or(AttachType::Mob);
     let owner = match attach {
@@ -271,10 +323,19 @@ fn build(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: usize) 
         AttachType::Wld => fx.room,
     };
     let id = fx.host.attach(owner, &proto).expect("owner exists");
+    // perform_give / perform_drop run the receive and drop triggers before
+    // the object leaves the actor's inventory (`obj->carried_by != actor`).
+    let bits = dg_vm::types::trig::asciiflag_conv(&record.flags);
+    let carried = match attach {
+        AttachType::Mob => bits & (1 << 9) != 0,
+        AttachType::Wld => bits & (1 << 7) != 0,
+        AttachType::Obj => false,
+    };
+    let object = if carried { fx.inventory[0] } else { fx.bench };
     let cast = Cast {
         actor: dg_vm::types::uid_text(fx.player),
         victim: dg_vm::types::uid_text(fx.guard),
-        object: dg_vm::types::uid_text(fx.bench),
+        object: dg_vm::types::uid_text(object),
         target: dg_vm::types::uid_text(fx.inventory[0]),
     };
     let vars = event_vars(record, attach, &cast);
@@ -355,29 +416,45 @@ fn run_record(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: us
     }
 }
 
-/// Reduce a script_log line to its shape: drop the `Trigger: name, VNum N.`
-/// prefix, digits become `#`, quoted text becomes `'..'`.
+/// Reduce a script_log line to its shape: drop the `Trigger: name, Vnum N`
+/// prefix (any case, with the optional `, type N`), digits become `#` and the
+/// text of a `'%s'` becomes `'..'`. The literal quoted keywords of the
+/// driver's own `Trigger VNum N has 'else' without 'if'.` messages and their
+/// `(error N)` number stay, so different C messages keep different shapes.
 fn log_shape(message: &str) -> String {
-    let rest = message
-        .strip_prefix("Trigger: ")
-        .and_then(|m| m.find(", VNum ").map(|at| &m[at + 7..]))
-        .map(|m| m.trim_start_matches(|c: char| c.is_ascii_digit()))
-        .map(|m| {
-            m.strip_prefix(". ")
+    let literal = message.starts_with("Trigger VNum ");
+    let mut rest = message;
+    if let Some(after) = message.strip_prefix("Trigger: ") {
+        let lower = after.to_ascii_lowercase();
+        if let Some(at) = lower.find(", vnum ") {
+            let m = after[at + 7..].trim_start_matches(|c: char| c.is_ascii_digit());
+            let m = m
+                .strip_prefix(", type")
+                .map(|t| {
+                    t.trim_start_matches(':')
+                        .trim_start()
+                        .trim_start_matches(|c: char| c.is_ascii_digit())
+                })
+                .unwrap_or(m);
+            rest = m
+                .strip_prefix(". ")
                 .or_else(|| m.strip_prefix('.'))
-                .unwrap_or(m)
-        })
-        .unwrap_or(message);
+                .unwrap_or(m);
+        }
+    }
     // The C formats put the quoted text (which may hold apostrophes itself)
     // at or near the end of the line: everything from the first quote to the
     // last one is the quoted text.
     let (head, tail) = match (rest.find('\''), rest.rfind('\'')) {
-        (Some(first), Some(last)) if first < last => (&rest[..first], &rest[last + 1..]),
+        (Some(first), Some(last)) if first < last && !literal => {
+            (&rest[..first], &rest[last + 1..])
+        }
         _ => (rest, ""),
     };
     let quoted = head.len() != rest.len();
     let mut out = String::new();
     let mut last_digit = false;
+    let mut keep_digits = false;
     for c in head
         .chars()
         .chain(std::iter::once('\0'))
@@ -390,7 +467,13 @@ fn log_shape(message: &str) -> String {
             last_digit = false;
         } else if c.is_ascii_digit() {
             if !last_digit {
-                out.push('#');
+                keep_digits = out.ends_with("(error ");
+                if !keep_digits {
+                    out.push('#');
+                }
+            }
+            if keep_digits {
+                out.push(c);
             }
             last_digit = true;
         } else {
@@ -399,6 +482,17 @@ fn log_shape(message: &str) -> String {
         }
     }
     out
+}
+
+/// Shapes that report a room, object or mobile vnum the script computed
+/// (`%at% %num%`, `%load% obj %present3%`) and the harness did not create: a
+/// gap of the mock world, not of the VM.
+fn is_world_gap(shape: &str) -> bool {
+    shape.contains("location not found")
+        || shape.ends_with("invalid location")
+        || shape.contains("bad object vnum")
+        || shape.contains("bad mob vnum")
+        || shape.contains("No room with vnum")
 }
 
 fn top<K: Clone + Ord>(counts: &BTreeMap<K, usize>, n: usize) -> Vec<(K, usize)> {
@@ -521,11 +615,27 @@ fn print_summary(outcomes: &[Outcome], failures: &[String]) {
         "script_log messages: {total_logs} in {} shapes",
         shapes.len()
     );
-    for (shape, count) in top(&shapes, 100) {
+    let mut gaps: BTreeMap<String, usize> = BTreeMap::new();
+    let mut real: BTreeMap<String, usize> = BTreeMap::new();
+    for (shape, count) in &shapes {
+        let into = if is_world_gap(shape) {
+            &mut gaps
+        } else {
+            &mut real
+        };
+        into.insert(shape.clone(), *count);
+    }
+    for (shape, count) in top(&real, 100) {
+        println!("  {count:5}  {shape}  [e.g. {}]", shape_sample[&shape]);
+    }
+    println!(
+        "world gaps (rooms, objects and mobs a script computes that the harness does not create):"
+    );
+    for (shape, count) in top(&gaps, 100) {
         println!("  {count:5}  {shape}  [e.g. {}]", shape_sample[&shape]);
     }
     println!("vnums behind the 20 most frequent log shapes:");
-    for (shape, count) in top(&shapes, 20) {
+    for (shape, count) in top(&real, 20) {
         let vnums: Vec<String> = shape_vnums[&shape].iter().map(|v| v.to_string()).collect();
         println!(
             "  {count:5}  {shape}\n         vnums: {}\n         e.g. {}",

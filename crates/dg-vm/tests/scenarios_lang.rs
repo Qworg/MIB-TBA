@@ -19,11 +19,13 @@ mod common;
 
 use common::corpus::Record;
 use common::scene::{Scene, assert_clean, heard, heard_raw, other_effects, said, vnums};
-use common::world::{commands, fire, global_var, install_record, run_waits, uid};
+use common::world::{
+    commands, fire, global_var, install, install_record, local_var, run_waits, uid,
+};
 use dg_vm::driver::resume;
 use dg_vm::host::{BaseHost, WorldHost};
 use dg_vm::mock::MockHost;
-use dg_vm::types::Uid;
+use dg_vm::types::{AttachType, Uid};
 
 /// Resume the pending waits and return those queued next.
 fn step(host: &mut MockHost) -> Vec<(Uid, u64, i64)> {
@@ -200,13 +202,9 @@ fn trigger_45_shotgun_fires_twice_then_detaches() {
     assert!(scene.fx.host.effects.is_empty());
     assert_eq!(scene.fx.host.num(guard, "hit"), 40);
     // The only trigger is gone and so is the script with its variable.
-    assert!(
-        scene
-            .fx
-            .host
-            .script(gun)
-            .is_none_or(|script| script.trigger(id).is_none())
-    );
+    // process_detach: `if (!TRIGGERS(SCRIPT(o))) extract_script(o, OBJ_TRIGGER)`.
+    assert!(scene.fx.host.script(gun).is_none());
+    assert_eq!(global_var(&scene.fx.host, gun, "shotgun_rounds"), None);
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
 }
@@ -330,6 +328,17 @@ fn wecho_lines_end_in_return_newline() {
     ];
     assert_eq!(heard_raw(&scene.fx.host, player), expected);
     assert_eq!(heard_raw(&scene.fx.host, watcher), expected);
+    // act_to_room: `act(.., TO_ROOM)` reaches everyone but the head of
+    // room->people (Watcher) first, then `act(.., TO_CHAR)` reaches the head.
+    assert_eq!(
+        scene.fx.host.effects[..4],
+        [
+            format!("send {player}: The first word is: go\r\n"),
+            format!("send {watcher}: The first word is: go\r\n"),
+            format!("send {player}: The rest of the string is: \r\n"),
+            format!("send {watcher}: The rest of the string is: \r\n"),
+        ]
+    );
 }
 
 // ---------------------------------------------------------------------
@@ -401,7 +410,8 @@ fn trigger_189_does_not_load_a_second_ball() {
 // Trigger 12, room enter `2 g 100`: `%load% obj` in a room.
 //
 // `wait 1 sec` (10 pulses), then wechoaround, wsend, `wload obj 1394` (the
-// object lands in the room), `wdamage %actor% 3`: hit 100 -> 97.
+// object lands in the room), `%damage% %actor% %random.5%` (wdamage) with the roll 3 the test
+// supplies: hit 100 -> 97.
 // ---------------------------------------------------------------------
 #[test]
 fn trigger_12_drops_the_ball_on_the_head() {
@@ -462,10 +472,16 @@ fn trigger_21_transforms_into_the_rolled_mob() {
             "say Transform complete to mob 106.",
         ]
     );
-    assert_eq!(
-        scene.fx.host.effects[0],
-        format!("transform_mob {mob} 106 true")
-    );
+    // do_mtransform sends no message: the transform, then `extract_char(m)`
+    // of the fresh mob it copied from (never the mob itself).
+    let effects = &scene.fx.host.effects;
+    assert_eq!(effects.len(), 2, "{effects:?}");
+    assert_eq!(effects[0], format!("transform_mob {mob} 106 true"));
+    let temp: Uid = effects[1]
+        .strip_prefix("extract_char ")
+        .and_then(|text| text.parse().ok())
+        .expect("the temporary mob is extracted");
+    assert_ne!(temp, mob);
     assert_eq!(scene.fx.host.text(mob, "name"), "a hill giant");
     assert!(scene.fx.host.logs.is_empty());
     assert_clean(&scene.fx.host);
@@ -759,12 +775,8 @@ fn trigger_59_drenches_the_first_opener_once() {
     );
     assert_eq!(scene.fx.host.num(player, "hit"), 99);
     assert!(
-        scene
-            .fx
-            .host
-            .script(room)
-            .is_none_or(|script| script.trigger(id).is_none()),
-        "the trigger is detached"
+        scene.fx.host.script(room).is_none(),
+        "the trigger is detached and the empty script freed"
     );
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
     assert_clean(&scene.fx.host);
@@ -804,31 +816,23 @@ fn trigger_59_ignores_other_door_commands() {
 // `if` finds the loop's `done` (find_done skips nested while/switch blocks
 // and returns the first `done`), after which `if %has_it%` says "has that".
 // ---------------------------------------------------------------------
-fn greeted_by(scene: &mut Scene, mob: Uid, actor: Uid) -> Vec<String> {
-    let record = corpus_trigger(32);
-    let id = install_record(scene.host(), mob, &record);
+fn greeted_by(record: &Record, scene: &mut Scene, mob: Uid, actor: Uid) -> Vec<String> {
+    let id = install_record(scene.host(), mob, record);
     let vars = [("actor", uid(actor)), ("direction", "south".to_owned())];
     assert_eq!(fire(scene.host(), mob, id, &vars), 1);
     assert_clean(&scene.fx.host);
     commands(&scene.fx.host)
 }
 
-fn corpus_trigger(vnum: i32) -> Record {
-    common::corpus::trigger(vnum).expect("corpus")
-}
-
 #[test]
 fn trigger_32_finds_the_wielded_item_first() {
-    if common::corpus::cached().is_none() {
-        common::corpus::skip_message("trigger_32_finds_the_wielded_item_first");
-        return;
-    }
+    let record = real!(32);
     let mut scene = Scene::new();
     let (player, sword) = (scene.player(), scene.fx.equipment[0]);
     scene.host().set_num(sword, "vnum", 1300);
     let mob = scene.add_owner_mob(3200, "a checker");
     assert_eq!(
-        greeted_by(&mut scene, mob, player),
+        greeted_by(&record, &mut scene, mob, player),
         vec!["say Tester has that special item."]
     );
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
@@ -836,15 +840,12 @@ fn trigger_32_finds_the_wielded_item_first() {
 
 #[test]
 fn trigger_32_walks_the_whole_inventory_and_finds_nothing() {
-    if common::corpus::cached().is_none() {
-        common::corpus::skip_message("trigger_32_walks_the_whole_inventory_and_finds_nothing");
-        return;
-    }
+    let record = real!(32);
     let mut scene = Scene::new();
     let player = scene.player();
     let mob = scene.add_owner_mob(3200, "a checker");
     assert_eq!(
-        greeted_by(&mut scene, mob, player),
+        greeted_by(&record, &mut scene, mob, player),
         vec!["say Tester doesnt have that crappy item."]
     );
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
@@ -852,10 +853,7 @@ fn trigger_32_walks_the_whole_inventory_and_finds_nothing() {
 
 #[test]
 fn trigger_32_breaks_out_of_the_walk_on_the_last_item() {
-    if common::corpus::cached().is_none() {
-        common::corpus::skip_message("trigger_32_breaks_out_of_the_walk_on_the_last_item");
-        return;
-    }
+    let record = real!(32);
     let mut scene = Scene::new();
     let watcher = scene.watcher;
     // obj_to_char pushes at the head: the list is 3042, 3041, 1300.
@@ -865,7 +863,7 @@ fn trigger_32_breaks_out_of_the_walk_on_the_last_item() {
     }
     let mob = scene.add_owner_mob(3200, "a checker");
     assert_eq!(
-        greeted_by(&mut scene, mob, watcher),
+        greeted_by(&record, &mut scene, mob, watcher),
         vec!["say Watcher has that special item."]
     );
     assert!(scene.fx.host.logs.is_empty(), "{:?}", scene.fx.host.logs);
@@ -936,11 +934,19 @@ fn trigger_40_scatters_the_inventory_and_drops_the_equipment_text() {
     // The worn items were never purged.
     assert_eq!(host.equipment(player, 12), Some(scene.fx.equipment[1]));
     assert_eq!(host.equipment(player, 16), Some(scene.fx.equipment[0]));
-    let drops: Vec<String> = heard(host, player)
-        .into_iter()
-        .filter(|line| line.starts_with("You drop"))
-        .collect();
-    assert_eq!(drops, vec!["You drop a cloak", "You drop a sword"]);
+    // wsend ends in "\n\r" (sub_write); script_damage's send_char_pos adds
+    // "That really did HURT!" (dam 99 > max_hit >> 2, act: "\r\n") and, with
+    // 1 hit point left (< 25), the BLEEDING line (no colour for this player).
+    assert_eq!(
+        heard_raw(host, player),
+        vec![
+            "You feel you must not have been worthy when a powerful force hurls you back through the gates.\n\r",
+            "That really did HURT!\r\n",
+            "You wish that your wounds would stop BLEEDING so much!\r\n",
+            "You drop a cloak\n\r",
+            "You drop a sword\n\r",
+        ]
+    );
     assert_eq!(
         host.logs,
         vec![
@@ -951,4 +957,96 @@ fn trigger_40_scatters_the_inventory_and_drops_the_equipment_text() {
     assert_eq!(host.mud_commands, vec![(player, " look".to_owned())]);
     assert!(host.rolls.is_empty());
     assert_clean(host);
+}
+
+// ---------------------------------------------------------------------
+// Trigger 1396, room speech `2 d 100`: the loop guard of script_driver.
+//
+// `while %i%<32` runs its body for i = 0..31. At each `done` whose condition
+// still holds, `cl->loops++` and on the 30th `cl->loops = 0`,
+// `process_wait(.., "wait 1", cl)` and the run returns (ret_val 1). The 30th
+// `done` sees i = 30 (the body of pass 30 ended with `eval i %i%+1`), so the
+// body ran for i = 0..29 and the echoes are slots 12 (the cloak) and 16 (the
+// sword), in slot order. `%echo%` is wecho: act_to_room acts TO_ROOM first
+// (everyone but the head of room->people, Watcher: Tester hears it) and then
+// TO_CHAR to the head (Watcher), so Tester's line precedes Watcher's. The
+// resumed run (curr_state is the line after the `while`) does i = 30 and 31,
+// finds nothing in those slots, and at the `done` with i = 32 the condition
+// fails and the loop ends.
+// ---------------------------------------------------------------------
+#[test]
+fn trigger_1396_yields_on_the_thirtieth_pass_of_a_loop() {
+    let record = real!(1396);
+    let mut scene = Scene::new();
+    let (room, player, watcher) = (scene.room(), scene.player(), scene.watcher);
+    let id = install_record(scene.host(), room, &record);
+    let vars = [("actor", uid(player)), ("speech", "test".to_owned())];
+    assert_eq!(fire(scene.host(), room, id, &vars), 1);
+    let line = |who, text: &str| format!("send {who}: {text}\r\n");
+    let echoes = vec![
+        line(player, "In slot 12 you are wearing a cloak"),
+        line(watcher, "In slot 12 you are wearing a cloak"),
+        line(player, "In slot 16 you are wearing a sword"),
+        line(watcher, "In slot 16 you are wearing a sword"),
+    ];
+    assert_eq!(scene.fx.host.effects, echoes);
+    assert_eq!(scene.fx.host.waits, vec![(room, id, 1)]);
+    assert_eq!(
+        local_var(&scene.fx.host, room, id, "i").as_deref(),
+        Some("30")
+    );
+
+    assert_eq!(run_waits(scene.host(), 5), 1);
+    assert_eq!(scene.fx.host.effects, echoes);
+    assert!(scene.fx.host.waits.is_empty());
+    assert_eq!(local_var(&scene.fx.host, room, id, "i"), None);
+    assert!(scene.fx.host.logs.is_empty());
+    assert_clean(&scene.fx.host);
+}
+
+// A loop that never ends: `while 1` and a `global n` that records how far it
+// got. GET_TRIG_LOOPS counts every pass of the instance's run and is reset
+// only by TRIG_NEW; cl->loops is reset at each forced wait. Passes 30, 60 and
+// 90 end in `wait 1` (n = 30, 60, 90). Pass 100 leaves cl->loops at 10, so
+// the 30 test fails and `GET_TRIG_LOOPS >= 100` logs "Trigger VNum %d has
+// looped 100 times!!!" and breaks out of the run: the `wecho` after `done`
+// never happens, and nothing is waiting any more.
+#[test]
+fn a_loop_that_never_ends_is_stopped_at_a_hundred_passes() {
+    let mut scene = Scene::new();
+    let room = scene.room();
+    let id = install(
+        scene.host(),
+        room,
+        9001,
+        AttachType::Wld,
+        "g",
+        100,
+        "",
+        "set n 0\nwhile 1\neval n %n%+1\nglobal n\ndone\n%echo% finished",
+    );
+    assert_eq!(fire(scene.host(), room, id, &[]), 1);
+    for expected in ["30", "60", "90"] {
+        assert_eq!(scene.fx.host.waits, vec![(room, id, 1)]);
+        assert_eq!(
+            global_var(&scene.fx.host, room, "n").as_deref(),
+            Some(expected)
+        );
+        assert!(scene.fx.host.logs.is_empty());
+        let due = std::mem::take(&mut scene.host().waits);
+        for (owner, id, _) in due {
+            resume(scene.host(), owner, id);
+        }
+    }
+    assert!(scene.fx.host.waits.is_empty());
+    assert_eq!(
+        global_var(&scene.fx.host, room, "n").as_deref(),
+        Some("100")
+    );
+    assert_eq!(
+        scene.fx.host.logs,
+        vec!["Trigger VNum 9001 has looped 100 times!!!"]
+    );
+    assert!(scene.fx.host.effects.is_empty());
+    assert_clean(&scene.fx.host);
 }

@@ -328,8 +328,10 @@ fn tutorial_10_stays_silent_once_the_quest_is_solved() {
     );
 }
 
-// Trigger 11, `0 j 100`: the player hands over object 47 (already in the
-// mob's inventory when receive_mtrigger runs). `!varexists && vnum == 47` is
+// Trigger 11, `0 j 100`: the player hands over object 47. perform_give runs
+// `receive_mtrigger` before `obj_from_char`/`obj_to_char`, and the trigger
+// tests `obj->carried_by != actor`, so the ball is still in the player's
+// inventory when the script runs. `!varexists && vnum == 47` is
 // true: `set` makes a local; `remote name <id>` copies it into the player's
 // script globals (the player must have a script); `%purge% %object%` is
 // `mpurge <uid>` and extract_obj removes the object at once; `dance` is no
@@ -343,7 +345,7 @@ fn tutorial_11_rewards_the_magic_eight_ball() {
     let mut scene = Scene::new(1317, "the tutorial guide");
     let (owner, player) = (scene.owner, scene.fx.player);
     let ball = scene.host().add_obj(47, "the magic eight ball");
-    scene.host().obj_to_char(ball, owner);
+    scene.host().obj_to_char(ball, player);
     let id = install_record(scene.host(), owner, &record);
     let vars = [("actor", uid(player)), ("object", uid(ball))];
     assert_eq!(fire(scene.host(), owner, id, &vars), 1);
@@ -395,7 +397,6 @@ fn tutorial_11_refuses_any_other_object() {
     let mut scene = Scene::new(1317, "the tutorial guide");
     let (owner, player) = (scene.owner, scene.fx.player);
     let lantern = scene.fx.inventory[1];
-    scene.host().obj_to_char(lantern, owner);
     let id = install_record(scene.host(), owner, &record);
     let vars = [("actor", uid(player)), ("object", uid(lantern))];
     assert_eq!(fire(scene.host(), owner, id, &vars), 1);
@@ -406,6 +407,7 @@ fn tutorial_11_refuses_any_other_object() {
     assert!(scene.fx.host.waits.is_empty());
     assert_eq!(global_var(&scene.fx.host, player, SOLVED), None);
     assert!(scene.fx.host.exists(lantern));
+    assert_eq!(scene.fx.host.link(lantern, "carried_by"), Some(player));
 }
 
 // Trigger 11 for a player who has already solved the quest: `!1 && …` is
@@ -418,7 +420,7 @@ fn tutorial_11_refuses_the_ball_a_second_time() {
     scene.set_global(player, SOLVED, "1");
     let ball = scene.host().add_obj(47, "the magic eight ball");
     scene.host().set_text(ball, "alias", "ball magic eight");
-    scene.host().obj_to_char(ball, owner);
+    scene.host().obj_to_char(ball, player);
     let id = install_record(scene.host(), owner, &record);
     let vars = [("actor", uid(player)), ("object", uid(ball))];
     fire(scene.host(), owner, id, &vars);
@@ -444,7 +446,7 @@ fn remote_to_a_character_without_a_script_stores_nothing() {
     let room = scene.fx.room;
     scene.host().char_to_room(wanderer, room);
     let ball = scene.host().add_obj(47, "the magic eight ball");
-    scene.host().obj_to_char(ball, owner);
+    scene.host().obj_to_char(ball, wanderer);
     let id = install_record(scene.host(), owner, &record);
     let vars = [("actor", uid(wanderer)), ("object", uid(ball))];
     fire(scene.host(), owner, id, &vars);
@@ -462,7 +464,7 @@ fn remote_to_a_player_stores_the_quest_flag() {
     let mut scene = Scene::new(1317, "the tutorial guide");
     let (owner, player) = (scene.owner, scene.fx.player);
     let ball = scene.host().add_obj(47, "the magic eight ball");
-    scene.host().obj_to_char(ball, owner);
+    scene.host().obj_to_char(ball, player);
     let id = install_record(scene.host(), owner, &record);
     let vars = [("actor", uid(player)), ("object", uid(ball))];
     fire(scene.host(), owner, id, &vars);
@@ -592,8 +594,7 @@ fn questmaster_ignores_veterans_and_mobs_on_greet() {
     );
 }
 
-fn quest_assignment(speech: &str, rolls: &[i64]) -> (Scene, u64) {
-    let record = trigger_139();
+fn quest_assignment(record: &common::corpus::Record, speech: &str, rolls: &[i64]) -> (Scene, u64) {
     let mut scene = questmaster();
     let (owner, player) = (scene.owner, scene.fx.player);
     {
@@ -613,35 +614,30 @@ fn quest_assignment(speech: &str, rolls: &[i64]) -> (Scene, u64) {
         scene.host().add_room(vnum, "a quest room");
     }
     scene.host().rolls = rolls.iter().copied().collect();
-    let id = install_record(scene.host(), owner, &record);
+    let id = install_record(scene.host(), owner, record);
     let vars = [("actor", uid(player)), ("speech", speech.to_owned())];
     fire(scene.host(), owner, id, &vars);
     (scene, id)
 }
 
-fn trigger_139() -> common::corpus::Record {
-    common::corpus::trigger(139).unwrap_or_else(|| {
-        common::corpus::skip_message("trigger 139");
-        panic!("corpus missing")
-    })
-}
-
 // Trigger 139 (`0 d 1 *`), the player says "yes": `%actor% == %self%` is
 // false and the player has no quest flag and 0 qp, so the word loop starts.
 // `eval word %speech.car%` is "yes"; `yes /= yes` (str_str finds the right
-// side inside the left) is true: the mob says the prompt and halts.
+// side inside the left) is true: the mob says the prompt and halts. str_str
+// compares `LOWER(*cs) != LOWER(*t)` and %speech% keeps the player's case, so
+// "YES" and "Yes" get the same prompt.
 #[test]
 fn questmaster_prompts_after_yes() {
-    if common::corpus::cached().is_none() {
-        common::corpus::skip_message("questmaster_prompts_after_yes");
-        return;
+    let record = real!(139);
+    for speech in ["yes", "YES", "Yes"] {
+        let (scene, _) = quest_assignment(&record, speech, &[]);
+        assert_eq!(
+            say_all(&scene.fx.host),
+            vec!["say Very well Tester. Would you like to find an object or hunt a mobile?"],
+            "{speech}"
+        );
+        assert!(scene.fx.host.logs.is_empty());
     }
-    let (scene, _) = quest_assignment("yes", &[]);
-    assert_eq!(
-        say_all(&scene.fx.host),
-        vec!["say Very well Tester. Would you like to find an object or hunt a mobile?"]
-    );
-    assert!(scene.fx.host.logs.is_empty());
 }
 
 // Trigger 139, the player says "hunt". `yes /= hunt` is false (no "hunt"
@@ -660,11 +656,8 @@ fn questmaster_prompts_after_yes() {
 //     the player's globals; `halt`.
 #[test]
 fn questmaster_assigns_a_hunt() {
-    if common::corpus::cached().is_none() {
-        common::corpus::skip_message("questmaster_assigns_a_hunt");
-        return;
-    }
-    let (scene, id) = quest_assignment("hunt", &[7]);
+    let record = real!(139);
+    let (scene, id) = quest_assignment(&record, "hunt", &[7]);
     let (owner, player, watcher, room) =
         (scene.owner, scene.fx.player, scene.watcher, scene.fx.room);
     assert_eq!(
@@ -718,11 +711,8 @@ fn questmaster_assigns_a_hunt() {
 // as the mob; the timer goes to the player and the flag is set.
 #[test]
 fn questmaster_assigns_a_search() {
-    if common::corpus::cached().is_none() {
-        common::corpus::skip_message("questmaster_assigns_a_search");
-        return;
-    }
-    let (scene, _) = quest_assignment("find", &[7]);
+    let record = real!(139);
+    let (scene, _) = quest_assignment(&record, "find", &[7]);
     let (owner, player) = (scene.owner, scene.fx.player);
     assert_eq!(
         scene.fx.host.mud_commands,
@@ -757,11 +747,8 @@ fn questmaster_assigns_a_search() {
 // (3, then 9) are consumed and the hunt mob goes to 99+9 = 108.
 #[test]
 fn questmaster_walks_the_words_of_the_speech() {
-    if common::corpus::cached().is_none() {
-        common::corpus::skip_message("questmaster_walks_the_words_of_the_speech");
-        return;
-    }
-    let (scene, id) = quest_assignment("please hunt", &[3, 9]);
+    let record = real!(139);
+    let (scene, id) = quest_assignment(&record, "please hunt", &[3, 9]);
     let owner = scene.owner;
     assert!(scene.fx.host.rolls.is_empty());
     assert_eq!(
@@ -818,8 +805,13 @@ fn questmaster_clears_an_expired_flag_before_assigning() {
     );
 }
 
-fn receive_scene(object_vnum: i32, on_quest: bool) -> (Scene, u64, Uid) {
-    let record = common::corpus::trigger(143).expect("corpus");
+/// The quest item is handed over by the player: it is still in the player's
+/// inventory when `receive_mtrigger` fires (perform_give moves it afterwards).
+fn receive_scene(
+    record: &common::corpus::Record,
+    object_vnum: i32,
+    on_quest: bool,
+) -> (Scene, u64, Uid) {
     let mut scene = questmaster();
     let (owner, player) = (scene.owner, scene.fx.player);
     if on_quest {
@@ -827,8 +819,8 @@ fn receive_scene(object_vnum: i32, on_quest: bool) -> (Scene, u64, Uid) {
     }
     let item = scene.host().add_obj(object_vnum, "a handed item");
     scene.host().set_text(item, "alias", "handed item");
-    scene.host().obj_to_char(item, owner);
-    let id = install_record(scene.host(), owner, &record);
+    scene.host().obj_to_char(item, player);
+    let id = install_record(scene.host(), owner, record);
     let vars = [("actor", uid(player)), ("object", uid(item))];
     fire(scene.host(), owner, id, &vars);
     (scene, id, item)
@@ -838,11 +830,8 @@ fn receive_scene(object_vnum: i32, on_quest: bool) -> (Scene, u64, Uid) {
 // and halts: the give goes through (value 1), no wait.
 #[test]
 fn questmaster_refuses_a_gift_from_a_stranger() {
-    if common::corpus::cached().is_none() {
-        common::corpus::skip_message("questmaster_refuses_a_gift_from_a_stranger");
-        return;
-    }
-    let (scene, _, item) = receive_scene(15, false);
+    let record = real!(143);
+    let (scene, _, item) = receive_scene(&record, 15, false);
     assert_eq!(
         say_all(&scene.fx.host),
         vec!["say You are not even on a quest Tester."]
@@ -857,15 +846,15 @@ fn questmaster_refuses_a_gift_from_a_stranger() {
 // `%actor.questpoints(1)%` adds a point.
 #[test]
 fn questmaster_rewards_the_quest_item() {
-    if common::corpus::cached().is_none() {
-        common::corpus::skip_message("questmaster_rewards_the_quest_item");
-        return;
-    }
+    let record = real!(143);
     for vnum in [15, 17] {
-        let (mut scene, id, item) = receive_scene(vnum, true);
+        let (mut scene, id, item) = receive_scene(&record, vnum, true);
         let (owner, player) = (scene.owner, scene.fx.player);
         assert_eq!(scene.fx.host.waits, vec![(owner, id, 10)]);
         assert!(say_all(&scene.fx.host).is_empty());
+        // The first run returned 1 at the wait: the give completes.
+        assert_eq!(scene.fx.host.link(item, "carried_by"), Some(player));
+        scene.host().obj_to_char(item, owner);
         run_waits(scene.host(), 3);
         assert_eq!(
             say_all(&scene.fx.host),
@@ -890,14 +879,13 @@ fn questmaster_rewards_the_quest_item() {
 // refused. Running the second half directly shows the script's value.
 #[test]
 fn questmaster_return_zero_comes_too_late_to_refuse_the_gift() {
-    if common::corpus::cached().is_none() {
-        common::corpus::skip_message("questmaster_return_zero_comes_too_late");
-        return;
-    }
-    let (mut scene, id, item) = receive_scene(99, true);
+    let record = real!(143);
+    let (mut scene, id, item) = receive_scene(&record, 99, true);
     let (owner, player) = (scene.owner, scene.fx.player);
     assert_eq!(scene.fx.host.waits, vec![(owner, id, 10)]);
     scene.host().waits.clear();
+    // The give went through at the first run's return of 1.
+    scene.host().obj_to_char(item, owner);
     assert_eq!(script_driver(scene.host(), owner, id, Mode::Restart), 0);
     assert_eq!(say_all(&scene.fx.host), vec!["say I don't want that!"]);
     assert!(scene.fx.host.exists(item));
@@ -937,4 +925,38 @@ fn quest_mob_loads_its_head() {
         Some(uid(held[0]))
     );
     assert!(scene.fx.host.mud_commands.is_empty());
+}
+
+// Trigger 144 with an object that cannot be taken (no ITEM_WEAR_TAKE): do_mload
+// without a target does `obj_to_room(object, IN_ROOM(ch))` instead of
+// `obj_to_char`, so the mob carries nothing and the room holds the head;
+// `lastloaded` still names it.
+#[test]
+fn quest_mob_loads_an_untakeable_head_into_the_room() {
+    let record = real!(144);
+    let mut scene = Scene::new(15, "the quest mob");
+    let (owner, room) = (scene.owner, scene.room());
+    scene
+        .fx
+        .host
+        .globals
+        .texts
+        .insert("objproto:17".to_owned(), "a head".to_owned());
+    scene
+        .fx
+        .host
+        .globals
+        .nums
+        .insert("objproto:17:wear".to_owned(), 0);
+    let id = install_record(scene.host(), owner, &record);
+    assert_eq!(fire(scene.host(), owner, id, &[]), 1);
+    assert!(scene.fx.host.carrying(owner).is_empty());
+    let contents = scene.fx.host.list(room, "contents");
+    assert_eq!(contents.len(), 2);
+    let head = contents[contents.len() - 1];
+    assert_eq!(scene.fx.host.vnum(head), 17);
+    assert_eq!(
+        global_var(&scene.fx.host, owner, "lastloaded"),
+        Some(uid(head))
+    );
 }
