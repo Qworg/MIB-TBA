@@ -917,26 +917,47 @@ mod tests {
 
     /// The names of the `match` arms of `char_field`, read from its source.
     fn arm_names() -> Vec<String> {
-        let source = include_str!("fields_char.rs");
+        arm_names_of(include_str!("fields_char.rs"))
+    }
+
+    /// The quoted names in the pattern of each arm of the `match` in `source`,
+    /// whatever lines the alternation is wrapped over: an arm starts at a
+    /// string literal at the table's indentation and its pattern ends at `=>`
+    /// or at an `if` guard.
+    fn arm_names_of(source: &str) -> Vec<String> {
         let table = source.split("match lowered.as_str()").nth(1).unwrap_or("");
         let table = table.split("#[cfg(test)]").next().unwrap_or("");
         let mut names = Vec::new();
+        let mut pattern: Option<String> = None;
         for line in table.lines() {
-            let Some(arm) = line.strip_prefix("        \"") else {
+            if pattern.is_none() && line.starts_with("        \"") {
+                pattern = Some(String::new());
+            }
+            let Some(text) = pattern.as_mut() else {
                 continue;
             };
-            let head = arm.split(" =>").next().unwrap_or("");
-            let head = head.split(" if ").next().unwrap_or("");
-            if !arm.contains(" =>") && !arm.contains(" if ") {
-                continue;
+            text.push_str(line);
+            text.push(' ');
+            if let Some(end) = text.find("=>") {
+                let head = &text[..end];
+                let head = head.split(" if ").next().unwrap_or("");
+                names.extend(
+                    head.split('"')
+                        .skip(1)
+                        .step_by(2)
+                        .map(std::borrow::ToOwned::to_owned),
+                );
+                pattern = None;
             }
-            names.extend(
-                head.split(" | ")
-                    .map(|name| name.trim_matches('"').to_owned()),
-            );
         }
         names.sort();
         names
+    }
+
+    #[test]
+    fn arm_names_are_read_across_wrapped_alternations() {
+        let source = "match lowered.as_str() {\n        \"a\" => 1,\n        \"b\"\n        | \"c\"\n        | \"d\" if x => 2,\n            \"deep\" => 3,\n        _ => 4,\n}\n#[cfg(test)]";
+        assert_eq!(arm_names_of(source), ["a", "b", "c", "d"]);
     }
 
     #[test]

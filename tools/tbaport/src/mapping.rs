@@ -2352,11 +2352,13 @@ fn trigger_coverage(triggers: &TriggersFile) -> TriggerCoverage {
     let mut by_attach_type: BTreeMap<String, usize> = BTreeMap::new();
     for def in triggers.triggers.values() {
         *by_attach_type.entry(def.attach_type.clone()).or_default() += 1;
+        // A record of no known owner type is analysed as a room script so its
+        // lines are in the totals; its record count stays under the empty
+        // attach type.
         let attach = match def.attach_type.as_str() {
             "mob" => AttachType::Mob,
             "obj" => AttachType::Obj,
-            "wld" => AttachType::Wld,
-            _ => continue,
+            _ => AttachType::Wld,
         };
         corpus.add(def.vnum, &analyze(&def.script, attach));
     }
@@ -2458,6 +2460,28 @@ mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
 
     use super::*;
+
+    #[test]
+    fn a_record_of_unknown_attach_type_is_still_counted_in_the_lines() {
+        let mut triggers = TriggersFile::default();
+        for (vnum, attach_type, script) in [(1, "mob", "say hi"), (2, "", "wecho x\nfoo")] {
+            triggers.triggers.insert(
+                TriggerId::from_vnum(vnum),
+                TriggerDef {
+                    vnum,
+                    attach_type: attach_type.to_owned(),
+                    script: script.to_owned(),
+                    ..TriggerDef::default()
+                },
+            );
+        }
+        let coverage = trigger_coverage(&triggers);
+        assert_eq!(coverage.records, 2);
+        assert_eq!(coverage.script_lines, 3);
+        assert_eq!(coverage.by_attach_type[""], 1);
+        assert_eq!(coverage.unknown_world_commands["foo"].vnums, [2]);
+        assert_eq!(coverage.script_commands["wecho"], 1);
+    }
 
     fn zone_report() -> ZoneReport {
         ZoneReport {

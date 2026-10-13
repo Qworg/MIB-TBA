@@ -7,7 +7,7 @@
 mod common;
 
 use common::corpus::{self, EXPECTED_RECORDS, Record};
-use dg_vm::analyze::{Analysis, Corpus, LineClass, analyze};
+use dg_vm::analyze::{Analysis, Corpus, LineClass, StructuralErrorKind, analyze};
 use dg_vm::fields_char::char_field;
 use dg_vm::fields_obj::obj_field;
 use dg_vm::fields_room::room_field;
@@ -131,23 +131,150 @@ fn the_broken_scripts_are_named_with_their_errors() {
         return;
     };
     let corpus = analyse_corpus(&records);
-    // Found by balancing `if`/`end` and `while`+`switch`/`done` per body with
-    // a separate line scan.
+    // Found with one stack of `if` / `while` / `switch` openers per body, a
+    // closer pairing with the innermost opener of its kind, in a line scan
+    // written apart from `analyze`. Balancing the counts of each kind alone
+    // finds 13 of these; trigger 1106 (`switch` where an `if` was meant) and
+    // 1133 (a `while` and an `if` closed in the wrong order) need the nesting.
     let vnums: Vec<i32> = corpus.structural.keys().copied().collect();
     assert_eq!(
         vnums,
         vec![
-            1292, 1324, 1338, 1385, 1939, 1959, 2737, 4601, 8315, 13005, 21101, 34302, 55513
+            1106, 1133, 1292, 1324, 1338, 1385, 1939, 1959, 2737, 4601, 8315, 13005, 21101, 34302,
+            55513
         ]
     );
-    assert_eq!(corpus.totals.broken_scripts, 13);
-    assert!(
-        corpus
-            .structural
-            .values()
-            .flatten()
-            .all(|e| !e.kind.describe().is_empty())
+    assert_eq!(corpus.totals.broken_scripts, 15);
+    let at = |vnum: i32| -> Vec<(usize, StructuralErrorKind)> {
+        corpus.structural[&vnum]
+            .iter()
+            .map(|e| (e.line, e.kind))
+            .collect()
+    };
+    use StructuralErrorKind::{
+        DoneWithoutLoop, ElseWithoutIf, EndWithoutIf, IfWithoutEnd, SwitchWithoutDone,
+        WhileWithoutDone,
+    };
+    assert_eq!(at(1338), [(1, IfWithoutEnd)]);
+    // The `end` at the bottom closes the inner block; the `if` at 18 is open.
+    assert_eq!(at(1324), [(18, IfWithoutEnd)]);
+    assert_eq!(at(1385), [(1, IfWithoutEnd), (3, IfWithoutEnd)]);
+    assert_eq!(
+        at(1133),
+        [(9, IfWithoutEnd), (105, ElseWithoutIf), (107, EndWithoutIf)]
     );
+    assert_eq!(at(1292), [(2, WhileWithoutDone)]);
+    assert_eq!(at(34302), [(3, SwitchWithoutDone)]);
+    assert_eq!(at(21101), [(4, SwitchWithoutDone), (29, EndWithoutIf)]);
+    assert_eq!(at(1959), [(11, DoneWithoutLoop)]);
+    assert_eq!(at(13005), [(184, DoneWithoutLoop)]);
+    assert_eq!(at(4601), [(8, ElseWithoutIf), (10, EndWithoutIf)]);
+    assert_eq!(at(8315), [(7, EndWithoutIf)]);
+}
+
+/// Counts from a line scan of the `.trg` bodies written apart from `analyze`
+/// (first word of each line; the tables of `interpreter.c` and the
+/// substitution rules of `var_subst` ported separately), and the names of
+/// the tables from the lists the modules export.
+#[test]
+fn corpus_commands_and_references_match_independent_counts() {
+    let Some(records) = corpus::load_corpus() else {
+        corpus::skip_message("corpus_commands_and_references_match_independent_counts");
+        return;
+    };
+    let totals = analyse_corpus(&records).totals;
+
+    for (class, expected) in [
+        (LineClass::Control, 8085),
+        (LineClass::Statement, 8247),
+        (LineClass::ScriptCommand, 4985),
+        (LineClass::UnknownCommand, 45),
+        (LineClass::MudCommand, 2681),
+        (LineClass::DynamicCommand, 71),
+        (LineClass::OverLength, 0),
+    ] {
+        assert_eq!(
+            totals.classes.get(&class).copied().unwrap_or(0),
+            expected,
+            "{class:?}"
+        );
+    }
+    for (name, expected) in [
+        ("break", 1195),
+        ("case", 1509),
+        ("default", 137),
+        ("done", 286),
+    ] {
+        assert_eq!(count(&totals.controls, name), expected, "{name}");
+    }
+    for (name, expected) in [("else", 723), ("end", 1745)] {
+        assert_eq!(count(&totals.controls, name), expected, "{name}");
+    }
+    for (name, expected) in [
+        ("return", 360),
+        ("rdelete", 135),
+        ("nop", 106),
+        ("unset", 38),
+        ("extract", 18),
+        ("context", 13),
+        ("makeuid", 2),
+    ] {
+        assert_eq!(count(&totals.statements, name), expected, "{name}");
+    }
+
+    // Script commands, the command variables expanded: `%send%` and `msend`
+    // are both msend for a mob, and so on per owner type.
+    for (name, expected) in [
+        ("msend", 279),
+        ("mecho", 430),
+        ("mload", 379),
+        ("osend", 637),
+        ("oechoaround", 226),
+        ("wecho", 621),
+        ("wdoor", 290),
+        ("wteleport", 87),
+        ("osetval", 5),
+        ("otimer", 9),
+    ] {
+        assert_eq!(count(&totals.script_commands, name), expected, "{name}");
+    }
+    assert_eq!(totals.script_commands.values().sum::<usize>(), 4985);
+
+    // Mob lines for the game. A word that does not start with a letter is
+    // the one character the interpreter takes.
+    assert_eq!(totals.mud_commands.values().sum::<usize>(), 2681);
+    assert_eq!(totals.mud_commands.len(), 139);
+    assert_eq!(count(&totals.mud_commands, "say"), 1436);
+    assert_eq!(count(&totals.mud_commands, "'"), 3);
+    assert!(
+        totals
+            .mud_commands
+            .keys()
+            .all(|w| w.starts_with(|c: char| c.is_ascii_alphabetic()) || w.chars().count() == 1)
+    );
+
+    assert_eq!(totals.unknown_object_commands.values().sum::<usize>(), 16);
+    assert_eq!(totals.unknown_world_commands.values().sum::<usize>(), 29);
+    assert_eq!(count(&totals.unknown_object_commands, "load"), 3);
+    assert_eq!(count(&totals.unknown_world_commands, "tobacco,"), 2);
+    // Room trigger 332's first line escapes its percent signs.
+    assert_eq!(count(&totals.unknown_world_commands, "%send%"), 1);
+
+    // References: every `%...%` of a command line or a condition, nested
+    // ones included, and one field per step of each chain.
+    assert_eq!(totals.references, 17437);
+    assert_eq!(totals.field_references, 5545);
+    assert_eq!(totals.char_fields.values().sum::<usize>(), 4393);
+    assert_eq!(totals.obj_fields.values().sum::<usize>(), 3356);
+    assert_eq!(totals.room_fields.values().sum::<usize>(), 2730);
+    assert_eq!(totals.text_functions.values().sum::<usize>(), 443);
+    assert_eq!(totals.unknown_fields.values().sum::<usize>(), 83);
+    assert_eq!(totals.unknown_fields.len(), 34);
+    assert_eq!(totals.global_reads, 0);
+    assert_eq!(totals.heads_unknown.values().sum::<usize>(), 284);
+    assert_eq!(totals.heads_unknown.len(), 166);
+    // `eval people %room.people%` makes `%people.name%` a character field.
+    assert!(count(&totals.char_fields, "himher") >= 20);
 }
 
 /// A field name that no table lists must be refused by every table.
@@ -171,15 +298,18 @@ fn names_outside_the_lists_are_unknown_to_the_tables() {
     let mut trig = TrigInstance::new(1, proto);
     for name in unknown.keys() {
         assert!(text_processed(&host, name, "", "abc").is_none(), "{name}");
-        let mut cx = Cx {
-            host: &mut host,
-            owner: mob,
-            attach: AttachType::Mob,
-            trig: &mut trig,
-        };
-        assert_eq!(char_field(&mut cx, mob, name, ""), None, "{name}");
-        assert_eq!(char_field(&mut cx, pc, name, ""), None, "{name}");
-        assert_eq!(obj_field(&mut cx, item, name, ""), None, "{name}");
-        assert_eq!(room_field(&mut cx, room, name, ""), None, "{name}");
+        // A table may answer a name only for some subfields.
+        for sub in ["", "1", "on", "off", "abc", "0"] {
+            let mut cx = Cx {
+                host: &mut host,
+                owner: mob,
+                attach: AttachType::Mob,
+                trig: &mut trig,
+            };
+            assert_eq!(char_field(&mut cx, mob, name, sub), None, "{name}");
+            assert_eq!(char_field(&mut cx, pc, name, sub), None, "{name}");
+            assert_eq!(obj_field(&mut cx, item, name, sub), None, "{name}");
+            assert_eq!(room_field(&mut cx, room, name, sub), None, "{name}");
+        }
     }
 }

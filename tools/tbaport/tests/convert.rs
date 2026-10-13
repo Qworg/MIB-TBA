@@ -1346,18 +1346,16 @@ fn trigger_coverage_reports_the_analysis_totals() {
     assert_eq!(
         errors.by_vnum.keys().copied().collect::<Vec<_>>(),
         vec![
-            1292, 1324, 1338, 1385, 1939, 1959, 2737, 4601, 8315, 13005, 21101, 34302, 55513
+            1106, 1133, 1292, 1324, 1338, 1385, 1939, 1959, 2737, 4601, 8315, 13005, 21101, 34302,
+            55513
         ]
     );
-    assert_eq!(errors.scripts, 13);
+    assert_eq!(errors.scripts, 15);
     assert_eq!(
         errors.count,
         errors.by_vnum.values().map(Vec::len).sum::<usize>()
     );
-    assert_eq!(
-        errors.by_vnum[&1338],
-        vec!["line 1: 'if' without 'end' (error 2)"]
-    );
+    assert_eq!(errors.by_vnum[&1338], vec!["line 1: 'if' without 'end'"]);
 
     // Every unknown command names the scripts that use it, sorted.
     let unknown: usize = coverage
@@ -1382,6 +1380,10 @@ fn trigger_coverage_reports_the_analysis_totals() {
     assert_eq!(mud.lines, coverage.lines_by_class["mud_command"]);
     assert!(mud.supported.is_empty());
     assert_eq!(mud.unsupported.values().sum::<usize>(), mud.lines);
+    // A line that does not start with a letter is keyed by its first
+    // character, as the game's command interpreter takes it.
+    assert!(mud.unsupported.contains_key("'"));
+    assert!(!mud.unsupported.contains_key("'but"));
 
     assert_eq!(
         coverage.dynamic_commands,
@@ -1406,5 +1408,6 @@ fn trigger_coverage_reports_the_analysis_totals() {
     ] {
         assert!(summary.contains(heading), "{heading}");
     }
-    assert!(summary.contains("| 1338 | line 1: 'if' without 'end' (error 2) |"));
+    assert!(summary.contains("(top 15 of "));
+    assert!(summary.contains("| 1338 | line 1: 'if' without 'end' |"));
 }

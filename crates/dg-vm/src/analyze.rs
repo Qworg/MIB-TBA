@@ -31,9 +31,12 @@
 //! room tables; a name in none of them is "unknown or global": it may still be
 //! a script global on that entity.
 //!
-//! Control-flow errors are those the driver's scans would hit at run time: an
-//! `if` whose `find_end` runs off the script, a `while` without a `done`, and
-//! an `else`, `end` or `done` with nothing to close.
+//! Control-flow errors are those the driver's scans would hit at run time. The
+//! blocks of a script are matched on one stack, so a closer that does not match
+//! the innermost opener is named: an `if` with no `end`, a `while` or `switch`
+//! with no `done`, and an `else`, `end` or `done` with nothing to close. Which
+//! `(error N)` number the driver logs for an `if` without an `end` depends on
+//! whether the `if` is true at run time, so it is not named.
 //!
 //! # Simplifications
 //!
@@ -42,8 +45,10 @@
 //!   nothing); the paren depth of a line is carried across its references as
 //!   in the C, but the subfield buffer is not.
 //! - A line of [`MAX_INPUT_LENGTH`] bytes or more is refused by `var_subst` at
-//!   run time; it is counted ([`Analysis::over_length_lines`]) and its
-//!   references are not scanned.
+//!   run time, so the driver runs nothing for it: a command line is the class
+//!   [`LineClass::OverLength`] and assigns nothing, a control line keeps its
+//!   class, and both are counted ([`Analysis::over_length_lines`]) with their
+//!   references unscanned.
 //! - `case` labels are compared raw by `find_case`, never substituted, so they
 //!   hold no references. `default` reached by falling through a `case` is
 //!   dispatched as a command by the driver; it is counted as the label it
@@ -62,11 +67,10 @@ use crate::cstr::{
     any_one_arg, half_chop, one_argument, skip_spaces, starts_with_ci, two_arguments,
 };
 use crate::dispatch::EVENT_VARIABLES;
-use crate::driver::{CONTROL_KEYWORDS, STATEMENT_KEYWORDS, find_end, scan_long, scan_until};
+use crate::driver::{CONTROL_KEYWORDS, STATEMENT_KEYWORDS, scan_long, scan_until};
 use crate::fields_char;
 use crate::fields_obj;
 use crate::fields_room;
-use crate::mock::MockHost;
 use crate::script::{Line, Program};
 use crate::subst::{COMMAND_VARIABLES, SPECIAL_VARIABLES};
 use crate::text::TEXT_FUNCTIONS;
@@ -96,11 +100,14 @@ pub enum LineClass {
     /// A line whose first word is a variable that cannot be resolved without
     /// running the script.
     DynamicCommand,
+    /// A line of [`MAX_INPUT_LENGTH`] bytes or more that is not a control
+    /// line: `var_subst` refuses it and the driver runs nothing.
+    OverLength,
 }
 
 impl LineClass {
     /// Every class, in report order.
-    pub const ALL: [LineClass; 9] = [
+    pub const ALL: [LineClass; 10] = [
         LineClass::Comment,
         LineClass::Blank,
         LineClass::Control,
@@ -110,6 +117,7 @@ impl LineClass {
         LineClass::UnknownCommand,
         LineClass::MudCommand,
         LineClass::DynamicCommand,
+        LineClass::OverLength,
     ];
 
     /// The class's name in the report.
@@ -124,6 +132,7 @@ impl LineClass {
             LineClass::UnknownCommand => "unknown_command",
             LineClass::MudCommand => "mud_command",
             LineClass::DynamicCommand => "dynamic_command",
+            LineClass::OverLength => "over_length",
         }
     }
 }
@@ -131,10 +140,9 @@ impl LineClass {
 /// A control-flow error the driver's scans hit at run time.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum StructuralErrorKind {
-    /// `find_end` finds no `end` for this `if`. `error` is the number in the
-    /// driver's log line (`(error 1)` is an `if` on the last line, `(error 2)`
-    /// a scan that runs off the script).
-    IfWithoutEnd { error: u8 },
+    /// No `end` closes this `if`: the driver's `find_end` or `find_else_end`
+    /// runs off the script.
+    IfWithoutEnd,
     /// No `done` closes this `while`: the driver's `find_done` answers with
     /// the last line (or, in a nest, past it, which is the logged error).
     WhileWithoutDone,
@@ -152,9 +160,7 @@ impl StructuralErrorKind {
     /// The error in words, as the report names it.
     pub fn describe(self) -> String {
         match self {
-            StructuralErrorKind::IfWithoutEnd { error } => {
-                format!("'if' without 'end' (error {error})")
-            }
+            StructuralErrorKind::IfWithoutEnd => "'if' without 'end'".to_owned(),
             StructuralErrorKind::WhileWithoutDone => "'while' without 'done'".to_owned(),
             StructuralErrorKind::SwitchWithoutDone => "'switch' without 'done'".to_owned(),
             StructuralErrorKind::ElseWithoutIf => "'else' without 'if'".to_owned(),
@@ -201,8 +207,8 @@ pub struct Analysis {
     /// Mob-owned lines that go to the game's command interpreter, by first
     /// word.
     pub mud_commands: BTreeMap<String, usize>,
-    /// Lines of [`MAX_INPUT_LENGTH`] bytes or more, which `var_subst`
-    /// refuses.
+    /// Lines of [`MAX_INPUT_LENGTH`] bytes or more (a command line of them is
+    /// [`LineClass::OverLength`]), which `var_subst` refuses.
     pub over_length_lines: usize,
     /// Control-flow errors, in line order within each script.
     pub structural: Vec<StructuralError>,
@@ -216,6 +222,9 @@ pub struct Analysis {
     pub text_percents: usize,
     /// Field names in references (each step of a dotted chain counts).
     pub field_references: usize,
+    /// `.global(var)` reads of a script's globals, which `find_replacement`
+    /// answers before it consults the tables.
+    pub global_reads: usize,
     /// Text-function references by function name.
     pub text_functions: BTreeMap<String, usize>,
     /// References to a name of the character table, by name. A name that
@@ -248,6 +257,7 @@ impl Analysis {
         self.references += other.references;
         self.text_percents += other.text_percents;
         self.field_references += other.field_references;
+        self.global_reads += other.global_reads;
         self.structural.extend_from_slice(&other.structural);
         merge_counts(&mut self.classes, &other.classes);
         for (mine, theirs) in [
@@ -329,6 +339,11 @@ impl Corpus {
     }
 }
 
+/// The script globals the load commands set on the script that ran them
+/// (`add_var(&SCRIPT(owner)->global_vars, "lastloaded", …)`), which a later
+/// `%lastloaded%` reads.
+pub const COMMAND_GLOBALS: &[&str] = &["lastloaded"];
+
 /// Analyse one script body owned by an entity of type `attach`.
 pub fn analyze(body: &str, attach: AttachType) -> Analysis {
     let program = Program::parse(body);
@@ -393,6 +408,12 @@ fn classify<'a>(
         return (LineClass::Control, substituted);
     }
 
+    // `var_subst` refuses a line this long, so the driver runs nothing.
+    if body.len() >= MAX_INPUT_LENGTH {
+        out.over_length_lines += 1;
+        return (LineClass::OverLength, None);
+    }
+
     // The statements are tested on the substituted line; a keyword that
     // matches the line as written matches it after substitution too, since
     // the text before the first `%` does not change.
@@ -426,7 +447,7 @@ fn classify<'a>(
                 bump(&mut out.script_commands, word);
                 LineClass::ScriptCommand
             } else {
-                bump(&mut out.mud_commands, word);
+                bump(&mut out.mud_commands, mud_command_key(word));
                 LineClass::MudCommand
             }
         }
@@ -483,9 +504,11 @@ fn table_command<'a>(
 
 /// The first word of a command line as the interpreter will see it, lowercase;
 /// `None` when it depends on a variable's value. A leading command variable
-/// that the script does not assign expands to a command of the owner's type.
+/// that the script does not assign expands to a command of the owner's type,
+/// and a `%%` is a literal percent sign.
 fn command_word(body: &str, attach: AttachType, assigned: &BTreeSet<String>) -> Option<String> {
-    if let Some(rest) = body.strip_prefix('%') {
+    if body.starts_with('%') && !body.starts_with("%%") {
+        let rest = body.get(1..)?;
         let name = rest.split('%').next().filter(|_| rest.contains('%'))?;
         let lower = name.to_ascii_lowercase();
         if assigned.contains(&lower) {
@@ -496,7 +519,25 @@ fn command_word(body: &str, attach: AttachType, assigned: &BTreeSet<String>) -> 
         return Some(word.trim_end().to_owned());
     }
     let (word, _) = any_one_arg(body);
-    (!word.contains('%')).then_some(word)
+    let mut literal = String::with_capacity(word.len());
+    let mut chars = word.chars();
+    while let Some(c) = chars.next() {
+        if c == '%' {
+            // A lone percent sign starts a reference.
+            chars.next().filter(|&next| next == '%')?;
+        }
+        literal.push(c);
+    }
+    Some(literal)
+}
+
+/// The command `command_interpreter` takes from a line led by `word`: a line
+/// that does not start with a letter has the single character as its command.
+fn mud_command_key(word: String) -> String {
+    match word.chars().next() {
+        Some(first) if !first.is_ascii_alphabetic() => first.to_string(),
+        _ => word,
+    }
 }
 
 /// The form of a `wait` line, from the checks of `process_wait`.
@@ -506,14 +547,15 @@ fn wait_form(body: &str) -> &'static str {
     if arg.is_empty() {
         return "invalid";
     }
+    // The amount is data the script supplies.
+    if arg.contains('%') {
+        return "dynamic";
+    }
     if starts_with_ci(arg, "until ") {
         return match scan_until(arg) {
             (Some(_), _) => "until",
             _ => "invalid",
         };
-    }
-    if arg.starts_with('%') {
-        return "dynamic";
     }
     match scan_long(arg) {
         None => "invalid",
@@ -536,6 +578,9 @@ fn assigned_variables(lines: &[Line]) -> BTreeSet<String> {
     let mut names = BTreeSet::new();
     for line in lines {
         let body = line.body();
+        if body.len() >= MAX_INPUT_LENGTH {
+            continue;
+        }
         let Some(keyword) = STATEMENT_KEYWORDS
             .iter()
             .find(|keyword| starts_with_ci(body, keyword))
@@ -661,14 +706,17 @@ fn note_references(out: &mut Analysis, text: &str, assigned: &BTreeSet<String>) 
             out.text_percents += 1;
             continue;
         }
-        let special = SPECIAL_VARIABLES.contains(&head.as_str());
-        if special
+        // A trigger variable is looked up before the VM's own, so an assigned
+        // `people` hides the special one.
+        let special = !assigned.contains(&head) && SPECIAL_VARIABLES.contains(&head.as_str());
+        if assigned.contains(&head) {
+            bump(&mut out.heads_assigned, head.clone());
+        } else if special
             || EVENT_VARIABLES.contains(&head.as_str())
+            || COMMAND_GLOBALS.contains(&head.as_str())
             || COMMAND_VARIABLES.iter().any(|(name, _)| *name == head)
         {
             bump(&mut out.heads_provided, head.clone());
-        } else if assigned.contains(&head) {
-            bump(&mut out.heads_assigned, head.clone());
         } else {
             bump(&mut out.heads_unknown, head.clone());
         }
@@ -684,6 +732,10 @@ fn note_references(out: &mut Analysis, text: &str, assigned: &BTreeSet<String>) 
 /// Count a field name under every table that knows it, or as unknown.
 fn note_field(out: &mut Analysis, field: String) {
     out.field_references += 1;
+    if field == "global" {
+        out.global_reads += 1;
+        return;
+    }
     let mut known = false;
     for (names, counts) in [
         (TEXT_FUNCTIONS, &mut out.text_functions),
@@ -701,81 +753,70 @@ fn note_field(out: &mut Analysis, field: String) {
     }
 }
 
-/// How many `if` and `while` lines get the driver's own scan to name their
-/// error: a script made only of openers would otherwise cost a scan to the end
-/// of the script each. The rest are reported with the scan's general answer.
-const SCAN_LIMIT: usize = 64;
+/// A block opener the driver's scans pair with a closer.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Block {
+    If,
+    While,
+    Switch,
+}
 
 /// The control-flow errors of a script, in line order.
+///
+/// Blocks are matched on one stack. A closer pairs with the innermost opener
+/// of its kind; openers inside it are left unclosed, and a closer with no
+/// opener of its kind is a stray.
 fn structure(lines: &[Line]) -> Vec<StructuralError> {
     let mut errors = Vec::new();
-    // Openers still waiting for their closer, as line indexes.
-    let mut open_ifs: Vec<usize> = Vec::new();
-    let mut open_loops: Vec<usize> = Vec::new();
+    // Openers still waiting for their closer, with their line indexes.
+    let mut open: Vec<(Block, usize)> = Vec::new();
+    let unclosed = |errors: &mut Vec<StructuralError>, (block, index): (Block, usize)| {
+        errors.push(StructuralError {
+            line: index + 1,
+            kind: match block {
+                Block::If => StructuralErrorKind::IfWithoutEnd,
+                Block::While => StructuralErrorKind::WhileWithoutDone,
+                Block::Switch => StructuralErrorKind::SwitchWithoutDone,
+            },
+        });
+    };
     for (index, line) in lines.iter().enumerate() {
-        let body = line.body();
-        let at_line = index + 1;
-        match control_keyword(body) {
-            Some("if") => open_ifs.push(index),
-            Some("elseif" | "else") if open_ifs.is_empty() => errors.push(StructuralError {
-                line: at_line,
-                kind: StructuralErrorKind::ElseWithoutIf,
-            }),
-            // The guard pops the block this line closes.
-            Some("end") if open_ifs.pop().is_none() => errors.push(StructuralError {
-                line: at_line,
-                kind: StructuralErrorKind::EndWithoutIf,
-            }),
-            Some("while" | "switch") => open_loops.push(index),
-            // The guard pops the block this line closes.
-            Some("done") if open_loops.pop().is_none() => errors.push(StructuralError {
-                line: at_line,
-                kind: StructuralErrorKind::DoneWithoutLoop,
-            }),
+        let stray = |kind| StructuralError {
+            line: index + 1,
+            kind,
+        };
+        match control_keyword(line.body()) {
+            Some("if") => open.push((Block::If, index)),
+            Some("while") => open.push((Block::While, index)),
+            Some("switch") => open.push((Block::Switch, index)),
+            Some("elseif" | "else") => {
+                if open.last().map(|(block, _)| *block) != Some(Block::If) {
+                    errors.push(stray(StructuralErrorKind::ElseWithoutIf));
+                }
+            }
+            Some(closer @ ("end" | "done")) => {
+                let closes = |block: Block| (closer == "end") == (block == Block::If);
+                match open.iter().rposition(|(block, _)| closes(*block)) {
+                    Some(at) => {
+                        for opener in open.drain(at..).skip(1) {
+                            unclosed(&mut errors, opener);
+                        }
+                    }
+                    None => errors.push(stray(if closer == "end" {
+                        StructuralErrorKind::EndWithoutIf
+                    } else {
+                        StructuralErrorKind::DoneWithoutLoop
+                    })),
+                }
+            }
             _ => {}
         }
     }
-
-    // What is left open has no closer; the driver's scans name the error.
-    let mut host = MockHost::new();
-    for (checked, &index) in open_ifs.iter().enumerate() {
-        let error = if checked < SCAN_LIMIT {
-            host.logs.clear();
-            find_end(&mut host, 0, lines, index);
-            host.logs.first().and_then(|log| error_number(log))
-        } else {
-            None
-        };
-        errors.push(StructuralError {
-            line: index + 1,
-            kind: StructuralErrorKind::IfWithoutEnd {
-                error: error.unwrap_or(2),
-            },
-        });
-    }
-    // `find_done` answers with the last line when a loop has no `done`, so the
-    // driver runs such a loop without a log line; the script is still broken.
-    for &index in &open_loops {
-        let is_while = lines
-            .get(index)
-            .is_some_and(|line| starts_with_ci(line.body(), "while "));
-        errors.push(StructuralError {
-            line: index + 1,
-            kind: if is_while {
-                StructuralErrorKind::WhileWithoutDone
-            } else {
-                StructuralErrorKind::SwitchWithoutDone
-            },
-        });
+    for opener in open {
+        unclosed(&mut errors, opener);
     }
     errors.sort();
     errors
-}
-
-/// The `N` of a driver log line ending `(error N)`.
-fn error_number(log: &str) -> Option<u8> {
-    let tail = log.rsplit_once("(error ")?.1;
-    tail.trim_end_matches(')').parse().ok()
 }
 
 #[cfg(test)]
@@ -884,14 +925,14 @@ mod tests {
     fn wait_forms() {
         let a = mob(
             "wait 5\nwait 2 s\nwait 1 t\nwait until 14:30\nwait until 1430\nwait %n%\nwait\n\
-             wait soon\nwait until noon",
+             wait soon\nwait until noon\nwait 5 %unit%\nwait until %t%",
         );
         for (form, want) in [
             ("pulses", 1),
             ("seconds", 1),
             ("ticks", 1),
             ("until", 2),
-            ("dynamic", 1),
+            ("dynamic", 3),
             ("invalid", 2),
         ] {
             assert_eq!(count(&a.wait_forms, form), want, "{form}");
@@ -960,12 +1001,34 @@ mod tests {
 
     #[test]
     fn dynamic_commands_are_those_a_run_would_have_to_resolve() {
-        let a =
-            mob("%actor.name% waves\n%cmd% x\nsa%x% y\n%unterminated\n%%\nset send 1\n%send% x");
-        // `%cmd%` is an event variable, not a command variable; `%%` leads
-        // with an escape; the last line's variable is the script's own.
-        assert_eq!(class_count(&a, LineClass::DynamicCommand), 6);
+        let a = mob("%actor.name% waves\n%cmd% x\nsa%x% y\n%unterminated\nset send 1\n%send% x");
+        // `%cmd%` is an event variable, not a command variable; the last
+        // line's variable is the script's own.
+        assert_eq!(class_count(&a, LineClass::DynamicCommand), 5);
         assert_eq!(class_count(&a, LineClass::Statement), 1);
+    }
+
+    #[test]
+    fn a_leading_percent_escape_is_literal_text() {
+        // `%%send%%` is the text `%send%`, which no room command matches.
+        let a = analyze("%%send%% %actor% hi", AttachType::Wld);
+        assert_eq!(class_count(&a, LineClass::DynamicCommand), 0);
+        assert_eq!(count(&a.unknown_world_commands, "%send%"), 1);
+        // The mob's interpreter is handed the same text.
+        let a = mob("%%\nmy%%word x");
+        assert_eq!(count(&a.mud_commands, "%"), 1);
+        assert_eq!(count(&a.mud_commands, "my%word"), 1);
+    }
+
+    #[test]
+    fn mud_commands_are_keyed_by_the_commands_the_interpreter_takes() {
+        // A line that does not start with a letter has a one-character command.
+        let a = mob("'hello there\n'but\n1233. x\n\u{e9}t\u{e9} x\nSay hi");
+        assert_eq!(count(&a.mud_commands, "'"), 2);
+        assert_eq!(count(&a.mud_commands, "1"), 1);
+        assert_eq!(count(&a.mud_commands, "\u{e9}"), 1);
+        assert_eq!(count(&a.mud_commands, "say"), 1);
+        assert_eq!(a.mud_commands.len(), 4);
     }
 
     #[test]
@@ -1034,6 +1097,35 @@ mod tests {
     }
 
     #[test]
+    fn an_assigned_name_hides_the_special_variable() {
+        // `find_replacement` looks the script's variables up first, so the
+        // field after `people` is a character field here.
+        let a = analyze(
+            "eval people %self.people%\n%echo% %people.name% %people.himher%",
+            AttachType::Wld,
+        );
+        assert_eq!(count(&a.heads_assigned, "people"), 2);
+        assert_eq!(count(&a.heads_provided, "people"), 0);
+        assert_eq!(count(&a.char_fields, "name"), 1);
+        assert_eq!(count(&a.char_fields, "himher"), 1);
+        // Without the assignment the first field is the room's own argument.
+        let a = analyze("%echo% %people.3001.name%", AttachType::Wld);
+        assert_eq!(count(&a.char_fields, "name"), 1);
+        assert_eq!(a.field_references, 1);
+    }
+
+    #[test]
+    fn script_globals_and_load_variables_are_known() {
+        let a = mob("say %lastloaded.id% %self.global(count)% %actor.global(x)%");
+        assert!(a.heads_unknown.is_empty(), "{:?}", a.heads_unknown);
+        assert_eq!(count(&a.heads_provided, "lastloaded"), 1);
+        assert_eq!(a.global_reads, 2);
+        assert!(a.unknown_fields.is_empty(), "{:?}", a.unknown_fields);
+        // `id` is a field of the loaded entity.
+        assert_eq!(count(&a.char_fields, "id"), 1);
+    }
+
+    #[test]
     fn conditions_are_scanned_but_case_labels_are_not() {
         let a = mob("if %actor.level% > 5\nswitch %arg%\ncase %other%\nbreak\ndone\nend");
         assert_eq!(a.references, 2);
@@ -1056,6 +1148,21 @@ mod tests {
         assert_eq!(a.over_length_lines, 1);
         assert_eq!(a.references, 0);
         assert_eq!(a.lines, 1);
+        assert_eq!(class_count(&a, LineClass::OverLength), 1);
+    }
+
+    #[test]
+    fn an_over_long_line_runs_nothing_and_assigns_nothing() {
+        let pad = "x".repeat(MAX_INPUT_LENGTH);
+        let a = mob(&format!("set v 1 {pad}\nsay %v%\nwait {pad}"));
+        assert_eq!(class_count(&a, LineClass::OverLength), 2);
+        assert!(a.statements.is_empty());
+        assert!(a.wait_forms.is_empty());
+        assert_eq!(count(&a.heads_unknown, "v"), 1);
+        // A control line keeps its class; its condition is refused.
+        let a = mob(&format!("if {pad}\nend"));
+        assert_eq!(class_count(&a, LineClass::Control), 2);
+        assert_eq!(a.over_length_lines, 1);
     }
 
     fn kinds(analysis: &Analysis) -> Vec<(usize, StructuralErrorKind)> {
@@ -1077,26 +1184,92 @@ mod tests {
     }
 
     #[test]
-    fn an_if_without_an_end_names_the_drivers_error() {
-        // Error 2: the scan runs off the script.
+    fn an_if_without_an_end_is_named_at_its_own_line() {
         let a = mob("if 1\nsay a\nsay b");
-        assert_eq!(
-            kinds(&a),
-            vec![(1, StructuralErrorKind::IfWithoutEnd { error: 2 })]
-        );
+        assert_eq!(kinds(&a), vec![(1, StructuralErrorKind::IfWithoutEnd)]);
         assert_eq!(a.broken_scripts, 1);
-        // Error 1: the `if` is the last line.
         let a = mob("say a\nif 1");
-        assert_eq!(
-            kinds(&a),
-            vec![(2, StructuralErrorKind::IfWithoutEnd { error: 1 })]
-        );
+        assert_eq!(kinds(&a), vec![(2, StructuralErrorKind::IfWithoutEnd)]);
         // The inner `if` has its end; the outer one does not.
         let a = mob("if 1\nif 2\nend\nsay x");
+        assert_eq!(kinds(&a), vec![(1, StructuralErrorKind::IfWithoutEnd)]);
+        // The `end` closes the inner `if`, so the unclosed one is the outer.
+        let a = mob("if 1\nsay a\nif 2\nsay b\nend");
+        assert_eq!(kinds(&a), vec![(1, StructuralErrorKind::IfWithoutEnd)]);
+        assert_eq!(
+            StructuralErrorKind::IfWithoutEnd.describe(),
+            "'if' without 'end'"
+        );
+    }
+
+    #[test]
+    fn interleaved_blocks_are_named() {
+        // Trigger 1133's shape: the `done` closes the `while` and leaves the
+        // `if` open, so the `else` and `end` have nothing to close.
+        let a = mob("while 1\nif 2\ndone\nelse\nend");
         assert_eq!(
             kinds(&a),
-            vec![(1, StructuralErrorKind::IfWithoutEnd { error: 2 })]
+            vec![
+                (2, StructuralErrorKind::IfWithoutEnd),
+                (4, StructuralErrorKind::ElseWithoutIf),
+                (5, StructuralErrorKind::EndWithoutIf),
+            ]
         );
+        // The `end` closes the outer `if` and leaves the `while` open.
+        let a = mob("if 1\nwhile 2\nend\ndone");
+        assert_eq!(
+            kinds(&a),
+            vec![
+                (2, StructuralErrorKind::WhileWithoutDone),
+                (4, StructuralErrorKind::DoneWithoutLoop),
+            ]
+        );
+    }
+
+    /// The log lines a mob trigger with `script` writes when it runs.
+    fn driver_logs(script: &str) -> Vec<String> {
+        use crate::driver::{Mode, script_driver};
+        use crate::mock::MockHost;
+        let mut host = MockHost::new();
+        let room = host.add_room(1, "Room");
+        let mob = host.add_mob(100, "mob");
+        host.char_to_room(mob, room);
+        let proto = host.add_proto(5, AttachType::Mob, "g", 100, "", script);
+        let id = host.attach(mob, &proto).expect("attached");
+        script_driver(&mut host, mob, id, Mode::New);
+        host.logs.clone()
+    }
+
+    #[test]
+    fn the_errors_are_those_the_driver_logs() {
+        let logged = |logs: &[String], what: &str| logs.iter().any(|l| l.contains(what));
+        // Trigger 1133's shape: the driver skips the loop body, then meets an
+        // `else` and an `end` with no `if` open.
+        let script = "while 0\nif 1\ndone\nelse\nend";
+        let logs = driver_logs(script);
+        assert!(logged(&logs, "'else' without 'if'"), "{logs:?}");
+        assert!(logged(&logs, "'end' without 'if'"), "{logs:?}");
+        let kinds = kinds(&mob(script));
+        assert!(kinds.contains(&(4, StructuralErrorKind::ElseWithoutIf)));
+        assert!(kinds.contains(&(5, StructuralErrorKind::EndWithoutIf)));
+        // A false `if` with no `end` runs off the script through
+        // `find_else_end`; the analysis cannot tell which `(error N)` a run
+        // logs, only that the `if` is open.
+        for script in ["if 0\nsay a\nsay b", "if 0\nif 1\nend\nsay x"] {
+            let logs = driver_logs(script);
+            assert!(logged(&logs, "'if' without 'end'"), "{logs:?}");
+            assert_eq!(
+                kinds_of(script),
+                vec![(1, StructuralErrorKind::IfWithoutEnd)]
+            );
+        }
+        // Balanced scripts log nothing.
+        let logs = driver_logs("if 0\nsay a\nelse\nsay b\nend");
+        assert!(logs.is_empty(), "{logs:?}");
+    }
+
+    fn kinds_of(script: &str) -> Vec<(usize, StructuralErrorKind)> {
+        kinds(&mob(script))
     }
 
     #[test]
@@ -1121,20 +1294,16 @@ mod tests {
                 (5, StructuralErrorKind::ElseWithoutIf),
             ]
         );
-        assert_eq!(
-            StructuralErrorKind::IfWithoutEnd { error: 5 }.describe(),
-            "'if' without 'end' (error 5)"
-        );
     }
 
     #[test]
-    fn the_scan_limit_bounds_the_work_on_a_script_of_openers() {
+    fn a_script_of_openers_is_cheap() {
         let body = "if 1\n".repeat(1000);
         let a = mob(&body);
         assert_eq!(a.structural.len(), 1000);
         assert_eq!(a.broken_scripts, 1);
         let body = "while 1\n".repeat(1000);
-        assert!(mob(&body).structural.len() >= 999);
+        assert_eq!(mob(&body).structural.len(), 1000);
     }
 
     #[test]

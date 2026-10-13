@@ -255,7 +255,8 @@ pub struct TriggerCoverage {
     /// Lines whose first word is a variable that cannot be resolved without
     /// running the script (also in `lines_by_class`).
     pub dynamic_commands: usize,
-    /// Lines of 1024 bytes or more, which the VM's substitution refuses.
+    /// Lines of `MAX_INPUT_LENGTH` (512) bytes or more, which the VM's
+    /// substitution refuses: the driver runs nothing for them.
     pub over_length_lines: usize,
     /// Control-flow errors the driver's scans hit.
     pub structural_errors: StructuralErrors,
@@ -741,6 +742,11 @@ impl DropReport {
 
         let coverage = &self.trigger_coverage;
         let _ = writeln!(out, "\n## DG trigger corpus (#15)\n");
+        let _ = writeln!(
+            out,
+            "Counts describe the emitted scripts (colour codes stripped), so they can \
+             differ from a count over the raw `.trg` bodies.\n"
+        );
         let _ = writeln!(out, "- emitted records: {}", coverage.records);
         let _ = writeln!(out, "- script lines: {}", coverage.script_lines);
         let _ = writeln!(
@@ -782,12 +788,23 @@ impl DropReport {
             ("Unknown object commands", &coverage.unknown_object_commands),
             ("Unknown world commands", &coverage.unknown_world_commands),
         ] {
-            let _ = writeln!(out, "\n### {title} ({} words)\n", unknown.len());
+            let _ = writeln!(
+                out,
+                "\n### {title} (top {} of {} words)\n",
+                unknown.len().min(TOP_N),
+                unknown.len()
+            );
             let _ = writeln!(out, "| word | lines | triggers |");
             let _ = writeln!(out, "|---|---:|---|");
             for (word, use_) in top_n(unknown.iter().map(|(w, u)| (w, u.count)), TOP_N) {
                 let vnums = unknown.get(word).map_or(&[][..], |u| u.vnums.as_slice());
-                let _ = writeln!(out, "| `{word}` | {} | {} |", use_, vnum_list(vnums));
+                let _ = writeln!(
+                    out,
+                    "| {} | {} | {} |",
+                    code_cell(word),
+                    use_,
+                    vnum_list(vnums)
+                );
             }
         }
 
@@ -799,9 +816,10 @@ impl DropReport {
         );
         let _ = writeln!(
             out,
-            "Supported words: {}; unsupported words: {} (top {TOP_N} below).\n",
+            "Supported words: {}; unsupported words: {} (top {} below).\n",
             mud.supported.len(),
-            mud.unsupported.len()
+            mud.unsupported.len(),
+            mud.unsupported.len().min(TOP_N)
         );
         count_table(&mut out, "unsupported word", &mud.unsupported, Some(TOP_N));
 
@@ -827,11 +845,17 @@ impl DropReport {
                 names.values().sum::<usize>()
             );
         }
-        let _ = writeln!(out, "\nUnknown or global names (top {TOP_N}):\n");
+        let _ = writeln!(
+            out,
+            "\nUnknown or global names (top {} of {}):\n",
+            refs.unknown_or_global.len().min(TOP_N),
+            refs.unknown_or_global.len()
+        );
         count_table(&mut out, "name", &refs.unknown_or_global, Some(TOP_N));
         let _ = writeln!(
             out,
-            "\n### Variables read but never provided or assigned ({} names)\n",
+            "\n### Variables read but never provided or assigned (top {} of {} names)\n",
+            coverage.unknown_variable_heads.len().min(TOP_N),
             coverage.unknown_variable_heads.len()
         );
         count_table(
@@ -877,7 +901,18 @@ fn count_table(
         None => counts.iter().map(|(k, v)| (k, *v)).collect(),
     };
     for (name, count) in rows {
-        let _ = writeln!(out, "| `{name}` | {count} |");
+        let _ = writeln!(out, "| {} | {count} |", code_cell(name));
+    }
+}
+
+/// `text` as a code span that is safe in a markdown table cell: a backtick
+/// would end the span and a `|` the cell.
+fn code_cell(text: &str) -> String {
+    let text = text.replace('|', "\\|").replace('\n', " ");
+    if text.contains('`') {
+        format!("`` {text} ``")
+    } else {
+        format!("`{text}`")
     }
 }
 
@@ -910,6 +945,16 @@ mod tests {
         assert_eq!(split.lines, 8);
         assert_eq!(split.supported, counts(&[("say", 5), ("Smile", 2)]));
         assert_eq!(split.unsupported, counts(&[("zap", 1)]));
+    }
+
+    #[test]
+    fn table_cells_survive_pipes_and_backticks() {
+        assert_eq!(code_cell("say"), "`say`");
+        assert_eq!(code_cell("a|b"), "`a\\|b`");
+        assert_eq!(code_cell("it`s"), "`` it`s ``");
+        let mut out = String::new();
+        count_table(&mut out, "word", &counts(&[("x|y", 2)]), None);
+        assert!(out.contains("| `x\\|y` | 2 |"), "{out}");
     }
 
     #[test]

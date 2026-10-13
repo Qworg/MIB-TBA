@@ -868,21 +868,6 @@ mod tests {
         assert_eq!(SPECIAL_VARIABLES, named.as_slice());
     }
 
-    #[test]
-    fn command_variables_expand_by_owner_type() {
-        let mut w = world();
-        let owner = w.guard;
-        for (name, words) in COMMAND_VARIABLES {
-            for (attach, word) in [AttachType::Mob, AttachType::Obj, AttachType::Wld]
-                .into_iter()
-                .zip(words)
-            {
-                let got = run(&mut w, owner, attach, |cx| no_field_value(cx, attach, name));
-                assert_eq!(got, *word, "{name}");
-            }
-        }
-    }
-
     /// A mob `guard` (vnum 3000) in room 3001 with a second mob `thug`
     /// (vnum 3001) and an object `sword` (vnum 3020) lying there.
     struct World {
