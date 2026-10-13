@@ -503,6 +503,9 @@ pub const PULSE_VIOLENCE: i64 = 2 * PASSES_PER_SEC;
 /// truncated to one byte less.
 pub const MAX_INPUT_LENGTH: usize = 512;
 
+/// `ITEM_CONTAINER`: the `GET_OBJ_TYPE` of an object that holds others.
+pub const ITEM_CONTAINER: i32 = 15;
+
 /// `NUM_OF_DIRS`.
 pub const NUM_OF_DIRS: usize = 10;
 /// `dirs[]` (`constants.c`), indexed by direction number.

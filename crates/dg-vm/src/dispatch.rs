@@ -130,7 +130,9 @@ fn zone_empty<H: DgHost + ?Sized>(host: &H, room: Uid) -> bool {
             return false;
         };
         host.room_zone_number(here) == zone
-            && !(!host.is_npc(ch) && host.level(ch) >= LVL_IMMORT && host.char_pref_flagged(ch, PRF_NOHASSLE))
+            && !(!host.is_npc(ch)
+                && host.level(ch) >= LVL_IMMORT
+                && host.char_pref_flagged(ch, PRF_NOHASSLE))
     })
 }
 
@@ -967,7 +969,10 @@ pub fn hitprcnt_mtrigger<H: DgHost + ?Sized>(host: &mut H, ch: Uid) {
     if max_hit == 0 {
         return;
     }
-    let percent = host.char_stat(ch, CharStat::Hit).wrapping_mul(100).wrapping_div(max_hit);
+    let percent = host
+        .char_stat(ch, CharStat::Hit)
+        .wrapping_mul(100)
+        .wrapping_div(max_hit);
     if let Some(id) = find_narg(host, ch, MTRIG_HITPRCNT, |narg| percent <= narg) {
         if let Some(actor) = host.char_fighting(ch) {
             set_uid_var(host, ch, id, "actor", actor);
@@ -2000,7 +2005,7 @@ mod tests {
             let guard = h.add_mob(3024, "the guard");
             h.set_num(alice, "level", 5);
             h.set_num(alice, "class", 1);
-            h.set_num(alice, "playing", 1);
+            h.set_num(alice, "desc", 1);
             for ch in [alice, guard] {
                 h.set_num(ch, "pos", 8);
                 h.char_to_room(ch, room);
@@ -2281,7 +2286,9 @@ mod tests {
         // Diagonals exist only when DIR_COUNT says so.
         greet_mtrigger(&mut w.h, w.alice, 7);
         assert_eq!(w.g(w.guard, "direction").as_deref(), Some("none"));
-        w.h.globals.nums.insert("dir_count".to_owned(), 10);
+        w.h.globals
+            .nums
+            .insert("config:diagonal_dirs".to_owned(), 1);
         greet_mtrigger(&mut w.h, w.alice, 7);
         assert_eq!(w.g(w.guard, "direction").as_deref(), Some("southwest"));
         greet_mtrigger(&mut w.h, w.alice, 10);
@@ -3217,7 +3224,9 @@ mod tests {
         // A hole in the table, the top, and beyond it.
         cast_mtrigger(&mut w.h, w.alice, Some(w.guard), 6);
         assert_eq!(w.g(w.guard, "spellname").as_deref(), Some("!UNUSED!"));
-        cast_mtrigger(&mut w.h, w.alice, Some(w.guard), 8);
+        cast_mtrigger(&mut w.h, w.alice, Some(w.guard), TOP_SPELL_DEFINE);
+        assert_eq!(w.g(w.guard, "spellname").as_deref(), Some("!UNUSED!"));
+        cast_mtrigger(&mut w.h, w.alice, Some(w.guard), TOP_SPELL_DEFINE + 1);
         assert_eq!(w.g(w.guard, "spellname").as_deref(), Some("UNDEFINED"));
         cast_mtrigger(&mut w.h, w.alice, Some(w.guard), -1);
         assert_eq!(w.g(w.guard, "spellname").as_deref(), Some("UNUSED"));
@@ -4219,7 +4228,7 @@ mod tests {
     fn random_sweep_needs_an_occupied_zone_or_the_global_bit() {
         let mut w = W::new();
         w.h.set_num(w.room, "zone", 30);
-        w.h.set_num(w.alice, "playing", 0);
+        w.h.set_num(w.alice, "desc", 0);
         let orb = w.obj(10, "an orb");
         w.trig(w.guard, 3, "b", 100, "", RAN);
         w.trig(w.room, 2, "b", 100, "", RAN);
@@ -4287,7 +4296,7 @@ mod tests {
     fn time_sweep_zone_rules() {
         let mut w = W::new();
         w.h.set_num(w.room, "zone", 7);
-        w.h.set_num(w.alice, "playing", 0);
+        w.h.set_num(w.alice, "desc", 0);
         w.trig(w.guard, 3, "t", 5, "", RAN);
         w.trig(w.room, 2, "t", 5, "", RAN);
         w.h.time.hours = 5;
@@ -4319,7 +4328,7 @@ mod tests {
         w.trig(w.guard, 1, "g", 100, "", &greet_script(0));
         assert_eq!(greet_mtrigger(&mut w.h, w.alice, 0), 0);
         // A god with nohassle is not a target either way.
-        w.h.set_num(w.alice, "nohassle", 1);
+        w.h.set_nohassle(w.alice, true);
         assert_eq!(greet_mtrigger(&mut w.h, w.alice, 0), 1);
 
         let mut w = W::new();
@@ -4571,19 +4580,19 @@ mod tests {
         };
         // A mortal counts, with or without nohassle.
         assert!(fires(&|_| {}));
-        assert!(fires(&|w| w.h.set_num(w.alice, "nohassle", 1)));
+        assert!(fires(&|w| w.h.set_nohassle(w.alice, true)));
         // An immortal counts unless nohassle is on.
         assert!(fires(&|w| w.h.set_num(w.alice, "level", 32)));
         assert!(!fires(&|w| {
             w.h.set_num(w.alice, "level", 32);
-            w.h.set_num(w.alice, "nohassle", 1);
+            w.h.set_nohassle(w.alice, true);
         }));
         // A player in another zone, or not playing, does not.
         assert!(!fires(&|w| {
             w.h.set_num(w.room2, "zone", 9);
             w.h.char_to_room(w.alice, w.room2);
         }));
-        assert!(!fires(&|w| w.h.set_num(w.alice, "playing", 0)));
+        assert!(!fires(&|w| w.h.set_num(w.alice, "desc", 0)));
     }
 
     #[test]
@@ -5059,21 +5068,21 @@ mod tests {
         // LVL_IMMORT itself (31) with nohassle does not count; 30 does.
         assert!(!fires(&|w| {
             w.h.set_num(w.alice, "level", 31);
-            w.h.set_num(w.alice, "nohassle", 1);
+            w.h.set_nohassle(w.alice, true);
         }));
         assert!(fires(&|w| {
             w.h.set_num(w.alice, "level", 30);
-            w.h.set_num(w.alice, "nohassle", 1);
+            w.h.set_nohassle(w.alice, true);
         }));
         // A playing character in no room is skipped.
         assert!(!fires(&|w| w.h.char_from_room(w.alice)));
         // A mob that is "playing" with nohassle-level is still not an
         // immortal player: an NPC never gets the nohassle exemption.
         assert!(fires(&|w| {
-            w.h.set_num(w.guard, "playing", 1);
+            w.h.set_num(w.guard, "desc", 1);
             w.h.set_num(w.guard, "level", 40);
-            w.h.set_num(w.guard, "nohassle", 1);
-            w.h.set_num(w.alice, "playing", 0);
+            w.h.set_nohassle(w.guard, true);
+            w.h.set_num(w.alice, "desc", 0);
         }));
     }
 

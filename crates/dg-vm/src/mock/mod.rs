@@ -24,7 +24,7 @@
 //! | char | `nums["dg_invalid"]` | non-zero makes `valid_dg_target` false outright |
 //! | char | `nums["desc"]` | `ch->desc != NULL` |
 //! | char | `nums["con_state"]` | `STATE(ch->desc)`; `0` is `CON_PLAYING` |
-//! | char | `nums["nohassle"]` | `PRF_FLAGGED(ch, PRF_NOHASSLE)` |
+//! | char | `nums["pref"]` | the preference bitvector, bit `n` = `PRF_*` number `n` (`PRF_NOHASSLE` is 8) |
 //! | char | `lists["cannot_see"]` | entities this character fails `CAN_SEE` for |
 //! | char | `nums["pos"]` | `GET_POS` (`0` dead … `8` standing) |
 //! | char | `nums["hit"]`, `nums["max_hit"]`, `nums["mana"]`, `nums["max_mana"]`, `nums["move"]`, `nums["max_move"]` | the point pools |
@@ -65,12 +65,16 @@
 use std::collections::{BTreeMap, VecDeque};
 use std::sync::Arc;
 
+use crate::fields_char::CharHost;
 use crate::host::{BaseHost, WorldHost};
 use crate::script::Program;
 use crate::types::{
     AttachType, Kind, LVL_GRGOD, LVL_IMMORT, MOB_ID_BASE, MudTime, OBJ_ID_BASE, ROOM_ID_BASE,
     Script, ScriptMemory, TrigProto, Uid, VmState, trig::asciiflag_conv,
 };
+
+/// `PRF_NOHASSLE`: a bit of the preference flags.
+const PRF_NOHASSLE: u32 = 8;
 
 mod chars;
 mod commands;
@@ -456,6 +460,17 @@ impl MockHost {
             .map(|script| script.add_trigger(Arc::clone(proto), -1))
     }
 
+    /// Set or clear `PRF_NOHASSLE` (preference bit 8).
+    pub fn set_nohassle(&mut self, ch: Uid, on: bool) {
+        self.char_set_pref_bit(ch, PRF_NOHASSLE, on);
+    }
+
+    fn char_set_pref_bit(&mut self, ch: Uid, bit: u32, on: bool) {
+        let mask = 1i64 << bit.min(62);
+        let pref = self.num(ch, "pref");
+        self.set_num(ch, "pref", if on { pref | mask } else { pref & !mask });
+    }
+
     /// Record a world effect for assertions.
     pub fn effect(&mut self, text: impl Into<String>) {
         self.effects.push(text.into());
@@ -577,7 +592,7 @@ impl WorldHost for MockHost {
         if !allow_gods && level >= LVL_GRGOD {
             return false;
         }
-        self.num(ch, "nohassle") == 0
+        !self.char_pref_flagged(ch, PRF_NOHASSLE)
     }
 
     fn name(&self, uid: Uid) -> String {
@@ -656,8 +671,8 @@ impl WorldHost for MockHost {
         self.num(ch, "dead") != 0
     }
 
-    fn is_container(&self, obj: Uid) -> bool {
-        self.num(obj, "type") == 15
+    fn obj_type(&self, obj: Uid) -> i32 {
+        i32::try_from(self.num(obj, "type")).unwrap_or(0)
     }
 
     fn wear_flags(&self, obj: Uid) -> u32 {
@@ -719,7 +734,7 @@ mod tests {
         host.set_num(god, "level", 33);
         assert!(host.valid_dg_target(god, true));
         assert!(!host.valid_dg_target(god, false));
-        host.set_num(god, "nohassle", 1);
+        host.set_nohassle(god, true);
         assert!(!host.valid_dg_target(god, true));
 
         // Room contents are oldest first; an object goes at once.

@@ -2097,21 +2097,23 @@ mod tests {
     }
 
     #[test]
-    fn nohassle_is_the_shared_key_in_pref_and_in_valid_dg_target() {
+    fn nohassle_is_preference_bit_8_in_pref_and_in_valid_dg_target() {
         let mut f = fx();
         let pc = f.pc;
         f.host.set_num(pc, "level", 34);
-        // PRF_NOHASSLE is preference bit 8, "NO_HASS": the shared nohassle.
+        // PRF_NOHASSLE is preference bit 8, "NO_HASS".
         assert_eq!(f.s(pc, "pref", "NO_HASS"), "0");
         assert!(f.host.valid_dg_target(pc, true));
-        f.host.set_num(pc, "nohassle", 1);
+        f.host.set_nohassle(pc, true);
         assert_eq!(f.s(pc, "pref", "NO_HASS"), "1");
         assert!(!f.host.valid_dg_target(pc, true));
-        // A bit 8 of the pref array alone is not the preference.
-        f.host.set_num(pc, "nohassle", 0);
-        f.host.set_num(pc, "pref", 1 << 8);
+        f.host.set_nohassle(pc, false);
         assert_eq!(f.s(pc, "pref", "NO_HASS"), "0");
         assert!(f.host.valid_dg_target(pc, true));
+        // The one fact is the bit itself, however it got set.
+        f.host.set_num(pc, "pref", 1 << 8);
+        assert_eq!(f.s(pc, "pref", "NO_HASS"), "1");
+        assert!(!f.host.valid_dg_target(pc, true));
     }
 
     #[test]

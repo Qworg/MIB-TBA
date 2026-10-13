@@ -210,8 +210,9 @@ pub trait WorldHost {
     /// `DEAD(ch)`: extracted this pulse and awaiting the sweep.
     fn is_dead(&self, ch: Uid) -> bool;
 
-    /// `GET_OBJ_TYPE(obj) == ITEM_CONTAINER`.
-    fn is_container(&self, obj: Uid) -> bool;
+    /// `GET_OBJ_TYPE(obj)`: the `ITEM_*` number ([`crate::types::ITEM_CONTAINER`]
+    /// is 15). `0` for something that is not an object.
+    fn obj_type(&self, obj: Uid) -> i32;
 
     /// `GET_OBJ_WEAR(obj)` as a bitvector: bit `n` is `ITEM_WEAR_*` number
     /// `n` (`0` take, `1` finger, … `14` hold; see

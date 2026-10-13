@@ -119,12 +119,9 @@ impl World {
         });
     }
 
-    /// Set or clear `PRF_NOHASSLE`, in both places the mock reads it
-    /// (`valid_dg_target` reads the shared `nohassle` key, `char_pref_flagged`
-    /// the `pref` bit vector).
+    /// Set or clear `PRF_NOHASSLE`.
     pub fn set_nohassle(&mut self, ch: Uid, on: bool) {
-        self.host.set_num(ch, "nohassle", i64::from(on));
-        self.set_bit(ch, "pref", 8, on);
+        self.host.set_nohassle(ch, on);
     }
 
     /// Make `ch` a switched character whose `desc->original` is a level

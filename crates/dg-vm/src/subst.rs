@@ -56,7 +56,6 @@
 //!   running trigger's owner whatever its kind; the C casts `go` to a
 //!   character.
 
-
 use crate::cstr::{atoi, str_eq};
 use crate::expr::process_eval;
 use crate::host::{BaseHost, Cx, DgHost};
@@ -65,7 +64,9 @@ use crate::lookup::{
     get_obj_by_room, get_obj_in_list, get_room, obj_room, trgvar_in_room,
 };
 use crate::text::text_processed;
-use crate::types::{AttachType, VmState, DIRS, MAX_INPUT_LENGTH, NUM_OF_DIRS, ROOM_ID_BASE, Uid, uid_text};
+use crate::types::{
+    AttachType, DIRS, MAX_INPUT_LENGTH, NUM_OF_DIRS, ROOM_ID_BASE, Uid, VmState, uid_text,
+};
 use crate::{fields_char, fields_obj, fields_room};
 
 /// `happy_data` (`act.h`): the happy-hour state `%happyhour%` reports.
@@ -1328,7 +1329,7 @@ mod tests {
             )),
             expect
         );
-        w.host.set_num(god, "nohassle", 1);
+        w.host.set_nohassle(god, true);
         assert_eq!(
             run(&mut w, hall, AttachType::Wld, |cx| var_subst(
                 cx,

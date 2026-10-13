@@ -16,7 +16,7 @@
 //! | `nums["save:<0..4>"]` | `GET_SAVE`, indexed by `SAVING_PARA` 0, `ROD` 1, `PETRI` 2, `BREATH` 3, `SPELL` 4 |
 //! | `nums["abil:<name>"]`, `nums["rabil:<name>"]` | `aff_abils` / `real_abils`; `name` is `str`, `stradd`, `int`, `wis`, `dex`, `con`, `cha`. `affect_total` copies real to aff (the mock has no affects that change abilities) |
 //! | `nums["skill:<n>"]` | `GET_SKILL` |
-//! | `nums["act"]`, `nums["pref"]` | the act / preference bitvectors (bit `n` = flag `n`; preference bit 8 is the shared `nums["nohassle"]`); `IS_NPC` is the shared `nums["is_npc"]`, not act bit 3 (the VM reads that through `is_npc`) |
+//! | `nums["act"]`, `nums["pref"]` | the act / preference bitvectors (bit `n` = flag `n`; `PRF_NOHASSLE` is preference bit 8); `IS_NPC` is the shared `nums["is_npc"]`, not act bit 3 (the VM reads that through `is_npc`) |
 //! | `globals.nums["dummy:<key>"]` | the C's shared `dummy_mob` record: `prac`, `qp`, `cond:<n>` and `skill:<n>` of every NPC live here, not on the mob |
 //! | `texts["title"]` | `GET_TITLE`; absent = NULL |
 //! | `nums["quest"]` | `GET_QUEST`; absent = `NOTHING` (`-1`) |
@@ -25,9 +25,7 @@
 //!
 //! `DEAD(ch)` is the shared `nums["dead"]` and is never read from or written
 //! to `nums["act"]`: the VM asks `is_dead`, so an act bit 19 (NPC) or 16
-//! (player) is only an ordinary bit of the array. Likewise `PRF_NOHASSLE`
-//! (preference bit 8) is the shared `nums["nohassle"]`, not a bit of
-//! `nums["pref"]`.
+//! (player) is only an ordinary bit of the array.
 //!
 //! `gain_exp` models only the parts of the C that do not need the level
 //! tables: an NPC adds, a player below level 1 or at an immortal level is
@@ -42,8 +40,6 @@ use crate::types::Uid;
 /// `CONFIG_MAX_EXP_GAIN` and `CONFIG_MAX_EXP_LOSS` at their `config.c` defaults.
 const MAX_EXP_GAIN: i32 = 100_000;
 const MAX_EXP_LOSS: i32 = 500_000;
-/// `PRF_NOHASSLE`: the preference bit the shared `nums["nohassle"]` stands for.
-const PRF_NOHASSLE: u32 = 8;
 /// `MAX_GOLD`.
 const MAX_GOLD: i32 = 2_140_000_000;
 
@@ -287,9 +283,6 @@ impl CharHost for MockHost {
     }
 
     fn char_pref_flagged(&self, ch: Uid, bit: u32) -> bool {
-        if bit == PRF_NOHASSLE {
-            return self.num(ch, "nohassle") != 0;
-        }
         (self.num(ch, "pref") >> bit.min(62)) & 1 != 0
     }
 

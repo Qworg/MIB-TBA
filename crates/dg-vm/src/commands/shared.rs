@@ -17,7 +17,7 @@ use crate::lookup::{
     get_obj_by_obj, get_obj_in_room, get_obj_near_obj, get_obj_vis, get_player_vis, get_room,
     obj_room,
 };
-use crate::types::{DIRS, LVL_GRGOD, UID_CHAR, Uid, uid_text};
+use crate::types::{DIRS, ITEM_CONTAINER, LVL_GRGOD, UID_CHAR, Uid, uid_text};
 
 /// `ROOM_PRIVATE`, `ROOM_GODROOM`, `ROOM_HOUSE` (`structs.h`).
 const ROOM_PRIVATE: usize = 9;
@@ -461,7 +461,7 @@ pub(crate) fn load<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument: &st
             Owner::Wld(room) => get_obj_in_room(host, room, &name),
         };
         if let Some(cnt) = cnt
-            && host.is_container(cnt)
+            && host.obj_type(cnt) == ITEM_CONTAINER
         {
             host.cmd_obj_to_obj(object, cnt);
             load_otrigger(host, object);

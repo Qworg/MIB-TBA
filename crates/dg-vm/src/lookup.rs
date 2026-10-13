@@ -11,7 +11,7 @@
 
 use crate::cstr::{atoi, is_abbrev, is_number, is_space, str_eq};
 use crate::host::WorldHost;
-use crate::types::{Kind, OBJ_ID_BASE, ROOM_ID_BASE, UID_CHAR, Uid, parse_uid};
+use crate::types::{ITEM_CONTAINER, Kind, OBJ_ID_BASE, ROOM_ID_BASE, UID_CHAR, Uid, parse_uid};
 
 /// `NUM_WEARS`: the number of equipment positions.
 pub const NUM_WEARS: i32 = 18;
@@ -273,7 +273,7 @@ pub fn item_in_list<H: WorldHost + ?Sized>(host: &H, item: &str, list: &[Uid]) -
                 total += 1;
             }
             // The bound only guards against a corrupt containment cycle.
-            if depth < 64 && host.is_container(obj) {
+            if depth < 64 && host.obj_type(obj) == ITEM_CONTAINER {
                 total += count(host, &host.obj_contains(obj), matches, depth + 1);
             }
         }

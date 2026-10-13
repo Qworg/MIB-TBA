@@ -45,7 +45,7 @@ use crate::host::{Cx, DgHost};
 use crate::lookup::{
     NUM_WEARS, can_wear_on_pos, find_eq_pos_script, get_object_in_equip, item_in_list, obj_room,
 };
-use crate::types::{MAX_INPUT_LENGTH, Uid, parse_uid, uid_text};
+use crate::types::{ITEM_CONTAINER, MAX_INPUT_LENGTH, Uid, parse_uid, uid_text};
 
 /// A vnum as the C holds it: `IDXTYPE` is `ush_int` in this tree, so
 /// `NOTHING` is 65535. A host reports it as any negative number (the mock as
@@ -76,7 +76,7 @@ pub(crate) fn item_in_list_c<H: WorldHost + ?Sized>(host: &H, item: &str, list: 
                 total += 1;
             }
             // The bound only guards against a corrupt containment cycle.
-            if depth < 64 && host.is_container(obj) {
+            if depth < 64 && host.obj_type(obj) == ITEM_CONTAINER {
                 total += count(host, &host.obj_contains(obj), wanted, depth + 1);
             }
         }
@@ -249,9 +249,6 @@ pub(crate) fn fit(mut text: String) -> String {
 /// A host that does not model a fact returns the neutral value (`0`, empty,
 /// `false`) and ignores the write.
 pub trait ObjHost {
-    /// `GET_OBJ_TYPE(obj)`.
-    fn obj_type(&self, obj: Uid) -> i32;
-
     /// `GET_OBJ_VAL(obj, idx)`, `idx` in `0..4`.
     fn obj_val(&self, obj: Uid, idx: usize) -> i32;
 
@@ -475,7 +472,7 @@ pub fn obj_field<H: DgHost + ?Sized>(
             .map(uid_text)
             .unwrap_or_default()
     } else if is("count") {
-        if host.is_container(obj) {
+        if host.obj_type(obj) == ITEM_CONTAINER {
             item_in_list_c(&*host, subfield, &host.obj_contains(obj)).to_string()
         } else {
             "0".to_owned()
@@ -489,7 +486,7 @@ pub fn obj_field<H: DgHost + ?Sized>(
             extra_bits_text(&*host, obj)
         }
     } else if is("has_in") {
-        if host.is_container(obj) {
+        if host.obj_type(obj) == ITEM_CONTAINER {
             let found = item_in_list_c(&*host, subfield, &host.obj_contains(obj)) != 0;
             u8::from(found).to_string()
         } else {

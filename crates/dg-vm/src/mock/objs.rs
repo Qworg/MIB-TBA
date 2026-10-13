@@ -23,10 +23,6 @@ fn to_i32(value: i64) -> i32 {
 }
 
 impl ObjHost for MockHost {
-    fn obj_type(&self, obj: Uid) -> i32 {
-        to_i32(self.num(obj, "type"))
-    }
-
     fn obj_val(&self, obj: Uid, idx: usize) -> i32 {
         to_i32(self.num(obj, &format!("val{idx}")))
     }
