@@ -12,7 +12,7 @@
 //!
 //! - `snprintf(str, slen, …)` truncates to the caller's buffer
 //!   (`MAX_INPUT_LENGTH - 20` bytes in `var_subst`, one of them for the NUL).
-//!   [`fit`] does the same, backing up to a character boundary instead of
+//!   `fit` does the same, backing up to a character boundary instead of
 //!   splitting a UTF-8 sequence.
 //! - `check_flags_by_name_ar` walks `NUM_*_FLAGS` entries of a name table; the
 //!   tables here hold exactly that many names, so the walk cannot run past the
@@ -27,7 +27,13 @@
 //!   as the C does; the object's carried weight is not adjusted, exactly as in
 //!   the C, which assigns the field directly.
 //! - An `oset apply` modifier is stored in a signed byte and the location in
-//!   a `byte`, also signed (`struct obj_affected_type`; 0..24 fits either way), so the sum wraps to `i8`.
+//!   a `byte`, also signed (`struct obj_affected_type`; 0..24 fits either
+//!   way), so the sum wraps to `i8`.
+//! - `GET_OBJ_VNUM` of an object with no prototype is `NOTHING`, 65535 in
+//!   this tree (`CIRCLE_UNSIGNED_INDEX`). A host may report any negative
+//!   number for such an object (the mock reports -1); [`obj_vnum`] maps it to
+//!   65535, so `%corpse.vnum(65535)%` is 1 as stock scripts (30.trg:208)
+//!   expect.
 //!
 //! Tables ported from `constants.c`: [`ITEM_TYPES`], [`EXTRA_BITS`],
 //! [`AFFECTED_BITS`], [`APPLY_TYPES`]. (`wear_bits` is not used by this
@@ -37,6 +43,13 @@ use crate::cstr::{atoi, is_abbrev, one_argument, skip_spaces, sprinttype, str_eq
 use crate::host::{Cx, DgHost};
 use crate::lookup::{can_wear_on_pos, find_eq_pos_script, item_in_list, obj_room};
 use crate::types::{MAX_INPUT_LENGTH, Uid, uid_text};
+
+/// `GET_OBJ_VNUM(obj)`: the host's vnum, with a negative answer (no
+/// prototype) rendered as `NOTHING`, 65535 in this tree.
+pub(crate) fn obj_vnum<H: DgHost + ?Sized>(host: &H, obj: Uid) -> i32 {
+    let vnum = host.vnum(obj);
+    if vnum < 0 { 65535 } else { vnum }
+}
 
 /// `item_types[]` (`constants.c`), without the `"\n"` terminator.
 pub const ITEM_TYPES: [&str; 24] = [
@@ -458,9 +471,9 @@ pub fn obj_field<H: DgHost + ?Sized>(
         host.obj_timer(obj).to_string()
     } else if is("vnum") {
         if has_sub {
-            u8::from(host.vnum(obj) == atoi(subfield)).to_string()
+            u8::from(obj_vnum(&*host, obj) == atoi(subfield)).to_string()
         } else {
-            host.vnum(obj).to_string()
+            obj_vnum(&*host, obj).to_string()
         }
     } else if is("val0") {
         host.obj_val(obj, 0).to_string()
@@ -569,6 +582,17 @@ mod tests {
         // atoi of non-numeric text is 0, which is not this vnum.
         assert_eq!(f(&mut h, o, "vnum", "abc"), "0");
         assert_eq!(f(&mut h, o, "vnum", "3020x"), "1");
+    }
+
+    #[test]
+    fn prototype_less_object_vnum_is_nothing() {
+        // 30.trg:208 `if %item.vnum(65535)%`, 201.trg:1145
+        // `%object.vnum% == 65535`: GET_OBJ_VNUM is NOTHING (65535).
+        let mut h = MockHost::new();
+        let o = h.add_obj(-1, "corpse");
+        assert_eq!(f(&mut h, o, "vnum", ""), "65535");
+        assert_eq!(f(&mut h, o, "vnum", "65535"), "1");
+        assert_eq!(f(&mut h, o, "vnum", "-1"), "0");
     }
 
     #[test]
@@ -777,6 +801,15 @@ mod tests {
         assert_eq!(f(&mut h, o, "hasattached", "8"), "0");
         assert_eq!(f(&mut h, o, "hasattached", "7abc"), "1");
         assert_eq!(f(&mut h, o, "hasattached", "x"), "0");
+    }
+
+    #[test]
+    fn oset_text_keeps_a_leading_tab() {
+        // skip_spaces stops at '\t', so the stored text starts with it.
+        let mut h = MockHost::new();
+        let o = sword(&mut h);
+        assert_eq!(f(&mut h, o, "oset", "alias  \tfoo"), "1");
+        assert_eq!(h.text(o, "alias"), "\tfoo");
     }
 
     #[test]

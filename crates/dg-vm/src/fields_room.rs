@@ -16,18 +16,18 @@
 //! Only the six directions `north east south west up down` are fields in this
 //! tree of the C, although the game has ten exits; the diagonals fall through
 //! to the unknown-field path, as they do there. An exit subfield other than
-//! `vnum key bits room` leaves the result empty.
+//! `vnum key bits room` leaves the result empty. `GET_ROOM_VNUM(to_room)` of
+//! an exit with no destination is `NOWHERE`, 65535 in this tree
+//! (`CIRCLE_UNSIGNED_INDEX`), and that is what `(vnum)` prints. A
+//! prototype-less object counts as 65535 in `contents(N)` too.
 //!
 //! # Differences from the C
 //!
 //! - `snprintf` truncation to the caller's buffer is applied with
-//!   [`crate::fields_obj::fit`].
+//!   `fit`.
 //! - `weather` indexes `sky_look[]` with `weather_info.sky`; a sky value
 //!   outside `0..4` (which the C would read out of bounds) gives an empty
 //!   result.
-//! - `GET_ROOM_VNUM(to_room)` of an exit with no destination is `NOWHERE`,
-//!   which is 65535 in this tree (`CIRCLE_UNSIGNED_INDEX`: `IDXTYPE` is
-//!   `ush_int`), and that is what `(vnum)` prints.
 //!
 //! Tables ported from `constants.c`: [`ROOM_BITS`], [`EXIT_BITS`],
 //! [`SECTOR_TYPES`], and `sky_look` ([`SKY_LOOK`]).
@@ -182,7 +182,7 @@ pub fn room_field<H: DgHost + ?Sized>(
             // found is empty.
             contents
                 .iter()
-                .find(|obj| host.vnum(**obj) == atoi(subfield))
+                .find(|obj| crate::fields_obj::obj_vnum(&*host, **obj) == atoi(subfield))
                 .map(|obj| uid_text(*obj))
                 .unwrap_or_default()
         } else {
@@ -345,6 +345,11 @@ mod tests {
         assert_eq!(f(&mut h, r, "contents", "8"), format!("}}{b}"));
         assert_eq!(f(&mut h, r, "contents", "7"), format!("}}{a}"));
         assert_eq!(f(&mut h, r, "contents", "9"), "");
+        // A prototype-less object is NOTHING (65535): 30.trg:208.
+        let corpse = h.add_obj(-1, "corpse");
+        h.obj_to_room(corpse, r);
+        assert_eq!(f(&mut h, r, "contents", "65535"), format!("}}{corpse}"));
+        assert_eq!(f(&mut h, r, "contents", "-1"), "");
         // atoi stops at the junk: "7junk" is vnum 7.
         assert_eq!(f(&mut h, r, "contents", "7junk"), format!("}}{a}"));
         // A non-numeric subfield is vnum 0, which nothing here has.
