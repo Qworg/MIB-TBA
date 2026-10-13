@@ -5,7 +5,6 @@
 //! houses, nor zone restrictions, so those checks are absent; the rest of
 //! `do_simple_move` is here, in order, with the triggers it runs.
 
-use mib_core::prelude::Entity;
 use dg_vm::cstr::{one_argument, str_cmp};
 use dg_vm::dispatch::{
     enter_wtrigger, entry_memory_mtrigger, entry_mtrigger, greet_memory_mtrigger, greet_mtrigger,
@@ -13,8 +12,9 @@ use dg_vm::dispatch::{
 };
 use dg_vm::lookup::NUM_WEARS;
 use dg_vm::{BaseHost, Uid, WorldHost};
-use mib_stdlib::prelude::{Location, Player, Room, RoomTag};
+use mib_core::prelude::Entity;
 use mib_stdlib::content::Sector;
+use mib_stdlib::prelude::{Location, Player, Room, RoomTag};
 
 use super::act::{To, act, act_vict, fname};
 use super::door::{ExitView, exit_of};
@@ -78,7 +78,9 @@ fn sector(host: &EcsHost<'_>, room: Entity) -> Option<Sector> {
 
 /// How many players stand in a room (`num_pc_in_room`).
 fn players_in(host: &mut EcsHost<'_>, room: Entity) -> usize {
-    let mut query = host.world.query_filtered::<&Location, mib_core::prelude::With<Player>>();
+    let mut query = host
+        .world
+        .query_filtered::<&Location, mib_core::prelude::With<Player>>();
     query
         .iter(host.world)
         .filter(|location| location.room == room)
@@ -108,13 +110,12 @@ pub fn simple_move(host: &mut EcsHost<'_>, ch: Uid, dir: usize, exit: &ExitView)
         return false;
     }
 
-    if matches!(sector(host, was_in), Some(Sector::WaterNoSwim))
-        || matches!(sector(host, going_to), Some(Sector::WaterNoSwim))
+    if (matches!(sector(host, was_in), Some(Sector::WaterNoSwim))
+        || matches!(sector(host, going_to), Some(Sector::WaterNoSwim)))
+        && !has_boat(host, ch)
     {
-        if !has_boat(host, ch) {
-            to_char(host, ch, "You need a boat to go there.\r\n");
-            return false;
-        }
+        to_char(host, ch, "You need a boat to go there.\r\n");
+        return false;
     }
     if (matches!(sector(host, was_in), Some(Sector::Flying))
         || matches!(sector(host, going_to), Some(Sector::Flying)))
@@ -138,7 +139,13 @@ pub fn simple_move(host: &mut EcsHost<'_>, ch: Uid, dir: usize, exit: &ExitView)
     // An NPC pays no movement points.
     let sneak = world::sneaking(host, ch);
     if !sneak {
-        act(host, &format!("$n leaves {}.", dir_name(dir)), true, ch, To::Room);
+        act(
+            host,
+            &format!("$n leaves {}.", dir_name(dir)),
+            true,
+            ch,
+            To::Room,
+        );
     }
 
     world::char_to_room(host, ch_entity, going_to);
@@ -223,7 +230,10 @@ pub fn do_enter(host: &mut EcsHost<'_>, ch: Uid, argument: &str) {
     let (arg, _) = one_argument(argument);
     if arg.is_empty() {
         // Which rooms are indoors is not modelled, so there is no entrance to find.
-        host.unsupported("mobcmd.indoors", "enter without an argument needs ROOM_INDOORS");
+        host.unsupported(
+            "mobcmd.indoors",
+            "enter without an argument needs ROOM_INDOORS",
+        );
         return;
     }
     let Some(room) = room_of(host, ch) else {

@@ -15,10 +15,10 @@
 //! those the pack has no model for, are rows too; the latter are counted
 //! under `mobcmd.<command>` in the [`DgLog`](super::DgLog).
 
-use mib_core::prelude::Entity;
 use dg_vm::cstr::{any_one_arg, skip_spaces};
 use dg_vm::dispatch::{command_mtrigger, command_otrigger, command_wtrigger};
 use dg_vm::{BaseHost, Uid, WorldHost};
+use mib_core::prelude::Entity;
 use mib_core::prelude::{CommandReceived, CommandSequence, Messages, PlayerInput};
 use mib_stdlib::prelude::{OnlinePlayers, Player};
 
@@ -62,10 +62,7 @@ pub fn mud_command(host: &mut EcsHost<'_>, ch: Uid, line: &str) {
         any_one_arg(argument)
     } else {
         let len = first.len_utf8();
-        (
-            first.to_string(),
-            argument.get(len..).unwrap_or_default(),
-        )
+        (first.to_string(), argument.get(len..).unwrap_or_default())
     };
 
     // The command triggers may take the command over: world, mob, object.
@@ -88,10 +85,10 @@ pub fn mud_command(host: &mut EcsHost<'_>, ch: Uid, line: &str) {
             .world
             .get_resource::<TbaContent>()
             .and_then(|content| social::find_social(content, &word, level));
-        if let Some(action) = social {
-            if gate_position(host, ch, action.min_char_position) {
-                social::do_action(host, ch, &action, rest);
-            }
+        if let Some(action) = social
+            && gate_position(host, ch, action.min_char_position)
+        {
+            social::do_action(host, ch, &action, rest);
         }
         // Anything else is "Huh?!?", which only the NPC itself would read.
         return;

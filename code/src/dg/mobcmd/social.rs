@@ -60,7 +60,11 @@ pub fn do_action(host: &mut EcsHost<'_>, ch: Uid, action: &SocialDef, argument: 
 
     let (_, part, _) = two_arguments(argument);
     if action.char_body_found.is_none() && !part.is_empty() {
-        to_char(host, ch, "Sorry, this social does not support body parts.\r\n");
+        to_char(
+            host,
+            ch,
+            "Sorry, this social does not support body parts.\r\n",
+        );
         return;
     }
     let arg = if action.char_found.is_some() {

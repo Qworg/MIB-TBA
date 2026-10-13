@@ -206,7 +206,8 @@ pub fn act_full(
                 let is_vict = matches!(vict, ActVict::Char(v) if v == recipient);
                 let skip = !sendok(host, recipient, flags.sleep)
                     || Some(recipient) == ch
-                    || (hide && ch.is_some_and(|ch| !dg_vm::WorldHost::can_see(host, recipient, ch)))
+                    || (hide
+                        && ch.is_some_and(|ch| !dg_vm::WorldHost::can_see(host, recipient, ch)))
                     || (to != To::Room && is_vict);
                 if !skip {
                     perform_act(host, text, ch, obj, vict, recipient);

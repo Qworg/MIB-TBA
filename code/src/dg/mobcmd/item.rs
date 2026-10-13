@@ -14,14 +14,12 @@ use dg_vm::dispatch::{
     bribe_mtrigger, drop_otrigger, drop_wtrigger, get_otrigger, give_otrigger, receive_mtrigger,
     remove_otrigger, wear_otrigger,
 };
-use dg_vm::lookup::{
-    NUM_WEARS, get_char_room_vis, get_obj_in_list_vis, isname,
-};
+use dg_vm::lookup::{NUM_WEARS, get_char_room_vis, get_obj_in_list_vis, isname};
 use dg_vm::{BaseHost, Uid, WorldHost};
 use mib_core::prelude::Entity;
 use mib_stdlib::prelude::{Container, Item, Location, Player};
 
-use super::act::{act, act_obj, act_obj_obj, act_obj_vict, act_vict, To};
+use super::act::{To, act, act_obj, act_obj_obj, act_obj_vict, act_vict};
 use super::table::DropMode;
 use super::world;
 use crate::content::{ItemExtraFlag, TbaItemDef, TbaItemKind, WearSlot};
@@ -36,7 +34,7 @@ enum Dot {
     /// `FIND_ALL`: `all`.
     All,
     /// `FIND_ALLDOT`: `all.name`; the argument is cut to the name.
-    AllDot,
+    Prefixed,
 }
 
 /// `find_all_dots(arg)`: the mode and the argument as the caller goes on to
@@ -45,14 +43,17 @@ fn find_all_dots(arg: &str) -> (Dot, String) {
     if arg == "all" {
         (Dot::All, arg.to_owned())
     } else if let Some(name) = arg.strip_prefix("all.") {
-        (Dot::AllDot, name.to_owned())
+        (Dot::Prefixed, name.to_owned())
     } else {
         (Dot::Indiv, arg.to_owned())
     }
 }
 
 /// The prototype definition of an item.
-pub(super) fn item_def<'a>(host: &'a crate::dg::host::EcsHost<'_>, obj: Uid) -> Option<&'a TbaItemDef> {
+pub(super) fn item_def<'a>(
+    host: &'a crate::dg::host::EcsHost<'_>,
+    obj: Uid,
+) -> Option<&'a TbaItemDef> {
     let entity = host.entity(obj)?;
     let item = host.world.get::<Item>(entity)?;
     host.world
@@ -153,7 +154,7 @@ fn get_from_room(host: Host<'_, '_>, ch: Uid, arg: &str, howmany: i32) {
             obj = get_obj_in_list_vis(host, ch, &arg, &next);
         }
     } else {
-        if dotmode == Dot::AllDot && arg.is_empty() {
+        if dotmode == Dot::Prefixed && arg.is_empty() {
             return;
         }
         for obj in list {
@@ -198,7 +199,7 @@ fn get_from_container(host: Host<'_, '_>, ch: Uid, cont: Uid, arg: &str, howmany
             obj = get_obj_in_list_vis(host, ch, &arg, &next);
         }
     } else {
-        if dotmode == Dot::AllDot && arg.is_empty() {
+        if dotmode == Dot::Prefixed && arg.is_empty() {
             return;
         }
         for obj in list {
@@ -243,7 +244,7 @@ pub fn do_get(host: Host<'_, '_>, ch: Uid, argument: &str) {
         }
         return;
     }
-    if cont_dotmode == Dot::AllDot && arg2.is_empty() {
+    if cont_dotmode == Dot::Prefixed && arg2.is_empty() {
         return;
     }
     let mut lists = vec![host.carrying(ch)];
@@ -285,11 +286,26 @@ fn perform_put(host: Host<'_, '_>, ch: Uid, obj: Uid, cont: Uid) {
         .is_some_and(|c| c.contents.len() >= usize::try_from(c.capacity).unwrap_or(usize::MAX));
     let cont_lies_in_room = host.in_room(cont).is_some();
     if corpse {
-        act_obj_obj(host, "You can't put anything in $P.", false, ch, obj, cont, To::Char);
+        act_obj_obj(
+            host,
+            "You can't put anything in $P.",
+            false,
+            ch,
+            obj,
+            cont,
+            To::Char,
+        );
     } else if full {
         act_obj_obj(host, "$p won't fit in $P.", false, ch, obj, cont, To::Char);
     } else if extra_flagged(host, obj, ItemExtraFlag::NoDrop) && cont_lies_in_room {
-        act_obj(host, "You can't get $p out of your hand.", false, ch, obj, To::Char);
+        act_obj(
+            host,
+            "You can't get $p out of your hand.",
+            false,
+            ch,
+            obj,
+            To::Char,
+        );
     } else {
         world::obj_to_obj(host, obj_entity, cont_entity);
         act_obj_obj(host, "$n puts $p in $P.", true, ch, obj, cont, To::Room);
@@ -360,7 +376,13 @@ pub fn do_put(host: Host<'_, '_>, ch: Uid, argument: &str) {
 // -- drop and junk --------------------------------------------------------------
 
 /// `perform_drop_gold`.
-fn perform_drop_gold(host: Host<'_, '_>, ch: Uid, amount: i32, mode: DropMode, donate: Option<Uid>) {
+fn perform_drop_gold(
+    host: Host<'_, '_>,
+    ch: Uid,
+    amount: i32,
+    mode: DropMode,
+    donate: Option<Uid>,
+) {
     let amount = i64::from(amount);
     if amount <= 0 || world::gold(host, ch) < amount {
         return;
@@ -464,8 +486,22 @@ fn perform_drop(
     } else {
         "  It vanishes in a puff of smoke!"
     };
-    act_obj(host, &format!("You {sname} $p.{vanish}"), false, ch, obj, To::Char);
-    act_obj(host, &format!("$n {sname}s $p.{vanish}"), true, ch, obj, To::Room);
+    act_obj(
+        host,
+        &format!("You {sname} $p.{vanish}"),
+        false,
+        ch,
+        obj,
+        To::Char,
+    );
+    act_obj(
+        host,
+        &format!("$n {sname}s $p.{vanish}"),
+        true,
+        ch,
+        obj,
+        To::Room,
+    );
     let Some(obj_entity) = host.entity(obj) else {
         return 0;
     };
@@ -592,7 +628,7 @@ pub fn do_drop(host: Host<'_, '_>, ch: Uid, argument: &str, command: DropMode) {
                     amount += perform_drop(host, ch, obj, mode, sname, donate);
                 }
             }
-        } else if dotmode == Dot::AllDot {
+        } else if dotmode == Dot::Prefixed {
             if arg.is_empty() {
                 return;
             }
@@ -607,7 +643,13 @@ pub fn do_drop(host: Host<'_, '_>, ch: Uid, argument: &str, command: DropMode) {
         }
     }
     if amount != 0 && command == DropMode::Junk {
-        act(host, "$n has been rewarded by the gods!", true, ch, To::Room);
+        act(
+            host,
+            "$n has been rewarded by the gods!",
+            true,
+            ch,
+            To::Room,
+        );
         let purse = world::gold(host, ch);
         world::set_gold(host, ch, purse.saturating_add(amount));
     }
@@ -624,7 +666,14 @@ fn perform_give(host: Host<'_, '_>, ch: Uid, vict: Uid, obj: Uid) {
         return;
     }
     if extra_flagged(host, obj, ItemExtraFlag::NoDrop) {
-        act_obj(host, "You can't let go of $p!!  Yeech!", false, ch, obj, To::Char);
+        act_obj(
+            host,
+            "You can't let go of $p!!  Yeech!",
+            false,
+            ch,
+            obj,
+            To::Char,
+        );
         return;
     }
     let (Some(vict_entity), Some(obj_entity)) = (host.entity(vict), host.entity(obj)) else {
@@ -722,7 +771,7 @@ pub fn do_give(host: Host<'_, '_>, ch: Uid, argument: &str) {
         if let Some(obj) = get_obj_in_list_vis(host, ch, &arg, &list) {
             perform_give(host, ch, vict, obj);
         }
-    } else if dotmode == Dot::AllDot && arg.is_empty() {
+    } else if dotmode == Dot::Prefixed && arg.is_empty() {
     } else {
         for obj in list {
             if host.exists(obj)
@@ -884,7 +933,8 @@ fn find_eq_pos(host: &crate::dg::host::EcsHost<'_>, obj: Uid, arg: &str) -> Opti
 /// `GET_OBJ_LEVEL(obj)` against `GET_LEVEL(ch)`: whether the wearer is too
 /// inexperienced.
 fn too_low_level(host: &crate::dg::host::EcsHost<'_>, ch: Uid, obj: Uid) -> bool {
-    let needed = item_def(host, obj).map_or(0, |def| i32::try_from(def.min_level).unwrap_or(i32::MAX));
+    let needed =
+        item_def(host, obj).map_or(0, |def| i32::try_from(def.min_level).unwrap_or(i32::MAX));
     host.level(ch) < needed
 }
 
@@ -913,7 +963,7 @@ pub fn do_wear(host: Host<'_, '_>, ch: Uid, argument: &str) {
                 }
             }
         }
-        Dot::AllDot => {
+        Dot::Prefixed => {
             if arg1.is_empty() {
                 return;
             }
@@ -1004,7 +1054,14 @@ fn perform_remove(host: Host<'_, '_>, ch: Uid, pos: i32) {
         return;
     };
     if extra_flagged(host, obj, ItemExtraFlag::NoDrop) {
-        act_obj(host, "You can't remove $p, it must be CURSED!", false, ch, obj, To::Char);
+        act_obj(
+            host,
+            "You can't remove $p, it must be CURSED!",
+            false,
+            ch,
+            obj,
+            To::Char,
+        );
         return;
     }
     if remove_otrigger(host, obj, ch) == 0 {
@@ -1032,7 +1089,7 @@ pub fn do_remove(host: Host<'_, '_>, ch: Uid, argument: &str) {
                 }
             }
         }
-        Dot::AllDot => {
+        Dot::Prefixed => {
             if arg.is_empty() {
                 return;
             }

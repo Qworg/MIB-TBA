@@ -12,14 +12,13 @@ use dg_vm::Uid;
 use mib_core::prelude::*;
 use mib_protocol::prelude::ExitKey;
 use mib_stdlib::prelude::{
-    CarriedBy, Container, ContainedBy, GroundItem, Item, ItemId, Location, Npc, NpcKey,
+    CarriedBy, ContainedBy, Container, GroundItem, Item, ItemId, Location, Npc, NpcKey,
     OnlinePlayers, Player, QuestEvent, Room, SaveId,
 };
 
 use super::table;
 use crate::combat::{
-    GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID, GOLD_ITEM_NAME, TbaAttackerMemory, TbaCombatant, TbaGold,
-    TbaSneaking, npc_combatant_system,
+    GOLD_ITEM_ID, TbaAttackerMemory, TbaCombatant, TbaGold, TbaSneaking, npc_combatant_system,
 };
 use crate::content::{Position, TbaItemKind, WearSlot};
 use crate::dg::host::EcsHost;
@@ -57,7 +56,11 @@ pub fn position(host: &EcsHost<'_>, ch: Uid) -> Position {
     let Some(entity) = host.entity(ch) else {
         return Position::Dead;
     };
-    if host.world.get::<crate::dg::script::DgDead>(entity).is_some() {
+    if host
+        .world
+        .get::<crate::dg::script::DgDead>(entity)
+        .is_some()
+    {
         return Position::Dead;
     }
     if let Some(combatant) = host.world.get::<TbaCombatant>(entity) {
@@ -316,8 +319,8 @@ pub fn create_money_in_room(host: &mut EcsHost<'_>, room: Entity, amount: i64) -
         .spawn((
             Item {
                 def_id: ItemId::from(GOLD_ITEM_ID),
-                name: GOLD_ITEM_NAME.to_owned(),
-                description: GOLD_ITEM_DESCRIPTION.to_owned(),
+                name: money_desc(i64::from(amount)).to_owned(),
+                description: money_description(amount),
                 value: Some(amount),
                 tags: Vec::new(),
             },
@@ -326,25 +329,39 @@ pub fn create_money_in_room(host: &mut EcsHost<'_>, room: Entity, amount: i64) -
         ))
         .id();
     crate::dg::ids::stamp_spawn(host.world, pile);
+    // The pile is a script entity from here on: give it its id now rather than
+    // at the next `with_host`.
+    crate::dg::ids::ensure_ids(host.world);
     Some(pile)
 }
 
-/// `money_desc(amount)`.
+/// The line a pile of coins shows lying on the floor (`create_money`).
+fn money_description(amount: u32) -> String {
+    if amount == 1 {
+        return "One miserable gold coin is lying here.".to_owned();
+    }
+    let line = format!("{} is lying here.", money_desc(i64::from(amount)));
+    super::act::cap(&line)
+}
+
+/// `money_desc(amount)`: the words for a pile of coins (`handler.c`).
 pub fn money_desc(amount: i64) -> &'static str {
     match amount {
-        i64::MIN..=9 => "a gold coin",
-        10..=20 => "a tiny pile of gold coins",
-        21..=75 => "a small pile of gold coins",
-        76..=200 => "a pile of gold coins",
-        201..=1000 => "a large pile of gold coins",
-        1001..=5000 => "a huge pile of gold coins",
-        5001..=10000 => "an enormous pile of gold coins",
-        10001..=20000 => "a massive pile of gold coins",
-        20001..=75000 => "an immense pile of gold coins",
-        75001..=150000 => "a pile of gold coins as big as a house",
-        150001..=250000 => "a heap of gold coins",
-        250001..=500000 => "a tremendous heap of gold coins",
-        _ => "a mountain of gold coins",
+        i64::MIN..=1 => "a gold coin",
+        2..=10 => "a tiny pile of gold coins",
+        11..=20 => "a handful of gold coins",
+        21..=75 => "a little pile of gold coins",
+        76..=200 => "a small pile of gold coins",
+        201..=1000 => "a pile of gold coins",
+        1001..=5000 => "a big pile of gold coins",
+        5001..=10000 => "a large heap of gold coins",
+        10001..=20000 => "a huge mound of gold coins",
+        20001..=75000 => "an enormous mound of gold coins",
+        75001..=150000 => "a small mountain of gold coins",
+        150001..=250000 => "a mountain of gold coins",
+        250001..=500000 => "a huge mountain of gold coins",
+        500001..=1000000 => "an enormous mountain of gold coins",
+        _ => "an absolutely colossal mountain of gold coins",
     }
 }
 
@@ -512,9 +529,7 @@ pub fn followers(host: &EcsHost<'_>, leader: Uid) -> Vec<Uid> {
         return Vec::new();
     };
     let mut found: Vec<Uid> = Vec::new();
-    let mut query = host
-        .world
-        .try_query::<(Entity, &TbaFollowing)>();
+    let mut query = host.world.try_query::<(Entity, &TbaFollowing)>();
     if let Some(query) = query.as_mut() {
         for (follower, following) in query.iter(host.world) {
             if following.leader == entity

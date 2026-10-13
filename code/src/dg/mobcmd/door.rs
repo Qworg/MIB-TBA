@@ -8,12 +8,12 @@
 //! open/locked state, so a closeable container reports the gap instead of
 //! pretending.
 
-use mib_core::prelude::Entity;
 use dg_vm::cstr::{is_abbrev, search_block, two_arguments};
 use dg_vm::dispatch::{door_mtrigger, door_wtrigger};
 use dg_vm::lookup::{WEAR_HOLD, get_obj_in_list_vis, isname};
 use dg_vm::types::ITEM_CONTAINER;
 use dg_vm::{BaseHost, Uid, WorldHost};
+use mib_core::prelude::Entity;
 use mib_stdlib::prelude::{Door, DoorState, Doors, Exits, Room, RoomId, RoomState};
 
 use super::act::{ActObj, ActVict, Flags, To, act_full, an, fname};
@@ -248,7 +248,10 @@ fn do_doorcmd(host: &mut EcsHost<'_>, ch: Uid, room: Entity, door: usize, cmd: D
         return;
     };
     let back = back_exit(host, room, door, &exit);
-    let sides = [Some((room, door)), back.as_ref().map(|_| (exit.to, rev_dir(door)))];
+    let sides = [
+        Some((room, door)),
+        back.as_ref().map(|_| (exit.to, rev_dir(door))),
+    ];
     for (side_room, side_dir) in sides.into_iter().flatten() {
         set_door_state(host, side_room, side_dir, |state| match cmd {
             DoorCmd::Open => state.closed = false,

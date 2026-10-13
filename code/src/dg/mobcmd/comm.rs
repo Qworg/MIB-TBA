@@ -79,7 +79,10 @@ fn tell_ok(host: &mut EcsHost<'_>, ch: Uid, vict: Uid) -> bool {
     if ch == vict {
         return false;
     }
-    if let Some(room) = host.entity(ch).and_then(|e| host.world.get::<mib_stdlib::prelude::Location>(e)).map(|l| l.room)
+    if let Some(room) = host
+        .entity(ch)
+        .and_then(|e| host.world.get::<mib_stdlib::prelude::Location>(e))
+        .map(|l| l.room)
         && world::room_flagged(host, room, RoomTag::Soundproof)
     {
         return false;

@@ -52,12 +52,23 @@ pub fn do_hit(host: &mut EcsHost<'_>, ch: Uid, argument: &str) {
     };
     if vict == ch {
         to_char(host, ch, "You hit yourself...OUCH!.\r\n");
-        act_vict(host, "$n hits $mself, and says OUCH!", false, ch, vict, To::Room);
+        act_vict(
+            host,
+            "$n hits $mself, and says OUCH!",
+            false,
+            ch,
+            vict,
+            To::Room,
+        );
         return;
     }
     if position(host, ch) == Position::Standing && world::fighting(host, ch) != Some(vict) {
         if peaceful(host, ch) {
-            to_char(host, ch, "This room just has such a peaceful, easy feeling...\r\n");
+            to_char(
+                host,
+                ch,
+                "This room just has such a peaceful, easy feeling...\r\n",
+            );
             return;
         }
         start_fight(host, ch, vict);
@@ -69,7 +80,11 @@ pub fn do_hit(host: &mut EcsHost<'_>, ch: Uid, argument: &str) {
 /// `do_assist`.
 pub fn do_assist(host: &mut EcsHost<'_>, ch: Uid, argument: &str) {
     if world::fighting(host, ch).is_some() {
-        to_char(host, ch, "You're already fighting!  How can you assist someone else?\r\n");
+        to_char(
+            host,
+            ch,
+            "You're already fighting!  How can you assist someone else?\r\n",
+        );
         return;
     }
     let (arg, _) = one_argument(argument);
@@ -92,11 +107,25 @@ pub fn do_assist(host: &mut EcsHost<'_>, ch: Uid, argument: &str) {
             .find(|person| world::fighting(host, *person) == Some(helpee))
     });
     let Some(opponent) = opponent else {
-        act_vict(host, "But nobody is fighting $M!", false, ch, helpee, To::Char);
+        act_vict(
+            host,
+            "But nobody is fighting $M!",
+            false,
+            ch,
+            helpee,
+            To::Char,
+        );
         return;
     };
     if !host.can_see(ch, opponent) {
-        act_vict(host, "You can't see who is fighting $M!", false, ch, helpee, To::Char);
+        act_vict(
+            host,
+            "You can't see who is fighting $M!",
+            false,
+            ch,
+            helpee,
+            To::Char,
+        );
         return;
     }
     to_char(host, ch, "You join the fight!\r\n");
@@ -167,7 +196,14 @@ pub fn stop_follower(host: &mut EcsHost<'_>, ch: Uid) {
         return;
     };
     act_vict(host, "You stop following $N.", false, ch, master, To::Char);
-    act_vict(host, "$n stops following $N.", true, ch, master, To::NotVict);
+    act_vict(
+        host,
+        "$n stops following $N.",
+        true,
+        ch,
+        master,
+        To::NotVict,
+    );
     if host.can_see(master, ch) {
         act_vict(host, "$n stops following you.", true, ch, master, To::Vict);
     }
@@ -195,7 +231,14 @@ pub fn add_follower(host: &mut EcsHost<'_>, ch: Uid, leader: Uid) {
     if host.can_see(leader, ch) {
         act_vict(host, "$n starts following you.", true, ch, leader, To::Vict);
     }
-    act_vict(host, "$n starts to follow $N.", true, ch, leader, To::NotVict);
+    act_vict(
+        host,
+        "$n starts to follow $N.",
+        true,
+        ch,
+        leader,
+        To::NotVict,
+    );
 }
 
 /// `do_follow`.
@@ -218,7 +261,14 @@ pub fn do_follow(host: &mut EcsHost<'_>, ch: Uid, argument: &str) {
         leader
     };
     if world::master(host, ch) == Some(leader) {
-        act_vict(host, "You are already following $M.", false, ch, leader, To::Char);
+        act_vict(
+            host,
+            "You are already following $M.",
+            false,
+            ch,
+            leader,
+            To::Char,
+        );
         return;
     }
     // The pack has no charm affect, so a follower is never bound to its master.
@@ -230,7 +280,11 @@ pub fn do_follow(host: &mut EcsHost<'_>, ch: Uid, argument: &str) {
         stop_follower(host, ch);
     } else {
         if circle_follow(host, ch, leader) {
-            to_char(host, ch, "Sorry, but following in loops is not allowed.\r\n");
+            to_char(
+                host,
+                ch,
+                "Sorry, but following in loops is not allowed.\r\n",
+            );
             return;
         }
         if world::master(host, ch).is_some() {

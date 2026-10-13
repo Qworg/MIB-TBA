@@ -34,13 +34,23 @@ pub fn do_stand(host: &mut EcsHost<'_>, ch: Uid) {
         }
         Position::Resting => {
             to_char(host, ch, "You stop resting, and stand up.\r\n");
-            act(host, "$n stops resting, and clambers on $s feet.", true, ch, To::Room);
+            act(
+                host,
+                "$n stops resting, and clambers on $s feet.",
+                true,
+                ch,
+                To::Room,
+            );
             set_position(host, ch, Position::Standing);
         }
         Position::Sleeping => to_char(host, ch, "You have to wake up first!\r\n"),
         Position::Fighting => to_char(host, ch, "Do you not consider fighting as standing?\r\n"),
         _ => {
-            to_char(host, ch, "You stop floating around, and put your feet on the ground.\r\n");
+            to_char(
+                host,
+                ch,
+                "You stop floating around, and put your feet on the ground.\r\n",
+            );
             act(
                 host,
                 "$n stops floating around, and puts $s feet on the ground.",
@@ -85,7 +95,13 @@ pub fn do_sit(host: &mut EcsHost<'_>, ch: Uid, argument: &str) {
         Position::Fighting => to_char(host, ch, "Sit down while fighting? Are you MAD?\r\n"),
         _ => {
             to_char(host, ch, "You stop floating around, and sit down.\r\n");
-            act(host, "$n stops floating around, and sits down.", true, ch, To::Room);
+            act(
+                host,
+                "$n stops floating around, and sits down.",
+                true,
+                ch,
+                To::Room,
+            );
             set_position(host, ch, Position::Sitting);
         }
     }
@@ -108,8 +124,18 @@ pub fn do_rest(host: &mut EcsHost<'_>, ch: Uid) {
         Position::Sleeping => to_char(host, ch, "You have to wake up first.\r\n"),
         Position::Fighting => to_char(host, ch, "Rest while fighting?  Are you MAD?\r\n"),
         _ => {
-            to_char(host, ch, "You stop floating around, and stop to rest your tired bones.\r\n");
-            act(host, "$n stops floating around, and rests.", false, ch, To::Room);
+            to_char(
+                host,
+                ch,
+                "You stop floating around, and stop to rest your tired bones.\r\n",
+            );
+            act(
+                host,
+                "$n stops floating around, and rests.",
+                false,
+                ch,
+                To::Room,
+            );
             set_position(host, ch, Position::Resting);
         }
     }
@@ -126,8 +152,18 @@ pub fn do_sleep(host: &mut EcsHost<'_>, ch: Uid) {
         Position::Sleeping => to_char(host, ch, "You are already sound asleep.\r\n"),
         Position::Fighting => to_char(host, ch, "Sleep while fighting?  Are you MAD?\r\n"),
         _ => {
-            to_char(host, ch, "You stop floating around, and lie down to sleep.\r\n");
-            act(host, "$n stops floating around, and lie down to sleep.", true, ch, To::Room);
+            to_char(
+                host,
+                ch,
+                "You stop floating around, and lie down to sleep.\r\n",
+            );
+            act(
+                host,
+                "$n stops floating around, and lie down to sleep.",
+                true,
+                ch,
+                To::Room,
+            );
             set_position(host, ch, Position::Sleeping);
         }
     }
