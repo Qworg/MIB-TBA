@@ -15,7 +15,7 @@ use serde::Serialize;
 use crate::error::Result;
 
 /// Report schema version. Bumped when the shape changes incompatibly.
-pub const REPORT_SCHEMA: u32 = 2;
+pub const REPORT_SCHEMA: u32 = 3;
 
 /// The vnum Circle spawns mortals in by default (`CONFIG_MORTAL_START`).
 pub const DEFAULT_START_ROOM: u32 = 3001;
@@ -113,6 +113,31 @@ pub struct ZoneReport {
     /// no per-instance variables yet); each carries what is needed to apply
     /// it later.
     pub trigger_variables: Vec<TriggerVariableDrop>,
+    /// Every zone-reset `T` command that ran statically and was folded into
+    /// a prototype attachment list (or found already there).
+    pub zone_trigger_links: Vec<ZoneTriggerLink>,
+}
+
+/// One zone-reset `T` command folded into the prototype attachments.
+///
+/// The C attaches a fresh copy per instance on every reset (`reset_zone`,
+/// `db.c:3024`); the converter has no instances, so the link lands on the
+/// prototype list instead (see `mapping::attach`).
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+pub struct ZoneTriggerLink {
+    pub zone: u32,
+    /// Index into the zone's command list.
+    pub command: usize,
+    /// Source line of the command.
+    pub line: usize,
+    pub if_flag: i32,
+    /// The owner the command targets (`npc tba_npc_3`, …).
+    pub owner: String,
+    /// The trigger vnum.
+    pub trigger: i32,
+    /// `folded` (a new link was appended) or `already_present` (the owner's
+    /// list already held the trigger, so the C's second copy is not kept).
+    pub outcome: String,
 }
 
 /// One `V` zone-reset command, dropped by name (`reset_zone`, `db.c:3052`).
@@ -131,8 +156,16 @@ pub struct TriggerVariableDrop {
     /// The target the reset script resolves to (`npc tba_npc_3`, …), or
     /// `None` when the C would find none.
     pub target: Option<String>,
-    /// The variable's context, as the C passes it to `add_var`.
+    /// The context field as written in the zone file (`arg2`, the builder's
+    /// "Global's context" prompt). For a room target the C passes it to
+    /// `add_var` (`db.c:3075`).
     pub context: i32,
+    /// The room field as written in the zone file (`arg3`, a vnum). For a mob
+    /// or object target the C passes the room's *rnum* (a `world[]` index,
+    /// after `renum_zone_table` rewrites `arg3`) as the variable's context
+    /// instead of `context` (`db.c:3057`); for a room target it names the
+    /// room.
+    pub room: i32,
     pub name: String,
     pub value: String,
 }
@@ -146,13 +179,15 @@ pub struct TriggerAttachments {
     pub links: usize,
     /// Links by owner kind (`npc`, `item`, `room`).
     pub links_by_owner_kind: BTreeMap<String, usize>,
-    /// Zone-reset `T` commands that appended a new link to a prototype.
+    /// Zone-reset `T` commands that appended a new link to a prototype
+    /// (itemised in each zone's `zone_trigger_links`).
     pub zone_reset_folded: usize,
-    /// Zone-reset `T` commands whose trigger the target already listed.
+    /// Zone-reset `T` commands whose trigger the target already listed
+    /// (also itemised there).
     pub zone_reset_already_present: usize,
     /// Emitted triggers no owner lists.
     pub unattached_triggers: usize,
-    /// The vnums of those triggers, ascending.
+    /// The vnums of those triggers, ascending numerically.
     pub unattached: Vec<i32>,
     /// Links whose trigger `attach_type` differs from the owner's kind; each
     /// is also an `unmapped` entry of kind `trigger_attach_type_mismatch`.
@@ -276,6 +311,8 @@ impl DropReport {
             zone.triggers.dedup();
             zone.trigger_variables.sort();
             zone.trigger_variables.dedup();
+            zone.zone_trigger_links.sort();
+            zone.zone_trigger_links.dedup();
         }
         self.zones.sort_by_key(|zone| zone.number);
         self.global_drops.sort();
@@ -329,6 +366,17 @@ impl DropReport {
             .get("trigger_attach_type_mismatch")
             .copied()
             .unwrap_or(0);
+        let links = self.zones.iter().flat_map(|zone| &zone.zone_trigger_links);
+        let (mut folded, mut present) = (0, 0);
+        for link in links {
+            if link.outcome == "folded" {
+                folded += 1;
+            } else {
+                present += 1;
+            }
+        }
+        self.trigger_attachments.zone_reset_folded = folded;
+        self.trigger_attachments.zone_reset_already_present = present;
         self.trigger_attachments.variable_commands = self
             .zones
             .iter()

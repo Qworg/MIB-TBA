@@ -164,7 +164,7 @@ fn zone_parses_header_flags_and_commands() {
     assert_eq!(variable.code, 'V');
     assert_eq!(
         (variable.arg1, variable.arg2, variable.arg3),
-        (0, 0, 0),
+        (0, 7, 3001),
         "the four numbers are read before the name"
     );
     assert_eq!(variable.sarg1, "zonearg");

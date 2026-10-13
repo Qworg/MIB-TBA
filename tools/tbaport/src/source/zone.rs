@@ -97,7 +97,9 @@ pub fn parse_zone(src: &mut Source) -> Result<RawZone> {
             Some(c) => c,
             None => continue,
         };
-        let rest = trimmed[1..].trim();
+        // Only leading blanks go: a `V` value keeps its trailing blanks, as
+        // the C's `%[^\f\n\r\t\v]` does.
+        let rest = trimmed[1..].trim_start();
         match code {
             '*' => continue,
             'S' | '$' => break,
@@ -203,18 +205,34 @@ fn leading_ints(rest: &str, count: usize) -> (Vec<i32>, &str) {
     (ints, tail)
 }
 
-/// Split the tail of a `V` command into its name (one whitespace-delimited
-/// word) and value (the remainder up to a form feed, newline, carriage
-/// return, tab or vertical tab, leading blanks skipped).
+/// Longest `V` name or value the C reads (`ZCMD_STR_FIELD`, `db.h:185`).
+const ZCMD_STR_FIELD: usize = 79;
+
+/// The longest prefix of `text` that is at most `limit` bytes and ends on a
+/// character boundary.
+fn cap_bytes(text: &str, limit: usize) -> &str {
+    let mut end = limit.min(text.len());
+    while !text.is_char_boundary(end) {
+        end -= 1;
+    }
+    &text[..end]
+}
+
+/// Split the tail of a `V` command into its name and value, as
+/// `sscanf(" %79s %79[^\f\n\r\t\v]")` does (`db.c:2461`): the name is one
+/// whitespace-delimited word capped at 79 bytes (a longer word spills its
+/// remainder into the value), the value runs from the next non-blank to a
+/// form feed, newline, carriage return, tab or vertical tab, capped at 79
+/// bytes, and keeps its trailing blanks.
 fn split_variable(tail: &str) -> (&str, &str) {
     let tail = tail.trim_start();
-    let end = tail.find(char::is_whitespace).unwrap_or(tail.len());
-    let (name, after) = tail.split_at(end);
-    let after = after.trim_start();
+    let word = tail.find(char::is_whitespace).unwrap_or(tail.len());
+    let name = cap_bytes(&tail[..word], ZCMD_STR_FIELD);
+    let after = tail[name.len()..].trim_start();
     let stop = after
         .find(['\x0c', '\n', '\r', '\t', '\x0b'])
         .unwrap_or(after.len());
-    (name, &after[..stop])
+    (name, cap_bytes(&after[..stop], ZCMD_STR_FIELD))
 }
 
 /// Extract every leading signed integer token from a command tail. Stops at

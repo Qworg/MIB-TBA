@@ -711,6 +711,33 @@ fn fixture_attachments_follow_the_c_rules() {
     );
     assert_eq!(summary.variable_commands, 1);
 
+    // The folded command and the repeat are itemised, with the zone-file
+    // line, `if_flag` and owner; the `T` lines are fixture lines 9 and 10.
+    let links = &conversion.report.zones[0].zone_trigger_links;
+    let summary_links: Vec<_> = links
+        .iter()
+        .map(|link| {
+            (
+                link.command,
+                link.owner.as_str(),
+                link.trigger,
+                link.outcome.as_str(),
+            )
+        })
+        .collect();
+    assert_eq!(
+        summary_links,
+        [
+            (2, "npc tba_npc_3000", 3000, "folded"),
+            (3, "npc tba_npc_3000", 3000, "already_present"),
+        ]
+    );
+    assert!(
+        links
+            .iter()
+            .all(|link| link.zone == 30 && link.if_flag == 0)
+    );
+
     // `T 0 1 ...` follows a mob load, so there is no object to attach to;
     // `T 0 2 ... 9999` names a room that does not exist (`renum_zone_table`
     // disables it).
@@ -739,7 +766,10 @@ fn fixture_attachments_follow_the_c_rules() {
     assert_eq!(variable.zone, 30);
     assert_eq!(variable.attach, "mob");
     assert_eq!(variable.target.as_deref(), Some("npc tba_npc_3000"));
-    assert_eq!(variable.context, 0);
+    // `arg2` is the builder's context and `arg3` the room vnum: the zone line
+    // is `V 0 0 7 3001 zonearg varval`.
+    assert_eq!(variable.context, 7);
+    assert_eq!(variable.room, 3001);
     assert_eq!(variable.name, "zonearg");
     assert_eq!(variable.value, "varval");
 }
@@ -862,6 +892,11 @@ fn attachment_lists_reproduce_the_source_t_line_order() {
     assert_eq!(summary.zone_reset_already_present, 0);
     assert_eq!(summary.unattached_triggers, 432);
     assert_eq!(summary.unattached.len(), 432);
+    assert!(
+        summary.unattached.windows(2).all(|pair| pair[0] < pair[1]),
+        "unattached vnums are ascending numerically"
+    );
+    assert_eq!(conversion.report.schema, 3);
     assert_eq!(summary.variable_commands, 0, "no zone file has a V command");
     assert_eq!(summary.attach_type_mismatches, 8);
 
@@ -916,4 +951,180 @@ fn full_conversion_is_byte_deterministic() {
     assert_eq!(trigger_count, 1461);
     assert_eq!(owner_shards.len(), 1295);
     assert!(owner_shards.values().all(|count| *count == 1));
+}
+
+/// Copy the fixture tree into a scratch directory, replace zone 30's reset
+/// file with `zon`, and optionally strip every `T` line from the world files
+/// (so only reset commands attach triggers). The caller removes the directory.
+fn scratch_world(tag: &str, zon: &str, strip_t_lines: bool) -> PathBuf {
+    fn copy(from: &Path, to: &Path, strip: bool) {
+        std::fs::create_dir_all(to).expect("mkdir");
+        for entry in std::fs::read_dir(from).expect("read_dir") {
+            let entry = entry.expect("entry");
+            let target = to.join(entry.file_name());
+            if entry.file_type().expect("type").is_dir() {
+                copy(&entry.path(), &target, strip);
+            } else if strip
+                && matches!(
+                    entry.path().extension().and_then(|e| e.to_str()),
+                    Some("mob" | "obj" | "wld")
+                )
+            {
+                let text = std::fs::read_to_string(entry.path()).expect("read");
+                let kept: Vec<&str> = text.lines().filter(|l| !l.starts_with("T ")).collect();
+                std::fs::write(&target, kept.join("\n") + "\n").expect("write");
+            } else {
+                std::fs::copy(entry.path(), &target).expect("copy");
+            }
+        }
+    }
+    let dir = std::env::temp_dir().join(format!("tbaport-scratch-{tag}-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    copy(&fixture_root(), &dir, strip_t_lines);
+    std::fs::write(dir.join("lib/world/zon/30.zon"), zon).expect("write zon");
+    dir
+}
+
+const ZONE_HEAD: &str = "#30\ntbaport fixture~\nFixture Zone~\n3000 3002 15 2 d 0 0 0 1 33\n";
+
+fn convert_zone_30(tag: &str, commands: &str, strip_t_lines: bool) -> tbaport::Conversion {
+    let root = scratch_world(tag, &format!("{ZONE_HEAD}{commands}S\n$\n"), strip_t_lines);
+    let conversion = convert(&ConvertOptions {
+        source_root: root.clone(),
+        only: Some(30),
+        start_room: Some(DEFAULT_START_ROOM),
+    })
+    .expect("scratch world converts");
+    let _ = std::fs::remove_dir_all(&root);
+    conversion
+}
+
+/// `renum_zone_table` turns a command naming a missing vnum into `*`, which
+/// `reset_zone` handles with `last_cmd = 0` only: `tmob` still points at the
+/// last mob that loaded, so a later `T` attaches to it.
+#[test]
+fn a_disabled_load_leaves_the_reset_target_in_place() {
+    let conversion = convert_zone_30(
+        "disabled-load",
+        "M 0 3000 1 3001\nM 0 9999 1 3001\nT 0 0 3000 3001\n",
+        false,
+    );
+    let lists = &conversion.bundle.triggers.attachments;
+    assert_eq!(lists["npc:tba_npc_3000"], ids(&[3000]));
+    assert!(
+        !conversion.report.zones[0]
+            .dangling
+            .iter()
+            .any(|entry| entry.kind == "dangling_zone_trigger_target")
+    );
+}
+
+/// A command with a non-zero `if_flag` is skipped while `last_cmd` is clear,
+/// which the disabled command before it left it.
+#[test]
+fn a_dependent_trigger_after_a_disabled_command_is_skipped() {
+    let conversion = convert_zone_30(
+        "if-flag-skip",
+        "M 0 3000 1 3001\nM 0 9999 1 3001\nT 1 0 3000 3001\n",
+        false,
+    );
+    assert!(
+        !conversion
+            .bundle
+            .triggers
+            .attachments
+            .contains_key("npc:tba_npc_3000")
+    );
+    let zone = &conversion.report.zones[0];
+    assert!(zone.unmapped.iter().any(|entry| {
+        entry.kind == "zone_trigger_skipped" && entry.object == "zone 30 command 2 (T)"
+    }));
+    assert!(zone.zone_trigger_links.is_empty());
+}
+
+/// A reset `T` whose room is missing is disabled at boot, so the trigger is
+/// attached nowhere: the legacy `attach` field agrees with the lists.
+#[test]
+fn legacy_attach_never_names_an_owner_the_lists_omit() {
+    let conversion = convert_zone_30("legacy-attach", "M 0 3000 1 3001\nT 0 0 3000 9999\n", true);
+    let bundle = &conversion.bundle;
+    assert!(bundle.triggers.attachments.is_empty());
+    let def = &bundle.triggers.triggers[&mib_tba::triggers::content::TriggerId::from_vnum(3000)];
+    assert_eq!(def.attach, "");
+    assert_eq!(
+        conversion.report.trigger_attachments.unattached,
+        [3000],
+        "the trigger is reported unattached"
+    );
+}
+
+/// With a reset-folded owner, `attach` names it.
+#[test]
+fn legacy_attach_follows_a_folded_owner() {
+    let conversion = convert_zone_30("legacy-folded", "M 0 3000 1 3001\nT 0 0 3000 3001\n", true);
+    let def = &conversion.bundle.triggers.triggers
+        [&mib_tba::triggers::content::TriggerId::from_vnum(3000)];
+    assert_eq!(def.attach, "npc:tba_npc_3000");
+}
+
+/// A zone may span more than 100 vnums; the owner list goes to its zone's
+/// shard, not to the shard of `vnum / 100`.
+#[test]
+fn owner_lists_shard_by_the_owners_zone_file() {
+    let root = scratch_world("shard-zone", "", false);
+    let wld = root.join("lib/world/wld/30.wld");
+    let text = std::fs::read_to_string(&wld).expect("read wld");
+    // Room 3150 (was 3002) gains a `T` line, as the last record of the file.
+    let text = text
+        .replace("#3002\n", "#3150\n")
+        .replace("S\n$", "S\nT 3000\n$");
+    std::fs::write(&wld, text).expect("write wld");
+    std::fs::write(
+        root.join("lib/world/zon/30.zon"),
+        "#30\ntbaport fixture~\nFixture Zone~\n3000 3199 15 2 d 0 0 0 1 33\nS\n$\n",
+    )
+    .expect("write zon");
+    let conversion = convert(&ConvertOptions {
+        source_root: root.clone(),
+        only: Some(30),
+        start_room: Some(DEFAULT_START_ROOM),
+    })
+    .expect("scratch world converts");
+    let _ = std::fs::remove_dir_all(&root);
+
+    let files = render(&conversion.bundle).expect("render");
+    let shard_of = |owner: &str| -> Vec<&str> {
+        files
+            .iter()
+            .filter(|(name, yaml)| {
+                name.starts_with("tba.triggers.")
+                    && yaml.lines().any(|line| line == format!("  {owner}:"))
+            })
+            .map(|(name, _)| name.as_str())
+            .collect()
+    };
+    // Banding room 3150 by `vnum / 100` would put its list in
+    // `tba.triggers.31.yaml`, a shard for a zone that does not exist.
+    assert_eq!(shard_of("room:tba.3150"), ["tba.triggers.30.yaml"]);
+    assert_eq!(shard_of("room:tba.3000"), ["tba.triggers.30.yaml"]);
+    assert!(!files.iter().any(|(name, _)| name == "tba.triggers.31.yaml"));
+}
+
+/// `V` reads like `sscanf("%79s %79[^\f\n\r\t\v]")`: the value keeps trailing
+/// blanks and both fields stop at 79 bytes.
+#[test]
+fn variable_command_strings_follow_the_sscanf_fields() {
+    let long = "x".repeat(100);
+    let commands =
+        format!("M 0 3000 1 3001\nV 0 0 5 3001 name value   \nV 0 0 5 3001 other {long}\n");
+    let conversion = convert_zone_30("v-strings", &commands, false);
+    let variables = &conversion.report.zones[0].trigger_variables;
+    let value_of = |name: &str| {
+        variables
+            .iter()
+            .find(|variable| variable.name == name)
+            .map(|variable| variable.value.clone())
+    };
+    assert_eq!(value_of("name").as_deref(), Some("value   "));
+    assert_eq!(value_of("other"), Some("x".repeat(79)));
 }

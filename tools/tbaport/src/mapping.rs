@@ -276,13 +276,11 @@ struct TriggerOwner {
     label: String,
     /// The zone used for the demo/essential check (the triage's `owner_zones`).
     zone: u32,
-    /// The entity to attach to, when the source reference resolves to one.
-    attach: Option<AttachCandidate>,
 }
 
-/// Collect every trigger attachment. The `zone` field deliberately matches the
-/// triage (`build_triage`) so the curated essential set cannot drift; `attach`
-/// is the richer target the converter resolves for `tba.triggers`.
+/// Collect every trigger attachment for the triage. The `zone` field is the
+/// triage's `owner_zones`, so the curated essential set cannot drift. Which
+/// entity a trigger really lands on is [`attach`]'s job.
 fn collect_trigger_owners(sources: &[ZoneSource]) -> BTreeMap<i32, Vec<TriggerOwner>> {
     let mut owners: BTreeMap<i32, Vec<TriggerOwner>> = BTreeMap::new();
     for source in sources {
@@ -291,7 +289,6 @@ fn collect_trigger_owners(sources: &[ZoneSource]) -> BTreeMap<i32, Vec<TriggerOw
                 owners.entry(*trigger).or_default().push(TriggerOwner {
                     label: AttachCandidate::Npc(mob.vnum).label(),
                     zone: crate::triage::vnum_zone(mob.vnum),
-                    attach: Some(AttachCandidate::Npc(mob.vnum)),
                 });
             }
         }
@@ -300,7 +297,6 @@ fn collect_trigger_owners(sources: &[ZoneSource]) -> BTreeMap<i32, Vec<TriggerOw
                 owners.entry(*trigger).or_default().push(TriggerOwner {
                     label: AttachCandidate::Item(obj.vnum).label(),
                     zone: crate::triage::vnum_zone(obj.vnum),
-                    attach: Some(AttachCandidate::Item(obj.vnum)),
                 });
             }
         }
@@ -309,25 +305,16 @@ fn collect_trigger_owners(sources: &[ZoneSource]) -> BTreeMap<i32, Vec<TriggerOw
                 owners.entry(*trigger).or_default().push(TriggerOwner {
                     label: AttachCandidate::Room(room.vnum).label(),
                     zone: crate::triage::vnum_zone(room.vnum),
-                    attach: Some(AttachCandidate::Room(room.vnum)),
                 });
             }
         }
-        // Zone-reset `T` commands attach to the mob or object the reset
-        // script just loaded, or to the named room (`attach::reset_scripts`).
-        // The triage zone stays the reset zone; only the attach target is
-        // resolved.
-        for script in attach::reset_scripts(&source.zone) {
-            if script.command.code == 'T' {
-                owners
-                    .entry(script.command.arg2)
-                    .or_default()
-                    .push(TriggerOwner {
-                        label: format!("zone tba_{} reset", source.number),
-                        zone: source.number,
-                        attach: script.target,
-                    });
-            }
+        // Zone-reset `T` commands count as owners under the reset zone,
+        // whether or not their target resolves.
+        for command in source.zone.commands.iter().filter(|c| c.code == 'T') {
+            owners.entry(command.arg2).or_default().push(TriggerOwner {
+                label: format!("zone tba_{} reset", source.number),
+                zone: source.number,
+            });
         }
     }
     for list in owners.values_mut() {
@@ -361,7 +348,6 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         .iter()
         .flat_map(|s| s.objs.iter().map(|o| ids::item_id(o.vnum)))
         .collect();
-    let owners = collect_trigger_owners(&sources);
     let trigger_kinds = trigger_attach_types(&sources);
 
     // Phase 2: map.
@@ -385,6 +371,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
             command_flags: Vec::new(),
             triggers: Vec::new(),
             trigger_variables: Vec::new(),
+            zone_trigger_links: Vec::new(),
         };
 
         bundle.areas.areas.insert(
@@ -443,7 +430,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         zr.items = source.objs.len();
         zr.commands = zone_def_kept(&bundle, source.number);
 
-        map_triggers(source, &owners, &room_ids, &npc_ids, &item_ids, &mut bundle);
+        map_triggers(source, &mut bundle);
         attach::attach_prototype_lines(source, &trigger_kinds, &mut bundle, &mut zr);
         add_trigger_records(&mut zr, &source.triggers);
         for raw in &source.quests {
@@ -459,17 +446,39 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
     // Zone-reset `T` commands fold into the prototype lists only after every
     // zone's own `T` lines are in, so a folded trigger always follows the
     // target's own lines even when the target lives in another zone.
+    set_legacy_attach(&mut bundle.triggers);
     let entities = attach::Entities {
         rooms: &room_ids,
         npcs: &npc_ids,
         items: &item_ids,
+        triggers: &trigger_kinds,
+        zones: sources
+            .iter()
+            .flat_map(|source| {
+                let owners = source
+                    .mobs
+                    .iter()
+                    .map(|mob| AttachCandidate::Npc(mob.vnum))
+                    .chain(
+                        source
+                            .objs
+                            .iter()
+                            .map(|obj| AttachCandidate::Item(obj.vnum)),
+                    )
+                    .chain(
+                        source
+                            .rooms
+                            .iter()
+                            .map(|room| AttachCandidate::Room(room.vnum)),
+                    );
+                owners.map(|owner| (owner, source.number))
+            })
+            .collect(),
     };
-    let mut fold = attach::FoldStats::default();
     for (source, zr) in sources.iter().zip(zones.iter_mut()) {
-        let stats = attach::fold_reset_scripts(source, &trigger_kinds, &entities, &mut bundle, zr);
-        fold.folded += stats.folded;
-        fold.already_present += stats.already_present;
+        attach::fold_reset_scripts(source, &entities, &mut bundle, zr);
     }
+    set_legacy_attach(&mut bundle.triggers);
 
     // The death penalty's gold prototype is a genre rule, not a world object:
     // no tbaMUD source file defines it, so the converter always adds it. A
@@ -491,7 +500,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         .filter(|vnum| bundle.rooms.rooms.contains_key(&ids::room_id(*vnum as i32)));
 
     let trigger_coverage = parser_based_trigger_coverage(&bundle.triggers);
-    let trigger_attachments = summarise_attachments(&bundle.triggers, fold);
+    let trigger_attachments = summarise_attachments(&bundle.triggers);
 
     let mut report = DropReport {
         schema: REPORT_SCHEMA,
@@ -2310,34 +2319,15 @@ fn attach_type_name(attach_type: i32) -> &'static str {
 
 /// Emit every trigger record of one zone into `tba.triggers`.
 ///
-/// The `attach` field is the first resolvable owner among the `T` lines and
-/// zone-reset `T` commands that name the trigger, preferring an entity that
-/// actually exists in the converted world; it is empty when there is none.
-/// Which triggers an entity carries, and in what order, is the separate
-/// attachment lists ([`attach`]).
-fn map_triggers(
-    source: &ZoneSource,
-    owners: &BTreeMap<i32, Vec<TriggerOwner>>,
-    rooms: &BTreeSet<RoomId>,
-    npcs: &BTreeSet<NpcId>,
-    items: &BTreeSet<ItemId>,
-    bundle: &mut OutputBundle,
-) {
+/// The legacy `attach` field is filled afterwards from the attachment lists
+/// ([`set_legacy_attach`]); which triggers an entity carries, and in what
+/// order, is those lists ([`attach`]).
+fn map_triggers(source: &ZoneSource, bundle: &mut OutputBundle) {
     for trigger in &source.triggers {
-        let resolved = owners
-            .get(&trigger.vnum)
-            .into_iter()
-            .flatten()
-            .filter_map(|owner| owner.attach)
-            .find(|candidate| match candidate {
-                AttachCandidate::Npc(vnum) => npcs.contains(&ids::npc_id(*vnum)),
-                AttachCandidate::Item(vnum) => items.contains(&ids::item_id(*vnum)),
-                AttachCandidate::Room(vnum) => rooms.contains(&ids::room_id(*vnum)),
-            });
         let def = TriggerDef {
             vnum: trigger.vnum,
             name: trigger.name.clone(),
-            attach: resolved.map(AttachCandidate::attach).unwrap_or_default(),
+            attach: String::new(),
             attach_type: attach_type_name(trigger.attach_type).to_owned(),
             flags: trigger.flags.clone(),
             types: trigger
@@ -2353,6 +2343,23 @@ fn map_triggers(
             .triggers
             .triggers
             .insert(TriggerId::from_vnum(trigger.vnum), def);
+    }
+}
+
+/// Give every trigger without a legacy `attach` the first owner (in
+/// `attachments` key order: items, mobs, rooms) whose list contains it. The
+/// field therefore never names an owner the lists omit. Called once after the
+/// prototype `T` lines and once after the zone-reset fold, so an owner from a
+/// `T` line is preferred to one from a reset command.
+fn set_legacy_attach(triggers: &mut TriggersFile) {
+    for (owner, list) in &triggers.attachments {
+        for id in list {
+            if let Some(def) = triggers.triggers.get_mut(id)
+                && def.attach.is_empty()
+            {
+                def.attach = owner.clone();
+            }
+        }
     }
 }
 
@@ -2386,13 +2393,11 @@ fn parser_based_trigger_coverage(triggers: &TriggersFile) -> TriggerCoverage {
     coverage
 }
 
-/// The attachment roll-up of the emitted lists. The mismatch and variable
-/// counts come from the zone reports ([`DropReport::finalise`]).
-fn summarise_attachments(triggers: &TriggersFile, fold: attach::FoldStats) -> TriggerAttachments {
+/// The attachment roll-up of the emitted lists. The mismatch, variable and
+/// zone-reset counts come from the zone reports ([`DropReport::finalise`]).
+fn summarise_attachments(triggers: &TriggersFile) -> TriggerAttachments {
     let mut summary = TriggerAttachments {
         owners: triggers.attachments.len(),
-        zone_reset_folded: fold.folded,
-        zone_reset_already_present: fold.already_present,
         ..TriggerAttachments::default()
     };
     let mut attached: BTreeSet<&TriggerId> = BTreeSet::new();
@@ -2410,6 +2415,7 @@ fn summarise_attachments(triggers: &TriggersFile, fold: attach::FoldStats) -> Tr
         .filter(|(id, _)| !attached.contains(id))
         .map(|(_, def)| def.vnum)
         .collect();
+    summary.unattached.sort_unstable();
     summary.unattached_triggers = summary.unattached.len();
     summary
 }
@@ -2499,6 +2505,7 @@ mod tests {
             command_flags: Vec::new(),
             triggers: Vec::new(),
             trigger_variables: Vec::new(),
+            zone_trigger_links: Vec::new(),
         }
     }
 

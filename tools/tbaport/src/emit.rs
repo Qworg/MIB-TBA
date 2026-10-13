@@ -33,6 +33,9 @@ pub struct OutputBundle {
     /// `tba.triggers` — every DG script and every owner's trigger list, sharded
     /// by zone.
     pub triggers: TriggersFile,
+    /// The zone file each `triggers.attachments` owner lives in, which picks
+    /// the shard of its list. An owner absent here is placed by its vnum.
+    pub attachment_zones: BTreeMap<String, u32>,
 }
 
 impl OutputBundle {
@@ -73,6 +76,7 @@ impl OutputBundle {
                 socials: Default::default(),
             },
             triggers: TriggersFile::default(),
+            attachment_zones: BTreeMap::new(),
         }
     }
 }
@@ -143,10 +147,9 @@ fn room_shards(rooms: &RoomsFile) -> Result<Vec<(String, String)>> {
 }
 
 /// The zone of an attachments key (`npc:tba_npc_3`, `item:tba_item_16`,
-/// `room:tba.22`): Circle's vnum banding of the owner, which the `.mob`/`.obj`/
-/// `.wld` files follow for the whole corpus. An unparsable key lands in
-/// zone 0 rather than being dropped.
-fn owner_zone(owner: &str) -> u32 {
+/// `room:tba.22`) with no recorded zone: Circle's vnum banding of the owner.
+/// An unparsable key lands in zone 0 rather than being dropped.
+fn banded_owner_zone(owner: &str) -> u32 {
     owner
         .rsplit(['_', '.'])
         .next()
@@ -159,12 +162,15 @@ fn owner_zone(owner: &str) -> u32 {
 ///
 /// A trigger's zone is Circle's vnum banding (`vnum / 100`), which the triage
 /// confirms equals the `.trg` file's zone for the whole corpus. An owner's
-/// list goes in the shard of the owner's own zone, so each owner key appears
+/// list goes in the shard of the zone file the owner lives in, so each owner key appears
 /// in exactly one shard (the pack loader rejects a duplicate key) while the
 /// list may name triggers defined in other zones' shards: the sections are
 /// validated after the shards are merged. Shards are emitted in ascending
 /// zone order so the staging directory is deterministic.
-fn trigger_shards(triggers: &TriggersFile) -> Result<Vec<(String, String)>> {
+fn trigger_shards(
+    triggers: &TriggersFile,
+    owner_zones: &BTreeMap<String, u32>,
+) -> Result<Vec<(String, String)>> {
     let mut by_zone: BTreeMap<u32, TriggersFile> = BTreeMap::new();
     for (id, def) in &triggers.triggers {
         by_zone
@@ -175,7 +181,12 @@ fn trigger_shards(triggers: &TriggersFile) -> Result<Vec<(String, String)>> {
     }
     for (owner, list) in &triggers.attachments {
         by_zone
-            .entry(owner_zone(owner))
+            .entry(
+                owner_zones
+                    .get(owner)
+                    .copied()
+                    .unwrap_or_else(|| banded_owner_zone(owner)),
+            )
             .or_default()
             .attachments
             .insert(owner.clone(), list.clone());
@@ -202,7 +213,7 @@ fn section_files(bundle: &OutputBundle) -> Result<Vec<(String, String)>> {
         ("tba.socials.yaml".to_owned(), dump(&bundle.socials)?),
     ];
     files.extend(room_shards(&bundle.rooms)?);
-    files.extend(trigger_shards(&bundle.triggers)?);
+    files.extend(trigger_shards(&bundle.triggers, &bundle.attachment_zones)?);
     Ok(files)
 }
 

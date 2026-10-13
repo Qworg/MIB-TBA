@@ -196,7 +196,18 @@ impl PackSection for TriggersSection {
                     ),
                 );
             }
-            if !trigger.flags.chars().all(|c| c.is_ascii_alphanumeric()) {
+            // `asciiflag_conv` reads a field made only of digits and `-` as a
+            // number (so `-1` is legal), anything else as type letters.
+            if !trigger
+                .flags
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || c == '-')
+                || (trigger.flags.contains('-')
+                    && !trigger
+                        .flags
+                        .chars()
+                        .all(|c| c.is_ascii_digit() || c == '-'))
+            {
                 ctx.error_at(
                     format!("{field}.flags"),
                     format!("flags `{}` must be type letters or a number", trigger.flags),
