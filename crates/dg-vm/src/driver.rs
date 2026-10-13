@@ -36,12 +36,6 @@
 //!   per-prototype instance count (`trig_index[]->number`, which
 //!   `extract_trigger` decrements) does not exist, so there is no "attached N
 //!   places" line. Accepted deviation.
-//! - Not yet covered by a test: a single `script_driver` call whose command
-//!   starts another trigger (re-entrancy through the dg_triggers dispatchers)
-//!   and an owner purged mid-run through `script_driver_default` by a real
-//!   command. `dispatch.rs` is still a skeleton and `MockHost::mud_command`
-//!   only records, so the nesting tests check out the outer trigger by hand;
-//!   the next wave should add a mock hook for this.
 //! - A trigger that detaches itself (or whose script is extracted) keeps
 //!   running, as the C does on its freed trigger: its variables are cleared
 //!   once, at the detach (`free_trigger`), and a later `set`/`eval` makes new
@@ -1264,7 +1258,7 @@ mod tests {
 
     use super::*;
     use crate::host::WorldHost;
-    use crate::mock::MockHost;
+    use crate::mock::{MockAction, MockHost};
     use crate::script::Program;
     use crate::types::{ROOM_ID_BASE, TrigInstance};
 
@@ -4171,5 +4165,105 @@ mod tests {
             ran += 1;
         }
         assert!(ran > 1400, "ran only {ran}");
+    }
+
+    // ---- re-entrancy and purges through the real commands ---------------
+
+    /// A mob in room 1 whose trigger 5 runs `script`, with a loadable rat
+    /// (vnum 3100) that gets a `load` trigger running `rat_script`.
+    fn loader_world(script: &str, rat_script: &str) -> (MockHost, Uid, u64) {
+        let (mut host, mob, id) = world(script);
+        host.globals
+            .texts
+            .insert("mobproto:3100".to_owned(), "a rat".to_owned());
+        host.add_proto(6, AttachType::Mob, "n", 100, "", rat_script);
+        host.globals.nums.insert("mobtrig:3100".to_owned(), 6);
+        (host, mob, id)
+    }
+
+    fn rats(host: &MockHost) -> Vec<Uid> {
+        host.character_list
+            .iter()
+            .copied()
+            .filter(|ch| host.vnum(*ch) == 3100)
+            .collect()
+    }
+
+    #[test]
+    fn a_command_that_starts_another_trigger_nests_one_level_and_unwinds() {
+        // `mload` raises the rat's load trigger from inside the loader's
+        // run: the rat's `say` happens one level down, before the loader's
+        // next line, and the counter is back to 0 at the end.
+        let (mut host, mob, id) = loader_world("mload mob 3100\nsay back", "say loaded");
+        host.hook(None, "say loaded", MockAction::RecordDepth);
+        host.hook(None, "say back", MockAction::RecordDepth);
+        assert_eq!(run(&mut host, mob, id), 1);
+        let rat = rats(&host)[0];
+        assert_eq!(
+            host.mud_commands,
+            [(rat, "say loaded".to_owned()), (mob, "say back".to_owned())]
+        );
+        assert_eq!(host.effects, ["depth 2", "depth 1"]);
+        assert_eq!(host.vm.depth, 0);
+        // Both runs finished and are idle again.
+        assert_eq!(state(&host, mob, id).depth, 0);
+        let rat_trigger = host.script(rat).unwrap().trigger_ids()[0];
+        assert_eq!(state(&host, rat, rat_trigger).depth, 0);
+    }
+
+    #[test]
+    fn triggers_that_keep_loading_stop_at_the_depth_cap_and_unwind() {
+        // Every rat's load trigger loads another rat. The loader's run is
+        // depth 1, so the rats' runs are depths 2 to 11; the next one is
+        // refused when the counter is past `MAX_SCRIPT_DEPTH`, which logs,
+        // extracts the script of that rat and has `load_mtrigger` free the
+        // prototype's script.
+        let (mut host, mob, id) = loader_world("mload mob 3100", "mload mob 3100");
+        run(&mut host, mob, id);
+        let loaded = rats(&host);
+        assert_eq!(loaded.len(), MAX_SCRIPT_DEPTH as usize + 1);
+        let last = loaded[0];
+        assert!(host.script(last).is_none());
+        assert_eq!(
+            host.logs,
+            [
+                "Trigger 6 recursed beyond maximum allowed depth.".to_owned(),
+                "It was attached to a rat [3100]".to_owned()
+            ]
+        );
+        assert_eq!(host.effects, [format!("free_proto_script {last}")]);
+        assert_eq!(host.vm.depth, 0);
+    }
+
+    #[test]
+    fn an_owner_that_purges_itself_stops_and_the_run_returns_the_default() {
+        let (mut host, mob, id) = world("say before\nmpurge %self%\nsay after");
+        assert_eq!(script_driver_default(&mut host, mob, id, Mode::New, 7), 7);
+        assert_eq!(cmds(&host), ["say before"]);
+        assert!(host.vm.owner_purged);
+        assert!(host.is_dead(mob));
+        assert_eq!(host.vm.depth, 0);
+        // The next run clears the flag on entry.
+        let (mut host2, mob2, id2) = world("say once");
+        host2.vm.owner_purged = true;
+        script_driver_default(&mut host2, mob2, id2, Mode::New, 7);
+        assert!(!host2.vm.owner_purged);
+        assert_eq!(cmds(&host2), ["say once"]);
+    }
+
+    #[test]
+    fn a_nested_owner_purge_leaves_the_flag_set_for_the_outer_run() {
+        // `dg_owner_purged` is one global: the rat purges itself in its load
+        // trigger, and when `mload` returns the loader's loop sees the flag
+        // and stops, though the loader was never purged (the C does the
+        // same).
+        let (mut host, mob, id) = loader_world("mload mob 3100\nsay after", "mpurge %self%");
+        run(&mut host, mob, id);
+        let rat = rats(&host)[0];
+        assert!(host.is_dead(rat));
+        assert!(!host.is_dead(mob));
+        assert!(cmds(&host).is_empty());
+        assert!(host.vm.owner_purged);
+        assert_eq!(host.vm.depth, 0);
     }
 }

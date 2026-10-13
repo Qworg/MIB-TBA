@@ -63,6 +63,10 @@ pub enum MockAction {
     /// Clear [`VmState::act_check`](crate::types::VmState), as the
     /// `act(..., DG_NO_TRIG)` inside `do_say` does.
     ActNoTrig,
+    /// Record `depth <n>` with [`MockHost::effect`], `n` being
+    /// [`VmState::depth`](crate::types::VmState) as it is when the command
+    /// runs: how deeply triggers are nested at that point.
+    RecordDepth,
     /// Fire a trigger through the dispatch module.
     Fire(MockEvent),
 }
@@ -149,6 +153,10 @@ impl MockHost {
                 if let Some(script) = self.ensure_script(owner) {
                     script.global_vars.add_var(&name, &value, 0);
                 }
+            }
+            MockAction::RecordDepth => {
+                let depth = self.vm.depth;
+                self.effect(format!("depth {depth}"));
             }
             MockAction::ActNoTrig => self.vm.act_check = false,
             MockAction::Fire(event) => match event {
