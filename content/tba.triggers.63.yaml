@@ -3,7 +3,8 @@ triggers:
   tba_trig_6300:
     vnum: 6300
     name: Near Death Trap Mahatma - 6318
-    attach: npc:tba_npc_6318
+    attach_type: mob
+    flags: g
     types:
     - greet
     narg: 100
@@ -59,3 +60,82 @@ triggers:
         end
         eval i %i%+1
       done
+  tba_trig_6301:
+    vnum: 6301
+    name: Magic User - 6302, 6309, 6312, 6314, 6315
+    attach_type: mob
+    flags: k
+    types:
+    - fight
+    narg: 10
+    arglist: ''
+    script: |
+      switch %actor.level%
+        case 1
+        case 2
+        case 3
+        break
+        case 4
+          dg_cast 'magic missile' %actor%
+        break
+        case 5
+          dg_cast 'chill touch' %actor%
+        break
+        case 6
+          dg_cast 'burning hands' %actor%
+        break
+        case 7
+        case 8
+          dg_cast 'shocking grasp' %actor%
+        break
+        case 9
+        case 10
+        case 11
+          dg_cast 'lightning bolt' %actor%
+        break
+        case 12
+          dg_cast 'color spray' %actor%
+        break
+        case 13
+          dg_cast 'energy drain' %actor%
+        break
+        case 14
+          dg_cast 'curse' %actor%
+        break
+        case 15
+          dg_cast 'poison' %actor%
+        break
+        case 16
+          if %actor.align% > 0
+            dg_cast 'dispel good' %actor%
+          else
+            dg_cast 'dispel evil' %actor%
+          end
+       break
+        case 17
+        case 18
+          dg_cast 'call lightning' %actor%
+        break
+        case 19
+        case 20
+        case 21
+        case 22
+          dg_cast 'harm' %actor%
+        break
+        default
+          dg_cast 'fireball' %actor%
+        break
+      done
+attachments:
+  npc:tba_npc_6302:
+  - tba_trig_6301
+  npc:tba_npc_6309:
+  - tba_trig_6301
+  npc:tba_npc_6312:
+  - tba_trig_6301
+  npc:tba_npc_6314:
+  - tba_trig_6301
+  npc:tba_npc_6315:
+  - tba_trig_6301
+  npc:tba_npc_6318:
+  - tba_trig_6300

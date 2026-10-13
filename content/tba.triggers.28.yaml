@@ -3,7 +3,8 @@ triggers:
   tba_trig_2800:
     vnum: 2800
     name: new trigger
-    attach: ''
+    attach_type: mob
+    flags: g
     types:
     - greet
     narg: 100

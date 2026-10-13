@@ -3,7 +3,8 @@ triggers:
   tba_trig_5400:
     vnum: 5400
     name: Thief Guildguard - 5459
-    attach: npc:tba_npc_5459
+    attach_type: mob
+    flags: q
     types:
     - leave
     narg: 100
@@ -21,7 +22,8 @@ triggers:
   tba_trig_5401:
     vnum: 5401
     name: Mage Guildguard - 5456
-    attach: npc:tba_npc_5456
+    attach_type: mob
+    flags: q
     types:
     - leave
     narg: 100
@@ -39,7 +41,8 @@ triggers:
   tba_trig_5402:
     vnum: 5402
     name: Cleric Guildguard - 5457
-    attach: npc:tba_npc_5457
+    attach_type: mob
+    flags: q
     types:
     - leave
     narg: 100
@@ -57,7 +60,8 @@ triggers:
   tba_trig_5403:
     vnum: 5403
     name: Warrior Guildguard - 5458
-    attach: npc:tba_npc_5458
+    attach_type: mob
+    flags: q
     types:
     - leave
     narg: 100
@@ -72,3 +76,186 @@ triggers:
           %echoaround% %actor% The guard humiliates %actor.name%, and blocks %actor.hisher% way.
         end
       end
+  tba_trig_5404:
+    vnum: 5404
+    name: Magic User - 5421-5428, 5440, 5455
+    attach_type: mob
+    flags: k
+    types:
+    - fight
+    narg: 10
+    arglist: ''
+    script: |
+      switch %actor.level%
+        case 1
+        case 2
+        case 3
+        break
+        case 4
+          dg_cast 'magic missile' %actor%
+        break
+        case 5
+          dg_cast 'chill touch' %actor%
+        break
+        case 6
+          dg_cast 'burning hands' %actor%
+        break
+        case 7
+        case 8
+          dg_cast 'shocking grasp' %actor%
+        break
+        case 9
+        case 10
+        case 11
+          dg_cast 'lightning bolt' %actor%
+        break
+        case 12
+          dg_cast 'color spray' %actor%
+        break
+        case 13
+          dg_cast 'energy drain' %actor%
+        break
+        case 14
+          dg_cast 'curse' %actor%
+        break
+        case 15
+          dg_cast 'poison' %actor%
+        break
+        case 16
+          if %actor.align% > 0
+            dg_cast 'dispel good' %actor%
+          else
+            dg_cast 'dispel evil' %actor%
+          end
+       break
+        case 17
+        case 18
+          dg_cast 'call lightning' %actor%
+        break
+        case 19
+        case 20
+        case 21
+        case 22
+          dg_cast 'harm' %actor%
+        break
+        default
+          dg_cast 'fireball' %actor%
+        break
+      done
+  tba_trig_5405:
+    vnum: 5405
+    name: Cityguard - 5434, 61-63, 82
+    attach_type: mob
+    flags: b
+    types:
+    - random
+    narg: 50
+    arglist: ''
+    script: |
+      if !%self.fighting%
+        set actor %random.char%
+        if %actor%
+          if %actor.is_killer%
+            emote screams 'HEY!!!  You're one of those PLAYER KILLERS!!!!!!'
+            kill %actor.name%
+          elseif %actor.is_thief%
+            emote screams 'HEY!!!  You're one of those PLAYER THIEVES!!!!!!'
+            kill %actor.name%
+          elseif %actor.cha% < 6
+            %send% %actor% %self.name% spits in your face.
+            %echoaround% %actor% %self.name% spits in %actor.name%'s face.
+          end
+          if %actor.fighting%
+            eval victim %actor.fighting%
+            if %actor.align% < %victim.align% && %victim.align% >= 0
+              emote screams 'PROTECT THE INNOCENT!  BANZAI!  CHARGE!  ARARARAGGGHH!'
+              kill %actor.name%
+            end
+          end
+        end
+      end
+  tba_trig_5406:
+    vnum: 5406
+    name: Healer - 5481
+    attach_type: mob
+    flags: b
+    types:
+    - random
+    narg: 10
+    arglist: ''
+    script: |
+      * This is required because a random trig does not have an actor.
+      set actor %random.char%
+      * only continue if an actor is defined.
+      if %actor%
+        * if they have lost more than half their hitpoints heal em
+        if %actor.hitp% < %actor.maxhitp% / 2
+          wait 1 sec
+          say You are injured, let me help.
+          wait 2 sec
+          %echoaround% %actor% %self.name% lays %self.hisher% hands on %actor.name%'s wounds and bows %actor.hisher% head in concentration.
+          %send% %actor% %self.name% lays %self.hisher% hands on your wounds and bows %actor.hisher% head in concentration.
+          dg_cast 'heal' %actor%
+        end
+      end
+  tba_trig_5407:
+    vnum: 5407
+    name: Thief - 5435
+    attach_type: mob
+    flags: b
+    types:
+    - random
+    narg: 10
+    arglist: ''
+    script: |
+      set actor %random.char%
+      if %actor%
+        if %actor.is_pc% && %actor.gold%
+          %send% %actor% You discover that %self.name% has %self.hisher% hands in your wallet.
+          %echoaround% %actor% %self.name% tries to steal gold from %actor.name%.
+          eval coins %actor.gold% * %random.10% / 100
+          nop %actor.gold(-%coins%)%
+          nop %self.gold(%coins%)%
+        end
+      end
+attachments:
+  npc:tba_npc_5421:
+  - tba_trig_5404
+  npc:tba_npc_5422:
+  - tba_trig_5404
+  npc:tba_npc_5423:
+  - tba_trig_5404
+  npc:tba_npc_5424:
+  - tba_trig_5404
+  npc:tba_npc_5425:
+  - tba_trig_5404
+  npc:tba_npc_5426:
+  - tba_trig_5404
+  npc:tba_npc_5427:
+  - tba_trig_5404
+  npc:tba_npc_5428:
+  - tba_trig_5404
+  npc:tba_npc_5434:
+  - tba_trig_5405
+  npc:tba_npc_5440:
+  - tba_trig_5404
+  npc:tba_npc_5455:
+  - tba_trig_5404
+  npc:tba_npc_5456:
+  - tba_trig_5401
+  npc:tba_npc_5457:
+  - tba_trig_5402
+  npc:tba_npc_5458:
+  - tba_trig_5403
+  npc:tba_npc_5459:
+  - tba_trig_5400
+  npc:tba_npc_5461:
+  - tba_trig_5405
+  npc:tba_npc_5462:
+  - tba_trig_5405
+  npc:tba_npc_5463:
+  - tba_trig_5405
+  npc:tba_npc_5481:
+  - tba_trig_5406
+  npc:tba_npc_5482:
+  - tba_trig_5405
