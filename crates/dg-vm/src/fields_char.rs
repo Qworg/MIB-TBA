@@ -29,7 +29,9 @@
 //! - `npcflag` runs `sprintbitarray` over `action_bits` and then the
 //!   flawed [`str_str`]; on a player the same bits are read as player flags.
 //!   `sprintbitarray` stops at the end of the name table: bit 20 prints
-//!   `UNDEFINED `, higher bits are never looked at.
+//!   `UNDEFINED `, higher bits are never looked at. When no bit prints,
+//!   `sprintbitarray` leaves `NOBITS ` in the buffer, and that is what the
+//!   search runs over (a flagless player matches `NOBITS`, `bit`, `s`, ...).
 //! - `skill` with an empty or all-fill subfield resolves to spell 1, because
 //!   the C's `find_skill_num` falls out of its word loop with nothing left in
 //!   the name (`ok && !*first2`).
@@ -46,15 +48,12 @@ use crate::cstr::{
 };
 use crate::host::{Cx, DgHost};
 use crate::lookup::{NUM_WEARS, find_eq_pos_script, get_object_in_equip, item_in_list};
-use crate::types::{AttachType, ROOM_ID_BASE, Uid, uid_text};
+use crate::types::{
+    AttachType, LVL_GRGOD, LVL_IMMORT, PULSE_VIOLENCE, ROOM_ID_BASE, Uid, uid_text,
+};
 
-/// `LVL_IMMORT`.
-const LVL_IMMORT: i32 = 31;
-/// `LVL_GRGOD`.
-const LVL_GRGOD: i32 = 33;
-/// `PULSE_VIOLENCE / 2`: pulses per unit of `wait(<n>)` (`PULSE_VIOLENCE` is
-/// two seconds of ten passes each).
-const WAIT_UNIT: i32 = 10;
+/// `PULSE_VIOLENCE / 2`: pulses per unit of `wait(<n>)`.
+const WAIT_UNIT: i32 = (PULSE_VIOLENCE / 2) as i32;
 /// `POS_SLEEPING` and `POS_STANDING`: the range `pos(<name>)` can set.
 const POS_SLEEPING: i32 = 4;
 const POS_STANDING: i32 = 8;
@@ -165,10 +164,10 @@ pub enum CharStat {
     Move,
     /// `GET_MAX_MOVE(ch)` (`sh_int`).
     MaxMove,
-    /// `GET_GOLD(ch)`. Read only; written through
+    /// `GET_GOLD(ch)`. Read only (`char_set_stat` ignores it); written through
     /// [`CharHost::char_increase_gold`].
     Gold,
-    /// `GET_EXP(ch)`. Read only; written through [`CharHost::char_gain_exp`].
+    /// `GET_EXP(ch)`. Read only (`char_set_stat` ignores it); written through [`CharHost::char_gain_exp`].
     Exp,
     /// `GET_SEX(ch)`.
     Sex,
@@ -176,9 +175,7 @@ pub enum CharStat {
     Class,
     /// `GET_POS(ch)`.
     Pos,
-    /// `GET_LEVEL(ch)`.
-    Level,
-    /// `GET_WEIGHT(ch)` (`ubyte`). Read only.
+    /// `GET_WEIGHT(ch)` (`ubyte`). Read only: `char_set_stat` ignores it.
     Weight,
     /// `GET_PRACTICES(ch)`.
     Practices,
@@ -229,8 +226,12 @@ pub trait CharHost {
     fn char_stat(&self, ch: Uid, stat: CharStat) -> i32;
 
     /// Store one numeric attribute: `GET_xxx(ch) = value`. The VM has already
-    /// narrowed `value` to the C field's width.
+    /// narrowed `value` to the C field's width. `Gold`, `Exp` and `Weight`
+    /// are read only and ignored.
     fn char_set_stat(&mut self, ch: Uid, stat: CharStat, value: i32);
+
+    /// `GET_LEVEL(ch) = level`. Reads go through `WorldHost::level`.
+    fn char_set_level(&mut self, ch: Uid, level: i32);
 
     /// `ch->aff_abils.<abil>`: the ability including affects (`GET_STR(ch)`).
     fn char_abil(&self, ch: Uid, abil: CharAbil) -> i32;
@@ -268,9 +269,11 @@ pub trait CharHost {
     /// `affected_by_spell(ch, spell)`.
     fn char_affected_by_spell(&self, ch: Uid, spell: i32) -> bool;
 
-    /// `spell_info[spell].name`, for `spell` from 1 up; `None` past
-    /// `TOP_SPELL_DEFINE`. Every number up to the top has a name (the C names
-    /// unused slots `!UNUSED!`), so the table is contiguous.
+    /// `TOP_SPELL_DEFINE`: the highest spell number.
+    fn char_top_spell(&self) -> i32;
+
+    /// `spell_info[spell].name` for `spell` in `1..=TOP_SPELL_DEFINE`; `None`
+    /// for a slot the host does not define (treated as a non-match).
     fn char_spell_name(&self, spell: i32) -> Option<String>;
 
     /// `GET_SKILL(ch, skill)`.
@@ -295,7 +298,9 @@ pub trait CharHost {
     /// Replace `GET_TITLE(ch)`.
     fn char_set_title(&mut self, ch: Uid, title: &str);
 
-    /// `GET_QUEST(ch)`; `-1` (`NOTHING`) when on no quest.
+    /// `GET_QUEST(ch)`; `-1` when `GET_QUEST(ch) == NOTHING` (this tree's
+    /// unsigned `NOTHING` is read as -1 by the VM; a host may also return the
+    /// raw 65535, which no quest has).
     fn char_quest(&self, ch: Uid) -> i32;
 
     /// `real_quest(vnum) != NOTHING`.
@@ -326,9 +331,9 @@ fn narrow(width: Width, value: i32) -> i32 {
 /// `find_skill_num(name)` (`spell_parser.c`): the spell whose name `name`
 /// abbreviates, whole or word by word; `-1` when none.
 pub fn find_skill_num<H: CharHost + ?Sized>(host: &H, name: &str) -> i32 {
-    for index in 1..=MAX_SPELL_SCAN {
+    for index in 1..=host.char_top_spell().min(MAX_SPELL_SCAN) {
         let Some(spell) = host.char_spell_name(index) else {
-            break;
+            continue;
         };
         if is_abbrev(name, &spell) {
             return index;
@@ -600,7 +605,7 @@ pub fn char_field<H: DgHost + ?Sized>(
         "level" => {
             if has_sub {
                 let level = atoi(sub).clamp(0, LVL_IMMORT - 1);
-                host.char_set_stat(c, CharStat::Level, level);
+                host.char_set_level(c, level);
                 None
             } else {
                 number(host.level(c))
@@ -644,6 +649,10 @@ pub fn char_field<H: DgHost + ?Sized>(
                 // prints UNDEFINED, and the C stops after it.
                 if host.char_act_flagged(c, 20) {
                     buf.push_str("UNDEFINED ");
+                }
+                // sprintbitarray's fallback when nothing was printed.
+                if buf.is_empty() {
+                    buf.push_str("NOBITS ");
                 }
                 flag(str_str(&buf, sub).is_some())
             } else {
@@ -690,12 +699,13 @@ pub fn char_field<H: DgHost + ?Sized>(
             |cur, add| cur.wrapping_add(add),
         ),
         "quest" => {
-            let quest = host.char_quest(c);
-            if !host.is_npc(c) && quest != -1 && host.char_quest_exists(quest) {
-                number(quest)
-            } else {
-                Some("0".to_owned())
+            if !host.is_npc(c) {
+                let quest = host.char_quest(c);
+                if quest != -1 && host.char_quest_exists(quest) {
+                    return number(quest);
+                }
             }
+            Some("0".to_owned())
         }
         "questdone" => {
             if !host.is_npc(c) && has_sub {
@@ -960,8 +970,8 @@ mod tests {
         assert_eq!(f.s(pc, "mana", "-10"), "-3");
         assert_eq!(f.s(pc, "move", "100"), "100");
         // An overflowing atoi wraps in int, then truncates to short.
-        let wrapped = narrow(Width::I16, 100i32.wrapping_add(atoi("99999999999")));
-        assert_eq!(f.s(pc, "move", "99999999999"), wrapped.to_string());
+        // atoi wraps to 1215752191; +100 = 1215752291, low 16 bits 59491 = -6045.
+        assert_eq!(f.s(pc, "move", "99999999999"), "-6045");
     }
 
     #[test]
@@ -1425,6 +1435,15 @@ mod tests {
         assert_eq!(f.s(mob, "npcflag", "UNDEFINED"), "1");
         f.host.set_num(mob, "act", 1 << 21);
         assert_eq!(f.s(mob, "npcflag", "UNDEFINED"), "0");
+        // A mob always has ISNPC (bit 3), so it never reaches the fallback.
+        assert_eq!(f.s(mob, "npcflag", "NOBITS"), "0");
+        // A player with no printable bit: sprintbitarray leaves "NOBITS ".
+        f.host.set_num(pc, "act", 0);
+        assert_eq!(f.s(pc, "npcflag", "NOBITS"), "1");
+        assert_eq!(f.s(pc, "npcflag", "bit"), "1");
+        assert_eq!(f.s(pc, "npcflag", "SENTINEL"), "0");
+        f.host.set_num(pc, "act", 1 << 21);
+        assert_eq!(f.s(pc, "npcflag", "NOBITS"), "1");
         // The same bits on a player read through the NPC names.
         f.host.set_num(pc, "act", 1);
         assert_eq!(f.s(pc, "npcflag", "SPEC"), "1");
@@ -1575,6 +1594,33 @@ mod tests {
             f.s(999_999, "room", ""),
             format!("{UID_CHAR}{ROOM_ID_BASE}")
         );
+    }
+
+    #[test]
+    fn skills_above_unused_spell_slots_are_found() {
+        let mut f = fx();
+        let pc = f.pc;
+        // Slots 2..130 undefined, as in the C's "!UNUSED!" gap.
+        f.host
+            .globals
+            .texts
+            .insert("spell:1".into(), "armor".into());
+        f.host
+            .globals
+            .texts
+            .insert("spell:131".into(), "backstab".into());
+        f.host.set_num(pc, "skill:131", 77);
+        assert_eq!(f.s(pc, "skill", "backstab"), "77");
+        assert_eq!(f.s(pc, "skill", "bogus"), "unknown skill");
+    }
+
+    #[test]
+    fn mock_mob_has_isnpc_flag() {
+        let mut f = fx();
+        let (mob, pc) = (f.mob, f.pc);
+        // MOB_ISNPC is act bit 3 and IS_NPC reads it.
+        assert_eq!(f.s(mob, "npcflag", "ISNPC"), "1");
+        assert_eq!(f.s(pc, "npcflag", "ISNPC"), "0");
     }
 
     #[test]

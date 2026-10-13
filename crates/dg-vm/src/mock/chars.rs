@@ -13,14 +13,14 @@
 //! | `nums["prac"]`, `nums["qp"]` | `GET_PRACTICES`, `GET_QUESTPOINTS` |
 //! | `nums["wait"]` | `GET_WAIT_STATE` |
 //! | `nums["cond:<0..2>"]` | `GET_COND` (drunk, hunger, thirst) |
-//! | `nums["save:<0..4>"]` | `GET_SAVE` |
+//! | `nums["save:<0..4>"]` | `GET_SAVE`, indexed by `SAVING_PARA` 0, `ROD` 1, `PETRI` 2, `BREATH` 3, `SPELL` 4 |
 //! | `nums["abil:<name>"]`, `nums["rabil:<name>"]` | `aff_abils` / `real_abils`; `name` is `str`, `stradd`, `int`, `wis`, `dex`, `con`, `cha`. `affect_total` copies real to aff (the mock has no affects that change abilities) |
 //! | `nums["skill:<n>"]` | `GET_SKILL` |
-//! | `nums["act"]`, `nums["pref"]` | the act / preference bitvectors (bit `n` = flag `n`) |
+//! | `nums["act"]`, `nums["pref"]` | the act / preference bitvectors (bit `n` = flag `n`); act bit 3 (`MOB_ISNPC`) is not stored, it reads and writes the shared `nums["is_npc"]` |
 //! | `texts["title"]` | `GET_TITLE`; absent = NULL |
 //! | `nums["quest"]` | `GET_QUEST`; absent = `NOTHING` (`-1`) |
 //! | `nums["quest_done:<vnum>"]` | `is_complete(ch, vnum)` |
-//! | `globals.texts["spell:<n>"]` | `spell_info[n].name`; absent ends the table |
+//! | `globals.texts["spell:<n>"]` | `spell_info[n].name`; absent = undefined slot; the top is the highest key present |
 //! | `globals.nums["quest:<vnum>"]` | `real_quest(vnum) != NOTHING` |
 //!
 //! `gain_exp` models only the parts of the C that do not need the level
@@ -30,6 +30,9 @@
 use crate::fields_char::{CharAbil, CharHost, CharStat};
 use crate::mock::MockHost;
 use crate::types::Uid;
+
+/// `MOB_ISNPC`: the act bit that is `IS_NPC`.
+const MOB_ISNPC_BIT: u32 = 3;
 
 /// `MAX_GOLD`.
 const MAX_GOLD: i32 = 2_140_000_000;
@@ -50,7 +53,6 @@ fn stat_key(stat: CharStat) -> &'static str {
         CharStat::Sex => "sex",
         CharStat::Class => "class",
         CharStat::Pos => "pos",
-        CharStat::Level => "level",
         CharStat::Weight => "weight",
         CharStat::Practices => "prac",
         CharStat::QuestPoints => "qp",
@@ -58,10 +60,10 @@ fn stat_key(stat: CharStat) -> &'static str {
         CharStat::Drunk => "cond:0",
         CharStat::Hunger => "cond:1",
         CharStat::Thirst => "cond:2",
-        CharStat::SaveBreath => "save:0",
-        CharStat::SavePara => "save:1",
+        CharStat::SavePara => "save:0",
+        CharStat::SaveRod => "save:1",
         CharStat::SavePetri => "save:2",
-        CharStat::SaveRod => "save:3",
+        CharStat::SaveBreath => "save:3",
         CharStat::SaveSpell => "save:4",
     }
 }
@@ -88,27 +90,36 @@ const ABILS: [CharAbil; 7] = [
     CharAbil::Cha,
 ];
 
-impl MockHost {
-    fn num_i32(&self, ch: Uid, key: &str) -> i32 {
-        i32::try_from(self.num(ch, key)).unwrap_or(0)
-    }
+fn char_num_i32(host: &MockHost, ch: Uid, key: &str) -> i32 {
+    i32::try_from(host.num(ch, key)).unwrap_or(0)
+}
+
+fn char_exists(host: &MockHost, ch: Uid) -> bool {
+    host.entity(ch).is_some()
 }
 
 impl CharHost for MockHost {
     fn char_stat(&self, ch: Uid, stat: CharStat) -> i32 {
-        self.num_i32(ch, stat_key(stat))
+        char_num_i32(self, ch, stat_key(stat))
+    }
+
+    fn char_set_level(&mut self, ch: Uid, level: i32) {
+        self.set_num(ch, "level", i64::from(level));
     }
 
     fn char_set_stat(&mut self, ch: Uid, stat: CharStat, value: i32) {
+        if matches!(stat, CharStat::Gold | CharStat::Exp | CharStat::Weight) {
+            return;
+        }
         self.set_num(ch, stat_key(stat), i64::from(value));
     }
 
     fn char_abil(&self, ch: Uid, abil: CharAbil) -> i32 {
-        self.num_i32(ch, &format!("abil:{}", abil_name(abil)))
+        char_num_i32(self, ch, &format!("abil:{}", abil_name(abil)))
     }
 
     fn char_real_abil(&self, ch: Uid, abil: CharAbil) -> i32 {
-        self.num_i32(ch, &format!("rabil:{}", abil_name(abil)))
+        char_num_i32(self, ch, &format!("rabil:{}", abil_name(abil)))
     }
 
     fn char_set_real_abil(&mut self, ch: Uid, abil: CharAbil, value: i32) {
@@ -116,7 +127,7 @@ impl CharHost for MockHost {
     }
 
     fn char_affect_total(&mut self, ch: Uid) {
-        if !self.exists_char(ch) {
+        if !char_exists(self, ch) {
             return;
         }
         for abil in ABILS {
@@ -127,7 +138,7 @@ impl CharHost for MockHost {
     }
 
     fn char_armor_class(&self, ch: Uid) -> i32 {
-        self.num_i32(ch, "ac")
+        char_num_i32(self, ch, "ac")
     }
 
     fn char_update_pos(&mut self, ch: Uid) {
@@ -152,7 +163,7 @@ impl CharHost for MockHost {
     }
 
     fn char_gain_exp(&mut self, ch: Uid, gain: i32) {
-        if !self.exists_char(ch) {
+        if !char_exists(self, ch) {
             return;
         }
         self.effect(format!("gain_exp {ch}: {gain}"));
@@ -171,7 +182,7 @@ impl CharHost for MockHost {
     }
 
     fn char_increase_gold(&mut self, ch: Uid, amt: i32) {
-        if !self.exists_char(ch) {
+        if !char_exists(self, ch) {
             return;
         }
         self.effect(format!("increase_gold {ch}: {amt}"));
@@ -207,12 +218,21 @@ impl CharHost for MockHost {
         self.num(ch, &format!("spell:{spell}")) != 0
     }
 
+    fn char_top_spell(&self) -> i32 {
+        self.globals
+            .texts
+            .keys()
+            .filter_map(|key| key.strip_prefix("spell:")?.parse::<i32>().ok())
+            .max()
+            .unwrap_or(0)
+    }
+
     fn char_spell_name(&self, spell: i32) -> Option<String> {
         self.globals.texts.get(&format!("spell:{spell}")).cloned()
     }
 
     fn char_skill(&self, ch: Uid, skill: i32) -> i32 {
-        self.num_i32(ch, &format!("skill:{skill}"))
+        char_num_i32(self, ch, &format!("skill:{skill}"))
     }
 
     fn char_set_skill(&mut self, ch: Uid, skill: i32, value: i32) {
@@ -220,10 +240,17 @@ impl CharHost for MockHost {
     }
 
     fn char_act_flagged(&self, ch: Uid, bit: u32) -> bool {
+        if bit == MOB_ISNPC_BIT {
+            return self.num(ch, "is_npc") != 0;
+        }
         (self.num(ch, "act") >> bit.min(62)) & 1 != 0
     }
 
     fn char_set_act_flag(&mut self, ch: Uid, bit: u32, on: bool) {
+        if bit == MOB_ISNPC_BIT {
+            self.set_num(ch, "is_npc", i64::from(on));
+            return;
+        }
         let mask = 1i64 << bit.min(62);
         let act = self.num(ch, "act");
         self.set_num(ch, "act", if on { act | mask } else { act & !mask });
@@ -257,11 +284,5 @@ impl CharHost for MockHost {
 
     fn char_quest_completed(&self, ch: Uid, vnum: i32) -> bool {
         self.num(ch, &format!("quest_done:{vnum}")) != 0
-    }
-}
-
-impl MockHost {
-    fn exists_char(&self, ch: Uid) -> bool {
-        self.entity(ch).is_some()
     }
 }
