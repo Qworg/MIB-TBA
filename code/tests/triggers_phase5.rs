@@ -160,6 +160,7 @@ fn def(vnum: i32, attach: &str, types: &[&str], narg: i32, script: &str) -> Trig
         narg,
         arglist: String::new(),
         script: script.to_owned(),
+        ..Default::default()
     }
 }
 

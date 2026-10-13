@@ -1086,6 +1086,7 @@ fn a_cast_trigger_can_negate_a_spell() {
             narg: 100,
             arglist: String::new(),
             script: "if %spellname% == magic missile\nreturn 0\nend\n".to_owned(),
+            ..Default::default()
         },
     );
     app.insert_resource(TbaTriggers::build(defs));

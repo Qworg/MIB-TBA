@@ -1,11 +1,15 @@
-//! `tba.triggers` — the DG script corpus the converter emits for the essential
-//! interactivity set (issue #15, `docs/design/triggers.md` §6.3).
+//! `tba.triggers` — the DG script corpus (issue #15, `docs/design/triggers.md`
+//! §6.3; every record and every attachment since issue #27).
 //!
-//! This is the DG record plus its attachment, **not** a re-authoring: the
-//! converter writes the source attach target (`npc:`/`item:`/`room:`), the
+//! This is the DG record plus its attachments, **not** a re-authoring: the
+//! converter writes the record's own `attach_type` and raw type letters, the
 //! lowercased expanded type letters, the `narg`, the DG `arglist`, and the
 //! script body verbatim (colour-stripped). The runtime parses `script` once at
 //! world build/reload into an AST ([`crate::triggers::ast`]).
+//!
+//! Which triggers an entity carries is [`TriggersFile::attachments`]: the
+//! entity's `proto_script` list, in source order. [`TriggerDef::attach`] is
+//! the older single-owner spelling and is kept for the existing runtime.
 //!
 //! The section keys by a stable [`TriggerId`] (`tba_trig_<vnum>`) so a script
 //! survives a re-conversion even if the zone file moves.
@@ -62,10 +66,10 @@ impl TriggerId {
 
 /// One DG trigger record.
 ///
-/// `attach` names the source entity: `npc:<id>`, `item:<id>`, or `room:<id>`.
-/// It is empty for a trigger the converter could not attach to any emitted
-/// entity (a named dangling drop, not a silent one).
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+/// `attach` names the first resolvable owner: `npc:<id>`, `item:<id>`, or
+/// `room:<id>`. It is empty for a trigger no emitted entity owns. The full
+/// owner lists are [`TriggersFile::attachments`].
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct TriggerDef {
     /// The DG trigger vnum (`#<vnum>` in the `.trg` record).
@@ -76,6 +80,16 @@ pub struct TriggerDef {
     /// `room:tba.22`), or empty when unattached.
     #[serde(default)]
     pub attach: String,
+    /// The record's own `attach_type` (`mob`, `obj` or `wld`; `parse_trigger`,
+    /// `dg_db_scripts.c:53`), or empty when the file predates the field. The
+    /// owner that lists the trigger decides how its type letters are read;
+    /// this is the kind the record was authored for.
+    #[serde(default)]
+    pub attach_type: String,
+    /// The record's raw type field exactly as in the `.trg`: type letters (`g`,
+    /// `ab`) or a plain number (`0`), which `asciiflag_conv` also accepts.
+    #[serde(default)]
+    pub flags: String,
     /// The lowercased expanded type letters (`["speech"]`, `["greet-all"]`).
     #[serde(default)]
     pub types: Vec<String>,
@@ -129,6 +143,17 @@ impl<'a> AttachTarget<'a> {
 #[serde(deny_unknown_fields)]
 pub struct TriggersFile {
     pub triggers: BTreeMap<TriggerId, TriggerDef>,
+    /// Each owner's trigger list in `proto_script` order: the order of the `T`
+    /// lines in its `.mob`/`.obj`/`.wld` record (`dg_read_trigger` appends),
+    /// followed by any zone-reset `T` commands folded in. Keyed by the owner
+    /// in the [`TriggerDef::attach`] spelling (`npc:<id>`, `item:<id>`,
+    /// `room:<id>`). A trigger listed twice is attached twice, as in the C.
+    ///
+    /// Per-zone shards of this section merge by key, so a shard may list a
+    /// trigger defined in another zone's shard, and an owner must appear in
+    /// exactly one shard (the pack loader rejects a duplicate key).
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub attachments: BTreeMap<String, Vec<TriggerId>>,
 }
 
 /// `tba.triggers`.
@@ -162,6 +187,25 @@ impl PackSection for TriggersSection {
                     );
                 }
             }
+            if !matches!(trigger.attach_type.as_str(), "" | "mob" | "obj" | "wld") {
+                ctx.error_at(
+                    format!("{field}.attach_type"),
+                    format!(
+                        "attach_type `{}` must be empty, `mob`, `obj` or `wld`",
+                        trigger.attach_type
+                    ),
+                );
+            }
+            // The record's type field is one whitespace-free token in the
+            // `.trg`; `asciiflag_conv` accepts any characters in it (letters
+            // set bits, a field of digits and `-` is a number, everything else
+            // is ignored), so only an embedded blank is malformed.
+            if trigger.flags.chars().any(char::is_whitespace) {
+                ctx.error_at(
+                    format!("{field}.flags"),
+                    format!("flags `{}` must be a single token", trigger.flags),
+                );
+            }
             if trigger.attach.trim().is_empty() {
                 // An unattached trigger is legal content (the converter records
                 // it as a named dangling drop); it simply never fires.
@@ -184,6 +228,33 @@ impl PackSection for TriggersSection {
                         trigger.attach
                     ),
                 ),
+            }
+        }
+
+        // The owner lists are validated against the merged section, so a list
+        // in one zone's shard may name a trigger defined in another's.
+        for (owner, list) in &defs.attachments {
+            let field = format!("attachments.{owner}");
+            match AttachTarget::parse(owner) {
+                Some(AttachTarget::Npc(npc)) => require_npc(ctx, &field, &NpcId::from(npc), &npcs),
+                Some(AttachTarget::Item(item)) => {
+                    require_item(ctx, &field, &ItemId::from(item), &items)
+                }
+                Some(AttachTarget::Room(room)) => {
+                    require_room(ctx, &field, &RoomId::from(room), &rooms)
+                }
+                None => ctx.error_at(
+                    field.clone(),
+                    format!("owner `{owner}` must be `npc:<id>`, `item:<id>`, or `room:<id>`"),
+                ),
+            }
+            for (index, id) in list.iter().enumerate() {
+                if !defs.triggers.contains_key(id) {
+                    ctx.error_at(
+                        format!("{field}[{index}]"),
+                        format!("unknown trigger `{id}`"),
+                    );
+                }
             }
         }
     }
@@ -249,6 +320,31 @@ mod tests {
     #[test]
     fn trigger_id_is_the_stable_tba_prefix() {
         assert_eq!(TriggerId::from_vnum(139).as_ref(), "tba_trig_139");
+    }
+
+    #[test]
+    fn new_fields_default_so_existing_content_loads() {
+        let old = "triggers:\n  tba_trig_1:\n    vnum: 1\n    name: n\n    script: say hi\n";
+        let file: TriggersFile = serde_yaml::from_str(old).expect("old shape loads");
+        let def = &file.triggers[&TriggerId::from_vnum(1)];
+        assert_eq!(def.attach_type, "");
+        assert_eq!(def.flags, "");
+        assert!(file.attachments.is_empty());
+        let out = serde_yaml::to_string(&file).expect("serialises");
+        assert!(
+            !out.contains("attachments"),
+            "empty attachments are skipped"
+        );
+    }
+
+    #[test]
+    fn attachments_round_trip_in_order() {
+        let text = "triggers: {}\nattachments:\n  npc:tba_npc_1:\n  - tba_trig_9\n  - tba_trig_2\n  - tba_trig_9\n";
+        let file: TriggersFile = serde_yaml::from_str(text).expect("loads");
+        let list = &file.attachments["npc:tba_npc_1"];
+        let vnums: Vec<&str> = list.iter().map(AsRef::as_ref).collect();
+        assert_eq!(vnums, ["tba_trig_9", "tba_trig_2", "tba_trig_9"]);
+        assert_eq!(serde_yaml::to_string(&file).expect("serialises"), text);
     }
 
     #[test]

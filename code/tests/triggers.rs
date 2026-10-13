@@ -31,6 +31,7 @@ fn trigger(vnum: i32, attach: &str, types: &[&str], arglist: &str, script: &str)
         narg: 100,
         arglist: arglist.to_owned(),
         script: script.to_owned(),
+        ..Default::default()
     }
 }
 

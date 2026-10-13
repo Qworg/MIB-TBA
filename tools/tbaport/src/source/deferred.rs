@@ -1,9 +1,8 @@
-//! Deferred section reader: `.trg`.
+//! Trigger reader: `.trg`.
 //!
-//! DG scripts are **not** emitted as runnable content yet (doc §10), but every
-//! record is scanned and *classified* so the drop report carries the triage
-//! that a later phase needs. The scan is faithful to the source grammar so it
-//! cannot mis-count records:
+//! Every record is scanned and *classified* so the drop report carries the
+//! triage and the converter can emit the whole corpus into `tba.triggers`. The
+//! scan is faithful to the source grammar so it cannot mis-count records:
 //!
 //! - `.trg` — `parse_trigger` (`dg_db_scripts.c:30`): `#vnum`, name, attach
 //!   line (`<attach_type> <flags> <narg>`), arglist, command list.
@@ -13,11 +12,8 @@
 //! names depend on the attach type, from `trig_types[]`/`otrig_types[]`/
 //! `wtrig_types[]` (`constants.c:859-931`). See [`expand_types`].
 //!
-//! Quests (`.qst`) used to be scanned here; they are now parsed and emitted as
-//! `stdlib.quests` by [`crate::source::quest`]. `.shp` used to be scanned here
-//! too; shops are now parsed into real content by [`crate::source::shop`].
-//!
-//! [`DeferredRecord`] is still the shared record type for the report entries.
+//! Quests (`.qst`) are parsed and emitted as `stdlib.quests` by
+//! [`crate::source::quest`]; shops (`.shp`) by [`crate::source::shop`].
 
 use crate::error::Result;
 use crate::source::tokens::Source;
@@ -136,30 +132,6 @@ pub struct TriggerRecord {
     pub raw_lines: usize,
     /// The rough interactivity bucket.
     pub bucket: TriggerBucket,
-}
-
-impl TriggerRecord {
-    /// The deferred-report projection of this record. The trigger layer is
-    /// still deferred wholesale in this phase; the classification rides beside
-    /// it in `DropReport::trigger_triage`.
-    pub fn deferred(&self) -> DeferredRecord {
-        DeferredRecord {
-            vnum: self.vnum,
-            attach: self.attach.clone(),
-            detail: self.name.clone(),
-        }
-    }
-}
-
-/// A deferred record: enough metadata to rebuild the section later.
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct DeferredRecord {
-    /// Record vnum (trigger vnum, shopkeeper mob vnum, or quest vnum).
-    pub vnum: i32,
-    /// What the record attaches to: `npc`, `mob`, `object`, `world`.
-    pub attach: String,
-    /// Free-form detail (trigger name, quest name, questmaster).
-    pub detail: String,
 }
 
 /// The attach-type-to-bit-name table for `attach_type`.

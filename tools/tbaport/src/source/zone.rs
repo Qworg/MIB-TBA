@@ -24,13 +24,18 @@ pub struct RawZone {
 }
 
 /// One reset command.
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct RawCommand {
     pub code: char,
     pub if_flag: i32,
     pub arg1: i32,
     pub arg2: i32,
     pub arg3: i32,
+    /// `V` only: the variable name (`ZCMD.sarg1`, one `%s` word).
+    pub sarg1: String,
+    /// `V` only: the variable value (`ZCMD.sarg2`, the rest of the line up to
+    /// a tab or other control whitespace).
+    pub sarg2: String,
     /// 1-based source line, for diagnostics.
     pub line: usize,
 }
@@ -92,18 +97,30 @@ pub fn parse_zone(src: &mut Source) -> Result<RawZone> {
             Some(c) => c,
             None => continue,
         };
-        let rest = trimmed[1..].trim();
+        // Only leading blanks go: a `V` value keeps its trailing blanks, as
+        // the C's `%[^\f\n\r\t\v]` does.
+        let rest = trimmed[1..].trim_start();
         match code {
             '*' => continue,
             'S' | '$' => break,
             'V' => {
-                let args = numbers(rest);
+                // `sscanf(" %d %d %d %d %s %[^\f\n\r\t\v]")` (`db.c:2461`): a
+                // missing field is a fatal format error in the C.
+                let (args, tail) = leading_ints(rest, 4);
+                let (name, value) = split_variable(tail);
+                if args.len() < 4 || name.is_empty() || value.is_empty() {
+                    return Err(src.parse_error(format!(
+                        "zone {number}: V command expected four numbers, a name and a value, got `{rest}`"
+                    )));
+                }
                 commands.push(RawCommand {
                     code,
-                    if_flag: args.first().copied().unwrap_or(0),
-                    arg1: args.get(1).copied().unwrap_or(0),
-                    arg2: args.get(2).copied().unwrap_or(0),
-                    arg3: args.get(3).copied().unwrap_or(0),
+                    if_flag: args[0],
+                    arg1: args[1],
+                    arg2: args[2],
+                    arg3: args[3],
+                    sarg1: name.to_owned(),
+                    sarg2: value.to_owned(),
                     line: line_no,
                 });
             }
@@ -120,6 +137,8 @@ pub fn parse_zone(src: &mut Source) -> Result<RawZone> {
                     arg1: args[1],
                     arg2: args[2],
                     arg3: 0,
+                    sarg1: String::new(),
+                    sarg2: String::new(),
                     line: line_no,
                 });
             }
@@ -136,6 +155,8 @@ pub fn parse_zone(src: &mut Source) -> Result<RawZone> {
                     arg1: args[1],
                     arg2: args[2],
                     arg3: args[3],
+                    sarg1: String::new(),
+                    sarg2: String::new(),
                     line: line_no,
                 });
             }
@@ -162,6 +183,56 @@ pub fn parse_zone(src: &mut Source) -> Result<RawZone> {
 
 fn strip_tilde(line: &str) -> String {
     line.trim_end_matches('~').trim().to_owned()
+}
+
+/// Take up to `count` leading integer tokens off `rest`, returning them and
+/// the unread remainder (so a `V` command's name token is never read as a
+/// number).
+fn leading_ints(rest: &str, count: usize) -> (Vec<i32>, &str) {
+    let mut ints = Vec::with_capacity(count);
+    let mut tail = rest;
+    while ints.len() < count {
+        let trimmed = tail.trim_start();
+        let end = trimmed.find(char::is_whitespace).unwrap_or(trimmed.len());
+        match trimmed[..end].parse::<i32>() {
+            Ok(value) => {
+                ints.push(value);
+                tail = &trimmed[end..];
+            }
+            Err(_) => break,
+        }
+    }
+    (ints, tail)
+}
+
+/// Longest `V` name or value the C reads (`ZCMD_STR_FIELD`, `db.h:185`).
+const ZCMD_STR_FIELD: usize = 79;
+
+/// The longest prefix of `text` that is at most `limit` bytes and ends on a
+/// character boundary.
+fn cap_bytes(text: &str, limit: usize) -> &str {
+    let mut end = limit.min(text.len());
+    while !text.is_char_boundary(end) {
+        end -= 1;
+    }
+    &text[..end]
+}
+
+/// Split the tail of a `V` command into its name and value, as
+/// `sscanf(" %79s %79[^\f\n\r\t\v]")` does (`db.c:2461`): the name is one
+/// whitespace-delimited word capped at 79 bytes (a longer word spills its
+/// remainder into the value), the value runs from the next non-blank to a
+/// form feed, newline, carriage return, tab or vertical tab, capped at 79
+/// bytes, and keeps its trailing blanks.
+fn split_variable(tail: &str) -> (&str, &str) {
+    let tail = tail.trim_start();
+    let word = tail.find(char::is_whitespace).unwrap_or(tail.len());
+    let name = cap_bytes(&tail[..word], ZCMD_STR_FIELD);
+    let after = tail[name.len()..].trim_start();
+    let stop = after
+        .find(['\x0c', '\n', '\r', '\t', '\x0b'])
+        .unwrap_or(after.len());
+    (name, cap_bytes(&after[..stop], ZCMD_STR_FIELD))
 }
 
 /// Extract every leading signed integer token from a command tail. Stops at

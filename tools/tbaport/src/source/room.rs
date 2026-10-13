@@ -16,7 +16,7 @@ pub struct RawRoom {
     pub sector: i32,
     pub exits: Vec<RawExit>,
     pub extra_descriptions: Vec<RawExtraDesc>,
-    /// DG trigger vnums referenced by trailing `T <vnum>` lines (deferred).
+    /// DG trigger vnums referenced by trailing `T <vnum>` lines (`dg_read_trigger`).
     pub trigger_vnums: Vec<i32>,
 }
 

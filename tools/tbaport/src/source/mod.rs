@@ -1,7 +1,7 @@
 //! Source readers, one per tbaMUD file type, plus the low-level tokenizer.
 //!
 //! Each reader mirrors the corresponding C function in `src/db.c` (and
-//! `src/dg_db_scripts.c` / `src/quest.c` for the deferred types) closely
+//! `src/dg_db_scripts.c` / `src/quest.c` for the trigger and quest types) closely
 //! enough that a record the loader accepts is parsed the same way here.
 
 pub mod deferred;
