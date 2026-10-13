@@ -14,6 +14,7 @@
 //! - [`script`] — per-entity script state and the trigger prototypes built
 //!   from `tba.triggers`.
 //! - [`waits`] — the pulse clock and the queue of scripts suspended in `wait`.
+//! - [`out`] — text delivery to the players a script addresses.
 //! - [`vars`] — [`vars::TbaTriggerVars`], the persisted quest variables.
 //! - [`intake`] — the systems that observe gameplay and call the dispatch
 //!   functions, grouped by the events they own: commands, movement, items,
@@ -86,6 +87,7 @@ pub mod host;
 pub mod ids;
 pub mod intake;
 pub mod mobcmd;
+pub mod out;
 pub mod script;
 pub mod vars;
 pub mod waits;
