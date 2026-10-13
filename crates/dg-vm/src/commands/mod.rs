@@ -75,6 +75,13 @@
 //!   receives nothing, as in the C. `sub_write` never offers its text to an
 //!   NPC's `act` triggers; `act()` does, through [`CmdHost::cmd_act_trigger`]
 //!   (the dispatch module has no `act_mtrigger` to call).
+//!   This is a seam: once `dispatch` exposes `act_mtrigger`, `act()` should
+//!   call it and `cmd_act_trigger` goes away.
+//! - Vnum arguments are wrapped to 16 bits (`room_vnum`, `mob_vnum` and
+//!   `obj_vnum` are `ush_int`) where the C passes them on; `NOBODY` and
+//!   `NOTHING` print as 65535 in `mob_log` / `obj_log`.
+//! - The `*_vis` lookups' `get_number` strips `N.` from the caller's buffer;
+//!   later lookups and log lines in the same command see the bare name.
 //! - `update_pos`, `die`, `hit`, `char_to_room` and the other `handler.c`
 //!   routines are host primitives; their internals are not ported here.
 //! - `sh_int` hit points: `script_damage` truncates to 16 bits as the C's
@@ -291,22 +298,24 @@ pub trait CmdHost {
     /// vnum that does not exist.
     fn cmd_read_object(&mut self, vnum: i32) -> Option<Uid>;
 
-    /// The body of `do_mtransform` after the argument checks: read mob `vnum`
-    /// (`false` when there is no such mob), move `ch`'s equipment off it, copy
-    /// the new mob over `ch` while keeping `ch`'s identity (script id,
-    /// affects, carried items, scripts, memory, events, list links, followers,
-    /// master, group, was-in-room, gold, position, carrying weight and count,
-    /// fighting and hunting) and, when `keep_hp`, its hit points, maximum hit
-    /// points and experience; put the equipment back; set `ch->nr`; extract
-    /// the temporary mob.
-    fn cmd_transform_mob(&mut self, ch: Uid, vnum: i32, keep_hp: bool) -> bool;
+    /// The `memcpy(ch, &tmpmob, sizeof(*ch))` of `do_mtransform`: copy the
+    /// prototype data of mob `from` (a temporary mob from
+    /// [`CmdHost::cmd_read_mobile`]) over `ch` while keeping `ch`'s identity
+    /// (script id, affects, carried items, scripts, memory, events, list
+    /// links, followers, master, group, was-in-room, gold, position, carrying
+    /// weight and count, fighting and hunting) and, when `keep_hp`, its hit
+    /// points, maximum hit points and experience. `ch->nr` is restored to its
+    /// old value afterwards (`ch->nr = this_rnum`), so the vnum of `ch` is
+    /// NOT changed by a transform.
+    fn cmd_overwrite_mob(&mut self, ch: Uid, from: Uid, keep_hp: bool);
 
-    /// The body of `do_otransform` after the argument checks: read object
-    /// `vnum` (`false` when there is no such object), unequip `obj` if worn,
-    /// copy the new object over it while keeping its place, contents, script
-    /// id, scripts and list links, re-equip it, and extract the temporary
-    /// object.
-    fn cmd_transform_obj(&mut self, obj: Uid, vnum: i32) -> bool;
+    /// The `memcpy(obj, &tmpobj, sizeof(*obj))` of `do_otransform`: copy the
+    /// prototype data of object `from` (a temporary object from
+    /// [`CmdHost::cmd_read_object`]) over `obj` while keeping its place
+    /// (room, carrier, wearer and wear position, container), contents, script
+    /// id, scripts and list links. Unlike mobs, `item_number` is copied, so
+    /// the vnum of `obj` becomes that of `from`.
+    fn cmd_overwrite_obj(&mut self, obj: Uid, from: Uid);
 
     /// `GET_OBJ_VAL(obj, position) = value`.
     fn cmd_set_obj_val(&mut self, obj: Uid, position: usize, value: i32);

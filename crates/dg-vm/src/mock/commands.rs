@@ -350,26 +350,26 @@ impl CmdHost for MockHost {
         Some(obj)
     }
 
-    fn cmd_transform_mob(&mut self, ch: Uid, vnum: i32, keep_hp: bool) -> bool {
+    fn cmd_overwrite_mob(&mut self, ch: Uid, from: Uid, keep_hp: bool) {
+        let vnum = self.vnum(from);
         let Some(name) = self.globals.texts.get(&format!("mobproto:{vnum}")).cloned() else {
-            return false;
+            return;
         };
         self.effect(format!("transform_mob {ch} {vnum} {keep_hp}"));
-        self.set_num(ch, "vnum", i64::from(vnum));
+        // `ch->nr` is restored, so the vnum stays.
         self.set_text(ch, "name", &name);
         self.set_text(ch, "alias", &name);
-        true
     }
 
-    fn cmd_transform_obj(&mut self, obj: Uid, vnum: i32) -> bool {
+    fn cmd_overwrite_obj(&mut self, obj: Uid, from: Uid) {
+        let vnum = self.vnum(from);
         let Some(name) = self.globals.texts.get(&format!("objproto:{vnum}")).cloned() else {
-            return false;
+            return;
         };
         self.effect(format!("transform_obj {obj} {vnum}"));
         self.set_num(obj, "vnum", i64::from(vnum));
         self.set_text(obj, "name", &name);
         self.set_text(obj, "alias", &name);
-        true
     }
 
     fn cmd_set_obj_val(&mut self, obj: Uid, position: usize, value: i32) {

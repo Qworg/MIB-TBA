@@ -64,7 +64,10 @@ impl World {
         host.globals
             .texts
             .insert("objproto:7000".to_owned(), "a lamp".to_owned());
-        let proto = host.add_proto(900, AttachType::Mob, "g", 100, "", "say hi");
+        // A GLOBAL trigger ('a'): no event the commands raise (a load, an
+        // entry, an act line) can fire it, so the fixture does not depend on
+        // the dispatch stubs being inert.
+        let proto = host.add_proto(900, AttachType::Mob, "a", 100, "", "say hi");
         for owner in [mob, obj, room] {
             host.attach(owner, &proto);
         }

@@ -294,6 +294,8 @@ pub fn send_to_zone<H: DgHost + ?Sized>(host: &mut H, messg: &str, zone: i32) {
 /// `send_to_range(start, finish, "%s\r\n", msg)` (`comm.c`): write `msg` to
 /// every character with a descriptor in a room numbered `start..=finish`.
 pub fn send_to_range<H: DgHost + ?Sized>(host: &mut H, start: i32, finish: i32, msg: &str) {
+    // `room_vnum` is `ush_int`: the arguments wrap to 16 bits.
+    let (start, finish) = (i32::from(start as u16), i32::from(finish as u16));
     if start > finish {
         host.cmd_syslog("send_to_range passed start room value greater then finish.");
         return;
@@ -308,11 +310,30 @@ pub fn send_to_range<H: DgHost + ?Sized>(host: &mut H, start: i32, finish: i32, 
     }
 }
 
-/// `CAP`: uppercase the first letter.
+/// `CAP` (`utils.c`): uppercase the first real character, after skipping
+/// leading colour codes (`\t` and the character after it) and ANSI
+/// `ESC [ ... letter` sequences.
 fn cap(text: &mut String) {
-    if let Some(first) = text.get(..1) {
-        let upper = first.to_ascii_uppercase();
-        text.replace_range(..1, &upper);
+    let bytes = text.as_bytes();
+    let at = |i: usize| bytes.get(i).copied().unwrap_or(0);
+    let mut p = 0;
+    while (at(p) == b'\t' && at(p + 1) != 0) || (at(p) == 0x1B && at(p + 1) == b'[') {
+        if at(p) == b'\t' {
+            p += 2;
+        } else {
+            p += 2;
+            while at(p) != 0 && !at(p).is_ascii_alphabetic() {
+                p += 1;
+            }
+            if at(p) != 0 {
+                p += 1;
+            }
+        }
+    }
+    // Only an ASCII byte is replaced, so the index is a character boundary.
+    if at(p).is_ascii_lowercase() {
+        let upper = char::from(at(p).to_ascii_uppercase()).to_string();
+        text.replace_range(p..=p, &upper);
     }
 }
 
@@ -849,5 +870,38 @@ mod tests {
             ["syslog: send_to_range passed start room value greater then finish."]
         );
         let _ = w.host.pulse();
+    }
+
+    #[test]
+    fn cap_skips_colour_codes_before_uppercasing() {
+        for (input, want) in [
+            ("hello", "Hello"),
+            ("\tythe ground.\tn", "\tyThe ground.\tn"),
+            ("\x1B[0;31mred", "\x1B[0;31mRed"),
+            ("\t", "\t"),
+            ("\x1B[", "\x1B["),
+            ("\x1B[31", "\x1B[31"),
+            ("\t\u{e9}a", "\t\u{e9}a"),
+            ("\u{e9}a", "\u{e9}a"),
+            ("", ""),
+            ("1abc", "1abc"),
+        ] {
+            let mut text = input.to_owned();
+            cap(&mut text);
+            assert_eq!(text, want, "{input:?}");
+        }
+    }
+
+    #[test]
+    fn send_to_range_wraps_its_arguments_to_sixteen_bits() {
+        let mut w = World::new();
+        let alice = w.player;
+        // -1 is 65535, greater than 3001.
+        send_to_range(&mut w.host, -1, 3001, "hi");
+        assert!(w.sent_to(alice).is_empty());
+        assert_eq!(w.effects("syslog").len(), 1);
+        // 65536 + 3001 is 3001.
+        send_to_range(&mut w.host, 65536 + 3001, 3001, "yo");
+        assert_eq!(w.sent_to(alice), ["yo\r\n"]);
     }
 }

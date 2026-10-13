@@ -37,6 +37,20 @@ pub(crate) enum Owner {
     Wld(Uid),
 }
 
+/// The conversion of an `atoi` result to `room_vnum`, `mob_vnum` or
+/// `obj_vnum` when it is passed on: with `CIRCLE_UNSIGNED_INDEX` these are
+/// `ush_int`, so the value wraps to 16 bits (-1 becomes 65535).
+pub(crate) fn vnum16(value: i32) -> i32 {
+    i32::from(value as u16)
+}
+
+/// A vnum as the C prints it with `%d`: `NOBODY` / `NOTHING` are
+/// `(IDXTYPE)~0`, an unsigned short, so an owner with no prototype prints
+/// 65535, not -1.
+fn prototype_vnum(vnum: i32) -> i32 {
+    if vnum < 0 { 65535 } else { vnum }
+}
+
 impl Owner {
     /// The `m`/`o`/`w` of the command names.
     pub(crate) fn letter(self) -> char {
@@ -61,13 +75,16 @@ impl Owner {
                 } else {
                     "(null)".to_owned()
                 };
-                format!("Mob ({short}, VNum {}):: {message}", host.vnum(ch))
+                format!(
+                    "Mob ({short}, VNum {}):: {message}",
+                    prototype_vnum(host.vnum(ch))
+                )
             }
             Owner::Obj(obj) => {
                 format!(
                     "Obj ({}, VNum {}):: {message}",
                     host.name(obj),
-                    host.vnum(obj)
+                    prototype_vnum(host.vnum(obj))
                 )
             }
             Owner::Wld(room) => format!("Room {} :: {message}", host.vnum(room)),
@@ -155,7 +172,7 @@ pub(crate) fn door<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument: &st
         }
         3 => host.cmd_exit_set(room, dir, ExitField::Key(atoi(value))),
         4 => host.cmd_exit_set(room, dir, ExitField::Keyword(value.to_owned())),
-        _ => match host.real_room(atoi(value)) {
+        _ => match host.real_room(vnum16(atoi(value))) {
             Some(to) => host.cmd_exit_set(room, dir, ExitField::ToRoom(Some(to))),
             None => {
                 host.cmd_exit_set(room, dir, ExitField::ToRoom(None));
@@ -176,7 +193,7 @@ pub(crate) fn zoneecho<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument:
 
     if room_number.is_empty() || msg.is_empty() {
         owner.log(host, &format!("{letter}zoneecho called with too few args"));
-    } else if let Some(zone) = host.cmd_zone_of_vnum(atoi(&room_number)) {
+    } else if let Some(zone) = host.cmd_zone_of_vnum(vnum16(atoi(&room_number))) {
         // The C builds this in a MAX_INPUT_LENGTH buffer, which a message of
         // 510 bytes or more overruns; there is no limit here.
         send_to_zone(host, &format!("{msg}\r\n"), zone);
@@ -240,12 +257,14 @@ fn obj_to_room_or_log<H: DgHost + ?Sized>(host: &mut H, obj: Uid, room: Option<U
 pub(crate) fn load<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument: &str) {
     let letter = owner.letter();
     let (arg1, arg2, target) = two_arguments(argument);
-    let number = atoi(&arg2);
+    let raw_number = atoi(&arg2);
 
-    if arg1.is_empty() || arg2.is_empty() || !is_number(&arg2) || number < 0 {
+    if arg1.is_empty() || arg2.is_empty() || !is_number(&arg2) || raw_number < 0 {
         owner.log(host, &format!("{letter}load: bad syntax"));
         return;
     }
+    // `read_mobile` / `read_object` take an `mob_vnum` / `obj_vnum`.
+    let number = vnum16(raw_number);
 
     let here = match owner {
         Owner::Mob(ch) => host.in_room(ch),
@@ -264,7 +283,7 @@ pub(crate) fn load<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument: &st
             here
         } else {
             let found = if starts_with_digit(target) {
-                host.real_room(atoi(target))
+                host.real_room(vnum16(atoi(target)))
             } else {
                 None
             };
@@ -357,7 +376,8 @@ pub(crate) fn load<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument: &st
                 if name.starts_with(UID_CHAR) {
                     get_obj(host, &name)
                 } else {
-                    get_obj_vis(host, ch, &name)
+                    // `get_char_room_vis` has already stripped any `N.`.
+                    get_obj_vis(host, ch, get_number(&name).1)
                 }
             }
             Owner::Obj(obj) => get_obj_near_obj(host, obj, &name),
@@ -394,7 +414,7 @@ pub(crate) fn find_target_room<H: DgHost + ?Sized>(
     }
 
     let location = if starts_with_digit(&roomstr) && !roomstr.contains('.') {
-        match host.real_room(atoi(&roomstr)) {
+        match host.real_room(vnum16(atoi(&roomstr))) {
             Some(room) => room,
             None => {
                 host.cmd_send(ch, "No room exists with that number.\r\n");
@@ -500,7 +520,7 @@ pub(crate) fn find_obj_target_room<H: DgHost + ?Sized>(
     }
 
     let location = if starts_with_digit(&roomstr) && !roomstr.contains('.') {
-        host.real_room(atoi(&roomstr))?
+        host.real_room(vnum16(atoi(&roomstr)))?
     } else if let Some(target_mob) = get_char_by_obj(host, obj, &roomstr) {
         // A character in no room has no flags to read.
         host.in_room(target_mob)?

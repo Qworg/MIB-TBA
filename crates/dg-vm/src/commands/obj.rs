@@ -11,7 +11,7 @@ use super::comm::{TO_CHAR, TO_ROOM, sub_write};
 use super::misc::script_damage;
 use super::shared::{
     Owner, door, find_obj_target_room, load, obj_contains_obj, recho, starts_with_digit, teleport,
-    zoneecho,
+    vnum16, zoneecho,
 };
 use super::strncmp_lookup;
 use crate::cstr::{any_one_arg, atoi, is_number, one_argument, skip_spaces, str_eq, two_arguments};
@@ -226,7 +226,23 @@ fn do_otransform<H: DgHost + ?Sized>(host: &mut H, obj: Uid, argument: &str) {
         log.log(host, "otransform: missing argument");
     } else if !starts_with_digit(&arg) {
         log.log(host, "otransform: bad argument");
-    } else if !host.cmd_transform_obj(obj, atoi(&arg)) {
+    } else if let Some(new_obj) = host.cmd_read_object(vnum16(atoi(&arg))) {
+        // A worn object is taken off and put back on at the same position.
+        // `worn_on` is the position in the wearer's equipment holding `obj`.
+        let worn = host.obj_worn_by(obj).and_then(|wearer| {
+            (0..NUM_WEARS)
+                .find(|pos| host.equipment(wearer, *pos) == Some(obj))
+                .map(|pos| (wearer, pos))
+        });
+        if let Some((wearer, pos)) = worn {
+            host.cmd_unequip_char(wearer, pos);
+        }
+        host.cmd_overwrite_obj(obj, new_obj);
+        if let Some((wearer, pos)) = worn {
+            host.cmd_equip_char(wearer, obj, pos);
+        }
+        host.cmd_extract_obj(new_obj);
+    } else {
         log.log(host, "otransform: bad object vnum");
     }
 }
@@ -401,7 +417,7 @@ fn do_oat<H: DgHost + ?Sized>(host: &mut H, obj: Uid, argument: &str, nest: u32)
     }
 
     let loc = if starts_with_digit(&arg) {
-        host.real_room(atoi(&arg))
+        host.real_room(vnum16(atoi(&arg)))
     } else {
         get_char_by_obj(host, obj, &arg).and_then(|ch| host.in_room(ch))
     };
@@ -1149,5 +1165,16 @@ mod tests {
                 run(&mut w, &format!("{command} {arg} 3001 {arg}"));
             }
         }
+    }
+
+    #[test]
+    fn otransform_re_equips_a_worn_object() {
+        let mut w = World::new();
+        let (lamp, alice) = (w.obj, w.player);
+        w.host.equip_char(alice, lamp, 16);
+        run(&mut w, "otransform 7102");
+        assert_eq!(w.host.equipment(alice, 16), Some(lamp));
+        assert_eq!(w.host.vnum(lamp), 7102);
+        assert_eq!(w.effects("extract_obj").len(), 1);
     }
 }

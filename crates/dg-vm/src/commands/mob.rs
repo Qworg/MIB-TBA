@@ -12,13 +12,13 @@
 use super::comm::{TO_CHAR, TO_ROOM, sub_write, sub_write_in};
 use super::misc::script_damage;
 use super::shared::{
-    Owner, door, find_target_room, load, recho, starts_with_digit, teleport, zoneecho,
+    Owner, door, find_target_room, load, recho, starts_with_digit, teleport, vnum16, zoneecho,
 };
 use crate::cstr::{atoi, one_argument, skip_spaces, str_eq, two_arguments};
 use crate::host::DgHost;
 use crate::lookup::{
-    NUM_WEARS, Where, get_char, get_char_room_vis, get_char_vis, get_obj, get_obj_in_list_vis,
-    get_obj_pos_in_equip_vis, get_obj_vis, isname,
+    NUM_WEARS, Where, get_char, get_char_room_vis, get_char_vis, get_number, get_obj,
+    get_obj_in_list_vis, get_obj_pos_in_equip_vis, get_obj_vis, isname,
 };
 use crate::types::{LVL_IMPL, ScriptMemory, UID_CHAR, Uid};
 
@@ -131,6 +131,18 @@ fn gate<H: DgHost + ?Sized>(host: &mut H, ch: Uid, charm_check: bool) -> bool {
     !(charm_check && host.cmd_is_charmed(ch))
 }
 
+/// What the C's `arg` buffer holds after a lookup: the `*_vis` functions
+/// call `get_number`, which removes the `N.` / `last.` prefix in place, so
+/// later uses (log messages, a second lookup) see the bare name. A UID
+/// argument never reaches `get_number` and is left alone.
+fn shown(arg: &str) -> String {
+    if arg.starts_with(UID_CHAR) {
+        arg.to_owned()
+    } else {
+        get_number(arg).1.to_owned()
+    }
+}
+
 /// `if (*arg == UID_CHAR) get_char(arg) else get_char_room_vis(ch, arg)`.
 fn victim_in_room<H: DgHost + ?Sized>(host: &H, ch: Uid, arg: &str) -> Option<Uid> {
     if arg.starts_with(UID_CHAR) {
@@ -186,7 +198,7 @@ fn do_mkill<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         return;
     }
     let Some(victim) = victim_in_room(host, ch, &arg) else {
-        log.log(host, &format!("mkill: victim ({arg}) not found"));
+        log.log(host, &format!("mkill: victim ({}) not found", shown(&arg)));
         return;
     };
     if victim == ch {
@@ -278,7 +290,9 @@ fn do_mjunk<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
             host.cmd_extract_obj(obj);
             return;
         }
-        if let Some(obj) = get_obj_in_list_vis(host, ch, &junk.word, &host.carrying(ch)) {
+        // The equipment lookup has stripped any `N.` from the buffer.
+        let bare = shown(&junk.word);
+        if let Some(obj) = get_obj_in_list_vis(host, ch, &bare, &host.carrying(ch)) {
             host.cmd_extract_obj(obj);
         }
         return;
@@ -290,8 +304,12 @@ fn do_mjunk<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         }
     }
     // Each pass takes one worn object off, so NUM_WEARS passes are enough.
+    // Each lookup strips one `N.` from the buffer the next one sees.
+    let mut word = junk.word.clone();
     for _ in 0..NUM_WEARS {
-        let Some(pos) = get_obj_pos_in_equip_vis(host, ch, ch, &junk.word) else {
+        let found = get_obj_pos_in_equip_vis(host, ch, ch, &word);
+        word = shown(&word);
+        let Some(pos) = found else {
             break;
         };
         match host.cmd_unequip_char(ch, pos) {
@@ -316,7 +334,10 @@ fn do_msend<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str, around: b
         return;
     }
     let Some(victim) = victim_in_room(host, ch, &arg) else {
-        Owner::Mob(ch).log(host, &format!("{name}: victim ({arg}) does not exist"));
+        Owner::Mob(ch).log(
+            host,
+            &format!("{name}: victim ({}) does not exist", shown(&arg)),
+        );
         return;
     };
     sub_write(
@@ -419,7 +440,8 @@ fn do_mpurge<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         let obj = if arg.starts_with(UID_CHAR) {
             get_obj(host, &arg)
         } else {
-            get_obj_vis(host, ch, &arg)
+            // `get_char_room_vis` has already stripped any `N.` from `arg`.
+            get_obj_vis(host, ch, &shown(&arg))
         };
         match obj {
             Some(obj) => host.cmd_extract_obj(obj),
@@ -526,7 +548,10 @@ fn do_mteleport<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         }
     } else {
         let Some(vict) = victim_in_world(host, ch, &arg1) else {
-            log.log(host, &format!("mteleport: victim ({arg1}) does not exist"));
+            log.log(
+                host,
+                &format!("mteleport: victim ({}) does not exist", shown(&arg1)),
+            );
             return;
         };
         if host.valid_dg_target(vict, true) {
@@ -548,7 +573,10 @@ fn do_mdamage<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     }
     let dam = atoi(&amount);
     let Some(vict) = victim_in_room(host, ch, &name) else {
-        Owner::Mob(ch).log(host, &format!("mdamage: victim ({name}) does not exist"));
+        Owner::Mob(ch).log(
+            host,
+            &format!("mdamage: victim ({}) does not exist", shown(&name)),
+        );
         return;
     };
     script_damage(host, vict, dam);
@@ -629,7 +657,10 @@ fn do_mhunt<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         return;
     }
     let Some(victim) = victim_in_world(host, ch, &arg) else {
-        Owner::Mob(ch).log(host, &format!("mhunt: victim ({arg}) does not exist"));
+        Owner::Mob(ch).log(
+            host,
+            &format!("mhunt: victim ({}) does not exist", shown(&arg)),
+        );
         return;
     };
     host.cmd_set_hunting(ch, victim);
@@ -650,7 +681,10 @@ fn do_mremember<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         return;
     }
     let Some(victim) = victim_in_world(host, ch, &arg) else {
-        Owner::Mob(ch).log(host, &format!("mremember: victim ({arg}) does not exist"));
+        Owner::Mob(ch).log(
+            host,
+            &format!("mremember: victim ({}) does not exist", shown(&arg)),
+        );
         return;
     };
 
@@ -679,7 +713,10 @@ fn do_mforget<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         return;
     }
     let Some(victim) = victim_in_world(host, ch, &arg) else {
-        Owner::Mob(ch).log(host, &format!("mforget: victim ({arg}) does not exist"));
+        Owner::Mob(ch).log(
+            host,
+            &format!("mforget: victim ({}) does not exist", shown(&arg)),
+        );
         return;
     };
 
@@ -710,13 +747,32 @@ fn do_mtransform<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     } else {
         // A leading `-` keeps the old hit points out of the new mob.
         let (vnum, keep_hp) = if starts_with_digit(&arg) {
-            (atoi(&arg), true)
+            (vnum16(atoi(&arg)), true)
         } else {
-            (atoi(&arg[1..]), false)
+            (vnum16(atoi(&arg[1..])), false)
         };
-        if !host.cmd_transform_mob(ch, vnum, keep_hp) {
+        let Some(new_mob) = host.cmd_read_mobile(vnum) else {
             log.log(host, "mtransform: bad mobile vnum");
+            return;
+        };
+        // Take the equipment off, put the new mob in the same room so the
+        // extract works, copy it over `ch`, then dress `ch` again.
+        let mut worn = Vec::new();
+        for pos in 0..NUM_WEARS {
+            if host.equipment(ch, pos).is_some()
+                && let Some(obj) = host.cmd_unequip_char(ch, pos)
+            {
+                worn.push((pos, obj));
+            }
         }
+        if let Some(room) = host.in_room(ch) {
+            host.cmd_char_to_room(new_mob, room);
+        }
+        host.cmd_overwrite_mob(ch, new_mob, keep_hp);
+        for (pos, obj) in worn {
+            host.cmd_equip_char(ch, obj, pos);
+        }
+        host.cmd_extract_char(new_mob);
     }
 }
 
@@ -748,7 +804,10 @@ fn do_mfollow<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     } else {
         let found = get_char_vis(host, ch, &buf, Where::Room);
         if found.is_none() {
-            log.log(host, &format!("mfollow: victim ({buf}) not found"));
+            log.log(
+                host,
+                &format!("mfollow: victim ({}) not found", shown(&buf)),
+            );
             return;
         }
         found
@@ -845,7 +904,7 @@ mod tests {
         let (alice, proto) = (w.player, w.proto.clone());
         w.host.attach(alice, &proto);
         assert!(w.run_mob(alice, "mlog hi"));
-        assert_eq!(w.log(), "Mob ((null), VNum -1):: hi");
+        assert_eq!(w.log(), "Mob ((null), VNum 65535):: hi");
     }
 
     #[test]
@@ -1045,11 +1104,17 @@ mod tests {
             run(&mut w, line);
             log_is(&w, "mrecho called with too few args");
         }
-        // Negative numbers are numbers; an inverted range is refused by
-        // send_to_range.
+        // Negative numbers are numbers, but `send_to_range` takes `room_vnum`
+        // (`ush_int`): -5 is 65531, so the range is inverted and refused.
         w.clear();
         run(&mut w, "mrecho -5 3001 neg");
-        assert_eq!(w.sent_to(alice), ["neg\r\n"]);
+        assert!(w.sent_to(alice).is_empty());
+        assert_eq!(
+            w.effects("syslog"),
+            ["syslog: send_to_range passed start room value greater then finish."]
+        );
+        w.clear();
+        // An inverted range is refused by send_to_range.
         run(&mut w, "mrecho 3002 3001 inverted");
         assert_eq!(
             w.effects("syslog"),
@@ -1769,7 +1834,8 @@ mod tests {
             format!("transform_mob {mob} 3100 false")
         );
         // The mob is a rat now, and logs as one.
-        let rat = "Mob (a rat, VNum 3100):: ";
+        // `ch->nr` is restored, so the vnum stays 3000.
+        let rat = "Mob (a rat, VNum 3000):: ";
         run(&mut w, "mtransform");
         assert_eq!(w.log(), format!("{rat}mtransform: missing argument"));
         run(&mut w, "mtransform abc");
@@ -1971,5 +2037,140 @@ mod tests {
             }
         }
         let _ = AttachType::Mob;
+    }
+
+    // ---- the get_number side effect ---------------------------------------
+
+    fn two_lamps(w: &mut World) -> (Uid, Uid) {
+        let second = w.host.add_obj(7000, "a lamp");
+        w.host.set_text(second, "alias", "lamp");
+        w.host.obj_to_room(second, w.room);
+        let list = w.host.room_contents(w.room);
+        (list[0], list[1])
+    }
+
+    #[test]
+    fn mpurge_strips_the_count_before_the_object_lookup() {
+        // `get_char_room_vis` strips `2.` from the buffer, so the object
+        // lookup counts 1 and takes the first lamp.
+        let mut w = World::new();
+        let (first, second) = two_lamps(&mut w);
+        run(&mut w, "mpurge 2.lamp");
+        assert!(!w.host.exists(first));
+        assert!(w.host.exists(second));
+    }
+
+    #[test]
+    fn mload_container_lookup_counts_from_the_bare_name() {
+        let mut w = World::new();
+        w.host
+            .globals
+            .nums
+            .insert("objproto:7100:type".to_owned(), 15);
+        let mut sacks = Vec::new();
+        for _ in 0..2 {
+            let sack = w.host.add_obj(7100, "a sack");
+            w.host.set_text(sack, "alias", "sack");
+            w.host.set_num(sack, "type", 15);
+            w.host.obj_to_room(sack, w.room);
+            sacks.push(sack);
+        }
+        let order: Vec<Uid> = w
+            .host
+            .room_contents(w.room)
+            .into_iter()
+            .filter(|o| sacks.contains(o))
+            .collect();
+        run(&mut w, "mload obj 7102 2.sack");
+        let rock = w
+            .host
+            .object_list()
+            .into_iter()
+            .find(|o| w.host.vnum(*o) == 7102)
+            .expect("rock loaded");
+        assert_eq!(w.host.obj_in_obj(rock), Some(order[0]));
+    }
+
+    #[test]
+    fn mjunk_counts_only_on_the_first_equipment_pass() {
+        // `mjunk 2.sword` is not an `all.` form, so the C takes the loop
+        // branch: pass one counts 2, the buffer is then `sword`, so the
+        // remaining passes count 1 and all three swords go.
+        let mut w = World::new();
+        let mob = w.mob;
+        let mut swords = Vec::new();
+        for pos in [5, 6, 7] {
+            let sword = w.host.add_obj(7000, "a sword");
+            w.host.set_text(sword, "alias", "sword");
+            w.host.equip_char(mob, sword, pos);
+            swords.push(sword);
+        }
+        run(&mut w, "mjunk 2.sword");
+        assert!(swords.iter().all(|s| !w.host.exists(*s)));
+    }
+
+    #[test]
+    fn mjunk_all_dot_count_takes_the_first_carried() {
+        // `all.2.sword` leaves `2.sword`; the equipment lookup strips the
+        // count, so the carried lookup takes the first sword.
+        let mut w = World::new();
+        let mob = w.mob;
+        let mut swords = Vec::new();
+        for _ in 0..2 {
+            let sword = w.host.add_obj(7000, "a sword");
+            w.host.set_text(sword, "alias", "sword");
+            w.host.obj_to_char(sword, mob);
+            swords.push(sword);
+        }
+        let first = w.host.carrying(mob)[0];
+        run(&mut w, "mjunk all.2.sword");
+        assert!(!w.host.exists(first));
+        assert_eq!(w.host.carrying(mob).len(), 1);
+    }
+
+    #[test]
+    fn failed_lookups_log_the_name_without_its_count() {
+        let mut w = World::new();
+        run(&mut w, "mkill 2.zed");
+        log_is(&w, "mkill: victim (zed) not found");
+        run(&mut w, "msend 2.zed hi");
+        log_is(&w, "msend: victim (zed) does not exist");
+        run(&mut w, "mechoaround last.zed hi");
+        log_is(&w, "mechoaround: victim (zed) does not exist");
+        run(&mut w, "mdamage 2.zed 5");
+        log_is(&w, "mdamage: victim (zed) does not exist");
+        run(&mut w, "mteleport 2.zed 3002");
+        log_is(&w, "mteleport: victim (zed) does not exist");
+        run(&mut w, "mhunt 2.zed");
+        log_is(&w, "mhunt: victim (zed) does not exist");
+        run(&mut w, "mremember 2.zed");
+        log_is(&w, "mremember: victim (zed) does not exist");
+        run(&mut w, "mforget 2.zed");
+        log_is(&w, "mforget: victim (zed) does not exist");
+        run(&mut w, "mfollow 2.zed");
+        log_is(&w, "mfollow: victim (zed) not found");
+        // A UID argument never reaches get_number.
+        run(&mut w, "mkill }9.9");
+        log_is(&w, "mkill: victim (}9.9) not found");
+    }
+
+    #[test]
+    fn room_arguments_wrap_to_sixteen_bits() {
+        // `real_room((room_vnum)68538)` is room 3002.
+        let mut w = World::new();
+        let (alice, room2) = (w.player, w.room2);
+        run(&mut w, "mteleport alice 68538");
+        assert_eq!(w.host.in_room(alice), Some(room2));
+    }
+
+    #[test]
+    fn mtransform_puts_the_equipment_back_and_extracts_the_temporary_mob() {
+        let mut w = World::new();
+        let (mob, lamp) = (w.mob, w.obj);
+        w.host.equip_char(mob, lamp, 3);
+        run(&mut w, "mtransform 3100");
+        assert_eq!(w.host.equipment(mob, 3), Some(lamp));
+        assert_eq!(w.host.vnum(mob), 3000);
+        assert_eq!(w.effects("extract_char").len(), 1);
     }
 }
