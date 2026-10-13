@@ -14,38 +14,19 @@ pub fn is_space(c: char) -> bool {
     matches!(c, ' ' | '\t' | '\n' | '\r' | '\x0b' | '\x0c')
 }
 
-/// C `atoi`: skip leading whitespace, read an optional sign and the leading
-/// digits, ignore the rest. No digits yields `0`. Overflow wraps (glibc
-/// saturates the intermediate `long` instead; the two differ only past 19
-/// digits).
+/// C `atoi` in the reference build (glibc): `(int) strtol(text, NULL, 10)`.
+/// Skip leading whitespace, read an optional sign and the leading digits,
+/// ignore the rest; no digits yields `0`. `strtol` saturates at `LONG_MAX` /
+/// `LONG_MIN` (see [`atol`]) and the conversion to `int` then keeps the low
+/// 32 bits, so `99999999999999999999` is `-1` and a huge negative number is
+/// `0`, while `4294967296` is `0` as well.
 pub fn atoi(text: &str) -> i32 {
-    let mut chars = text.chars().skip_while(|c| is_space(*c)).peekable();
-    let mut negative = false;
-    match chars.peek() {
-        Some('-') => {
-            negative = true;
-            chars.next();
-        }
-        Some('+') => {
-            chars.next();
-        }
-        _ => {}
-    }
-    let mut value: i32 = 0;
-    for c in chars {
-        let Some(digit) = c.to_digit(10) else {
-            break;
-        };
-        value = value.wrapping_mul(10).wrapping_add(digit as i32);
-    }
-    if negative {
-        value.wrapping_neg()
-    } else {
-        value
-    }
+    atol(text) as i32
 }
 
-/// C `atol`, as [`atoi`] but 64-bit (ids are `long`).
+/// C `atol` (glibc `strtol` with base 10): as [`atoi`] but 64-bit (ids are
+/// `long`). A value past the range of `long` saturates at `i64::MAX` or
+/// `i64::MIN`.
 pub fn atol(text: &str) -> i64 {
     let mut chars = text.chars().skip_while(|c| is_space(*c)).peekable();
     let mut negative = false;
@@ -59,17 +40,30 @@ pub fn atol(text: &str) -> i64 {
         }
         _ => {}
     }
-    let mut value: i64 = 0;
+    let mut magnitude: u64 = 0;
+    let mut overflow = false;
     for c in chars {
         let Some(digit) = c.to_digit(10) else {
             break;
         };
-        value = value.wrapping_mul(10).wrapping_add(i64::from(digit));
+        match magnitude
+            .checked_mul(10)
+            .and_then(|m| m.checked_add(u64::from(digit)))
+        {
+            Some(next) => magnitude = next,
+            None => overflow = true,
+        }
     }
     if negative {
-        value.wrapping_neg()
+        if overflow || magnitude > i64::MIN.unsigned_abs() {
+            i64::MIN
+        } else {
+            0i64.wrapping_sub_unsigned(magnitude)
+        }
+    } else if overflow || magnitude > i64::MAX.unsigned_abs() {
+        i64::MAX
     } else {
-        value
+        i64::try_from(magnitude).unwrap_or(i64::MAX)
     }
 }
 
@@ -97,8 +91,10 @@ pub fn is_number(text: &str) -> bool {
 /// the first differing pair of lowercased bytes (`0` when equal), which is the
 /// value `eval_op` prints for `!=` on strings.
 ///
-/// The reference is the configured Linux build, where `sysdep.h` maps
-/// `str_cmp` to `strcasecmp`: bytes compare as **unsigned**, so a byte above
+/// The reference build is the configured Linux (glibc) one, where `sysdep.h`
+/// defines `str_cmp` as `strcasecmp` (and `strn_cmp` as `strncasecmp`) and
+/// `utils.c`'s own implementation is compiled out. Bytes therefore compare as
+/// **unsigned**, so a byte above
 /// `0x7F` sorts after every ASCII character. (`utils.c`'s own fallback loop
 /// compares signed `char`s and would order them first.)
 pub fn str_cmp(a: &str, b: &str) -> i32 {
@@ -346,6 +342,30 @@ mod tests {
         assert_eq!(atoi("abc"), 0);
         assert_eq!(atoi(""), 0);
         assert_eq!(atoi("12abc34"), 12);
+    }
+
+    #[test]
+    fn atoi_and_atol_saturate_like_glibc_strtol() {
+        // LONG_MAX is 0x7fff_ffff_ffff_ffff: its low 32 bits are all ones.
+        assert_eq!(atol("9223372036854775807"), i64::MAX);
+        assert_eq!(atol("9223372036854775808"), i64::MAX);
+        assert_eq!(atol("99999999999999999999"), i64::MAX);
+        assert_eq!(atol("-9223372036854775808"), i64::MIN);
+        assert_eq!(atol("-9223372036854775809"), i64::MIN);
+        assert_eq!(atol("-99999999999999999999"), i64::MIN);
+        assert_eq!(atoi("99999999999999999999"), -1);
+        assert_eq!(atoi("9223372036854775807"), -1);
+        // LONG_MIN's low 32 bits are zero.
+        assert_eq!(atoi("-99999999999999999999"), 0);
+        // In `long` range, `int` keeps the low 32 bits.
+        assert_eq!(atoi("4294967296"), 0);
+        assert_eq!(atoi("4294967297"), 1);
+        assert_eq!(atoi("2147483648"), i32::MIN);
+        assert_eq!(atoi("-2147483649"), i32::MAX);
+        // Digits after an overflow do not bring the value back.
+        assert_eq!(atol("99999999999999999999000"), i64::MAX);
+        assert_eq!(atol("  +12x"), 12);
+        assert_eq!(atol("+-5"), 0);
     }
 
     #[test]
