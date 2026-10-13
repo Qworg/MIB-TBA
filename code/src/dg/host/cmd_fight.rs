@@ -147,21 +147,18 @@ pub(super) fn die(world: &mut World, ch: Entity) {
     if is_dead(world, ch) {
         return;
     }
-    // A character already at the dead position has been through this: the
-    // pack's death handling may not have run yet.
-    if world
-        .get::<TbaCombatant>(ch)
-        .is_some_and(|combatant| combatant.position == Position::Dead)
-    {
-        return;
-    }
     if let Some(mut combatant) = world.get_mut::<TbaCombatant>(ch) {
         combatant.hp = combatant.hp.max(0);
         combatant.position = Position::Dead;
         combatant.target = None;
     }
     if is_player {
-        if let Some(mut events) = world.get_resource_mut::<Messages<PlayerDefeated>>() {
+        // A player stays in the world at the dead position until the pack's
+        // death handling runs, so a second kill must not announce a second
+        // death while the first is still pending.
+        if !defeat_pending(world, ch)
+            && let Some(mut events) = world.get_resource_mut::<Messages<PlayerDefeated>>()
+        {
             events.write(PlayerDefeated { player: ch });
         }
     } else {
@@ -186,6 +183,19 @@ pub(super) fn die(world: &mut World, ch: Entity) {
         }
     }
     super::place::extract_char(world, ch);
+}
+
+/// Whether a `PlayerDefeated` for `player` is still waiting in the message
+/// buffers.
+fn defeat_pending(world: &World, player: Entity) -> bool {
+    world
+        .get_resource::<Messages<PlayerDefeated>>()
+        .is_some_and(|events| {
+            events
+                .get_cursor()
+                .read(events)
+                .any(|event| event.player == player)
+        })
 }
 
 /// `HUNTING(ch) = victim`. Returns whether the hunt was recorded.

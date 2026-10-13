@@ -1586,8 +1586,9 @@ fn a_closed_exit_without_the_door_flag_still_blocks() {
         host.cmd_exit_set(t, NORTH, ExitField::ToRoom(Some(sq)));
         host.cmd_exit_set(t, NORTH, ExitField::Flags(2));
     });
+    // Closed and not a door: sealed, since the C cannot open it either.
     let state = &app.world().get::<RoomState>(temple).unwrap().doors[&ExitKey::North];
-    assert_eq!((state.closed, state.locked), (true, false));
+    assert_eq!((state.closed, state.locked), (true, true));
     assert!(
         app.world()
             .get::<Doors>(temple)
@@ -1997,6 +1998,7 @@ fn a_move_puts_the_object_at_the_head_of_the_new_list() {
 #[test]
 fn a_temporary_mob_leaves_no_spawn_index_entry() {
     let mut app = world();
+    app.init_resource::<NpcIndex>();
     let temple = room(&mut app, 3001);
     let t = uid(&mut app, temple);
     for _ in 0..3 {
@@ -2156,4 +2158,111 @@ fn a_room_script_loads_teleports_and_builds_doors() {
     assert_eq!(location(&app, alice), Some(square));
     let state = &app.world().get::<RoomState>(temple).unwrap().doors[&ExitKey::North];
     assert_eq!((state.closed, state.locked), (true, true));
+}
+
+// -- review fixes ----------------------------------------------------------------------
+
+#[test]
+fn a_kill_from_the_dead_position_still_runs_the_death_handling() {
+    // The VM stores the hit points, updates the position to dead and only then
+    // calls cmd_die.
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let alice = player(&mut app, temple, "Alice", 7);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    for e in [alice, guard] {
+        let mut dying = fighter(-11);
+        dying.position = Position::Dead;
+        app.world_mut().entity_mut(e).insert(dying);
+    }
+    let [a, g] = [alice, guard].map(|e| uid(&mut app, e));
+    run(&mut app, |host| {
+        host.cmd_die(a);
+        host.cmd_die(a);
+        host.cmd_die(g);
+    });
+    let players = app
+        .world_mut()
+        .resource_mut::<Messages<PlayerDefeated>>()
+        .drain()
+        .count();
+    let npcs = app
+        .world_mut()
+        .resource_mut::<Messages<NpcDefeated>>()
+        .drain()
+        .count();
+    assert_eq!((players, npcs), (1, 1));
+    assert!(app.world().get_entity(guard).is_err());
+}
+
+#[test]
+fn equipping_a_player_whose_saved_worn_set_is_not_relinked_keeps_the_set() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let alice = player(&mut app, temple, "Alice", 7);
+    let sword = item_on_ground(&mut app, temple, 3001, "a sword");
+    app.world_mut()
+        .entity_mut(sword)
+        .insert(SaveId::new("item:d0"));
+    app.world_mut().entity_mut(alice).insert(TbaEquipmentSave {
+        worn: [(WearSlot::Body, "item:d77".to_owned())].into(),
+    });
+    let [a, sw] = [alice, sword].map(|e| uid(&mut app, e));
+    run(&mut app, |host| host.cmd_equip_char(a, sw, WEAR_WIELD));
+    let save = app.world().get::<TbaEquipmentSave>(alice).unwrap();
+    assert_eq!(save.worn.len(), 2);
+    assert_eq!(
+        save.worn.get(&WearSlot::Body).map(String::as_str),
+        Some("item:d77")
+    );
+    assert_eq!(
+        save.worn.get(&WearSlot::Wield).map(String::as_str),
+        Some("item:d0")
+    );
+    assert!(app.world().get::<TbaEquipment>(alice).is_none());
+}
+
+#[test]
+fn a_teleported_leader_does_not_drag_its_followers() {
+    let mut app = world();
+    app.add_systems(Update, follow_system);
+    let temple = room(&mut app, 3001);
+    let square = room(&mut app, 3002);
+    let alice = player(&mut app, temple, "Alice", 7);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    let [a, g, sq] = [alice, guard, square].map(|e| uid(&mut app, e));
+    run(&mut app, |host| host.cmd_follow(g, a));
+    app.update();
+    run(&mut app, |host| {
+        host.cmd_char_from_room(a);
+        host.cmd_char_to_room(a, sq);
+    });
+    app.update();
+    assert_eq!(location(&app, alice), Some(square));
+    assert_eq!(location(&app, guard), Some(temple));
+}
+
+#[test]
+fn a_closed_exit_that_is_not_a_door_cannot_be_opened() {
+    let (mut app, _, temple, square) = exit_world();
+    let (t, sq) = (uid(&mut app, temple), uid(&mut app, square));
+    run(&mut app, |host| {
+        host.cmd_exit_set(t, NORTH, ExitField::ToRoom(Some(sq)));
+        // EX_CLOSED alone.
+        host.cmd_exit_set(t, NORTH, ExitField::Flags(2));
+    });
+    let door = &app.world().get::<Doors>(temple).unwrap().by_dir[&ExitKey::North];
+    assert!(!door.pickable && door.key.is_none());
+    let state = &app.world().get::<RoomState>(temple).unwrap().doors[&ExitKey::North];
+    assert_eq!((state.closed, state.locked), (true, true));
+}
+
+#[test]
+fn a_dead_character_is_not_transformed_and_reports_no_gap() {
+    let mut app = world();
+    let temple = room(&mut app, 3001);
+    let guard = npc(&mut app, temple, 3001, "the guard");
+    let g = uid(&mut app, guard);
+    run(&mut app, |host| host.cmd_overwrite_mob(g, g, false));
+    assert_eq!(unsupported(&app, "mtransform.stats"), 0);
 }

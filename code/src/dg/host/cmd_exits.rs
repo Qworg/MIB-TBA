@@ -190,13 +190,18 @@ fn set_door(world: &mut World, room: Entity, key: ExitKey, f: impl FnOnce(&mut D
 
 /// The exit's flags. A C exit that is closed or locked blocks passage whether
 /// or not it is flagged `EX_ISDOOR`, and the pack blocks only at a door, so
-/// any of `EX_ISDOOR`, `EX_CLOSED` and `EX_LOCKED` makes a [`Door`] (a pack
-/// door can be opened where a C non-door cannot); `EX_PICKPROOF` makes it
-/// unpickable. With none of the three the exit has no door, and its key and
-/// keyword wait in [`DgPendingDoors`].
+/// any of `EX_ISDOOR`, `EX_CLOSED` and `EX_LOCKED` makes a [`Door`]. A closed
+/// exit that is not `EX_ISDOOR` cannot be opened in the C (`DOOR_IS_OPENABLE`),
+/// so it becomes a locked, unpickable door with no key, which no door command
+/// opens; its real key waits in [`DgPendingDoors`] until `EX_ISDOOR` is set.
+/// (A key set afterwards, while the exit is still not a door, would unlock it.)
+/// `EX_PICKPROOF` makes a door unpickable. With none of the three flags the
+/// exit has no door, and its key and keyword wait in [`DgPendingDoors`].
 fn set_flags(world: &mut World, room: Entity, key: ExitKey, flags: i32) {
-    let closed = flags & EX_CLOSED != 0;
-    let locked = flags & EX_LOCKED != 0;
+    let is_door = flags & EX_ISDOOR != 0;
+    let blocked_only = !is_door && flags & (EX_CLOSED | EX_LOCKED) != 0;
+    let closed = flags & EX_CLOSED != 0 || blocked_only;
+    let locked = flags & EX_LOCKED != 0 || blocked_only;
     if flags & (EX_ISDOOR | EX_CLOSED | EX_LOCKED) == 0 {
         let removed = world
             .get_mut::<Doors>(room)
@@ -216,6 +221,7 @@ fn set_flags(world: &mut World, room: Entity, key: ExitKey, flags: i32) {
         .get_mut::<DgPendingDoors>(room)
         .and_then(|mut pending| pending.0.remove(&key))
         .unwrap_or_default();
+    let mut held_stash = held_key.clone();
     with(world, room, |doors: &mut Doors| {
         let door = doors.by_dir.entry(key).or_insert_with(|| Door {
             key: held_key,
@@ -225,10 +231,22 @@ fn set_flags(world: &mut World, room: Entity, key: ExitKey, flags: i32) {
             default_closed: closed,
             default_locked: locked,
         });
-        door.pickable = flags & EX_PICKPROOF == 0;
+        door.pickable = flags & EX_PICKPROOF == 0 && !blocked_only;
         door.default_closed = closed;
         door.default_locked = locked;
+        if blocked_only {
+            held_stash = door.key.take();
+        } else if door.key.is_none() {
+            door.key = held_stash.take();
+        } else {
+            held_stash = None;
+        }
     });
+    if held_stash.is_some() {
+        with(world, room, |pending: &mut DgPendingDoors| {
+            pending.0.entry(key).or_default().0 = held_stash;
+        });
+    }
     with(world, room, |state: &mut RoomState| {
         let door = state.doors.entry(key).or_insert_with(|| DoorState {
             closed,

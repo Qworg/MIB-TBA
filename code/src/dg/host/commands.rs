@@ -293,8 +293,9 @@ impl CmdHost for EcsHost<'_> {
     }
 
     fn cmd_overwrite_mob(&mut self, ch: Uid, from: Uid, keep_hp: bool) {
-        if let (Some(ch), Some(from)) = (self.entity(ch), self.entity(from)) {
-            place::overwrite_mob(self.world, ch, from, keep_hp);
+        if let (Some(ch), Some(from)) = (self.entity(ch), self.entity(from))
+            && place::overwrite_mob(self.world, ch, from, keep_hp)
+        {
             self.unsupported(
                 "mtransform.stats",
                 "level, alignment, rewards and key-based behaviour stay those of the original vnum",

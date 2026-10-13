@@ -9,9 +9,10 @@ use mib_core::prelude::*;
 use mib_persist::prelude::DocKind;
 use mib_stdlib::prelude::{
     CarriedBy, Concealment, ContainedBy, Container, Discovered, Exits, GroundItem, Item, ItemId,
-    ItemQuery, Location, Npc, NpcBehaviors, NpcId, NpcIndex, NpcKey, OnlinePlayers, Perception,
-    Player, QuestEvent, Room, RoomId, SaveId, SaveKind, VisibilityPolicy, find_autonomy_def,
-    find_item_def, find_npc_def, next_item_save_id, spawn_npc_with_autonomy,
+    ItemQuery, Location, Npc, NpcBehaviors, NpcId, NpcIndex, NpcKey, OnlinePlayers,
+    PendingBundleRestore, Perception, Player, QuestEvent, Room, RoomId, SaveId, SaveKind,
+    VisibilityPolicy, find_autonomy_def, find_item_def, find_npc_def, next_item_save_id,
+    spawn_npc_with_autonomy,
 };
 
 use crate::combat::{
@@ -23,6 +24,7 @@ use crate::dg::DgLog;
 use crate::equipment::{TbaEquipment, TbaEquipmentSave};
 use crate::items::TbaItemTimer;
 use crate::module::TbaContent;
+use crate::party::TbaFollowing;
 
 /// How far up a container chain to look for a cycle; deeper than any real
 /// nesting.
@@ -240,6 +242,33 @@ pub(super) fn equip_char(world: &mut World, ch: Entity, obj: Entity, slot: WearS
     if !is_item(world, obj) || !is_character(world, ch) {
         return false;
     }
+    // A player whose saved worn set has not been relinked yet has no runtime
+    // map: the new item joins the saved set instead, and the relink picks it
+    // up, so a login-time equip does not replace what the player wore.
+    let unlinked = world.get::<Player>(ch).is_some()
+        && world.get::<TbaEquipment>(ch).is_none()
+        && (world.get::<TbaEquipmentSave>(ch).is_some()
+            || world.get::<PendingBundleRestore>(ch).is_some());
+    if unlinked {
+        let Some(save_id) = world.get::<SaveId>(obj).map(|id| id.0.to_string()) else {
+            return false;
+        };
+        let taken = world
+            .get::<TbaEquipmentSave>(ch)
+            .is_some_and(|save| save.worn.get(&slot).is_some_and(|worn| *worn != save_id));
+        if taken {
+            return false;
+        }
+        lift_item(world, obj);
+        world.entity_mut(obj).insert(CarriedBy(ch));
+        if world.get::<TbaEquipmentSave>(ch).is_none() {
+            world.entity_mut(ch).insert(TbaEquipmentSave::default());
+        }
+        if let Some(mut save) = world.get_mut::<TbaEquipmentSave>(ch) {
+            save.worn.insert(slot, save_id);
+        }
+        return true;
+    }
     let taken = world
         .get::<TbaEquipment>(ch)
         .is_some_and(|equipment| equipment.worn(slot).is_some_and(|worn| worn != obj));
@@ -315,6 +344,14 @@ pub(super) fn char_to_room(world: &mut World, ch: Entity, room: Entity) -> bool 
         return false;
     }
     world.entity_mut(ch).insert(Location { room });
+    // Only the moved character travels: its followers' anchors move with it,
+    // so the pack's follow system does not read the jump as a walk.
+    let mut followers = world.query::<&mut TbaFollowing>();
+    for mut following in followers.iter_mut(world) {
+        if following.leader == ch {
+            following.last_room = room;
+        }
+    }
     if world.get::<Npc>(ch).is_some() && world.get::<TbaSpawnHome>(ch).is_none() {
         let zone = zone_bounds(world, room);
         world.entity_mut(ch).insert(TbaSpawnHome { room, zone });
@@ -449,15 +486,15 @@ pub(super) fn forget_waits(world: &mut World, uids: &[dg_vm::Uid]) {
 /// character keeps its prototype key (so its vnum), position, target,
 /// memory, home, script, items and followers; with `keep_hp` it also keeps
 /// its hit points.
-pub(super) fn overwrite_mob(world: &mut World, ch: Entity, from: Entity, keep_hp: bool) {
+pub(super) fn overwrite_mob(world: &mut World, ch: Entity, from: Entity, keep_hp: bool) -> bool {
     if ch == from || world.get::<Npc>(ch).is_none() {
-        return;
+        return false;
     }
     let Some((name, persona)) = world
         .get::<Npc>(from)
         .map(|npc| (npc.name.clone(), npc.persona.clone()))
     else {
-        return;
+        return false;
     };
     if let Some(mut npc) = world.get_mut::<Npc>(ch) {
         npc.name = name;
@@ -494,6 +531,7 @@ pub(super) fn overwrite_mob(world: &mut World, ch: Entity, from: Entity, keep_hp
             entity.remove::<TbaAttackDice>();
         }
     }
+    true
 }
 
 /// `memcpy(obj, &tmpobj, sizeof(*obj))` of `do_otransform`: the object takes
