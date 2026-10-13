@@ -20,8 +20,9 @@ mod common;
 use common::corpus::Record;
 use common::scene::{Scene, assert_clean, heard, heard_raw, other_effects, said, vnums};
 use common::world::{
-    commands, fire, global_var, install, install_record, local_var, run_waits, uid,
+    PERCENT_ROLL, commands, global_var, install, install_record, local_var, run_waits,
 };
+use dg_vm::dispatch;
 use dg_vm::driver::resume;
 use dg_vm::host::{BaseHost, WorldHost};
 use dg_vm::mock::MockHost;
@@ -55,17 +56,8 @@ fn trigger_53_walks_the_words_of_a_speech_with_car_and_cdr() {
     let record = real!(53);
     let mut scene = Scene::new();
     let (room, player, watcher) = (scene.room(), scene.player(), scene.watcher);
-    let id = install_record(scene.host(), room, &record);
-    let ret = fire(
-        scene.host(),
-        room,
-        id,
-        &[
-            ("actor", uid(player)),
-            ("speech", "go north now".to_owned()),
-        ],
-    );
-    assert_eq!(ret, 1);
+    install_record(scene.host(), room, &record);
+    dispatch::speech_wtrigger(scene.host(), player, "go north now");
     let expected = vec![
         "The first word is: go",
         "The rest of the string is: north now",
@@ -98,18 +90,9 @@ fn flip(record: &Record, arg: &str, roll: i64) -> (Scene, i32) {
     let mut scene = Scene::new();
     let (player, flipper) = (scene.player(), scene.fx.host.add_obj(3500, "a quarter"));
     scene.host().obj_to_char(flipper, player);
-    let id = install_record(scene.host(), flipper, record);
+    install_record(scene.host(), flipper, record);
     scene.host().rolls.push_back(roll);
-    let ret = fire(
-        scene.host(),
-        flipper,
-        id,
-        &[
-            ("actor", uid(player)),
-            ("arg", arg.to_owned()),
-            ("cmd", "flip".to_owned()),
-        ],
-    );
+    let ret = dispatch::command_otrigger(scene.host(), player, "flip", &format!(" {arg}"));
     (scene, ret)
 }
 
@@ -176,11 +159,11 @@ fn trigger_45_shotgun_fires_twice_then_detaches() {
     let gun = scene.fx.host.add_obj(3501, "a shotgun");
     scene.host().equip_char(player, gun, 16);
     scene.host().set_link(player, "fighting", Some(guard));
-    let id = install_record(scene.host(), gun, &record);
+    install_record(scene.host(), gun, &record);
 
     for (shot, hit) in [(1, 50), (2, 40)] {
         scene.host().effects.clear();
-        assert_eq!(fire(scene.host(), gun, id, &[]), 1);
+        dispatch::script_trigger_check(scene.host());
         assert_eq!(scene.fx.host.num(guard, "hit"), hit);
         assert_eq!(
             heard(&scene.fx.host, player),
@@ -198,7 +181,7 @@ fn trigger_45_shotgun_fires_twice_then_detaches() {
     }
 
     scene.host().effects.clear();
-    assert_eq!(fire(scene.host(), gun, id, &[]), 1);
+    dispatch::script_trigger_check(scene.host());
     assert!(scene.fx.host.effects.is_empty());
     assert_eq!(scene.fx.host.num(guard, "hit"), 40);
     // The only trigger is gone and so is the script with its variable.
@@ -226,8 +209,8 @@ fn trigger_3010_devours_a_corpse_in_the_room() {
     let mob = scene.add_owner_mob(3062, "a fido");
     let bench = scene.fx.bench;
     let corpse = scene.add_room_obj(65535, "the corpse of a rat");
-    let id = install_record(scene.host(), mob, &record);
-    assert_eq!(fire(scene.host(), mob, id, &[]), 1);
+    install_record(scene.host(), mob, &record);
+    dispatch::script_trigger_check(scene.host());
     assert_eq!(
         said(&scene.fx.host),
         vec![(mob, "emote savagely devours a corpse.".to_owned())]
@@ -246,8 +229,8 @@ fn trigger_3010_ignores_a_room_without_a_corpse() {
     let mut scene = Scene::new();
     let mob = scene.add_owner_mob(3062, "a fido");
     scene.add_room_obj(3021, "a dagger");
-    let id = install_record(scene.host(), mob, &record);
-    assert_eq!(fire(scene.host(), mob, id, &[]), 1);
+    install_record(scene.host(), mob, &record);
+    dispatch::script_trigger_check(scene.host());
     assert!(scene.fx.host.mud_commands.is_empty());
     assert!(scene.fx.host.effects.is_empty());
     assert_eq!(scene.fx.host.list(scene.room(), "contents").len(), 2);
@@ -273,13 +256,8 @@ fn trigger_1376_lists_what_a_container_holds() {
         let item = scene.fx.host.add_obj(vnum, "a coin");
         scene.host().obj_to_obj(item, bag);
     }
-    let id = install_record(scene.host(), bag, &record);
-    let ret = fire(
-        scene.host(),
-        bag,
-        id,
-        &[("actor", uid(player)), ("cmd", "testing".to_owned())],
-    );
+    install_record(scene.host(), bag, &record);
+    let ret = dispatch::command_otrigger(scene.host(), player, "testing", "");
     assert_eq!(ret, 1);
     let expected = vec!["firing", "contains: 12", "contains: 11"];
     assert_eq!(heard(&scene.fx.host, player), expected);
@@ -297,13 +275,8 @@ fn oecho_lines_end_in_newline_return() {
     let mut scene = Scene::new();
     let (player, watcher) = (scene.player(), scene.watcher);
     let bag = scene.add_room_obj(3600, "a bag");
-    let id = install_record(scene.host(), bag, &record);
-    fire(
-        scene.host(),
-        bag,
-        id,
-        &[("actor", uid(player)), ("cmd", "testing".to_owned())],
-    );
+    install_record(scene.host(), bag, &record);
+    dispatch::command_otrigger(scene.host(), player, "testing", "");
     assert_eq!(heard_raw(&scene.fx.host, player), vec!["firing\n\r"]);
     assert_eq!(heard_raw(&scene.fx.host, watcher), vec!["firing\n\r"]);
 }
@@ -316,9 +289,8 @@ fn wecho_lines_end_in_return_newline() {
     let record = real!(53);
     let mut scene = Scene::new();
     let (room, player, watcher) = (scene.room(), scene.player(), scene.watcher);
-    let id = install_record(scene.host(), room, &record);
-    let vars = [("actor", uid(player)), ("speech", "go".to_owned())];
-    fire(scene.host(), room, id, &vars);
+    install_record(scene.host(), room, &record);
+    dispatch::speech_wtrigger(scene.host(), player, "go");
     // `go`: car "go", cdr ""; then the loop echoes "go" and "" once more.
     let expected = vec![
         "The first word is: go\r\n",
@@ -366,8 +338,9 @@ fn eight_ball_scene(record: &Record, first_is_ball: bool) -> (Scene, Uid, u64) {
         scene.add_room_obj(47, "ball");
     }
     let id = install_record(scene.host(), room, record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
     scene.host().rolls.push_back(4);
-    let ret = fire(scene.host(), room, id, &[("actor", uid(player))]);
+    let ret = dispatch::enter_wtrigger(scene.host(), room, player, 0);
     assert_eq!(ret, 1);
     assert_eq!(scene.fx.host.waits, vec![(room, id, 20)]);
     (scene, room, id)
@@ -424,8 +397,9 @@ fn trigger_12_drops_the_ball_on_the_head() {
         .texts
         .insert("objproto:1394".to_owned(), "a magic eight ball".to_owned());
     let id = install_record(scene.host(), room, &record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
     scene.host().rolls.push_back(3);
-    assert_eq!(fire(scene.host(), room, id, &[("actor", uid(player))]), 1);
+    assert_eq!(dispatch::enter_wtrigger(scene.host(), room, player, 0), 1);
     assert_eq!(scene.fx.host.waits, vec![(room, id, 10)]);
     run_waits(scene.host(), 5);
     assert_eq!(
@@ -462,9 +436,10 @@ fn trigger_21_transforms_into_the_rolled_mob() {
         .globals
         .texts
         .insert("mobproto:106".to_owned(), "a hill giant".to_owned());
-    let id = install_record(scene.host(), mob, &record);
+    install_record(scene.host(), mob, &record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
     scene.host().rolls.push_back(7);
-    assert_eq!(fire(scene.host(), mob, id, &[("actor", uid(player))]), 1);
+    assert_eq!(dispatch::greet_mtrigger(scene.host(), player, 0), 1);
     assert_eq!(
         commands(&scene.fx.host),
         vec![
@@ -509,7 +484,7 @@ fn trigger_24_strikes_everyone_with_lightning_in_turn() {
         (scene.room(), scene.player(), scene.watcher, scene.guard());
     scene.host().add_room(3, "The Void");
     let id = install_record(scene.host(), room, &record);
-    assert_eq!(fire(scene.host(), room, id, &[]), 1);
+    dispatch::script_trigger_check(scene.host());
     assert_eq!(scene.fx.host.waits, vec![(room, id, 10)]);
     assert_eq!(
         scene.fx.host.list(room, "people"),
@@ -561,13 +536,11 @@ fn trigger_25_catches_looking_at_the_window() {
     let record = real!(25);
     let mut scene = Scene::new();
     let (room, player, watcher) = (scene.room(), scene.player(), scene.watcher);
-    let id = install_record(scene.host(), room, &record);
-    let vars = [
-        ("actor", uid(player)),
-        ("cmd", "l".to_owned()),
-        ("arg", "window".to_owned()),
-    ];
-    assert_eq!(fire(scene.host(), room, id, &vars), 1);
+    install_record(scene.host(), room, &record);
+    assert_eq!(
+        dispatch::command_wtrigger(scene.host(), player, "l", " window"),
+        1
+    );
     let expected = vec!["Tester typed l to look at the window."];
     assert_eq!(heard(&scene.fx.host, player), expected);
     assert_eq!(heard(&scene.fx.host, watcher), expected);
@@ -580,13 +553,13 @@ fn trigger_25_lets_every_other_command_through() {
     for (cmd, arg) in [("l", "table"), ("say", "window"), ("l", "")] {
         let mut scene = Scene::new();
         let (room, player) = (scene.room(), scene.player());
-        let id = install_record(scene.host(), room, &record);
-        let vars = [
-            ("actor", uid(player)),
-            ("cmd", cmd.to_owned()),
-            ("arg", arg.to_owned()),
-        ];
-        assert_eq!(fire(scene.host(), room, id, &vars), 0, "{cmd} {arg}");
+        install_record(scene.host(), room, &record);
+        let argument = format!(" {arg}");
+        assert_eq!(
+            dispatch::command_wtrigger(scene.host(), player, cmd, &argument),
+            0,
+            "{cmd} {arg}"
+        );
         assert!(scene.fx.host.effects.is_empty(), "{cmd} {arg}");
     }
 }
@@ -605,8 +578,8 @@ fn blocks_mobs(record: &Record, setup: impl FnOnce(&mut Scene) -> Uid) -> (Scene
     let mut scene = Scene::new();
     let room = scene.room();
     let actor = setup(&mut scene);
-    let id = install_record(scene.host(), room, record);
-    let ret = fire(scene.host(), room, id, &[("actor", uid(actor))]);
+    install_record(scene.host(), room, record);
+    let ret = dispatch::enter_wtrigger(scene.host(), room, actor, 0);
     (scene, ret)
 }
 
@@ -651,9 +624,12 @@ fn trigger_26_lets_followers_and_players_in() {
 fn target(record: &Record, arg: &str) -> Scene {
     let mut scene = Scene::new();
     let (room, player) = (scene.room(), scene.player());
-    let id = install_record(scene.host(), room, record);
-    let vars = [("actor", uid(player)), ("arg", arg.to_owned())];
-    assert_eq!(fire(scene.host(), room, id, &vars), 1);
+    install_record(scene.host(), room, record);
+    let argument = format!(" {arg}");
+    assert_eq!(
+        dispatch::command_wtrigger(scene.host(), player, "target", &argument),
+        1
+    );
     scene
 }
 
@@ -695,8 +671,8 @@ fn barrier(record: &Record, sex: i64) -> (Scene, i32) {
     let mut scene = Scene::new();
     let (room, player) = (scene.room(), scene.player());
     scene.host().set_num(player, "sex", sex);
-    let id = install_record(scene.host(), room, record);
-    let ret = fire(scene.host(), room, id, &[("actor", uid(player))]);
+    install_record(scene.host(), room, record);
+    let ret = dispatch::enter_wtrigger(scene.host(), room, player, 0);
     (scene, ret)
 }
 
@@ -751,13 +727,8 @@ fn trigger_59_drenches_the_first_opener_once() {
     let record = real!(59);
     let mut scene = Scene::new();
     let (room, player, watcher) = (scene.room(), scene.player(), scene.watcher);
-    let id = install_record(scene.host(), room, &record);
-    let vars = [
-        ("actor", uid(player)),
-        ("cmd", "open".to_owned()),
-        ("direction", "north".to_owned()),
-    ];
-    assert_eq!(fire(scene.host(), room, id, &vars), 0);
+    install_record(scene.host(), room, &record);
+    assert_eq!(dispatch::door_wtrigger(scene.host(), player, 0, 0), 0);
     assert_eq!(
         heard(&scene.fx.host, watcher),
         vec![
@@ -788,12 +759,7 @@ fn trigger_59_ignores_other_door_commands() {
     let mut scene = Scene::new();
     let (room, player) = (scene.room(), scene.player());
     let id = install_record(scene.host(), room, &record);
-    let vars = [
-        ("actor", uid(player)),
-        ("cmd", "close".to_owned()),
-        ("direction", "north".to_owned()),
-    ];
-    assert_eq!(fire(scene.host(), room, id, &vars), 1);
+    assert_eq!(dispatch::door_wtrigger(scene.host(), player, 1, 0), 1);
     assert!(scene.fx.host.effects.is_empty());
     assert!(scene.fx.host.script(room).unwrap().trigger(id).is_some());
     assert!(other_effects(&scene.fx.host).is_empty());
@@ -817,9 +783,9 @@ fn trigger_59_ignores_other_door_commands() {
 // and returns the first `done`), after which `if %has_it%` says "has that".
 // ---------------------------------------------------------------------
 fn greeted_by(record: &Record, scene: &mut Scene, mob: Uid, actor: Uid) -> Vec<String> {
-    let id = install_record(scene.host(), mob, record);
-    let vars = [("actor", uid(actor)), ("direction", "south".to_owned())];
-    assert_eq!(fire(scene.host(), mob, id, &vars), 1);
+    install_record(scene.host(), mob, record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    assert_eq!(dispatch::greet_mtrigger(scene.host(), actor, 0), 1);
     assert_clean(&scene.fx.host);
     commands(&scene.fx.host)
 }
@@ -906,9 +872,9 @@ fn trigger_40_scatters_the_inventory_and_drops_the_equipment_text() {
             .texts
             .insert(format!("objproto:{vnum}"), "a copy".to_owned());
     }
-    scene.host().rolls = [7, 3, 4, 9, 2].into_iter().collect();
+    scene.host().rolls = [PERCENT_ROLL, 7, 3, 4, 9, 2].into_iter().collect();
     let id = install_record(scene.host(), room, &record);
-    assert_eq!(fire(scene.host(), room, id, &[("actor", uid(player))]), 1);
+    assert_eq!(dispatch::enter_wtrigger(scene.host(), room, player, 0), 1);
     assert_eq!(scene.fx.host.waits, vec![(room, id, 10)]);
     assert_eq!(step(scene.host()), vec![(room, id, 20)]);
     assert_eq!(
@@ -980,8 +946,7 @@ fn trigger_1396_yields_on_the_thirtieth_pass_of_a_loop() {
     let mut scene = Scene::new();
     let (room, player, watcher) = (scene.room(), scene.player(), scene.watcher);
     let id = install_record(scene.host(), room, &record);
-    let vars = [("actor", uid(player)), ("speech", "test".to_owned())];
-    assert_eq!(fire(scene.host(), room, id, &vars), 1);
+    dispatch::speech_wtrigger(scene.host(), player, "test");
     let line = |who, text: &str| format!("send {who}: {text}\r\n");
     let echoes = vec![
         line(player, "In slot 12 you are wearing a cloak"),
@@ -1025,7 +990,8 @@ fn a_loop_that_never_ends_is_stopped_at_a_hundred_passes() {
         "",
         "set n 0\nwhile 1\neval n %n%+1\nglobal n\ndone\n%echo% finished",
     );
-    assert_eq!(fire(scene.host(), room, id, &[]), 1);
+    let player = scene.player();
+    assert_eq!(dispatch::enter_wtrigger(scene.host(), room, player, 0), 1);
     for expected in ["30", "60", "90"] {
         assert_eq!(scene.fx.host.waits, vec![(room, id, 1)]);
         assert_eq!(

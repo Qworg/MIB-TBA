@@ -11,7 +11,10 @@
 mod common;
 
 use common::scene::Scene as CommonScene;
-use common::world::{commands, fire, global_var, install_record, local_var, run_waits, uid};
+use common::world::{
+    PERCENT_ROLL, commands, global_var, install_record, local_var, run_waits, uid,
+};
+use dg_vm::dispatch;
 use dg_vm::driver::{Mode, script_driver};
 use dg_vm::host::{BaseHost, WorldHost};
 use dg_vm::mock::MockHost;
@@ -77,17 +80,14 @@ const CLASS_NAMES: [&str; 4] = ["Magic User", "Cleric", "Thief", "Warrior"];
 fn guild_guard(vnum: i32, blocked_dir: &str, guild_class: i64) {
     let record = real!(vnum);
     for class in 0..4i64 {
-        for dir in ["north", "east", "south", "west"] {
+        for (dir_number, dir) in ["north", "east", "south", "west"].into_iter().enumerate() {
+            let dir_number = dir_number as i32;
             let mut scene = Scene::new(3024, "the guard");
             let (owner, player, watcher) = (scene.owner, scene.fx.player, scene.watcher);
-            let id = install_record(scene.host(), owner, &record);
+            install_record(scene.host(), owner, &record);
             scene.host().set_num(player, "class", class);
-            let result = fire(
-                scene.host(),
-                owner,
-                id,
-                &[("actor", uid(player)), ("direction", dir.to_owned())],
-            );
+            scene.host().rolls.push_back(PERCENT_ROLL);
+            let result = dispatch::leave_mtrigger(scene.host(), player, dir_number);
             let label = format!(
                 "trigger {vnum} class {} dir {dir}",
                 CLASS_NAMES[class as usize]
@@ -160,12 +160,10 @@ fn tutorial_9_greets_a_newcomer_after_one_second() {
     let mut scene = Scene::new(1317, "the tutorial guide");
     let (owner, player) = (scene.owner, scene.fx.player);
     let id = install_record(scene.host(), owner, &record);
-    let ret = fire(
-        scene.host(),
-        owner,
-        id,
-        &[("actor", uid(player)), ("direction", "south".to_owned())],
-    );
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    // The player walked north into the room: greet_mtrigger hands over the
+    // way back, "south".
+    let ret = dispatch::greet_mtrigger(scene.host(), player, 0);
     assert_eq!(ret, 1);
     assert_eq!(scene.fx.host.waits, vec![(owner, id, 10)]);
     assert!(say_all(&scene.fx.host).is_empty());
@@ -207,8 +205,8 @@ fn tutorial_9_lets_a_returning_player_retry_and_clears_the_flag() {
     let (owner, player) = (scene.owner, scene.fx.player);
     scene.set_global(player, SOLVED, "1");
     let id = install_record(scene.host(), owner, &record);
-    let vars = [("actor", uid(player)), ("direction", "south".to_owned())];
-    assert_eq!(fire(scene.host(), owner, id, &vars), 1);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    assert_eq!(dispatch::greet_mtrigger(scene.host(), player, 0), 1);
     assert_eq!(scene.fx.host.waits, vec![(owner, id, 10)]);
 
     scene.host().waits.clear();
@@ -240,13 +238,10 @@ fn tutorial_9_lets_a_returning_player_retry_and_clears_the_flag() {
     let mut scene = Scene::new(1317, "the tutorial guide");
     let (owner, player) = (scene.owner, scene.fx.player);
     scene.set_global(player, SOLVED, "1");
-    let id = install_record(scene.host(), owner, &record);
-    fire(
-        scene.host(),
-        owner,
-        id,
-        &[("actor", uid(player)), ("direction", "north".to_owned())],
-    );
+    install_record(scene.host(), owner, &record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    // Walking south into the room: the way back is "north".
+    dispatch::greet_mtrigger(scene.host(), player, 2);
     run_waits(scene.host(), 5);
     assert_eq!(
         say_all(&scene.fx.host),
@@ -272,8 +267,7 @@ fn tutorial_10_gives_the_hint_over_three_waits() {
     let mut scene = Scene::new(1317, "the tutorial guide");
     let (owner, player) = (scene.owner, scene.fx.player);
     let id = install_record(scene.host(), owner, &record);
-    let vars = [("actor", uid(player)), ("speech", "yes".to_owned())];
-    assert_eq!(fire(scene.host(), owner, id, &vars), 1);
+    dispatch::speech_mtrigger(scene.host(), player, "yes");
     assert_eq!(scene.fx.host.waits, vec![(owner, id, 10)]);
     assert!(say_all(&scene.fx.host).is_empty());
 
@@ -312,8 +306,7 @@ fn tutorial_10_stays_silent_once_the_quest_is_solved() {
     let (owner, player) = (scene.owner, scene.fx.player);
     scene.set_global(player, SOLVED, "1");
     let id = install_record(scene.host(), owner, &record);
-    let vars = [("actor", uid(player)), ("speech", "yes".to_owned())];
-    assert_eq!(fire(scene.host(), owner, id, &vars), 1);
+    dispatch::speech_mtrigger(scene.host(), player, "yes");
     assert!(scene.fx.host.waits.is_empty());
     assert!(say_all(&scene.fx.host).is_empty());
     assert!(
@@ -347,8 +340,14 @@ fn tutorial_11_rewards_the_magic_eight_ball() {
     let ball = scene.host().add_obj(47, "the magic eight ball");
     scene.host().obj_to_char(ball, player);
     let id = install_record(scene.host(), owner, &record);
-    let vars = [("actor", uid(player)), ("object", uid(ball))];
-    assert_eq!(fire(scene.host(), owner, id, &vars), 1);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    // perform_give runs the trigger before the ball moves. The script purges
+    // the ball, so the object is no longer carried by the giver and
+    // receive_mtrigger refuses the give.
+    assert_eq!(
+        dispatch::receive_mtrigger(scene.host(), owner, player, ball),
+        0
+    );
 
     // Up to the first wait.
     assert_eq!(
@@ -397,9 +396,12 @@ fn tutorial_11_refuses_any_other_object() {
     let mut scene = Scene::new(1317, "the tutorial guide");
     let (owner, player) = (scene.owner, scene.fx.player);
     let lantern = scene.fx.inventory[1];
-    let id = install_record(scene.host(), owner, &record);
-    let vars = [("actor", uid(player)), ("object", uid(lantern))];
-    assert_eq!(fire(scene.host(), owner, id, &vars), 1);
+    install_record(scene.host(), owner, &record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    assert_eq!(
+        dispatch::receive_mtrigger(scene.host(), owner, player, lantern),
+        1
+    );
     assert_eq!(
         say_all(&scene.fx.host),
         vec!["say I don't want that!", "junk lantern"]
@@ -421,9 +423,12 @@ fn tutorial_11_refuses_the_ball_a_second_time() {
     let ball = scene.host().add_obj(47, "the magic eight ball");
     scene.host().set_text(ball, "alias", "ball magic eight");
     scene.host().obj_to_char(ball, player);
-    let id = install_record(scene.host(), owner, &record);
-    let vars = [("actor", uid(player)), ("object", uid(ball))];
-    fire(scene.host(), owner, id, &vars);
+    install_record(scene.host(), owner, &record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    assert_eq!(
+        dispatch::receive_mtrigger(scene.host(), owner, player, ball),
+        1
+    );
     assert_eq!(
         say_all(&scene.fx.host),
         vec!["say I don't want that!", "junk ball magic eight"]
@@ -447,9 +452,12 @@ fn remote_to_a_character_without_a_script_stores_nothing() {
     scene.host().char_to_room(wanderer, room);
     let ball = scene.host().add_obj(47, "the magic eight ball");
     scene.host().obj_to_char(ball, wanderer);
-    let id = install_record(scene.host(), owner, &record);
-    let vars = [("actor", uid(wanderer)), ("object", uid(ball))];
-    fire(scene.host(), owner, id, &vars);
+    install_record(scene.host(), owner, &record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    assert_eq!(
+        dispatch::receive_mtrigger(scene.host(), owner, wanderer, ball),
+        0
+    );
     assert!(scene.fx.host.script(wanderer).is_none());
     assert!(!scene.fx.host.exists(ball));
     assert_eq!(say_all(&scene.fx.host), vec!["dance"]);
@@ -465,9 +473,12 @@ fn remote_to_a_player_stores_the_quest_flag() {
     let (owner, player) = (scene.owner, scene.fx.player);
     let ball = scene.host().add_obj(47, "the magic eight ball");
     scene.host().obj_to_char(ball, player);
-    let id = install_record(scene.host(), owner, &record);
-    let vars = [("actor", uid(player)), ("object", uid(ball))];
-    fire(scene.host(), owner, id, &vars);
+    install_record(scene.host(), owner, &record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    assert_eq!(
+        dispatch::receive_mtrigger(scene.host(), owner, player, ball),
+        0
+    );
     assert_eq!(
         global_var(&scene.fx.host, player, SOLVED).as_deref(),
         Some("1")
@@ -506,15 +517,8 @@ fn questmaster_greets_a_player_without_a_quest() {
     let mut scene = questmaster();
     let (owner, player) = (scene.owner, scene.fx.player);
     let id = install_record(scene.host(), owner, &record);
-    assert_eq!(
-        fire(
-            scene.host(),
-            owner,
-            id,
-            &[("actor", uid(player)), ("direction", "south".into())]
-        ),
-        1
-    );
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    assert_eq!(dispatch::greet_mtrigger(scene.host(), player, 0), 1);
     assert_eq!(scene.fx.host.waits, vec![(owner, id, 20)]);
     assert!(say_all(&scene.fx.host).is_empty());
     run_waits(scene.host(), 3);
@@ -536,8 +540,9 @@ fn questmaster_asks_after_a_recent_quest() {
     let mut scene = questmaster();
     let (owner, player) = (scene.owner, scene.fx.player);
     scene.set_global(player, QUEST, "5 13");
-    let id = install_record(scene.host(), owner, &record);
-    fire(scene.host(), owner, id, &[("actor", uid(player))]);
+    install_record(scene.host(), owner, &record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    dispatch::greet_mtrigger(scene.host(), player, 0);
     run_waits(scene.host(), 3);
     assert_eq!(
         say_all(&scene.fx.host),
@@ -560,8 +565,9 @@ fn questmaster_expires_an_old_quest_on_greet() {
     let mut scene = questmaster();
     let (owner, player) = (scene.owner, scene.fx.player);
     scene.set_global(player, QUEST, "1 3");
-    let id = install_record(scene.host(), owner, &record);
-    fire(scene.host(), owner, id, &[("actor", uid(player))]);
+    install_record(scene.host(), owner, &record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    dispatch::greet_mtrigger(scene.host(), player, 0);
     run_waits(scene.host(), 3);
     assert_eq!(global_var(&scene.fx.host, player, QUEST), None);
     assert_eq!(
@@ -581,11 +587,13 @@ fn questmaster_ignores_veterans_and_mobs_on_greet() {
     let mut scene = questmaster();
     let (owner, player, guard) = (scene.owner, scene.fx.player, scene.fx.guard);
     scene.host().set_num(player, "qp", 50);
-    let id = install_record(scene.host(), owner, &record);
-    fire(scene.host(), owner, id, &[("actor", uid(player))]);
+    install_record(scene.host(), owner, &record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    dispatch::greet_mtrigger(scene.host(), player, 0);
     assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.logs.is_empty());
-    fire(scene.host(), owner, id, &[("actor", uid(guard))]);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    dispatch::greet_mtrigger(scene.host(), guard, 0);
     assert!(scene.fx.host.waits.is_empty());
     assert!(say_all(&scene.fx.host).is_empty());
     assert_eq!(
@@ -615,8 +623,7 @@ fn quest_assignment(record: &common::corpus::Record, speech: &str, rolls: &[i64]
     }
     scene.host().rolls = rolls.iter().copied().collect();
     let id = install_record(scene.host(), owner, record);
-    let vars = [("actor", uid(player)), ("speech", speech.to_owned())];
-    fire(scene.host(), owner, id, &vars);
+    dispatch::speech_mtrigger(scene.host(), player, speech);
     (scene, id)
 }
 
@@ -778,10 +785,15 @@ fn questmaster_ignores_the_wrong_speakers() {
             scene.set_global(player, QUEST, flag);
         }
         scene.host().set_num(player, "qp", qp);
-        let id = install_record(scene.host(), owner, &record);
+        install_record(scene.host(), owner, &record);
+        // speech_mtrigger skips the mob's own words unless CONFIG_SCRIPT_PLAYERS.
+        scene
+            .host()
+            .globals
+            .nums
+            .insert("script_players".to_owned(), 1);
         let actor = if who == "self" { owner } else { player };
-        let vars = [("actor", uid(actor)), ("speech", "yes".to_owned())];
-        assert_eq!(fire(scene.host(), owner, id, &vars), 1);
+        dispatch::speech_mtrigger(scene.host(), actor, "yes");
         assert!(say_all(&scene.fx.host).is_empty(), "{who} {flag:?} {qp}");
         assert!(scene.fx.host.waits.is_empty());
     }
@@ -795,9 +807,8 @@ fn questmaster_clears_an_expired_flag_before_assigning() {
     let mut scene = questmaster();
     let (owner, player) = (scene.owner, scene.fx.player);
     scene.set_global(player, QUEST, "1 3");
-    let id = install_record(scene.host(), owner, &record);
-    let vars = [("actor", uid(player)), ("speech", "yes".to_owned())];
-    fire(scene.host(), owner, id, &vars);
+    install_record(scene.host(), owner, &record);
+    dispatch::speech_mtrigger(scene.host(), player, "yes");
     assert_eq!(global_var(&scene.fx.host, player, QUEST), None);
     assert_eq!(
         say_all(&scene.fx.host),
@@ -821,8 +832,9 @@ fn receive_scene(
     scene.host().set_text(item, "alias", "handed item");
     scene.host().obj_to_char(item, player);
     let id = install_record(scene.host(), owner, record);
-    let vars = [("actor", uid(player)), ("object", uid(item))];
-    fire(scene.host(), owner, id, &vars);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    let ret = dispatch::receive_mtrigger(scene.host(), owner, player, item);
+    assert_eq!(ret, 1, "the give is not refused");
     (scene, id, item)
 }
 
@@ -915,8 +927,9 @@ fn quest_mob_loads_its_head() {
         .globals
         .nums
         .insert("objproto:17:wear".to_owned(), 1);
-    let id = install_record(scene.host(), owner, &record);
-    assert_eq!(fire(scene.host(), owner, id, &[]), 1);
+    install_record(scene.host(), owner, &record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    dispatch::load_mtrigger(scene.host(), owner);
     let held = scene.fx.host.carrying(owner);
     assert_eq!(held.len(), 1);
     assert_eq!(scene.fx.host.vnum(held[0]), 17);
@@ -948,8 +961,9 @@ fn quest_mob_loads_an_untakeable_head_into_the_room() {
         .globals
         .nums
         .insert("objproto:17:wear".to_owned(), 0);
-    let id = install_record(scene.host(), owner, &record);
-    assert_eq!(fire(scene.host(), owner, id, &[]), 1);
+    install_record(scene.host(), owner, &record);
+    scene.host().rolls.push_back(PERCENT_ROLL);
+    dispatch::load_mtrigger(scene.host(), owner);
     assert!(scene.fx.host.carrying(owner).is_empty());
     let contents = scene.fx.host.list(room, "contents");
     assert_eq!(contents.len(), 2);

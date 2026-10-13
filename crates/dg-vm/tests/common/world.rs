@@ -13,6 +13,12 @@ use dg_vm::mock::MockHost;
 use dg_vm::script::Program;
 use dg_vm::types::{AttachType, TrigProto, Uid, trig::asciiflag_conv, uid_text};
 
+/// A scripted `rand_number` result that wins every percent roll the dispatch
+/// functions make (`rand_number(1, 100) <= narg`) for a trigger whose `narg`
+/// is at least 1. A dispatch function that rolls takes it before the script's
+/// own `%random%` rolls.
+pub const PERCENT_ROLL: i64 = 1;
+
 /// The usual cast of a scenario: a central room with an exit each way, a
 /// player with an inventory and equipment, another mob, and objects.
 pub struct Fixture {
