@@ -604,7 +604,7 @@ pub fn do_drop(host: Host<'_, '_>, ch: Uid, argument: &str, command: DropMode) {
             let mut list = list;
             loop {
                 let next = remaining(host, &list, obj);
-                amount += perform_drop(host, ch, obj, mode, sname, donate);
+                amount = amount.saturating_add(perform_drop(host, ch, obj, mode, sname, donate));
                 multi = multi.wrapping_sub(1);
                 let Some(found) = get_obj_in_list_vis(host, ch, &arg, &next) else {
                     break;
@@ -625,7 +625,8 @@ pub fn do_drop(host: Host<'_, '_>, ch: Uid, argument: &str, command: DropMode) {
         if dotmode == Dot::All {
             for obj in list {
                 if host.exists(obj) && host.obj_carried_by(obj) == Some(ch) {
-                    amount += perform_drop(host, ch, obj, mode, sname, donate);
+                    amount =
+                        amount.saturating_add(perform_drop(host, ch, obj, mode, sname, donate));
                 }
             }
         } else if dotmode == Dot::Prefixed {
@@ -635,11 +636,12 @@ pub fn do_drop(host: Host<'_, '_>, ch: Uid, argument: &str, command: DropMode) {
             let mut obj = get_obj_in_list_vis(host, ch, &arg, &list);
             while let Some(current) = obj {
                 let next = remaining(host, &list, current);
-                amount += perform_drop(host, ch, current, mode, sname, donate);
+                amount =
+                    amount.saturating_add(perform_drop(host, ch, current, mode, sname, donate));
                 obj = get_obj_in_list_vis(host, ch, &arg, &next);
             }
         } else if let Some(obj) = get_obj_in_list_vis(host, ch, &arg, &list) {
-            amount += perform_drop(host, ch, obj, mode, sname, donate);
+            amount = amount.saturating_add(perform_drop(host, ch, obj, mode, sname, donate));
         }
     }
     if amount != 0 && command == DropMode::Junk {

@@ -2251,3 +2251,134 @@ fn a_forced_player_with_no_session_is_a_counted_gap() {
         1
     );
 }
+
+// -- gaps, no-ops and memory ---------------------------------------------------
+
+#[test]
+fn commands_the_pack_cannot_model_are_counted_by_name() {
+    let mut s = scene();
+    cmd(&mut s.app, s.guard_id, "eat bread");
+    cmd(&mut s.app, s.guard_id, "eat water");
+    cmd(&mut s.app, s.guard_id, "quaff potion");
+    let log = s.app.world().resource::<mib_tba::dg::DgLog>();
+    assert_eq!(log.count("mobcmd.eat"), 2);
+    assert_eq!(log.count("mobcmd.quaff"), 1);
+    assert!(texts(&mut s.app).is_empty());
+}
+
+#[test]
+fn displays_toggles_and_skills_do_nothing_for_an_npc_and_are_not_gaps() {
+    let mut s = scene();
+    for line in [
+        "look",
+        "l alice",
+        "score",
+        "inventory",
+        "equipment",
+        "exits",
+        "who",
+        "time",
+        "weather",
+        "afk",
+        "brief",
+        "backstab alice",
+        "bash alice",
+        "kick alice",
+        "rescue alice",
+        "hide",
+        "sneak",
+        "cast 'armor'",
+        "buy sword",
+        "sell sword",
+        "scan",
+        "consider alice",
+        "gold",
+        "title hi",
+        "save",
+        "quit",
+        "help",
+        "commands",
+    ] {
+        cmd(&mut s.app, s.guard_id, line);
+    }
+    assert!(texts(&mut s.app).is_empty());
+    assert!(log_lines(&s.app).is_empty());
+    assert_eq!(room_of(&s.app, s.guard), s.room);
+}
+
+#[test]
+fn immortal_commands_do_nothing_whatever_the_level() {
+    let mut s = scene();
+    define_npc_level(&mut s.app, 9, 34);
+    let boss = npc(&mut s.app, s.room, 9, "Boss");
+    let boss_id = uid(&mut s.app, boss);
+    for line in [
+        "goto 100",
+        "purge",
+        "advance alice 30",
+        "shutdown",
+        "load mob 1",
+        "force alice quit",
+        "echo hi",
+        "at 100 say hi",
+    ] {
+        cmd(&mut s.app, s.guard_id, line);
+        cmd(&mut s.app, boss_id, line);
+    }
+    assert!(texts(&mut s.app).is_empty());
+    assert!(s.app.world().get_entity(s.alice).is_ok());
+    assert_eq!(room_of(&s.app, boss), s.room);
+}
+
+#[test]
+fn an_npcs_purse_starts_as_its_prototypes_gold() {
+    let mut s = scene();
+    s.app
+        .world_mut()
+        .resource_mut::<TbaContent>()
+        .npc_stats
+        .get_mut(&NpcId::from("tba_npc_1"))
+        .unwrap()
+        .gold = 25;
+    cmd(&mut s.app, s.guard_id, "give 30 coins alice");
+    assert_eq!(gold_of(&s.app, s.alice), 0, "it only has 25");
+    cmd(&mut s.app, s.guard_id, "give 10 coins alice");
+    assert_eq!(gold_of(&s.app, s.alice), 10);
+    cmd(&mut s.app, s.guard_id, "give 15 coins alice");
+    assert_eq!(gold_of(&s.app, s.alice), 25);
+    cmd(&mut s.app, s.guard_id, "give 1 coin alice");
+    assert_eq!(gold_of(&s.app, s.alice), 25, "the purse is empty");
+}
+
+#[test]
+fn a_remembered_command_runs_when_the_mover_enters_the_remembered_ones_room() {
+    let mut d = doorway(false, false);
+    let bob = player(&mut d.s.app, d.north, "Bob", 8);
+    let bob_id = uid(&mut d.s.app, bob);
+    run(&mut d.s.app, |host| {
+        dg_vm::WorldHost::set_script_mem(
+            host,
+            d.s.guard_id,
+            vec![dg_vm::types::ScriptMemory {
+                id: bob_id,
+                cmd: Some("say Found you".to_owned()),
+            }],
+        );
+    });
+    cmd(&mut d.s.app, d.s.guard_id, "north");
+    let lines = texts(&mut d.s.app);
+    assert!(
+        lines.contains(&"Guard says, 'Found you'".to_owned()),
+        "{lines:?}"
+    );
+}
+
+#[test]
+fn a_position_change_survives_until_the_combat_system_reads_it() {
+    // The state a command writes is the one the combat systems then see.
+    let mut s = scene();
+    cmd(&mut s.app, s.guard_id, "rest");
+    let combatant = s.app.world().get::<TbaCombatant>(s.guard).unwrap();
+    assert_eq!(combatant.position, Position::Resting);
+    assert!(combatant.hp > 0 || combatant.max_hp >= 0);
+}
