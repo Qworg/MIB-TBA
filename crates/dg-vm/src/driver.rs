@@ -34,7 +34,9 @@
 //! - `dg_letter` takes the character that starts at byte `num - 1`; inside a
 //!   multi-byte character it yields U+FFFD (the C copies a raw byte).
 //! - `trig_wait_event`'s "restarted on unknown entity" diagnostics go to
-//!   `script_log` only (the C also writes to the syslog, and names the vnum).
+//!   `script_log` only (the C writes the first three to the syslog). The vnum
+//!   and the "attached %d places" count are not recoverable from a vanished
+//!   owner, so the vnum line names the instance id and the count is omitted.
 //! - The C has no "version line" handling in `script_driver`; none is ported.
 //! - The `default` label inside a `switch` is not a keyword of the main loop in
 //!   the C (only `find_case` knows it), so a `default` line reached by falling
@@ -57,7 +59,8 @@ use crate::script::Line;
 use crate::subst::var_subst;
 use crate::types::{
     AttachType, Kind, MAX_INPUT_LENGTH, MAX_SCRIPT_DEPTH, PASSES_PER_SEC, PULSES_PER_MUD_HOUR,
-    SCRIPT_ERROR_CODE, SECS_PER_MUD_DAY, SECS_PER_MUD_HOUR, Script, UID_CHAR, Uid, uid_text,
+    SCRIPT_ERROR_CODE, SECS_PER_MUD_DAY, SECS_PER_MUD_HOUR, Script, UID_CHAR, Uid, uid_kind,
+    uid_text,
 };
 
 /// `TRIG_NEW` / `TRIG_RESTART`: start from the top, or continue after a
@@ -238,18 +241,32 @@ pub fn script_driver_default<H: DgHost + ?Sized>(
 
 /// `trig_wait_event`: a scheduled `wait` came due. Resumes the trigger if the
 /// owner and the instance still exist.
+///
+/// Always returns `0`, as the C does ("Do not reenqueue"): the script's own
+/// return value is discarded, and a host that wires this to an event queue
+/// must not read the result as a requeue delay.
 pub fn resume<H: DgHost + ?Sized>(host: &mut H, owner: Uid, trigger_id: u64) -> i32 {
     if !host.exists(owner) {
+        // The C's syslog lines, through the script log (see the module docs).
+        host.script_log(&format!(
+            "Trigger restarted on unknown entity. Vnum: unknown (instance {trigger_id})"
+        ));
+        let kind = match uid_kind(owner) {
+            Kind::Char => "Mob",
+            Kind::Obj => "Obj",
+            Kind::Room => "Room",
+        };
+        host.script_log(&format!("Type: {kind} trigger"));
         host.script_log("Trigger restart attempt on unknown entity.");
         return 0;
     }
     let present = host
         .script(owner)
         .is_some_and(|script| script.trigger(trigger_id).is_some());
-    if !present {
-        return 0;
+    if present {
+        script_driver(host, owner, trigger_id, Mode::Restart);
     }
-    script_driver(host, owner, trigger_id, Mode::Restart)
+    0
 }
 
 /// The `for (cl = …; cl && GET_TRIG_DEPTH(trig); cl = cl->next)` loop of
@@ -441,6 +458,7 @@ fn command_line<H: DgHost + ?Sized>(
         if *cx.host.owner_purged_mut() {
             return Step::Yield(Outcome::Purged);
         }
+        clear_if_detached(cx);
     }
     Step::Goto(cl)
 }
@@ -968,7 +986,12 @@ fn process_detach<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, cmd: &str) {
             extract_script(&mut *cx.host, target);
         }
     }
-    // A trigger that detached itself carries on with its variables gone.
+    clear_if_detached(cx);
+}
+
+/// A trigger that lost its slot while it ran (detached, or its script
+/// extracted) carries on with its variables gone: the C freed the trigger.
+fn clear_if_detached<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>) {
     let alive = cx
         .host
         .script(cx.owner)
@@ -1152,6 +1175,12 @@ fn extract_value<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, cmd: &str) {
             break;
         }
         let (next, rest) = half_chop(words);
+        if next.is_empty() && rest == words {
+            // No progress (e.g. the text starts with a tab): every further
+            // half_chop yields the same empty word.
+            word.clear();
+            break;
+        }
         word = next;
         words = rest;
     }
@@ -1447,7 +1476,7 @@ mod tests {
 
         for total in [60, 90] {
             host.waits.clear();
-            assert_eq!(resume(&mut host, mob, id), 1);
+            assert_eq!(resume(&mut host, mob, id), 0);
             assert_eq!(cmds(&host).len(), total);
             assert_eq!(host.waits, vec![(mob, id, 1)]);
         }
@@ -1652,7 +1681,7 @@ mod tests {
         assert_eq!(host.waits, vec![(mob, id, 4)]);
         assert_eq!(state(&host, mob, id).depth, 2);
         assert_eq!(state(&host, mob, id).curr_state, 3);
-        assert_eq!(resume(&mut host, mob, id), 1);
+        assert_eq!(resume(&mut host, mob, id), 0);
         assert_eq!(cmds(&host), vec!["say in 1", "say out"]);
         assert_eq!(state(&host, mob, id).depth, 0);
         assert!(
@@ -2515,32 +2544,279 @@ mod tests {
         assert_eq!(resume(&mut host, 424_242, 0), 0);
         assert_eq!(
             host.logs,
-            vec!["Trigger restart attempt on unknown entity."]
+            vec![
+                "Trigger restarted on unknown entity. Vnum: unknown (instance 0)",
+                "Type: Mob trigger",
+                "Trigger restart attempt on unknown entity."
+            ]
         );
         assert_eq!(resume(&mut host, mob, 77), 0);
         assert!(host.mud_commands.is_empty());
     }
 
     #[test]
-    fn non_ascii_and_hostile_lines_do_not_panic() {
-        let script = "é\n\u{a0}if é\nif é\nwhile é\ndone\nswitch é\ncase é\ndefault\nbreak\nwait é\nset é é\nextract é 1 é\ndg_letter é 1 é\nmakeuid é é é\nattach é é\ndetach é é\nremote é é\nrdelete é é\nreturn é\nunset é\nglobal é\ncontext é\nif\nelse\nend\ndone\ncase\n*\n   ";
-        let (host, mob, id) = run_script(script);
-        assert_eq!(host.depth, 0);
-        assert!(host.script(mob).unwrap().trigger(id).is_some());
-        // Very long lines.
-        let long = "x".repeat(100_000);
-        let (host, _, _) = run_script(&format!(
-            "set a {long}\nif {long}\nsay hi\nend\nwait {long}\nextract w 3 {long}"
-        ));
-        assert_eq!(host.depth, 0);
+    fn resume_continues_the_script_and_never_requeues() {
+        // trig_wait_event returns 0 whatever the script returned.
+        let (mut host, mob, id) = world("say a\nwait 2\nsay b\nreturn 0");
+        run(&mut host, mob, id);
+        assert_eq!(host.waits, vec![(mob, id, 2)]);
+        assert_eq!(resume(&mut host, mob, id), 0);
+        assert_eq!(cmds(&host), vec!["say a", "say b"]);
+        assert_eq!(state(&host, mob, id).depth, 0);
+        // An idle instance resumed again still runs from curr_state.
+        assert_eq!(resume(&mut host, mob, id), 0);
     }
 
     #[test]
-    fn corpus_scripts_run_to_completion_or_a_wait() {
-        let dir = std::path::Path::new("/home/qworg/Development/tbamud/lib/world/trg");
-        let Ok(entries) = std::fs::read_dir(dir) else {
-            return;
+    fn resume_runs_for_a_dead_but_still_listed_character() {
+        // The C finds the mob in character_list until it is swept, and runs.
+        let (mut host, mob, id) = world("wait 1\nsay late");
+        run(&mut host, mob, id);
+        host.extract_char(mob);
+        assert!(host.exists(mob));
+        assert_eq!(resume(&mut host, mob, id), 0);
+        assert_eq!(cmds(&host), vec!["say late"]);
+    }
+
+    /// Run each script and check the commands it dispatched and the log
+    /// lines it wrote, so a line that is never reached fails the test.
+    fn expect(script: &str, want_cmds: &[&str], want_log: Option<&str>) {
+        let (host, mob, id) = run_script(script);
+        assert_eq!(cmds(&host), want_cmds, "script {script:?}");
+        match want_log {
+            Some(needle) => assert!(
+                host.logs.iter().any(|l| l.contains(needle)),
+                "script {script:?}: no log containing {needle:?} in {:?}",
+                host.logs
+            ),
+            None => assert!(host.logs.is_empty(), "script {script:?}: {:?}", host.logs),
+        }
+        assert_eq!(host.depth, 0);
+        assert!(host.script(mob).unwrap().trigger(id).is_some());
+    }
+
+    #[test]
+    fn non_ascii_lines_reach_every_statement_without_panicking() {
+        expect("é", &["é"], None);
+        // NBSP is not isspace in the C locale: the line is a plain command.
+        expect("\u{a0}if é\nsay ok", &["\u{a0}if é", "say ok"], None);
+        expect("if é\nsay in\nend\nsay ok", &["say in", "say ok"], None);
+        expect(
+            "if é\nsay in\nelse\nsay out\nend\nsay ok",
+            &["say in", "say ok"],
+            None,
+        );
+        expect(
+            "switch é\ncase é\nsay hit\nbreak\ndone\nsay ok",
+            &["say hit", "say ok"],
+            None,
+        );
+        expect("wait é\nsay ok", &[], Some("wait w/o a number"));
+        expect("set é é\nsay %é%\nsay ok", &["say é", "say ok"], None);
+        expect("extract é 1 é\nsay %é%", &["say é"], None);
+        expect(
+            "dg_letter x 2 é\nsay %x%",
+            &["say \u{fffd}"],
+            Some("deprecated"),
+        );
+        expect("makeuid é é é\nsay ok", &["say ok"], Some("makeuid"));
+        expect("attach é é\nsay ok", &["say ok"], Some("attach"));
+        expect("detach é é\nsay ok", &["say ok"], Some("detach"));
+        expect(
+            "remote é é\nsay ok",
+            &["say ok"],
+            Some("not found in remote call"),
+        );
+        expect("rdelete é é\nsay ok", &["say ok"], Some("illegal uid"));
+        expect("return é\nsay ok", &["say ok"], None);
+        expect("unset é\nsay ok", &["say ok"], None);
+        expect(
+            "global é\nsay ok",
+            &["say ok"],
+            Some("not found in global call"),
+        );
+        expect("context é\nsay ok", &["say ok"], None);
+        expect(
+            "if\nelse\nend\ndone\ncase\n*\n   ",
+            &["if", ""],
+            Some("without 'if'"),
+        );
+    }
+
+    #[test]
+    fn very_long_lines_do_not_panic() {
+        let long = "x".repeat(100_000);
+        let (host, _, _) = run_script(&format!("set a {long}\nsay %a%"));
+        assert_eq!(cmds(&host), vec![format!("say {long}")]);
+        let (host, _, _) = run_script(&format!("if {long}\nsay hi\nend"));
+        assert_eq!(cmds(&host), vec!["say hi"]);
+        let (host, _, _) = run_script(&format!("wait {long}\nsay no"));
+        assert!(cmds(&host).is_empty());
+        assert_eq!(count_logs(&host, "wait w/o a number"), 1);
+        let (host, _, _) = run_script(&format!("extract w 3 {long}\nsay [%w%]"));
+        assert_eq!(cmds(&host), vec!["say []"]);
+        let (host, _, _) = run_script(&format!("extract w 1 {long}\nsay %w%"));
+        assert_eq!(cmds(&host), vec![format!("say {long}")]);
+    }
+
+    #[test]
+    fn extract_stops_at_a_fixpoint_instead_of_spinning() {
+        // A remainder starting with a tab makes half_chop return the same
+        // text forever (skip_spaces stops at a tab, any_one_arg at isspace).
+        // The C yields an empty word after num iterations; so does this,
+        // without running them.
+        let started = std::time::Instant::now();
+        let (host, _, _) = run_script("extract w 2000000000 \tfoo bar\nsay [%w%]");
+        assert_eq!(cmds(&host), vec!["say []"]);
+        assert!(started.elapsed() < std::time::Duration::from_secs(5));
+    }
+
+    /// Start trigger `id` of `owner` by hand the way the driver does, so a
+    /// test can run another trigger "from inside" it.
+    fn check_out_running(host: &mut MockHost, owner: Uid, id: u64) -> TrigInstance {
+        let mut trig = host.script_mut(owner).unwrap().check_out(id).unwrap();
+        trig.run.depth = 1;
+        *host.depth_mut() += 1;
+        trig
+    }
+
+    #[test]
+    fn a_nested_trigger_detaching_the_running_one_clears_its_variables() {
+        let (mut host, mob, a) = world("say a");
+        host.add_proto(6, AttachType::Mob, "g", 100, "", &format!("detach 5 {mob}"));
+        let sibling = host.attach(mob, &host.protos[&6].clone()).unwrap();
+        let mut trig = check_out_running(&mut host, mob, a);
+        trig.vars.add_var("x", "1", 0);
+        // The nested run happens while A is checked out.
+        assert_eq!(script_driver(&mut host, mob, sibling, Mode::New), 1);
+        assert_eq!(host.depth, 1);
+        let mut cx = Cx {
+            host: &mut host,
+            owner: mob,
+            attach: AttachType::Mob,
+            trig: &mut trig,
         };
+        clear_if_detached(&mut cx);
+        assert!(trig.vars.is_empty());
+        // check_in fails: the slot is gone, so no wait would be queued.
+        assert!(!host.script_mut(mob).unwrap().check_in(trig));
+    }
+
+    #[test]
+    fn a_nested_depth_cap_extracting_the_script_clears_the_running_triggers_variables() {
+        let (mut host, mob, a) = world("say a");
+        let proto = host.protos[&5].clone();
+        let b = host.attach(mob, &proto).unwrap();
+        let mut trig = check_out_running(&mut host, mob, a);
+        trig.vars.add_var("x", "1", 0);
+        *host.depth_mut() = 11;
+        assert_eq!(
+            script_driver(&mut host, mob, b, Mode::New),
+            SCRIPT_ERROR_CODE
+        );
+        let mut cx = Cx {
+            host: &mut host,
+            owner: mob,
+            attach: AttachType::Mob,
+            trig: &mut trig,
+        };
+        clear_if_detached(&mut cx);
+        assert!(trig.vars.is_empty());
+        assert!(host.script(mob).is_none());
+    }
+
+    #[test]
+    fn a_live_running_trigger_keeps_its_variables() {
+        let (mut host, mob, a) = world("say a");
+        let mut trig = check_out_running(&mut host, mob, a);
+        trig.vars.add_var("x", "1", 0);
+        let mut cx = Cx {
+            host: &mut host,
+            owner: mob,
+            attach: AttachType::Mob,
+            trig: &mut trig,
+        };
+        clear_if_detached(&mut cx);
+        assert!(trig.vars.get("x").is_some());
+    }
+
+    #[test]
+    fn the_thirty_loop_yield_of_a_self_detached_trigger_queues_no_wait() {
+        let (mut host, mob, id) = world(&format!(
+            "detach 5 {mob}\nwhile 1\nsay tick\ndone",
+            mob = 10_000_001
+        ));
+        assert_eq!(mob, 10_000_001);
+        run(&mut host, mob, id);
+        // The script went with its only trigger; the yield found no slot.
+        assert!(host.script(mob).is_none());
+        assert!(host.waits.is_empty());
+        assert_eq!(host.depth, 0);
+        assert_eq!(cmds(&host).len(), 30);
+    }
+
+    #[test]
+    fn makeuid_for_a_mob_owner_prefers_inventory_to_the_room() {
+        let (mut host, mob, _) = world("");
+        let room = host.real_room(1).unwrap();
+        let in_room = host.add_obj(8, "sword");
+        host.obj_to_room(in_room, room);
+        let carried = host.add_obj(9, "sword");
+        host.obj_to_char(carried, mob);
+        let proto = host.add_proto(
+            6,
+            AttachType::Mob,
+            "g",
+            100,
+            "",
+            "makeuid o obj sword\nsay %o%",
+        );
+        let id = host.attach(mob, &proto).unwrap();
+        run(&mut host, mob, id);
+        assert_eq!(cmds(&host), vec![format!("say }}{carried}")]);
+    }
+
+    #[test]
+    fn depth_cap_names_objects_and_rooms_by_their_own_text() {
+        let mut host = MockHost::new();
+        let room = host.add_room(1, "Hall");
+        let obj = host.add_obj(8, "orb");
+        host.obj_to_room(obj, room);
+        for (owner, attach, want) in [
+            (obj, AttachType::Obj, "It was attached to orb [8]"),
+            (room, AttachType::Wld, "It was attached to Hall [1]"),
+        ] {
+            let proto = host.add_proto(6, attach, "b", 100, "", "set x 1");
+            let id = host.attach(owner, &proto).unwrap();
+            host.logs.clear();
+            host.depth = 11;
+            assert_eq!(
+                script_driver(&mut host, owner, id, Mode::New),
+                SCRIPT_ERROR_CODE
+            );
+            assert_eq!(
+                host.logs,
+                vec!["Trigger 6 recursed beyond maximum allowed depth.", want]
+            );
+            assert!(host.script(owner).is_none());
+        }
+    }
+
+    /// Where the `.trg` files live: `DG_TRG_DIR`, else the tbaMUD checkout
+    /// next to the repository.
+    fn corpus_dir() -> std::path::PathBuf {
+        std::env::var_os("DG_TRG_DIR").map_or_else(
+            || std::path::PathBuf::from("/home/qworg/Development/tbamud/lib/world/trg"),
+            std::path::PathBuf::from,
+        )
+    }
+
+    #[test]
+    #[ignore = "needs the tbaMUD corpus; set DG_TRG_DIR and run with --ignored"]
+    fn corpus_scripts_run_without_panicking_and_leave_a_sane_state() {
+        let dir = corpus_dir();
+        let entries = std::fs::read_dir(&dir)
+            .unwrap_or_else(|e| panic!("corpus directory {} unreadable: {e}", dir.display()));
         let mut ran = 0;
         for entry in entries.flatten() {
             let path = entry.path();
@@ -2585,12 +2861,14 @@ mod tests {
                 let id = host.attach(owner, &proto).unwrap();
                 script_driver(&mut host, owner, id, Mode::New);
                 assert_eq!(host.depth, 0, "trigger {vnum}");
-                // Whatever it did, the cleanup left it idle or waiting.
-                let trigger = host.script(owner).unwrap().trigger(id).unwrap();
-                assert!(
-                    trigger.run.depth == 0 || !host.waits.is_empty() || !host.logs.is_empty(),
-                    "trigger {vnum} left running without a wait"
-                );
+                // The trigger may have detached itself, or its owner may be
+                // gone; otherwise it ended idle, waiting or with a log line.
+                if let Some(trigger) = host.script(owner).and_then(|s| s.trigger(id)) {
+                    assert!(
+                        trigger.run.depth == 0 || !host.waits.is_empty() || !host.logs.is_empty(),
+                        "trigger {vnum} left running without a wait"
+                    );
+                }
                 ran += 1;
             }
         }

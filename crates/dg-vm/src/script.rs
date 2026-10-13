@@ -45,13 +45,6 @@ impl Program {
     }
 }
 
-impl Program {
-    /// The line at `index`, if the script has one (`cl` non-NULL).
-    pub fn line(&self, index: usize) -> Option<&Line> {
-        self.lines.get(index)
-    }
-}
-
 #[cfg(test)]
 mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
@@ -75,12 +68,5 @@ mod tests {
         assert_eq!(program.lines[2].body(), "");
         // Non-ASCII whitespace is not isspace in the C locale.
         assert_eq!(program.lines[3].body(), "\u{a0}caf\u{e9}");
-    }
-
-    #[test]
-    fn line_is_none_past_the_end() {
-        let program = Program::parse("a\nb");
-        assert_eq!(program.line(1).map(|l| l.cmd.as_str()), Some("b"));
-        assert!(program.line(2).is_none());
     }
 }
