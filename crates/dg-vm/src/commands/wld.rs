@@ -434,7 +434,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "needs the dispatch bodies: act_mtrigger must fire the act trigger"]
     fn wecho_offers_the_line_to_npcs_that_watch_for_it() {
         // The room's head is Bob. `act_to_room` tells the guard once (the
         // TO_ROOM pass); Bob's own TO_CHAR line is not offered to anyone.

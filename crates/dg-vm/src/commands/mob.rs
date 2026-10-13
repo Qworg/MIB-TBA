@@ -880,6 +880,7 @@ mod tests {
     use crate::commands::CmdHost;
     use crate::commands::support::World;
     use crate::host::{BaseHost, WorldHost};
+    use crate::mock::MockAction;
     use crate::types::{AttachType, uid_text};
 
     const PREFIX: &str = "Mob (the guard, VNum 3000):: ";
@@ -1709,16 +1710,19 @@ mod tests {
     #[test]
     fn mat_leaves_the_mob_where_the_command_put_it() {
         // `if (IN_ROOM(ch) == location)`: when the command took the mob
-        // somewhere else (`at XXXX quit`), it is not put back. The mock's
-        // `hook:arrive` stands in for the command and moves the mob on to a
-        // third room as it arrives.
+        // somewhere else (`at XXXX quit`), it is not put back. A mock hook
+        // stands in for the command and moves the mob on to a third room.
         let mut w = World::new();
         let mob = w.mob;
         let room3 = w.host.add_room(3003, "The Cellar");
-        w.host
-            .globals
-            .texts
-            .insert(format!("hook:arrive:{mob}"), "move 3003".to_owned());
+        w.host.hook(
+            Some(mob),
+            "look",
+            MockAction::MoveChar {
+                ch: mob,
+                room: room3,
+            },
+        );
         run(&mut w, "mat 3002 look");
         assert_eq!(w.host.mud_commands, [(mob, " look".to_owned())]);
         assert_eq!(w.host.in_room(mob), Some(room3));

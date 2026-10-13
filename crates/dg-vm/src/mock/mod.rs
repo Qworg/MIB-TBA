@@ -61,6 +61,17 @@
 //! | `texts["zone:<n>:name"]` | a zone's name, `<n>` the zone number |
 //! | `texts["mobproto:<vnum>"]`, `texts["objproto:<vnum>"]` | a loadable prototype's name; absent = no such vnum |
 //!
+//! # Changing the world from a command
+//!
+//! [`BaseHost::mud_command`] only records the line. A test that needs the
+//! command to have an effect (a forced `north` that moves the character, a
+//! `quit` that extracts it, a social that raises an `act` trigger) queues a
+//! [`MockHook`] with [`MockHost::hook`]: the first later call that matches
+//! its character and line prefix runs a [`MockAction`] (move or extract a
+//! character, extract an object, load a mob, set a variable, clear
+//! `dg_act_check`, or fire a trigger through [`crate::dispatch`]). See
+//! `hooks.rs` for the matching rules.
+//!
 //! Like the C lists, a newly placed character or object goes to the **head**,
 //! with one exception the C also makes: `obj_to_room` appends, so a room's
 //! contents are oldest first.
@@ -79,10 +90,13 @@ use crate::types::{
 mod chars;
 mod commands;
 mod dispatch;
+mod hooks;
 mod magic;
 mod objs;
 mod rooms;
 mod subst;
+
+pub use hooks::{MockAction, MockEvent, MockHook};
 
 /// One mock entity.
 #[derive(Debug, Clone)]
@@ -120,6 +134,9 @@ impl MockEntity {
 /// The in-memory host.
 #[derive(Debug, Default)]
 pub struct MockHost {
+    /// Queued [`MockHook`]s, run by [`BaseHost::mud_command`] (see
+    /// [`hooks`]).
+    pub hooks: VecDeque<MockHook>,
     pub entities: BTreeMap<Uid, MockEntity>,
     /// World-level facts (see the module table). Its `kind` is meaningless.
     pub globals: MockEntity,
@@ -545,6 +562,7 @@ impl BaseHost for MockHost {
 
     fn mud_command(&mut self, ch: Uid, line: &str) {
         self.mud_commands.push((ch, line.to_owned()));
+        self.run_hooks(ch, line);
     }
 
     fn mud_command_name(&self, prefix: &str) -> Option<String> {

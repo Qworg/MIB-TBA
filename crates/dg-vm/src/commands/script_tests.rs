@@ -3,15 +3,14 @@
 //! hands what is left to the command interpreters.
 //!
 //! The load, enter and act triggers these commands raise are the dispatch
-//! module's. The tests that need one to fire are `#[ignore]`d: they assert
-//! what the trigger writes, so they can only pass once the dispatch bodies
-//! are in (run them with `--include-ignored` then).
+//! module's; the tests assert what those triggers write.
 
 #![allow(clippy::expect_used, clippy::unwrap_used)]
 
 use super::support::World;
 use crate::driver::{Mode, script_driver};
 use crate::host::{BaseHost, WorldHost};
+use crate::mock::MockAction;
 use crate::types::{AttachType, Uid, uid_text};
 
 /// Attach a new trigger with `script` to `owner`; the id of its instance.
@@ -317,7 +316,6 @@ fn load_watcher(w: &mut World, loader: Uid, key: &str, vnum: i32, types: &str, k
 }
 
 #[test]
-#[ignore = "needs the dispatch bodies: load_mtrigger must fire the load trigger"]
 fn mload_records_lastloaded_before_the_new_mob_is_told_it_loaded() {
     let mut w = World::new();
     let mob = w.mob;
@@ -337,7 +335,6 @@ fn mload_records_lastloaded_before_the_new_mob_is_told_it_loaded() {
 }
 
 #[test]
-#[ignore = "needs the dispatch bodies: load_otrigger must fire the load trigger"]
 fn every_way_mload_obj_places_an_object_tells_it_after_lastloaded_is_set() {
     // No target (lying in the room), a person, a worn position, a container
     // and a target that is neither a person nor a container.
@@ -373,7 +370,6 @@ fn every_way_mload_obj_places_an_object_tells_it_after_lastloaded_is_set() {
 }
 
 #[test]
-#[ignore = "needs the dispatch bodies: load_otrigger must fire the load trigger"]
 fn oload_and_wload_record_lastloaded_the_way_their_c_does() {
     let mut w = World::new();
     let (lamp, room, alice) = (w.obj, w.room, w.player);
@@ -446,7 +442,6 @@ fn entry_watcher(w: &mut World, room: Uid) {
 }
 
 #[test]
-#[ignore = "needs the dispatch bodies: enter_wtrigger must fire the enter trigger"]
 fn every_script_teleport_and_goto_tells_the_new_room() {
     for (owner, line, who) in [
         ("mob", "mteleport %actor% 3002", "Alice"),
@@ -485,16 +480,22 @@ fn teleport_moves_the_actor() {
 // ---- the `all` forms follow the next occupant where it went ----------------
 
 /// Room 3001 holds [Bob, Alice, guard] and room 3002 a rat. Bob's arrival in
-/// 3002 pulls Alice there as well (what a follower does in `perform_move`).
+/// 3002 pulls Alice there as well (what a follower does in `perform_move`):
+/// the room's enter trigger forces Bob to run a command, which moves Alice.
 fn followers_world() -> (World, Uid, Uid) {
     let mut w = World::new();
     let (room2, alice, bob) = (w.room2, w.player, w.player2);
     let rat = w.host.add_mob(3100, "a rat");
     w.host.char_to_room(rat, room2);
-    w.host
-        .globals
-        .texts
-        .insert(format!("hook:arrive:{bob}"), format!("pull 3002 {alice}"));
+    attach(&mut w, room2, AttachType::Wld, "g", "wforce %actor% follow");
+    w.host.hook(
+        Some(bob),
+        "follow",
+        MockAction::MoveChar {
+            ch: alice,
+            room: room2,
+        },
+    );
     (w, alice, bob)
 }
 
@@ -534,6 +535,71 @@ fn wteleport_all_follows_the_next_occupant_into_the_new_room() {
     assert_walk_followed_the_next_occupant(&w, alice, bob);
 }
 
+/// `oforce all` / `wforce all` from [Bob, Alice, guard] with a rat in 3002:
+/// Bob's forced command takes Alice (his saved next) to 3002, so the walk
+/// goes on at Alice in her new room and then the rat; the guard is never
+/// reached.
+fn assert_force_walk_followed_the_next_occupant(w: &World, alice: Uid, bob: Uid) {
+    let rat = w.host.character_list[0];
+    assert_eq!(w.host.vnum(rat), 3100);
+    assert_eq!(
+        w.host.mud_commands,
+        [
+            (bob, " wave".to_owned()),
+            (alice, " wave".to_owned()),
+            (rat, " wave".to_owned())
+        ]
+    );
+    assert_eq!(w.host.room_people(w.room), [bob, w.mob]);
+}
+
+fn force_world() -> (World, Uid, Uid) {
+    let mut w = World::new();
+    let (room2, alice, bob) = (w.room2, w.player, w.player2);
+    let rat = w.host.add_mob(3100, "a rat");
+    w.host.char_to_room(rat, room2);
+    w.host.hook(
+        Some(bob),
+        "wave",
+        MockAction::MoveChar {
+            ch: alice,
+            room: room2,
+        },
+    );
+    (w, alice, bob)
+}
+
+#[test]
+fn oforce_all_follows_the_next_occupant_into_the_new_room() {
+    let (mut w, alice, bob) = force_world();
+    let lamp = w.obj;
+    w.run_obj(lamp, "oforce all wave");
+    assert_force_walk_followed_the_next_occupant(&w, alice, bob);
+}
+
+#[test]
+fn wforce_all_follows_the_next_occupant_into_the_new_room() {
+    let (mut w, alice, bob) = force_world();
+    let room = w.room;
+    w.run_wld(room, "wforce all wave");
+    assert_force_walk_followed_the_next_occupant(&w, alice, bob);
+}
+
+#[test]
+fn wforce_all_still_reaches_an_occupant_extracted_by_the_previous_command() {
+    // The saved next of Bob is Alice; a command that extracts her only marks
+    // her dead (she stays in the list, and `valid_dg_target` does not look at
+    // `DEAD`), so the walk still reaches her and goes on to the guard.
+    let mut w = World::new();
+    let (alice, bob, guard) = (w.player, w.player2, w.mob);
+    w.host
+        .hook(Some(bob), "wave", MockAction::ExtractChar(alice));
+    let room = w.room;
+    w.run_wld(room, "wforce all wave");
+    let forced: Vec<Uid> = w.host.mud_commands.iter().map(|(ch, _)| *ch).collect();
+    assert_eq!(forced, [bob, alice, guard]);
+}
+
 #[test]
 fn a_script_teleport_all_reaches_everyone_when_nobody_moves_on_their_own() {
     let mut w = World::new();
@@ -547,44 +613,41 @@ fn a_script_teleport_all_reaches_everyone_when_nobody_moves_on_their_own() {
 // ---- dg_act_check: one NPC's act trigger can end the walk ---------------
 
 #[test]
-#[ignore = "needs the dispatch bodies: act_mtrigger must fire the act trigger"]
 fn an_act_trigger_that_says_something_ends_the_offers_to_later_npcs() {
-    // Room people [Alice, Bob, guard2, guard]; both guards watch for `hush`.
-    // `wecho hush` is `act()` from Alice: Bob is told first. `say` is an
-    // `act(..., DG_NO_TRIG)`, which sets `dg_act_check` to 0 for the rest of
-    // the outer walk, so the guards behind a speaker are not offered the
-    // line. The mock's `mud_command` cannot run `say`, so a send hook clears
-    // the flag when Bob is told, as a speaking NPC before him would have.
+    // Room people [Alice, speaker, guard2, guard]; all three NPCs watch for
+    // `hush`. `wecho hush` is `act()` from Alice, and each NPC's trigger says
+    // `heard`. `say` is an `act(..., DG_NO_TRIG)`, which sets `dg_act_check`
+    // to 0 for the rest of the outer walk, so the NPCs behind a speaker are
+    // not offered the line. The mock's `mud_command` cannot run `say`, so a
+    // hook clears the flag when the speaker's `say` is run.
     for hushed in [false, true] {
         let mut w = World::new();
-        let (room, alice, bob, guard) = (w.room, w.player, w.player2, w.mob);
+        let (room, alice, guard) = (w.room, w.player, w.mob);
+        let speaker = w.host.add_mob(3102, "a speaker");
         let guard2 = w.host.add_mob(3101, "a second guard");
-        w.host.char_to_room(guard2, room);
-        w.host.set_num(guard2, "pos", 8);
-        for ch in [bob, alice] {
-            w.host.char_from_room(ch);
-            w.host.char_to_room(ch, room);
+        for npc in [speaker, guard2] {
+            w.host.set_num(npc, "pos", 8);
         }
-        assert_eq!(w.host.room_people(room), [alice, bob, guard2, guard]);
-        let proto = w
-            .host
-            .add_proto(901, AttachType::Mob, "e", 0, "hush", "say heard");
-        w.host.attach(guard, &proto);
-        w.host.attach(guard2, &proto);
+        w.seat(room, &[alice, speaker, guard2, guard]);
+        assert_eq!(
+            w.host.room_people(room),
+            [alice, speaker, guard2, guard, w.player2]
+        );
+        for npc in [speaker, guard2, guard] {
+            w.listen_for(npc, "hush", "say heard");
+        }
         if hushed {
-            w.host
-                .globals
-                .texts
-                .insert(format!("hook:send:{bob}"), "noact".to_owned());
+            w.host.hook(Some(speaker), "say", MockAction::ActNoTrig);
         }
         run_script(&mut w, room, "wecho hush", None);
-        let heard = [
-            (guard2, "say heard".to_owned()),
-            (guard, "say heard".to_owned()),
-        ];
+        let heard = |npc| (npc, "say heard".to_owned());
         assert_eq!(
             w.host.mud_commands,
-            if hushed { vec![] } else { heard.to_vec() }
+            if hushed {
+                vec![heard(speaker)]
+            } else {
+                vec![heard(speaker), heard(guard2), heard(guard)]
+            }
         );
     }
 }
