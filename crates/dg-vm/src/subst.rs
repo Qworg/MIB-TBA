@@ -61,7 +61,8 @@ use crate::expr::process_eval;
 use crate::host::{BaseHost, Cx, DgHost};
 use crate::lookup::{
     get_char, get_char_by_obj, get_char_by_room, get_char_in_room, get_obj, get_obj_by_obj,
-    get_obj_by_room, get_obj_in_list, get_room, obj_room, trgvar_in_room,
+    get_obj_by_room, get_obj_in_list, get_object_in_equip, get_room, idx_vnum, obj_room,
+    trgvar_in_room,
 };
 use crate::text::text_processed;
 use crate::types::{
@@ -629,7 +630,7 @@ fn special_var<H: DgHost + ?Sized>(
     if str_eq(var, "people") {
         let num = atoi(field);
         let count = if num > 0 {
-            match trgvar_in_room(&*cx.host, idx(num)) {
+            match trgvar_in_room(&*cx.host, idx_vnum(num)) {
                 Some(count) => count,
                 None => {
                     cx.host
@@ -676,17 +677,17 @@ fn special_var<H: DgHost + ?Sized>(
             cx.host.script_log("findmob.vnum(mvnum) - illegal syntax");
             return Special::Done("0".to_owned());
         }
-        let Some(room) = cx.host.real_room(idx(atoi(field))) else {
+        let Some(room) = cx.host.real_room(idx_vnum(atoi(field))) else {
             let message = format!("findmob.vnum(ovnum): No room with vnum {}", atoi(field));
             cx.host.script_log(&message);
             return Special::Done("0".to_owned());
         };
-        let mvnum = idx(atoi(subfield));
+        let mvnum = idx_vnum(atoi(subfield));
         let count = cx
             .host
             .room_people(room)
             .into_iter()
-            .filter(|ch| idx(cx.host.vnum(*ch)) == mvnum)
+            .filter(|ch| idx_vnum(cx.host.vnum(*ch)) == mvnum)
             .count();
         return Special::Done(count.to_string());
     }
@@ -695,24 +696,19 @@ fn special_var<H: DgHost + ?Sized>(
             cx.host.script_log("findobj.vnum(ovnum) - illegal syntax");
             return Special::Done("0".to_owned());
         }
-        let Some(room) = cx.host.real_room(idx(atoi(field))) else {
+        let Some(room) = cx.host.real_room(idx_vnum(atoi(field))) else {
             let message = format!("findobj.vnum(ovnum): No room with vnum {}", atoi(field));
             cx.host.script_log(&message);
             return Special::Done("0".to_owned());
         };
         // item_in_list looks within containers as well.
         let list = cx.host.room_contents(room);
-        return Special::Done(fields_obj::item_in_list_c(&*cx.host, subfield, &list).to_string());
+        return Special::Done(crate::lookup::item_in_list(&*cx.host, subfield, &list).to_string());
     }
     if str_eq(var, "random") {
         return Special::Done(random_var(cx, attach, field));
     }
     Special::Entity(Ent::Nothing)
-}
-
-/// An `int` stored into an `IDXTYPE` (`ush_int`): the low 16 bits.
-fn idx(value: i32) -> i32 {
-    i32::from(value as u16)
 }
 
 /// `%random.char%`, `%random.dir%` and `%random.<number>%`.
@@ -798,7 +794,7 @@ fn random_var<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, attach: AttachType, field:
 fn resolve_name<H: DgHost + ?Sized>(host: &H, attach: AttachType, go: Uid, name: &str) -> Ent {
     match attach {
         AttachType::Mob => {
-            if let Some(o) = fields_obj::get_object_in_equip_c(host, go, name) {
+            if let Some(o) = get_object_in_equip(host, go, name) {
                 return Ent::Obj(o);
             }
             if let Some(o) = get_obj_in_list(host, name, &host.carrying(go)) {

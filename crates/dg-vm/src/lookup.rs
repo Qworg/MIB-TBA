@@ -35,6 +35,28 @@ pub const WEAR_WRIST_L: i32 = 15;
 pub const WEAR_WIELD: i32 = 16;
 pub const WEAR_HOLD: i32 = 17;
 
+/// An `int` stored into an `IDXTYPE` (`room_vnum`, `mob_vnum`, `obj_vnum`):
+/// with `CIRCLE_UNSIGNED_INDEX` that is `ush_int`, so the value keeps its low
+/// 16 bits (`-1` becomes 65535 = `NOTHING`, `68556` becomes 3020).
+pub fn idx_vnum(value: i32) -> i32 {
+    i32::from(value as u16)
+}
+
+/// A vnum as the C holds it: `GET_MOB_VNUM` / `GET_OBJ_VNUM` of an entity
+/// with no prototype is `NOBODY` / `NOTHING`, `(IDXTYPE)~0` = 65535. A host
+/// reports "no prototype" as any negative vnum ([`crate::host::WorldHost::vnum`]);
+/// every other vnum is passed through.
+pub fn c_vnum(vnum: i32) -> i32 {
+    if vnum < 0 { 65535 } else { vnum }
+}
+
+/// Whether the entity's vnum equals a number a script gave, as the C compares
+/// them: `obj_vnum ovnum = atoi(item)` narrows the script's number to
+/// `IDXTYPE`, and the entity's vnum already is one.
+fn vnum_is<H: WorldHost + ?Sized>(host: &H, uid: Uid, wanted: i32) -> bool {
+    idx_vnum(c_vnum(host.vnum(uid))) == idx_vnum(wanted)
+}
+
 /// `FIND_INDEX_LAST`: what [`get_number`] returns for `last.<name>`.
 pub const FIND_INDEX_LAST: i32 = -1;
 
@@ -95,7 +117,8 @@ pub fn find_room<H: WorldHost + ?Sized>(host: &H, n: Uid) -> Option<Uid> {
     if !(ROOM_ID_BASE..OBJ_ID_BASE).contains(&n) {
         return None;
     }
-    host.real_room(i32::try_from(n - ROOM_ID_BASE).ok()?)
+    // `real_room((room_vnum)n)`: the id's vnum part narrows to 16 bits.
+    host.real_room(idx_vnum(i32::try_from(n - ROOM_ID_BASE).ok()?))
 }
 
 /// A character id that is also a valid script target.
@@ -178,7 +201,7 @@ pub fn get_object_in_equip<H: WorldHost + ?Sized>(host: &H, ch: Uid, name: &str)
     }
     if is_number(name) {
         let vnum = atoi(name);
-        return worn.into_iter().find(|obj| host.vnum(*obj) == vnum);
+        return worn.into_iter().find(|obj| vnum_is(host, *obj, vnum));
     }
     let (number, keyword) = get_number(name);
     if number == 0 {
@@ -286,7 +309,7 @@ pub fn item_in_list<H: WorldHost + ?Sized>(host: &H, item: &str, list: &[Uid]) -
         count(host, list, &|obj| obj == id, 0)
     } else if is_number(item) {
         let vnum = atoi(item);
-        count(host, list, &|obj| host.vnum(obj) == vnum, 0)
+        count(host, list, &|obj| vnum_is(host, obj, vnum), 0)
     } else {
         count(host, list, &|obj| isname(item, &host.keywords(obj)), 0)
     }
@@ -350,7 +373,7 @@ pub fn get_obj<H: WorldHost + ?Sized>(host: &H, name: &str) -> Option<Uid> {
 pub fn get_room<H: WorldHost + ?Sized>(host: &H, name: &str) -> Option<Uid> {
     match parse_uid(name) {
         Some(id) => find_room(host, id),
-        None => host.real_room(atoi(name)),
+        None => host.real_room(idx_vnum(atoi(name))),
     }
 }
 
@@ -553,7 +576,10 @@ pub fn get_char_world_vis<H: WorldHost + ?Sized>(host: &H, ch: Uid, name: &str) 
         return Some(found);
     }
     if number == 0 {
-        return get_player_vis(host, ch, name, false);
+        // The room pass ran `get_player_vis(ch, name, NULL, …)` on this very
+        // buffer, and its `get_number` stripped the inner `N.` of `0.N.name`
+        // in place: the world pass sees the bare name.
+        return get_player_vis(host, ch, get_number(name).1, false);
     }
     if number == FIND_INDEX_LAST {
         return None;
@@ -748,6 +774,51 @@ mod tests {
         assert_eq!(find_eq_pos_script("wield"), Some(WEAR_WIELD));
         assert_eq!(find_eq_pos_script("5"), Some(WEAR_BODY));
         assert_eq!(find_eq_pos_script("tail"), None);
+    }
+
+    #[test]
+    fn a_zero_count_world_pass_looks_for_the_bare_name() {
+        // `get_char_world_vis(ch, "0.2.carol")`: the room pass's
+        // `get_player_vis` strips the inner `2.` from the buffer, so the
+        // world pass asks for the first visible `carol`, not the second.
+        let (mut host, _, guard, _, _, _) = world();
+        let elsewhere = host.add_room(3002, "Altar");
+        let carol = host.add_player("Carol");
+        host.char_to_room(carol, elsewhere);
+        assert_eq!(get_char_world_vis(&host, guard, "0.carol"), Some(carol));
+        assert_eq!(get_char_world_vis(&host, guard, "0.2.carol"), Some(carol));
+        assert_eq!(get_char_world_vis(&host, guard, "2.carol"), None);
+        // In the room, the room pass finds the player first.
+        assert_eq!(
+            get_char_world_vis(&host, guard, "0.3.bob").map(|c| host.name(c)),
+            Some("Bob".to_owned())
+        );
+    }
+
+    #[test]
+    fn vnum_comparisons_narrow_to_sixteen_bits_like_idxtype() {
+        let (mut host, room, _, _, bob, sword) = world();
+        // A prototype-less object: the host says -1, the C holds NOTHING =
+        // 65535 and `obj_vnum ovnum = atoi(item)` narrows the same way.
+        let ghost = host.add_obj(-1, "a ghost thing");
+        host.obj_to_char(ghost, bob);
+        let carried = host.carrying(bob);
+        assert_eq!(item_in_list(&host, "65535", &carried), 1);
+        assert_eq!(item_in_list(&host, "131071", &carried), 1);
+        assert_eq!(item_in_list(&host, "-1", &carried), 1);
+        // 68556 = 65536 + 3022 narrows to the sword's vnum.
+        assert_eq!(item_in_list(&host, "68558", &carried), 1);
+        assert_eq!(item_in_list(&host, "3022", &carried), 1);
+        host.equip_char(bob, sword, WEAR_WIELD);
+        host.equip_char(bob, ghost, WEAR_HOLD);
+        assert_eq!(get_object_in_equip(&host, bob, "65535"), Some(ghost));
+        assert_eq!(get_object_in_equip(&host, bob, "68558"), Some(sword));
+        // Rooms: `real_room` takes a `room_vnum`.
+        assert_eq!(get_room(&host, "68537"), Some(room));
+        assert_eq!(get_room(&host, "-62535"), Some(room));
+        let id = ROOM_ID_BASE + 68537;
+        assert_eq!(find_room(&host, id), Some(room));
+        assert_eq!(get_room(&host, "3002"), None);
     }
 
     #[test]

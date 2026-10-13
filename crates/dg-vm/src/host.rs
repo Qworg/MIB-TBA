@@ -159,8 +159,12 @@ pub trait WorldHost {
     /// player, their name) / `obj->name`.
     fn keywords(&self, uid: Uid) -> String;
 
-    /// `GET_MOB_VNUM(ch)` / `GET_OBJ_VNUM(obj)` / `room->number`; `-1` for a
-    /// player (`NOBODY`).
+    /// `GET_MOB_VNUM(ch)` / `GET_OBJ_VNUM(obj)` / `room->number`. An entity
+    /// with no prototype (a player, an object made without one) answers
+    /// `-1`: the C's `NOBODY` / `NOTHING` is `(IDXTYPE)~0`, 65535, and the VM
+    /// maps any negative vnum to it ([`crate::lookup::c_vnum`]). Vnums are 16
+    /// bits in the reference build (`CIRCLE_UNSIGNED_INDEX`), so a host never
+    /// reports one above 65534.
     fn vnum(&self, uid: Uid) -> i32;
 
     /// `IN_ROOM(ch)` / `IN_ROOM(obj)`: the room a character is in, or the room

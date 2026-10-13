@@ -39,71 +39,10 @@
 //! [`AFFECTED_BITS`], [`APPLY_TYPES`]. (`wear_bits` is not used by this
 //! table: `wearflag` goes through `can_wear_on_pos`.)
 
-use crate::cstr::{atoi, is_abbrev, is_number, one_argument, skip_spaces, sprinttype, str_eq};
-use crate::host::WorldHost;
+use crate::cstr::{atoi, is_abbrev, one_argument, skip_spaces, sprinttype, str_eq};
 use crate::host::{Cx, DgHost};
-use crate::lookup::{
-    NUM_WEARS, can_wear_on_pos, find_eq_pos_script, get_object_in_equip, item_in_list, obj_room,
-};
-use crate::types::{ITEM_CONTAINER, MAX_INPUT_LENGTH, Uid, parse_uid, uid_text};
-
-/// A vnum as the C holds it: `IDXTYPE` is `ush_int` in this tree, so
-/// `NOTHING` is 65535. A host reports it as any negative number (the mock as
-/// -1); every other vnum is passed through, so one above 65535, which the C
-/// cannot hold, is out of contract but not mistaken for `NOTHING`. Numeric
-/// comparisons against a script's number narrow both sides to 16 bits
-/// ([`vnum_is`]).
-pub(crate) fn c_vnum(vnum: i32) -> i32 {
-    if vnum < 0 { 65535 } else { vnum }
-}
-
-/// Whether a host vnum equals a number a script gave, as the C compares
-/// them: `obj_vnum ovnum = atoi(item)` narrows the script's number to the
-/// unsigned 16-bit `IDXTYPE`, and `GET_OBJ_VNUM` is one already.
-fn vnum_is(vnum: i32, wanted: i32) -> bool {
-    c_vnum(vnum) as u16 == wanted as u16
-}
-
-/// `item_in_list(item, list)` (`dg_variables.c`) with the vnum comparison
-/// of the C: both sides are `IDXTYPE`, so a prototype-less object (host
-/// vnum negative) is 65535. Ids and keywords go through
-/// [`crate::lookup::item_in_list`], which does the rest of the C function.
-pub(crate) fn item_in_list_c<H: WorldHost + ?Sized>(host: &H, item: &str, list: &[Uid]) -> i32 {
-    fn count<H: WorldHost + ?Sized>(host: &H, list: &[Uid], wanted: i32, depth: u32) -> i32 {
-        let mut total = 0;
-        for obj in list.iter().copied() {
-            if vnum_is(host.vnum(obj), wanted) {
-                total += 1;
-            }
-            // The bound only guards against a corrupt containment cycle.
-            if depth < 64 && host.obj_type(obj) == ITEM_CONTAINER {
-                total += count(host, &host.obj_contains(obj), wanted, depth + 1);
-            }
-        }
-        total
-    }
-    if !item.is_empty() && parse_uid(item).is_none() && is_number(item) {
-        count(host, list, atoi(item), 0)
-    } else {
-        item_in_list(host, item, list)
-    }
-}
-
-/// `get_object_in_equip(ch, name)` (`dg_scripts.c`) with the same vnum
-/// comparison as [`item_in_list_c`].
-pub(crate) fn get_object_in_equip_c<H: WorldHost + ?Sized>(
-    host: &H,
-    ch: Uid,
-    name: &str,
-) -> Option<Uid> {
-    if parse_uid(name).is_none() && is_number(name) {
-        let wanted = atoi(name);
-        return (0..NUM_WEARS)
-            .filter_map(|pos| host.equipment(ch, pos))
-            .find(|obj| vnum_is(host.vnum(*obj), wanted));
-    }
-    get_object_in_equip(host, ch, name)
-}
+use crate::lookup::{c_vnum, can_wear_on_pos, find_eq_pos_script, item_in_list, obj_room};
+use crate::types::{ITEM_CONTAINER, MAX_INPUT_LENGTH, Uid, uid_text};
 
 /// `GET_OBJ_VNUM(obj)`: the host's vnum through [`c_vnum`].
 pub(crate) fn obj_vnum<H: DgHost + ?Sized>(host: &H, obj: Uid) -> i32 {
@@ -473,7 +412,7 @@ pub fn obj_field<H: DgHost + ?Sized>(
             .unwrap_or_default()
     } else if is("count") {
         if host.obj_type(obj) == ITEM_CONTAINER {
-            item_in_list_c(&*host, subfield, &host.obj_contains(obj)).to_string()
+            item_in_list(&*host, subfield, &host.obj_contains(obj)).to_string()
         } else {
             "0".to_owned()
         }
@@ -487,7 +426,7 @@ pub fn obj_field<H: DgHost + ?Sized>(
         }
     } else if is("has_in") {
         if host.obj_type(obj) == ITEM_CONTAINER {
-            let found = item_in_list_c(&*host, subfield, &host.obj_contains(obj)) != 0;
+            let found = item_in_list(&*host, subfield, &host.obj_contains(obj)) != 0;
             u8::from(found).to_string()
         } else {
             "0".to_owned()

@@ -9,14 +9,14 @@
 use super::comm::{TO_CHAR, TO_ROOM, act_to_room, for_each_occupant, sub_write};
 use super::misc::script_damage;
 use super::shared::{
-    Owner, dir_count, door, exit_to_room, load, recho, starts_with_digit, teleport, vnum16,
-    zoneecho,
+    Owner, dir_count, door, exit_to_room, load, recho, starts_with_digit, teleport, zoneecho,
 };
 use super::strncmp_lookup;
 use crate::cstr::{any_one_arg, atoi, one_argument, skip_spaces, str_eq, two_arguments};
 use crate::host::DgHost;
 use crate::lookup::{
     get_char, get_char_by_room, get_char_in_room, get_obj, get_obj_by_room, get_obj_in_room,
+    idx_vnum,
 };
 use crate::types::{UID_CHAR, Uid};
 
@@ -183,7 +183,7 @@ fn do_wteleport<H: DgHost + ?Sized>(host: &mut H, room: Uid, argument: &str) {
         return;
     }
 
-    let nr = vnum16(atoi(&arg2));
+    let nr = idx_vnum(atoi(&arg2));
     let Some(target) = host.real_room(nr) else {
         log.log(host, "wteleport target is an invalid room");
         return;
@@ -307,7 +307,7 @@ fn do_wat<H: DgHost + ?Sized>(host: &mut H, room: Uid, argument: &str, nest: u32
     }
 
     let loc = if starts_with_digit(&arg) {
-        host.real_room(vnum16(atoi(&arg)))
+        host.real_room(idx_vnum(atoi(&arg)))
     } else {
         get_char_by_room(host, room, &arg).and_then(|ch| host.in_room(ch))
     };
@@ -331,7 +331,7 @@ fn do_wmove<H: DgHost + ?Sized>(host: &mut H, room: Uid, argument: &str) {
         return;
     }
 
-    let nr = vnum16(atoi(&arg2));
+    let nr = idx_vnum(atoi(&arg2));
     let Some(target) = host.real_room(nr) else {
         log.log(host, "wmove target is an invalid room");
         return;

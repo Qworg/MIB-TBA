@@ -11,12 +11,12 @@ use super::comm::{TO_CHAR, TO_ROOM, for_each_occupant, sub_write};
 use super::misc::script_damage;
 use super::shared::{
     Owner, dir_count, door, exit_to_room, find_obj_target_room, load, obj_contains_obj, recho,
-    starts_with_digit, teleport, vnum16, zoneecho,
+    starts_with_digit, teleport, zoneecho,
 };
 use super::strncmp_lookup;
 use crate::cstr::{any_one_arg, atoi, is_number, one_argument, skip_spaces, str_eq, two_arguments};
 use crate::host::DgHost;
-use crate::lookup::{NUM_WEARS, get_char_by_obj, get_obj_by_obj, obj_room};
+use crate::lookup::{NUM_WEARS, get_char_by_obj, get_obj_by_obj, idx_vnum, obj_room};
 use crate::types::Uid;
 
 /// How many `oat` levels deep a command may nest (the C is bounded only by
@@ -227,7 +227,7 @@ fn do_otransform<H: DgHost + ?Sized>(host: &mut H, obj: Uid, argument: &str) {
         log.log(host, "otransform: missing argument");
     } else if !starts_with_digit(&arg) {
         log.log(host, "otransform: bad argument");
-    } else if let Some(new_obj) = host.cmd_read_object(vnum16(atoi(&arg))) {
+    } else if let Some(new_obj) = host.cmd_read_object(idx_vnum(atoi(&arg))) {
         // A worn object is taken off and put back on at the same position.
         // `worn_on` is the position in the wearer's equipment holding `obj`.
         let worn = host.obj_worn_by(obj).and_then(|wearer| {
@@ -418,7 +418,7 @@ fn do_oat<H: DgHost + ?Sized>(host: &mut H, obj: Uid, argument: &str, nest: u32)
     }
 
     let loc = if starts_with_digit(&arg) {
-        host.real_room(vnum16(atoi(&arg)))
+        host.real_room(idx_vnum(atoi(&arg)))
     } else {
         get_char_by_obj(host, obj, &arg).and_then(|ch| host.in_room(ch))
     };

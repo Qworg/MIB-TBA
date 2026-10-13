@@ -79,12 +79,9 @@
 //!   ([`comm::for_each_occupant`]). Both walks are cut off after 100000
 //!   steps, which the C does not do.
 //! - `dg_act_check`, the static of `comm.c` that every `act()` overwrites, is
-//!   host state ([`CmdHost::cmd_act_check`]) so that the `act()` of the game
+//!   [`crate::types::VmState::act_check`], so that the `act()` of the game
 //!   and this one share it: an `act` trigger that makes the game say
 //!   something switches it off for the rest of the outer walk.
-//! - `get_char_world_vis` is called through `shared::char_world_vis`, which
-//!   gives the world pass of a `0.N.name` argument the name the room pass
-//!   left in the C's buffer (`lookup.rs` hands it the unstripped name).
 //! - `sub_write` takes the room to work in as a parameter rather than reading
 //!   `IN_ROOM(ch)`, so `do_masound`'s temporary reassignment of the mob's room
 //!   needs no host support.

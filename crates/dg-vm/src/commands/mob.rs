@@ -12,14 +12,14 @@
 use super::comm::{TO_CHAR, TO_ROOM, for_each_occupant, sub_write, sub_write_in};
 use super::misc::script_damage;
 use super::shared::{
-    Owner, PRF_NOHASSLE, char_world_vis, dir_count, door, exit_to_room, find_target_room, has_desc,
-    load, recho, shown_after_char, starts_with_digit, teleport, vnum16, zoneecho,
+    Owner, PRF_NOHASSLE, dir_count, door, exit_to_room, find_target_room, has_desc, load, recho,
+    shown_after_char, starts_with_digit, teleport, zoneecho,
 };
 use crate::cstr::{atoi, one_argument, skip_spaces, str_eq, two_arguments};
 use crate::host::DgHost;
 use crate::lookup::{
-    NUM_WEARS, Where, get_char, get_char_room_vis, get_char_vis, get_number, get_obj,
-    get_obj_in_list_vis, get_obj_pos_in_equip_vis, get_obj_vis, isname,
+    NUM_WEARS, Where, get_char, get_char_room_vis, get_char_vis, get_char_world_vis, get_number,
+    get_obj, get_obj_in_list_vis, get_obj_pos_in_equip_vis, get_obj_vis, idx_vnum, isname,
 };
 use crate::types::{LVL_IMPL, ScriptMemory, UID_CHAR, Uid};
 
@@ -149,7 +149,7 @@ fn victim_in_world<H: DgHost + ?Sized>(host: &H, ch: Uid, arg: &str) -> Option<U
     if arg.starts_with(UID_CHAR) {
         get_char(host, arg)
     } else {
-        char_world_vis(host, ch, arg)
+        get_char_world_vis(host, ch, arg)
     }
 }
 
@@ -764,9 +764,9 @@ fn do_mtransform<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     } else {
         // A leading `-` keeps the old hit points out of the new mob.
         let (vnum, keep_hp) = if starts_with_digit(&arg) {
-            (vnum16(atoi(&arg)), true)
+            (idx_vnum(atoi(&arg)), true)
         } else {
-            (vnum16(atoi(&arg[1..])), false)
+            (idx_vnum(atoi(&arg[1..])), false)
         };
         let Some(new_mob) = host.cmd_read_mobile(vnum) else {
             log.log(host, "mtransform: bad mobile vnum");
@@ -1665,7 +1665,7 @@ mod tests {
 
     #[test]
     fn mgoto_with_a_negative_count_finds_nothing() {
-        // atoi wraps 4294967294 to -2: every match counts it further from
+        // atoi keeps the low 32 bits of 4294967294, which is -2: every match counts it further from
         // zero, so neither the character nor the object search returns.
         let mut w = World::new();
         let (mob, room2) = (w.mob, w.room2);

@@ -55,9 +55,9 @@
 use crate::cstr::{
     atoi, is_abbrev, is_number, one_word, skip_spaces, sprinttype, str_str, strn_cmp,
 };
-use crate::fields_obj::{c_vnum, get_object_in_equip_c, item_in_list_c};
 use crate::host::{Cx, DgHost};
 use crate::lookup::{NUM_WEARS, find_eq_pos_script};
+use crate::lookup::{c_vnum, get_object_in_equip, item_in_list};
 use crate::magic::find_skill_num;
 use crate::types::{
     AttachType, LVL_GRGOD, LVL_IMMORT, PULSE_VIOLENCE, ROOM_ID_BASE, Uid, uid_text,
@@ -364,10 +364,10 @@ pub fn skill_percent<H: DgHost + ?Sized>(host: &H, ch: Uid, skill: &str) -> Stri
 /// `char_has_item(item, ch)` (`dg_variables.c`): worn, or carried (searching
 /// containers), by id, vnum or keyword.
 pub fn char_has_item<H: DgHost + ?Sized>(host: &H, item: &str, ch: Uid) -> bool {
-    if get_object_in_equip_c(host, ch, item).is_some() {
+    if get_object_in_equip(host, ch, item).is_some() {
         return true;
     }
-    item_in_list_c(host, item, &host.carrying(ch)) != 0
+    item_in_list(host, item, &host.carrying(ch)) != 0
 }
 
 /// `"1"` or `"0"`.
@@ -980,8 +980,9 @@ mod tests {
         assert_eq!(f.s(pc, "mana", "7"), "7");
         assert_eq!(f.s(pc, "mana", "-10"), "-3");
         assert_eq!(f.s(pc, "move", "100"), "100");
-        // An overflowing atoi wraps in int, then truncates to short.
-        // atoi wraps to 1215752191; +100 = 1215752291, low 16 bits 59491 = -6045.
+        // atoi keeps the low 32 bits of strtol's long, then the sum truncates
+        // to short: 99999999999 is 1215752191; +100 = 1215752291, low 16 bits
+        // 59491 = -6045.
         assert_eq!(f.s(pc, "move", "99999999999"), "-6045");
     }
 

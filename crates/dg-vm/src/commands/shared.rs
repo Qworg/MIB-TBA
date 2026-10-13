@@ -12,9 +12,9 @@ use crate::dispatch::{enter_wtrigger, load_mtrigger, load_otrigger};
 use crate::fields_char::CharStat;
 use crate::host::DgHost;
 use crate::lookup::{
-    FIND_INDEX_LAST, Where, can_wear_on_pos, find_eq_pos_script, get_char, get_char_by_obj,
-    get_char_in_room, get_char_near_obj, get_char_room_vis, get_char_vis, get_number, get_obj,
-    get_obj_by_obj, get_obj_in_room, get_obj_near_obj, get_obj_vis, get_player_vis, get_room,
+    FIND_INDEX_LAST, Where, c_vnum, can_wear_on_pos, find_eq_pos_script, get_char, get_char_by_obj,
+    get_char_in_room, get_char_near_obj, get_char_room_vis, get_char_world_vis, get_number,
+    get_obj, get_obj_by_obj, get_obj_in_room, get_obj_near_obj, get_obj_vis, get_room, idx_vnum,
     obj_room,
 };
 use crate::types::{DIRS, ITEM_CONTAINER, LVL_GRGOD, UID_CHAR, Uid, uid_text};
@@ -51,20 +51,6 @@ pub(crate) enum Owner {
     Wld(Uid),
 }
 
-/// The conversion of an `atoi` result to `room_vnum`, `mob_vnum` or
-/// `obj_vnum` when it is passed on: with `CIRCLE_UNSIGNED_INDEX` these are
-/// `ush_int`, so the value wraps to 16 bits (-1 becomes 65535).
-pub(crate) fn vnum16(value: i32) -> i32 {
-    i32::from(value as u16)
-}
-
-/// A vnum as the C prints it with `%d`: `NOBODY` / `NOTHING` are
-/// `(IDXTYPE)~0`, an unsigned short, so an owner with no prototype prints
-/// 65535, not -1.
-fn prototype_vnum(vnum: i32) -> i32 {
-    if vnum < 0 { 65535 } else { vnum }
-}
-
 impl Owner {
     /// The `m`/`o`/`w` of the command names.
     pub(crate) fn letter(self) -> char {
@@ -89,16 +75,13 @@ impl Owner {
                 } else {
                     "(null)".to_owned()
                 };
-                format!(
-                    "Mob ({short}, VNum {}):: {message}",
-                    prototype_vnum(host.vnum(ch))
-                )
+                format!("Mob ({short}, VNum {}):: {message}", c_vnum(host.vnum(ch)))
             }
             Owner::Obj(obj) => {
                 format!(
                     "Obj ({}, VNum {}):: {message}",
                     host.name(obj),
-                    prototype_vnum(host.vnum(obj))
+                    c_vnum(host.vnum(obj))
                 )
             }
             Owner::Wld(room) => format!("Room {} :: {message}", host.vnum(room)),
@@ -208,7 +191,7 @@ pub(crate) fn door<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument: &st
     let room = if crate::types::parse_uid(&target).is_some() {
         get_room(host, &target)
     } else {
-        host.real_room(vnum16(atoi(&target)))
+        host.real_room(idx_vnum(atoi(&target)))
     };
     let Some(room) = room else {
         owner.log(
@@ -247,9 +230,9 @@ pub(crate) fn door<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument: &st
             let flags = crate::types::trig::asciiflag_conv(value) as i16;
             host.cmd_exit_set(room, dir, ExitField::Flags(i32::from(flags)));
         }
-        3 => host.cmd_exit_set(room, dir, ExitField::Key(vnum16(atoi(value)))),
+        3 => host.cmd_exit_set(room, dir, ExitField::Key(idx_vnum(atoi(value)))),
         4 => host.cmd_exit_set(room, dir, ExitField::Keyword(value.to_owned())),
-        _ => match host.real_room(vnum16(atoi(value))) {
+        _ => match host.real_room(idx_vnum(atoi(value))) {
             Some(to) => host.cmd_exit_set(room, dir, ExitField::ToRoom(Some(to))),
             None => {
                 host.cmd_exit_set(room, dir, ExitField::ToRoom(None));
@@ -270,7 +253,7 @@ pub(crate) fn zoneecho<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument:
 
     if room_number.is_empty() || msg.is_empty() {
         owner.log(host, &format!("{letter}zoneecho called with too few args"));
-    } else if let Some(zone) = host.cmd_zone_of_vnum(vnum16(atoi(&room_number))) {
+    } else if let Some(zone) = host.cmd_zone_of_vnum(idx_vnum(atoi(&room_number))) {
         // The C builds this in a MAX_INPUT_LENGTH buffer, which a message of
         // 510 bytes or more overruns; there is no limit here.
         send_to_zone(host, &format!("{msg}\r\n"), zone);
@@ -341,7 +324,7 @@ pub(crate) fn load<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument: &st
         return;
     }
     // `read_mobile` / `read_object` take an `mob_vnum` / `obj_vnum`.
-    let number = vnum16(raw_number);
+    let number = idx_vnum(raw_number);
 
     let here = match owner {
         Owner::Mob(ch) => host.in_room(ch),
@@ -360,7 +343,7 @@ pub(crate) fn load<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument: &st
             here
         } else {
             let found = if starts_with_digit(target) {
-                host.real_room(vnum16(atoi(target)))
+                host.real_room(idx_vnum(atoi(target)))
             } else {
                 None
             };
@@ -491,7 +474,7 @@ pub(crate) fn find_target_room<H: DgHost + ?Sized>(
     }
 
     let location = if starts_with_digit(&roomstr) && !roomstr.contains('.') {
-        match host.real_room(vnum16(atoi(&roomstr))) {
+        match host.real_room(idx_vnum(atoi(&roomstr))) {
             Some(room) => room,
             None => {
                 host.cmd_send(ch, "No room exists with that number.\r\n");
@@ -544,7 +527,7 @@ fn room_of_name<H: DgHost + ?Sized>(host: &H, ch: Uid, roomstr: &str) -> Result<
     let target_mob = if never_matches {
         (str_eq(name, "self") || str_eq(name, "me")).then_some(ch)
     } else {
-        char_world_vis(host, ch, &counted(num, name))
+        get_char_world_vis(host, ch, &counted(num, name))
     };
     if let Some(target_mob) = target_mob {
         return host
@@ -574,21 +557,6 @@ fn room_of_name<H: DgHost + ?Sized>(host: &H, ch: Uid, roomstr: &str) -> Result<
         .ok_or("That object is currently not in a room.\r\n")
 }
 
-/// `get_char_vis(ch, name, NULL, FIND_CHAR_WORLD)` with the buffer the C
-/// leaves behind: for a `0.` count the room pass has already stripped the
-/// inner `N.` of `0.N.name`, so the world pass looks for the bare name
-/// (`lookup::get_char_world_vis` hands it the unstripped name).
-pub(crate) fn char_world_vis<H: DgHost + ?Sized>(host: &H, ch: Uid, arg: &str) -> Option<Uid> {
-    let (num, rest) = get_number(arg);
-    if num != 0 {
-        return get_char_vis(host, ch, arg, Where::World);
-    }
-    if let Some(found) = get_char_room_vis(host, ch, arg) {
-        return Some(found);
-    }
-    get_player_vis(host, ch, get_number(rest).1, false)
-}
-
 /// `N.name` with the count spelled the way `get_number` reads it.
 fn counted(num: i32, name: &str) -> String {
     if num == FIND_INDEX_LAST {
@@ -606,7 +574,7 @@ fn remaining_count<H: DgHost + ?Sized>(host: &H, ch: Uid, num: i32, name: &str) 
         return num;
     }
     let mut matches = 0;
-    while matches < num - 1 && char_world_vis(host, ch, &counted(matches + 1, name)).is_some() {
+    while matches < num - 1 && get_char_world_vis(host, ch, &counted(matches + 1, name)).is_some() {
         matches += 1;
     }
     num - matches
@@ -626,7 +594,7 @@ pub(crate) fn find_obj_target_room<H: DgHost + ?Sized>(
     }
 
     let location = if starts_with_digit(&roomstr) && !roomstr.contains('.') {
-        host.real_room(vnum16(atoi(&roomstr)))?
+        host.real_room(idx_vnum(atoi(&roomstr)))?
     } else if let Some(target_mob) = get_char_by_obj(host, obj, &roomstr) {
         // A character in no room has no flags to read.
         host.in_room(target_mob)?
