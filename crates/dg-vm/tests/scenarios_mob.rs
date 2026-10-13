@@ -11,6 +11,7 @@
 mod common;
 
 use common::scene::Scene as CommonScene;
+use common::scene::sub_line;
 use common::world::{
     PERCENT_ROLL, commands, global_var, install_record, local_var, run_waits, uid,
 };
@@ -189,6 +190,7 @@ fn tutorial_9_greets_a_newcomer_after_one_second() {
     assert!(trigger.vars.is_empty());
     assert_eq!(scene.fx.host.vm.depth, 0);
     assert!(scene.fx.host.logs.is_empty());
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 // Trigger 9 again, now the player returns from the south and already has the
@@ -232,6 +234,7 @@ fn tutorial_9_lets_a_returning_player_retry_and_clears_the_flag() {
     );
     assert_eq!(global_var(&scene.fx.host, player, SOLVED), None);
     assert!(scene.fx.host.waits.is_empty());
+    assert!(scene.fx.host.effects.is_empty());
     assert!(scene.fx.host.logs.is_empty());
 
     // From the north the first condition is false whatever the player has.
@@ -254,6 +257,9 @@ fn tutorial_9_lets_a_returning_player_retry_and_clears_the_flag() {
         global_var(&scene.fx.host, player, SOLVED).as_deref(),
         Some("1")
     );
+    assert!(scene.fx.host.effects.is_empty());
+    assert!(scene.fx.host.waits.is_empty());
+    assert!(scene.fx.host.logs.is_empty());
 }
 
 // Trigger 10, `0 d 1` with argument "yes": the player has not solved the
@@ -294,6 +300,7 @@ fn tutorial_10_gives_the_hint_over_three_waits() {
     let trigger = scene.fx.host.script(owner).unwrap().trigger(id).unwrap();
     assert!(!trigger.is_busy());
     assert_eq!(say_all(&scene.fx.host).len(), 2);
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 // Trigger 10 with the quest already solved: `!1` is 0, the whole body is
@@ -319,6 +326,7 @@ fn tutorial_10_stays_silent_once_the_quest_is_solved() {
             .unwrap()
             .is_busy()
     );
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 // Trigger 11, `0 j 100`: the player hands over object 47. perform_give runs
@@ -372,6 +380,14 @@ fn tutorial_11_rewards_the_magic_eight_ball() {
     );
     assert_eq!(scene.fx.host.num(player, "exp"), 1050);
     assert_eq!(scene.fx.host.num(player, "gold"), 550);
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            format!("extract_obj {ball}"),
+            format!("gain_exp {player}: 50"),
+            format!("increase_gold {player}: 50"),
+        ]
+    );
     assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.logs.is_empty());
     assert!(
@@ -410,6 +426,7 @@ fn tutorial_11_refuses_any_other_object() {
     assert_eq!(global_var(&scene.fx.host, player, SOLVED), None);
     assert!(scene.fx.host.exists(lantern));
     assert_eq!(scene.fx.host.link(lantern, "carried_by"), Some(player));
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 // Trigger 11 for a player who has already solved the quest: `!1 && …` is
@@ -434,6 +451,7 @@ fn tutorial_11_refuses_the_ball_a_second_time() {
         vec!["say I don't want that!", "junk ball magic eight"]
     );
     assert!(scene.fx.host.exists(ball));
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 // Trigger 11 with a mob as the actor, a character that has no script at all
@@ -461,6 +479,8 @@ fn remote_to_a_character_without_a_script_stores_nothing() {
     assert!(scene.fx.host.script(wanderer).is_none());
     assert!(!scene.fx.host.exists(ball));
     assert_eq!(say_all(&scene.fx.host), vec!["dance"]);
+    assert_eq!(scene.fx.host.effects, vec![format!("extract_obj {ball}")]);
+    assert_eq!(scene.fx.host.waits.len(), 1);
     assert!(scene.fx.host.logs.is_empty());
 }
 
@@ -484,6 +504,9 @@ fn remote_to_a_player_stores_the_quest_flag() {
         Some("1")
     );
     assert_eq!(say_all(&scene.fx.host), vec!["dance"]);
+    assert_eq!(scene.fx.host.effects, vec![format!("extract_obj {ball}")]);
+    assert_eq!(scene.fx.host.waits.len(), 1);
+    assert!(scene.fx.host.logs.is_empty());
 }
 
 // ---------------------------------------------------------------------
@@ -527,6 +550,7 @@ fn questmaster_greets_a_player_without_a_quest() {
         vec!["say Welcome Tester, are you interested in a simple quest?"]
     );
     assert!(scene.fx.host.logs.is_empty());
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 // Trigger 138 when the quest began two ticks ago. `extract day 1 <v>` and
@@ -554,6 +578,7 @@ fn questmaster_asks_after_a_recent_quest() {
         global_var(&scene.fx.host, player, QUEST).as_deref(),
         Some("5 13")
     );
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 // Trigger 138 when the quest began at "1 3": start_ticks = (1/24)+3 = 3,
@@ -574,6 +599,7 @@ fn questmaster_expires_an_old_quest_on_greet() {
         say_all(&scene.fx.host),
         vec!["say Welcome Tester, are you interested in a simple quest?"]
     );
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 // Trigger 138 with 50 quest points (`50 < 50` is false), and with a mob as the
@@ -600,6 +626,7 @@ fn questmaster_ignores_veterans_and_mobs_on_greet() {
         scene.fx.host.logs,
         vec!["Trigger: Questmaster Greet - 3, VNum 138. unknown char field: 'questpoints'"]
     );
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 fn quest_assignment(record: &common::corpus::Record, speech: &str, rolls: &[i64]) -> (Scene, u64) {
@@ -638,6 +665,7 @@ fn questmaster_prompts_after_yes() {
     let record = real!(139);
     for speech in ["yes", "YES", "Yes"] {
         let (scene, _) = quest_assignment(&record, speech, &[]);
+        assert!(scene.fx.host.effects.is_empty(), "{speech}");
         assert_eq!(
             say_all(&scene.fx.host),
             vec!["say Very well Tester. Would you like to find an object or hunt a mobile?"],
@@ -742,9 +770,21 @@ fn questmaster_assigns_a_search() {
     assert_eq!(held, vec![15]);
     assert_eq!(scene.fx.host.vnum(scene.fx.host.carrying(player)[0]), 16);
     assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(player, "the questmaster gives you the quest timer."),
+            sub_line(
+                scene.watcher,
+                "the questmaster gives Tester the quest timer."
+            ),
+        ]
+    );
+    assert_eq!(
         global_var(&scene.fx.host, player, QUEST).as_deref(),
         Some("5 15")
     );
+    assert!(scene.fx.host.waits.is_empty());
+    assert!(scene.fx.host.logs.is_empty());
 }
 
 // Trigger 139 with a two-word speech, "please hunt": the first pass sees
@@ -763,7 +803,29 @@ fn questmaster_walks_the_words_of_the_speech() {
         (owner, " mload  m 15".to_owned())
     );
     assert_eq!(scene.fx.host.mud_commands.len(), 2);
-    let _ = id;
+    assert_eq!(
+        scene.fx.host.effects,
+        vec![
+            sub_line(
+                scene.fx.player,
+                "the questmaster gives you the quest timer."
+            ),
+            sub_line(
+                scene.watcher,
+                "the questmaster gives Tester the quest timer."
+            ),
+        ]
+    );
+    assert!(
+        !scene
+            .fx
+            .host
+            .script(scene.owner)
+            .unwrap()
+            .trigger(id)
+            .unwrap()
+            .is_busy()
+    );
 }
 
 // Trigger 139 refusals, all silent `halt`s (every PC owns a script, so the
@@ -795,6 +857,8 @@ fn questmaster_ignores_the_wrong_speakers() {
         let actor = if who == "self" { owner } else { player };
         dispatch::speech_mtrigger(scene.host(), actor, "yes");
         assert!(say_all(&scene.fx.host).is_empty(), "{who} {flag:?} {qp}");
+        assert!(scene.fx.host.effects.is_empty(), "{who} {flag:?} {qp}");
+        assert!(scene.fx.host.logs.is_empty(), "{who} {flag:?} {qp}");
         assert!(scene.fx.host.waits.is_empty());
     }
 }
@@ -814,6 +878,7 @@ fn questmaster_clears_an_expired_flag_before_assigning() {
         say_all(&scene.fx.host),
         vec!["say Very well Tester. Would you like to find an object or hunt a mobile?"]
     );
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 /// The quest item is handed over by the player: it is still in the player's
@@ -850,6 +915,7 @@ fn questmaster_refuses_a_gift_from_a_stranger() {
     );
     assert!(scene.fx.host.waits.is_empty());
     assert!(scene.fx.host.exists(item));
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 // Trigger 143 for a quester handing over object 15 (or 17): `wait 1 sec`
@@ -880,6 +946,14 @@ fn questmaster_rewards_the_quest_item() {
         assert_eq!(scene.fx.host.num(player, "gold"), 550);
         assert_eq!(scene.fx.host.num(player, "qp"), 1);
         assert!(!scene.fx.host.exists(item));
+        assert_eq!(
+            scene.fx.host.effects,
+            vec![
+                format!("gain_exp {player}: 50"),
+                format!("increase_gold {player}: 50"),
+                format!("extract_obj {item}"),
+            ]
+        );
         assert!(scene.fx.host.logs.is_empty());
     }
 }
@@ -905,6 +979,7 @@ fn questmaster_return_zero_comes_too_late_to_refuse_the_gift() {
         global_var(&scene.fx.host, player, QUEST).as_deref(),
         Some("5 14")
     );
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 // Trigger 144 (`0 n 100`): the quest mob loads, `%load% obj 17` is `mload obj
@@ -938,6 +1013,7 @@ fn quest_mob_loads_its_head() {
         Some(uid(held[0]))
     );
     assert!(scene.fx.host.mud_commands.is_empty());
+    assert!(scene.fx.host.effects.is_empty());
 }
 
 // Trigger 144 with an object that cannot be taken (no ITEM_WEAR_TAKE): do_mload
@@ -973,4 +1049,5 @@ fn quest_mob_loads_an_untakeable_head_into_the_room() {
         global_var(&scene.fx.host, owner, "lastloaded"),
         Some(uid(head))
     );
+    assert!(scene.fx.host.effects.is_empty());
 }
