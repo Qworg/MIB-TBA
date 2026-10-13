@@ -873,6 +873,7 @@ mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
 
     use super::*;
+    use crate::commands::CmdHost;
     use crate::commands::support::World;
     use crate::host::{BaseHost, WorldHost};
     use crate::types::{AttachType, uid_text};
@@ -1643,6 +1644,26 @@ mod tests {
     }
 
     #[test]
+    fn mgoto_with_a_negative_count_finds_nothing() {
+        // atoi wraps 4294967294 to -2: every match counts it further from
+        // zero, so neither the character nor the object search returns.
+        let mut w = World::new();
+        let (mob, room2) = (w.mob, w.room2);
+        w.host.char_to_room(mob, room2);
+        run(&mut w, "mgoto 4294967294.alice");
+        log_is(&w, "mgoto: invalid location");
+        assert_eq!(w.host.in_room(mob), Some(room2));
+        w.clear();
+        run(&mut w, "mgoto 4294967294.lamp");
+        log_is(&w, "mgoto: invalid location");
+        assert_eq!(w.host.in_room(mob), Some(room2));
+        // The same name with a count that is still positive does move it.
+        w.clear();
+        run(&mut w, "mgoto 1.alice");
+        assert_eq!(w.host.in_room(mob), Some(w.room));
+    }
+
+    #[test]
     fn mgoto_to_a_private_room_with_company_is_refused() {
         let mut w = World::new();
         let (mob, room2, bob, alice) = (w.mob, w.room2, w.player2, w.player);
@@ -2204,5 +2225,233 @@ mod tests {
         assert_eq!(w.host.equipment(mob, 3), Some(lamp));
         assert_eq!(w.host.vnum(mob), 3000);
         assert_eq!(w.effects("extract_char").len(), 1);
+    }
+
+    // ---- the buffer after a `0.` count ------------------------------------
+
+    #[test]
+    fn a_zero_count_strips_the_name_a_second_time_in_the_buffer() {
+        // `get_char_room_vis` sends `0.<name>` to `get_player_vis`, which runs
+        // `get_number` on the same buffer again; a failed world search does so
+        // once more. The log lines and the follow-up lookups see what is left.
+        let mut w = World::new();
+        for (line, text) in [
+            ("mkill 0.2.zed", "mkill: victim (zed) not found"),
+            ("msend 0.2.zed hi", "msend: victim (zed) does not exist"),
+            (
+                "mechoaround 0.2.zed hi",
+                "mechoaround: victim (zed) does not exist",
+            ),
+            ("mdamage 0.2.zed 5", "mdamage: victim (zed) does not exist"),
+            ("mfollow 0.2.zed", "mfollow: victim (zed) not found"),
+            (
+                "mteleport 0.2.zed 3002",
+                "mteleport: victim (zed) does not exist",
+            ),
+            ("mhunt 0.2.zed", "mhunt: victim (zed) does not exist"),
+            (
+                "mremember 0.2.zed",
+                "mremember: victim (zed) does not exist",
+            ),
+            ("mforget 0.2.zed", "mforget: victim (zed) does not exist"),
+            // The world search strips a third time.
+            ("mhunt 0.1.2.zed", "mhunt: victim (zed) does not exist"),
+            (
+                "mteleport 0.1.2.zed 3002",
+                "mteleport: victim (zed) does not exist",
+            ),
+            // Not a number: the count is 0 as well.
+            ("mkill x.2.zed", "mkill: victim (zed) not found"),
+            // A real count strips once.
+            ("mkill 2.1.zed", "mkill: victim (1.zed) not found"),
+        ] {
+            w.clear();
+            run(&mut w, line);
+            log_is(&w, text);
+        }
+    }
+
+    #[test]
+    fn a_zero_count_leaves_the_bare_name_for_the_object_lookup() {
+        let mut w = World::new();
+        let mob = w.mob;
+        let mut swords = Vec::new();
+        for _ in 0..2 {
+            let sword = w.host.add_obj(7000, "a sword");
+            w.host.set_text(sword, "alias", "sword");
+            w.host.obj_to_char(sword, mob);
+            swords.push(sword);
+        }
+        // Carried head first: the first in the list is the one added last.
+        let (first, second) = (w.host.carrying(mob)[0], w.host.carrying(mob)[1]);
+        run(&mut w, "mpurge 0.2.sword");
+        assert!(!w.host.exists(first));
+        assert!(w.host.exists(second));
+        assert_eq!(w.log(), "");
+    }
+
+    #[test]
+    fn a_zero_count_leaves_the_bare_name_for_the_container_lookup() {
+        let mut w = World::new();
+        let mut sacks = Vec::new();
+        for _ in 0..2 {
+            let sack = w.host.add_obj(7100, "a sack");
+            w.host.set_text(sack, "alias", "sack");
+            w.host.set_num(sack, "type", 15);
+            w.host.obj_to_room(sack, w.room);
+            sacks.push(sack);
+        }
+        run(&mut w, "mload obj 7102 0.2.sack");
+        let rock = w.host.object_list()[0];
+        assert_eq!(w.host.vnum(rock), 7102);
+        assert_eq!(w.host.obj_in_obj(rock), Some(sacks[0]));
+    }
+
+    // ---- commands a switched mob below LVL_IMPL may not give --------------
+
+    #[test]
+    fn a_switched_mob_below_impl_is_refused_by_each_world_changing_command() {
+        let mut w = World::new();
+        let (mob, alice, bob, lamp) = (w.mob, w.player, w.player2, w.obj);
+        let rat = bare_mob(&mut w);
+        w.host.set_text(rat, "alias", "rat");
+        w.host.set_num(mob, "desc", 1);
+        w.host.set_num(mob, "desc_original_level", 33);
+        let remembered = ScriptMemory {
+            id: alice,
+            cmd: None,
+        };
+        w.host.set_script_mem(mob, vec![remembered.clone()]);
+        let lines = [
+            "mpurge",
+            "mpurge rat",
+            "mpurge lamp",
+            "mhunt alice",
+            "mremember bob",
+            "mforget alice",
+            "mforce alice look",
+            "mload mob 3100",
+        ];
+        for line in lines {
+            run(&mut w, line);
+        }
+        assert!(w.host.logs.is_empty());
+        assert!(!w.host.is_dead(rat));
+        assert!(w.host.exists(lamp));
+        assert!(w.effects("hunt").is_empty());
+        assert_eq!(w.host.script_mem(mob), [remembered]);
+        assert!(w.host.mud_commands.is_empty());
+        assert_eq!(w.host.list(w.room, "people").len(), 4);
+
+        // The same lines work for an implementor.
+        w.host.set_num(mob, "desc_original_level", 34);
+        for line in [
+            "mpurge rat",
+            "mhunt alice",
+            "mremember bob",
+            "mforget alice",
+            "mforce alice look",
+            "mload mob 3100",
+        ] {
+            run(&mut w, line);
+        }
+        assert!(w.host.is_dead(rat));
+        assert_eq!(w.effects("hunt").len(), 1);
+        assert_eq!(
+            w.host.script_mem(mob),
+            [ScriptMemory { id: bob, cmd: None }]
+        );
+        assert_eq!(w.host.mud_commands, [(alice, " look".to_owned())]);
+        assert_eq!(w.host.list(w.room, "people").len(), 5);
+        run(&mut w, "mpurge");
+        assert!(!w.host.exists(lamp));
+    }
+
+    #[test]
+    fn a_player_with_triggers_is_not_held_to_the_switched_mob_level() {
+        // A descriptor with no `original` is answered with the character's
+        // own level, which is below LVL_IMPL for an ordinary player.
+        let mut w = World::new();
+        let (alice, proto) = (w.player, w.proto.clone());
+        w.host.attach(alice, &proto);
+        run_as(&mut w, alice, "mload mob 3100");
+        assert_eq!(w.host.list(w.room, "people").len(), 3);
+        w.host.set_num(alice, "level", 34);
+        run_as(&mut w, alice, "mload mob 3100");
+        assert_eq!(w.host.list(w.room, "people").len(), 4);
+    }
+
+    fn run_as(w: &mut World, ch: Uid, line: &str) {
+        assert!(w.run_mob(ch, line));
+    }
+
+    // ---- DG_ALLOW_GODS ----------------------------------------------------
+
+    #[test]
+    fn force_refuses_the_highest_gods_and_teleport_does_not() {
+        let mut w = World::new();
+        let (alice, room2) = (w.player, w.room2);
+        w.host.set_num(alice, "level", 33);
+        // `mforce` passes 0, `mteleport` DG_ALLOW_GODS.
+        run(&mut w, "mforce alice look");
+        assert!(w.host.mud_commands.is_empty());
+        run(&mut w, "mteleport alice 3002");
+        assert_eq!(w.host.in_room(alice), Some(room2));
+        // One level lower is forced like a mortal unless nohassle is on.
+        w.host.set_num(alice, "level", 32);
+        run(&mut w, "mteleport alice 3001");
+        assert_eq!(w.host.in_room(alice), Some(w.room));
+        run(&mut w, "mforce alice look");
+        assert_eq!(w.host.mud_commands.len(), 1);
+        w.set_nohassle(alice, true);
+        run(&mut w, "mforce alice look");
+        run(&mut w, "mteleport alice 3002");
+        assert_eq!(w.host.mud_commands.len(), 1);
+        assert_eq!(w.host.in_room(alice), Some(w.room));
+    }
+
+    #[test]
+    fn force_all_and_teleport_all_apply_the_same_rule() {
+        let mut w = World::new();
+        let (alice, bob, mob, room2) = (w.player, w.player2, w.mob, w.room2);
+        w.host.set_num(alice, "level", 33);
+        w.host.set_num(mob, "level", 40);
+        run(&mut w, "mforce all look");
+        // Bob only: Alice is a high god and the rest are not lower level.
+        assert_eq!(w.host.mud_commands, [(bob, " look".to_owned())]);
+        run(&mut w, "mteleport all 3002");
+        assert_eq!(w.host.in_room(alice), Some(room2));
+        assert_eq!(w.host.in_room(bob), Some(room2));
+    }
+
+    // ---- sendok, damage and following boundaries --------------------------
+
+    #[test]
+    fn writing_blocks_players_but_not_mobs() {
+        let mut w = World::new();
+        let (alice, mob) = (w.player, w.mob);
+        w.host.set_num(mob, "desc", 1);
+        w.host.set_num(mob, "desc_original_level", 34);
+        // Bit 4 of an NPC's act flags is MOB_AWARE, not PLR_WRITING.
+        w.set_writing(mob, true);
+        w.set_writing(alice, true);
+        run(&mut w, "mecho hi");
+        assert_eq!(w.sent_to(mob), ["hi\n\r"]);
+        assert!(w.sent_to(alice).is_empty());
+    }
+
+    #[test]
+    fn already_following_the_leader_changes_nothing() {
+        let mut w = World::new();
+        let (alice, mob) = (w.player, w.mob);
+        let rat = bare_mob(&mut w);
+        w.host.set_text(rat, "alias", "rat");
+        w.host.cmd_follow(mob, alice);
+        w.host.cmd_follow(rat, alice);
+        assert_eq!(w.host.list(alice, "followers"), [rat, mob]);
+        run(&mut w, "mfollow alice");
+        // Leaving and rejoining would put the mob at the head of the list.
+        assert_eq!(w.host.list(alice, "followers"), [rat, mob]);
+        assert!(w.host.logs.is_empty());
     }
 }

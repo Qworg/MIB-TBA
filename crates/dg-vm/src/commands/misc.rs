@@ -169,6 +169,16 @@ mod tests {
     }
 
     #[test]
+    fn hit_points_at_the_quarter_mark_do_not_bleed() {
+        let mut w = World::new();
+        let alice = w.player;
+        // 20 - 15 = 5 is not below 20 >> 2 = 5.
+        script_damage(&mut w.host, alice, 15);
+        assert_eq!(hit(&w, alice), 5);
+        assert_eq!(w.sent_to(alice), ["That really did HURT!\r\n"]);
+    }
+
+    #[test]
     fn low_hit_points_bleed_in_colour_when_colour_is_on() {
         let mut w = World::new();
         let alice = w.player;

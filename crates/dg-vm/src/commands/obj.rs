@@ -610,6 +610,19 @@ mod tests {
     }
 
     #[test]
+    fn oasound_skips_an_exit_back_into_the_objects_own_room() {
+        let mut w = World::new();
+        let (alice, bob, room, room2) = (w.player, w.player2, w.room, w.room2);
+        w.host.char_to_room(bob, room2);
+        w.host.set_link(room, "exit:1", Some(room));
+        w.host.set_link(room, "exit:2", Some(room2));
+        run(&mut w, "oasound Hush");
+        // The room echo is a TO_ROOM and a TO_CHAR for the head of the room.
+        assert_eq!(w.sent_to(bob), ["Hush\n\r", "Hush\n\r"]);
+        assert!(w.sent_to(alice).is_empty());
+    }
+
+    #[test]
     fn olog_and_orecho_and_ozoneecho() {
         let mut w = World::new();
         let (alice, bob, room) = (w.player, w.player2, w.room);
@@ -1121,6 +1134,18 @@ mod tests {
         run(&mut w, &format!("oat 3002 opurge {}", uid_text(lamp)));
         assert!(!w.host.exists(lamp));
         assert!(*w.host.owner_purged_mut());
+    }
+
+    #[test]
+    fn oat_accepts_the_nesting_a_c_line_can_hold() {
+        let mut w = World::new();
+        w.host.add_room(1, "A closet");
+        let line = format!("{}olog deep", "oat 1 ".repeat(70));
+        assert!(line.len() < 512);
+        run(&mut w, &line);
+        log_is(&w, "deep");
+        assert_eq!(w.host.logs.len(), 1);
+        assert_eq!(w.host.object_list.len(), 1);
     }
 
     #[test]
