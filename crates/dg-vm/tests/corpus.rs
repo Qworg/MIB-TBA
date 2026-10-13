@@ -20,7 +20,7 @@ use common::world::{Fixture, checked_out, make_proto, run_waits, set_event_vars}
 use dg_vm::driver::{Mode, script_driver};
 use dg_vm::host::{BaseHost, WorldHost};
 use dg_vm::mock::MockHost;
-use dg_vm::types::{AttachType, TrigProto, Uid};
+use dg_vm::types::{AttachType, ScriptMemory, TrigProto, Uid};
 
 #[test]
 fn the_corpus_reader_reads_every_record() {
@@ -141,6 +141,15 @@ struct Refs {
     loads_mobs: bool,
     /// Names of characters a script addresses (`%at% rumble ...`).
     people: BTreeSet<String>,
+    /// The people the script reaches with `%at%`: they stand in rooms of
+    /// their own. Every other addressed character stands with the owner.
+    remote: BTreeSet<String>,
+    /// Names a script purges (`%purge% spectre`): the owner answers to them
+    /// when the script loads nothing else.
+    purged: BTreeSet<String>,
+    /// What `arg` needs after the player's name when a script hands the whole
+    /// of it to a command that takes more than a name (`%force% %arg%`).
+    arg_tail: &'static str,
 }
 
 /// What a first run of a trigger showed its world to lack, learned from the
@@ -149,6 +158,8 @@ struct Refs {
 struct Needs {
     rooms: BTreeSet<i32>,
     people: BTreeSet<String>,
+    /// People a script reaches with `%at%`, who stand elsewhere.
+    remote: BTreeSet<String>,
     /// The `arg` the command triggers receive is a room number (the script
     /// teleports to it).
     arg_is_room: bool,
@@ -167,7 +178,7 @@ fn harvest(logs: &[String], needs: &mut Needs) -> bool {
                     needs.rooms.insert(room);
                 }
                 Err(_) => {
-                    needs.people.insert(name.to_owned());
+                    needs.remote.insert(name.to_owned());
                 }
             }
         }
@@ -415,6 +426,7 @@ fn scan_command(words: &[&str], refs: &mut Refs) {
                     | "force"
                     | "damage"
                     | "send"
+                    | "purge"
             )
         })
         .unwrap_or(command);
@@ -473,7 +485,25 @@ fn scan_command(words: &[&str], refs: &mut Refs) {
                 refs.addressed.insert((*word).to_owned());
             }
         }
+        // `purge <name>`: the owner (or something it holds) answers to it.
+        "purge" => {
+            if let Some(word) = words.get(1)
+                && !word.starts_with('%')
+                && number(word).is_none()
+            {
+                refs.purged.insert((*word).to_owned());
+            }
+        }
         _ => {}
+    }
+    // `%teleport% %arg%` and `%force% %arg%` take the player's name and then
+    // a room or a command.
+    if let ([_, "%arg%"], "teleport" | "force") = (words, command) {
+        refs.arg_tail = if command == "teleport" {
+            " 3002"
+        } else {
+            " look"
+        };
     }
 }
 
@@ -518,6 +548,7 @@ fn referenced_vnums(record: &Record) -> Refs {
             && target.parse::<i32>().is_err()
         {
             refs.people.insert((*target).to_owned());
+            refs.remote.insert((*target).to_owned());
         }
     }
     refs
@@ -544,10 +575,14 @@ fn build(
     refs.rooms.extend([3000, 3031]);
     refs.rooms.extend(needs.rooms.iter().copied());
     refs.people.extend(needs.people.iter().cloned());
-    // Each character a script addresses by name stands in a room of its own.
+    refs.remote.extend(needs.remote.iter().cloned());
+    refs.people.extend(needs.remote.iter().cloned());
+    // A character the script reaches with `%at%` stands in a room of its own;
+    // the others stand with the owner, where `mforce` and `msend` look.
     let people: Vec<(String, i32)> = refs
         .people
         .iter()
+        .filter(|name| refs.remote.contains(*name))
         .zip(98_000..)
         .map(|(name, vnum)| (name.clone(), vnum))
         .collect();
@@ -628,6 +663,15 @@ fn build(
             fx.host.char_to_room(person, room);
         }
     }
+    for name in refs
+        .people
+        .iter()
+        .filter(|name| !refs.remote.contains(*name))
+    {
+        let person = fx.host.add_player(name);
+        common::world::dress_player(&mut fx.host, person, 10);
+        fx.host.char_to_room(person, fx.room);
+    }
     let watcher = fx.host.add_player(EVENT_ARG);
     common::world::dress_player(&mut fx.host, watcher, 5);
     fx.host.char_to_room(watcher, fx.room);
@@ -636,7 +680,15 @@ fn build(
     let owner = match attach {
         AttachType::Mob => {
             let mob = fx.host.add_mob(3000, "the owner");
-            fx.host.set_text(mob, "alias", "owner");
+            let alias = if refs.loads_mobs {
+                "owner".to_owned()
+            } else {
+                std::iter::once("owner")
+                    .chain(refs.purged.iter().map(String::as_str))
+                    .collect::<Vec<_>>()
+                    .join(" ")
+            };
+            fx.host.set_text(mob, "alias", &alias);
             common::world::dress_mob(&mut fx.host, mob, 30);
             fx.host.char_to_room(mob, fx.room);
             let item = fx.host.add_obj(3030, "a key");
@@ -647,7 +699,7 @@ fn build(
         AttachType::Obj => {
             let obj = fx.host.add_obj(3031, "the owner object");
             fx.host.set_text(obj, "alias", "owner object");
-            match object_place(bits, record.narg, index) {
+            match object_place(bits, record.narg, &record.body, index) {
                 Place::Room => fx.host.obj_to_room(obj, fx.room),
                 Place::Inventory => fx.host.obj_to_char(obj, fx.player),
                 Place::Worn => fx.host.equip_char(fx.player, obj, 5),
@@ -658,7 +710,9 @@ fn build(
     };
     let id = fx.host.attach(owner, &proto).expect("owner exists");
     // `time` triggers fire in the hour their narg names.
-    fx.host.time.hours = record.narg;
+    if bits & (1 << 19) != 0 {
+        fx.host.time.hours = record.narg;
+    }
     // perform_give / perform_drop run the receive and drop triggers before
     // the object leaves the actor's inventory (`obj->carried_by != actor`).
     let carried = match attach {
@@ -675,7 +729,7 @@ fn build(
         arg: if needs.arg_is_room {
             EVENT_ARG_ROOM.to_owned()
         } else {
-            EVENT_ARG.to_owned()
+            format!("{EVENT_ARG}{}", refs.arg_tail)
         },
     };
     let vars = event_vars(record, attach, &cast);
@@ -698,8 +752,10 @@ fn build(
 /// Where an object owner lies, stands or hangs for the event its trigger
 /// types listen to: `get` fires on an object in the room, `drop`, `give`,
 /// `wear` and `consume` on one the actor carries, `remove` on one worn, and a
-/// command trigger where its narg says. Other types rotate through the three.
-fn object_place(bits: u32, narg: i32, index: usize) -> Place {
+/// command trigger where its narg says. A script that reads `self.worn_by`
+/// is worn and one that reads `self.carried_by` is carried; the rest rotate
+/// through the three.
+fn object_place(bits: u32, narg: i32, body: &str, index: usize) -> Place {
     let has = |bit: u32| bits & (1 << bit) != 0;
     if has(2) {
         if narg & dg_vm::types::OCMD_EQUIP != 0 {
@@ -714,8 +770,10 @@ fn object_place(bits: u32, narg: i32, index: usize) -> Place {
         Place::Room
     } else if has(7) || has(8) || has(9) || has(18) {
         Place::Inventory
-    } else if has(11) {
+    } else if has(11) || body.contains("self.worn_by") {
         Place::Worn
+    } else if body.contains("self.carried_by") {
+        Place::Inventory
     } else {
         match index % 3 {
             0 => Place::Room,
@@ -772,10 +830,16 @@ fn fire_by_dispatch(world: &mut BuiltWorld, record: &Record) -> bool {
     let host = &mut world.host;
     let (owner, actor, room) = (world.owner, world.player, world.room);
     let command = first_word(&record.arglist, "look");
-    let speech = first_word(&record.arglist, "hello");
+    // A speech trigger with narg 0 matches a phrase (`is_substring`), one
+    // with narg 1 a word.
+    let speech = if record.narg == 0 && !record.arglist.trim().is_empty() && record.arglist != "*" {
+        record.arglist.trim().to_owned()
+    } else {
+        first_word(&record.arglist, "hello")
+    };
     let narg = record.narg.max(1);
     let spell = SPELL_MAGIC_MISSILE;
-    let first = (0..20).find(|bit| world.bits & (1 << bit) != 0);
+    let first = (1..20).find(|bit| world.bits & (1 << bit) != 0);
     // A percent roll wins when it is the lowest the die gives.
     host.rolls.extend([1; 4]);
     match (world.attach, first) {
@@ -806,8 +870,29 @@ fn fire_by_dispatch(world: &mut BuiltWorld, record: &Record) -> bool {
         (AttachType::Mob, Some(9)) => {
             d::receive_mtrigger(host, owner, actor, world.object);
         }
+        (AttachType::Mob, Some(10)) => {
+            host.set_link(owner, "fighting", Some(actor));
+            d::fight_mtrigger(host, owner);
+        }
+        (AttachType::Mob, Some(11)) => {
+            // Hit points at or below the trigger's percentage of the maximum.
+            let max = host.num(owner, "max_hit");
+            host.set_num(owner, "hit", i64::from(narg - 1) * max / 100);
+            host.set_link(owner, "fighting", Some(actor));
+            d::hitprcnt_mtrigger(host, owner);
+        }
         (AttachType::Mob, Some(12)) => d::bribe_mtrigger(host, owner, actor, narg.max(100)),
         (AttachType::Mob, Some(13)) => d::load_mtrigger(host, owner),
+        (AttachType::Mob, Some(14)) => {
+            host.set_script_mem(
+                owner,
+                vec![ScriptMemory {
+                    id: actor,
+                    cmd: None,
+                }],
+            );
+            d::greet_memory_mtrigger(host, actor);
+        }
         (AttachType::Mob, Some(15)) => {
             d::cast_mtrigger(host, actor, Some(owner), spell);
         }
@@ -1020,6 +1105,18 @@ fn log_shape(message: &str) -> String {
                 .unwrap_or(m);
         }
     }
+    // The argument a C format prints in trailing parentheses (`(arg == %s)`,
+    // `(loading mob vnum %d to room %s)`) is the script's text; the driver's
+    // `(error N)` is part of the message.
+    let collapsed;
+    if let Some(at) = rest.rfind(" (")
+        && rest.ends_with(')')
+        && !rest[at..].starts_with(" (error ")
+        && !literal
+    {
+        collapsed = format!("{} (..)", &rest[..at]);
+        rest = &collapsed;
+    }
     // The C formats put the quoted text (which may hold apostrophes itself)
     // at or near the end of the line: everything from the first quote to the
     // last one is the quoted text.
@@ -1084,6 +1181,27 @@ fn is_world_gap(shape: &str) -> bool {
         || shape.contains("No room with vnum")
 }
 
+/// Triggers whose log lines come from something the mock world cannot give
+/// them, with the cause: these are listed apart from the script and VM
+/// messages.
+const HARNESS_LIMITS: &[(i32, &str)] = &[
+    (
+        1911,
+        "purges a corpse that nothing in the mock world creates",
+    ),
+    (
+        2750,
+        "`attach %arg%` needs a trigger vnum and a target id in the player's words",
+    ),
+];
+
+fn harness_limit(vnum: i32) -> Option<&'static str> {
+    HARNESS_LIMITS
+        .iter()
+        .find(|(limited, _)| *limited == vnum)
+        .map(|(_, cause)| *cause)
+}
+
 fn top<K: Clone + Ord>(counts: &BTreeMap<K, usize>, n: usize) -> Vec<(K, usize)> {
     let mut rows: Vec<(K, usize)> = counts.iter().map(|(k, v)| (k.clone(), *v)).collect();
     rows.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
@@ -1120,6 +1238,22 @@ fn log_shapes_keep_distinct_c_messages_apart() {
         "Mob (a, VNum 3000):: msend: victim (Rumble) does not exist",
     ];
     assert_eq!(log_shape(same[0]), log_shape(same[1]));
+    // The text in trailing parentheses is the script's, with or without an
+    // apostrophe in the format or the text.
+    let same = [
+        "Mob (a, VNum 3000):: mdoor: invalid door target (arg == north)",
+        "Mob (a, VNum 3000):: mdoor: invalid door target (arg == 2 o'clock)",
+    ];
+    assert_eq!(log_shape(same[0]), log_shape(same[1]));
+    let same = [
+        "Mob (a, VNum 3000):: mload: room target vnum doesn't exist (loading mob vnum 5 to room x)",
+        "Mob (a, VNum 3000):: mload: room target vnum doesn't exist (loading mob vnum 77 to room it's)",
+    ];
+    assert_eq!(log_shape(same[0]), log_shape(same[1]));
+    assert_ne!(
+        log_shape("Mob (a, VNum 3000):: mdoor: invalid door target (arg == x)"),
+        log_shape("Mob (a, VNum 3000):: mdoor: invalid door direction (arg == x)"),
+    );
     let same = [
         "Trigger: x, Vnum 1926, type 0. Trying to access Global var list of void. Apparently this has not been set up!",
         "Trigger: y z, Vnum 7, type 0. Trying to access Global var list of void. Apparently this has not been set up!",
@@ -1132,18 +1266,31 @@ fn objects_are_placed_where_their_event_happens() {
     let bits = |letters: &str| dg_vm::types::trig::asciiflag_conv(letters);
     // get_otrigger: the object lies in the room; drop, give, wear and consume
     // are offered an object the actor carries; remove one the actor wears.
-    assert!(matches!(object_place(bits("g"), 100, 1), Place::Room));
+    assert!(matches!(object_place(bits("g"), 100, "", 1), Place::Room));
     for letters in ["h", "i", "j", "s"] {
         assert!(matches!(
-            object_place(bits(letters), 100, 0),
+            object_place(bits(letters), 100, "", 0),
             Place::Inventory
         ));
     }
-    assert!(matches!(object_place(bits("l"), 100, 0), Place::Worn));
+    assert!(matches!(object_place(bits("l"), 100, "", 0), Place::Worn));
     // cmd_otrig: narg 1 worn, 2 carried, 4 in the room.
-    assert!(matches!(object_place(bits("c"), 1, 0), Place::Worn));
-    assert!(matches!(object_place(bits("c"), 2, 0), Place::Inventory));
-    assert!(matches!(object_place(bits("c"), 4, 0), Place::Room));
+    assert!(matches!(object_place(bits("c"), 1, "", 0), Place::Worn));
+    assert!(matches!(
+        object_place(bits("c"), 2, "", 0),
+        Place::Inventory
+    ));
+    assert!(matches!(object_place(bits("c"), 4, "", 0), Place::Room));
+    // A timer or random object is where its script reads its holder from.
+    let timer = bits("f");
+    assert!(matches!(
+        object_place(timer, 5, "eval actor %self.worn_by%", 0),
+        Place::Worn
+    ));
+    assert!(matches!(
+        object_place(timer, 5, "set actor %self.carried_by%", 0),
+        Place::Inventory
+    ));
 }
 
 #[test]
@@ -1248,11 +1395,16 @@ fn print_summary(outcomes: &[Outcome], failures: &[String]) {
     let mut words: BTreeMap<String, usize> = BTreeMap::new();
     let mut word_vnums: BTreeMap<String, BTreeSet<i32>> = BTreeMap::new();
     let mut total_logs = 0;
+    let mut limited: BTreeMap<(i32, &str), usize> = BTreeMap::new();
     let mut total_commands = 0;
     let mut resumes = 0;
     for outcome in outcomes {
         resumes += outcome.resumes;
         for message in &outcome.logs {
+            if let Some(cause) = harness_limit(outcome.vnum) {
+                *limited.entry((outcome.vnum, cause)).or_default() += 1;
+                continue;
+            }
             total_logs += 1;
             let shape = log_shape(message);
             *shapes.entry(shape.clone()).or_default() += 1;
@@ -1294,6 +1446,12 @@ fn print_summary(outcomes: &[Outcome], failures: &[String]) {
         "script_log messages: {total_logs} in {} shapes",
         shapes.len()
     );
+    if !limited.is_empty() {
+        println!("harness limits (messages the mock world causes, by trigger):");
+        for ((vnum, cause), count) in &limited {
+            println!("  {count:5}  trigger {vnum}: {cause}");
+        }
+    }
     let mut gaps: BTreeMap<String, usize> = BTreeMap::new();
     let mut real: BTreeMap<String, usize> = BTreeMap::new();
     for (shape, count) in &shapes {

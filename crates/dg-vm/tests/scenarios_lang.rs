@@ -1424,3 +1424,97 @@ fn a_loop_that_never_ends_is_stopped_at_a_hundred_passes() {
     assert_clean(&scene.fx.host);
     assert_no_commands(&scene.fx.host);
 }
+
+// A `while` whose condition is false on entry resets its pass count
+// (`else { cl->loops = 0; cl = temp; }`); leaving a loop at its `done` does
+// not. The inner loop of this script is swept three times. The first sweep
+// runs 10 passes, of which the 9 whose `done` finds the condition true are
+// counted. The second is entered with a false condition (lim 0), which clears
+// the count. The third runs 35 passes and its forced wait comes at the 30th
+// counted pass (n = 30), not at the 21st that the first sweep's 9 would give.
+// The 4 counted passes after the wait (n = 31..34) end it at n = 35. 43 passes
+// in all, under the cap of 100.
+#[test]
+fn a_loop_entered_with_a_false_condition_starts_its_count_afresh() {
+    let mut scene = Scene::new();
+    let (room, player) = (scene.room(), scene.player());
+    let id = install(
+        scene.host(),
+        room,
+        9002,
+        AttachType::Wld,
+        "g",
+        100,
+        "",
+        "set k 0\nset lim 10\nwhile %k% < 3\nset n 0\nwhile %n% < %lim%\n\
+         eval n %n%+1\nglobal n\ndone\nif %k% == 0\nset lim 0\nelse\n\
+         set lim 35\nend\neval k %k%+1\ndone\n%echo% finished",
+    );
+    assert_eq!(dispatch::enter_wtrigger(scene.host(), room, player, 0), 1);
+    assert_eq!(scene.fx.host.waits, vec![(room, id, 1)]);
+    assert_eq!(global_var(&scene.fx.host, room, "n").as_deref(), Some("30"));
+    assert!(scene.fx.host.effects.is_empty());
+    assert_eq!(run_waits(scene.host(), 5), 1);
+    assert_eq!(global_var(&scene.fx.host, room, "n").as_deref(), Some("35"));
+    assert_eq!(
+        scene.fx.host.effects,
+        echo_all(&scene.fx.host, room, &["Finished"], "\r\n")
+    );
+    assert_no_waits(&scene.fx.host);
+    assert_no_logs(&scene.fx.host);
+    assert_no_commands(&scene.fx.host);
+    assert_clean(&scene.fx.host);
+}
+
+// enter_wtrigger sets `direction` to the opposite of the direction the actor
+// moved (`dirs[rev_dir[dir]]`): arriving by moving east (1) is arriving from
+// the west.
+#[test]
+fn a_room_enter_trigger_sees_the_direction_the_actor_came_from() {
+    let mut scene = Scene::new();
+    let (room, player) = (scene.room(), scene.player());
+    install(
+        scene.host(),
+        room,
+        9003,
+        AttachType::Wld,
+        "g",
+        100,
+        "",
+        "%echo% from the %direction%",
+    );
+    assert_eq!(dispatch::enter_wtrigger(scene.host(), room, player, 1), 1);
+    assert_ended_with(
+        &scene.fx.host,
+        &echo_all(&scene.fx.host, room, &["From the west"], "\r\n"),
+    );
+}
+
+// greet_mtrigger skips the actor itself (`ch != actor`): a mob with a greet
+// trigger that walks into a room greets nobody, while a second mob with the
+// same trigger greets it.
+#[test]
+fn a_mob_does_not_greet_itself_when_it_enters() {
+    let mut scene = Scene::new();
+    let first = scene.add_owner_mob(7001, "a doorman");
+    let second = scene.add_owner_mob(7002, "a porter");
+    for mob in [first, second] {
+        install(
+            scene.host(),
+            mob,
+            9004,
+            AttachType::Mob,
+            "g",
+            100,
+            "",
+            "say hello",
+        );
+    }
+    scene.host().rolls.extend([PERCENT_ROLL; 2]);
+    assert_eq!(dispatch::greet_mtrigger(scene.host(), first, 0), 1);
+    assert_eq!(said(&scene.fx.host), vec![(second, "say hello".to_owned())]);
+    assert!(scene.fx.host.effects.is_empty());
+    assert_no_logs(&scene.fx.host);
+    assert_no_waits(&scene.fx.host);
+    assert_clean(&scene.fx.host);
+}
