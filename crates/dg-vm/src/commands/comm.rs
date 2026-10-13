@@ -15,7 +15,10 @@
 //! `act` (through `CAP`) capitalises, and only for a character with a
 //! descriptor.
 
+use super::shared::{PLR_WRITING, awake, has_desc};
 use crate::cstr::is_space;
+use crate::dispatch::act_mtrigger;
+use crate::fields_char::CharStat;
 use crate::host::DgHost;
 use crate::lookup::{
     get_char_in_room, get_char_room_vis, get_obj_in_equip_vis, get_obj_in_list_vis, get_obj_in_room,
@@ -26,9 +29,6 @@ use crate::types::{LVL_IMMORT, Uid, trig::MTRIG_ACT};
 pub const TO_ROOM: u32 = 1;
 /// `TO_CHAR`: to the character.
 pub const TO_CHAR: u32 = 4;
-
-/// `POS_SLEEPING`; `AWAKE(ch)` is `GET_POS(ch) > POS_SLEEPING`.
-pub(crate) const POS_SLEEPING: i32 = 4;
 
 /// `any_one_name` (`dg_comm.c`): like `any_one_arg`, but the word also ends
 /// at punctuation (except `#` and `-`). Returns the lowercased word and the
@@ -57,9 +57,9 @@ pub(crate) fn sendok<H: DgHost + ?Sized>(host: &H, ch: Uid, to_sleeping: bool) -
     let reacts = host
         .script(ch)
         .is_some_and(|script| script.check(MTRIG_ACT));
-    (host.cmd_has_desc(ch) || reacts)
-        && (to_sleeping || host.cmd_pos(ch) > POS_SLEEPING)
-        && !(!host.is_npc(ch) && host.cmd_is_writing(ch))
+    (has_desc(host, ch) || reacts)
+        && (to_sleeping || awake(host, ch))
+        && !(!host.is_npc(ch) && host.char_act_flagged(ch, PLR_WRITING))
 }
 
 /// `PERS(ch, vict)`: the name `viewer` sees `target` by.
@@ -130,17 +130,23 @@ fn sub_write_to_char<H: DgHost + ?Sized>(
             },
             '^' => match id {
                 Some(id) if id == ch => sb.push_str("your"),
-                Some(id) if host.can_see(ch, id) => sb.push_str(hshr(host.cmd_sex(id))),
+                Some(id) if host.can_see(ch, id) => {
+                    sb.push_str(hshr(host.char_stat(id, CharStat::Sex)))
+                }
                 _ => sb.push_str("its"),
             },
             '&' => match id {
                 Some(id) if id == ch => sb.push_str("you"),
-                Some(id) if host.can_see(ch, id) => sb.push_str(hssh(host.cmd_sex(id))),
+                Some(id) if host.can_see(ch, id) => {
+                    sb.push_str(hssh(host.char_stat(id, CharStat::Sex)))
+                }
                 _ => sb.push_str("it"),
             },
             '*' => match id {
                 Some(id) if id == ch => sb.push_str("you"),
-                Some(id) if host.can_see(ch, id) => sb.push_str(hmhr(host.cmd_sex(id))),
+                Some(id) if host.can_see(ch, id) => {
+                    sb.push_str(hmhr(host.char_stat(id, CharStat::Sex)))
+                }
                 _ => sb.push_str("it"),
             },
             '`' => match id {
@@ -284,8 +290,8 @@ pub fn send_to_zone<H: DgHost + ?Sized>(host: &mut H, messg: &str, zone: i32) {
     for ch in host.cmd_playing_characters() {
         let in_zone = host
             .in_room(ch)
-            .is_some_and(|room| host.cmd_room_zone(room) == zone);
-        if host.cmd_pos(ch) > POS_SLEEPING && in_zone {
+            .is_some_and(|room| host.room_zone_number(room) == zone);
+        if awake(host, ch) && in_zone {
             host.cmd_send(ch, messg);
         }
     }
@@ -303,7 +309,7 @@ pub fn send_to_range<H: DgHost + ?Sized>(host: &mut H, start: i32, finish: i32, 
     let text = format!("{msg}\r\n");
     for room in host.cmd_rooms_in_range(start, finish) {
         for ch in host.room_people(room) {
-            if host.cmd_has_desc(ch) {
+            if has_desc(host, ch) {
                 host.cmd_send(ch, &text);
             }
         }
@@ -362,9 +368,9 @@ fn act_text<H: DgHost + ?Sized>(host: &mut H, orig: &str, ch: Uid, to: Uid) -> S
         let code = src.get(at).copied();
         let text: String = match code {
             Some(b'n') => pers(host, ch, to),
-            Some(b'm') => hmhr(host.cmd_sex(ch)).to_owned(),
-            Some(b's') => hshr(host.cmd_sex(ch)).to_owned(),
-            Some(b'e') => hssh(host.cmd_sex(ch)).to_owned(),
+            Some(b'm') => hmhr(host.char_stat(ch, CharStat::Sex)).to_owned(),
+            Some(b's') => hshr(host.char_stat(ch, CharStat::Sex)).to_owned(),
+            Some(b'e') => hssh(host.char_stat(ch, CharStat::Sex)).to_owned(),
             Some(
                 b'N' | b'M' | b'S' | b'E' | b'o' | b'O' | b'p' | b'P' | b'a' | b'A' | b'T' | b't'
                 | b'F',
@@ -407,16 +413,35 @@ fn act_text<H: DgHost + ?Sized>(host: &mut H, orig: &str, ch: Uid, to: Uid) -> S
     String::from_utf8_lossy(&out).into_owned()
 }
 
-/// `perform_act(orig, ch, NULL, NULL, to)`.
-fn perform_act<H: DgHost + ?Sized>(host: &mut H, orig: &str, ch: Uid, to: Uid) {
+/// The buffer `perform_act` ends up with for `to`: the text, its line end,
+/// and (`CAP`, in place) a capital first letter when `to` has a descriptor to
+/// write it to.
+fn act_line<H: DgHost + ?Sized>(host: &mut H, orig: &str, ch: Uid, to: Uid) -> String {
     let mut text = act_text(host, orig, ch, to);
     text.push_str("\r\n");
-    if host.cmd_has_desc(to) {
+    if has_desc(host, to) {
         cap(&mut text);
+    }
+    text
+}
+
+/// `IS_NPC(to) && dg_act_check && to != ch`: whether `perform_act` offers the
+/// line to `to`'s `act` triggers. `dg_act_check` is true for every `act()` a
+/// script command makes.
+fn offers_to_triggers<H: DgHost + ?Sized>(host: &H, ch: Uid, to: Uid) -> bool {
+    host.is_npc(to) && to != ch
+}
+
+/// `perform_act(orig, ch, NULL, NULL, to)`.
+fn perform_act<H: DgHost + ?Sized>(host: &mut H, orig: &str, ch: Uid, to: Uid) {
+    let text = act_line(host, orig, ch, to);
+    if has_desc(host, to) {
         host.cmd_send(to, &text);
     }
-    if host.is_npc(to) && to != ch {
-        host.cmd_act_trigger(to, &text, ch);
+    if offers_to_triggers(host, ch, to) {
+        // The victim, object, target and argument are all absent (`dg_victim`
+        // is NULL because `vict_obj` is).
+        act_mtrigger(host, to, &text, Some(ch), None, None, None, None);
     }
 }
 
@@ -661,13 +686,13 @@ mod tests {
     fn sendok_needs_a_descriptor_or_act_trigger_and_not_writing() {
         let mut w = World::new();
         let (alice, bob, mob) = (w.player, w.player2, w.mob);
-        w.host.set_num(bob, "writing", 1);
+        w.set_writing(bob, true);
         sub_write(&mut w.host, "x", alice, true, TO_CHAR | TO_ROOM);
         assert_eq!(w.sent_to(alice).len(), 1);
         assert!(w.sent_to(bob).is_empty());
         // Sleeping characters are still sent to (to_sleeping is 1).
         w.clear();
-        w.host.set_num(bob, "writing", 0);
+        w.set_writing(bob, false);
         w.host.set_num(bob, "pos", 4);
         sub_write(&mut w.host, "x", alice, true, TO_ROOM);
         assert_eq!(w.sent_to(bob).len(), 1);
@@ -680,7 +705,7 @@ mod tests {
         assert!(sendok(&w.host, mob, true));
         w.clear();
         sub_write(&mut w.host, "x", alice, true, TO_ROOM);
-        assert!(w.host.effects.iter().all(|e| !e.starts_with("act_trigger")));
+        assert!(w.host.mud_commands.is_empty());
         // A character in no room has nobody to send to and resolves no names.
         w.clear();
         w.host.char_from_room(alice);
@@ -776,23 +801,12 @@ mod tests {
     }
 
     #[test]
-    fn act_skips_sleepers_and_offers_npcs_the_uncapitalised_line() {
+    fn act_skips_sleepers_and_a_character_in_no_room_has_nobody_to_act_to() {
         let mut w = World::new();
-        let (alice, bob, mob) = (w.player, w.player2, w.mob);
+        let (alice, bob) = (w.player, w.player2);
         w.host.set_num(alice, "pos", 4);
         act(&mut w.host, "waves at $n.", false, bob, TO_ROOM);
         assert!(w.sent_to(alice).is_empty());
-        // The guard reacts to act triggers: it gets the line, as written.
-        let act_proto = w
-            .host
-            .add_proto(901, AttachType::Mob, "e", 100, "", "say hi");
-        w.host.attach(mob, &act_proto);
-        act(&mut w.host, "waves at $n.", false, bob, TO_ROOM);
-        assert_eq!(
-            w.effects("act_trigger"),
-            [format!("act_trigger {mob} {bob}: waves at Bob.\r\n")]
-        );
-        // A character in no room has nobody to act to.
         w.clear();
         w.host.char_from_room(bob);
         act(&mut w.host, "x", false, bob, TO_ROOM);
@@ -800,6 +814,63 @@ mod tests {
             w.effects("syslog"),
             ["syslog: SYSERR: no valid target to act()!"]
         );
+    }
+
+    #[test]
+    fn the_line_a_trigger_is_offered_is_capitalised_only_for_a_descriptor() {
+        let mut w = World::new();
+        let (alice, bob, mob) = (w.player, w.player2, w.mob);
+        // CAP works on the buffer in place before `write_to_output`, so a
+        // character with a descriptor gets, and a trigger would see, a
+        // capital; a mob with no descriptor leaves the buffer as written.
+        assert_eq!(
+            act_line(&mut w.host, "waves at $n.", bob, mob),
+            "waves at Bob.\r\n"
+        );
+        assert_eq!(
+            act_line(&mut w.host, "waves at $n.", bob, alice),
+            "Waves at Bob.\r\n"
+        );
+        // A switched mob has a descriptor.
+        w.host.set_num(mob, "desc", 1);
+        assert_eq!(
+            act_line(&mut w.host, "waves at $n.", bob, mob),
+            "Waves at Bob.\r\n"
+        );
+    }
+
+    #[test]
+    fn only_an_npc_other_than_the_actor_is_offered_the_line() {
+        let mut w = World::new();
+        let (alice, bob, mob) = (w.player, w.player2, w.mob);
+        let rat = w.host.add_mob(3001, "a rat");
+        assert!(offers_to_triggers(&w.host, bob, mob));
+        assert!(offers_to_triggers(&w.host, mob, rat));
+        // Players are never offered it, and an NPC is not offered its own
+        // TO_CHAR line.
+        assert!(!offers_to_triggers(&w.host, bob, alice));
+        assert!(!offers_to_triggers(&w.host, mob, mob));
+        assert!(!offers_to_triggers(&w.host, alice, alice));
+    }
+
+    #[test]
+    fn act_offers_each_npc_in_the_room_its_line_through_the_dispatch_module() {
+        // `act_mtrigger` runs the `act` triggers whose argument matches. A
+        // trigger that says what it was shown makes the call visible; until
+        // the dispatch module fires triggers, nothing is said and the test
+        // asserts only that nothing else was.
+        let mut w = World::new();
+        let (bob, mob) = (w.player2, w.mob);
+        let act_proto = w
+            .host
+            .add_proto(901, AttachType::Mob, "e", 0, "waves", "say saw %arg%");
+        w.host.attach(mob, &act_proto);
+        act(&mut w.host, "waves at $n.", false, bob, TO_ROOM);
+        let said: Vec<_> = w.host.mud_commands.iter().map(|(who, _)| *who).collect();
+        assert!(said.iter().all(|who| *who == mob), "{said:?}");
+        for (_, line) in &w.host.mud_commands {
+            assert_eq!(line, "say saw waves at Bob.");
+        }
     }
 
     #[test]
@@ -841,9 +912,9 @@ mod tests {
         send_to_zone(&mut w.host, "", 5);
         assert!(w.host.effects.is_empty());
         // Not playing: skipped. In no room: skipped.
-        w.host.set_num(alice, "playing", 0);
+        w.host.set_num(alice, "con_state", 1);
         send_to_zone(&mut w.host, "Thunder\r\n", 5);
-        w.host.set_num(alice, "playing", 1);
+        w.host.set_num(alice, "con_state", 0);
         w.host.char_from_room(alice);
         send_to_zone(&mut w.host, "Thunder\r\n", 5);
         assert!(w.host.effects.is_empty());

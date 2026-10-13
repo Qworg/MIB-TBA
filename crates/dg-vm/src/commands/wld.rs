@@ -8,7 +8,10 @@
 
 use super::comm::{TO_CHAR, TO_ROOM, act_to_room, sub_write};
 use super::misc::script_damage;
-use super::shared::{Owner, door, load, recho, starts_with_digit, teleport, vnum16, zoneecho};
+use super::shared::{
+    Owner, dir_count, door, exit_to_room, load, recho, starts_with_digit, teleport, vnum16,
+    zoneecho,
+};
 use super::strncmp_lookup;
 use crate::cstr::{any_one_arg, atoi, one_argument, skip_spaces, str_eq, two_arguments};
 use crate::host::DgHost;
@@ -123,8 +126,8 @@ fn do_wasound<H: DgHost + ?Sized>(host: &mut H, room: Uid, argument: &str) {
         return;
     }
 
-    for door in 0..host.cmd_dir_count() {
-        if let Some(to) = host.cmd_exit_to_room(room, door)
+    for door in 0..dir_count(host) {
+        if let Some(to) = exit_to_room(host, room, door)
             && to != room
         {
             act_to_room(host, argument, to);
@@ -432,17 +435,20 @@ mod tests {
 
     #[test]
     fn wecho_offers_the_line_to_npcs_that_watch_for_it() {
+        // The guard's `act` trigger says what it was shown. `act_mtrigger`
+        // only fires once the dispatch module is real; until then nothing is
+        // said, and the assertion is that nothing else is.
         let mut w = World::new();
-        let (mob, bob) = (w.mob, w.player2);
+        let mob = w.mob;
         let act_proto = w
             .host
-            .add_proto(901, AttachType::Mob, "e", 100, "", "say hi");
+            .add_proto(901, AttachType::Mob, "e", 0, "hush", "say heard %arg%");
         w.host.attach(mob, &act_proto);
         run(&mut w, "wecho hush");
-        assert_eq!(
-            w.effects("act_trigger"),
-            [format!("act_trigger {mob} {bob}: hush\r\n")]
-        );
+        for (who, line) in &w.host.mud_commands {
+            assert_eq!(*who, mob);
+            assert_eq!(line, "say heard hush");
+        }
     }
 
     #[test]

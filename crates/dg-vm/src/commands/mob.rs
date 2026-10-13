@@ -12,13 +12,14 @@
 use super::comm::{TO_CHAR, TO_ROOM, sub_write, sub_write_in};
 use super::misc::script_damage;
 use super::shared::{
-    Owner, door, find_target_room, load, recho, starts_with_digit, teleport, vnum16, zoneecho,
+    Owner, PRF_NOHASSLE, dir_count, door, exit_to_room, find_target_room, has_desc, load, recho,
+    shown, shown_after_char, starts_with_digit, teleport, vnum16, zoneecho,
 };
 use crate::cstr::{atoi, one_argument, skip_spaces, str_eq, two_arguments};
 use crate::host::DgHost;
 use crate::lookup::{
-    NUM_WEARS, Where, get_char, get_char_room_vis, get_char_vis, get_number, get_obj,
-    get_obj_in_list_vis, get_obj_pos_in_equip_vis, get_obj_vis, isname,
+    NUM_WEARS, Where, get_char, get_char_room_vis, get_char_vis, get_obj, get_obj_in_list_vis,
+    get_obj_pos_in_equip_vis, get_obj_vis, isname,
 };
 use crate::types::{LVL_IMPL, ScriptMemory, UID_CHAR, Uid};
 
@@ -131,18 +132,6 @@ fn gate<H: DgHost + ?Sized>(host: &mut H, ch: Uid, charm_check: bool) -> bool {
     !(charm_check && host.cmd_is_charmed(ch))
 }
 
-/// What the C's `arg` buffer holds after a lookup: the `*_vis` functions
-/// call `get_number`, which removes the `N.` / `last.` prefix in place, so
-/// later uses (log messages, a second lookup) see the bare name. A UID
-/// argument never reaches `get_number` and is left alone.
-fn shown(arg: &str) -> String {
-    if arg.starts_with(UID_CHAR) {
-        arg.to_owned()
-    } else {
-        get_number(arg).1.to_owned()
-    }
-}
-
 /// `if (*arg == UID_CHAR) get_char(arg) else get_char_room_vis(ch, arg)`.
 fn victim_in_room<H: DgHost + ?Sized>(host: &H, ch: Uid, arg: &str) -> Option<Uid> {
     if arg.starts_with(UID_CHAR) {
@@ -176,8 +165,8 @@ fn do_masound<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     let Some(was_in_room) = host.in_room(ch) else {
         return;
     };
-    for door in 0..host.cmd_dir_count() {
-        if let Some(to) = host.cmd_exit_to_room(was_in_room, door)
+    for door in 0..dir_count(host) {
+        if let Some(to) = exit_to_room(host, was_in_room, door)
             && to != was_in_room
         {
             sub_write_in(host, argument, ch, Some(to), true, TO_ROOM);
@@ -198,18 +187,24 @@ fn do_mkill<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         return;
     }
     let Some(victim) = victim_in_room(host, ch, &arg) else {
-        log.log(host, &format!("mkill: victim ({}) not found", shown(&arg)));
+        log.log(
+            host,
+            &format!(
+                "mkill: victim ({}) not found",
+                shown_after_char(&arg, Where::Room)
+            ),
+        );
         return;
     };
     if victim == ch {
         log.log(host, "mkill: victim is self");
         return;
     }
-    if !host.is_npc(victim) && host.cmd_nohassle(victim) {
+    if !host.is_npc(victim) && host.char_pref_flagged(victim, PRF_NOHASSLE) {
         log.log(host, "mkill: target has nohassle on");
         return;
     }
-    if host.cmd_fighting(ch).is_some() {
+    if host.char_fighting(ch).is_some() {
         log.log(host, "mkill: already fighting");
         return;
     }
@@ -336,7 +331,10 @@ fn do_msend<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str, around: b
     let Some(victim) = victim_in_room(host, ch, &arg) else {
         Owner::Mob(ch).log(
             host,
-            &format!("{name}: victim ({}) does not exist", shown(&arg)),
+            &format!(
+                "{name}: victim ({}) does not exist",
+                shown_after_char(&arg, Where::Room)
+            ),
         );
         return;
     };
@@ -441,7 +439,7 @@ fn do_mpurge<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
             get_obj(host, &arg)
         } else {
             // `get_char_room_vis` has already stripped any `N.` from `arg`.
-            get_obj_vis(host, ch, &shown(&arg))
+            get_obj_vis(host, ch, &shown_after_char(&arg, Where::Room))
         };
         match obj {
             Some(obj) => host.cmd_extract_obj(obj),
@@ -476,7 +474,7 @@ fn do_mgoto<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         return;
     };
 
-    if host.cmd_fighting(ch).is_some() {
+    if host.char_fighting(ch).is_some() {
         host.cmd_stop_fighting(ch);
     }
     host.cmd_char_from_room(ch);
@@ -550,7 +548,10 @@ fn do_mteleport<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         let Some(vict) = victim_in_world(host, ch, &arg1) else {
             log.log(
                 host,
-                &format!("mteleport: victim ({}) does not exist", shown(&arg1)),
+                &format!(
+                    "mteleport: victim ({}) does not exist",
+                    shown_after_char(&arg1, Where::World)
+                ),
             );
             return;
         };
@@ -575,7 +576,10 @@ fn do_mdamage<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     let Some(vict) = victim_in_room(host, ch, &name) else {
         Owner::Mob(ch).log(
             host,
-            &format!("mdamage: victim ({}) does not exist", shown(&name)),
+            &format!(
+                "mdamage: victim ({}) does not exist",
+                shown_after_char(&name, Where::Room)
+            ),
         );
         return;
     };
@@ -653,13 +657,16 @@ fn do_mhunt<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         Owner::Mob(ch).log(host, "mhunt called with no argument");
         return;
     }
-    if host.cmd_fighting(ch).is_some() {
+    if host.char_fighting(ch).is_some() {
         return;
     }
     let Some(victim) = victim_in_world(host, ch, &arg) else {
         Owner::Mob(ch).log(
             host,
-            &format!("mhunt: victim ({}) does not exist", shown(&arg)),
+            &format!(
+                "mhunt: victim ({}) does not exist",
+                shown_after_char(&arg, Where::World)
+            ),
         );
         return;
     };
@@ -683,7 +690,10 @@ fn do_mremember<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     let Some(victim) = victim_in_world(host, ch, &arg) else {
         Owner::Mob(ch).log(
             host,
-            &format!("mremember: victim ({}) does not exist", shown(&arg)),
+            &format!(
+                "mremember: victim ({}) does not exist",
+                shown_after_char(&arg, Where::World)
+            ),
         );
         return;
     };
@@ -715,7 +725,10 @@ fn do_mforget<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     let Some(victim) = victim_in_world(host, ch, &arg) else {
         Owner::Mob(ch).log(
             host,
-            &format!("mforget: victim ({}) does not exist", shown(&arg)),
+            &format!(
+                "mforget: victim ({}) does not exist",
+                shown_after_char(&arg, Where::World)
+            ),
         );
         return;
     };
@@ -730,7 +743,7 @@ fn do_mtransform<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     if !gate(host, ch, true) {
         return;
     }
-    if host.cmd_has_desc(ch) {
+    if has_desc(host, ch) {
         host.cmd_send(
             ch,
             "You've got no VNUM to return to, dummy! try 'switch'\r\n",
@@ -806,7 +819,10 @@ fn do_mfollow<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         if found.is_none() {
             log.log(
                 host,
-                &format!("mfollow: victim ({}) not found", shown(&buf)),
+                &format!(
+                    "mfollow: victim ({}) not found",
+                    shown_after_char(&buf, Where::Room)
+                ),
             );
             return;
         }
@@ -816,7 +832,7 @@ fn do_mfollow<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         return;
     };
 
-    if host.cmd_master(ch) == Some(leader) {
+    if host.char_master(ch) == Some(leader) {
         // Already following.
         return;
     }
@@ -824,7 +840,7 @@ fn do_mfollow<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     // left at the gate.)
 
     // Stop following someone else first.
-    if host.cmd_master(ch).is_some() {
+    if host.char_master(ch).is_some() {
         host.cmd_unfollow(ch);
     }
     if ch == leader {
@@ -845,7 +861,7 @@ fn circle_follow<H: DgHost + ?Sized>(host: &H, ch: Uid, victim: Uid) -> bool {
     for _ in 0..host.character_list().len().saturating_add(1) {
         match k {
             Some(i) if i == ch => return true,
-            Some(i) => k = host.cmd_master(i),
+            Some(i) => k = host.char_master(i),
             None => return false,
         }
     }
@@ -1049,8 +1065,13 @@ mod tests {
         w.host.set_link(room, "exit:6", Some(room2));
         run(&mut w, "masound again");
         assert_eq!(w.sent_to(bob), ["again\n\r"]);
+        // The self-loop exit does not speak into the mob's own room.
+        assert!(w.sent_to(alice).is_empty());
         w.clear();
-        w.host.globals.nums.insert("dir_count".to_owned(), 10);
+        w.host
+            .globals
+            .nums
+            .insert("config:diagonal_dirs".to_owned(), 1);
         run(&mut w, "masound twice");
         assert_eq!(w.sent_to(bob), ["twice\n\r", "twice\n\r"]);
         run(&mut w, "masound");
@@ -1161,7 +1182,7 @@ mod tests {
         log_is(&w, "mkill: victim is self");
         run(&mut w, "mkill guard");
         log_is(&w, "mkill: victim is self");
-        w.host.set_num(alice, "nohassle", 1);
+        w.set_nohassle(alice, true);
         run(&mut w, "mkill alice");
         log_is(&w, "mkill: target has nohassle on");
         assert!(w.effects("hit").is_empty());
@@ -1176,7 +1197,7 @@ mod tests {
         let mut w = World::new();
         let rat = bare_mob(&mut w);
         w.host.set_text(rat, "alias", "rat");
-        w.host.set_num(rat, "nohassle", 1);
+        w.set_nohassle(rat, true);
         run(&mut w, "mkill rat");
         assert_eq!(w.effects("hit").len(), 1);
     }

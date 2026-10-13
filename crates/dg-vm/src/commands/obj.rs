@@ -10,8 +10,8 @@
 use super::comm::{TO_CHAR, TO_ROOM, sub_write};
 use super::misc::script_damage;
 use super::shared::{
-    Owner, door, find_obj_target_room, load, obj_contains_obj, recho, starts_with_digit, teleport,
-    vnum16, zoneecho,
+    Owner, dir_count, door, exit_to_room, find_obj_target_room, load, obj_contains_obj, recho,
+    starts_with_digit, teleport, vnum16, zoneecho,
 };
 use super::strncmp_lookup;
 use crate::cstr::{any_one_arg, atoi, is_number, one_argument, skip_spaces, str_eq, two_arguments};
@@ -360,8 +360,8 @@ fn do_oasound<H: DgHost + ?Sized>(host: &mut H, obj: Uid, argument: &str) {
         return;
     };
 
-    for door in 0..host.cmd_dir_count() {
-        if let Some(to) = host.cmd_exit_to_room(room, door)
+    for door in 0..dir_count(host) {
+        if let Some(to) = exit_to_room(host, room, door)
             && to != room
         {
             echo_room(host, argument, to);

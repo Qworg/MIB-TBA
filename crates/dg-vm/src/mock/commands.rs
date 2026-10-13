@@ -1,31 +1,32 @@
 //! [`CmdHost`] for the mock.
 //!
-//! Uses the shared keys of [`super`] (`pos`, `sex`, `hit`, `max_hit`,
-//! `level`, `zone`, `val0`..`val3`, `timer`, `exit:<dir>…`, `flag:<n>`,
-//! `links["fighting"]`, `links["master"]`, `lists["followers"]`,
-//! `aff:<n>`, `mobproto:<vnum>`, `objproto:<vnum>`) and these:
+//! Uses the shared keys of [`super`] (`desc`, `con_state`, `level`, `zone`,
+//! `exit:<dir>…` including `exit:<dir>:nowhere`, `links["room"]`,
+//! `links["master"]`, `lists["followers"]`, `aff:<n>`, `mobproto:<vnum>`,
+//! `objproto:<vnum>`, `val0`..`val3`, `timer`) and these, which no other
+//! module needs:
 //!
 //! | entity | key | meaning (C) |
 //! |---|---|---|
-//! | char | `nums["desc"]` | `ch->desc != NULL`; `send_to_char` only records for such a character |
-//! | char | `nums["desc_original_level"]` | `GET_LEVEL(ch->desc->original)` (default 0) |
-//! | char | `nums["writing"]` | `PLR_FLAGGED(ch, PLR_WRITING)` |
-//! | char | `nums["playing"]` | on `descriptor_list` with `CON_PLAYING` |
-//! | char | `nums["color"]` | `COLOR_LEV(ch)` |
-//! | char | `nums["nohassle"]`, `nums["invis_level"]` | `PRF_NOHASSLE`, `GET_INVIS_LEV` |
+//! | char | `nums["desc_original_level"]` | `GET_LEVEL(ch->desc->original)`; absent = the character's own level (the C dereferences NULL for a descriptor that is not switched) |
+//! | char | `nums["invis_level"]` | `GET_INVIS_LEV` |
 //! | char | `links["hunting"]` | `HUNTING(ch)` |
-//! | room | `nums["exit:<dir>:nowhere"]` | the exit exists and leads to `NOWHERE` |
 //! | world | `texts["huh"]` | `CONFIG_HUH` (default `Huh?!?\r\n`) |
-//! | world | `nums["dir_count"]` | `DIR_COUNT` (default 6) |
 //! | world | `nums["house_enter:<vnum>"]` | `House_can_enter(ch, vnum)` |
 //! | world | `nums["objproto:<vnum>:wear"]`, `nums["objproto:<vnum>:type"]` | a loadable object's wear flags and type |
 //! | world | `nums["zone:<n>:bot"]`, `nums["zone:<n>:top"]` | a zone's vnum range |
+//! | world | `nums["mobtrig:<vnum>"]`, `nums["objtrig:<vnum>"]` | a trigger (a `protos` key) that `read_mobile` / `read_object` attach to what they build, as the prototype's trigger list does |
+//!
+//! A character is on `descriptor_list` playing when it has `desc` and its
+//! `con_state` is 0. The facts that other traits own are read through them:
+//! `PLR_WRITING` is bit 4 of `nums["act"]`, `PRF_NOHASSLE` bit 8 and the colour
+//! bits 13 and 14 of `nums["pref"]` (see `mock/chars.rs`), the direction count
+//! follows `config:diagonal_dirs`.
 //!
 //! Effects recorded with [`MockHost::effect`]: `send <ch>: <text>`,
-//! `act_trigger <to> <actor>: <text>`, `mudlog <level>: <text>`,
-//! `syslog: <text>`, `die <ch>`, `hit <ch> <victim>`, `hunt <ch> <victim>`,
-//! `extract_char <ch>`, `extract_obj <obj>`, `transform_mob <ch> <vnum>
-//! <keep_hp>`, `transform_obj <obj> <vnum>`.
+//! `mudlog <level>: <text>`, `syslog: <text>`, `die <ch>`, `hit <ch>
+//! <victim>`, `hunt <ch> <victim>`, `extract_char <ch>`, `extract_obj <obj>`,
+//! `transform_mob <ch> <vnum> <keep_hp>`, `transform_obj <obj> <vnum>`.
 
 use crate::commands::{CmdHost, ExitField};
 use crate::host::WorldHost;
@@ -44,6 +45,19 @@ impl MockHost {
     fn has_exit(&self, room: Uid, dir: usize) -> bool {
         self.link(room, &Self::exit_key(dir, "")).is_some()
             || self.num(room, &Self::exit_key(dir, "nowhere")) != 0
+    }
+
+    /// Attach the trigger the world key names (a vnum in `protos`) to `uid`.
+    fn attach_proto_trigger(&mut self, uid: Uid, key: &str) {
+        let proto = self
+            .globals
+            .nums
+            .get(key)
+            .and_then(|vnum| i32::try_from(*vnum).ok())
+            .and_then(|vnum| self.protos.get(&vnum).cloned());
+        if let Some(proto) = proto {
+            self.attach(uid, &proto);
+        }
     }
 
     /// The room `CREATE` leaves a fresh exit pointing at: room number 0, the
@@ -71,21 +85,15 @@ impl CmdHost for MockHost {
         }
     }
 
-    fn cmd_has_desc(&self, ch: Uid) -> bool {
-        self.num(ch, "desc") != 0
-    }
-
     fn cmd_desc_original_level(&self, ch: Uid) -> Option<i32> {
-        self.cmd_has_desc(ch)
-            .then(|| i32::try_from(self.num(ch, "desc_original_level")).unwrap_or(0))
-    }
-
-    fn cmd_is_writing(&self, ch: Uid) -> bool {
-        self.num(ch, "writing") != 0
-    }
-
-    fn cmd_act_trigger(&mut self, to: Uid, text: &str, actor: Uid) {
-        self.effect(format!("act_trigger {to} {actor}: {text}"));
+        (self.num(ch, "desc") != 0).then(|| {
+            self.entity(ch)
+                .and_then(|entity| entity.nums.get("desc_original_level"))
+                .map_or_else(
+                    || self.level(ch),
+                    |level| i32::try_from(*level).unwrap_or(0),
+                )
+        })
     }
 
     fn cmd_mudlog(&mut self, level: i32, text: &str) {
@@ -100,71 +108,20 @@ impl CmdHost for MockHost {
         self.character_list
             .iter()
             .copied()
-            .filter(|ch| self.num(*ch, "playing") != 0)
+            .filter(|ch| self.num(*ch, "desc") != 0 && self.num(*ch, "con_state") == 0)
             .collect()
-    }
-
-    fn cmd_pos(&self, ch: Uid) -> i32 {
-        i32::try_from(self.num(ch, "pos")).unwrap_or(0)
-    }
-
-    fn cmd_sex(&self, ch: Uid) -> i32 {
-        i32::try_from(self.num(ch, "sex")).unwrap_or(0)
-    }
-
-    fn cmd_color_level(&self, ch: Uid) -> i32 {
-        i32::try_from(self.num(ch, "color")).unwrap_or(0)
     }
 
     fn cmd_is_charmed(&self, ch: Uid) -> bool {
         self.num(ch, "aff:22") != 0
     }
 
-    fn cmd_nohassle(&self, ch: Uid) -> bool {
-        self.num(ch, "nohassle") != 0
-    }
-
     fn cmd_invis_level(&self, ch: Uid) -> i32 {
         i32::try_from(self.num(ch, "invis_level")).unwrap_or(0)
     }
 
-    fn cmd_hit(&self, ch: Uid) -> i32 {
-        i32::try_from(self.num(ch, "hit")).unwrap_or(0)
-    }
-
-    fn cmd_max_hit(&self, ch: Uid) -> i32 {
-        i32::try_from(self.num(ch, "max_hit")).unwrap_or(0)
-    }
-
-    fn cmd_set_hit(&mut self, ch: Uid, hit: i32) {
-        self.set_num(ch, "hit", i64::from(hit));
-    }
-
-    fn cmd_update_pos(&mut self, ch: Uid) {
-        let hit = self.cmd_hit(ch);
-        let pos = self.cmd_pos(ch);
-        let new = if hit > 0 && pos > 3 {
-            return;
-        } else if hit > 0 {
-            8
-        } else if hit <= -11 {
-            0
-        } else if hit <= -6 {
-            1
-        } else if hit <= -3 {
-            2
-        } else {
-            3
-        };
-        self.set_num(ch, "pos", new);
-    }
-
     fn cmd_die(&mut self, ch: Uid) {
         self.effect(format!("die {ch}"));
-    }
-
-    fn cmd_fighting(&self, ch: Uid) -> Option<Uid> {
-        self.link(ch, "fighting")
     }
 
     fn cmd_stop_fighting(&mut self, ch: Uid) {
@@ -181,10 +138,6 @@ impl CmdHost for MockHost {
         self.set_link(ch, "hunting", Some(victim));
     }
 
-    fn cmd_master(&self, ch: Uid) -> Option<Uid> {
-        self.link(ch, "master")
-    }
-
     fn cmd_unfollow(&mut self, ch: Uid) {
         if let Some(master) = self.link(ch, "master") {
             self.list_remove(master, "followers", ch);
@@ -195,18 +148,6 @@ impl CmdHost for MockHost {
     fn cmd_follow(&mut self, ch: Uid, leader: Uid) {
         self.set_link(ch, "master", Some(leader));
         self.list_push_front(leader, "followers", ch);
-    }
-
-    fn cmd_dir_count(&self) -> usize {
-        self.globals
-            .nums
-            .get("dir_count")
-            .and_then(|count| usize::try_from(*count).ok())
-            .unwrap_or(6)
-    }
-
-    fn cmd_exit_to_room(&self, room: Uid, dir: usize) -> Option<Uid> {
-        self.link(room, &Self::exit_key(dir, ""))
     }
 
     fn cmd_exit_purge(&mut self, room: Uid, dir: usize) {
@@ -248,10 +189,6 @@ impl CmdHost for MockHost {
         }
     }
 
-    fn cmd_room_flagged(&self, room: Uid, flag: i32) -> bool {
-        self.num(room, &format!("flag:{flag}")) != 0
-    }
-
     fn cmd_house_can_enter(&self, _ch: Uid, room_vnum: i32) -> bool {
         self.globals
             .nums
@@ -278,10 +215,6 @@ impl CmdHost for MockHost {
             matches!((bot, top), (Some(bot), Some(top))
                 if *bot <= i64::from(vnum) && i64::from(vnum) <= *top)
         })
-    }
-
-    fn cmd_room_zone(&self, room: Uid) -> i32 {
-        i32::try_from(self.num(room, "zone")).unwrap_or(0)
     }
 
     fn cmd_rooms_in_range(&self, start: i32, finish: i32) -> Vec<Uid> {
@@ -344,6 +277,7 @@ impl CmdHost for MockHost {
         let name = self.globals.texts.get(&format!("mobproto:{vnum}"))?.clone();
         let mob = self.add_mob(vnum, &name);
         self.set_num(mob, "pos", 8);
+        self.attach_proto_trigger(mob, &format!("mobtrig:{vnum}"));
         Some(mob)
     }
 
@@ -359,6 +293,7 @@ impl CmdHost for MockHost {
                 .unwrap_or(0);
             self.set_num(obj, key, value);
         }
+        self.attach_proto_trigger(obj, &format!("objtrig:{vnum}"));
         Some(obj)
     }
 
