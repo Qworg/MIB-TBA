@@ -68,7 +68,7 @@
 //! `quit` that extracts it, a social that raises an `act` trigger) queues a
 //! [`MockHook`] with [`MockHost::hook`]: the first later call that matches
 //! its character and line prefix runs a [`MockAction`] (move or extract a
-//! character, extract an object, load a mob, set a variable, clear
+//! character, move or extract an object, load a mob, set a variable, clear
 //! `dg_act_check`, or fire a trigger through [`crate::dispatch`]). See
 //! `hooks.rs` for the matching rules.
 //!

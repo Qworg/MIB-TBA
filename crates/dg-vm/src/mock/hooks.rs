@@ -39,6 +39,12 @@ pub enum MockAction {
     /// of `room`'s people, as a command that walks it there would. A room
     /// that does not exist leaves it where it is.
     MoveChar { ch: Uid, room: Uid },
+    /// `obj_from_anywhere` then `obj_to_room`: the object is appended to the
+    /// room's contents.
+    ObjToRoom { obj: Uid, room: Uid },
+    /// `obj_from_anywhere` then `obj_to_char`: the object goes to the head of
+    /// the character's inventory.
+    ObjToChar { obj: Uid, ch: Uid },
     /// `extract_char`: the character is marked dead and stays in its room
     /// until [`MockHost::sweep_dead`].
     ExtractChar(Uid),
@@ -116,6 +122,18 @@ impl MockHost {
                 if self.exists(room) {
                     self.char_from_room(ch);
                     self.char_to_room(ch, room);
+                }
+            }
+            MockAction::ObjToRoom { obj, room } => {
+                if self.exists(obj) && self.exists(room) {
+                    self.obj_from_anywhere(obj);
+                    self.obj_to_room(obj, room);
+                }
+            }
+            MockAction::ObjToChar { obj, ch } => {
+                if self.exists(obj) && self.exists(ch) {
+                    self.obj_from_anywhere(obj);
+                    self.obj_to_char(obj, ch);
                 }
             }
             MockAction::ExtractChar(ch) => self.extract_char(ch),
