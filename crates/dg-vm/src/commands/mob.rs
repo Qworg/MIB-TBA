@@ -9,17 +9,17 @@
 //! `mhunt`, `mremember`, `mforget`) also refuse a switched player below
 //! `LVL_IMPL`.
 
-use super::comm::{TO_CHAR, TO_ROOM, sub_write, sub_write_in};
+use super::comm::{TO_CHAR, TO_ROOM, for_each_occupant, sub_write, sub_write_in};
 use super::misc::script_damage;
 use super::shared::{
     Owner, PRF_NOHASSLE, char_world_vis, dir_count, door, exit_to_room, find_target_room, has_desc,
-    load, recho, shown, shown_after_char, starts_with_digit, teleport, vnum16, zoneecho,
+    load, recho, shown_after_char, starts_with_digit, teleport, vnum16, zoneecho,
 };
 use crate::cstr::{atoi, one_argument, skip_spaces, str_eq, two_arguments};
 use crate::host::DgHost;
 use crate::lookup::{
-    NUM_WEARS, Where, get_char, get_char_room_vis, get_char_vis, get_obj, get_obj_in_list_vis,
-    get_obj_pos_in_equip_vis, get_obj_vis, isname,
+    NUM_WEARS, Where, get_char, get_char_room_vis, get_char_vis, get_number, get_obj,
+    get_obj_in_list_vis, get_obj_pos_in_equip_vis, get_obj_vis, isname,
 };
 use crate::types::{LVL_IMPL, ScriptMemory, UID_CHAR, Uid};
 
@@ -288,8 +288,9 @@ fn do_mjunk<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
             host.cmd_extract_obj(obj);
             return;
         }
-        // The equipment lookup has stripped any `N.` from the buffer.
-        let bare = shown(&junk.word);
+        // The equipment lookup has stripped any `N.` from the buffer, whatever
+        // its first byte (`do_mjunk` has no UID branch).
+        let bare = get_number(&junk.word).1.to_owned();
         if let Some(obj) = get_obj_in_list_vis(host, ch, &bare, &host.carrying(ch)) {
             host.cmd_extract_obj(obj);
         }
@@ -306,7 +307,7 @@ fn do_mjunk<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
     let mut word = junk.word.clone();
     for _ in 0..NUM_WEARS {
         let found = get_obj_pos_in_equip_vis(host, ch, ch, &word);
-        word = shown(&word);
+        word = get_number(&word).1.to_owned();
         let Some(pos) = found else {
             break;
         };
@@ -542,11 +543,11 @@ fn do_mteleport<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
             log.log(host, "mteleport all target is itself");
             return;
         }
-        for vict in host.room_people(here) {
-            if host.exists(vict) && host.valid_dg_target(vict, true) {
+        for_each_occupant(host, here, |host, vict| {
+            if host.valid_dg_target(vict, true) {
                 teleport(host, vict, target);
             }
-        }
+        });
     } else {
         let Some(vict) = victim_in_world(host, ch, &arg1) else {
             log.log(
@@ -2128,6 +2129,11 @@ mod tests {
             long,
             "99999999999999999999 99999999999999999999".to_owned(),
             "-2147483648 -2147483648 x".to_owned(),
+            // `atoi` wraps to `i32::MIN`; the count decrement must not
+            // overflow when a target of that name is present.
+            "2147483648.bob".to_owned(),
+            "2147483648.lamp".to_owned(),
+            "4294967294.alice".to_owned(),
         ];
         for (command, _) in MOB_SCRIPT_COMMANDS {
             for arg in &nasty {
@@ -2529,5 +2535,66 @@ mod tests {
         // Leaving and rejoining would put the mob at the head of the list.
         assert_eq!(w.host.list(alice, "followers"), [rat, mob]);
         assert!(w.host.logs.is_empty());
+    }
+
+    // ---- branches the earlier tests left unpinned --------------------------
+
+    #[test]
+    fn msend_reaches_a_sleeping_victim() {
+        // `sub_write` has `to_sleeping = 1`.
+        let mut w = World::new();
+        let bob = w.player2;
+        w.host.set_num(bob, "pos", 4);
+        run(&mut w, "msend bob hi");
+        assert_eq!(w.sent_to(bob), ["hi\n\r"]);
+    }
+
+    #[test]
+    fn mzoneecho_and_mdoor_narrow_their_room_numbers_to_sixteen_bits() {
+        let mut w = World::new();
+        let (alice, room, room2) = (w.player, w.room, w.room2);
+        w.host.globals.nums.insert("zone:3:bot".to_owned(), 3000);
+        w.host.globals.nums.insert("zone:3:top".to_owned(), 3099);
+        w.host.set_num(room, "zone", 3);
+        // 68537 is 65536 + 3001.
+        run(&mut w, "mzoneecho 68537 hello");
+        assert_eq!(w.sent_to(alice), ["hello\r\n"]);
+        assert!(w.host.logs.is_empty());
+        // The room a door leads to is narrowed too (68538 is 65536 + 3002).
+        run(&mut w, "mdoor 3001 east room 68538");
+        assert_eq!(w.host.link(room, "exit:1"), Some(room2));
+        assert!(w.host.logs.is_empty());
+    }
+
+    #[test]
+    fn mtransform_puts_the_temporary_mob_in_the_room_of_the_mob() {
+        // `char_to_room(m, IN_ROOM(ch))` before the struct copy.
+        let mut w = World::new();
+        let (mob, room) = (w.mob, w.room);
+        run(&mut w, "mtransform 3100");
+        let extracted = w.effects("extract_char");
+        assert_eq!(extracted.len(), 1);
+        let temp: Uid = extracted[0]
+            .strip_prefix("extract_char ")
+            .and_then(|uid| uid.parse().ok())
+            .unwrap();
+        assert_ne!(temp, mob);
+        assert_eq!(w.host.in_room(temp), Some(room));
+    }
+
+    #[test]
+    fn mjunk_strips_the_count_from_a_word_that_starts_with_the_uid_character() {
+        // `do_mjunk` has no UID branch: `get_number` strips the buffer
+        // whatever its first byte, so the lookups see `sword`.
+        let mut w = World::new();
+        let (mob, lamp) = (w.mob, w.obj);
+        let sword = w.host.add_obj(7200, "a sword");
+        w.host.set_text(sword, "alias", "sword");
+        w.host.obj_to_char(sword, mob);
+        w.host.equip_char(mob, lamp, 16);
+        run(&mut w, "mjunk all.}1.sword");
+        assert_eq!(w.effects("extract_obj"), [format!("extract_obj {sword}")]);
+        assert!(!w.host.exists(sword));
+        assert!(w.host.exists(lamp));
     }
 }

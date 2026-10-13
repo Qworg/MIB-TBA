@@ -426,10 +426,12 @@ fn act_line<H: DgHost + ?Sized>(host: &mut H, orig: &str, ch: Uid, to: Uid) -> S
 }
 
 /// `IS_NPC(to) && dg_act_check && to != ch`: whether `perform_act` offers the
-/// line to `to`'s `act` triggers. `dg_act_check` is true for every `act()` a
-/// script command makes.
+/// line to `to`'s `act` triggers. `dg_act_check` is the global every `act()`
+/// call overwrites ([`CmdHost::cmd_act_check`]), so an `act` trigger that
+/// says something (`do_say` passes `DG_NO_TRIG`) switches it off for the
+/// rest of the outer walk.
 fn offers_to_triggers<H: DgHost + ?Sized>(host: &H, ch: Uid, to: Uid) -> bool {
-    host.is_npc(to) && to != ch
+    host.is_npc(to) && host.cmd_act_check() && to != ch
 }
 
 /// `perform_act(orig, ch, NULL, NULL, to)`.
@@ -451,6 +453,9 @@ pub fn act<H: DgHost + ?Sized>(host: &mut H, text: &str, hide_invisible: bool, c
     if text.is_empty() {
         return;
     }
+    // `dg_act_check = !IS_SET(type, DG_NO_TRIG)`: the script commands never
+    // pass `DG_NO_TRIG`.
+    host.cmd_set_act_check(true);
     if kind == TO_CHAR {
         if sendok(host, ch, false) {
             perform_act(host, text, ch, ch);
@@ -466,8 +471,8 @@ pub fn act<H: DgHost + ?Sized>(host: &mut H, text: &str, hide_invisible: bool, c
     };
     // The walk follows `to->next_in_room` live, so a recipient that an act
     // trigger moved carries it on in the list it is in now. A recipient that
-    // is in no list any more ends the walk (the C would follow a dangling
-    // pointer); the step bound stops a trigger that keeps moving recipients
+    // is in no list any more ends the walk (`char_from_room` leaves its
+    // `next_in_room` NULL, in the C too); the step bound stops a trigger that keeps moving recipients
     // back in front of the walk.
     let mut next = host.room_people(room).first().copied();
     let mut steps = 0_usize;
@@ -487,6 +492,29 @@ pub fn act<H: DgHost + ?Sized>(host: &mut H, text: &str, hide_invisible: bool, c
 
 /// The most recipients one `act()` walk visits.
 const ACT_WALK_LIMIT: usize = 100_000;
+
+/// `for (ch = room->people; ch; ch = next_ch) { next_ch = ch->next_in_room;
+/// body }`: the walk of the `all` forms of `oforce`, `wforce`, `mteleport`,
+/// `oteleport` and `wteleport`. The next occupant is read before the body
+/// runs and followed wherever the body left it, so a forced command or an
+/// enter trigger that moves it carries the walk into its new room. The step
+/// bound stops occupants that keep moving back in front of the walk.
+pub(crate) fn for_each_occupant<H: DgHost + ?Sized>(
+    host: &mut H,
+    room: Uid,
+    mut body: impl FnMut(&mut H, Uid),
+) {
+    let mut next = host.room_people(room).first().copied();
+    let mut steps = 0_usize;
+    while let Some(ch) = next {
+        steps += 1;
+        if steps > ACT_WALK_LIMIT {
+            break;
+        }
+        next = next_in_room(host, ch);
+        body(host, ch);
+    }
+}
 
 /// `to->next_in_room`.
 fn next_in_room<H: DgHost + ?Sized>(host: &H, to: Uid) -> Option<Uid> {
@@ -514,6 +542,7 @@ mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
 
     use super::*;
+    use crate::commands::CmdHost;
     use crate::commands::support::World;
     use crate::host::{BaseHost, WorldHost};
     use crate::types::AttachType;
@@ -868,6 +897,7 @@ mod tests {
         let mut w = World::new();
         let (alice, bob, mob) = (w.player, w.player2, w.mob);
         let rat = w.host.add_mob(3001, "a rat");
+        w.host.cmd_set_act_check(true);
         assert!(offers_to_triggers(&w.host, bob, mob));
         assert!(offers_to_triggers(&w.host, mob, rat));
         // Players are never offered it, and an NPC is not offered its own
@@ -875,6 +905,10 @@ mod tests {
         assert!(!offers_to_triggers(&w.host, bob, alice));
         assert!(!offers_to_triggers(&w.host, mob, mob));
         assert!(!offers_to_triggers(&w.host, alice, alice));
+        // `dg_act_check` off (an `act()` made with `DG_NO_TRIG`): no NPC is.
+        w.host.cmd_set_act_check(false);
+        assert!(!offers_to_triggers(&w.host, bob, mob));
+        assert!(!offers_to_triggers(&w.host, mob, rat));
     }
 
     #[test]
@@ -935,6 +969,68 @@ mod tests {
         assert_eq!(w.sent_to(people[1]), ["Hush\r\n"]);
         assert_eq!(w.sent_to(people[2]), ["Hush\r\n"]);
         assert_ne!(w.host.room_people(room)[0], people[0]);
+    }
+
+    #[test]
+    fn act_sets_the_check_and_a_nested_act_without_triggers_clears_it() {
+        // `act()` starts with `dg_act_check = !IS_SET(type, DG_NO_TRIG)`; a
+        // nested `act(..., DG_NO_TRIG)` made while a recipient is served
+        // (what `do_say` does in an `act` trigger) leaves it 0 for the rest of
+        // the outer walk.
+        let mut w = World::new();
+        let (alice, mob) = (w.player, w.mob);
+        let people = all_listening(&mut w);
+        w.host.cmd_set_act_check(false);
+        act(&mut w.host, "hush", false, alice, TO_ROOM);
+        assert!(w.host.cmd_act_check());
+        assert!(offers_to_triggers(&w.host, alice, mob));
+        let first = people.iter().find(|p| **p != alice).copied().unwrap();
+        w.host
+            .globals
+            .texts
+            .insert(format!("hook:send:{first}"), "noact".to_owned());
+        act(&mut w.host, "hush", false, alice, TO_ROOM);
+        assert!(!w.host.cmd_act_check());
+        assert!(!offers_to_triggers(&w.host, alice, mob));
+        // The next `act()` switches it on again.
+        act(&mut w.host, "hush", false, alice, TO_CHAR);
+        assert!(w.host.cmd_act_check());
+        // An empty string returns before touching it.
+        w.host.cmd_set_act_check(false);
+        act(&mut w.host, "", false, alice, TO_ROOM);
+        assert!(!w.host.cmd_act_check());
+    }
+
+    #[test]
+    fn for_each_occupant_follows_the_saved_next_character_wherever_it_went() {
+        // `next_ch = ch->next_in_room` is read before the body. Room 3001 is
+        // [Bob, Alice, guard] and 3002 holds a rat. The body for Bob takes
+        // Bob and then Alice to 3002 (3002 is [Alice, Bob, rat]); the walk
+        // goes on at Alice, in 3002 now, then Bob, then the rat. The guard is
+        // never reached.
+        let mut w = World::new();
+        let (room, room2, alice, bob, guard) = (w.room, w.room2, w.player, w.player2, w.mob);
+        let rat = w.host.add_mob(3100, "a rat");
+        w.host.char_to_room(rat, room2);
+        let mut visited = Vec::new();
+        for_each_occupant(&mut w.host, room, |host, ch| {
+            visited.push(ch);
+            if ch == bob && visited.len() == 1 {
+                for mover in [bob, alice] {
+                    host.char_from_room(mover);
+                    host.char_to_room(mover, room2);
+                }
+            }
+        });
+        assert_eq!(visited, [bob, alice, bob, rat]);
+        assert_eq!(w.host.room_people(room), [guard]);
+        // A room nobody is in visits nothing.
+        let mut count = 0;
+        for_each_occupant(&mut w.host, w.room, |_, _| count += 1);
+        assert_eq!(count, 1);
+        let empty = w.host.add_room(3003, "Empty");
+        for_each_occupant(&mut w.host, empty, |_, _| count += 1);
+        assert_eq!(count, 1);
     }
 
     #[test]

@@ -15,7 +15,8 @@
 //! | world | `nums["house_enter:<vnum>"]` | `House_can_enter(ch, vnum)` |
 //! | world | `nums["objproto:<vnum>:wear"]`, `nums["objproto:<vnum>:type"]` | a loadable object's wear flags and type |
 //! | world | `nums["zone:<n>:bot"]`, `nums["zone:<n>:top"]` | a zone's vnum range |
-//! | world | `texts["hook:send:<ch>"]`, `texts["hook:arrive:<ch>"]` | a test hook, run once and removed: after the next text delivered to `<ch>` (what an `act` trigger of `<ch>` would do) or after the next time `<ch>` is put into a room (what the command of an `at` would do). `load <mob vnum>` puts a new mob at the head of `<ch>`'s room, `move <room vnum>` takes `<ch>` to that room |
+//! | world | `texts["hook:send:<ch>"]`, `texts["hook:arrive:<ch>"]` | a test hook, run once and removed: after the next text delivered to `<ch>` (what an `act` trigger of `<ch>` would do) or after the next time `<ch>` is put into a room (what the command of an `at` would do). `load <mob vnum>` puts a new mob at the head of `<ch>`'s room, `move <room vnum>` takes `<ch>` to that room, `pull <room vnum> <uid>` takes the character `<uid>` there, `noact` clears `dg_act_check` (a nested `act()` with `DG_NO_TRIG`) |
+//! | world | `nums["act_check"]` | `dg_act_check` (0 until the first `act()`) |
 //! | world | `nums["mobtrig:<vnum>"]`, `nums["objtrig:<vnum>"]` | a trigger (a `protos` key) that `read_mobile` / `read_object` attach to what they build, as the prototype's trigger list does |
 //!
 //! A character is on `descriptor_list` playing when it has `desc` and its
@@ -27,7 +28,9 @@
 //! Effects recorded with [`MockHost::effect`]: `send <ch>: <text>`,
 //! `mudlog <level>: <text>`, `syslog: <text>`, `die <ch>`, `hit <ch>
 //! <victim>`, `hunt <ch> <victim>`, `extract_char <ch>`, `extract_obj <obj>`,
-//! `transform_mob <ch> <vnum> <keep_hp>`, `transform_obj <obj> <vnum>`.
+//! `transform_mob <ch> <vnum> <keep_hp>`, `transform_obj <obj> <vnum>`,
+//! `transform_obj_while_worn <obj>` (the object was still worn when it was
+//! overwritten).
 
 use crate::commands::{CmdHost, ExitField};
 use crate::host::WorldHost;
@@ -53,6 +56,10 @@ impl MockHost {
         let Some(spec) = self.globals.texts.remove(key) else {
             return;
         };
+        if spec.trim() == "noact" {
+            self.cmd_set_act_check(false);
+            return;
+        }
         let mut words = spec.split_whitespace();
         let (Some(action), Some(vnum)) = (words.next(), words.next()) else {
             return;
@@ -60,7 +67,14 @@ impl MockHost {
         let Ok(vnum) = vnum.parse::<i32>() else {
             return;
         };
+        let other = words.next().and_then(|word| word.parse::<Uid>().ok());
         match action {
+            "pull" => {
+                if let (Some(room), Some(other)) = (self.real_room(vnum), other) {
+                    self.char_from_room(other);
+                    self.char_to_room(other, room);
+                }
+            }
             "load" => {
                 if let (Some(mob), Some(room)) = (self.cmd_read_mobile(vnum), self.in_room(ch)) {
                     self.char_to_room(mob, room);
@@ -113,6 +127,19 @@ impl CmdHost for MockHost {
             self.effect(format!("send {ch}: {text}"));
             self.run_hook(&format!("hook:send:{ch}"), ch);
         }
+    }
+
+    fn cmd_act_check(&self) -> bool {
+        self.globals
+            .nums
+            .get("act_check")
+            .is_some_and(|on| *on != 0)
+    }
+
+    fn cmd_set_act_check(&mut self, on: bool) {
+        self.globals
+            .nums
+            .insert("act_check".to_owned(), i64::from(on));
     }
 
     fn cmd_desc(&self, ch: Uid) -> Option<Option<Uid>> {
@@ -337,6 +364,11 @@ impl CmdHost for MockHost {
         let Some(name) = self.globals.texts.get(&format!("objproto:{vnum}")).cloned() else {
             return;
         };
+        // The struct copy overwrites `worn_by` / `worn_on`, so the C takes the
+        // object off first; record a copy made while it is still worn.
+        if self.obj_worn_by(obj).is_some() {
+            self.effect(format!("transform_obj_while_worn {obj}"));
+        }
         self.effect(format!("transform_obj {obj} {vnum}"));
         self.set_num(obj, "vnum", i64::from(vnum));
         self.set_text(obj, "name", &name);

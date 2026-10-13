@@ -6,7 +6,7 @@
 //! has no trailing space, so only the full word `wlog` reaches it: `wl` and
 //! `wlo` select `wload` (which comes first), and `wlogs` matches nothing.
 
-use super::comm::{TO_CHAR, TO_ROOM, act_to_room, sub_write};
+use super::comm::{TO_CHAR, TO_ROOM, act_to_room, for_each_occupant, sub_write};
 use super::misc::script_damage;
 use super::shared::{
     Owner, dir_count, door, exit_to_room, load, recho, starts_with_digit, teleport, vnum16,
@@ -194,11 +194,11 @@ fn do_wteleport<H: DgHost + ?Sized>(host: &mut H, room: Uid, argument: &str) {
             log.log(host, "wteleport all target is itself");
             return;
         }
-        for ch in host.room_people(room) {
-            if host.exists(ch) && host.valid_dg_target(ch, true) {
+        for_each_occupant(host, room, |host, ch| {
+            if host.valid_dg_target(ch, true) {
                 teleport(host, ch, target);
             }
-        }
+        });
     } else if let Some(ch) = get_char_by_room(host, room, &arg1) {
         if host.valid_dg_target(ch, true) {
             teleport(host, ch, target);
@@ -218,11 +218,11 @@ fn do_wforce<H: DgHost + ?Sized>(host: &mut H, room: Uid, argument: &str) {
     }
 
     if str_eq(&arg1, "all") {
-        for ch in host.room_people(room) {
-            if host.exists(ch) && host.valid_dg_target(ch, false) {
+        for_each_occupant(host, room, |host, ch| {
+            if host.valid_dg_target(ch, false) {
                 host.mud_command(ch, line);
             }
-        }
+        });
     } else if let Some(ch) = get_char_by_room(host, room, &arg1) {
         if host.valid_dg_target(ch, false) {
             host.mud_command(ch, line);
@@ -919,6 +919,8 @@ mod tests {
             "x".repeat(20_000),
             "99999999999999999999 99999999999999999999".to_owned(),
             "-2147483648 -2147483648 x".to_owned(),
+            "2147483648.bob".to_owned(),
+            "2147483648.lamp".to_owned(),
         ];
         for (command, _) in WLD_CMD_INFO {
             let command = command.trim_end();
@@ -929,5 +931,14 @@ mod tests {
                 run(&mut w, &format!("{command} {arg} 3001 {arg}"));
             }
         }
+    }
+
+    #[test]
+    fn wsend_reaches_a_sleeping_victim() {
+        let mut w = World::new();
+        let bob = w.player2;
+        w.host.set_num(bob, "pos", 4);
+        run(&mut w, "wsend bob hi");
+        assert_eq!(w.sent_to(bob), ["hi\n\r"]);
     }
 }

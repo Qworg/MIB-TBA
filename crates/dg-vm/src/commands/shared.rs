@@ -143,18 +143,6 @@ pub(crate) fn exit_to_room<H: DgHost + ?Sized>(host: &H, room: Uid, dir: usize) 
     host.room_exit(room, dir).and_then(|exit| exit.to_room)
 }
 
-/// What the C's `arg` buffer holds after a `get_number` call: the `N.` /
-/// `last.` prefix of a name is removed in place by every `*_vis` lookup, so
-/// later uses (log messages, a second lookup) see the bare name. A UID
-/// argument never reaches `get_number` and is left alone.
-pub(crate) fn shown(arg: &str) -> String {
-    if arg.starts_with(UID_CHAR) {
-        arg.to_owned()
-    } else {
-        get_number(arg).1.to_owned()
-    }
-}
-
 /// What the buffer holds after a failed `get_char_room_vis` / `get_char_vis`
 /// on a name without a UID. A `0.` count sends the lookup to
 /// `get_player_vis(ch, name, NULL, ...)`, which runs `get_number` on the same

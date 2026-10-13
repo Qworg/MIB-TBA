@@ -72,9 +72,16 @@
 //!   `original`).
 //! - `act()` to a room follows `to->next_in_room` live, as the C does, so an
 //!   act trigger that moves a recipient carries the walk into the list it is
-//!   in now. A recipient that is in no room any more ends the walk (the C
-//!   would follow a dangling pointer), and a walk is cut off after 100000
-//!   recipients.
+//!   in now. A recipient that is in no room any more ends the walk, as in the
+//!   C (`char_from_room` leaves its `next_in_room` NULL). The `all` forms of
+//!   `oforce`, `wforce`, `mteleport`, `oteleport` and `wteleport` save
+//!   `next_ch` before their body and follow it the same way
+//!   ([`comm::for_each_occupant`]). Both walks are cut off after 100000
+//!   steps, which the C does not do.
+//! - `dg_act_check`, the static of `comm.c` that every `act()` overwrites, is
+//!   host state ([`CmdHost::cmd_act_check`]) so that the `act()` of the game
+//!   and this one share it: an `act` trigger that makes the game say
+//!   something switches it off for the rest of the outer walk.
 //! - `get_char_world_vis` is called through `shared::char_world_vis`, which
 //!   gives the world pass of a `0.N.name` argument the name the room pass
 //!   left in the C's buffer (`lookup.rs` hands it the unstripped name).
@@ -168,6 +175,17 @@ pub trait CmdHost {
     /// The characters of `descriptor_list` whose `connected` is `CON_PLAYING`
     /// (`i->character` for each `!i->connected`), in list order.
     fn cmd_playing_characters(&self) -> Vec<Uid>;
+
+    // ---- act() ---------------------------------------------------------
+
+    /// The static `dg_act_check` of `comm.c`, which `act()` and the `act()`
+    /// of the game share: whether the `act()` call in progress (the latest
+    /// one, nested calls included) offers its lines to `act` triggers.
+    fn cmd_act_check(&self) -> bool;
+
+    /// `dg_act_check = on`: what `act()` does on entry (`on` is
+    /// `!IS_SET(type, DG_NO_TRIG)`).
+    fn cmd_set_act_check(&mut self, on: bool);
 
     // ---- character facts -----------------------------------------------
 

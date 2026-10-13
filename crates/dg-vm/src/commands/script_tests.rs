@@ -3,9 +3,9 @@
 //! hands what is left to the command interpreters.
 //!
 //! The load, enter and act triggers these commands raise are the dispatch
-//! module's. Where a test needs one to fire it says what the trigger writes
-//! and asserts that everything written is right; with the dispatch stubs the
-//! trigger does not fire and there is nothing to check.
+//! module's. The tests that need one to fire are `#[ignore]`d: they assert
+//! what the trigger writes, so they can only pass once the dispatch bodies
+//! are in (run them with `--include-ignored` then).
 
 #![allow(clippy::expect_used, clippy::unwrap_used)]
 
@@ -390,20 +390,32 @@ fn oload_and_wload_record_lastloaded_the_way_their_c_does() {
         ]
     );
 
-    // A room records an object only when it is loaded without a target.
+    // A room records an object only when it is loaded without a target; the
+    // rock's load trigger reads the room's `lastloaded`.
     w.clear();
+    load_watcher(&mut w, room, "objtrig", 7102, "n", AttachType::Obj);
+    let rock_line = "Obj (a rock, VNum 7102):: saw";
     run_script(
         &mut w,
         room,
         "wload obj 7102 alice\nwlog [%lastloaded%]",
         None,
     );
-    assert_eq!(logs(&w), [format!("{WLD}[]")]);
+    // The room has no `lastloaded` yet, which the trigger's lookup reports.
+    let seen = logs(&w);
+    assert_eq!(seen.len(), 3);
+    assert!(seen[0].ends_with("unknown room field: 'lastloaded'"));
+    assert_eq!(seen[1..], [format!("{rock_line} "), format!("{WLD}[]")]);
     assert_eq!(w.host.carrying(alice).len(), 1);
     w.clear();
     run_script(&mut w, room, "wload obj 7102\nwlog [%lastloaded%]", None);
     let rock = w.host.room_contents(room).last().copied().unwrap();
-    assert_eq!(logs(&w), [format!("{WLD}[{}]", uid_text(rock))]);
+    let id = uid_text(rock);
+    // `lastloaded` is set before `load_otrigger(object)`.
+    assert_eq!(
+        logs(&w),
+        [format!("{rock_line} {id}"), format!("{WLD}[{id}]")]
+    );
 }
 
 #[test]
@@ -424,7 +436,13 @@ fn mload_records_lastloaded_for_the_script_that_runs_it() {
 
 /// A room trigger that says who entered.
 fn entry_watcher(w: &mut World, room: Uid) {
-    attach(w, room, AttachType::Wld, "g", "wlog entered %actor.name%");
+    attach(
+        w,
+        room,
+        AttachType::Wld,
+        "g",
+        "wlog entered %actor.name% in %actor.room.vnum%",
+    );
 }
 
 #[test]
@@ -446,7 +464,11 @@ fn every_script_teleport_and_goto_tells_the_new_room() {
         };
         run_script(&mut w, owner, line, Some(alice));
         // The trigger ran once and found the traveller already in the room.
-        assert_eq!(logs(&w), [format!("Room 3002 :: entered {who}")], "{line}");
+        assert_eq!(
+            logs(&w),
+            [format!("Room 3002 :: entered {who} in 3002")],
+            "{line}"
+        );
         let traveller = if who == "Alice" { alice } else { mob };
         assert_eq!(w.host.in_room(traveller), Some(room2), "{line}");
     }
@@ -458,4 +480,111 @@ fn teleport_moves_the_actor() {
     let (mob, room2, alice) = (w.mob, w.room2, w.player);
     run_script(&mut w, mob, "mteleport %actor% 3002", Some(alice));
     assert_eq!(w.host.in_room(alice), Some(room2));
+}
+
+// ---- the `all` forms follow the next occupant where it went ----------------
+
+/// Room 3001 holds [Bob, Alice, guard] and room 3002 a rat. Bob's arrival in
+/// 3002 pulls Alice there as well (what a follower does in `perform_move`).
+fn followers_world() -> (World, Uid, Uid) {
+    let mut w = World::new();
+    let (room2, alice, bob) = (w.room2, w.player, w.player2);
+    let rat = w.host.add_mob(3100, "a rat");
+    w.host.char_to_room(rat, room2);
+    w.host
+        .globals
+        .texts
+        .insert(format!("hook:arrive:{bob}"), format!("pull 3002 {alice}"));
+    (w, alice, bob)
+}
+
+/// The walk `for (ch = people; ch; ch = next_ch) { next_ch =
+/// ch->next_in_room; teleport }` from [Bob, Alice, guard]: Bob goes, Alice is
+/// pulled after him, then the walk (at Alice, next Bob) carries on through
+/// Bob and the rat in 3002. The guard, left behind in 3001, is never reached.
+fn assert_walk_followed_the_next_occupant(w: &World, alice: Uid, bob: Uid) {
+    let guard = w.mob;
+    let rat = w.host.character_list[0];
+    assert_eq!(w.host.vnum(rat), 3100);
+    assert_eq!(w.host.room_people(w.room), [guard]);
+    assert_eq!(w.host.room_people(w.room2), [rat, bob, alice]);
+}
+
+#[test]
+fn mteleport_all_follows_the_next_occupant_into_the_new_room() {
+    let (mut w, alice, bob) = followers_world();
+    let mob = w.mob;
+    w.run_mob(mob, "mteleport all 3002");
+    assert_walk_followed_the_next_occupant(&w, alice, bob);
+}
+
+#[test]
+fn oteleport_all_follows_the_next_occupant_into_the_new_room() {
+    let (mut w, alice, bob) = followers_world();
+    let lamp = w.obj;
+    w.run_obj(lamp, "oteleport all 3002");
+    assert_walk_followed_the_next_occupant(&w, alice, bob);
+}
+
+#[test]
+fn wteleport_all_follows_the_next_occupant_into_the_new_room() {
+    let (mut w, alice, bob) = followers_world();
+    let room = w.room;
+    w.run_wld(room, "wteleport all 3002");
+    assert_walk_followed_the_next_occupant(&w, alice, bob);
+}
+
+#[test]
+fn a_script_teleport_all_reaches_everyone_when_nobody_moves_on_their_own() {
+    let mut w = World::new();
+    let (mob, alice, bob) = (w.mob, w.player, w.player2);
+    run_script(&mut w, mob, "mteleport all 3002", None);
+    for ch in [mob, alice, bob] {
+        assert_eq!(w.host.in_room(ch), Some(w.room2));
+    }
+}
+
+// ---- dg_act_check: one NPC's act trigger can end the walk ---------------
+
+#[test]
+#[ignore = "needs the dispatch bodies: act_mtrigger must fire the act trigger"]
+fn an_act_trigger_that_says_something_ends_the_offers_to_later_npcs() {
+    // Room people [Alice, Bob, guard2, guard]; both guards watch for `hush`.
+    // `wecho hush` is `act()` from Alice: Bob is told first. `say` is an
+    // `act(..., DG_NO_TRIG)`, which sets `dg_act_check` to 0 for the rest of
+    // the outer walk, so the guards behind a speaker are not offered the
+    // line. The mock's `mud_command` cannot run `say`, so a send hook clears
+    // the flag when Bob is told, as a speaking NPC before him would have.
+    for hushed in [false, true] {
+        let mut w = World::new();
+        let (room, alice, bob, guard) = (w.room, w.player, w.player2, w.mob);
+        let guard2 = w.host.add_mob(3101, "a second guard");
+        w.host.char_to_room(guard2, room);
+        w.host.set_num(guard2, "pos", 8);
+        for ch in [bob, alice] {
+            w.host.char_from_room(ch);
+            w.host.char_to_room(ch, room);
+        }
+        assert_eq!(w.host.room_people(room), [alice, bob, guard2, guard]);
+        let proto = w
+            .host
+            .add_proto(901, AttachType::Mob, "e", 0, "hush", "say heard");
+        w.host.attach(guard, &proto);
+        w.host.attach(guard2, &proto);
+        if hushed {
+            w.host
+                .globals
+                .texts
+                .insert(format!("hook:send:{bob}"), "noact".to_owned());
+        }
+        run_script(&mut w, room, "wecho hush", None);
+        let heard = [
+            (guard2, "say heard".to_owned()),
+            (guard, "say heard".to_owned()),
+        ];
+        assert_eq!(
+            w.host.mud_commands,
+            if hushed { vec![] } else { heard.to_vec() }
+        );
+    }
 }

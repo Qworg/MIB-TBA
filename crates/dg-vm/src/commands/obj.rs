@@ -7,7 +7,7 @@
 //! entry (`oechoaround` is not a prefix of `"oecho "`), and a word longer than
 //! an entry never matches it.
 
-use super::comm::{TO_CHAR, TO_ROOM, sub_write};
+use super::comm::{TO_CHAR, TO_ROOM, for_each_occupant, sub_write};
 use super::misc::script_damage;
 use super::shared::{
     Owner, dir_count, door, exit_to_room, find_obj_target_room, load, obj_contains_obj, recho,
@@ -166,11 +166,11 @@ fn do_oforce<H: DgHost + ?Sized>(host: &mut H, obj: Uid, argument: &str) {
         match obj_room(host, obj) {
             None => log.log(host, "oforce called by object in NOWHERE"),
             Some(room) => {
-                for ch in host.room_people(room) {
-                    if host.exists(ch) && host.valid_dg_target(ch, false) {
+                for_each_occupant(host, room, |host, ch| {
+                    if host.valid_dg_target(ch, false) {
                         host.mud_command(ch, line);
                     }
-                }
+                });
             }
         }
     } else if let Some(ch) = get_char_by_obj(host, obj, &arg1) {
@@ -317,11 +317,11 @@ fn do_oteleport<H: DgHost + ?Sized>(host: &mut H, obj: Uid, argument: &str) {
             log.log(host, "oteleport target is itself");
             return;
         }
-        for ch in host.room_people(rm) {
-            if host.exists(ch) && host.valid_dg_target(ch, true) {
+        for_each_occupant(host, rm, |host, ch| {
+            if host.valid_dg_target(ch, true) {
                 teleport(host, ch, target);
             }
-        }
+        });
     } else if let Some(ch) = get_char_by_obj(host, obj, &arg1) {
         if host.valid_dg_target(ch, true) {
             teleport(host, ch, target);
@@ -1228,6 +1228,8 @@ mod tests {
             "x".repeat(20_000),
             "99999999999999999999 99999999999999999999".to_owned(),
             "-2147483648 -2147483648 x".to_owned(),
+            "2147483648.bob".to_owned(),
+            "2147483648.lamp".to_owned(),
         ];
         for (command, _) in OBJ_CMD_INFO {
             let command = command.trim_end();
@@ -1249,5 +1251,41 @@ mod tests {
         assert_eq!(w.host.equipment(alice, 16), Some(lamp));
         assert_eq!(w.host.vnum(lamp), 7102);
         assert_eq!(w.effects("extract_obj").len(), 1);
+    }
+
+    // ---- branches the earlier tests left unpinned --------------------------
+
+    #[test]
+    fn osend_reaches_a_sleeping_victim() {
+        let mut w = World::new();
+        let bob = w.player2;
+        w.host.set_num(bob, "pos", 4);
+        run(&mut w, "osend bob hi");
+        assert_eq!(w.sent_to(bob), ["hi\n\r"]);
+    }
+
+    #[test]
+    fn oteleport_reads_a_dotted_room_word_as_a_name() {
+        // `isdigit(*roomstr) && !strchr(roomstr, '.')` is false for `3.002`,
+        // so it is looked up as the 3rd thing named `002`, which is nothing,
+        // and not as room 3.
+        let mut w = World::new();
+        let (alice, room) = (w.player, w.room);
+        let three = w.host.add_room(3, "Nowhere Much");
+        run(&mut w, "oteleport alice 3.002");
+        log_is(&w, "oteleport target is an invalid room");
+        assert_eq!(w.host.in_room(alice), Some(room));
+        run(&mut w, "oteleport alice 3");
+        assert_eq!(w.host.in_room(alice), Some(three));
+    }
+
+    #[test]
+    fn otransform_takes_a_worn_object_off_before_the_copy() {
+        let mut w = World::new();
+        let (lamp, alice) = (w.obj, w.player);
+        w.host.equip_char(alice, lamp, 16);
+        run(&mut w, "otransform 7102");
+        assert!(w.effects("transform_obj_while_worn").is_empty());
+        assert_eq!(w.host.equipment(alice, 16), Some(lamp));
     }
 }
