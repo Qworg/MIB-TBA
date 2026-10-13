@@ -19,15 +19,27 @@
 //!   a snapshot of [`Script::trigger_ids`] and re-fetches every instance by
 //!   id, so a trigger detached by an earlier run is skipped and the run state
 //!   tested is always current, and a trigger attached by an earlier run in
-//!   the same walk is not examined (the C reaches it through `t->next`). The
-//!   room people, room contents and memory lists the C walks with a saved
-//!   `next` pointer are snapshots too. `greet_mtrigger`,
-//!   `greet_memory_mtrigger` and `entry_memory_mtrigger` are the exception:
-//!   the C reads `ch->next_in_room` after the run, so they advance through
-//!   the live list (a character a script moved carries the walk into its
-//!   new room), ending after `LIVE_WALK_LIMIT` characters.
+//!   the same walk is not examined (the C reaches it through `t->next`); the
+//!   trigger-id snapshot is the host contract's way of surviving a run that
+//!   attaches or detaches. The memory lists the C walks with a saved `next`
+//!   pointer are snapshots too.
+//! - The room walks of `greet_mtrigger`, `greet_memory_mtrigger`,
+//!   `entry_memory_mtrigger` (the C reads `ch->next_in_room` after the run)
+//!   and of `command_mtrigger`, `speech_mtrigger` (`ch_next` saved before
+//!   the run) and `leave_otrigger` (`obj_next`) go through the live lists,
+//!   so a mob or object a script moved carries the walk into its new list,
+//!   as the C pointer does. Each such walk ends after `LIVE_WALK_LIMIT`
+//!   steps, with one `script_log` line: two mobs that keep putting
+//!   themselves back at the head of a list would loop for ever in the C.
 //! - "The owner was purged" (`!obj` after `script_driver` NULLs `go_adress`)
-//!   is `dg_owner_purged` as the run returned, or `!host.exists(obj)`;
+//!   is `dg_owner_purged` as the run returned, or `!host.exists(obj)`. The C
+//!   NULLs the pointer only when the driver returns through its final
+//!   `if (dg_owner_purged)` test; the flag a nested script left set under a
+//!   `dg_cast` or `dg_affect` line (which have no such test) also reads as
+//!   "gone" here, so a get/wear/remove/drop/give/consume/command/timer/leave
+//!   trigger of an object whose cast target purged itself returns `0` where
+//!   the C returns the script's result. The driver does not report how it
+//!   returned; fixing this needs that from its owner.
 //!   `has_obj_by_uid_in_lookup_table` is `!host.exists(obj)`; a purged
 //!   character is `DEAD(ch)`, [`WorldHost::is_dead`].
 //! - The `SYSERR: … Trigger #%d has no text argument!` lines are `mudlog(NRM,
@@ -41,7 +53,8 @@
 //!   dereferences the NULL from `strchr`).
 //! - `word_check` copies the word list into a `MAX_INPUT_LENGTH` buffer; a
 //!   longer list is cut at one byte less, as `strcpy` would overrun it.
-//! - `is_substring` and `word_check` return `bool`, not `int`.
+//! - `is_substring` and `word_check` return `bool`, not `int`: they are
+//!   predicates and nothing outside this module calls them.
 //! - `wear_otrigger`'s `where` argument is unused in the C (it sets no
 //!   variable) and is kept only for the signature.
 //! - `act_mtrigger`'s `arg` argument is unused in the C and is kept only for
@@ -317,6 +330,38 @@ fn next_in_room<H: DgHost + ?Sized>(host: &H, ch: Uid) -> Option<Uid> {
 /// the C; here the walk ends after this many characters.
 const LIVE_WALK_LIMIT: usize = 100_000;
 
+/// Counts one step of a live-list walk; `true` (after one `script_log` line)
+/// when the walk has gone past [`LIVE_WALK_LIMIT`] and must end.
+fn walk_exhausted<H: DgHost + ?Sized>(host: &mut H, steps: usize, what: &str) -> bool {
+    if steps <= LIVE_WALK_LIMIT {
+        return false;
+    }
+    host.script_log(&format!(
+        "SCRIPT ERROR: {what} walk stopped after {LIVE_WALK_LIMIT} characters (a script keeps moving the walked character)."
+    ));
+    true
+}
+
+/// `obj->next_content` read from the live list the object is in now: the
+/// entry after `obj` in the room contents, the carried items, or the
+/// contents of its container. `None` at the end, for a worn object (the C
+/// leaves `next_content` NULL there) and for an object that is gone.
+fn next_content<H: DgHost + ?Sized>(host: &H, obj: Uid) -> Option<Uid> {
+    if !host.exists(obj) {
+        return None;
+    }
+    let list = if let Some(room) = host.in_room(obj) {
+        host.room_contents(room)
+    } else if let Some(ch) = host.obj_carried_by(obj) {
+        host.carrying(ch)
+    } else {
+        let container = host.obj_in_obj(obj)?;
+        host.obj_contains(container)
+    };
+    let index = list.iter().position(|other| *other == obj)?;
+    list.get(index + 1).copied()
+}
+
 /// Remove one memory entry from a mob's `SCRIPT_MEM` list (the unlink loop
 /// of `greet_memory_mtrigger` / `entry_memory_mtrigger`). Does nothing when
 /// the entry is no longer in the list.
@@ -458,7 +503,7 @@ pub fn greet_memory_mtrigger<H: DgHost + ?Sized>(host: &mut H, actor: Uid) {
     let mut steps = 0;
     while let Some(ch) = cur {
         steps += 1;
-        if steps > LIVE_WALK_LIMIT {
+        if walk_exhausted(host, steps, "greet_memory_mtrigger") {
             break;
         }
         cur = greet_memory_visit(host, actor, ch, &mut command_performed)
@@ -536,7 +581,7 @@ pub fn greet_mtrigger<H: DgHost + ?Sized>(host: &mut H, actor: Uid, dir: i32) ->
     let mut steps = 0;
     while let Some(ch) = cur {
         steps += 1;
-        if steps > LIVE_WALK_LIMIT {
+        if walk_exhausted(host, steps, "greet_mtrigger") {
             break;
         }
         if !host.exists(ch) {
@@ -584,7 +629,10 @@ pub fn entry_memory_mtrigger<H: DgHost + ?Sized>(host: &mut H, ch: Uid) {
     let mut steps = 0;
     while let Some(actor) = cur {
         steps += 1;
-        if steps > LIVE_WALK_LIMIT || host.script_mem(ch).is_empty() || !host.exists(actor) {
+        if walk_exhausted(host, steps, "entry_memory_mtrigger")
+            || host.script_mem(ch).is_empty()
+            || !host.exists(actor)
+        {
             break;
         }
         if actor != ch {
@@ -633,6 +681,10 @@ pub fn entry_mtrigger<H: DgHost + ?Sized>(host: &mut H, ch: Uid) -> i32 {
 /// command and ends the walk with `1`. A run that returns `0` lets the walk
 /// go on to the next trigger and mob. Returns `0` if none claimed it.
 ///
+/// `cmd` is the first word as `any_one_arg` left it (lowercased), or the
+/// single first character when that is not a letter (`'hi` gives `'`); the
+/// argument is the rest of the line, not yet stripped of its leading spaces.
+///
 /// Called from `command_interpreter` (`interpreter.c`) for every command a
 /// character types, after `command_wtrigger` and before `command_otrigger`;
 /// a non-zero result means the command was handled and is not executed.
@@ -651,9 +703,17 @@ pub fn command_mtrigger<H: DgHost + ?Sized>(
     // `skip_spaces(&argument)` / `skip_spaces(&cmd)` advance the caller's
     // pointers for good, so later triggers see the skipped text.
     let (mut cmd, mut argument) = (cmd, argument);
-    for ch in host.room_people(room) {
-        if !host.exists(ch)
-            || !script_check(host, ch, MTRIG_COMMAND)
+    let mut cur = host.room_people(room).first().copied();
+    let mut steps = 0;
+    while let Some(ch) = cur {
+        steps += 1;
+        if walk_exhausted(host, steps, "command_mtrigger") || !host.exists(ch) {
+            break;
+        }
+        // `ch_next = ch->next_in_room`, read before the mob's triggers run.
+        let saved = next_in_room(host, ch);
+        cur = saved;
+        if !script_check(host, ch, MTRIG_COMMAND)
             || charmed(host, ch)
             || !(actor != ch || host.script_players())
         {
@@ -690,15 +750,26 @@ pub fn command_mtrigger<H: DgHost + ?Sized>(
 /// matches the spoken text (`word_check` when narg is non-zero,
 /// `is_substring` when it is zero), with `actor` and `speech` set.
 ///
-/// Called from `do_say` (`act.comm.c`) after the speaker's own message is
-/// shown, followed by `speech_wtrigger`. The result is ignored.
+/// Called from `do_say` (`act.comm.c`) last, after the speaker's own message,
+/// and unconditionally: also for a bare `say`, with the `skip_spaces`'d
+/// argument empty, so a trigger whose argument starts with `*` (or a
+/// non-zero narg with `*`) still fires. Followed by `speech_wtrigger`. The
+/// result is ignored.
 pub fn speech_mtrigger<H: DgHost + ?Sized>(host: &mut H, actor: Uid, str: &str) {
     let Some(room) = room_of(host, actor) else {
         return;
     };
-    for ch in host.room_people(room) {
-        if !host.exists(ch)
-            || !script_check(host, ch, MTRIG_SPEECH)
+    let mut cur = host.room_people(room).first().copied();
+    let mut steps = 0;
+    while let Some(ch) = cur {
+        steps += 1;
+        if walk_exhausted(host, steps, "speech_mtrigger") || !host.exists(ch) {
+            break;
+        }
+        // `ch_next = ch->next_in_room`, read before the mob's triggers run.
+        let saved = next_in_room(host, ch);
+        cur = saved;
+        if !script_check(host, ch, MTRIG_SPEECH)
             || !awake(host, ch)
             || charmed(host, ch)
             || !(actor != ch || host.script_players())
@@ -1192,6 +1263,10 @@ fn command_otrigger_list<H: DgHost + ?Sized>(
 /// actor's inventory, then the objects lying in the actor's room, in list
 /// order. Returns `1` as soon as one claims it, else `0`.
 ///
+/// `cmd` is the first word as `any_one_arg` left it (lowercased), or the
+/// single first character when that is not a letter (`'hi` gives `'`); the
+/// argument is the rest of the line, not yet stripped of its leading spaces.
+///
 /// Called from `command_interpreter` (`interpreter.c`) last, after the world
 /// and mob command triggers; a non-zero result means the command was handled
 /// and is not executed.
@@ -1379,8 +1454,17 @@ pub fn leave_otrigger<H: DgHost + ?Sized>(host: &mut H, room: Uid, actor: Uid, d
         return 1;
     }
     let mut final_ret = 1;
-    for obj in host.room_contents(room) {
-        if !host.exists(obj) || !script_check(host, obj, OTRIG_LEAVE) {
+    let mut cur = host.room_contents(room).first().copied();
+    let mut steps = 0;
+    while let Some(obj) = cur {
+        steps += 1;
+        if walk_exhausted(host, steps, "leave_otrigger") || !host.exists(obj) {
+            break;
+        }
+        // `obj_next = obj->next_content`, read before the triggers run.
+        let saved = next_content(host, obj);
+        cur = saved;
+        if !script_check(host, obj, OTRIG_LEAVE) {
             continue;
         }
         for id in trigger_ids(host, obj) {
@@ -1503,6 +1587,10 @@ pub fn enter_wtrigger<H: DgHost + ?Sized>(host: &mut H, room: Uid, actor: Uid, d
 /// and its result is returned whether or not it is zero; `0` if none
 /// matched.
 ///
+/// `cmd` is the first word as `any_one_arg` left it (lowercased), or the
+/// single first character when that is not a letter (`'hi` gives `'`); the
+/// argument is the rest of the line, not yet stripped of its leading spaces.
+///
 /// Called from `command_interpreter` (`interpreter.c`) first, before the mob
 /// and object command triggers; a non-zero result means the command was
 /// handled and is not executed.
@@ -1545,8 +1633,9 @@ pub fn command_wtrigger<H: DgHost + ?Sized>(
 /// actor's room whose argument is `*` or matches the spoken text (as for
 /// [`speech_mtrigger`]), with `actor` and `speech` set.
 ///
-/// Called from `do_say` (`act.comm.c`) after `speech_mtrigger`. The result is
-/// ignored.
+/// Called from `do_say` (`act.comm.c`) last, right after `speech_mtrigger`
+/// and unconditionally: also for a bare `say`, with an empty argument. The
+/// result is ignored.
 pub fn speech_wtrigger<H: DgHost + ?Sized>(host: &mut H, actor: Uid, str: &str) {
     let Some(room) = room_of(host, actor) else {
         return;
@@ -4532,7 +4621,10 @@ mod tests {
 
     #[test]
     fn corpus_mob_command_example_lets_other_commands_continue() {
-        // Trigger 62, "Mob Command Example", `0 c 100`, argument `l`.
+        // Trigger 62, "Mob Command Example", `0 c 100`, argument `l`. The
+        // record's `%echoround% %actor% %actor.name% stares at the orb.`
+        // line (a typo in the corpus, a mob command that does not exist) is
+        // left out.
         let body = "* does not work for level 32 and above.\n\
             * Make sure the command is look, check for any abbrev of orb\n\
             if %cmd.mudcommand% == look && orb /= %arg%\n\
@@ -4661,7 +4753,8 @@ mod tests {
 
     #[test]
     fn corpus_room_enter_drop_and_command_examples() {
-        // Trigger 55, "Room Enter Example", `2 g 100`.
+        // Trigger 55, "Room Enter Example", `2 g 100`. The record's two
+        // `%echoaround%` lines are left out.
         let enter = "if %actor.is_pc%\n\
               if %actor.sex% == male\n\
                 return 0\n\
@@ -4731,5 +4824,225 @@ mod tests {
         );
         // `north` does not start with `l`.
         assert_eq!(command_wtrigger(&mut w.h, w.alice, "north", ""), 0);
+    }
+
+    // ---- review round 3 ----------------------------------------------------------
+
+    #[test]
+    fn command_mtrigger_walk_follows_the_next_mob_a_script_moved() {
+        // C: `ch_next = ch->next_in_room` is saved before the triggers run.
+        // Room order [first, guard, alice]. first sends the guard to the
+        // Altar (head of [guard, far]) and declines; the saved pointer is
+        // the guard, whose own next is now `far`, so far's trigger claims
+        // the command.
+        let mut w = W::new();
+        let first = w.mob(3030, "the first mob");
+        let far = w.h.add_mob(3031, "the far mob");
+        w.h.set_num(far, "pos", 8);
+        w.h.char_to_room(far, w.room2);
+        w.trig(
+            first,
+            1,
+            "c",
+            0,
+            "*",
+            &format!("mteleport {} 3002\nreturn 0", id(w.guard)),
+        );
+        w.trig(far, 2, "c", 0, "*", "set ran 1\nglobal ran\nreturn 1");
+        assert_eq!(command_mtrigger(&mut w.h, w.alice, "x", ""), 1);
+        assert_eq!(w.h.in_room(w.guard), Some(w.room2));
+        assert!(w.ran(far));
+    }
+
+    #[test]
+    fn speech_mtrigger_walk_follows_the_next_mob_a_script_moved() {
+        let mut w = W::new();
+        let first = w.mob(3030, "the first mob");
+        let far = w.h.add_mob(3031, "the far mob");
+        w.h.set_num(far, "pos", 8);
+        w.h.char_to_room(far, w.room2);
+        w.trig(
+            first,
+            1,
+            "d",
+            0,
+            "hi",
+            &format!("mteleport {} 3002", id(w.guard)),
+        );
+        w.trig(far, 2, "d", 0, "hi", RAN);
+        speech_mtrigger(&mut w.h, w.alice, "hi");
+        assert_eq!(w.h.in_room(w.guard), Some(w.room2));
+        assert!(w.ran(far));
+    }
+
+    #[test]
+    fn next_content_reads_the_list_the_object_is_in_now() {
+        // leave_otrigger's saved `obj_next` continues in the list its object
+        // is in when its turn comes. No object script can move another
+        // object mid-walk, so the helper is tested directly.
+        let mut w = W::new();
+        let a = w.obj(1, "a rock");
+        let b = w.obj(2, "a coin");
+        let c = w.obj(3, "a gem");
+        for o in [a, b] {
+            w.h.obj_to_room(o, w.room);
+        }
+        w.h.obj_to_room(c, w.room2);
+        assert_eq!(next_content(&w.h, a), Some(b));
+        assert_eq!(next_content(&w.h, b), None);
+        w.h.obj_to_room(b, w.room2);
+        assert_eq!(next_content(&w.h, a), None);
+        assert_eq!(next_content(&w.h, c), Some(b));
+        w.h.extract_obj(b);
+        assert_eq!(next_content(&w.h, b), None);
+    }
+
+    #[test]
+    fn greet_returning_zero_does_not_end_the_walk() {
+        // Room [late, guard, alice]: late's first trigger returns 0, yet its
+        // second trigger and the guard's still run.
+        let mut w = W::new();
+        let late = w.mob(3025, "the clerk");
+        w.trig(late, 1, "g", 100, "", &greet_script(0));
+        w.trig(late, 2, "g", 100, "", "set second 1\nglobal second");
+        w.trig(w.guard, 3, "g", 100, "", RAN);
+        assert_eq!(greet_mtrigger(&mut w.h, w.alice, 0), 0);
+        assert_eq!(w.g(late, "second").as_deref(), Some("1"));
+        assert!(w.ran(w.guard));
+    }
+
+    #[test]
+    fn greet_memory_skips_a_waiting_trigger_and_runs_only_one() {
+        // A trigger that is still running is skipped, memory forgotten.
+        let mut w = W::new();
+        let t = w.trig(w.guard, 1, "o", 100, "", RAN);
+        w.busy(w.guard, t);
+        w.h.set_script_mem(w.guard, mem_of(w.alice));
+        greet_memory_mtrigger(&mut w.h, w.alice);
+        assert!(!w.ran(w.guard));
+        assert!(w.h.script_mem(w.guard).is_empty());
+        // Only the first memory trigger that qualifies runs.
+        let mut w = W::new();
+        w.trig(w.guard, 1, "o", 100, "", RAN);
+        w.trig(w.guard, 2, "o", 100, "", "set b 1\nglobal b");
+        w.h.set_script_mem(w.guard, mem_of(w.alice));
+        greet_memory_mtrigger(&mut w.h, w.alice);
+        assert!(w.ran(w.guard));
+        assert_eq!(w.g(w.guard, "b"), None);
+    }
+
+    #[test]
+    fn door_mtrigger_skips_a_waiting_trigger() {
+        let mut w = W::new();
+        let t = w.trig(w.guard, 1, "r", 100, "", "return 0");
+        w.busy(w.guard, t);
+        assert_eq!(door_mtrigger(&mut w.h, w.alice, 0, 0), 1);
+    }
+
+    #[test]
+    fn hitprcnt_skips_a_charmed_mob() {
+        let mut w = W::new();
+        w.trig(w.guard, 1, "l", 100, "", RAN);
+        w.h.set_num(w.guard, "max_hit", 100);
+        w.h.set_num(w.guard, "hit", 10);
+        w.h.set_link(w.guard, "fighting", Some(w.alice));
+        w.charm(w.guard);
+        hitprcnt_mtrigger(&mut w.h, w.guard);
+        assert!(!w.ran(w.guard));
+    }
+
+    #[test]
+    fn time_otrigger_wants_the_hour_to_equal_narg() {
+        let mut w = W::new();
+        let clock = w.obj(11, "a clock");
+        w.trig(clock, 2, "t", 5, "", RAN);
+        w.h.time.hours = 3;
+        time_otrigger(&mut w.h, clock);
+        assert!(!w.ran(clock));
+        w.h.time.hours = 7;
+        time_otrigger(&mut w.h, clock);
+        assert!(!w.ran(clock));
+        w.h.time.hours = 5;
+        time_otrigger(&mut w.h, clock);
+        assert!(w.ran(clock));
+    }
+
+    #[test]
+    fn zone_emptiness_edges() {
+        let fires = |setup: &dyn Fn(&mut W)| {
+            let mut w = W::new();
+            w.trig(w.guard, 3, "b", 100, "", RAN);
+            setup(&mut w);
+            script_trigger_check(&mut w.h);
+            w.ran(w.guard)
+        };
+        // LVL_IMMORT itself (31) with nohassle does not count; 30 does.
+        assert!(!fires(&|w| {
+            w.h.set_num(w.alice, "level", 31);
+            w.h.set_num(w.alice, "nohassle", 1);
+        }));
+        assert!(fires(&|w| {
+            w.h.set_num(w.alice, "level", 30);
+            w.h.set_num(w.alice, "nohassle", 1);
+        }));
+        // A playing character in no room is skipped.
+        assert!(!fires(&|w| w.h.char_from_room(w.alice)));
+        // A mob that is "playing" with nohassle-level is still not an
+        // immortal player: an NPC never gets the nohassle exemption.
+        assert!(fires(&|w| {
+            w.h.set_num(w.guard, "playing", 1);
+            w.h.set_num(w.guard, "level", 40);
+            w.h.set_num(w.guard, "nohassle", 1);
+            w.h.set_num(w.alice, "playing", 0);
+        }));
+    }
+
+    #[test]
+    fn greet_walk_goes_on_past_a_mob_that_purged_itself() {
+        // The purged mob stays in the list until the sweep, and the walk
+        // goes on to the next one.
+        let mut w = W::new();
+        let late = w.mob(3025, "the clerk");
+        w.trig(late, 1, "g", 100, "", "mpurge %self%");
+        w.trig(w.guard, 2, "g", 100, "", RAN);
+        greet_mtrigger(&mut w.h, w.alice, 0);
+        assert!(w.h.is_dead(late));
+        assert!(w.ran(w.guard));
+    }
+
+    #[test]
+    fn load_prunes_the_prototype_only_on_the_error_code() {
+        let mut w = W::new();
+        w.trig(w.guard, 1, "n", 100, "", "return 0");
+        load_mtrigger(&mut w.h, w.guard);
+        assert!(w.h.effects.is_empty());
+    }
+
+    #[test]
+    fn cmd_otrig_strips_the_commands_leading_spaces_for_the_variable() {
+        let mut w = W::new();
+        let ball = w.obj(47, "a ball");
+        w.trig(ball, 1, "c", OCMD_INVEN, "*", &cmd_script("ran", 1));
+        assert_eq!(
+            cmd_otrig(&mut w.h, ball, w.alice, "  shake", "x", OCMD_INVEN),
+            1
+        );
+        assert_eq!(w.g(ball, "cmd").as_deref(), Some("shake"));
+    }
+
+    #[test]
+    fn a_runaway_live_walk_is_logged() {
+        // Two mobs that each put themselves back at the head of the room
+        // would alternate for ever in the C.
+        let mut w = W::new();
+        let other = w.mob(3030, "the other");
+        w.trig(w.guard, 1, "g", 100, "", "mgoto 3001");
+        w.trig(other, 2, "g", 100, "", "mgoto 3001");
+        greet_mtrigger(&mut w.h, w.alice, 0);
+        assert!(
+            w.h.logs
+                .iter()
+                .any(|line| line.contains("greet_mtrigger walk stopped"))
+        );
     }
 }
