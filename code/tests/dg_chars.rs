@@ -23,7 +23,7 @@ use dg_vm::magic::{MagicHost, SPELL_DG_AFFECT, find_skill_num};
 use dg_vm::script::Program;
 use dg_vm::subst::SubstHost;
 use dg_vm::types::{AttachType, TrigInstance, TrigProto};
-use dg_vm::{Uid, WorldHost};
+use dg_vm::{BaseHost, Uid, WorldHost};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::*;
 use mib_tba::combat::{
@@ -1847,11 +1847,41 @@ fn reads_of_unmodelled_facts_are_counted_at_the_next_mutable_call() {
         host.char_quest_completed(a, 100);
         host.char_set_title(a, "the Bold"); // reports them
     });
-    assert_eq!(count(&app, "char_sex"), 2);
-    assert_eq!(count(&app, "char_weight"), 1);
-    assert_eq!(count(&app, "char_str_add"), 1);
-    assert_eq!(count(&app, "char_pref_flags"), 1);
-    assert_eq!(count(&app, "char_quest_completed"), 1);
+    // One log line per key, carrying the number of reads.
+    let lines: Vec<&str> = app.world().resource::<DgLog>().lines().collect();
+    let reads = |key: &str, n: u32| {
+        lines
+            .iter()
+            .filter(|l| {
+                l.contains(&format!("unsupported {key}:")) && l.ends_with(&format!("(x{n})"))
+            })
+            .count()
+    };
+    assert_eq!(count(&app, "char_sex"), 1);
+    assert_eq!(reads("char_sex", 2), 1);
+    assert_eq!(reads("char_weight", 1), 1);
+    assert_eq!(reads("char_str_add", 1), 1);
+    assert_eq!(reads("char_pref_flags", 1), 1);
+    assert_eq!(reads("char_quest_completed", 1), 1);
+}
+
+#[test]
+fn many_unmodelled_reads_do_not_evict_script_errors() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| {
+        host.script_log("real error");
+        host.char_set_title(a, "the Brave");
+        for _ in 0..1500 {
+            host.char_stat(a, CharStat::Sex);
+        }
+        host.char_set_title(a, "the Bold");
+    });
+    let log = app.world().resource::<DgLog>();
+    assert!(log.lines().any(|line| line.contains("real error")));
+    assert!(log.lines().any(|line| line.ends_with("(x1500)")));
 }
 
 #[test]
@@ -1901,4 +1931,292 @@ fn reaching_the_maximum_gold_tells_the_player() {
     let a = uid(&mut app, alice);
     run(&mut app, |host| host.char_increase_gold(a, i32::MAX));
     assert_eq!(app.world().get::<TbaGold>(alice).unwrap().0, 2_140_000_000);
+}
+
+// -- review regressions ------------------------------------------------------
+
+#[test]
+fn an_npc_killed_by_a_script_cast_runs_its_death_trigger() {
+    // raw_kill: death_mtrigger(victim, killer) before the extraction.
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    define(&mut app, 903, "mob", "f", 100, "nop %actor.gold(77)%");
+    attach(&mut app, "npc:tba_npc_3", &[903]);
+    let alice = hero(&mut app, temple, "Alice", 7, "magic_user", 10);
+    let rat = mob(&mut app, temple, 3, "a rat", 1);
+    app.world_mut().get_mut::<TbaCombatant>(rat).unwrap().hp = 1;
+    let (a, r) = (uid(&mut app, alice), uid(&mut app, rat));
+    run(&mut app, |host| {
+        host.magic_call_magic(a, Some(r), None, 32, 30)
+    });
+    assert!(app.world().get_entity(rat).is_err());
+    assert_eq!(app.world().get::<TbaGold>(alice).unwrap().0, 77);
+}
+
+#[test]
+fn a_timed_hide_or_sneak_ends_with_its_duration_without_help() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| {
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 0, 0, 1, Some(19));
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 0, 0, 1, Some(20));
+    });
+    assert!(app.world().get::<TbaSneaking>(alice).is_some());
+    tick_pulses(&mut app, 1600);
+    // Any mutable call sweeps it.
+    run(&mut app, |host| host.char_set_title(a, "the Quiet"));
+    assert!(app.world().get::<TbaSneaking>(alice).is_none());
+    assert!(app.world().get::<TbaHidden>(alice).is_none());
+}
+
+#[test]
+fn a_script_affect_keeps_a_components_it_did_not_create() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "thief", 5);
+    let a = uid(&mut app, alice);
+    app.world_mut().entity_mut(alice).insert(TbaSneaking);
+    run(&mut app, |host| {
+        host.magic_call_magic(a, Some(a), None, 19, 10); // detect invisibility
+        assert!(host.char_affected_by_spell(a, 19));
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 0, 0, -1, Some(6)); // sense life
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 0, 0, -1, Some(19)); // sneak
+        host.magic_remove_dg_affects(a, SPELL_DG_AFFECT);
+    });
+    assert!(
+        app.world()
+            .get::<mib_tba::stealth::TbaTrueSight>(alice)
+            .is_some(),
+        "the spell's sight survives"
+    );
+    assert!(
+        app.world().get::<TbaSneaking>(alice).is_some(),
+        "the player's own sneak survives"
+    );
+}
+
+#[test]
+fn true_sight_from_a_script_is_not_the_spell() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| {
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 0, 0, -1, Some(4));
+        assert!(host.char_affected_by_spell(a, SPELL_DG_AFFECT));
+        assert!(!host.char_affected_by_spell(a, 19));
+        assert!(!host.char_affected_by_spell(a, 25));
+    });
+}
+
+#[test]
+fn a_write_to_an_npc_without_combat_state_gives_it_one() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    define_npc_level(&mut app, 3, 4);
+    let guard = npc(&mut app, temple, 3, "the guard");
+    let g = uid(&mut app, guard);
+    run(&mut app, |host| {
+        host.char_set_title(g, "x"); // creates the read counter
+        assert_eq!(host.char_stat(g, CharStat::Hit), 0); // neutral, counted
+        host.char_set_stat(g, CharStat::Hit, 5);
+        assert_eq!(host.char_stat(g, CharStat::Hit), 5);
+        assert!(host.char_stat(g, CharStat::MaxHit) > 0);
+        host.char_set_title(g, "y"); // reports the read
+    });
+    assert_eq!(count(&app, "char_set_stat_no_combat_state"), 0);
+    assert_eq!(count(&app, "char_npc_no_combat_state"), 1);
+}
+
+#[test]
+fn a_write_to_a_character_with_no_combat_state_and_no_prototype_is_logged() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let ghost = npc(&mut app, temple, 999, "a ghost");
+    let g = uid(&mut app, ghost);
+    run(&mut app, |host| host.char_set_stat(g, CharStat::Hit, 5));
+    assert_eq!(count(&app, "char_set_stat_no_combat_state"), 1);
+}
+
+#[test]
+fn update_pos_that_kills_is_counted() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| {
+        host.char_set_stat(a, CharStat::Hit, -3);
+        host.char_update_pos(a);
+    });
+    assert_eq!(count(&app, "char_update_pos_dead"), 1);
+}
+
+#[test]
+fn a_player_hit_by_a_script_debuff_is_told() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let troll = mob(&mut app, temple, 3, "a troll", 10);
+    let (a, t) = (uid(&mut app, alice), uid(&mut app, troll));
+    output(&mut app);
+    run(&mut app, |host| {
+        for _ in 0..60 {
+            host.magic_call_magic(t, Some(a), None, 33, 30); // poison
+        }
+    });
+    let landed = app
+        .world()
+        .get::<TbaBuffs>(alice)
+        .is_some_and(|buffs| !buffs.buffs.is_empty());
+    assert!(landed, "sixty casts land at least once");
+    let text = output(&mut app).join("\n");
+    assert!(text.contains("You are afflicted by"), "{text}");
+}
+
+#[test]
+fn experience_caps_hold_at_the_edges() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    // A class table longer than the immortal threshold.
+    app.world_mut()
+        .resource_mut::<TbaContent>()
+        .classes
+        .get_mut("warrior")
+        .unwrap()
+        .xp_table
+        .extend([9_000_000, 10_000_000, 11_000_000]);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 29);
+    app.world_mut().get_mut::<TbaProgress>(alice).unwrap().xp = 20_000_000;
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| host.char_gain_exp(a, 1));
+    assert_eq!(app.world().get::<TbaProgress>(alice).unwrap().level, 30);
+    // The loss cap is 500000 per call.
+    run(&mut app, |host| {
+        host.char_gain_exp(a, i32::MIN);
+        assert_eq!(host.char_fact(a, CharFact::Exp), 20_000_001 - 500_000);
+    });
+}
+
+#[test]
+fn reaching_the_maximum_gold_says_so() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    output(&mut app);
+    run(&mut app, |host| host.char_increase_gold(a, i32::MAX));
+    let text = output(&mut app).join("\n");
+    assert!(
+        text.contains("You have reached the maximum gold!"),
+        "{text}"
+    );
+}
+
+#[test]
+fn an_npc_keeps_its_experience_when_its_gold_changes() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let guard = mob(&mut app, temple, 3, "the guard", 4);
+    let g = uid(&mut app, guard);
+    run(&mut app, |host| {
+        host.char_gain_exp(g, 40);
+        host.char_increase_gold(g, 5);
+        assert_eq!(host.char_fact(g, CharFact::Exp), 40);
+        assert_eq!(host.char_fact(g, CharFact::Gold), 5);
+    });
+}
+
+#[test]
+fn an_unknown_class_is_class_undefined() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "bard", 5);
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| {
+        assert_eq!(host.char_stat(a, CharStat::Class), -1);
+    });
+}
+
+#[test]
+fn behaviour_bits_map_to_their_mob_flag_numbers() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let rat = mob(&mut app, temple, 3, "a rat", 1);
+    stats_of(&mut app, 3).behaviour = vec![NpcBehaviour::Memory];
+    let r = uid(&mut app, rat);
+    run(&mut app, |host| {
+        assert!(host.char_act_flagged(r, 11), "MOB_MEMORY");
+        assert!(!host.char_act_flagged(r, 12), "MOB_HELPER");
+    });
+    stats_of(&mut app, 3).behaviour = vec![NpcBehaviour::Helper];
+    run(&mut app, |host| {
+        assert!(host.char_act_flagged(r, 12));
+        assert!(!host.char_act_flagged(r, 11));
+    });
+}
+
+#[test]
+fn the_lowest_quest_vnum_answers_when_several_are_logged() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    let def: QuestDef = serde_yaml::from_str(
+        "name: Q\ndescription: d\ngiver: tba_npc_179\nsteps: []\nreward: {xp: 0, items: []}\n",
+    )
+    .expect("quest def");
+    let mut log = PlayerQuestLog::default();
+    for vnum in [105, 100, 110] {
+        log.quests.insert(
+            QuestId::from(format!("tba_quest_{vnum}").as_str()),
+            QuestProgress::fresh(&def),
+        );
+    }
+    app.world_mut().entity_mut(alice).insert(log);
+    run(&mut app, |host| assert_eq!(host.char_quest(a), 100));
+}
+
+#[test]
+fn dg_affect_off_removes_a_pinned_buff_whose_marker_was_lost() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    let buff = mib_tba::spells::ActiveBuff::pinned(
+        AffectDef {
+            location: AffectLocation::Damroll,
+            modifier: 3,
+        },
+        10,
+        false,
+    );
+    app.world_mut()
+        .entity_mut(alice)
+        .insert(TbaBuffs { buffs: vec![buff] });
+    run(&mut app, |host| {
+        host.magic_remove_dg_affects(a, SPELL_DG_AFFECT)
+    });
+    assert!(app.world().get::<TbaBuffs>(alice).unwrap().buffs.is_empty());
+}
+
+#[test]
+fn two_script_affects_sharing_a_bit_release_it_together() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "thief", 5);
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| {
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 0, 0, 1, Some(20));
+        host.magic_add_dg_affect(a, 5, 0, 0, -1, Some(20));
+    });
+    tick_pulses(&mut app, 1600);
+    run(&mut app, |host| host.char_set_title(a, "x"));
+    assert!(
+        app.world().get::<TbaHidden>(alice).is_some(),
+        "the permanent one still holds it"
+    );
+    run(&mut app, |host| host.magic_remove_dg_affects(a, 5));
+    assert!(app.world().get::<TbaHidden>(alice).is_none());
 }

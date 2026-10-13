@@ -43,6 +43,7 @@ use mib_stdlib::prelude::{Item, Npc, NpcBehaviors, Player, PlayerQuestLog, Quest
 
 use super::EcsHost;
 use super::magic::spell_info;
+use super::magic::{AFF_DETECT_INVIS, AFF_SENSE_LIFE};
 use crate::combat::{
     TbaAlignment, TbaCombatant, TbaGold, TbaNpcBase, TbaProgress, default_class, derive_vitals,
     level_for_xp,
@@ -255,6 +256,27 @@ impl EcsHost<'_> {
         self.content()?.npc_stats.get(&key.0)
     }
 
+    /// Give a living NPC that has no combat state yet the one
+    /// `npc_combatant_system` gives it, from its prototype. A mob a script
+    /// loads is seen by scripts before that system has run; a write to it
+    /// would otherwise be refused. Reads cannot do this (they take `&self`)
+    /// and count `char_npc_no_combat_state` instead.
+    fn ensure_npc_combat(&mut self, entity: Entity) {
+        if self.world.get::<TbaCombatant>(entity).is_some() {
+            return;
+        }
+        let Some(stats) = self.npc_stats(entity).cloned() else {
+            return;
+        };
+        let Some(mut rng) = self.world.get_resource_mut::<crate::combat::TbaRng>() else {
+            return;
+        };
+        let combatant = crate::combat::npc_combatant_from_stats(&stats, &mut rng);
+        self.world
+            .entity_mut(entity)
+            .insert((combatant.clone(), TbaNpcBase(combatant)));
+    }
+
     /// The script-written extras of a character, defaults when it has none.
     fn extras(&self, entity: Entity) -> TbaCharExtras {
         self.world
@@ -376,6 +398,7 @@ impl EcsHost<'_> {
     /// Store a derived statistic so it lasts. See the module docs.
     fn write_derived(&mut self, entity: Entity, location: AffectLocation, value: i32) {
         self.flush_reads();
+        self.ensure_npc_combat(entity);
         let Some(current) = self
             .world
             .get::<TbaCombatant>(entity)
@@ -469,9 +492,18 @@ impl EcsHost<'_> {
             .get_resource_or_insert_with(TbaUnmodelledReads::default)
             .take();
         for (key, detail, count) in taken {
-            for _ in 0..count.min(1000) {
-                self.unsupported(key, detail);
-            }
+            self.unsupported(key, &format!("{detail} (x{count})"));
+        }
+        // A script affect that has run out takes its hide, sneak or sight
+        // component with it, whether or not anything touches that character.
+        let mut query = self.world.query::<(Entity, &TbaDgAffects)>();
+        let timed: Vec<Entity> = query
+            .iter(self.world)
+            .filter(|(_, marks)| marks.0.iter().any(|mark| mark.expires.is_some()))
+            .map(|(entity, _)| entity)
+            .collect();
+        for entity in timed {
+            self.expire_dg_affects(entity);
         }
     }
 
@@ -543,6 +575,12 @@ impl CharHost for EcsHost<'_> {
         };
         let combatant = self.world.get::<TbaCombatant>(entity);
         let stats = self.npc_stats(entity);
+        if combatant.is_none() && self.is_npc_entity(entity) {
+            self.note_read(
+                "char_npc_no_combat_state",
+                "an NPC read before it has its combat state",
+            );
+        }
         if let (Some(location), Some(combatant)) = (stat_location(stat), combatant) {
             return derived_value(combatant, location);
         }
@@ -558,7 +596,10 @@ impl CharHost for EcsHost<'_> {
                 self.note_read("char_sex", "the pack models no sex");
                 0
             }
-            CharStat::WaitState => 0,
+            CharStat::WaitState => {
+                self.note_read("char_wait_state", "the pack models no wait state");
+                0
+            }
             CharStat::Class => self
                 .world
                 .get::<TbaProgress>(entity)
@@ -742,6 +783,7 @@ impl CharHost for EcsHost<'_> {
         }
         let want = value.saturating_sub(crate::combat::BASE_ATTRIBUTE);
         let have = self.permanent_adjustment(entity, location);
+        self.ensure_npc_combat(entity);
         let Some(current) = self
             .world
             .get::<TbaCombatant>(entity)
@@ -807,7 +849,8 @@ impl CharHost for EcsHost<'_> {
     /// recompute clamps hit points at zero, nothing regenerates or bleeds a
     /// downed character, and `heal` refuses one), so any hit point count at or
     /// below zero is `Position::Dead`, which is what the pack's own damage
-    /// does at zero. A script's damage then reaches `cmd_die`. A positive
+    /// does at zero. A script's damage then reaches `cmd_die`; a bare `hitp`
+    /// write does not (counted as `char_update_pos_dead`). A positive
     /// count stands a character up who was dead or down, as the C does.
     fn char_update_pos(&mut self, ch: Uid) {
         self.flush_reads();
@@ -826,6 +869,11 @@ impl CharHost for EcsHost<'_> {
         } else if combatant.position != Position::Dead {
             combatant.position = Position::Dead;
             combatant.target = None;
+            self.unsupported(
+                "char_update_pos_dead",
+                "hit points at or below zero mean dead in the pack; only a script's damage \
+                 follows with `cmd_die`, a plain hitp write does not",
+            );
         }
     }
 
@@ -943,7 +991,9 @@ impl CharHost for EcsHost<'_> {
 
     /// `ch->followers->follower`: the head of the follower list. `add_follower`
     /// prepends, so the head is the follower added last: the one whose
-    /// `TbaFollowing` is newest.
+    /// `TbaFollowing` is newest. The pack's `follow` re-targets by changing the
+    /// component in place, which keeps its tick, so a follower that switched
+    /// leaders keeps its old place in the order (an approximation).
     fn char_first_follower(&self, ch: Uid) -> Option<Uid> {
         let leader = self.character(ch)?;
         let now = self.world.read_change_tick();
@@ -1195,6 +1245,7 @@ impl EcsHost<'_> {
 
     /// Write hit, mana, move or position straight into the combatant.
     fn write_vital(&mut self, entity: Entity, stat: CharStat, value: i32) {
+        self.ensure_npc_combat(entity);
         let Some(mut combatant) = self.world.get_mut::<TbaCombatant>(entity) else {
             self.unsupported(
                 "char_set_stat_no_combat_state",
@@ -1269,7 +1320,20 @@ impl EcsHost<'_> {
                     .any(|buff| !buff.is_pinned() && &buff.affect == affect)
             })
         });
+        // True sight a script's affect created is the affect's, not the
+        // spell's (`SPELL_DG_AFFECT` is a different spell).
+        let pulse = self.pulse();
+        let script_sight = self.world.get::<TbaDgAffects>(entity).is_some_and(|marks| {
+            marks.0.iter().any(|mark| {
+                mark.owns_bit
+                    && mark.expires.is_none_or(|expires| expires > pulse)
+                    && mark
+                        .bit
+                        .is_some_and(|bit| bit == AFF_DETECT_INVIS || bit == AFF_SENSE_LIFE)
+            })
+        });
         let by_sight = matches!(info.id, "detect_invis" | "sense_life")
+            && !script_sight
             && self
                 .world
                 .get::<crate::stealth::TbaTrueSight>(entity)

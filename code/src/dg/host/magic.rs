@@ -22,7 +22,8 @@
 //! skips. The pack has no object-targeted spells, so a cast at an object is
 //! logged and does nothing. A spell the pack lists but cannot run (utility, or
 //! a detect that is not true sight) is logged as `magic_spell_inert`. An NPC the
-//! spell kills is marked `DgDead` and goes at the end of the host run.
+//! spell kills runs its `death` triggers (as `raw_kill` does for the killer) and is
+//! then marked `DgDead`, going at the end of the host run.
 //!
 //! # Affects
 //!
@@ -95,8 +96,8 @@ const HOUR_PULSES: i64 = (MUD_HOUR_SECONDS * 10.0) as i64;
 
 /// `AFF_DETECT_INVIS`, `AFF_SENSE_LIFE`, `AFF_SNEAK` and `AFF_HIDE`: the affect
 /// bits the pack has a component for.
-const AFF_DETECT_INVIS: u32 = 4;
-const AFF_SENSE_LIFE: u32 = 6;
+pub(super) const AFF_DETECT_INVIS: u32 = 4;
+pub(super) const AFF_SENSE_LIFE: u32 = 6;
 const AFF_SNEAK: u32 = 19;
 const AFF_HIDE: u32 = 20;
 
@@ -561,7 +562,7 @@ impl EcsHost<'_> {
 
     /// Drop the script affects that have worn off. Their buffs run out on
     /// the round clock by themselves; the bit components go with the marker.
-    fn expire_dg_affects(&mut self, entity: Entity) {
+    pub(super) fn expire_dg_affects(&mut self, entity: Entity) {
         let pulse = self.pulse();
         let Some(mut marks) = self.world.get_mut::<TbaDgAffects>(entity) else {
             return;
@@ -593,29 +594,40 @@ impl EcsHost<'_> {
         }
     }
 
-    /// Set the pack component an affect bit stands for.
-    fn grant_bit(&mut self, entity: Entity, bit: u32, rounds: u32) {
+    /// Set the pack component an affect bit stands for. A component the
+    /// character already has (a cast's true sight, the player's own sneak) is
+    /// kept as it is; the result tells whether this call created it.
+    fn grant_bit(&mut self, entity: Entity, bit: u32, rounds: u32) -> bool {
         let mut target = self.world.entity_mut(entity);
         match bit {
             AFF_DETECT_INVIS | AFF_SENSE_LIFE => {
+                if target.contains::<TbaTrueSight>() {
+                    return false;
+                }
                 target.insert(TbaTrueSight {
                     sight: SEE_INVIS,
                     detect: TRUE_SIGHT_DETECT,
                     rounds_left: rounds.max(1),
                 });
+                true
             }
             AFF_SNEAK => {
+                let fresh = !target.contains::<TbaSneaking>();
                 target.insert(TbaSneaking);
+                fresh
             }
             AFF_HIDE => {
+                let fresh = !target.contains::<TbaHidden>();
                 target.insert(TbaHidden);
+                fresh
             }
-            _ => {}
+            _ => false,
         }
     }
 
     /// Take away the component a marker's bit set, unless another live marker
-    /// still sets it.
+    /// still sets it (which then takes over the ownership) or the marker did
+    /// not create it.
     fn release_bit(&mut self, entity: Entity, mark: &DgAffect) {
         let Some(bit) = mark.bit else {
             return;
@@ -624,12 +636,15 @@ impl EcsHost<'_> {
         let sights = [AFF_DETECT_INVIS, AFF_SENSE_LIFE];
         let shared =
             |other: u32| other == bit || (sights.contains(&bit) && sights.contains(&other));
-        let held = self.world.get::<TbaDgAffects>(entity).is_some_and(|marks| {
-            marks.0.iter().any(|other| {
+        if let Some(mut marks) = self.world.get_mut::<TbaDgAffects>(entity)
+            && let Some(holder) = marks.0.iter_mut().find(|other| {
                 other.bit.is_some_and(shared) && other.expires.is_none_or(|e| e > pulse)
             })
-        });
-        if held {
+        {
+            holder.owns_bit |= mark.owns_bit;
+            return;
+        }
+        if !mark.owns_bit {
             return;
         }
         let mut target = self.world.entity_mut(entity);
@@ -815,8 +830,13 @@ impl MagicHost for EcsHost<'_> {
                     .get::<TbaCombatant>(entity)
                     .is_some_and(|combatant| combatant.position == Position::Dead)
             {
-                // The pack's spell leaves a dead NPC in place; it goes at the
-                // end of the pulse like any extracted character.
+                // `raw_kill` runs `death_mtrigger(victim, killer)` before the
+                // extraction. The pack's spell leaves a dead NPC in place; it
+                // goes at the end of the host run like any extracted
+                // character, so its death trigger has to run here.
+                if let Some(dead) = self.uid(entity) {
+                    dg_vm::dispatch::death_mtrigger(self, dead, Some(caster));
+                }
                 self.world.entity_mut(entity).insert(DgDead);
             }
             if let Some(affect) = &affects
@@ -895,7 +915,8 @@ impl MagicHost for EcsHost<'_> {
 
     /// `affect_to_char`: a marker for the affect, a buff for the number it
     /// changes when the pack models that number, and the bit it sets stored
-    /// with the marker (no pack system reads affect bits, which is logged). A
+    /// with the marker (hide, sneak and the two true-sight bits also set their
+    /// pack component; any other bit is logged as unread). A
     /// duration of -1 is permanent; otherwise the affect lasts until the
     /// `duration + 1`th mud-hour update, counted from now.
     fn magic_add_dg_affect(
@@ -927,6 +948,7 @@ impl MagicHost for EcsHost<'_> {
                 &format!("the pack models no apply type {location}"),
             );
         }
+        let mut owns_bit = false;
         if let Some(bit) = bit {
             if matches!(
                 bit,
@@ -938,7 +960,7 @@ impl MagicHost for EcsHost<'_> {
                     u32::try_from(hours.saturating_mul(HOUR_PULSES) / ROUND_PULSES)
                         .unwrap_or(PINNED_FOREVER)
                 };
-                self.grant_bit(entity, bit, rounds);
+                owns_bit = self.grant_bit(entity, bit, rounds);
             } else {
                 self.unsupported(
                     "magic_affect_bit",
@@ -976,6 +998,7 @@ impl MagicHost for EcsHost<'_> {
             bit,
             expires,
             numeric,
+            owns_bit,
         };
         if let Some(mut marks) = self.world.get_mut::<TbaDgAffects>(entity) {
             marks.0.push(mark);

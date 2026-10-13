@@ -140,7 +140,7 @@ pub fn tick_buffs(mut buffs: Query<&mut TbaBuffs>) {
                 if rounds >= PINNED_FOREVER {
                     return true;
                 }
-                buff.rounds_left = (buff.rounds_left & !PINNED_FOREVER) | (rounds - 1);
+                buff.rounds_left = (buff.rounds_left & !PINNED_FOREVER) | rounds.saturating_sub(1);
                 return rounds > 1;
             }
             buff.rounds_left = buff.rounds_left.saturating_sub(1);
@@ -796,6 +796,9 @@ fn apply_spell_to_target(
                         session,
                         format!("{target_name} is afflicted by {spell_name}."),
                     );
+                }
+                if players.get(target).is_ok() {
+                    output.write(text(target, format!("You are afflicted by {spell_name}.")));
                 }
             } else if target == session {
                 tell_caster(

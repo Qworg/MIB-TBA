@@ -136,6 +136,12 @@ pub struct DgAffect {
     pub expires: Option<i64>,
     /// The `TbaBuffs` entry that makes a numeric affect count.
     pub numeric: Option<AffectDef>,
+    /// Whether this marker created the pack component its bit stands for
+    /// (true sight, sneaking, hiding). A component that was already there
+    /// (from a cast or the character's own skill) is left alone when the
+    /// marker goes.
+    #[serde(default)]
+    pub owns_bit: bool,
 }
 
 /// The affects scripts applied to a character, oldest first.
@@ -145,7 +151,7 @@ pub struct TbaDgAffects(pub Vec<DgAffect>);
 /// Reads of facts the pack does not model, counted until the next mutable
 /// call can report them (`BaseHost::unsupported` needs `&mut`). The counts are
 /// per key with the detail line to log; interior mutability lets a `&self`
-/// read bump them.
+/// read bump them. A report is one log line per key carrying the count.
 #[derive(Debug, Default, Resource)]
 pub struct TbaUnmodelledReads(Mutex<BTreeMap<&'static str, (&'static str, u64)>>);
 
