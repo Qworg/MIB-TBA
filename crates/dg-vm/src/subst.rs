@@ -97,10 +97,6 @@ pub trait SubstHost {
     /// there is no happy hour.
     fn subst_happy_hour(&self) -> HappyHour;
 
-    /// `R_EXIT(room, dir) != NULL`, `dir` in `0..NUM_OF_DIRS`: whether the
-    /// room has an exit that way (whether or not it leads anywhere).
-    fn subst_has_exit(&self, room: Uid, dir: usize) -> bool;
-
     /// `CONFIG_DIAGONAL_DIRS`: whether diagonal directions exist
     /// (`DIR_COUNT` is 10 when set, 6 otherwise). `false` by default.
     fn subst_diagonal_dirs(&self) -> bool;
@@ -801,7 +797,7 @@ fn random_var<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, attach: AttachType, field:
             6
         };
         let exits: Vec<usize> = (0..dir_count)
-            .filter(|dir| cx.host.subst_has_exit(room, *dir))
+            .filter(|dir| cx.host.room_exit(room, *dir).is_some())
             .collect();
         let Some(first) = exits.first().copied() else {
             return String::new();

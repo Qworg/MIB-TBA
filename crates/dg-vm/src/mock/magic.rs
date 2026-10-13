@@ -4,29 +4,29 @@
 //!
 //! | entity | key | meaning (C) |
 //! |---|---|---|
-//! | globals | `nums["spellnum:<name>"]` | `find_skill_num(<name>)`, the name lowercased; exact match only |
+//! | globals | `texts["spell:<n>"]` | `spell_info[n].name`; absent = an undefined slot (the C's `"!UNUSED!"`). The VM's `find_skill_num` matches over these |
 //! | globals | `nums["spellinfo:<n>:targets"]`, `nums["spellinfo:<n>:routines"]` | `spell_info[n].targets` / `.routines` |
 //! | char | `texts["dg_aff_bits"]` | comma-separated `AFF_*` numbers set by `dg_affect` (so `off` can clear them) |
 //!
-//! `read_mobile(vnum)` succeeds when `texts["mobproto:<vnum>"]` exists (the
-//! shared key); the mob's keywords (`alias`) come from it and only its `name` (short_descr) is replaced. `dg_affect` sets the shared
+//! The caster mob an object or room casts through is made by the command
+//! module's primitives (`read_mobile` needs the shared
+//! `texts["mobproto:<vnum>"]`). `dg_affect` sets the shared
 //! `nums["spell:<n>"]` and `nums["aff:<n>"]` keys.
 //!
-//! Effects recorded: `call_magic …`, `extract_char <uid>`,
-//! `affect_to_char …`, `affect_from_char <uid>`.
+//! Effects recorded: `call_magic …`, `affect_to_char …`,
+//! `affect_from_char <uid>`.
 
 use crate::magic::MagicHost;
 use crate::mock::MockHost;
 use crate::types::Uid;
 
 impl MockHost {
-    /// Register a spell for `find_skill_num` and `spell_info[]`.
+    /// Register a spell in `spell_info[]`: its name, targets and routines.
     pub fn add_spell(&mut self, name: &str, spellnum: i32, targets: u32, routines: u32) {
+        self.globals
+            .texts
+            .insert(format!("spell:{spellnum}"), name.to_owned());
         let nums = &mut self.globals.nums;
-        nums.insert(
-            format!("spellnum:{}", name.to_ascii_lowercase()),
-            i64::from(spellnum),
-        );
         nums.insert(format!("spellinfo:{spellnum}:targets"), i64::from(targets));
         nums.insert(
             format!("spellinfo:{spellnum}:routines"),
@@ -40,12 +40,11 @@ fn show(uid: Option<Uid>) -> String {
 }
 
 impl MagicHost for MockHost {
-    fn magic_find_skill_num(&self, name: &str) -> i32 {
+    fn magic_spell_name(&self, spellnum: i32) -> Option<String> {
         self.globals
-            .nums
-            .get(&format!("spellnum:{}", name.to_ascii_lowercase()))
-            .and_then(|num| i32::try_from(*num).ok())
-            .unwrap_or(-1)
+            .texts
+            .get(&format!("spell:{spellnum}"))
+            .cloned()
     }
 
     fn magic_spell_targets(&self, spellnum: i32) -> u32 {
@@ -82,21 +81,6 @@ impl MagicHost for MockHost {
         ));
     }
 
-    fn magic_load_caster_proxy(&mut self, vnum: i32, room: Uid, short_descr: &str) -> Option<Uid> {
-        // Absent prototype: read_mobile fails.
-        let proto = self.globals.texts.get(&format!("mobproto:{vnum}"))?.clone();
-        let proxy = self.add_mob(vnum, &proto);
-        // Only short_descr is replaced; the keywords stay the prototype's.
-        self.set_text(proxy, "name", short_descr);
-        self.char_to_room(proxy, room);
-        Some(proxy)
-    }
-
-    fn magic_extract_caster_proxy(&mut self, proxy: Uid) {
-        self.extract_char(proxy);
-        self.effect(format!("extract_char {proxy}"));
-    }
-
     fn magic_remove_dg_affects(&mut self, ch: Uid, spell: i32) {
         let bits = self.text(ch, "dg_aff_bits");
         for bit in bits.split(',').filter(|bit| !bit.is_empty()) {
@@ -112,8 +96,8 @@ impl MagicHost for MockHost {
         ch: Uid,
         spell: i32,
         location: i32,
-        modifier: i32,
-        duration: i32,
+        modifier: i8,
+        duration: i16,
         bit: Option<u32>,
     ) {
         self.set_num(ch, &format!("spell:{spell}"), 1);

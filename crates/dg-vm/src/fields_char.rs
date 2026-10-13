@@ -9,7 +9,8 @@
 //! Also ported from `dg_variables.c`: `skill_percent` and `char_has_item`
 //! (with [`crate::lookup::item_in_list`] and
 //! [`crate::lookup::get_object_in_equip`]). From `spell_parser.c`:
-//! `find_skill_num`, over the host's spell-name table.
+//! `find_skill_num` lives in [`crate::magic`], over the host's spell-name
+//! table.
 //!
 //! # Fidelity notes
 //!
@@ -50,10 +51,12 @@
 //!   none is invented.
 
 use crate::cstr::{
-    any_one_arg, atoi, is_abbrev, is_number, one_word, skip_spaces, sprinttype, str_str, strn_cmp,
+    atoi, is_abbrev, is_number, one_word, skip_spaces, sprinttype, str_str, strn_cmp,
 };
+use crate::fields_obj::c_vnum;
 use crate::host::{Cx, DgHost};
 use crate::lookup::{NUM_WEARS, find_eq_pos_script, get_object_in_equip, item_in_list};
+use crate::magic::find_skill_num;
 use crate::types::{
     AttachType, LVL_GRGOD, LVL_IMMORT, PULSE_VIOLENCE, ROOM_ID_BASE, Uid, uid_text,
 };
@@ -63,11 +66,13 @@ const WAIT_UNIT: i32 = (PULSE_VIOLENCE / 2) as i32;
 /// `POS_SLEEPING` and `POS_STANDING`: the range `pos(<name>)` can set.
 const POS_SLEEPING: i32 = 4;
 const POS_STANDING: i32 = 8;
+/// `MOB_ISNPC`, `MOB_NOTDEADYET` and `PLR_NOTDEADYET` (`structs.h`).
+const MOB_ISNPC: u32 = 3;
+const MOB_NOTDEADYET: u32 = 19;
+const PLR_NOTDEADYET: u32 = 16;
 /// `PLR_KILLER` and `PLR_THIEF`.
 const PLR_KILLER: u32 = 0;
 const PLR_THIEF: u32 = 1;
-/// `unused_spellname` (`spell_parser.c`), the name of an undefined spell slot.
-const UNUSED_SPELLNAME: &str = "!UNUSED!";
 
 /// `pc_class_types` (`class.c`).
 pub const PC_CLASS_TYPES: &[&str] = &["Magic User", "Cleric", "Thief", "Warrior"];
@@ -234,9 +239,11 @@ pub enum CharAbil {
 /// mob (`CHECK_PLAYER_SPECIAL`), so a write through one mob is seen through
 /// another. A faithful host keeps that one shared record for NPCs.
 ///
-/// `char_act_flagged(ch, 3)` is `MOB_ISNPC`, the fact `WorldHost::is_npc`
-/// provides; the VM reads that bit through `is_npc` and never asks this trait
-/// for it, so a host need not store it in the act array.
+/// Two act bits are facts `WorldHost` already provides, and the VM reads them
+/// there and never asks this trait for them, so a host need not store them in
+/// the act array: `MOB_ISNPC` (bit 3, `WorldHost::is_npc`) and `DEAD(ch)`
+/// (`MOB_NOTDEADYET`, bit 19, for an NPC; `PLR_NOTDEADYET`, bit 16, for a
+/// player; `WorldHost::is_dead`).
 pub trait CharHost {
     /// The value of one numeric attribute (see [`CharStat`]).
     fn char_stat(&self, ch: Uid, stat: CharStat) -> i32;
@@ -287,14 +294,6 @@ pub trait CharHost {
     /// `affected_by_spell(ch, spell)`.
     fn char_affected_by_spell(&self, ch: Uid, spell: i32) -> bool;
 
-    /// `TOP_SPELL_DEFINE`: the highest spell number.
-    fn char_top_spell(&self) -> i32;
-
-    /// `spell_info[spell].name` for `spell` in `1..=TOP_SPELL_DEFINE`; `None`
-    /// for a slot the host does not define (read as `"!UNUSED!"`, the C's
-    /// name for an unused slot).
-    fn char_spell_name(&self, spell: i32) -> Option<String>;
-
     /// `GET_SKILL(ch, skill)`.
     fn char_skill(&self, ch: Uid, skill: i32) -> i32;
 
@@ -310,6 +309,10 @@ pub trait CharHost {
 
     /// `IS_SET_AR(PRF_FLAGS(ch), bit)`. The caller adds the `IS_NPC` test.
     fn char_pref_flagged(&self, ch: Uid, bit: u32) -> bool;
+
+    /// `ch->player.short_descr = strdup(text)`. Reads go through
+    /// `WorldHost::name`.
+    fn char_set_short_descr(&mut self, ch: Uid, text: &str);
 
     /// `GET_TITLE(ch)`; `None` when the pointer is NULL.
     fn char_title(&self, ch: Uid) -> Option<String>;
@@ -347,33 +350,6 @@ fn narrow(width: Width, value: i32) -> i32 {
     }
 }
 
-/// `find_skill_num(name)` (`spell_parser.c`): the spell whose name `name`
-/// abbreviates, whole or word by word; `-1` when none.
-pub fn find_skill_num<H: CharHost + ?Sized>(host: &H, name: &str) -> i32 {
-    for index in 1..=host.char_top_spell() {
-        let spell = host
-            .char_spell_name(index)
-            .unwrap_or_else(|| UNUSED_SPELLNAME.to_owned());
-        if is_abbrev(name, &spell) {
-            return index;
-        }
-        let mut ok = true;
-        let (mut first, mut temp) = any_one_arg(&spell);
-        let (mut first2, mut temp2) = any_one_arg(name);
-        while !first.is_empty() && !first2.is_empty() && ok {
-            if !is_abbrev(&first2, &first) {
-                ok = false;
-            }
-            (first, temp) = any_one_arg(temp);
-            (first2, temp2) = any_one_arg(temp2);
-        }
-        if ok && first2.is_empty() {
-            return index;
-        }
-    }
-    -1
-}
-
 /// `skill_percent(ch, skill)` (`dg_variables.c`).
 pub fn skill_percent<H: DgHost + ?Sized>(host: &H, ch: Uid, skill: &str) -> String {
     let skillnum = find_skill_num(host, skill);
@@ -390,12 +366,6 @@ pub fn char_has_item<H: DgHost + ?Sized>(host: &H, item: &str, ch: Uid) -> bool 
         return true;
     }
     item_in_list(host, item, &host.carrying(ch)) != 0
-}
-
-/// A vnum as the C holds it: `IDXTYPE` is `ush_int` here, so `NOTHING` (the
-/// host's -1) is 65535.
-fn c_vnum(vnum: i32) -> i32 {
-    i32::from(u16::try_from(vnum).unwrap_or(u16::MAX))
 }
 
 /// `"1"` or `"0"`.
@@ -667,9 +637,15 @@ pub fn char_field<H: DgHost + ?Sized>(
         "npcflag" => {
             if has_sub {
                 let mut buf = String::new();
+                let npc = host.is_npc(c);
                 for (bit, name) in (0u32..).zip(ACTION_BITS.iter()) {
-                    let set = if bit == 3 {
-                        host.is_npc(c)
+                    // MOB_ISNPC and the NOTDEADYET bit (MOB_NOTDEADYET for an
+                    // NPC, PLR_NOTDEADYET for a player, both the `DEAD(ch)`
+                    // fact) are not kept in the act array.
+                    let set = if bit == MOB_ISNPC {
+                        npc
+                    } else if bit == if npc { MOB_NOTDEADYET } else { PLR_NOTDEADYET } {
+                        host.is_dead(c)
                     } else {
                         host.char_act_flagged(c, bit)
                     };
@@ -1461,9 +1437,15 @@ mod tests {
         f.host.set_num(mob, "act", 1 << 8);
         assert_eq!(f.s(mob, "npcflag", "AGGR"), "1");
         assert_eq!(f.s(mob, "npcflag", "AGGR_EVIL"), "1");
-        // Bit 19 is the last named flag; bit 20 prints UNDEFINED; 21+ nothing.
+        // Bit 19 is the last named flag, MOB_NOTDEADYET, which is the
+        // DEAD(ch) fact: an extracted mob has it, an act bit does not make it.
         f.host.set_num(mob, "act", 1 << 19);
+        assert_eq!(f.s(mob, "npcflag", "DEAD"), "0");
+        f.host.set_num(mob, "act", 0);
+        f.host.extract_char(mob);
         assert_eq!(f.s(mob, "npcflag", "DEAD"), "1");
+        assert_eq!(f.s(mob, "npcflag", "ISNPC DEAD"), "1");
+        f.host.set_num(mob, "dead", 0);
         f.host.set_num(mob, "act", 1 << 20);
         assert_eq!(f.s(mob, "npcflag", "UNDEFINED"), "1");
         f.host.set_num(mob, "act", 1 << 21);
@@ -1719,12 +1701,13 @@ mod tests {
         let mut f = fx();
         let pc = f.pc;
         spells(&mut f.host);
-        // Slot 5 defined above a gap at 4, past any fixed scan limit.
+        // Slot 200 defined above a gap at 4..=199, the last stretch of the
+        // scan up to TOP_SPELL_DEFINE (299).
         f.host
             .globals
             .texts
-            .insert("spell:1001".into(), "zap".into());
-        f.host.set_num(pc, "skill:1001", 9);
+            .insert("spell:200".into(), "zap".into());
+        f.host.set_num(pc, "skill:200", 9);
         assert_eq!(f.s(pc, "skill", "zap"), "9");
         // is_abbrev("!", "!UNUSED!") matches slot 4, whose skill is 0.
         assert_eq!(f.s(pc, "skill", "!"), "0");

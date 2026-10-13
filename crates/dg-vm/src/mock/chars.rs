@@ -21,17 +21,30 @@
 //! | `texts["title"]` | `GET_TITLE`; absent = NULL |
 //! | `nums["quest"]` | `GET_QUEST`; absent = `NOTHING` (`-1`) |
 //! | `nums["quest_done:<vnum>"]` | `is_complete(ch, vnum)` |
-//! | `globals.texts["spell:<n>"]` | `spell_info[n].name`; absent = undefined slot; the top is the highest key present |
 //! | `globals.nums["quest:<vnum>"]` | `real_quest(vnum) != NOTHING` |
+//!
+//! The act bit `DEAD(ch)` reads (`MOB_NOTDEADYET` 19 for an NPC,
+//! `PLR_NOTDEADYET` 16 for a player) is the shared `nums["dead"]`, never
+//! stored in `nums["act"]`: reading it answers `is_dead`, writing it is
+//! ignored.
 //!
 //! `gain_exp` models only the parts of the C that do not need the level
 //! tables: an NPC adds, a player below level 1 or at an immortal level is
-//! unchanged, gains add (no level-up, no cap), losses floor the total at 0.
+//! unchanged, a zero gain changes nothing, gains add (capped at the default
+//! `CONFIG_MAX_EXP_GAIN`, no level-up), losses are capped at the default
+//! `CONFIG_MAX_EXP_LOSS` and floor the total at 0.
 
 use crate::fields_char::{CharAbil, CharFact, CharHost, CharStat};
+use crate::host::WorldHost;
 use crate::mock::MockHost;
 use crate::types::Uid;
 
+/// `CONFIG_MAX_EXP_GAIN` and `CONFIG_MAX_EXP_LOSS` at their `config.c` defaults.
+const MAX_EXP_GAIN: i32 = 100_000;
+const MAX_EXP_LOSS: i32 = 500_000;
+/// `MOB_NOTDEADYET` and `PLR_NOTDEADYET`: the act bit that is `DEAD(ch)`.
+const MOB_NOTDEADYET: u32 = 19;
+const PLR_NOTDEADYET: u32 = 16;
 /// `MAX_GOLD`.
 const MAX_GOLD: i32 = 2_140_000_000;
 
@@ -95,6 +108,15 @@ fn player_only(host: &MockHost, ch: Uid, key: &str) -> Option<String> {
     let player_key =
         matches!(key, "prac" | "qp") || key.starts_with("cond:") || key.starts_with("skill:");
     (player_key && host.num(ch, "is_npc") != 0).then(|| format!("dummy:{key}"))
+}
+
+/// Whether `bit` of this character's act array is `DEAD(ch)`.
+fn is_dead_bit(host: &MockHost, ch: Uid, bit: u32) -> bool {
+    bit == if host.is_npc(ch) {
+        MOB_NOTDEADYET
+    } else {
+        PLR_NOTDEADYET
+    }
 }
 
 fn char_exists(host: &MockHost, ch: Uid) -> bool {
@@ -210,9 +232,11 @@ impl CharHost for MockHost {
         } else if !(1..31).contains(&level) {
             return;
         } else if gain > 0 {
-            exp.wrapping_add(gain)
+            exp.wrapping_add(gain.min(MAX_EXP_GAIN))
+        } else if gain < 0 {
+            exp.wrapping_add(gain.max(-MAX_EXP_LOSS)).max(0)
         } else {
-            exp.wrapping_add(gain).max(0)
+            return;
         };
         self.set_num(ch, "exp", i64::from(value));
     }
@@ -254,19 +278,6 @@ impl CharHost for MockHost {
         self.num(ch, &format!("spell:{spell}")) != 0
     }
 
-    fn char_top_spell(&self) -> i32 {
-        self.globals
-            .texts
-            .keys()
-            .filter_map(|key| key.strip_prefix("spell:")?.parse::<i32>().ok())
-            .max()
-            .unwrap_or(0)
-    }
-
-    fn char_spell_name(&self, spell: i32) -> Option<String> {
-        self.globals.texts.get(&format!("spell:{spell}")).cloned()
-    }
-
     fn char_skill(&self, ch: Uid, skill: i32) -> i32 {
         self.shared_get(ch, &format!("skill:{skill}"))
     }
@@ -276,10 +287,16 @@ impl CharHost for MockHost {
     }
 
     fn char_act_flagged(&self, ch: Uid, bit: u32) -> bool {
+        if is_dead_bit(self, ch, bit) {
+            return self.is_dead(ch);
+        }
         (self.num(ch, "act") >> bit.min(62)) & 1 != 0
     }
 
     fn char_set_act_flag(&mut self, ch: Uid, bit: u32, on: bool) {
+        if is_dead_bit(self, ch, bit) {
+            return;
+        }
         let mask = 1i64 << bit.min(62);
         let act = self.num(ch, "act");
         self.set_num(ch, "act", if on { act | mask } else { act & !mask });
@@ -287,6 +304,10 @@ impl CharHost for MockHost {
 
     fn char_pref_flagged(&self, ch: Uid, bit: u32) -> bool {
         (self.num(ch, "pref") >> bit.min(62)) & 1 != 0
+    }
+
+    fn char_set_short_descr(&mut self, ch: Uid, text: &str) {
+        self.set_text(ch, "name", text);
     }
 
     fn char_title(&self, ch: Uid) -> Option<String> {

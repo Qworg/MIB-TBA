@@ -7,14 +7,9 @@
 //! | `globals` | `nums["happy:qp"]`, `nums["happy:exp"]`, `nums["happy:gold"]` | `happy_data.qp_rate`, `exp_rate`, `gold_rate` |
 //! | `globals` | `nums["happy:ticks"]` | `happy_data.ticks_left` |
 //! | `globals` | `nums["config:diagonal_dirs"]` | `CONFIG_DIAGONAL_DIRS` (nonzero = on) |
-//!
-//! An exit exists when the room has `links["exit:<dir>"]`, as in the shared
-//! data model. The raw key is read (not `MockHost::link`), which matches the
-//! C's `R_EXIT(room, i)`: an exit structure counts even if it leads nowhere.
 
 use crate::mock::MockHost;
 use crate::subst::{HappyHour, SubstHost};
-use crate::types::Uid;
 
 impl SubstHost for MockHost {
     fn subst_happy_hour(&self) -> HappyHour {
@@ -31,11 +26,6 @@ impl SubstHost for MockHost {
             gold_rate: get("happy:gold"),
             ticks_left: get("happy:ticks"),
         }
-    }
-
-    fn subst_has_exit(&self, room: Uid, dir: usize) -> bool {
-        self.entity(room)
-            .is_some_and(|entity| entity.links.contains_key(&format!("exit:{dir}")))
     }
 
     fn subst_diagonal_dirs(&self) -> bool {

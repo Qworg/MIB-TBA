@@ -44,11 +44,17 @@ use crate::host::{Cx, DgHost};
 use crate::lookup::{can_wear_on_pos, find_eq_pos_script, item_in_list, obj_room};
 use crate::types::{MAX_INPUT_LENGTH, Uid, uid_text};
 
-/// `GET_OBJ_VNUM(obj)`: the host's vnum, with a negative answer (no
-/// prototype) rendered as `NOTHING`, 65535 in this tree.
-pub(crate) fn obj_vnum<H: DgHost + ?Sized>(host: &H, obj: Uid) -> i32 {
-    let vnum = host.vnum(obj);
+/// A vnum as the C holds it: `IDXTYPE` is `ush_int` in this tree, so
+/// `NOTHING` is 65535. A host reports it as any negative number (the mock as
+/// -1); every other vnum is passed through, so one above 65535, which the C
+/// cannot hold, is out of contract but not mistaken for `NOTHING`.
+pub(crate) fn c_vnum(vnum: i32) -> i32 {
     if vnum < 0 { 65535 } else { vnum }
+}
+
+/// `GET_OBJ_VNUM(obj)`: the host's vnum through [`c_vnum`].
+pub(crate) fn obj_vnum<H: DgHost + ?Sized>(host: &H, obj: Uid) -> i32 {
+    c_vnum(host.vnum(obj))
 }
 
 /// `item_types[]` (`constants.c`), without the `"\n"` terminator.
