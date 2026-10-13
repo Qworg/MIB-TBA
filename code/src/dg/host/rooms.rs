@@ -7,7 +7,10 @@
 //! [`RoomState`] (whether the door is closed and locked now), seen through the
 //! ten DG directions ([`exit_key`], [`dir_number`]).
 //!
-//! The weather is not modelled: the pack has no sky.
+//! The weather is not modelled: the pack has no sky. The room reads take
+//! `&self`, so the unmodelled ones (the weather, the `ROOM_*` bits with no tag)
+//! answer their neutral value without a `BaseHost::unsupported` count; only a
+//! `&mut self` method can report.
 
 use dg_vm::Uid;
 use dg_vm::fields_room::{RoomExit, RoomHost};
@@ -19,11 +22,13 @@ use mib_stdlib::prelude::{Doors, Exits, Room, RoomState};
 use super::EcsHost;
 use crate::dg::ids::vnum_from_id;
 
-/// `EX_ISDOOR`, `EX_CLOSED`, `EX_LOCKED` and `EX_PICKPROOF` of `exit_info`.
+/// `EX_ISDOOR`, `EX_CLOSED`, `EX_LOCKED`, `EX_PICKPROOF` and `EX_HIDDEN` of
+/// `exit_info`.
 const EX_ISDOOR: u32 = 1 << 0;
 const EX_CLOSED: u32 = 1 << 1;
 const EX_LOCKED: u32 = 1 << 2;
 const EX_PICKPROOF: u32 = 1 << 3;
+const EX_HIDDEN: u32 = 1 << 4;
 
 /// `key` of an exit that needs none (`NOTHING` as an `ush_int`).
 const NO_KEY: i32 = 65_535;
@@ -110,10 +115,11 @@ impl EcsHost<'_> {
 
 impl RoomHost for EcsHost<'_> {
     /// `to_room` is `None` when the exit's destination is gone. A door is an
-    /// authored [`Doors`] entry, or a runtime [`RoomState`] door entry a
-    /// script made; its closed and locked state is the runtime one, falling
-    /// back to the authored default. The key is the vnum of the door's key
-    /// item.
+    /// authored [`Doors`] entry, as the engine's movement gate treats it (a
+    /// [`RoomState`] door entry alone is not one); its closed and locked state
+    /// is the runtime one, falling back to the authored default. The key is the
+    /// vnum of the door's key item. `EX_HIDDEN` is a direction in
+    /// [`Exits::hidden`].
     fn room_exit(&self, room: Uid, dir: usize) -> Option<RoomExit> {
         let (entity, _) = self.room_entity(room)?;
         let key = exit_key(dir)?;
@@ -131,17 +137,26 @@ impl RoomHost for EcsHost<'_> {
             .get::<RoomState>(entity)
             .and_then(|state| state.doors.get(&key));
         let mut info = 0;
-        if door.is_some() || state.is_some() {
+        if door.is_some() {
             info |= EX_ISDOOR;
         }
-        let closed = state
-            .map(|state| state.closed)
-            .or_else(|| door.map(|door| door.default_closed))
-            .unwrap_or(false);
-        let locked = state
-            .map(|state| state.locked)
-            .or_else(|| door.map(|door| door.default_locked))
-            .unwrap_or(false);
+        if self
+            .world
+            .get::<Exits>(entity)
+            .is_some_and(|exits| exits.hidden.contains(&key))
+        {
+            info |= EX_HIDDEN;
+        }
+        let closed = door.is_some()
+            && state.map_or_else(
+                || door.is_some_and(|door| door.default_closed),
+                |s| s.closed,
+            );
+        let locked = door.is_some()
+            && state.map_or_else(
+                || door.is_some_and(|door| door.default_locked),
+                |s| s.locked,
+            );
         if closed {
             info |= EX_CLOSED;
         }
@@ -198,5 +213,25 @@ impl RoomHost for EcsHost<'_> {
     /// The pack has no weather: always `SKY_CLOUDLESS`.
     fn room_sky(&self) -> i32 {
         0
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn dg_directions_and_engine_directions_round_trip() {
+        for dir in 0..10 {
+            let key = exit_key(dir);
+            assert!(key.is_some(), "direction {dir}");
+            assert_eq!(key.and_then(dir_number), Some(dir));
+        }
+        assert_eq!(exit_key(10), None);
+        assert_eq!(exit_key(usize::MAX), None);
+        assert_eq!(dir_number(ExitKey::In), None);
+        assert_eq!(dir_number(ExitKey::Out), None);
+        assert_eq!(dir_number(ExitKey::North), Some(0));
+        assert_eq!(dir_number(ExitKey::Southwest), Some(9));
     }
 }

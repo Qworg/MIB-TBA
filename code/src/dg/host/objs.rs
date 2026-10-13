@@ -7,12 +7,21 @@
 //! holds the per-instance changes and every read falls back from it to the
 //! prototype.
 //!
-//! The decay timer is one fact: the pack's [`TbaItemTimer`] (whole MUD hours,
-//! the unit of `GET_OBJ_TIMER`) is the live timer, so a script sets and reads
-//! that component and [`tick_item_timers`](crate::items::tick_item_timers)
-//! ages it. A timer of zero or less means "no timer" (`point_update` only
-//! decrements a positive one); it is the one value the component cannot hold,
-//! so [`DgObjOverride::timer`] keeps it.
+//! The timer a script sets is kept in [`DgObjOverride::timer`] with the MUD
+//! hour it was set, and read back aged by the pack's hour clock
+//! ([`TbaObjectClock`]), so `GET_OBJ_TIMER` counts down in the unit of
+//! `point_update`. The pack's own decay ([`TbaItemTimer`], from the
+//! prototype's `timer`) despawns the item at zero, which the C does only for
+//! a corpse (it fires the Timer trigger and keeps any other object), so a
+//! script-set timer must never reach it: setting one parks the component at
+//! [`PARKED`], a value `tick_item_timers` cannot run down in practice and
+//! `attach_item_timers` leaves alone. Until the intake stream fires the Timer
+//! trigger the countdown only reads; and the override is not saved, so a
+//! restored item reads zero.
+//!
+//! Script writes to the values, cost, rent, weight and applies are seen by
+//! scripts only: the pack's combat, equipment and shops read the prototype.
+//! Each such write is counted with `BaseHost::unsupported`.
 //!
 //! The extra and affect flags map from the pack's [`ItemExtraFlag`] and
 //! [`ItemAffectFlag`] to the bit numbers of `structs.h` (`ITEM_*`, `AFF_*`),
@@ -20,30 +29,35 @@
 //! No script command changes a flag, so flags are read from the prototype
 //! alone.
 
-use dg_vm::Uid;
 use dg_vm::fields_obj::{MAX_OBJ_AFFECT, ObjHost};
+use dg_vm::{BaseHost, Uid};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::Item;
 
 use super::EcsHost;
 use crate::content::{AffectLocation, ItemAffectFlag, ItemExtraFlag, TbaItemDef};
 use crate::items::TbaItemTimer;
+use crate::items::TbaObjectClock;
 
 /// The longest alias, short and long description the pack keeps; the VM has
 /// already applied the C's tighter caps, this only bounds a stray caller.
 const TEXT_MAX: usize = 4096;
 
+/// The [`TbaItemTimer`] value that stands for "a script owns the timer": far
+/// beyond any real life, so the pack's decay neither reaches zero nor
+/// despawns the item.
+const PARKED: u32 = u32::MAX / 2;
+
 /// Per-instance changes a script made to an object's prototype data. A field
 /// that is `None` still reads from the prototype. Runtime-only: it is not
-/// saved, so a restored object starts from its prototype again (the timer is
-/// the exception, being the persisted [`TbaItemTimer`]).
+/// saved, so a restored object starts from its prototype again.
 #[derive(Component, Debug, Clone, Default, PartialEq, Eq)]
 pub struct DgObjOverride {
     /// `GET_OBJ_VAL(obj, 0..4)`.
     pub values: [Option<i32>; 4],
-    /// `GET_OBJ_TIMER` when it is zero or negative (no timer running); a
-    /// positive timer is the [`TbaItemTimer`] component.
-    pub timer: Option<i32>,
+    /// `GET_OBJ_TIMER` as a script last set it, with the MUD hour (counted
+    /// from the clock's year 0) it was set at; a positive value ages from then.
+    pub timer: Option<(i32, u64)>,
     /// `GET_OBJ_COST`.
     pub cost: Option<i32>,
     /// `GET_OBJ_RENT`.
@@ -143,6 +157,20 @@ impl EcsHost<'_> {
         Some(entity)
     }
 
+    /// MUD hours elapsed on the pack's clock since year 0 (zero without one).
+    fn mud_hours(&self) -> u64 {
+        let Some(clock) = self.world.get_resource::<TbaObjectClock>() else {
+            return 0;
+        };
+        let days = u64::from(clock.year)
+            .saturating_mul(17)
+            .saturating_add(u64::from(clock.month))
+            .saturating_mul(35)
+            .saturating_add(u64::from(clock.day));
+        days.saturating_mul(24)
+            .saturating_add(u64::from(clock.hour_of_day))
+    }
+
     /// The object's per-instance changes, if it has any.
     fn obj_override(&self, entity: Entity) -> Option<&DgObjOverride> {
         self.world.get::<DgObjOverride>(entity)
@@ -189,42 +217,47 @@ impl ObjHost for EcsHost<'_> {
                 *slot = Some(value);
             }
         });
+        self.unsupported("obj.val.effect", "the pack's systems read the prototype");
     }
 
-    /// The live [`TbaItemTimer`] when one runs, else a zero or negative timer a
-    /// script set, else the prototype's `timer`.
+    /// The timer a script set, aged by the MUD hours since; else the pack's
+    /// live [`TbaItemTimer`]; else the prototype's `timer`.
     fn obj_timer(&self, obj: Uid) -> i32 {
         let Some(entity) = self.item_entity(obj) else {
             return 0;
         };
-        if let Some(timer) = self.world.get::<TbaItemTimer>(entity) {
-            return to_i32(timer.remaining);
+        if let Some((value, set_at)) = self.obj_override(entity).and_then(|over| over.timer) {
+            if value <= 0 {
+                return value;
+            }
+            let elapsed = self.mud_hours().saturating_sub(set_at);
+            let left = i64::from(value).saturating_sub(i64::try_from(elapsed).unwrap_or(i64::MAX));
+            return i32::try_from(left.max(0)).unwrap_or(i32::MAX);
         }
-        if let Some(timer) = self.obj_override(entity).and_then(|over| over.timer) {
-            return timer;
+        if let Some(timer) = self.world.get::<TbaItemTimer>(entity) {
+            return if timer.remaining >= PARKED {
+                0
+            } else {
+                to_i32(timer.remaining)
+            };
         }
         self.item_def(entity)
             .and_then(|def| def.timer)
             .map_or(0, to_i32)
     }
 
-    /// A positive timer starts (or restarts) the item's [`TbaItemTimer`]; zero
-    /// or less stops it, as `point_update` only ages a positive timer.
+    /// Stores the value and parks the pack's decay timer, so the item never
+    /// despawns at zero (see the module doc).
     fn obj_set_timer(&mut self, obj: Uid, value: i32) {
         let Some(entity) = self.item_entity(obj) else {
             return;
         };
-        if let Ok(remaining) = u32::try_from(value)
-            && remaining > 0
-        {
-            self.with_override(entity, |over| over.timer = None);
-            self.world
-                .entity_mut(entity)
-                .insert(TbaItemTimer { remaining });
-        } else {
-            self.world.entity_mut(entity).remove::<TbaItemTimer>();
-            self.with_override(entity, |over| over.timer = Some(value));
-        }
+        let now = self.mud_hours();
+        self.with_override(entity, |over| over.timer = Some((value, now)));
+        self.world
+            .entity_mut(entity)
+            .insert(TbaItemTimer { remaining: PARKED });
+        self.unsupported("obj.timer.persist", "a script-set timer is not saved");
     }
 
     fn obj_cost(&self, obj: Uid) -> i32 {
@@ -239,6 +272,7 @@ impl ObjHost for EcsHost<'_> {
     fn obj_set_cost(&mut self, obj: Uid, value: i32) {
         if let Some(entity) = self.item_entity(obj) {
             self.with_override(entity, |over| over.cost = Some(value));
+            self.unsupported("obj.cost.effect", "shops price from the prototype");
         }
     }
 
@@ -254,9 +288,12 @@ impl ObjHost for EcsHost<'_> {
     fn obj_set_rent(&mut self, obj: Uid, value: i32) {
         if let Some(entity) = self.item_entity(obj) {
             self.with_override(entity, |over| over.rent = Some(value));
+            self.unsupported("obj.rent.effect", "the pack has no rent");
         }
     }
 
+    /// The object's own weight; the C's `GET_OBJ_WEIGHT` of a container also
+    /// counts its contents, which this does not.
     fn obj_weight(&self, obj: Uid) -> i32 {
         let Some((def, over)) = self.obj_sources(obj) else {
             return 0;
@@ -272,6 +309,7 @@ impl ObjHost for EcsHost<'_> {
     fn obj_set_weight(&mut self, obj: Uid, value: i32) {
         if let Some(entity) = self.item_entity(obj) {
             self.with_override(entity, |over| over.weight = Some(value));
+            self.unsupported("obj.weight.effect", "the pack weighs from the prototype");
         }
     }
 
@@ -303,13 +341,8 @@ impl ObjHost for EcsHost<'_> {
         }
         def.and_then(|def| def.affects.get(slot))
             .map_or((0, 0), |affect| {
-                let modifier = affect
-                    .modifier
-                    .clamp(i32::from(i8::MIN), i32::from(i8::MAX));
-                (
-                    apply_number(affect.location),
-                    i8::try_from(modifier).unwrap_or(0),
-                )
+                // `sbyte modifier` takes the C's truncating assignment.
+                (apply_number(affect.location), affect.modifier as i8)
             })
     }
 
@@ -322,16 +355,22 @@ impl ObjHost for EcsHost<'_> {
                 *cell = Some((location, modifier));
             }
         });
+        self.unsupported("obj.apply.effect", "equipment bonuses read the prototype");
     }
 
-    /// Kept on the object; the pack matches an object's keywords against its
-    /// prototype, so the new alias is not yet what a player's `get` matches.
+    /// Kept on the object but read by nothing: `WorldHost::keywords` and the
+    /// pack's matching use the prototype, so `%obj.name%` and a player's `get`
+    /// still see the old keywords. Counted as `obj.alias`.
     fn obj_set_alias(&mut self, obj: Uid, name: &str) {
         let Some(entity) = self.item_entity(obj) else {
             return;
         };
         let alias: String = name.chars().take(TEXT_MAX).collect();
         self.with_override(entity, |over| over.alias = Some(alias));
+        self.unsupported(
+            "obj.alias",
+            "the new keywords are not what the pack matches",
+        );
     }
 
     /// The pack's item `name` is the short description.

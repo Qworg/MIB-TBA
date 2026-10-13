@@ -25,7 +25,8 @@ use mib_core::prelude::*;
 use mib_protocol::command::ExitKey;
 use mib_stdlib::content::{RoomTag, Sector};
 use mib_stdlib::prelude::*;
-use mib_tba::items::{TbaItemTimer, tick_item_timers};
+use mib_tba::dg::DgLog;
+use mib_tba::items::{TbaItemTimer, attach_item_timers, tick_item_timers};
 use mib_tba::prelude::*;
 
 const EX_ISDOOR: u32 = 1;
@@ -59,12 +60,6 @@ fn object(app: &mut App, room: Entity, vnum: u32) -> (Entity, Uid) {
     let entity = item_on_ground(app, room, vnum, "a thing");
     let id = uid(app, entity);
     (entity, id)
-}
-
-fn timer_component(app: &App, entity: Entity) -> Option<u32> {
-    app.world()
-        .get::<TbaItemTimer>(entity)
-        .map(|timer| timer.remaining)
 }
 
 // -- values ------------------------------------------------------------------
@@ -219,39 +214,45 @@ fn a_prototype_number_beyond_an_int_saturates() {
 // -- timer -------------------------------------------------------------------
 
 #[test]
-fn the_timer_is_the_items_decay_timer() {
+fn a_script_timer_counts_down_by_mud_hours_and_never_despawns_the_item() {
     let mut app = app();
     app.add_systems(FixedUpdate, tick_item_timers);
     let temple = room(&mut app, 1);
     let (entity, id) = object(&mut app, temple, 10);
     tweak(&mut app, 10, |def| def.timer = Some(5));
 
-    // Before the pack attaches its timer the prototype's value is the timer.
+    // Before a script sets one the prototype's value is the timer.
     run(&mut app, |host| assert_eq!(host.obj_timer(id), 5));
 
-    // A live decay timer is what a script reads.
+    // A live pack timer is what a script reads.
     app.world_mut()
         .entity_mut(entity)
         .insert(TbaItemTimer { remaining: 3 });
     run(&mut app, |host| assert_eq!(host.obj_timer(id), 3));
 
-    // `otimer 4` restarts the one decay timer...
+    // `otimer 4`, as the cooldown items do.
     run(&mut app, |host| host.obj_set_timer(id, 4));
-    assert_eq!(timer_component(&app, entity), Some(4));
     run(&mut app, |host| assert_eq!(host.obj_timer(id), 4));
 
-    // ...and the pack's decay ages it: one MUD hour is 75 seconds.
+    // One MUD hour is 75 seconds.
     tick(&mut app, Duration::from_secs(75));
     run(&mut app, |host| assert_eq!(host.obj_timer(id), 3));
-    assert_eq!(timer_component(&app, entity), Some(3));
 
-    // The item decays when the script-set timer runs out.
-    tick(&mut app, Duration::from_secs(75 * 3));
-    assert!(app.world().get_entity(entity).is_err(), "the item decayed");
+    // limits.c:469-473: at zero the C fires the Timer trigger and keeps the
+    // object; it reads 0 and stays at 0.
+    tick(&mut app, Duration::from_secs(75 * 10));
+    assert!(app.world().get_entity(entity).is_ok(), "the item survives");
     run(&mut app, |host| {
         assert_eq!(host.obj_timer(id), 0);
-        assert!(!host.exists(id));
+        assert!(host.exists(id));
     });
+    // Restarting works again.
+    run(&mut app, |host| host.obj_set_timer(id, 20));
+    run(&mut app, |host| assert_eq!(host.obj_timer(id), 20));
+    assert_eq!(
+        app.world().resource::<DgLog>().count("obj.timer.persist"),
+        2
+    );
 }
 
 #[test]
@@ -266,15 +267,14 @@ fn a_timer_of_zero_or_less_stops_the_decay_whatever_the_prototype_says() {
     tweak(&mut app, 10, |def| def.timer = Some(9));
 
     run(&mut app, |host| host.obj_set_timer(id, 0));
-    assert_eq!(timer_component(&app, entity), None);
     run(&mut app, |host| assert_eq!(host.obj_timer(id), 0));
     tick(&mut app, Duration::from_secs(75 * 20));
     assert!(app.world().get_entity(entity).is_ok(), "no timer, no decay");
+    run(&mut app, |host| assert_eq!(host.obj_timer(id), 0));
 
     run(&mut app, |host| {
         host.obj_set_timer(id, -3);
         assert_eq!(host.obj_timer(id), -3);
-        // A positive value starts it again, and wins over the stored zero.
         host.obj_set_timer(id, 2);
         assert_eq!(host.obj_timer(id), 2);
         host.obj_set_timer(id, i32::MAX);
@@ -282,7 +282,20 @@ fn a_timer_of_zero_or_less_stops_the_decay_whatever_the_prototype_says() {
         host.obj_set_timer(id, i32::MIN);
         assert_eq!(host.obj_timer(id), i32::MIN);
     });
-    assert_eq!(timer_component(&app, entity), None);
+}
+
+#[test]
+fn a_zero_timer_set_before_the_pack_attaches_its_own_is_not_undone() {
+    let mut app = app();
+    app.add_systems(FixedUpdate, (attach_item_timers, tick_item_timers).chain());
+    let temple = room(&mut app, 1);
+    let (entity, id) = object(&mut app, temple, 10);
+    tweak(&mut app, 10, |def| def.timer = Some(9));
+    run(&mut app, |host| host.obj_set_timer(id, 0));
+
+    tick(&mut app, Duration::from_secs(75 * 12));
+    assert!(app.world().get_entity(entity).is_ok());
+    run(&mut app, |host| assert_eq!(host.obj_timer(id), 0));
 }
 
 #[test]
@@ -447,6 +460,7 @@ fn apply_locations_map_to_apply_numbers() {
         for (slot, (_, number)) in table.iter().take(MAX_OBJ_AFFECT).enumerate() {
             assert_eq!(host.obj_apply(id, slot), (*number, 2), "slot {slot}");
         }
+        assert_eq!(host.obj_apply(id, MAX_OBJ_AFFECT), (0, 0));
         assert_eq!(host.obj_apply(id, MAX_OBJ_AFFECT + 1), (0, 0));
     });
     // Each location on its own, in slot zero.
@@ -465,7 +479,7 @@ fn apply_locations_map_to_apply_numbers() {
 }
 
 #[test]
-fn a_modifier_is_a_signed_byte() {
+fn a_modifier_wraps_to_a_signed_byte() {
     let mut app = app();
     let temple = room(&mut app, 1);
     let (_, id) = object(&mut app, temple, 10);
@@ -479,7 +493,13 @@ fn a_modifier_is_a_signed_byte() {
     });
     run(&mut app, |host| {
         let modifiers: Vec<i8> = (0..6).map(|slot| host.obj_apply(id, slot).1).collect();
-        assert_eq!(modifiers, vec![127, -128, 127, -128, 127, -128]);
+        // db.c:2290 assigns the int to an sbyte, truncating.
+        let expected: Vec<i8> = [i32::MAX, i32::MIN, 127, -128, 1000, -1000]
+            .iter()
+            .map(|m| (*m & 0xff) as u8 as i8)
+            .collect();
+        assert_eq!(modifiers, expected);
+        assert_eq!(modifiers[4], -24);
     });
 }
 
@@ -537,11 +557,16 @@ fn descriptions_are_the_items_name_and_description() {
         host.obj_set_long_desc(id, "A glowing orb floats here.");
         host.obj_set_alias(id, "orb glowing");
         assert_eq!(host.name(id), "a glowing orb");
+        // The alias is not readable back through the pack: it is counted.
+        assert_eq!(host.keywords(id), "thing");
+        let long = "x".repeat(10_000);
+        host.obj_set_short_desc(id, &long);
         assert_eq!(host.name(other_id), "a thing");
     });
     let item = app.world().get::<Item>(entity).unwrap();
-    assert_eq!(item.name, "a glowing orb");
+    assert_eq!(item.name.len(), 4096, "the text is bounded");
     assert_eq!(item.description, "A glowing orb floats here.");
+    assert_eq!(app.world().resource::<DgLog>().count("obj.alias"), 1);
     assert_eq!(app.world().get::<Item>(other).unwrap().name, "a thing");
 }
 
@@ -611,7 +636,7 @@ fn the_object_field_table_reads_and_the_commands_write() {
         "the other positions still read the prototype"
     );
     assert_eq!(read(&mut app, "timer"), "6");
-    assert_eq!(timer_component(&app, entity), Some(6));
+    assert!(app.world().get_entity(entity).is_ok());
     run(&mut app, |host| assert_eq!(host.obj_val(id, 1), 77));
 }
 
@@ -1140,7 +1165,9 @@ fn opening_a_door_at_runtime_clears_its_bits() {
 }
 
 #[test]
-fn a_door_a_script_made_with_no_authored_door_is_still_a_door() {
+fn a_door_state_with_no_authored_door_is_not_a_door() {
+    // The engine's movement gate treats a direction as a door only when
+    // `Doors` has it, so a bare `RoomState` entry is not one.
     let mut app = app();
     let hall = room(&mut app, 1);
     let vault = room(&mut app, 2);
@@ -1153,15 +1180,39 @@ fn a_door_a_script_made_with_no_authored_door_is_still_a_door() {
             ExitKey::East,
             DoorState {
                 closed: true,
-                locked: false,
+                locked: true,
                 to: None,
             },
         );
     let hall_id = uid(&mut app, hall);
     run(&mut app, |host| {
         let exit = host.room_exit(hall_id, 1).unwrap();
-        assert_eq!(exit.info, EX_ISDOOR | EX_CLOSED);
+        assert_eq!(exit.info, 0);
         assert_eq!(exit.key, 65_535);
+    });
+}
+
+#[test]
+fn a_hidden_exit_sets_ex_hidden() {
+    // db.c:1547-1550: door codes 3 and 4 add EX_HIDDEN (bit 4).
+    let mut app = app();
+    let hall = room(&mut app, 1);
+    let vault = room(&mut app, 2);
+    open_exit(&mut app, hall, ExitKey::East, vault);
+    open_exit(&mut app, hall, ExitKey::West, vault);
+    app.world_mut()
+        .get_mut::<Exits>(hall)
+        .unwrap()
+        .hidden
+        .insert(ExitKey::East);
+    door(&mut app, hall, ExitKey::East, None, false, None);
+    let hall_id = uid(&mut app, hall);
+    run(&mut app, |host| {
+        assert_eq!(
+            host.room_exit(hall_id, 1).unwrap().info,
+            EX_ISDOOR | EX_PICKPROOF | 16
+        );
+        assert_eq!(host.room_exit(hall_id, 3).unwrap().info, 0);
     });
 }
 
@@ -1332,4 +1383,28 @@ fn freeing_a_proto_script_of_an_entity_with_no_prototype_does_nothing() {
         vec![700],
         "a dead entity's prototype is not stripped"
     );
+}
+
+#[test]
+fn script_writes_the_pack_ignores_are_counted() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let (_, id) = object(&mut app, temple, 10);
+    run(&mut app, |host| {
+        host.obj_set_val(id, 0, 1);
+        host.obj_set_cost(id, 1);
+        host.obj_set_rent(id, 1);
+        host.obj_set_weight(id, 1);
+        host.obj_set_apply(id, 0, 1, 1);
+    });
+    let log = app.world().resource::<DgLog>();
+    for key in [
+        "obj.val.effect",
+        "obj.cost.effect",
+        "obj.rent.effect",
+        "obj.weight.effect",
+        "obj.apply.effect",
+    ] {
+        assert_eq!(log.count(key), 1, "{key}");
+    }
 }
