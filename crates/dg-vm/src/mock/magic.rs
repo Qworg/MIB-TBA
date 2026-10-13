@@ -6,13 +6,16 @@
 //! |---|---|---|
 //! | globals | `nums["spellnum:<name>"]` | `find_skill_num(<name>)`, the name lowercased; exact match only |
 //! | globals | `nums["spellinfo:<n>:targets"]`, `nums["spellinfo:<n>:routines"]` | `spell_info[n].targets` / `.routines` |
-//! | globals | `nums["no_caster_proxy"]` | non-zero makes `read_mobile(DG_CASTER_PROXY)` fail |
-//! | char | `nums["dg_affects"]` | how many `SPELL_DG_AFFECT` affects the character has |
+//! | char | `texts["dg_aff_bits"]` | comma-separated `AFF_*` numbers set by `dg_affect` (so `off` can clear them) |
+//!
+//! `read_mobile(vnum)` succeeds when `texts["mobproto:<vnum>"]` exists (the
+//! shared key); the mob is named from it. `dg_affect` sets the shared
+//! `nums["spell:<n>"]` and `nums["aff:<n>"]` keys.
 //!
 //! Effects recorded: `call_magic …`, `extract_char <uid>`,
 //! `affect_to_char …`, `affect_from_char <uid>`.
 
-use crate::magic::{DG_CASTER_PROXY, MagicHost};
+use crate::magic::MagicHost;
 use crate::mock::MockHost;
 use crate::types::Uid;
 
@@ -79,21 +82,10 @@ impl MagicHost for MockHost {
         ));
     }
 
-    fn magic_load_caster_proxy(&mut self, room: Uid, short_descr: Option<&str>) -> Option<Uid> {
-        if self
-            .globals
-            .nums
-            .get("no_caster_proxy")
-            .copied()
-            .unwrap_or(0)
-            != 0
-        {
-            return None;
-        }
-        let proxy = self.add_mob(DG_CASTER_PROXY, "Puff");
-        if let Some(name) = short_descr {
-            self.set_text(proxy, "name", name);
-        }
+    fn magic_load_caster_proxy(&mut self, vnum: i32, room: Uid, short_descr: &str) -> Option<Uid> {
+        // Absent prototype: read_mobile fails.
+        let _proto = self.globals.texts.get(&format!("mobproto:{vnum}"))?;
+        let proxy = self.add_mob(vnum, short_descr);
         self.char_to_room(proxy, room);
         Some(proxy)
     }
@@ -103,21 +95,31 @@ impl MagicHost for MockHost {
         self.effect(format!("extract_char {proxy}"));
     }
 
-    fn magic_remove_dg_affects(&mut self, ch: Uid) {
-        self.set_num(ch, "dg_affects", 0);
+    fn magic_remove_dg_affects(&mut self, ch: Uid, spell: i32) {
+        let bits = self.text(ch, "dg_aff_bits");
+        for bit in bits.split(',').filter(|bit| !bit.is_empty()) {
+            self.set_num(ch, &format!("aff:{bit}"), 0);
+        }
+        self.set_text(ch, "dg_aff_bits", "");
+        self.set_num(ch, &format!("spell:{spell}"), 0);
         self.effect(format!("affect_from_char {ch}"));
     }
 
     fn magic_add_dg_affect(
         &mut self,
         ch: Uid,
+        spell: i32,
         location: i32,
         modifier: i32,
         duration: i32,
         bit: Option<u32>,
     ) {
-        let count = self.num(ch, "dg_affects");
-        self.set_num(ch, "dg_affects", count + 1);
+        self.set_num(ch, &format!("spell:{spell}"), 1);
+        if let Some(bit) = bit {
+            self.set_num(ch, &format!("aff:{bit}"), 1);
+            let bits = self.text(ch, "dg_aff_bits");
+            self.set_text(ch, "dg_aff_bits", &format!("{bits}{bit},"));
+        }
         self.effect(format!(
             "affect_to_char {ch} location={location} modifier={modifier} duration={duration} bit={}",
             bit.map_or_else(|| "-".to_owned(), |bit| bit.to_string())

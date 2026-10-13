@@ -120,7 +120,10 @@ pub trait MagicHost {
     /// host does not know.
     fn magic_spell_routines(&self, spellnum: i32) -> u32;
 
-    /// `call_magic(caster, victim, obj, spellnum, level, CAST_SPELL)`.
+    /// `call_magic(caster, victim, obj, spellnum, level, CAST_SPELL)`: the
+    /// whole of the C function, including the `cast_wtrigger`,
+    /// `cast_otrigger` and `cast_mtrigger` calls that may refuse the spell,
+    /// and the `ROOM_NOMAGIC` / `ROOM_PEACEFUL` / `MOB_NOKILL` refusals.
     fn magic_call_magic(
         &mut self,
         caster: Uid,
@@ -131,28 +134,30 @@ pub trait MagicHost {
     );
 
     /// The temporary caster for an object or room:
-    /// `caster = read_mobile(DG_CASTER_PROXY, VIRTUAL)`, then, if `short_descr`
-    /// is given, `caster->player.short_descr = strdup(short_descr)`, then
+    /// `caster = read_mobile(vnum, VIRTUAL)` (`vnum` is [`DG_CASTER_PROXY`]),
+    /// then `caster->player.short_descr = strdup(short_descr)`, then
     /// `caster->next_in_room = room->people; room->people = caster;
     /// caster->in_room = real_room(room->number)`. `None` when the mob cannot
-    /// be loaded.
-    fn magic_load_caster_proxy(&mut self, room: Uid, short_descr: Option<&str>) -> Option<Uid>;
+    /// be loaded. (The host may implement the last step with its own
+    /// `char_to_room`; the C open-codes it.)
+    fn magic_load_caster_proxy(&mut self, vnum: i32, room: Uid, short_descr: &str) -> Option<Uid>;
 
     /// `extract_char(caster)` for the proxy made by
     /// [`Self::magic_load_caster_proxy`].
     fn magic_extract_caster_proxy(&mut self, proxy: Uid);
 
-    /// `affect_from_char(ch, SPELL_DG_AFFECT)`: remove every `dg_affect`
-    /// affect from the character.
-    fn magic_remove_dg_affects(&mut self, ch: Uid);
+    /// `affect_from_char(ch, spell)` (`spell` is [`SPELL_DG_AFFECT`]): remove
+    /// every affect of that spell from the character.
+    fn magic_remove_dg_affects(&mut self, ch: Uid, spell: i32);
 
-    /// `new_affect(&af); af.spell = SPELL_DG_AFFECT; af.duration = duration;
+    /// `new_affect(&af); af.spell = spell; af.duration = duration;
     /// af.modifier = modifier; af.location = location;` then, when `bit` is
     /// given, `SET_BIT_AR(af.bitvector, bit)`; `affect_to_char(ch, &af)`.
     /// `location` is `APPLY_NONE` (`0`) for a bit affect.
     fn magic_add_dg_affect(
         &mut self,
         ch: Uid,
+        spell: i32,
         location: i32,
         modifier: i32,
         duration: i32,
@@ -282,12 +287,12 @@ pub fn do_dg_cast<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, cmd: &str) {
     };
     // The proxy is named for the object, or "the gods" for a room.
     let short_descr = match cx.attach {
-        AttachType::Obj => Some(cx.host.name(owner)),
-        _ => Some("The gods".to_owned()),
+        AttachType::Obj => cx.host.name(owner),
+        _ => "The gods".to_owned(),
     };
     let Some(proxy) = cx
         .host
-        .magic_load_caster_proxy(room, short_descr.as_deref())
+        .magic_load_caster_proxy(DG_CASTER_PROXY, room, &short_descr)
     else {
         cx.host.script_log("dg_cast: Cannot load the caster mob!");
         return;
@@ -355,7 +360,7 @@ pub fn do_dg_affect<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, cmd: &str) {
     };
 
     if str_eq(&value_p, "off") {
-        cx.host.magic_remove_dg_affects(ch);
+        cx.host.magic_remove_dg_affects(ch, SPELL_DG_AFFECT);
         return;
     }
 
@@ -364,12 +369,12 @@ pub fn do_dg_affect<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, cmd: &str) {
         Property::Apply(index) => {
             let location = i32::try_from(index).unwrap_or(0);
             cx.host
-                .magic_add_dg_affect(ch, location, value, duration, None);
+                .magic_add_dg_affect(ch, SPELL_DG_AFFECT, location, value, duration, None);
         }
         Property::Affect(index) => {
             let bit = u32::try_from(index).unwrap_or(0);
             cx.host
-                .magic_add_dg_affect(ch, 0, value, duration, Some(bit));
+                .magic_add_dg_affect(ch, SPELL_DG_AFFECT, 0, value, duration, Some(bit));
         }
     }
 }
@@ -415,6 +420,9 @@ mod tests {
         );
         host.add_spell("sanctuary", SANCTUARY, TAR_CHAR_ROOM | TAR_SELF_ONLY, 0);
         host.add_spell("armor", ARMOR, TAR_CHAR_ROOM, 0);
+        host.globals
+            .texts
+            .insert("mobproto:1".to_owned(), "Puff".to_owned());
         host.add_spell(
             "identify",
             IDENTIFY,
@@ -695,7 +703,7 @@ mod tests {
     #[test]
     fn a_proxy_that_cannot_load_is_logged() {
         let mut w = world();
-        w.host.globals.nums.insert("no_caster_proxy".to_owned(), 1);
+        w.host.globals.texts.remove("mobproto:1");
         let room = w.room;
         run(&mut w, room, AttachType::Wld, |cx| {
             do_dg_cast(cx, "dg_cast 'earthquake'");
@@ -718,6 +726,26 @@ mod tests {
     fn affect(w: &mut World, cmd: &str) {
         let mob = w.mob;
         run(w, mob, AttachType::Mob, |cx| do_dg_affect(cx, cmd));
+    }
+
+    #[test]
+    fn tables_equal_the_c_lists() {
+        let apply = "NONE STR DEX INT WIS CON CHA CLASS LEVEL AGE CHAR_WEIGHT CHAR_HEIGHT MAXMANA MAXHIT MAXMOVE GOLD EXP ARMOR HITROLL DAMROLL SAVING_PARA SAVING_ROD SAVING_PETRI SAVING_BREATH SAVING_SPELL";
+        assert_eq!(APPLY_TYPES.join(" "), apply);
+        let bits = " BLIND INVIS DET-ALIGN DET-INVIS DET-MAGIC SENSE-LIFE WATWALK SANCT GROUP CURSE INFRA POISON PROT-EVIL PROT-GOOD SLEEP NO_TRACK FLY SCUBA SNEAK HIDE UNUSED CHARM";
+        assert_eq!(AFFECTED_BITS.join(" "), bits);
+    }
+
+    #[test]
+    fn fill_words_stay_in_dg_affect() {
+        // half_chop, not one_argument: "the" is the target name.
+        let mut w = world();
+        affect(&mut w, "dg_affect the guard str 1 5");
+        assert!(w.host.effects.is_empty());
+        assert_eq!(
+            w.host.logs,
+            vec!["Trigger: trigger 9, VNum 9. dg_affect: unknown property 'guard'!"]
+        );
     }
 
     #[test]
@@ -782,11 +810,14 @@ mod tests {
     #[test]
     fn off_removes_the_dg_affects() {
         let mut w = world();
-        affect(&mut w, "dg_affect bob str 3 4");
+        affect(&mut w, "dg_affect bob sanct 1 4");
+        assert_eq!(w.host.num(w.bob, "spell:298"), 1);
+        assert_eq!(w.host.num(w.bob, "aff:8"), 1);
         affect(&mut w, "dg_affect bob str OFF 1");
         assert_eq!(w.host.effects.len(), 2);
         assert_eq!(w.host.effects[1], format!("affect_from_char {}", w.bob));
-        assert_eq!(w.host.num(w.bob, "dg_affects"), 0);
+        assert_eq!(w.host.num(w.bob, "spell:298"), 0);
+        assert_eq!(w.host.num(w.bob, "aff:8"), 0);
     }
 
     #[test]

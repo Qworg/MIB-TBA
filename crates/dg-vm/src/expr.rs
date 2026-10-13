@@ -11,9 +11,12 @@
 //!
 //! - An unbalanced `(` whose last byte is part of a multi-byte character
 //!   drops the whole character where the C drops one byte of it (a `String`
-//!   cannot hold half a character).
-//! - A line that is just `(` evaluates to the empty string; the C reads the
-//!   buffer past the terminator there.
+//!   cannot hold half a character). This can change truthiness: `(\u{e9}` is
+//!   the empty string (false) here, and the lone byte `0xC3` (true) in the C;
+//!   `!(\u{e9}` is `1` here and `0` in the C.
+//! - Expressions nest at most [`MAX_DEPTH`] levels deep. Deeper input is
+//!   refused (logged, empty result) where the C recurses up to its 511-byte
+//!   limit; the VM must not overflow the stack of whatever thread runs it.
 //! - `INT_MIN / -1` wraps instead of trapping, and `*`, `+`, `-` wrap as C
 //!   `int` arithmetic does in practice.
 //! - [`eval_op`] with an operator not in the table yields the empty string;
@@ -24,10 +27,24 @@ use crate::cstr::{atoi, is_num, is_space, matching_paren, matching_quote, one_ar
 use crate::cstr::{skip_spaces, str_cmp, str_str};
 use crate::host::{Cx, DgHost};
 use crate::subst::var_subst;
+use crate::types::MAX_INPUT_LENGTH;
 
-/// `MAX_INPUT_LENGTH` (`structs.h`): the buffer size every expression buffer
-/// shares.
-pub const MAX_INPUT_LENGTH: usize = 512;
+/// The deepest `eval_expr` nesting accepted (see the module deviations).
+pub const MAX_DEPTH: usize = 256;
+
+thread_local! {
+    /// Current `eval_expr` nesting on this thread.
+    static DEPTH: std::cell::Cell<usize> = const { std::cell::Cell::new(0) };
+}
+
+/// Decrements [`DEPTH`] when an `eval_expr` level ends.
+struct DepthGuard;
+
+impl Drop for DepthGuard {
+    fn drop(&mut self) {
+        DEPTH.with(|depth| depth.set(depth.get().saturating_sub(1)));
+    }
+}
 
 /// The operators in priority order (`eval_lhs_op_rhs`'s `ops[]`). The order
 /// matters: `!=` must precede `!`, and `/=` must precede `/`.
@@ -40,6 +57,15 @@ const OPS: &[&str] = &[
 /// An expression of `MAX_INPUT_LENGTH` bytes or more is refused (logged) and
 /// evaluates to the empty string, which reads as false.
 pub fn eval_expr<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
+    let level = DEPTH.with(|depth| {
+        depth.set(depth.get().saturating_add(1));
+        depth.get()
+    });
+    let _guard = DepthGuard;
+    if level > MAX_DEPTH {
+        cx.log(&format!("Expression nested over {MAX_DEPTH} levels deep."));
+        return String::new();
+    }
     let line = line.trim_start_matches(is_space);
 
     if line.len() >= MAX_INPUT_LENGTH {
@@ -197,7 +223,11 @@ pub fn process_eval<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, cmd: &str) {
 
     let value = eval_expr(cx, expr);
     let context = cx.context();
-    cx.trig.vars.add_var(&name, &value, context);
+    if !cx.trig.vars.add_var(&name, &value, context) {
+        // The C logs this to the syslog; there is no such primitive.
+        cx.host
+            .script_log(&format!("add_var() : Attempt to add illegal var: {name}"));
+    }
 }
 
 #[cfg(test)]
@@ -413,6 +443,57 @@ mod tests {
     }
 
     #[test]
+    fn an_unbalanced_paren_ending_in_a_multibyte_character_loses_it() {
+        // Documented deviation: the C keeps the lone byte 0xC3 (true).
+        assert_eq!(eval("(\u{e9}"), "");
+        assert!(!truth("(\u{e9}"));
+        assert_eq!(eval("!(\u{e9}"), "1");
+        assert_eq!(eval("(abc\u{e9}"), "abc");
+    }
+
+    #[test]
+    fn the_length_limit_is_measured_after_leading_whitespace() {
+        let exact = "9".repeat(MAX_INPUT_LENGTH - 1);
+        assert_eq!(eval(&format!("   {exact}")), exact);
+    }
+
+    #[test]
+    fn nesting_is_bounded() {
+        // Past MAX_DEPTH the expression is refused; the maximal 511-byte
+        // input must not overflow a small stack.
+        let max = format!("{}1", "!".repeat(MAX_INPUT_LENGTH - 2));
+        let result = std::thread::Builder::new()
+            .stack_size(512 * 1024)
+            .spawn(move || with_cx(&[], |cx| (eval_expr(cx, &max), cx.host.logs.len())))
+            .unwrap()
+            .join()
+            .unwrap();
+        assert!(result.1 >= 1);
+        let ok = format!("{}1", "!".repeat(MAX_DEPTH - 2));
+        assert!(!eval(&ok).is_empty());
+    }
+
+    #[test]
+    fn eval_with_an_illegal_name_logs() {
+        let mut host = MockHost::new();
+        let mob = host.add_mob(1, "a mob");
+        let proto = host.add_proto(7, AttachType::Mob, "g", 100, "", "say hi");
+        let mut trig = TrigInstance::new(1, proto);
+        let mut cx = Cx {
+            host: &mut host,
+            owner: mob,
+            attach: AttachType::Mob,
+            trig: &mut trig,
+        };
+        process_eval(&mut cx, "eval a.b 1 + 1");
+        assert!(trig.vars.vars.is_empty());
+        assert_eq!(
+            host.logs,
+            vec!["add_var() : Attempt to add illegal var: a.b"]
+        );
+    }
+
+    #[test]
     fn over_long_non_ascii_expression_logs_without_splitting_a_character() {
         // 60 bytes land in the middle of a two-byte character.
         let long = format!("{}{}", "a".repeat(59), "\u{e9}".repeat(300));
@@ -459,9 +540,9 @@ mod tests {
             let _ = eval(text);
             let _ = truth(text);
         }
-        let deep = format!("{}1{}", "(".repeat(250), ")".repeat(250));
+        let deep = format!("{}1{}", "(".repeat(120), ")".repeat(120));
         assert_eq!(eval(&deep), "1");
-        let bangs = format!("{}1", "!".repeat(400));
+        let bangs = format!("{}1", "!".repeat(200));
         assert_eq!(eval(&bangs), "1");
     }
 
