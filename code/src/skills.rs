@@ -95,6 +95,7 @@ use crate::combat::{
     combat_dice,
 };
 use crate::content::{NpcBehaviour, Position, TbaClassDef, TbaItemKind};
+use crate::dg::intake::commands::{DgClaimed, is_claimed};
 use crate::module::TbaContent;
 use crate::party::TbaFollowing;
 
@@ -428,6 +429,7 @@ pub struct SkillQueries<'w, 's> {
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn handle_skill_commands(
     mut reader: MessageReader<CommandReceived>,
+    claimed: Option<Res<DgClaimed>>,
     sessions: Query<&Session>,
     mut combatants: Query<&mut TbaCombatant>,
     mut memories: Query<&mut TbaAttackerMemory>,
@@ -449,6 +451,9 @@ pub fn handle_skill_commands(
             .map(|session| session.state == SessionState::Playing)
             .unwrap_or(false);
         if !playing {
+            continue;
+        }
+        if is_claimed(claimed.as_deref(), msg.id) {
             continue;
         }
         let PlayerInput::RawLine(line) = &msg.input else {

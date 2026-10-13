@@ -30,6 +30,7 @@ use mib_stdlib::prelude::{CarriedBy, Item, Location, Npc, Player, Session, Sessi
 use crate::combat::commands::text;
 use crate::combat::{TbaCombatant, TbaProgress};
 use crate::content::Position;
+use crate::dg::intake::commands::{DgClaimed, is_claimed};
 use crate::module::TbaContent;
 
 /// Circle's exact refusal for an unknown social (`do_action`, `act.social.c`).
@@ -541,6 +542,7 @@ fn list_socials(
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn handle_social_commands(
     mut reader: MessageReader<CommandReceived>,
+    claimed: Option<Res<DgClaimed>>,
     sessions: Query<&Session>,
     players: Query<(Entity, &Player, &Location)>,
     npcs: Query<(Entity, &Npc, &Location)>,
@@ -561,6 +563,9 @@ pub fn handle_social_commands(
             .map(|session| session.state == SessionState::Playing)
             .unwrap_or(false);
         if !playing {
+            continue;
+        }
+        if is_claimed(claimed.as_deref(), msg.id) {
             continue;
         }
         let PlayerInput::RawLine(line) = &msg.input else {

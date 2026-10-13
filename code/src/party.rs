@@ -40,6 +40,7 @@ use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{Location, Player, Session, SessionState};
 
 use crate::combat::commands::{deny, text};
+use crate::dg::intake::commands::{DgClaimed, is_claimed};
 
 /// A party: a leader and the full member set (the leader is always a member).
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -314,6 +315,7 @@ fn would_loop(chain: &HashMap<Entity, Entity>, actor: Entity, target: Entity) ->
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn handle_party_commands(
     mut reader: MessageReader<CommandReceived>,
+    claimed: Option<Res<DgClaimed>>,
     sessions: Query<&Session>,
     players: Query<(Entity, &Player, &Location)>,
     mut parties: ResMut<TbaParties>,
@@ -328,6 +330,9 @@ pub fn handle_party_commands(
             .map(|session| session.state == SessionState::Playing)
             .unwrap_or(false);
         if !playing {
+            continue;
+        }
+        if is_claimed(claimed.as_deref(), msg.id) {
             continue;
         }
         let PlayerInput::RawLine(line) = &msg.input else {

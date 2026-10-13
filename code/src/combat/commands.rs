@@ -22,6 +22,7 @@ use mib_stdlib::prelude::{
 };
 
 use crate::content::Position;
+use crate::dg::intake::commands::{DgClaimed, is_claimed};
 
 use super::ai::TbaAttackerMemory;
 use super::model::{TbaCombatant, TbaHidden};
@@ -160,6 +161,7 @@ pub(crate) fn broadcast(
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn handle_combat_commands(
     mut reader: MessageReader<CommandReceived>,
+    claimed: Option<Res<DgClaimed>>,
     sessions: Query<&Session>,
     players: Query<(Entity, &Player, &Location)>,
     npcs: Query<(Entity, &Npc, &Location)>,
@@ -179,6 +181,9 @@ pub fn handle_combat_commands(
             .map(|session| session.state == SessionState::Playing)
             .unwrap_or(false);
         if !playing {
+            continue;
+        }
+        if is_claimed(claimed.as_deref(), msg.id) {
             continue;
         }
         let command = match &msg.input {
