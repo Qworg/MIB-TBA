@@ -16,16 +16,21 @@
 //! `TbaBuffs`, so a write to one of its derived fields (maxima, rolls, saves,
 //! abilities) would last one frame. The setters that take such a field write
 //! it (so a read in the same frame agrees) *and* the difference from what the
-//! rebuild would give into a permanent `TbaBuffs` entry
-//! ([`TbaCharExtras::adjust`] remembers it), which the rebuild keeps applying
-//! and the save keeps. An NPC's `TbaCombatant` is only rebuilt for an equipped
-//! NPC, from `TbaNpcBase`; its setters write both.
+//! rebuild would give into a pinned permanent-adjustment `TbaBuffs` entry
+//! ([`crate::spells::ActiveBuff::pinned`]: a cast never replaces it, the
+//! rebuild keeps applying it and the save keeps it; the base value a script
+//! reads back is derived from it). An NPC's `TbaCombatant` is only rebuilt for
+//! an equipped NPC, from `TbaNpcBase`; its setters write the combatant and add
+//! the same difference to the base.
 //!
-//! # Facts that cannot be logged
+//! # Facts that cannot be logged at once
 //!
-//! `BaseHost::unsupported` needs `&mut self`, so only setters (and
-//! `char_affect_total`) report a gap. A read of an unmodelled fact answers the
-//! neutral value from `HOST.md` silently.
+//! `BaseHost::unsupported` needs `&mut self`, so a read of an unmodelled fact
+//! (sex, weight, preference flags, `str_add`, quest completion) answers the
+//! neutral value from `HOST.md` and counts itself in [`TbaUnmodelledReads`];
+//! the counts reach `DgLog` at the next mutable call this host makes. The
+//! resource is created by that first mutable call, so reads before it go
+//! uncounted unless the runtime creates it at start.
 
 #[path = "../chardata.rs"]
 pub mod chardata;
@@ -34,7 +39,7 @@ use bevy::ecs::change_detection::Ref;
 use dg_vm::fields_char::{CharAbil, CharFact, CharHost, CharStat};
 use dg_vm::{BaseHost, Uid};
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{Item, Npc, NpcBehaviors, Player};
+use mib_stdlib::prelude::{Item, Npc, NpcBehaviors, Player, PlayerQuestLog, QuestId, QuestIndex};
 
 use super::EcsHost;
 use super::magic::spell_info;
@@ -46,8 +51,10 @@ use crate::content::{AffectDef, AffectLocation, NpcBehaviour, Position, TbaItemD
 use crate::equipment::{TbaEquipment, recompute_combatant_full};
 use crate::party::TbaFollowing;
 use crate::skills::{SKILL_LEARNED, skill_min_level};
-use crate::spells::{ActiveBuff, TbaBuffs};
-use chardata::{TbaActFlags, TbaCharExtras, TbaDgAffects, TbaDummyMob, TbaNpcPurse};
+use crate::spells::{ActiveBuff, PINNED_FOREVER, TbaBuffs};
+use chardata::{
+    TbaActFlags, TbaCharExtras, TbaDgAffects, TbaDummyMob, TbaNpcPurse, TbaUnmodelledReads,
+};
 
 /// `MAX_GOLD`: the most gold a character holds.
 const MAX_GOLD: i64 = 2_140_000_000;
@@ -57,12 +64,10 @@ const MAX_EXP_GAIN: i32 = 100_000;
 const MAX_EXP_LOSS: i32 = 500_000;
 /// `LVL_IMMORT`: `gain_exp` neither levels nor touches a character from here.
 const LVL_IMMORT: i32 = 31;
-/// Rounds a permanent buff starts with. Rounds count down, so anything above
-/// half of this is read as permanent.
-pub(super) const PERMANENT_ROUNDS: u32 = u32::MAX;
-/// Pulses in one combat round (`ROUND_SECONDS` of three seconds at ten pulses
-/// per second).
-pub(super) const ROUND_PULSES: i64 = 30;
+/// Pulses per second of the script clock.
+const PULSES_PER_SECOND: f32 = 10.0;
+/// Pulses in one combat round.
+pub(super) const ROUND_PULSES: i64 = (crate::combat::ROUND_SECONDS * PULSES_PER_SECOND) as i64;
 /// `MOB_ISNPC`.
 const MOB_ISNPC: u32 = 3;
 
@@ -140,29 +145,6 @@ fn class_number(class: &str) -> i32 {
         .position(|id| *id == key)
         .and_then(|index| i32::try_from(index).ok())
         .unwrap_or(-1)
-}
-
-/// The `APPLY_*` number of an affect location, as `dg_affect` names it.
-pub(super) fn apply_number(location: AffectLocation) -> i32 {
-    match location {
-        AffectLocation::Str => 1,
-        AffectLocation::Dex => 2,
-        AffectLocation::Int => 3,
-        AffectLocation::Wis => 4,
-        AffectLocation::Con => 5,
-        AffectLocation::Cha => 6,
-        AffectLocation::MaxMana => 12,
-        AffectLocation::MaxHp => 13,
-        AffectLocation::MaxMove => 14,
-        AffectLocation::ArmorClass => 17,
-        AffectLocation::Hitroll => 18,
-        AffectLocation::Damroll => 19,
-        AffectLocation::SavePara => 20,
-        AffectLocation::SaveRod => 21,
-        AffectLocation::SavePetri => 22,
-        AffectLocation::SaveBreath => 23,
-        AffectLocation::SaveSpell => 24,
-    }
 }
 
 /// The affect location of an `APPLY_*` number; `None` for the ones the pack
@@ -248,11 +230,6 @@ fn abil_location(abil: CharAbil) -> Option<AffectLocation> {
         CharAbil::Cha => AffectLocation::Cha,
         CharAbil::StrAdd => return None,
     })
-}
-
-/// A buff rounds count is permanent while it stays above half the range.
-pub(super) fn is_permanent(rounds: u32) -> bool {
-    rounds > PERMANENT_ROUNDS / 2
 }
 
 /// `AWAKE(ch)`: above `POS_SLEEPING`.
@@ -398,6 +375,7 @@ impl EcsHost<'_> {
 
     /// Store a derived statistic so it lasts. See the module docs.
     fn write_derived(&mut self, entity: Entity, location: AffectLocation, value: i32) {
+        self.flush_reads();
         let Some(current) = self
             .world
             .get::<TbaCombatant>(entity)
@@ -412,30 +390,25 @@ impl EcsHost<'_> {
         if let Some(mut combatant) = self.world.get_mut::<TbaCombatant>(entity) {
             *derived_field(&mut combatant, location) = value;
         }
+        let delta = value.saturating_sub(current);
         if self.is_npc_entity(entity) {
+            // The rebuild adds the worn items to the base, so the base takes
+            // the difference, not the affected value.
             if let Some(mut base) = self.world.get_mut::<TbaNpcBase>(entity) {
-                *derived_field(&mut base.0, location) = value;
+                let field = derived_field(&mut base.0, location);
+                *field = field.saturating_add(delta);
             }
             return;
         }
-        self.adjust_permanent(entity, location, value.saturating_sub(current));
+        self.adjust_permanent(entity, location, delta);
     }
 
     /// Add `delta` to the permanent adjustment of a derived statistic: the
-    /// `TbaBuffs` entry that keeps the rebuild from undoing a script's write.
+    /// pinned `TbaBuffs` entry that keeps the rebuild from undoing a script's
+    /// write.
     fn adjust_permanent(&mut self, entity: Entity, location: AffectLocation, delta: i32) {
         if delta == 0 {
             return;
-        }
-        let apply = apply_number(location);
-        let old = self.extras(entity).adjust.get(&apply).copied().unwrap_or(0);
-        let new = old.saturating_add(delta);
-        if let Some(mut extras) = self.extras_mut(entity) {
-            if new == 0 {
-                extras.adjust.remove(&apply);
-            } else {
-                extras.adjust.insert(apply, new);
-            }
         }
         if self.world.get::<TbaBuffs>(entity).is_none() {
             self.world.entity_mut(entity).insert(TbaBuffs::default());
@@ -443,40 +416,63 @@ impl EcsHost<'_> {
         let Some(mut buffs) = self.world.get_mut::<TbaBuffs>(entity) else {
             return;
         };
-        let held = AffectDef {
-            location,
-            modifier: old,
-        };
         let slot = buffs
             .buffs
             .iter()
-            .position(|buff| is_permanent(buff.rounds_left) && buff.affect == held);
-        match (slot, new) {
-            (Some(index), 0) => {
-                buffs.buffs.remove(index);
-            }
-            (Some(index), _) => {
-                if let Some(buff) = buffs.buffs.get_mut(index) {
+            .position(|buff| buff.is_adjustment() && buff.affect.location == location);
+        match slot {
+            Some(index) => {
+                let new = buffs
+                    .buffs
+                    .get(index)
+                    .map_or(delta, |buff| buff.affect.modifier.saturating_add(delta));
+                if new == 0 {
+                    buffs.buffs.remove(index);
+                } else if let Some(buff) = buffs.buffs.get_mut(index) {
                     buff.affect.modifier = new;
                 }
             }
-            (None, 0) => {}
-            (None, _) => buffs.buffs.push(ActiveBuff {
-                affect: AffectDef {
+            None => buffs.buffs.push(ActiveBuff::pinned(
+                AffectDef {
                     location,
-                    modifier: new,
+                    modifier: delta,
                 },
-                rounds_left: PERMANENT_ROUNDS,
-            }),
+                PINNED_FOREVER,
+                true,
+            )),
         }
     }
 
     /// The permanent adjustment scripts made to a derived statistic.
     fn permanent_adjustment(&self, entity: Entity, location: AffectLocation) -> i32 {
-        self.world
-            .get::<TbaCharExtras>(entity)
-            .and_then(|extras| extras.adjust.get(&apply_number(location)).copied())
-            .unwrap_or(0)
+        self.world.get::<TbaBuffs>(entity).map_or(0, |buffs| {
+            buffs
+                .buffs
+                .iter()
+                .filter(|buff| buff.is_adjustment() && buff.affect.location == location)
+                .fold(0, |sum, buff| sum.saturating_add(buff.affect.modifier))
+        })
+    }
+
+    /// Count a read of a fact the pack does not model, if the counter exists.
+    pub(super) fn note_read(&self, key: &'static str, detail: &'static str) {
+        if let Some(reads) = self.world.get_resource::<TbaUnmodelledReads>() {
+            reads.note(key, detail);
+        }
+    }
+
+    /// Move the counted unmodelled reads into `DgLog`, creating the counter
+    /// when it is not there yet.
+    pub(super) fn flush_reads(&mut self) {
+        let taken = self
+            .world
+            .get_resource_or_insert_with(TbaUnmodelledReads::default)
+            .take();
+        for (key, detail, count) in taken {
+            for _ in 0..count.min(1000) {
+                self.unsupported(key, detail);
+            }
+        }
     }
 
     /// The act-array bit a prototype and the engine's behaviour flags give an
@@ -498,8 +494,8 @@ impl EcsHost<'_> {
         prototype || engine
     }
 
-    /// `affect_total` for the stat reads: the pack affects of a player's
-    /// buffs. Whether a live dg affect still counts is not asked here.
+    /// `GET_SKILL` of a character: a script's percentage, else the class
+    /// grant (see [`CharHost::char_skill`]).
     fn skill_value(&self, entity: Entity, skill: i32) -> i32 {
         if self.is_npc_entity(entity) {
             return self
@@ -558,7 +554,11 @@ impl CharHost for EcsHost<'_> {
             CharStat::Hit => combatant.map_or(0, |combatant| combatant.hp),
             CharStat::Mana => combatant.map_or(0, |combatant| combatant.mana),
             CharStat::Move => combatant.map_or(0, |combatant| combatant.move_points),
-            CharStat::Sex | CharStat::WaitState => 0,
+            CharStat::Sex => {
+                self.note_read("char_sex", "the pack models no sex");
+                0
+            }
+            CharStat::WaitState => 0,
             CharStat::Class => self
                 .world
                 .get::<TbaProgress>(entity)
@@ -597,7 +597,10 @@ impl CharHost for EcsHost<'_> {
         match fact {
             CharFact::Gold => self.purse(entity).0,
             CharFact::Exp => self.purse(entity).1,
-            CharFact::Weight => 0,
+            CharFact::Weight => {
+                self.note_read("char_weight", "the pack models no character weight");
+                0
+            }
         }
     }
 
@@ -607,6 +610,7 @@ impl CharHost for EcsHost<'_> {
     /// points and conditions go to the character's extras (the shared record
     /// for an NPC). Sex and the wait state are not modelled and are logged.
     fn char_set_stat(&mut self, ch: Uid, stat: CharStat, value: i32) {
+        self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
@@ -652,10 +656,13 @@ impl CharHost for EcsHost<'_> {
     }
 
     /// A player's level is `TbaProgress.level`, which the next recompute
-    /// builds the vitals from and the kill reward never lowers. An NPC's level
-    /// is its prototype's; `WorldHost::level` cannot see an override, so the
-    /// write is logged and dropped.
+    /// builds the vitals from and the kill reward never lowers. The pack has
+    /// no level 0 (its vitals and saves are tabulated from level 1), so 0 is
+    /// stored as 1 where the C stores 0. An NPC's level is its prototype's;
+    /// `WorldHost::level` cannot see an override, so the write is logged and
+    /// dropped.
     fn char_set_level(&mut self, ch: Uid, level: i32) {
+        self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
@@ -672,7 +679,11 @@ impl CharHost for EcsHost<'_> {
     /// `aff_abils`: the combatant's attributes, base 13 plus worn items and
     /// buffs. `str_add` is not modelled: 0.
     fn char_abil(&self, ch: Uid, abil: CharAbil) -> i32 {
-        let (Some(entity), Some(location)) = (self.character(ch), abil_location(abil)) else {
+        let Some(location) = abil_location(abil) else {
+            self.note_read("char_str_add", "the pack models no exceptional strength");
+            return 0;
+        };
+        let Some(entity) = self.character(ch) else {
             return 0;
         };
         self.world
@@ -683,7 +694,11 @@ impl CharHost for EcsHost<'_> {
     /// `real_abils`: the attribute without affects. The pack gives every
     /// character the baseline 13; a script's `char_set_real_abil` moves it.
     fn char_real_abil(&self, ch: Uid, abil: CharAbil) -> i32 {
-        let (Some(entity), Some(location)) = (self.character(ch), abil_location(abil)) else {
+        let Some(location) = abil_location(abil) else {
+            self.note_read("char_str_add", "the pack models no exceptional strength");
+            return 0;
+        };
+        let Some(entity) = self.character(ch) else {
             return 0;
         };
         if self.world.get::<TbaCombatant>(entity).is_none() {
@@ -704,6 +719,7 @@ impl CharHost for EcsHost<'_> {
     /// ability moves with it), an NPC's in both its combatant and its base.
     /// `str_add` is not modelled and is logged.
     fn char_set_real_abil(&mut self, ch: Uid, abil: CharAbil, value: i32) {
+        self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
@@ -749,6 +765,7 @@ impl CharHost for EcsHost<'_> {
     /// rebuild: its buffs do not count in the pack (the recompute for NPCs
     /// passes none), which is logged when it carries any.
     fn char_affect_total(&mut self, ch: Uid) {
+        self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
@@ -784,10 +801,16 @@ impl CharHost for EcsHost<'_> {
         armor.max(-100)
     }
 
-    /// `update_pos`. The pack keeps no hit points below zero for a player (the
-    /// rebuild clamps them), so below -11 is the only `POS_DEAD` it can show
-    /// for a value a script just wrote.
+    /// `update_pos`, mapped to the pack's death rule. The C leaves a
+    /// character at 0 to -10 hit points stunned, incapacitated or mortally
+    /// wounded and bleeds it out; the pack has none of those states (its
+    /// recompute clamps hit points at zero, nothing regenerates or bleeds a
+    /// downed character, and `heal` refuses one), so any hit point count at or
+    /// below zero is `Position::Dead`, which is what the pack's own damage
+    /// does at zero. A script's damage then reaches `cmd_die`. A positive
+    /// count stands a character up who was dead or down, as the C does.
     fn char_update_pos(&mut self, ch: Uid) {
+        self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
@@ -798,17 +821,12 @@ impl CharHost for EcsHost<'_> {
         if hit > 0 && combatant.position > Position::Stunned {
             return;
         }
-        combatant.position = if hit > 0 {
-            Position::Standing
-        } else if hit <= -11 {
-            Position::Dead
-        } else if hit <= -6 {
-            Position::MortallyWounded
-        } else if hit <= -3 {
-            Position::Incapacitated
-        } else {
-            Position::Stunned
-        };
+        if hit > 0 {
+            combatant.position = Position::Standing;
+        } else if combatant.position != Position::Dead {
+            combatant.position = Position::Dead;
+            combatant.target = None;
+        }
     }
 
     /// `gain_exp`: an NPC's experience just changes; a player's is capped per
@@ -817,10 +835,12 @@ impl CharHost for EcsHost<'_> {
     /// "You rise a level!" line. The title reset, the mudlog line and the happy
     /// hour are not modelled.
     fn char_gain_exp(&mut self, ch: Uid, gain: i32) {
+        self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
         if self.is_npc_entity(entity) {
+            self.note_npc_purse(entity);
             let (gold, exp) = self.purse(entity);
             self.world.entity_mut(entity).insert(TbaNpcPurse {
                 gold,
@@ -862,12 +882,18 @@ impl CharHost for EcsHost<'_> {
         }
     }
 
-    /// `increase_gold`: clamped to `0..=MAX_GOLD`. A player's purse is
-    /// `TbaGold`; an NPC's is its [`TbaNpcPurse`].
+    /// `increase_gold`: clamped to `0..=MAX_GOLD`, with the C's line when a
+    /// player reaches the maximum. A player's purse is `TbaGold`; an NPC's is
+    /// its [`TbaNpcPurse`], which the kill reward does not read (logged on the
+    /// first change).
     fn char_increase_gold(&mut self, ch: Uid, amt: i32) {
+        self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
+        if self.is_npc_entity(entity) {
+            self.note_npc_purse(entity);
+        }
         let (gold, exp) = self.purse(entity);
         let next = (i64::from(gold) + i64::from(amt)).clamp(0, MAX_GOLD);
         let next = i32::try_from(next).unwrap_or(i32::MAX);
@@ -879,6 +905,18 @@ impl CharHost for EcsHost<'_> {
             self.world
                 .entity_mut(entity)
                 .insert(TbaGold(u32::try_from(next).unwrap_or(0)));
+            if i64::from(next) == MAX_GOLD {
+                crate::dg::out::send_to_char(
+                    self.world,
+                    entity,
+                    "You have reached the maximum gold!",
+                );
+                crate::dg::out::send_to_char(
+                    self.world,
+                    entity,
+                    "You must spend it or bank it before you can gain any more.",
+                );
+            }
         }
     }
 
@@ -930,9 +968,7 @@ impl CharHost for EcsHost<'_> {
         self.uid(head?.0)
     }
 
-    /// `affected_by_spell`: a live script affect of that spell number, a
-    /// buff equal to the pack spell's affect (buffs carry no spell tag), or
-    /// the true sight a detect spell grants.
+    /// `affected_by_spell`: see [`EcsHost::affected_by`].
     fn char_affected_by_spell(&self, ch: Uid, spell: i32) -> bool {
         let Some(entity) = self.character(ch) else {
             return false;
@@ -954,6 +990,7 @@ impl CharHost for EcsHost<'_> {
     /// `SET_SKILL`: stored per character (the shared record for an NPC), over
     /// the class grant.
     fn char_set_skill(&mut self, ch: Uid, skill: i32, value: i32) {
+        self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
@@ -984,11 +1021,13 @@ impl CharHost for EcsHost<'_> {
         self.is_npc_entity(entity) && self.npc_act_base(entity, bit)
     }
 
-    /// Records the change on the character. On an NPC the engine's sentinel,
-    /// scavenger and wimpy flags follow it, which the engine's behaviour
-    /// systems act on; every other bit is stored and read back but nothing in
-    /// the pack acts on it (its AI reads the prototype), which is logged.
+    /// Records the change on the character. On an NPC the engine's scavenger
+    /// flag follows it, and its sentinel flag where the NPC wanders (the
+    /// engine's wander system is the only reader); every other bit is stored
+    /// and read back but nothing in the pack acts on it (its AI reads the
+    /// prototype, and nothing reads the wimpy flag), which is logged.
     fn char_set_act_flag(&mut self, ch: Uid, bit: u32, on: bool) {
+        self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
@@ -1005,15 +1044,24 @@ impl CharHost for EcsHost<'_> {
             flags.cleared.insert(bit);
         }
         self.world.entity_mut(entity).insert(flags);
-        let engine = self.is_npc_entity(entity) && matches!(bit, 1 | 2 | 7);
-        if engine && let Some(mut behaviours) = self.world.get_mut::<NpcBehaviors>(entity) {
+        let mut acted = false;
+        if self.is_npc_entity(entity)
+            && let Some(mut behaviours) = self.world.get_mut::<NpcBehaviors>(entity)
+        {
             match bit {
-                1 => behaviours.0.sentinel = on,
-                2 => behaviours.0.scavenger = on,
-                _ => behaviours.0.wimpy = on,
+                2 => {
+                    behaviours.0.scavenger = on;
+                    acted = true;
+                }
+                1 => {
+                    behaviours.0.sentinel = on;
+                    acted = behaviours.0.wander;
+                }
+                7 => behaviours.0.wimpy = on,
+                _ => {}
             }
         }
-        if !engine {
+        if !acted {
             self.unsupported(
                 "char_act_flag_inert",
                 &format!("act bit {bit} is recorded but no pack system reads it"),
@@ -1023,6 +1071,7 @@ impl CharHost for EcsHost<'_> {
 
     /// The pack keeps no preferences: no bit is ever set.
     fn char_pref_flagged(&self, _ch: Uid, _bit: u32) -> bool {
+        self.note_read("char_pref_flags", "the pack keeps no preference flags");
         false
     }
 
@@ -1030,6 +1079,7 @@ impl CharHost for EcsHost<'_> {
     /// reads). A player has no short description of its own and keeps its
     /// name.
     fn char_set_short_descr(&mut self, ch: Uid, text: &str) {
+        self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
@@ -1045,6 +1095,7 @@ impl CharHost for EcsHost<'_> {
     }
 
     fn char_set_title(&mut self, ch: Uid, title: &str) {
+        self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
@@ -1053,21 +1104,60 @@ impl CharHost for EcsHost<'_> {
         }
     }
 
-    /// The pack has no autoquests: always `NOTHING`.
-    fn char_quest(&self, _ch: Uid) -> i32 {
-        -1
+    /// `GET_QUEST`: the vnum of the converted tbaMUD quest (`tba_quest_<vnum>`)
+    /// the player has accepted and not turned in, else `NOTHING`. The C keeps
+    /// one quest per player; the pack's log can hold several, and the lowest
+    /// converted vnum answers.
+    fn char_quest(&self, ch: Uid) -> i32 {
+        let Some(entity) = self.character(ch) else {
+            return -1;
+        };
+        self.world
+            .get::<PlayerQuestLog>(entity)
+            .and_then(|log| {
+                log.quests
+                    .keys()
+                    .filter_map(|id| id.0.strip_prefix(QUEST_PREFIX).and_then(parse_vnum))
+                    .min()
+            })
+            .unwrap_or(-1)
     }
 
-    /// The pack has no autoquest definitions (its quests are keyed by name,
-    /// not by number).
-    fn char_quest_exists(&self, _vnum: i32) -> bool {
-        false
+    /// `real_quest(vnum) != NOTHING`: whether the quest index holds the
+    /// converted quest `tba_quest_<vnum>`.
+    fn char_quest_exists(&self, vnum: i32) -> bool {
+        self.world
+            .get_resource::<QuestIndex>()
+            .is_some_and(|index| {
+                index
+                    .map
+                    .contains_key(&QuestId::from(quest_key(vnum).as_str()))
+            })
     }
 
-    /// The pack has no autoquests: none is ever complete.
+    /// `is_complete`: the pack's turn-in removes the quest from the log and
+    /// keeps no record of it, so a finished quest cannot be told from one never
+    /// taken: always false, counted as a gap.
     fn char_quest_completed(&self, _ch: Uid, _vnum: i32) -> bool {
+        self.note_read(
+            "char_quest_completed",
+            "the pack keeps no record of completed quests",
+        );
         false
     }
+}
+
+/// The id prefix of a quest converted from a tbaMUD `.qst` file.
+const QUEST_PREFIX: &str = "tba_quest_";
+
+/// The quest id string for a vnum.
+fn quest_key(vnum: i32) -> String {
+    format!("{QUEST_PREFIX}{vnum}")
+}
+
+/// A vnum from the digits of a quest id.
+fn parse_vnum(digits: &str) -> Option<i32> {
+    digits.parse().ok()
 }
 
 impl EcsHost<'_> {
@@ -1138,7 +1228,11 @@ impl EcsHost<'_> {
         }
     }
 
-    /// Whether the character is affected by the spell number.
+    /// Whether the character is affected by the spell number: a live script
+    /// affect of it (a numeric one needs its pinned buff on a player), an
+    /// unpinned buff equal to the pack spell's affect (buffs carry no spell
+    /// tag, but a script's pinned buffs never read as a cast spell), or the
+    /// true sight a detect spell grants.
     pub(super) fn affected_by(&self, entity: Entity, spell: i32) -> bool {
         let pulse = self.pulse();
         let player = self.world.get::<Player>(entity).is_some();
@@ -1148,9 +1242,12 @@ impl EcsHost<'_> {
                 mark.spell == spell
                     && mark.expires.is_none_or(|expires| expires > pulse)
                     && match (&mark.numeric, player) {
-                        (Some(affect), true) => {
-                            buffs.is_some_and(|buffs| buffs.affects().any(|a| a == affect))
-                        }
+                        (Some(affect), true) => buffs.is_some_and(|buffs| {
+                            buffs
+                                .buffs
+                                .iter()
+                                .any(|buff| buff.is_pinned() && &buff.affect == affect)
+                        }),
                         _ => true,
                     }
             })
@@ -1165,7 +1262,12 @@ impl EcsHost<'_> {
             return false;
         };
         let by_buff = def.affect.as_ref().is_some_and(|affect| {
-            buffs.is_some_and(|buffs| buffs.affects().any(|held| held == affect))
+            buffs.is_some_and(|buffs| {
+                buffs
+                    .buffs
+                    .iter()
+                    .any(|buff| !buff.is_pinned() && &buff.affect == affect)
+            })
         });
         let by_sight = matches!(info.id, "detect_invis" | "sense_life")
             && self
@@ -1173,5 +1275,16 @@ impl EcsHost<'_> {
                 .get::<crate::stealth::TbaTrueSight>(entity)
                 .is_some();
         by_buff || by_sight
+    }
+
+    /// Log the first script write to an NPC's purse: the kill reward reads the
+    /// prototype's gold and experience, not the purse.
+    fn note_npc_purse(&mut self, entity: Entity) {
+        if self.world.get::<TbaNpcPurse>(entity).is_none() {
+            self.unsupported(
+                "char_npc_purse_reward",
+                "an NPC's changed gold and experience are not what its kill pays",
+            );
+        }
     }
 }

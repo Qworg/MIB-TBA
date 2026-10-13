@@ -66,6 +66,47 @@ pub struct ActiveBuff {
     pub rounds_left: u32,
 }
 
+/// Bit of [`ActiveBuff::rounds_left`] that marks a pinned buff: one a script
+/// owns (a `dg_affect`, or a permanent stat adjustment). A cast never replaces
+/// a pinned buff, and the rounds it counts down are the low bits.
+pub const PINNED_BUFF: u32 = 1 << 31;
+/// Bit of [`ActiveBuff::rounds_left`] that marks a pinned buff as a permanent
+/// stat adjustment (a character's base value moved), not an affect.
+pub const ADJUSTMENT_BUFF: u32 = 1 << 30;
+/// The rounds of a pinned buff that never runs out.
+pub const PINNED_FOREVER: u32 = ADJUSTMENT_BUFF - 1;
+
+impl ActiveBuff {
+    /// A pinned buff of `rounds` rounds (clamped to [`PINNED_FOREVER`]);
+    /// `adjustment` marks a permanent stat adjustment.
+    pub fn pinned(affect: AffectDef, rounds: u32, adjustment: bool) -> Self {
+        let flags = PINNED_BUFF | if adjustment { ADJUSTMENT_BUFF } else { 0 };
+        Self {
+            affect,
+            rounds_left: flags | rounds.clamp(1, PINNED_FOREVER),
+        }
+    }
+
+    /// Whether a script owns this buff.
+    pub fn is_pinned(&self) -> bool {
+        self.rounds_left & PINNED_BUFF != 0
+    }
+
+    /// Whether this is a pinned permanent stat adjustment.
+    pub fn is_adjustment(&self) -> bool {
+        self.is_pinned() && self.rounds_left & ADJUSTMENT_BUFF != 0
+    }
+
+    /// The rounds left, without the pinned flags.
+    pub fn rounds(&self) -> u32 {
+        if self.is_pinned() {
+            self.rounds_left & PINNED_FOREVER
+        } else {
+            self.rounds_left
+        }
+    }
+}
+
 /// A combatant's active buff list, persisted with the player.
 ///
 /// Each entry's `rounds_left` starts at the casting spell's
@@ -93,6 +134,15 @@ impl TbaBuffs {
 pub fn tick_buffs(mut buffs: Query<&mut TbaBuffs>) {
     for mut store in &mut buffs {
         store.buffs.retain_mut(|buff| {
+            if buff.is_pinned() {
+                // A pinned buff that lasts for ever keeps its rounds.
+                let rounds = buff.rounds();
+                if rounds >= PINNED_FOREVER {
+                    return true;
+                }
+                buff.rounds_left = (buff.rounds_left & !PINNED_FOREVER) | (rounds - 1);
+                return rounds > 1;
+            }
             buff.rounds_left = buff.rounds_left.saturating_sub(1);
             buff.rounds_left > 0
         });
@@ -286,7 +336,9 @@ fn add_buff(
     match buffs.get_mut(target) {
         Ok(mut store) => {
             let location = entry.affect.location;
-            store.buffs.retain(|buff| buff.affect.location != location);
+            store
+                .buffs
+                .retain(|buff| buff.is_pinned() || buff.affect.location != location);
             store.buffs.push(entry);
         }
         Err(_) => {
@@ -496,6 +548,8 @@ pub fn handle_cast_command(
             spell,
             room,
             actor_name: &actor_name,
+            caster_hears: true,
+            defer_despawn: false,
         };
         for target in &targets {
             apply_spell_to_target(
@@ -529,6 +583,25 @@ struct Cast<'a> {
     spell: &'a SpellDef,
     room: Option<Entity>,
     actor_name: &'a str,
+    /// Whether the caster is told what happens: false for a script's cast by
+    /// a mob or the room and object proxies, which have no connection.
+    caster_hears: bool,
+    /// Whether a victim that dies is left in the world for the caller to
+    /// extract at the end of the pulse (a script's cast) rather than
+    /// despawned here.
+    defer_despawn: bool,
+}
+
+/// Tell the caster a line, unless it has no connection to hear it.
+fn tell_caster(
+    output: &mut MessageWriter<OutputEvent>,
+    hears: bool,
+    session: Entity,
+    line: String,
+) {
+    if hears {
+        output.write(text(session, line));
+    }
 }
 
 /// Resolve the cast's effect on one target: the saving throw, the damage,
@@ -559,6 +632,8 @@ fn apply_spell_to_target(
         spell,
         room,
         actor_name,
+        caster_hears,
+        defer_despawn,
     } = *cast;
     let spell_name = spell.name.clone();
     let target_name = entity_name(target, players, npcs);
@@ -589,10 +664,12 @@ fn apply_spell_to_target(
             output.write(text(target, format!("You resist the {spell_name}.")));
         }
         if target != session {
-            output.write(text(
+            tell_caster(
+                output,
+                caster_hears,
                 session,
                 format!("{target_name} resists your {spell_name}."),
-            ));
+            );
         }
         if let Some(room) = room {
             broadcast(
@@ -640,10 +717,12 @@ fn apply_spell_to_target(
                 if players.get(target).is_ok() {
                     output.write(text(target, format!("You resist the {spell_name}.")));
                 }
-                output.write(text(
+                tell_caster(
+                    output,
+                    caster_hears,
                     session,
                     format!("{target_name} partially resists your {spell_name}."),
-                ));
+                );
                 if let Some(room) = room {
                     broadcast(
                         players,
@@ -654,10 +733,12 @@ fn apply_spell_to_target(
                     );
                 }
             }
-            output.write(text(
+            tell_caster(
+                output,
+                caster_hears,
                 session,
                 format!("You hit {target_name} for {damage} damage."),
-            ));
+            );
             if let Some(room) = room {
                 broadcast(
                     players,
@@ -680,12 +761,19 @@ fn apply_spell_to_target(
                 combatant.hp = (combatant.hp + amount).min(combatant.max_hp);
             }
             if target == session {
-                output.write(text(session, format!("You heal yourself for {amount}.")));
+                tell_caster(
+                    output,
+                    caster_hears,
+                    session,
+                    format!("You heal yourself for {amount}."),
+                );
             } else {
-                output.write(text(
+                tell_caster(
+                    output,
+                    caster_hears,
                     session,
                     format!("You heal {target_name} for {amount}."),
-                ));
+                );
                 if players.get(target).is_ok() {
                     output.write(text(
                         target,
@@ -702,13 +790,20 @@ fn apply_spell_to_target(
             add_buff(target, affect.clone(), rounds, buffs, commands);
             if spell.kind == SpellKind::Debuff {
                 if target != session {
-                    output.write(text(
+                    tell_caster(
+                        output,
+                        caster_hears,
                         session,
                         format!("{target_name} is afflicted by {spell_name}."),
-                    ));
+                    );
                 }
             } else if target == session {
-                output.write(text(session, format!("You feel the {spell_name} settle.")));
+                tell_caster(
+                    output,
+                    caster_hears,
+                    session,
+                    format!("You feel the {spell_name} settle."),
+                );
             } else if players.get(target).is_ok() {
                 output.write(text(
                     target,
@@ -717,10 +812,12 @@ fn apply_spell_to_target(
             }
         }
         SpellKind::Detect => {
-            output.write(text(
+            tell_caster(
+                output,
+                caster_hears,
                 session,
                 format!("Your senses sharpen with {spell_name}."),
-            ));
+            );
             // True sight (`detect invisibility`, `sense life`) grants the
             // engine `Perception` carrier for the spell's duration so a
             // concealed occupant is perceived through the projection and
@@ -742,10 +839,12 @@ fn apply_spell_to_target(
                 .unsupported
                 .as_deref()
                 .unwrap_or("the Circle routine is not modelled");
-            output.write(text(
+            tell_caster(
+                output,
+                caster_hears,
                 session,
                 format!("You cast {spell_name}, but {reason}."),
-            ));
+            );
         }
     }
 
@@ -790,7 +889,9 @@ fn apply_spell_to_target(
                 gold,
                 alignment,
             });
-            commands.entity(target).despawn();
+            if !defer_despawn {
+                commands.entity(target).despawn();
+            }
         }
     }
 }
@@ -801,7 +902,10 @@ fn apply_spell_to_target(
 /// on `victim` (a `Caster` spell on the caster when none is named); a `Room`
 /// spell lands on everyone in the caster's room, the caster too unless the
 /// spell is hostile; a `None` spell lands on no one. Returns whether the spell
-/// exists.
+/// exists. A caster with no connection (a mob, or the room and object proxies)
+/// is told nothing, and an NPC the spell kills is left in the world (position
+/// dead, `NpcDefeated` written) for the caller to extract at the end of its
+/// pulse; `handle_cast_command` despawns it at once.
 pub fn cast_spell_at_level(
     world: &mut World,
     caster: Entity,
@@ -821,6 +925,7 @@ pub fn cast_spell_at_level(
         Query<'w, 's, &'static mut TbaCombatant>,
         Query<'w, 's, &'static mut TbaBuffs>,
         Query<'w, 's, &'static Location>,
+        Query<'w, 's, &'static Session>,
         Option<Res<'w, TbaContent>>,
         ResMut<'w, TbaRng>,
         Commands<'w, 's>,
@@ -845,6 +950,7 @@ pub fn cast_spell_at_level(
             mut combatants,
             mut buffs,
             locations,
+            sessions,
             content,
             mut rng,
             mut commands,
@@ -896,6 +1002,8 @@ pub fn cast_spell_at_level(
             spell,
             room,
             actor_name: &actor_name,
+            caster_hears: sessions.get(caster).is_ok(),
+            defer_despawn: true,
         };
         for target in targets {
             // A hostile cast is an attack: it breaks stealth, as Circle's

@@ -9,10 +9,13 @@
 //! script's read.
 //!
 //! The components derive serde so they can be registered with the stdlib
-//! `SaveRegistry` under `DocKind::Player`; registration is `module.rs`'s.
-//! Until it is done they last for the life of the entity.
+//! `SaveRegistry` under `DocKind::Player`; registration is `module.rs`'s and
+//! needs this module re-exported from `dg::host`. Until it is done they last
+//! for the life of the entity. (A character's permanent stat adjustments are
+//! not here: they are pinned entries of `TbaBuffs`, which is saved.)
 
 use std::collections::{BTreeMap, BTreeSet};
+use std::sync::Mutex;
 
 use mib_core::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -53,11 +56,6 @@ pub struct TbaCharExtras {
     /// number. They win over the class grant.
     #[serde(default)]
     pub skills: BTreeMap<i32, i32>,
-    /// The permanent adjustment scripts made to each derived statistic, by
-    /// `APPLY_*` number: what `TbaBuffs` holds as a permanent entry so the
-    /// recompute keeps applying it.
-    #[serde(default)]
-    pub adjust: BTreeMap<i32, i32>,
 }
 
 fn full_condition() -> i32 {
@@ -74,7 +72,6 @@ impl Default for TbaCharExtras {
             thirst: FULL_CONDITION,
             drunk: 0,
             skills: BTreeMap::new(),
-            adjust: BTreeMap::new(),
         }
     }
 }
@@ -95,7 +92,8 @@ pub struct TbaDummyMob {
 
 /// An NPC's gold and experience, which the pack keeps only on the prototype
 /// (`tba.npc_stats`). Inserted on the first script write, from the prototype's
-/// values. The kill reward still reads the prototype.
+/// values. The kill reward still reads the prototype (logged as
+/// `char_npc_purse_reward` on the first change).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Component, Serialize, Deserialize)]
 pub struct TbaNpcPurse {
     /// `GET_GOLD` of the mob.
@@ -118,9 +116,10 @@ pub struct TbaActFlags {
 
 /// One affect a script applied with `dg_affect` (or `affect_to_char`).
 ///
-/// A numeric affect also has a copy in the character's `TbaBuffs`, which is
-/// what makes it count; the `numeric` field is that copy's affect, found again
-/// by equality. A bit-only affect lives here alone.
+/// A numeric affect also has a pinned copy in the character's `TbaBuffs`,
+/// which is what makes it count and which runs out by itself when its rounds
+/// do; the `numeric` field is that copy's affect, found again by equality
+/// among the pinned buffs. A bit-only affect lives here alone.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DgAffect {
     /// `af.spell`: `SPELL_DG_AFFECT` for a script's affect.
@@ -132,7 +131,8 @@ pub struct DgAffect {
     /// The `AFF_*` bit, for a bit affect.
     pub bit: Option<u32>,
     /// The pulse (`DgPulse`) after which the affect has worn off; `None` is
-    /// permanent (`duration == -1`).
+    /// permanent (`duration == -1`). A pulse count since boot: it has to become
+    /// a remaining duration before it is saved.
     pub expires: Option<i64>,
     /// The `TbaBuffs` entry that makes a numeric affect count.
     pub numeric: Option<AffectDef>,
@@ -141,3 +141,31 @@ pub struct DgAffect {
 /// The affects scripts applied to a character, oldest first.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Component, Serialize, Deserialize)]
 pub struct TbaDgAffects(pub Vec<DgAffect>);
+
+/// Reads of facts the pack does not model, counted until the next mutable
+/// call can report them (`BaseHost::unsupported` needs `&mut`). The counts are
+/// per key with the detail line to log; interior mutability lets a `&self`
+/// read bump them.
+#[derive(Debug, Default, Resource)]
+pub struct TbaUnmodelledReads(Mutex<BTreeMap<&'static str, (&'static str, u64)>>);
+
+impl TbaUnmodelledReads {
+    /// Count one read under `key`.
+    pub fn note(&self, key: &'static str, detail: &'static str) {
+        if let Ok(mut counts) = self.0.lock() {
+            let entry = counts.entry(key).or_insert((detail, 0));
+            entry.1 = entry.1.saturating_add(1);
+        }
+    }
+
+    /// Take the counts: `(key, detail, count)`.
+    pub fn take(&self) -> Vec<(&'static str, &'static str, u64)> {
+        let Ok(mut counts) = self.0.lock() else {
+            return Vec::new();
+        };
+        std::mem::take(&mut *counts)
+            .into_iter()
+            .map(|(key, (detail, count))| (key, detail, count))
+            .collect()
+    }
+}

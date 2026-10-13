@@ -4,7 +4,7 @@
 //! Expectations come from tbaMUD's C (`limits.c`, `spell_parser.c`, `class.c`,
 //! `dg_variables.c`) and `crates/dg-vm/HOST.md`, never from what the code
 //! returns. Tests do not lean on other streams' stubs: room flags, script
-//! commands and the cast dispatchers are not exercised.
+//! commands are not exercised.
 //!
 //! Tests may unwrap/expect.
 
@@ -228,27 +228,9 @@ fn an_npcs_stats_come_from_its_prototype() {
         assert_eq!(host.char_fact(g, CharFact::Exp), 900);
         // GET_CLASS of a mob is 0 (CLASS_MAGIC_USER) from the loader.
         assert_eq!(host.char_stat(g, CharStat::Class), 0);
-        // The pack's NPC combat block holds the rolled position.
-        assert_eq!(
-            host.char_stat(g, CharStat::Pos),
-            position_number(want.position)
-        );
+        // The pack's NPC combat block starts a mob standing (POS_STANDING).
+        assert_eq!(host.char_stat(g, CharStat::Pos), 8);
     });
-}
-
-/// The `POS_*` number of a position, from the C's table.
-fn position_number(position: Position) -> i32 {
-    match position {
-        Position::Dead => 0,
-        Position::MortallyWounded => 1,
-        Position::Incapacitated => 2,
-        Position::Stunned => 3,
-        Position::Sleeping => 4,
-        Position::Resting => 5,
-        Position::Sitting => 6,
-        Position::Fighting => 7,
-        Position::Standing => 8,
-    }
 }
 
 #[test]
@@ -574,19 +556,23 @@ fn armor_class_adds_the_dexterity_bonus_while_awake() {
 
 #[test]
 fn update_pos_follows_the_hit_points() {
-    // update_pos (fight.c): > 0 and not stunned or worse stays; > 0
-    // from stunned or worse stands; <= -11 dead; <= -6 mortally wounded;
-    // <= -3 incapacitated; else stunned.
+    // update_pos (fight.c): > 0 and not stunned or worse stays; > 0 from
+    // stunned or worse stands. The pack has no stunned, incapacitated or
+    // mortally wounded state a character can be left in (its rules clamp hit
+    // points at zero and never bleed a downed character), so every count at
+    // or below zero is POS_DEAD, as its own damage does at zero.
     let mut app = pack_app();
     let temple = room(&mut app, 1);
     let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
     let a = uid(&mut app, alice);
     let expect = [
         (5, Position::Sitting, 6),
-        (-1, Position::Sitting, 3),
-        (-3, Position::Sitting, 2),
-        (-6, Position::Sitting, 1),
+        (0, Position::Sitting, 0),
+        (-1, Position::Sitting, 0),
+        (-3, Position::Sitting, 0),
+        (-6, Position::Sitting, 0),
         (-11, Position::Sitting, 0),
+        (5, Position::Dead, 8),
         (5, Position::Stunned, 8),
     ];
     for (hp, from, pos) in expect {
@@ -891,14 +877,17 @@ fn set_act_flag_is_read_back_and_drives_the_engine_flags() {
     assert!(flags.0.sentinel, "MOB_SENTINEL reaches the engine");
     assert!(flags.0.scavenger, "MOB_SCAVENGER reaches the engine");
     assert!(!flags.0.wimpy);
-    assert_eq!(count(&app, "char_act_flag_inert"), 1, "bit 5 reads nothing");
+    // Bit 5 reads nothing, and neither do the sentinel flag of a mob that does
+    // not wander (the engine's wander system is its only reader) or the
+    // wimpy flag (set and cleared).
+    assert_eq!(count(&app, "char_act_flag_inert"), 4);
 
     // Setting and clearing an unrelated bit is stored but inert.
     run(&mut app, |host| {
         host.char_set_act_flag(g, 16, true);
         assert!(host.char_act_flagged(g, 16));
     });
-    assert_eq!(count(&app, "char_act_flag_inert"), 2);
+    assert_eq!(count(&app, "char_act_flag_inert"), 5);
 }
 
 #[test]
@@ -908,7 +897,7 @@ fn a_player_has_only_the_act_flags_a_script_set_and_no_preferences() {
     let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
     let a = uid(&mut app, alice);
     run(&mut app, |host| {
-        // PLR_KILLER is bit 5, PLR_THIEF bit 6 (bit 3 is not MOB_ISNPC here).
+        // Bit 3 is MOB_ISNPC only for an NPC; bit 5 is a plain player bit.
         assert!(!host.char_act_flagged(a, 3));
         assert!(!host.char_act_flagged(a, 5));
         host.char_set_act_flag(a, 5, true);
@@ -1327,10 +1316,13 @@ fn a_script_affect_wears_off_after_its_duration() {
     run(&mut app, |host| {
         assert!(!host.char_affected_by_spell(a, SPELL_DG_AFFECT), "worn off");
         assert!(host.char_affected_by_spell(a, 2), "permanent stays");
-        // Dropping the worn-off marker takes its buff with it.
+        // The buff runs out on the round clock: 25 rounds an hour.
         host.char_affect_total(a);
         host.magic_add_dg_affect(a, 3, 0, 0, -1, None);
     });
+    for _ in 0..25 {
+        app.world_mut().run_system_once(tick_buffs).expect("tick");
+    }
     recompute(&mut app);
     assert_eq!(app.world().get::<TbaCombatant>(alice).unwrap().damroll, 0);
     // The buff's own round countdown matches the duration: 25 rounds an hour.
@@ -1343,8 +1335,8 @@ fn a_script_affect_wears_off_after_its_duration() {
         .unwrap()
         .buffs
         .iter()
-        .map(|buff| buff.rounds_left)
-        .filter(|rounds| *rounds < 1_000)
+        .filter(|buff| buff.rounds() < 1_000)
+        .map(|buff| buff.rounds())
         .max()
         .unwrap();
     assert_eq!(rounds, 3 * 25);
@@ -1355,7 +1347,7 @@ fn a_script_affect_wears_off_after_its_duration() {
             .unwrap()
             .buffs
             .iter()
-            .any(|b| b.rounds_left == 74)
+            .any(|b| b.rounds() == 74)
     );
 }
 
@@ -1366,8 +1358,8 @@ fn a_bit_affect_is_found_by_its_spell_and_logged_as_inert() {
     let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
     let a = uid(&mut app, alice);
     run(&mut app, |host| {
-        // AFF_SANCTUARY is bit 4; APPLY_NONE.
-        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 0, 0, 3, Some(4));
+        // AFF_SANCTUARY is bit 8; APPLY_NONE.
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 0, 0, 3, Some(8));
         assert!(host.char_affected_by_spell(a, SPELL_DG_AFFECT));
         host.magic_remove_dg_affects(a, SPELL_DG_AFFECT);
         assert!(!host.char_affected_by_spell(a, SPELL_DG_AFFECT));
@@ -1416,4 +1408,497 @@ fn true_sight_spells_read_as_affected() {
         host.magic_call_magic(a, Some(a), None, 19, 10);
         assert!(host.char_affected_by_spell(a, 19), "detect invisibility");
     });
+}
+
+// -- review fixes --------------------------------------------------------------
+
+use bevy::ecs::message::Messages;
+
+use mib_tba::equipment::recompute_npc_equipment_affects;
+
+fn spell_affect(app: &App, id: &str) -> AffectDef {
+    app.world()
+        .resource::<TbaContent>()
+        .spells
+        .get(id)
+        .and_then(|def| def.affect.clone())
+        .expect("spell affect")
+}
+
+#[test]
+fn damage_to_zero_or_below_is_death_after_a_recompute_too() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| {
+        host.char_set_stat(a, CharStat::Hit, -5);
+        host.char_update_pos(a);
+    });
+    recompute(&mut app);
+    let combatant = app.world().get::<TbaCombatant>(alice).unwrap();
+    assert_eq!(combatant.hp, 0);
+    assert_eq!(combatant.position, Position::Dead);
+}
+
+#[test]
+fn an_equipped_npcs_stat_write_survives_the_rebuild_without_double_counting() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let guard = mob(&mut app, temple, 3, "the guard", 4);
+    define_item(
+        &mut app,
+        50,
+        TbaItemKind::Weapon,
+        &[WearSlot::Wield],
+        &["sword"],
+    );
+    app.world_mut()
+        .resource_mut::<TbaContent>()
+        .items
+        .get_mut(&ItemId::from("tba_item_50"))
+        .unwrap()
+        .affects = vec![AffectDef {
+        location: AffectLocation::Hitroll,
+        modifier: 2,
+    }];
+    item_worn(&mut app, guard, WearSlot::Wield, 50, "a sword");
+    let g = uid(&mut app, guard);
+    run(&mut app, |host| {
+        host.char_affect_total(g);
+        assert_eq!(host.char_stat(g, CharStat::Hitroll), 2);
+        host.char_set_stat(g, CharStat::Hitroll, 7);
+        assert_eq!(host.char_stat(g, CharStat::Hitroll), 7);
+        host.char_set_real_abil(g, CharAbil::Str, 16);
+        assert_eq!(host.char_abil(g, CharAbil::Str), 16);
+        assert_eq!(host.char_real_abil(g, CharAbil::Str), 16);
+    });
+    app.world_mut()
+        .run_system_once(recompute_npc_equipment_affects)
+        .expect("npc recompute");
+    let combatant = app.world().get::<TbaCombatant>(guard).unwrap();
+    assert_eq!(combatant.hitroll, 7, "the frame's rebuild agrees");
+    assert_eq!(combatant.attributes.strength, 16);
+}
+
+#[test]
+fn a_cast_does_not_wipe_permanent_writes_or_script_affects() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let cleric = hero(&mut app, temple, "Cleric", 8, "cleric", 20);
+    let (a, c) = (uid(&mut app, alice), uid(&mut app, cleric));
+    let strength = spell_affect(&app, "strength");
+    let bless = spell_affect(&app, "bless");
+    run(&mut app, |host| {
+        host.char_set_real_abil(a, CharAbil::Str, 16);
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 18, 5, -1, None);
+        host.magic_call_magic(c, Some(a), None, 39, 10);
+        host.magic_call_magic(c, Some(a), None, 3, 10);
+        // The cast is in force at once.
+        assert_eq!(host.char_abil(a, CharAbil::Str), 16 + strength.modifier);
+        assert_eq!(host.char_stat(a, CharStat::Hitroll), 5 + bless.modifier);
+        assert_eq!(host.char_real_abil(a, CharAbil::Str), 16);
+        assert!(host.char_affected_by_spell(a, SPELL_DG_AFFECT));
+        assert!(host.char_affected_by_spell(a, 39));
+    });
+    recompute(&mut app);
+    let combatant = app.world().get::<TbaCombatant>(alice).unwrap();
+    assert_eq!(combatant.attributes.strength, 16 + strength.modifier);
+    assert_eq!(combatant.hitroll, 5 + bless.modifier);
+    // Taking the script affect off leaves the permanent write and the casts.
+    run(&mut app, |host| {
+        host.magic_remove_dg_affects(a, SPELL_DG_AFFECT);
+        assert_eq!(host.char_stat(a, CharStat::Hitroll), bless.modifier);
+        assert_eq!(host.char_real_abil(a, CharAbil::Str), 16);
+    });
+}
+
+#[test]
+fn a_pack_spell_is_not_confused_with_an_equal_script_affect() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| {
+        // strength is +1 str, bless +2 hitroll.
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 1, 1, 5, None);
+        host.char_set_stat(a, CharStat::Hitroll, 2);
+        assert!(!host.char_affected_by_spell(a, 39));
+        assert!(!host.char_affected_by_spell(a, 3));
+    });
+}
+
+#[test]
+fn overlapping_script_affects_expire_independently() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    // Duration 0 lasts to the first mud-hour update (25 rounds), 1 to the second.
+    run(&mut app, |host| {
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 1, 2, 0, None)
+    });
+    tick_pulses(&mut app, 300);
+    run(&mut app, |host| {
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 1, 2, 1, None)
+    });
+    for _ in 0..25 {
+        app.world_mut().run_system_once(tick_buffs).expect("tick");
+    }
+    tick_pulses(&mut app, 500);
+    run(&mut app, |host| {
+        // The first marker is dead; this prunes it.
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 18, 1, 5, None);
+        assert_eq!(host.char_abil(a, CharAbil::Str), 13 + 2, "the second holds");
+    });
+    let buffs = app.world().get::<TbaBuffs>(alice).unwrap();
+    assert_eq!(
+        buffs
+            .buffs
+            .iter()
+            .filter(|b| b.affect.location == AffectLocation::Str)
+            .count(),
+        1
+    );
+}
+
+#[test]
+fn a_lethal_script_cast_leaves_an_npc_for_the_end_of_the_pulse() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "magic_user", 10);
+    let rat = mob(&mut app, temple, 3, "a rat", 1);
+    app.world_mut().get_mut::<TbaCombatant>(rat).unwrap().hp = 1;
+    let (a, r) = (uid(&mut app, alice), uid(&mut app, rat));
+    run(&mut app, |host| {
+        host.magic_call_magic(a, Some(r), None, 32, 30);
+        assert!(host.is_dead(r), "marked, not yet extracted");
+        assert_eq!(host.name(r), "a rat");
+        assert_eq!(host.in_room(r), host.in_room(a));
+    });
+    assert!(
+        app.world().get_entity(rat).is_err(),
+        "swept when the host run ends, not mid-script"
+    );
+}
+
+#[test]
+fn spells_without_a_pack_effect_are_counted() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "magic_user", 10);
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| {
+        host.magic_call_magic(a, Some(a), None, 36, 10); // sanctuary
+        host.magic_call_magic(a, Some(a), None, 20, 10); // detect magic
+        host.magic_call_magic(a, Some(a), None, 19, 10); // detect invisibility: true sight
+    });
+    assert_eq!(count(&app, "magic_spell_inert"), 2);
+    assert!(
+        app.world()
+            .get::<mib_tba::stealth::TbaTrueSight>(alice)
+            .is_some()
+    );
+}
+
+#[test]
+fn a_cast_on_an_npc_logs_that_buffs_do_nothing_there() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "cleric", 10);
+    let guard = mob(&mut app, temple, 3, "the guard", 4);
+    let (a, g) = (uid(&mut app, alice), uid(&mut app, guard));
+    run(&mut app, |host| {
+        host.magic_call_magic(a, Some(g), None, 39, 10);
+        assert!(host.char_affected_by_spell(g, 39));
+    });
+    assert_eq!(count(&app, "magic_npc_affect"), 1);
+}
+
+#[test]
+fn a_script_cast_by_an_npc_writes_nothing_to_its_unconnected_caster() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 10);
+    let troll = mob(&mut app, temple, 3, "a troll", 10);
+    let (a, t) = (uid(&mut app, alice), uid(&mut app, troll));
+    app.world_mut()
+        .resource_mut::<Messages<OutputEvent>>()
+        .clear();
+    run(&mut app, |host| {
+        host.magic_call_magic(t, Some(a), None, 32, 10); // magic missile
+        host.magic_call_magic(t, Some(a), None, 39, 10); // strength
+        host.magic_call_magic(t, Some(a), None, 36, 10); // sanctuary
+    });
+    let to_caster = app
+        .world()
+        .resource::<Messages<OutputEvent>>()
+        .iter_current_update_messages()
+        .filter(|event| event.session == troll)
+        .count();
+    assert_eq!(to_caster, 0);
+}
+
+#[test]
+fn a_cast_trigger_that_returns_zero_refuses_the_spell() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    define(&mut app, 900, "mob", "p", 100, "return 0");
+    attach(&mut app, "npc:tba_npc_3", &[900]);
+    let alice = hero(&mut app, temple, "Alice", 7, "magic_user", 10);
+    let troll = mob(&mut app, temple, 3, "a troll", 20);
+    let (a, t) = (uid(&mut app, alice), uid(&mut app, troll));
+    let before = app.world().get::<TbaCombatant>(troll).unwrap().hp;
+    run(&mut app, |host| {
+        host.magic_call_magic(a, Some(t), None, 32, 10)
+    });
+    assert_eq!(app.world().get::<TbaCombatant>(troll).unwrap().hp, before);
+}
+
+#[test]
+fn a_cast_trigger_on_the_item_cast_through_or_the_room_refuses_the_spell() {
+    // An object's cast trigger is asked for the object the spell is cast
+    // through; a room's for the caster's room.
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let vault = room(&mut app, 2);
+    define(&mut app, 901, "obj", "p", 100, "return 0");
+    attach(&mut app, "item:tba_item_60", &[901]);
+    define(&mut app, 902, "wld", "p", 100, "return 0");
+    attach(&mut app, "room:tba.2", &[902]);
+    let alice = hero(&mut app, temple, "Alice", 7, "magic_user", 10);
+    let bob = hero(&mut app, vault, "Bob", 8, "magic_user", 10);
+    let wand = item_carried(&mut app, alice, 60, "a wand");
+    let troll = mob(&mut app, temple, 3, "a troll", 20);
+    let ogre = mob(&mut app, vault, 4, "an ogre", 20);
+    let (a, b, w) = (
+        uid(&mut app, alice),
+        uid(&mut app, bob),
+        uid(&mut app, wand),
+    );
+    let (t, o) = (uid(&mut app, troll), uid(&mut app, ogre));
+    let (troll_hp, ogre_hp) = (
+        app.world().get::<TbaCombatant>(troll).unwrap().hp,
+        app.world().get::<TbaCombatant>(ogre).unwrap().hp,
+    );
+    run(&mut app, |host| {
+        host.magic_call_magic(a, Some(t), Some(w), 32, 10);
+        host.magic_call_magic(b, Some(o), None, 32, 10);
+    });
+    assert_eq!(app.world().get::<TbaCombatant>(troll).unwrap().hp, troll_hp);
+    assert_eq!(app.world().get::<TbaCombatant>(ogre).unwrap().hp, ogre_hp);
+    // Without the wand the temple's spell goes through.
+    run(&mut app, |host| {
+        host.magic_call_magic(a, Some(t), None, 32, 10)
+    });
+    assert!(app.world().get::<TbaCombatant>(troll).unwrap().hp < troll_hp);
+}
+
+#[test]
+fn room_and_caster_target_spells_land_where_the_pack_says() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "magic_user", 20);
+    let bob = hero(&mut app, temple, "Bob", 8, "warrior", 20);
+    let (a, b) = (uid(&mut app, alice), uid(&mut app, bob));
+    let (alice_hp, bob_hp) = (
+        app.world().get::<TbaCombatant>(alice).unwrap().hp,
+        app.world().get::<TbaCombatant>(bob).unwrap().hp,
+    );
+    run(&mut app, |host| {
+        // earthquake hits the room but not the caster
+        host.magic_call_magic(a, None, None, 23, 30)
+    });
+    assert_eq!(app.world().get::<TbaCombatant>(alice).unwrap().hp, alice_hp);
+    assert!(app.world().get::<TbaCombatant>(bob).unwrap().hp < bob_hp);
+    // detect invisibility is a self spell: it lands on the victim named, as
+    // `mag_affects(victim)` does in the C.
+    run(&mut app, |host| {
+        host.magic_call_magic(a, Some(b), None, 19, 10)
+    });
+    let sight = |entity| {
+        app.world()
+            .get::<mib_tba::stealth::TbaTrueSight>(entity)
+            .is_some()
+    };
+    assert!(sight(bob));
+    assert!(!sight(alice));
+}
+
+#[test]
+fn every_dg_affect_apply_number_reaches_its_statistic() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    let stats = [
+        (12, CharStat::MaxMana),
+        (13, CharStat::MaxHit),
+        (14, CharStat::MaxMove),
+        (20, CharStat::SavePara),
+        (21, CharStat::SaveRod),
+        (22, CharStat::SavePetri),
+        (23, CharStat::SaveBreath),
+        (24, CharStat::SaveSpell),
+    ];
+    for (apply, stat) in &stats {
+        let before = run(&mut app, |host| host.char_stat(a, *stat));
+        run(&mut app, |host| {
+            host.magic_add_dg_affect(a, SPELL_DG_AFFECT, *apply, 3, -1, None)
+        });
+        let after = run(&mut app, |host| host.char_stat(a, *stat));
+        assert_eq!(after, before + 3, "apply {apply}");
+    }
+    let abils = [
+        (1, CharAbil::Str),
+        (2, CharAbil::Dex),
+        (3, CharAbil::Int),
+        (4, CharAbil::Wis),
+        (5, CharAbil::Con),
+        (6, CharAbil::Cha),
+    ];
+    for (apply, abil) in abils {
+        let before = run(&mut app, |host| host.char_abil(a, abil));
+        run(&mut app, |host| {
+            host.magic_add_dg_affect(a, SPELL_DG_AFFECT, apply, 2, -1, None)
+        });
+        let after = run(&mut app, |host| host.char_abil(a, abil));
+        assert_eq!(after, before + 2, "apply {apply}");
+    }
+    let damroll = run(&mut app, |host| host.char_stat(a, CharStat::Damroll));
+    run(&mut app, |host| {
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 19, 4, -1, None);
+        assert_eq!(host.char_stat(a, CharStat::Damroll), damroll + 4);
+    });
+}
+
+#[test]
+fn an_affect_bit_the_pack_has_a_component_for_sets_it_for_the_marker() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "thief", 5);
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| {
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 0, 0, -1, Some(20)); // hide
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 0, 0, -1, Some(19)); // sneak
+        host.magic_add_dg_affect(a, SPELL_DG_AFFECT, 0, 0, -1, Some(4)); // detect invis
+    });
+    assert!(app.world().get::<TbaHidden>(alice).is_some());
+    assert!(app.world().get::<TbaSneaking>(alice).is_some());
+    assert!(
+        app.world()
+            .get::<mib_tba::stealth::TbaTrueSight>(alice)
+            .is_some()
+    );
+    assert_eq!(count(&app, "magic_affect_bit"), 0);
+    run(&mut app, |host| {
+        host.magic_remove_dg_affects(a, SPELL_DG_AFFECT)
+    });
+    assert!(app.world().get::<TbaHidden>(alice).is_none());
+    assert!(app.world().get::<TbaSneaking>(alice).is_none());
+    assert!(
+        app.world()
+            .get::<mib_tba::stealth::TbaTrueSight>(alice)
+            .is_none()
+    );
+}
+
+#[test]
+fn quest_state_comes_from_the_quest_index_and_log() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    let mut index = QuestIndex::default();
+    let def: QuestDef = serde_yaml::from_str(
+        "name: Kill the Mice!\ndescription: d\ngiver: tba_npc_179\nsteps: []\nreward: {xp: 0, items: []}\n",
+    )
+    .expect("quest def");
+    index
+        .map
+        .insert(QuestId::from("tba_quest_100"), def.clone());
+    app.world_mut().insert_resource(index);
+    run(&mut app, |host| {
+        assert!(host.char_quest_exists(100));
+        assert!(!host.char_quest_exists(101));
+        assert_eq!(host.char_quest(a), -1);
+    });
+    let mut log = PlayerQuestLog::default();
+    log.quests
+        .insert(QuestId::from("tba_quest_100"), QuestProgress::fresh(&def));
+    app.world_mut().entity_mut(alice).insert(log);
+    run(&mut app, |host| assert_eq!(host.char_quest(a), 100));
+}
+
+#[test]
+fn reads_of_unmodelled_facts_are_counted_at_the_next_mutable_call() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| {
+        host.char_set_title(a, "the Brave"); // creates the counter
+        host.char_stat(a, CharStat::Sex);
+        host.char_stat(a, CharStat::Sex);
+        host.char_fact(a, CharFact::Weight);
+        host.char_abil(a, CharAbil::StrAdd);
+        host.char_pref_flagged(a, 3);
+        host.char_quest_completed(a, 100);
+        host.char_set_title(a, "the Bold"); // reports them
+    });
+    assert_eq!(count(&app, "char_sex"), 2);
+    assert_eq!(count(&app, "char_weight"), 1);
+    assert_eq!(count(&app, "char_str_add"), 1);
+    assert_eq!(count(&app, "char_pref_flags"), 1);
+    assert_eq!(count(&app, "char_quest_completed"), 1);
+}
+
+#[test]
+fn a_changed_npc_purse_is_logged_once_as_not_paid_by_the_kill() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let guard = mob(&mut app, temple, 3, "the guard", 4);
+    stats_of(&mut app, 3).gold = 40;
+    let g = uid(&mut app, guard);
+    run(&mut app, |host| {
+        host.char_increase_gold(g, -40);
+        host.char_increase_gold(g, 5);
+        assert_eq!(host.char_fact(g, CharFact::Gold), 5);
+    });
+    assert_eq!(count(&app, "char_npc_purse_reward"), 1);
+}
+
+#[test]
+fn gain_exp_stops_at_the_level_below_immortal() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 30);
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| host.char_gain_exp(a, 100_000));
+    assert_eq!(app.world().get::<TbaProgress>(alice).unwrap().level, 30);
+}
+
+#[test]
+fn a_sentinel_flag_reaches_a_wandering_npc() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let guard = mob(&mut app, temple, 3, "g", 4);
+    let mut behaviors = NpcBehaviors::default();
+    behaviors.0.wander = true;
+    app.world_mut().entity_mut(guard).insert(behaviors);
+    let g = uid(&mut app, guard);
+    run(&mut app, |host| host.char_set_act_flag(g, 1, true));
+    assert!(app.world().get::<NpcBehaviors>(guard).unwrap().0.sentinel);
+    assert_eq!(count(&app, "char_act_flag_inert"), 0);
+}
+
+#[test]
+fn reaching_the_maximum_gold_tells_the_player() {
+    let mut app = pack_app();
+    let temple = room(&mut app, 1);
+    let alice = hero(&mut app, temple, "Alice", 7, "warrior", 5);
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| host.char_increase_gold(a, i32::MAX));
+    assert_eq!(app.world().get::<TbaGold>(alice).unwrap().0, 2_140_000_000);
 }

@@ -20,18 +20,27 @@
 //! resolves the catalog entry (saving throw, damage, heal, buff) as the `cast`
 //! command does, minus the mana, class and position checks a script cast
 //! skips. The pack has no object-targeted spells, so a cast at an object is
-//! logged and does nothing.
+//! logged and does nothing. A spell the pack lists but cannot run (utility, or
+//! a detect that is not true sight) is logged as `magic_spell_inert`. An NPC the
+//! spell kills is marked `DgDead` and goes at the end of the host run.
 //!
 //! # Affects
 //!
 //! A script affect (`dg_affect`) is a [`DgAffect`] marker on the character
-//! plus, when it changes a number the pack models, a permanent-or-timed
-//! `TbaBuffs` entry that makes it count in the recompute. `affect_from_char`
-//! removes the markers of a spell number and the buffs they made. Buffs only
-//! take effect on players: the NPC recompute passes none (see
-//! `recompute_npc_equipment_affects`), so an NPC's affect is recorded, found by
-//! `affected_by_spell` and removable, but changes no statistic; that gap is
-//! logged as `magic_npc_affect`.
+//! plus, when it changes a number the pack models, a pinned `TbaBuffs` entry
+//! ([`ActiveBuff::pinned`]) that makes it count in the recompute, runs out by
+//! the round clock like any buff and is never replaced by a cast.
+//! `affect_from_char` removes the markers of a spell number and the buffs they
+//! made; for `SPELL_DG_AFFECT` it removes every pinned affect buff, so a saved
+//! buff whose marker was lost still goes. A bit the pack has a component for
+//! (`AFF_DETECT_INVIS`, `AFF_SENSE_LIFE`, `AFF_SNEAK`, `AFF_HIDE`) sets it
+//! while the marker lives; hide and sneak have no clock of their own, so a
+//! timed one ends when the marker is next pruned (any `dg_affect` or
+//! `affect_from_char` on the character). Buffs only take effect on players:
+//! the NPC recompute passes none (see `recompute_npc_equipment_affects`), so an
+//! NPC's affect (script or cast) is recorded, found by `affected_by_spell` and
+//! removable, but changes no statistic; that gap is logged as
+//! `magic_npc_affect`.
 
 use dg_vm::dispatch::{cast_mtrigger, cast_otrigger, cast_wtrigger};
 use dg_vm::fields_char::CharHost;
@@ -43,9 +52,14 @@ use mib_stdlib::prelude::Npc;
 
 use super::EcsHost;
 use super::chars::chardata::{DgAffect, TbaDgAffects};
-use super::chars::{PERMANENT_ROUNDS, ROUND_PULSES, affect_location, class_key};
-use crate::content::{AffectDef, SpellTarget};
-use crate::spells::{ActiveBuff, TbaBuffs, cast_spell_at_level};
+use super::chars::{ROUND_PULSES, affect_location, class_key};
+use crate::combat::{TbaCombatant, TbaHidden, TbaSneaking};
+use crate::content::{AffectDef, Position, SpellKind, SpellTarget};
+use crate::dg::script::DgDead;
+use crate::items::MUD_HOUR_SECONDS;
+use crate::spells::{ActiveBuff, PINNED_FOREVER, TbaBuffs, cast_spell_at_level};
+use crate::stealth::{TRUE_SIGHT_DETECT, TbaTrueSight};
+use mib_stdlib::prelude::SEE_INVIS;
 
 const TAR_IGNORE: u32 = 1 << 0;
 const TAR_CHAR_ROOM: u32 = 1 << 1;
@@ -76,9 +90,15 @@ const ROOM_NOMAGIC: usize = 7;
 /// `MOB_NOKILL`.
 const MOB_NOKILL: u32 = 18;
 
-/// Pulses in one mud hour (`SECS_PER_MUD_HOUR` of 75 seconds at ten pulses per
-/// second), the unit an affect's duration counts in.
-const HOUR_PULSES: i64 = 750;
+/// Pulses in one mud hour, the unit an affect's duration counts in.
+const HOUR_PULSES: i64 = (MUD_HOUR_SECONDS * 10.0) as i64;
+
+/// `AFF_DETECT_INVIS`, `AFF_SENSE_LIFE`, `AFF_SNEAK` and `AFF_HIDE`: the affect
+/// bits the pack has a component for.
+const AFF_DETECT_INVIS: u32 = 4;
+const AFF_SENSE_LIFE: u32 = 6;
+const AFF_SNEAK: u32 = 19;
+const AFF_HIDE: u32 = 20;
 
 /// One row of `spell_info[]` for a spell or skill the pack can carry.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -539,7 +559,8 @@ impl EcsHost<'_> {
         spell_info(number).filter(|info| self.carries(info))
     }
 
-    /// Drop the script affects that have worn off, and the buffs they made.
+    /// Drop the script affects that have worn off. Their buffs run out on
+    /// the round clock by themselves; the bit components go with the marker.
     fn expire_dg_affects(&mut self, entity: Entity) {
         let pulse = self.pulse();
         let Some(mut marks) = self.world.get_mut::<TbaDgAffects>(entity) else {
@@ -549,21 +570,104 @@ impl EcsHost<'_> {
             .into_iter()
             .partition(|mark| mark.expires.is_none_or(|expires| expires > pulse));
         marks.0 = live;
-        for mark in dead {
-            self.remove_buff_for(entity, &mark);
+        for mark in &dead {
+            self.release_bit(entity, mark);
         }
     }
 
-    /// Remove the buff that makes a marker count, if it is still there.
+    /// Remove the pinned buff that makes a marker count, if it is still there.
+    /// A timed marker takes a timed buff, a permanent one a permanent buff.
     fn remove_buff_for(&mut self, entity: Entity, mark: &DgAffect) {
         let Some(affect) = &mark.numeric else {
             return;
         };
         if let Some(mut buffs) = self.world.get_mut::<TbaBuffs>(entity)
-            && let Some(index) = buffs.buffs.iter().position(|buff| &buff.affect == affect)
+            && let Some(index) = buffs.buffs.iter().position(|buff| {
+                buff.is_pinned()
+                    && !buff.is_adjustment()
+                    && &buff.affect == affect
+                    && (buff.rounds() >= PINNED_FOREVER) == mark.expires.is_none()
+            })
         {
             buffs.buffs.remove(index);
         }
+    }
+
+    /// Set the pack component an affect bit stands for.
+    fn grant_bit(&mut self, entity: Entity, bit: u32, rounds: u32) {
+        let mut target = self.world.entity_mut(entity);
+        match bit {
+            AFF_DETECT_INVIS | AFF_SENSE_LIFE => {
+                target.insert(TbaTrueSight {
+                    sight: SEE_INVIS,
+                    detect: TRUE_SIGHT_DETECT,
+                    rounds_left: rounds.max(1),
+                });
+            }
+            AFF_SNEAK => {
+                target.insert(TbaSneaking);
+            }
+            AFF_HIDE => {
+                target.insert(TbaHidden);
+            }
+            _ => {}
+        }
+    }
+
+    /// Take away the component a marker's bit set, unless another live marker
+    /// still sets it.
+    fn release_bit(&mut self, entity: Entity, mark: &DgAffect) {
+        let Some(bit) = mark.bit else {
+            return;
+        };
+        let pulse = self.pulse();
+        let sights = [AFF_DETECT_INVIS, AFF_SENSE_LIFE];
+        let shared =
+            |other: u32| other == bit || (sights.contains(&bit) && sights.contains(&other));
+        let held = self.world.get::<TbaDgAffects>(entity).is_some_and(|marks| {
+            marks.0.iter().any(|other| {
+                other.bit.is_some_and(shared) && other.expires.is_none_or(|e| e > pulse)
+            })
+        });
+        if held {
+            return;
+        }
+        let mut target = self.world.entity_mut(entity);
+        match bit {
+            AFF_DETECT_INVIS | AFF_SENSE_LIFE => {
+                target.remove::<TbaTrueSight>();
+            }
+            AFF_SNEAK => {
+                target.remove::<TbaSneaking>();
+            }
+            AFF_HIDE => {
+                target.remove::<TbaHidden>();
+            }
+            _ => {}
+        }
+    }
+
+    /// The characters a cast may touch: the victim and the caster, and
+    /// everyone in the caster's room for a spell that hits the room.
+    fn cast_candidates(&self, caster: Uid, victim: Option<Uid>, room_wide: bool) -> Vec<Entity> {
+        let mut found: Vec<Entity> = Vec::new();
+        let mut push = |uid: Uid, host: &Self| {
+            if let Some(entity) = host.character(uid)
+                && !found.contains(&entity)
+            {
+                found.push(entity);
+            }
+        };
+        push(caster, self);
+        if let Some(victim) = victim {
+            push(victim, self);
+        }
+        if room_wide && let Some(room) = self.in_room(caster) {
+            for uid in self.room_people(room) {
+                push(uid, self);
+            }
+        }
+        found
     }
 }
 
@@ -593,6 +697,7 @@ impl MagicHost for EcsHost<'_> {
         spellnum: i32,
         level: i32,
     ) {
+        self.flush_reads();
         if !(1..=TOP_SPELL_DEFINE).contains(&spellnum) {
             return;
         }
@@ -616,7 +721,13 @@ impl MagicHost for EcsHost<'_> {
                     "Your magic fizzles out and dies.",
                 );
                 if let Some(room_entity) = room_entity {
-                    let line = format!("{}'s magic fizzles out and dies.", self.name(caster));
+                    let name = self.name(caster);
+                    let mut chars = name.chars();
+                    let name: String = chars
+                        .next()
+                        .map(|first| first.to_uppercase().chain(chars).collect())
+                        .unwrap_or_default();
+                    let line = format!("{name}'s magic fizzles out and dies.");
                     crate::dg::out::send_to_room(self.world, room_entity, &line, &[caster_entity]);
                 }
                 return;
@@ -658,7 +769,8 @@ impl MagicHost for EcsHost<'_> {
             // `SPELL_DG_AFFECT` and skills have no routines to run.
             return;
         };
-        let needs_victim = matches!(def.target, SpellTarget::Caster | SpellTarget::Victim);
+        let (kind, target, affects) = (def.kind, def.target, def.affect.clone());
+        let needs_victim = matches!(target, SpellTarget::Caster | SpellTarget::Victim);
         if needs_victim && victim_entity.is_none() {
             if obj.is_some() {
                 self.unsupported(
@@ -674,15 +786,65 @@ impl MagicHost for EcsHost<'_> {
                 "the pack has no spell that alters an object",
             );
         }
+        let sight = matches!(info.id, "detect_invis" | "sense_life");
+        if kind == SpellKind::Utility || (kind == SpellKind::Detect && !sight) {
+            self.unsupported(
+                "magic_spell_inert",
+                &format!("spell {spellnum} has no effect in the pack"),
+            );
+        }
         let id = info.id;
         let level = u32::try_from(level.max(1)).unwrap_or(1);
+        let touched = self.cast_candidates(caster, victim, target == SpellTarget::Room);
+        let alive_before: Vec<Entity> = touched
+            .iter()
+            .copied()
+            .filter(|entity| {
+                self.world
+                    .get::<TbaCombatant>(*entity)
+                    .is_none_or(|combatant| combatant.position != Position::Dead)
+            })
+            .collect();
         cast_spell_at_level(self.world, caster_entity, victim_entity, id, level);
+        for entity in touched {
+            let npc = self.world.get::<Npc>(entity).is_some();
+            if npc
+                && alive_before.contains(&entity)
+                && self
+                    .world
+                    .get::<TbaCombatant>(entity)
+                    .is_some_and(|combatant| combatant.position == Position::Dead)
+            {
+                // The pack's spell leaves a dead NPC in place; it goes at the
+                // end of the pulse like any extracted character.
+                self.world.entity_mut(entity).insert(DgDead);
+            }
+            if let Some(affect) = &affects
+                && self.world.get::<TbaBuffs>(entity).is_some_and(|buffs| {
+                    buffs
+                        .buffs
+                        .iter()
+                        .any(|buff| !buff.is_pinned() && &buff.affect == affect)
+                })
+            {
+                if npc {
+                    self.unsupported(
+                        "magic_npc_affect",
+                        "buffs do not change an NPC's statistics",
+                    );
+                } else {
+                    self.rebuild(entity);
+                }
+            }
+        }
     }
 
     /// `affect_from_char(ch, spell)`: the script affects of that spell and
-    /// the buffs they made; for a spell the pack carries, also the buffs equal
-    /// to its affect (the pack's buffs carry no spell tag).
+    /// the buffs they made (every pinned affect buff for `SPELL_DG_AFFECT`);
+    /// for a spell the pack carries, also the cast buffs equal to its affect
+    /// (the pack's buffs carry no spell tag).
     fn magic_remove_dg_affects(&mut self, ch: Uid, spell: i32) {
+        self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
@@ -699,6 +861,22 @@ impl MagicHost for EcsHost<'_> {
         };
         for mark in &removed {
             self.remove_buff_for(entity, mark);
+            self.release_bit(entity, mark);
+        }
+        if spell == SPELL_DG_AFFECT {
+            // A pinned buff no remaining marker accounts for belongs to a
+            // script affect whose marker was lost (it is saved, the marker is
+            // not).
+            let owned: Vec<AffectDef> = self
+                .world
+                .get::<TbaDgAffects>(entity)
+                .map(|marks| marks.0.iter().filter_map(|m| m.numeric.clone()).collect())
+                .unwrap_or_default();
+            if let Some(mut buffs) = self.world.get_mut::<TbaBuffs>(entity) {
+                buffs.buffs.retain(|buff| {
+                    !buff.is_pinned() || buff.is_adjustment() || owned.contains(&buff.affect)
+                });
+            }
         }
         if spell != SPELL_DG_AFFECT
             && let Some(info) = self.carried_info(spell)
@@ -708,7 +886,9 @@ impl MagicHost for EcsHost<'_> {
                 .and_then(|def| def.affect.clone())
             && let Some(mut buffs) = self.world.get_mut::<TbaBuffs>(entity)
         {
-            buffs.buffs.retain(|buff| buff.affect != affect);
+            buffs
+                .buffs
+                .retain(|buff| buff.is_pinned() || buff.affect != affect);
         }
         self.rebuild(entity);
     }
@@ -727,6 +907,7 @@ impl MagicHost for EcsHost<'_> {
         duration: i16,
         bit: Option<u32>,
     ) {
+        self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
@@ -746,23 +927,34 @@ impl MagicHost for EcsHost<'_> {
                 &format!("the pack models no apply type {location}"),
             );
         }
-        if bit.is_some() {
-            self.unsupported(
-                "magic_affect_bit",
-                "an affect bit is recorded but no pack system reads it",
-            );
+        if let Some(bit) = bit {
+            if matches!(
+                bit,
+                AFF_DETECT_INVIS | AFF_SENSE_LIFE | AFF_SNEAK | AFF_HIDE
+            ) {
+                let rounds = if permanent {
+                    PINNED_FOREVER
+                } else {
+                    u32::try_from(hours.saturating_mul(HOUR_PULSES) / ROUND_PULSES)
+                        .unwrap_or(PINNED_FOREVER)
+                };
+                self.grant_bit(entity, bit, rounds);
+            } else {
+                self.unsupported(
+                    "magic_affect_bit",
+                    "an affect bit is recorded but no pack system reads it",
+                );
+            }
         }
         if let Some(affect) = &numeric {
             let rounds = if permanent {
-                PERMANENT_ROUNDS
+                PINNED_FOREVER
             } else {
                 u32::try_from(hours.saturating_mul(HOUR_PULSES) / ROUND_PULSES)
-                    .unwrap_or(PERMANENT_ROUNDS / 2)
+                    .unwrap_or(PINNED_FOREVER - 1)
+                    .min(PINNED_FOREVER - 1)
             };
-            let buff = ActiveBuff {
-                affect: affect.clone(),
-                rounds_left: rounds,
-            };
+            let buff = ActiveBuff::pinned(affect.clone(), rounds, false);
             if let Some(mut buffs) = self.world.get_mut::<TbaBuffs>(entity) {
                 buffs.buffs.push(buff);
             } else {
