@@ -16,7 +16,8 @@
 //! | `nums["save:<0..4>"]` | `GET_SAVE`, indexed by `SAVING_PARA` 0, `ROD` 1, `PETRI` 2, `BREATH` 3, `SPELL` 4 |
 //! | `nums["abil:<name>"]`, `nums["rabil:<name>"]` | `aff_abils` / `real_abils`; `name` is `str`, `stradd`, `int`, `wis`, `dex`, `con`, `cha`. `affect_total` copies real to aff (the mock has no affects that change abilities) |
 //! | `nums["skill:<n>"]` | `GET_SKILL` |
-//! | `nums["act"]`, `nums["pref"]` | the act / preference bitvectors (bit `n` = flag `n`); act bit 3 (`MOB_ISNPC`) is not stored, it reads and writes the shared `nums["is_npc"]` |
+//! | `nums["act"]`, `nums["pref"]` | the act / preference bitvectors (bit `n` = flag `n`); `IS_NPC` is the shared `nums["is_npc"]`, not act bit 3 (the VM reads that through `is_npc`) |
+//! | `globals.nums["dummy:<key>"]` | the C's shared `dummy_mob` record: `prac`, `qp`, `cond:<n>` and `skill:<n>` of every NPC live here, not on the mob |
 //! | `texts["title"]` | `GET_TITLE`; absent = NULL |
 //! | `nums["quest"]` | `GET_QUEST`; absent = `NOTHING` (`-1`) |
 //! | `nums["quest_done:<vnum>"]` | `is_complete(ch, vnum)` |
@@ -27,12 +28,9 @@
 //! tables: an NPC adds, a player below level 1 or at an immortal level is
 //! unchanged, gains add (no level-up, no cap), losses floor the total at 0.
 
-use crate::fields_char::{CharAbil, CharHost, CharStat};
+use crate::fields_char::{CharAbil, CharFact, CharHost, CharStat};
 use crate::mock::MockHost;
 use crate::types::Uid;
-
-/// `MOB_ISNPC`: the act bit that is `IS_NPC`.
-const MOB_ISNPC_BIT: u32 = 3;
 
 /// `MAX_GOLD`.
 const MAX_GOLD: i32 = 2_140_000_000;
@@ -48,12 +46,9 @@ fn stat_key(stat: CharStat) -> &'static str {
         CharStat::MaxMana => "max_mana",
         CharStat::Move => "move",
         CharStat::MaxMove => "max_move",
-        CharStat::Gold => "gold",
-        CharStat::Exp => "exp",
         CharStat::Sex => "sex",
         CharStat::Class => "class",
         CharStat::Pos => "pos",
-        CharStat::Weight => "weight",
         CharStat::Practices => "prac",
         CharStat::QuestPoints => "qp",
         CharStat::WaitState => "wait",
@@ -94,13 +89,57 @@ fn char_num_i32(host: &MockHost, ch: Uid, key: &str) -> i32 {
     i32::try_from(host.num(ch, key)).unwrap_or(0)
 }
 
+/// The entity key and owner for a player-only attribute: an NPC shares the
+/// C's one `dummy_mob` record, held on the globals.
+fn player_only(host: &MockHost, ch: Uid, key: &str) -> Option<String> {
+    let player_key =
+        matches!(key, "prac" | "qp") || key.starts_with("cond:") || key.starts_with("skill:");
+    (player_key && host.num(ch, "is_npc") != 0).then(|| format!("dummy:{key}"))
+}
+
 fn char_exists(host: &MockHost, ch: Uid) -> bool {
     host.entity(ch).is_some()
 }
 
+impl MockHost {
+    /// Read a character number, through the shared NPC record when the C would.
+    fn shared_get(&self, ch: Uid, key: &str) -> i32 {
+        match player_only(self, ch, key) {
+            Some(shared) => {
+                i32::try_from(self.globals.nums.get(&shared).copied().unwrap_or(0)).unwrap_or(0)
+            }
+            None => char_num_i32(self, ch, key),
+        }
+    }
+
+    /// Write a character number, through the shared NPC record when the C would.
+    fn shared_set(&mut self, ch: Uid, key: &str, value: i32) {
+        match player_only(self, ch, key) {
+            Some(shared) => {
+                if char_exists(self, ch) {
+                    self.globals.nums.insert(shared, i64::from(value));
+                }
+            }
+            None => self.set_num(ch, key, i64::from(value)),
+        }
+    }
+}
+
 impl CharHost for MockHost {
     fn char_stat(&self, ch: Uid, stat: CharStat) -> i32 {
-        char_num_i32(self, ch, stat_key(stat))
+        self.shared_get(ch, stat_key(stat))
+    }
+
+    fn char_fact(&self, ch: Uid, fact: CharFact) -> i32 {
+        char_num_i32(
+            self,
+            ch,
+            match fact {
+                CharFact::Gold => "gold",
+                CharFact::Exp => "exp",
+                CharFact::Weight => "weight",
+            },
+        )
     }
 
     fn char_set_level(&mut self, ch: Uid, level: i32) {
@@ -108,10 +147,7 @@ impl CharHost for MockHost {
     }
 
     fn char_set_stat(&mut self, ch: Uid, stat: CharStat, value: i32) {
-        if matches!(stat, CharStat::Gold | CharStat::Exp | CharStat::Weight) {
-            return;
-        }
-        self.set_num(ch, stat_key(stat), i64::from(value));
+        self.shared_set(ch, stat_key(stat), value);
     }
 
     fn char_abil(&self, ch: Uid, abil: CharAbil) -> i32 {
@@ -167,7 +203,7 @@ impl CharHost for MockHost {
             return;
         }
         self.effect(format!("gain_exp {ch}: {gain}"));
-        let exp = self.char_stat(ch, CharStat::Exp);
+        let exp = self.char_fact(ch, CharFact::Exp);
         let level = self.num(ch, "level");
         let value = if self.num(ch, "is_npc") != 0 {
             exp.wrapping_add(gain)
@@ -186,7 +222,7 @@ impl CharHost for MockHost {
             return;
         }
         self.effect(format!("increase_gold {ch}: {amt}"));
-        let curr = self.char_stat(ch, CharStat::Gold);
+        let curr = self.char_fact(ch, CharFact::Gold);
         let mut gold;
         if amt < 0 {
             gold = curr.wrapping_add(amt).max(0);
@@ -232,25 +268,18 @@ impl CharHost for MockHost {
     }
 
     fn char_skill(&self, ch: Uid, skill: i32) -> i32 {
-        char_num_i32(self, ch, &format!("skill:{skill}"))
+        self.shared_get(ch, &format!("skill:{skill}"))
     }
 
     fn char_set_skill(&mut self, ch: Uid, skill: i32, value: i32) {
-        self.set_num(ch, &format!("skill:{skill}"), i64::from(value));
+        self.shared_set(ch, &format!("skill:{skill}"), value);
     }
 
     fn char_act_flagged(&self, ch: Uid, bit: u32) -> bool {
-        if bit == MOB_ISNPC_BIT {
-            return self.num(ch, "is_npc") != 0;
-        }
         (self.num(ch, "act") >> bit.min(62)) & 1 != 0
     }
 
     fn char_set_act_flag(&mut self, ch: Uid, bit: u32, on: bool) {
-        if bit == MOB_ISNPC_BIT {
-            self.set_num(ch, "is_npc", i64::from(on));
-            return;
-        }
         let mask = 1i64 << bit.min(62);
         let act = self.num(ch, "act");
         self.set_num(ch, "act", if on { act | mask } else { act & !mask });

@@ -16,7 +16,7 @@
 //! - A field with a subfield *changes* the character, then returns the new
 //!   value. The C stores into narrow fields (`sh_int` hit points and mana,
 //!   `sbyte` abilities, damroll, hitroll and conditions) with C's implicit
-//!   truncation; [`narrow`] reproduces it, so `%self.hitp(40000)%` wraps as
+//!   truncation; `narrow` reproduces it, so `%self.hitp(40000)%` wraps as
 //!   it does in the game. Arithmetic on `int` fields wraps.
 //! - `level(<n>)` sets the level but leaves the C's result sentinel
 //!   untouched, as does `stradd` below 18 strength and `questpoints`/`qp`/
@@ -32,14 +32,20 @@
 //!   `UNDEFINED `, higher bits are never looked at. When no bit prints,
 //!   `sprintbitarray` leaves `NOBITS ` in the buffer, and that is what the
 //!   search runs over (a flagless player matches `NOBITS`, `bit`, `s`, ...).
-//! - `skill` with an empty or all-fill subfield resolves to spell 1, because
+//! - `skill` with an empty or blank subfield resolves to spell 1, because
 //!   the C's `find_skill_num` falls out of its word loop with nothing left in
-//!   the name (`ok && !*first2`).
+//!   the name (`ok && !*first2`). Fill words are kept (`any_one_arg`), so
+//!   `skill(the)` is an unknown skill. A slot the host leaves undefined is
+//!   named `!UNUSED!`, as in the C.
 //! - `title` on a player with no title prints `(null)`, which is what the
 //!   C's `snprintf("%s", NULL)` gives with glibc.
-//! - Deviations where the C would index out of bounds: a sex, position or
-//!   class outside its name table prints `UNDEFINED` (as `sprinttype` does)
+//! - Deviations where the C would index out of bounds: a sex or position
+//!   outside its name table prints `UNDEFINED` (as `sprinttype` does)
 //!   rather than reading past the array.
+//! - `vnum`, `inventory(<vnum>)` compare vnums as the C's unsigned 16-bit
+//!   `IDXTYPE`: a prototype-less entity (host vnum -1) is 65535.
+//! - Player-only attributes on an NPC go to the host's shared `dummy_mob`
+//!   record (see [`CharHost`]); the mock keeps one on its globals.
 //! - There is no `race` field in this tree's table (tbaMUD has no races);
 //!   none is invented.
 
@@ -60,9 +66,8 @@ const POS_STANDING: i32 = 8;
 /// `PLR_KILLER` and `PLR_THIEF`.
 const PLR_KILLER: u32 = 0;
 const PLR_THIEF: u32 = 1;
-/// The upper bound on the spell numbers [`find_skill_num`] scans: the host
-/// ends its table with `None` well before this.
-const MAX_SPELL_SCAN: i32 = 1000;
+/// `unused_spellname` (`spell_parser.c`), the name of an undefined spell slot.
+const UNUSED_SPELLNAME: &str = "!UNUSED!";
 
 /// `pc_class_types` (`class.c`).
 pub const PC_CLASS_TYPES: &[&str] = &["Magic User", "Cleric", "Thief", "Warrior"];
@@ -164,19 +169,12 @@ pub enum CharStat {
     Move,
     /// `GET_MAX_MOVE(ch)` (`sh_int`).
     MaxMove,
-    /// `GET_GOLD(ch)`. Read only (`char_set_stat` ignores it); written through
-    /// [`CharHost::char_increase_gold`].
-    Gold,
-    /// `GET_EXP(ch)`. Read only (`char_set_stat` ignores it); written through [`CharHost::char_gain_exp`].
-    Exp,
     /// `GET_SEX(ch)`.
     Sex,
     /// `GET_CLASS(ch)`.
     Class,
     /// `GET_POS(ch)`.
     Pos,
-    /// `GET_WEIGHT(ch)` (`ubyte`). Read only: `char_set_stat` ignores it.
-    Weight,
     /// `GET_PRACTICES(ch)`.
     Practices,
     /// `GET_QUESTPOINTS(ch)`.
@@ -201,6 +199,19 @@ pub enum CharStat {
     SaveSpell,
 }
 
+/// A character attribute the field table only reads. Gold and experience are
+/// changed through [`CharHost::char_increase_gold`] and
+/// [`CharHost::char_gain_exp`]; weight is never written.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CharFact {
+    /// `GET_GOLD(ch)`.
+    Gold,
+    /// `GET_EXP(ch)`.
+    Exp,
+    /// `GET_WEIGHT(ch)` (`ubyte`).
+    Weight,
+}
+
 /// An ability score.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CharAbil {
@@ -218,16 +229,23 @@ pub enum CharAbil {
 ///
 /// Every method takes a character id that may no longer exist; the neutral
 /// value is `0`, `false`, `None` or empty, and a write to nothing is ignored.
-/// Player-only attributes (practices, conditions, quest points, skills,
-/// preferences) on an NPC are the host's to define: the C logs and uses a
-/// shared dummy record.
+/// Player-only attributes (practices, conditions, quest points, skills) on an
+/// NPC: the C logs and reads or writes one `dummy_mob` record shared by every
+/// mob (`CHECK_PLAYER_SPECIAL`), so a write through one mob is seen through
+/// another. A faithful host keeps that one shared record for NPCs.
+///
+/// `char_act_flagged(ch, 3)` is `MOB_ISNPC`, the fact `WorldHost::is_npc`
+/// provides; the VM reads that bit through `is_npc` and never asks this trait
+/// for it, so a host need not store it in the act array.
 pub trait CharHost {
     /// The value of one numeric attribute (see [`CharStat`]).
     fn char_stat(&self, ch: Uid, stat: CharStat) -> i32;
 
+    /// A read-only attribute (see [`CharFact`]).
+    fn char_fact(&self, ch: Uid, fact: CharFact) -> i32;
+
     /// Store one numeric attribute: `GET_xxx(ch) = value`. The VM has already
-    /// narrowed `value` to the C field's width. `Gold`, `Exp` and `Weight`
-    /// are read only and ignored.
+    /// narrowed `value` to the C field's width.
     fn char_set_stat(&mut self, ch: Uid, stat: CharStat, value: i32);
 
     /// `GET_LEVEL(ch) = level`. Reads go through `WorldHost::level`.
@@ -273,7 +291,8 @@ pub trait CharHost {
     fn char_top_spell(&self) -> i32;
 
     /// `spell_info[spell].name` for `spell` in `1..=TOP_SPELL_DEFINE`; `None`
-    /// for a slot the host does not define (treated as a non-match).
+    /// for a slot the host does not define (read as `"!UNUSED!"`, the C's
+    /// name for an unused slot).
     fn char_spell_name(&self, spell: i32) -> Option<String>;
 
     /// `GET_SKILL(ch, skill)`.
@@ -331,10 +350,10 @@ fn narrow(width: Width, value: i32) -> i32 {
 /// `find_skill_num(name)` (`spell_parser.c`): the spell whose name `name`
 /// abbreviates, whole or word by word; `-1` when none.
 pub fn find_skill_num<H: CharHost + ?Sized>(host: &H, name: &str) -> i32 {
-    for index in 1..=host.char_top_spell().min(MAX_SPELL_SCAN) {
-        let Some(spell) = host.char_spell_name(index) else {
-            continue;
-        };
+    for index in 1..=host.char_top_spell() {
+        let spell = host
+            .char_spell_name(index)
+            .unwrap_or_else(|| UNUSED_SPELLNAME.to_owned());
         if is_abbrev(name, &spell) {
             return index;
         }
@@ -371,6 +390,12 @@ pub fn char_has_item<H: DgHost + ?Sized>(host: &H, item: &str, ch: Uid) -> bool 
         return true;
     }
     item_in_list(host, item, &host.carrying(ch)) != 0
+}
+
+/// A vnum as the C holds it: `IDXTYPE` is `ush_int` here, so `NOTHING` (the
+/// host's -1) is 65535.
+fn c_vnum(vnum: i32) -> i32 {
+    i32::from(u16::try_from(vnum).unwrap_or(u16::MAX))
 }
 
 /// `"1"` or `"0"`.
@@ -539,7 +564,7 @@ pub fn char_field<H: DgHost + ?Sized>(
             if has_sub {
                 host.char_gain_exp(c, atoi(sub).min(1000));
             }
-            number(host.char_stat(c, CharStat::Exp))
+            number(host.char_fact(c, CharFact::Exp))
         }
         "fighting" => uid_or_empty(host.char_fighting(c)),
         "follower" => uid_or_empty(host.char_first_follower(c)),
@@ -547,7 +572,7 @@ pub fn char_field<H: DgHost + ?Sized>(
             if has_sub {
                 host.char_increase_gold(c, atoi(sub));
             }
-            number(host.char_stat(c, CharStat::Gold))
+            number(host.char_fact(c, CharFact::Gold))
         }
         "has_item" => {
             if has_sub {
@@ -594,7 +619,10 @@ pub fn char_field<H: DgHost + ?Sized>(
             let carrying = host.carrying(c);
             if has_sub {
                 let vnum = atoi(sub);
-                let found = carrying.iter().copied().find(|obj| host.vnum(*obj) == vnum);
+                let found = carrying
+                    .iter()
+                    .copied()
+                    .find(|obj| c_vnum(host.vnum(*obj)) == vnum);
                 uid_or_empty(found)
             } else {
                 uid_or_empty(carrying.first().copied())
@@ -640,7 +668,12 @@ pub fn char_field<H: DgHost + ?Sized>(
             if has_sub {
                 let mut buf = String::new();
                 for (bit, name) in (0u32..).zip(ACTION_BITS.iter()) {
-                    if host.char_act_flagged(c, bit) {
+                    let set = if bit == 3 {
+                        host.is_npc(c)
+                    } else {
+                        host.char_act_flagged(c, bit)
+                    };
+                    if set {
                         buf.push_str(name);
                         buf.push(' ');
                     }
@@ -775,15 +808,15 @@ pub fn char_field<H: DgHost + ?Sized>(
         }
         "vnum" => {
             if has_sub {
-                let same = host.is_npc(c) && host.vnum(c) == atoi(sub);
+                let same = host.is_npc(c) && c_vnum(host.vnum(c)) == atoi(sub);
                 number(i32::from(same))
             } else if host.is_npc(c) {
-                number(host.vnum(c))
+                number(c_vnum(host.vnum(c)))
             } else {
                 Some("-1".to_owned())
             }
         }
-        "weight" => number(host.char_stat(c, CharStat::Weight)),
+        "weight" => number(host.char_fact(c, CharFact::Weight)),
         "wis" => {
             let max = abil_max(host, c);
             adjust_abil(host, c, CharAbil::Wis, sub, 3, max)
@@ -1634,5 +1667,158 @@ mod tests {
         assert_eq!(f.s(pc, "eq", "*"), "");
         assert_eq!(f.s(pc, "has_item", "1234"), "0");
         assert_eq!(f.s(pc, "gold", ""), "0");
+    }
+
+    #[test]
+    fn npcflag_reads_isnpc_through_is_npc() {
+        let mut f = fx();
+        let (mob, pc) = (f.mob, f.pc);
+        // The mock's act word has no bit 3 stored; IS_NPC is its own fact.
+        assert_eq!(f.host.num(mob, "act") & 8, 0);
+        assert_eq!(f.s(mob, "npcflag", "ISNPC"), "1");
+        // sprintbitarray prints "ISNPC " only: NOBITS must not appear.
+        assert_eq!(f.s(mob, "npcflag", "NOBITS"), "0");
+        assert_eq!(f.s(pc, "npcflag", "ISNPC"), "0");
+        assert_eq!(f.s(pc, "npcflag", "NOBITS"), "1");
+    }
+
+    #[test]
+    fn vnums_compare_as_unsigned_sixteen_bit() {
+        let mut f = fx();
+        let (mob, pc) = (f.mob, f.pc);
+        let nowhere = f.host.add_obj(-1, "corpse");
+        f.host.obj_to_char(nowhere, pc);
+        // GET_OBJ_VNUM of a prototype-less object is NOTHING, 65535.
+        assert_eq!(f.s(pc, "inventory", "65535"), uid_text(nowhere));
+        assert_eq!(f.s(pc, "inventory", "-1"), "");
+        let ghost = f.host.add_mob(-1, "ghost");
+        assert_eq!(f.s(ghost, "vnum", ""), "65535");
+        assert_eq!(f.s(ghost, "vnum", "65535"), "1");
+        assert_eq!(f.s(ghost, "vnum", "-1"), "0");
+        assert_eq!(f.s(mob, "vnum", "3000"), "1");
+        assert_eq!(f.s(mob, "vnum", "abc"), "0");
+        assert_eq!(f.s(pc, "vnum", ""), "-1");
+    }
+
+    #[test]
+    fn npcs_share_one_dummy_player_record() {
+        let mut f = fx();
+        let (mob, pc) = (f.mob, f.pc);
+        let other = f.host.add_mob(3001, "the cook");
+        // CHECK_PLAYER_SPECIAL: every mob reads and writes dummy_mob.
+        assert_eq!(f.s(mob, "thirst", "-1"), "-1");
+        assert_eq!(f.s(other, "thirst", ""), "-1");
+        assert_eq!(f.s(mob, "prac", "5"), "5");
+        assert_eq!(f.s(other, "prac", ""), "5");
+        assert_eq!(f.s(pc, "prac", ""), "0");
+        assert_eq!(f.s(pc, "thirst", ""), "0");
+    }
+
+    #[test]
+    fn skill_names_use_the_unused_slot_name() {
+        let mut f = fx();
+        let pc = f.pc;
+        spells(&mut f.host);
+        // Slot 5 defined above a gap at 4, past any fixed scan limit.
+        f.host
+            .globals
+            .texts
+            .insert("spell:1001".into(), "zap".into());
+        f.host.set_num(pc, "skill:1001", 9);
+        assert_eq!(f.s(pc, "skill", "zap"), "9");
+        // is_abbrev("!", "!UNUSED!") matches slot 4, whose skill is 0.
+        assert_eq!(f.s(pc, "skill", "!"), "0");
+        assert_eq!(f.s(pc, "skill", "!unused!"), "0");
+        // Fill words are kept by any_one_arg.
+        assert_eq!(f.s(pc, "skill", "the"), "unknown skill");
+        // An empty name resolves to spell 1.
+        f.host.set_num(pc, "skill:1", 42);
+        assert_eq!(f.s(pc, "skill", " "), "42");
+    }
+
+    #[test]
+    fn alias_is_the_keyword_list() {
+        let mut f = fx();
+        let mob = f.mob;
+        f.host.set_text(mob, "alias", "guard city man");
+        assert_eq!(f.s(mob, "alias", ""), "guard city man");
+        assert_eq!(f.s(mob, "name", ""), "the guard");
+    }
+
+    #[test]
+    fn eq_position_names_ignore_case() {
+        let mut f = fx();
+        let mob = f.mob;
+        let sword = f.host.add_obj(100, "sword");
+        f.host.equip_char(mob, sword, 16);
+        assert_eq!(f.s(mob, "eq", "WIELD"), uid_text(sword));
+        assert_eq!(f.s(mob, "eq", "Wield"), uid_text(sword));
+    }
+
+    #[test]
+    fn stradd_needs_effective_strength() {
+        let mut f = fx();
+        let pc = f.pc;
+        // GET_STR is the effective value: real 17 with an affect at 18 passes.
+        f.host.set_num(pc, "abil:str", 18);
+        f.host.set_num(pc, "rabil:str", 17);
+        assert!(f.get(pc, "stradd", "").is_some());
+        // Real 18 with an affect lowering it to 17 does not.
+        f.host.set_num(pc, "abil:str", 17);
+        f.host.set_num(pc, "rabil:str", 18);
+        assert_eq!(f.get(pc, "stradd", ""), None);
+    }
+
+    #[test]
+    fn canbeseen_ignores_the_viewer_for_world_triggers() {
+        let mut f = fx();
+        let (mob, pc) = (f.mob, f.pc);
+        f.host
+            .entity_mut(mob)
+            .unwrap()
+            .lists
+            .insert("cannot_see".to_owned(), vec![pc]);
+        let owner = mob;
+        let mut cx = Cx {
+            host: &mut f.host,
+            owner,
+            attach: AttachType::Wld,
+            trig: &mut f.trig,
+        };
+        assert_eq!(
+            char_field(&mut cx, pc, "canbeseen", ""),
+            Some("1".to_owned())
+        );
+    }
+
+    #[test]
+    fn exp_is_capped_and_floored_on_players() {
+        let mut f = fx();
+        let pc = f.pc;
+        f.host.set_num(pc, "exp", 100);
+        // MIN(atoi, 1000) then gain_exp: +1000.
+        assert_eq!(f.s(pc, "exp", "5000"), "1100");
+        // A loss cannot take a player below 0.
+        assert_eq!(f.s(pc, "exp", "-5000"), "0");
+    }
+
+    #[test]
+    fn class_can_be_set_on_an_npc() {
+        let mut f = fx();
+        let mob = f.mob;
+        assert_eq!(f.s(mob, "class", "thief"), "1");
+        assert_eq!(f.host.num(mob, "class"), 2);
+        assert_eq!(f.s(mob, "class", ""), "Thief");
+    }
+
+    #[test]
+    fn high_preference_bits_are_read() {
+        let mut f = fx();
+        let pc = f.pc;
+        // ZONERESETS is bit 34 of the table.
+        assert_eq!(f.s(pc, "pref", "ZONERESETS"), "0");
+        f.host.set_num(pc, "pref", 1 << 34);
+        assert_eq!(f.s(pc, "pref", "ZONERESETS"), "1");
+        assert_eq!(f.s(pc, "pref", "AUTODOOR"), "0");
     }
 }
