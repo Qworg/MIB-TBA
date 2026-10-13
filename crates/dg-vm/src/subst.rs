@@ -43,9 +43,8 @@
 //!   with diagonals on, for both the exit count and the roll.
 //! - The vnum arguments of `%people%`, `%findmob%` and the room of
 //!   `%findobj%` are narrowed to `IDXTYPE` (`u16`) as the C does, so `65535`
-//!   is `NOBODY` and `68537` is `3001`. The object vnum of `%findobj%` goes
-//!   through `lookup::item_in_list`, which compares the un-narrowed value
-//!   (reported as a contract request).
+//!   is `NOBODY` and `68537` is `3001`. So is the object vnum of `%findobj%`
+//!   (`fields_obj::item_in_list_c`).
 //! - `%global.name%` reads the script of `world[0]`; the port takes that to
 //!   be room vnum 0 (`real_room(0)`), the void the rest of the C names by
 //!   `r->number == 0`.
@@ -64,8 +63,7 @@ use crate::expr::process_eval;
 use crate::host::{BaseHost, Cx, DgHost};
 use crate::lookup::{
     get_char, get_char_by_obj, get_char_by_room, get_char_in_room, get_obj, get_obj_by_obj,
-    get_obj_by_room, get_obj_in_list, get_object_in_equip, get_room, item_in_list, obj_room,
-    trgvar_in_room,
+    get_obj_by_room, get_obj_in_list, get_object_in_equip, get_room, obj_room, trgvar_in_room,
 };
 use crate::text::text_processed;
 use crate::types::{AttachType, DIRS, MAX_INPUT_LENGTH, NUM_OF_DIRS, ROOM_ID_BASE, Uid, uid_text};
@@ -499,21 +497,8 @@ fn replace<H: DgHost + ?Sized>(
             },
         },
         Ent::Room(r) => {
-            // special handling of the void, as it stores all 'full global'
-            // variables
-            if cx.host.vnum(r) == 0 {
-                if cx.host.script(r).is_none() {
-                    let message = format!(
-                        "Trigger: {}, Vnum {}, type {}. Trying to access Global var list of void. Apparently this has not been set up!",
-                        cx.trig.proto.name,
-                        cx.trig.proto.vnum,
-                        attach.index()
-                    );
-                    cx.host.script_log(&message);
-                    return String::new();
-                }
-                return own_global(&*cx.host, r, field).unwrap_or_default();
-            }
+            // The void (room 0) stores the 'full global' variables; room_field
+            // answers for it.
             match fields_room::room_field(cx, r, field, subfield) {
                 Some(text) => text,
                 None => match own_global(&*cx.host, r, field) {
@@ -730,7 +715,7 @@ fn special_var<H: DgHost + ?Sized>(
         };
         // item_in_list looks within containers as well.
         let list = cx.host.room_contents(room);
-        return Special::Done(item_in_list(&*cx.host, subfield, &list).to_string());
+        return Special::Done(fields_obj::item_in_list_c(&*cx.host, subfield, &list).to_string());
     }
     if str_eq(var, "random") {
         return Special::Done(random_var(cx, attach, field));
@@ -1283,6 +1268,8 @@ mod tests {
             "1"
         );
         assert_eq!(sub(&mut w, "%findobj.3001(9)%"), "0");
+        // The object vnum is an IDXTYPE too: 68556 is 3020 (item_in_list).
+        assert_eq!(sub(&mut w, "%findobj.3001(68556)%"), "2");
     }
 
     #[test]
@@ -1326,6 +1313,82 @@ mod tests {
         // A 0 on the second candidate takes it.
         w.host.rolls.extend([0, 0]);
         assert_eq!(sub(&mut w, "%random.char%"), uid_text(thug));
+    }
+
+    #[test]
+    fn random_char_for_an_object_or_room_allows_gods() {
+        // find_replacement: `valid_dg_target(c, DG_ALLOW_GODS)` for the
+        // object and world cases, so a level 34 god without nohassle is a
+        // target; with nohassle it is not.
+        let mut w = world();
+        let sword = w.sword;
+        let hall = w.host.add_room(1, "Hall");
+        let god = w.host.add_player("Zeus");
+        w.host.set_num(god, "level", 34);
+        w.host.char_to_room(god, hall);
+        w.host.obj_to_room(sword, hall);
+        let expect = uid_text(god);
+        assert_eq!(
+            run(&mut w, sword, AttachType::Obj, |cx| var_subst(
+                cx,
+                "%random.char%"
+            )),
+            expect
+        );
+        assert_eq!(
+            run(&mut w, hall, AttachType::Wld, |cx| var_subst(
+                cx,
+                "%random.char%"
+            )),
+            expect
+        );
+        w.host.set_num(god, "nohassle", 1);
+        assert_eq!(
+            run(&mut w, hall, AttachType::Wld, |cx| var_subst(
+                cx,
+                "[%random.char%]"
+            )),
+            "[]"
+        );
+    }
+
+    #[test]
+    fn random_dir_names_an_exit_that_leads_nowhere() {
+        // `for (i = 0; i < DIR_COUNT; i++) if (R_EXIT(room, i)) doors++;`:
+        // an exit to NOWHERE is still an exit, so the only one, south, is
+        // the answer.
+        let mut w = world();
+        let (guard, room) = (w.guard, w.room);
+        w.host.set_num(room, "exit:2:nowhere", 1);
+        assert_eq!(sub(&mut w, "%random.dir%"), "south");
+        w.host.rolls.push_back(5);
+        w.host.rolls.push_back(2);
+        assert_eq!(
+            run(&mut w, guard, AttachType::Mob, |cx| var_subst(
+                cx,
+                "%random.dir%"
+            )),
+            "south"
+        );
+    }
+
+    #[test]
+    fn a_mob_names_the_character_in_its_own_room_before_any_elsewhere() {
+        // find_replacement (mob): get_char_in_room(world[IN_ROOM(ch)], name)
+        // comes before get_char_vis / get_obj_vis over the whole world.
+        let mut w = world();
+        let hall = w.host.add_room(1, "Hall");
+        let far = w.host.add_mob(4000, "rat");
+        w.host.char_to_room(far, hall);
+        let near = w.host.add_mob(4001, "rat");
+        let room = w.room;
+        w.host.char_to_room(near, room);
+        // One more elsewhere, created after, so either end of the world's
+        // character list is a rat that is not in this room.
+        let far_after = w.host.add_mob(4002, "rat");
+        w.host.char_to_room(far_after, hall);
+        w.trig.vars.add_var("who", "rat", 0);
+        assert_eq!(sub(&mut w, "%who.vnum%"), "4001");
     }
 
     #[test]
@@ -2539,7 +2602,8 @@ mod integration {
         g.trig.vars.add_var("amount", "7", 0);
         assert_eq!(sub(&mut g, "%actor.gold(%amount%)%"), "7");
         // A later reference without parentheses sees the earlier subfield
-        // text again (subfield_p is never reset): gold(7) once more.
+        // text again (subfield_p is never reset): the second reference
+        // re-applies "3" to 10, giving 13.
         assert_eq!(sub(&mut g, "%actor.gold(3)% %actor.gold%"), "10 13");
         // Alignment is clamped to -1000..1000.
         assert_eq!(sub(&mut g, "%actor.align(5000)%"), "1000");
@@ -2760,12 +2824,16 @@ mod integration {
         assert_eq!(sub(&mut g, "%random.6% %random.0%"), "4 0");
         // %random.dir% names an exit: the Temple's only one is north.
         assert_eq!(sub(&mut g, "%random.dir%"), "north");
-        // 14.trg:11.trg `if %here.north%`: an exit with no flags prints
+        // 11.trg `if %here.north%`: an exit with no flags prints
         // NOBITS, which is true; no exit is empty.
         g.trig.vars.add_var("here", "3001", 0);
         assert!(truth(&mut g, "%here.north%"));
         assert!(!truth(&mut g, "%here.east%"));
         assert_eq!(sub(&mut g, "%here.north(vnum)%"), "3002");
+        // A world-file exit without a key has NOTHING (65535); an exit the
+        // mock has no key for is the calloc'd 0.
+        assert_eq!(sub(&mut g, "%here.north(key)%"), "0");
+        g.host.set_num(g.temple, "exit:0:key", 65535);
         assert_eq!(sub(&mut g, "%here.north(key)%"), "65535");
     }
 
@@ -3118,8 +3186,29 @@ done";
     }
 
     #[test]
+    fn an_exit_made_by_wdoor_has_the_callocd_key() {
+        // do_wdoor: `CREATE(newexit, struct room_direction_data, 1)` is
+        // calloc, so a fresh exit has key 0 (not NOTHING).
+        let mut g = game();
+        let temple = g.temple;
+        run_trigger(
+            &mut g,
+            temple,
+            AttachType::Wld,
+            "e",
+            &[],
+            "wdoor 3001 south flags a",
+        );
+        g.trig.vars.add_var("here", "3001", 0);
+        assert_eq!(sub(&mut g, "%here.south%"), "DOOR ");
+        assert_eq!(sub(&mut g, "%here.south(key)%"), "0");
+        assert_eq!(sub(&mut g, "%here.south(vnum)%"), "0");
+    }
+
+    #[test]
     fn the_speech_variable_checker_reads_a_variable_named_by_the_speaker() {
-        // 13.trg #1344, with the continuation line of the echo left out.
+        // 13.trg #1344 verbatim, except that `%echo%` is `say` and the echo's
+        // continuation line is joined (the harness records `say` lines).
         let body = "eval name %actor.car%\n\
 eval test %%name.varexists(%speech.cdr%)%%\n\
 if %test%\n\
@@ -3141,9 +3230,8 @@ end";
                 ("actor", bob.clone()),
                 ("speech", "Bob zzcustom".to_owned()),
             ],
-            // The speaker's own words are "Bob zzcustom": the first word is
-            // the target; here that is the actor car.
-            &body.replace("%actor.car%", "%actor%"),
+            // %actor.car% is text_processed on the UID text: the UID itself.
+            body,
         );
         assert_eq!(
             said,
@@ -3155,7 +3243,7 @@ end";
             AttachType::Mob,
             "d",
             &[("actor", bob), ("speech", "Bob nosuch".to_owned())],
-            &body.replace("%actor.car%", "%actor%"),
+            body,
         );
         assert_eq!(said, vec!["say Bob doesnt have the variable nosuch."]);
     }

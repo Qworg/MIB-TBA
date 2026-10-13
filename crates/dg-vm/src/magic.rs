@@ -52,64 +52,7 @@ pub const TAR_OBJ_EQUIP: u32 = 1 << 10;
 /// refused.
 pub const MAG_GROUPS: u32 = 1 << 5;
 
-/// `apply_types[]` (`constants.c`), without the `"\n"` terminator. The index
-/// is the `APPLY_*` number.
-pub const APPLY_TYPES: &[&str] = &[
-    "NONE",
-    "STR",
-    "DEX",
-    "INT",
-    "WIS",
-    "CON",
-    "CHA",
-    "CLASS",
-    "LEVEL",
-    "AGE",
-    "CHAR_WEIGHT",
-    "CHAR_HEIGHT",
-    "MAXMANA",
-    "MAXHIT",
-    "MAXMOVE",
-    "GOLD",
-    "EXP",
-    "ARMOR",
-    "HITROLL",
-    "DAMROLL",
-    "SAVING_PARA",
-    "SAVING_ROD",
-    "SAVING_PETRI",
-    "SAVING_BREATH",
-    "SAVING_SPELL",
-];
-
-/// `affected_bits[]` (`constants.c`), without the `"\n"` terminator. The
-/// index is the `AFF_*` bit number; entry 0 is the empty string the C keeps
-/// there.
-pub const AFFECTED_BITS: &[&str] = &[
-    "",
-    "BLIND",
-    "INVIS",
-    "DET-ALIGN",
-    "DET-INVIS",
-    "DET-MAGIC",
-    "SENSE-LIFE",
-    "WATWALK",
-    "SANCT",
-    "GROUP",
-    "CURSE",
-    "INFRA",
-    "POISON",
-    "PROT-EVIL",
-    "PROT-GOOD",
-    "SLEEP",
-    "NO_TRACK",
-    "FLY",
-    "SCUBA",
-    "SNEAK",
-    "HIDE",
-    "UNUSED",
-    "CHARM",
-];
+pub use crate::fields_obj::{AFFECTED_BITS, APPLY_TYPES};
 
 /// The spell and affect primitives.
 ///
@@ -823,17 +766,6 @@ mod tests {
     }
 
     #[test]
-    fn name_tables_match_the_c() {
-        assert_eq!(APPLY_TYPES.len(), 25);
-        assert_eq!(APPLY_TYPES[17], "ARMOR");
-        assert_eq!(APPLY_TYPES[24], "SAVING_SPELL");
-        assert_eq!(AFFECTED_BITS.len(), 23);
-        assert_eq!(AFFECTED_BITS[0], "");
-        assert_eq!(AFFECTED_BITS[8], "SANCT");
-        assert_eq!(AFFECTED_BITS[22], "CHARM");
-    }
-
-    #[test]
     fn an_apply_affect() {
         let mut w = world();
         affect(&mut w, "dg_affect bob armor -20 5");
@@ -1099,6 +1031,16 @@ mod tests {
         assert_eq!(find_skill_num(&w.host, "sanct"), SANCTUARY);
         assert_eq!(find_skill_num(&w.host, "magic missile extra"), -1);
         assert_eq!(find_skill_num(&w.host, "zork"), -1);
+    }
+
+    #[test]
+    fn the_scan_reaches_top_spell_define() {
+        // spell_parser.c: `for (skindex = 1; skindex <= TOP_SPELL_DEFINE; ...)`.
+        let mut w = world();
+        w.host.add_spell("zzlast", TOP_SPELL_DEFINE, 0, 0);
+        w.host.add_spell("zzbeyond", TOP_SPELL_DEFINE + 1, 0, 0);
+        assert_eq!(find_skill_num(&w.host, "zzlast"), TOP_SPELL_DEFINE);
+        assert_eq!(find_skill_num(&w.host, "zzbeyond"), -1);
     }
 
     #[test]

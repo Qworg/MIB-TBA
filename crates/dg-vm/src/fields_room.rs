@@ -493,9 +493,10 @@ mod tests {
         assert_eq!(f(&mut h, r, "south", "vnum"), "");
 
         // An exit that leads nowhere (the shared `nowhere` key): vnum is
-        // NOWHERE (65535 in this tree), room is empty, and with no key set
-        // the key is NOTHING, 65535.
+        // NOWHERE (65535 in this tree), room is empty, and a key of NOTHING
+        // (a world-file exit without one) is 65535.
         h.set_num(r, "exit:5:nowhere", 1);
+        h.set_num(r, "exit:5:key", 65535);
         assert_eq!(f(&mut h, r, "down", ""), "NOBITS ");
         assert_eq!(f(&mut h, r, "down", "vnum"), "65535");
         assert_eq!(f(&mut h, r, "down", "room"), "");

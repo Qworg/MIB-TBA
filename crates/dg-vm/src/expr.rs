@@ -477,6 +477,27 @@ mod tests {
     }
 
     #[test]
+    fn the_ops_table_order_decides_which_operator_splits_first() {
+        // ops[] is "||" "&&" "==" "!=" "<=" ">=" "<" ">" "/=" "-" ...: the
+        // first operator in table order that occurs splits the line.
+        // "<=" splits first: (3 >= 2) <= 0 is 1 <= 0.
+        assert_eq!(eval("3 >= 2 <= 0"), "0");
+        // "<" before ">": (2 > 1) < 1 is 1 < 1.
+        assert_eq!(eval("2 > 1 < 1"), "0");
+        // "/=" before "-": (5 - 3) /= 2 is str_str("2", "2").
+        assert_eq!(eval("5 - 3 /= 2"), "1");
+    }
+
+    #[test]
+    fn not_is_true_only_for_zero_or_nothing() {
+        // eval_op "!": a number is `!atoi(rhs)`, anything else `!*rhs`.
+        assert_eq!(eval("!0x"), "0");
+        assert_eq!(eval("!0"), "1");
+        assert_eq!(eval("!5"), "0");
+        assert_eq!(eval("!"), "1");
+    }
+
+    #[test]
     fn eval_op_trims_operands() {
         assert_eq!(eval_op("==", "  5  ", "\t5\n"), "1");
         assert_eq!(eval_op("==", " a b ", "a b"), "1");

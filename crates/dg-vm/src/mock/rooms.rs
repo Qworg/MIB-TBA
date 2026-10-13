@@ -10,17 +10,15 @@
 //! An exit exists (`R_EXIT(room, dir) != NULL`) when `links["exit:<dir>"]` or
 //! `nums["exit:<dir>:nowhere"]` is present, as the shared table says. Its
 //! `to_room` is the link, or `NOWHERE` when the link is absent, non-existent
-//! or `nowhere` is set. An exit with no `exit:<dir>:key` has no key
-//! (`NOTHING`, 65535). The zone is `nums["zone"]`, the zone's *number*
+//! or `nowhere` is set. An exit with no `exit:<dir>:key` has key 0, the
+//! calloc'd value of an exit a script just created; a test that models a
+//! world-file exit without a key sets `exit:<dir>:key` to 65535 (`NOTHING`). The zone is `nums["zone"]`, the zone's *number*
 //! (`zone_table[r->zone].number`, not its index), and its name
 //! `globals.texts["zone:<number>:name"]`.
 
 use crate::fields_room::{RoomExit, RoomHost};
 use crate::mock::MockHost;
 use crate::types::Uid;
-
-/// `NOTHING` as an `obj_vnum`: the key of an exit that has none.
-const NO_KEY: i32 = 65535;
 
 impl RoomHost for MockHost {
     fn room_exit(&self, room: Uid, dir: usize) -> Option<RoomExit> {
@@ -37,7 +35,7 @@ impl RoomHost for MockHost {
             key: entity
                 .nums
                 .get(&format!("{prefix}:key"))
-                .map_or(NO_KEY, |key| i32::try_from(*key).unwrap_or(0)),
+                .map_or(0, |key| i32::try_from(*key).unwrap_or(0)),
             info: u32::try_from(self.num(room, &format!("{prefix}:flags"))).unwrap_or(0),
         })
     }

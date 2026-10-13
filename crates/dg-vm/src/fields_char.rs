@@ -46,10 +46,7 @@
 //! - `vnum`, `inventory(<vnum>)` compare vnums as the C's unsigned 16-bit
 //!   `IDXTYPE`: a prototype-less entity (host vnum any negative number) is
 //!   65535; a vnum above 65535, which the C cannot hold, is passed through.
-//!   The exception is `has_item(<vnum>)`: it compares through
-//!   [`crate::lookup::item_in_list`] and
-//!   [`crate::lookup::get_object_in_equip`], which compare the host's vnum
-//!   signed, so a prototype-less object does not answer `has_item(65535)`.
+//!   `has_item(<vnum>)` compares the same way, both sides narrowed to 16 bits.
 //! - Player-only attributes on an NPC go to the host's shared `dummy_mob`
 //!   record (see [`CharHost`]); the mock keeps one on its globals.
 //! - There is no `race` field in this tree's table (tbaMUD has no races);
@@ -58,9 +55,9 @@
 use crate::cstr::{
     atoi, is_abbrev, is_number, one_word, skip_spaces, sprinttype, str_str, strn_cmp,
 };
-use crate::fields_obj::c_vnum;
+use crate::fields_obj::{c_vnum, get_object_in_equip_c, item_in_list_c};
 use crate::host::{Cx, DgHost};
-use crate::lookup::{NUM_WEARS, find_eq_pos_script, get_object_in_equip, item_in_list};
+use crate::lookup::{NUM_WEARS, find_eq_pos_script};
 use crate::magic::find_skill_num;
 use crate::types::{
     AttachType, LVL_GRGOD, LVL_IMMORT, PULSE_VIOLENCE, ROOM_ID_BASE, Uid, uid_text,
@@ -179,6 +176,8 @@ pub enum CharStat {
     Move,
     /// `GET_MAX_MOVE(ch)` (`sh_int`).
     MaxMove,
+    /// `GET_SEX(ch)`.
+    Sex,
     /// `GET_CLASS(ch)`.
     Class,
     /// `GET_POS(ch)`.
@@ -209,7 +208,7 @@ pub enum CharStat {
 
 /// A character attribute the field table only reads. Gold and experience are
 /// changed through [`CharHost::char_increase_gold`] and
-/// [`CharHost::char_gain_exp`]; weight and sex are never written.
+/// [`CharHost::char_gain_exp`]; weight is never written.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CharFact {
     /// `GET_GOLD(ch)`.
@@ -218,8 +217,6 @@ pub enum CharFact {
     Exp,
     /// `GET_WEIGHT(ch)` (`ubyte`).
     Weight,
-    /// `GET_SEX(ch)`.
-    Sex,
 }
 
 /// An ability score.
@@ -367,10 +364,10 @@ pub fn skill_percent<H: DgHost + ?Sized>(host: &H, ch: Uid, skill: &str) -> Stri
 /// `char_has_item(item, ch)` (`dg_variables.c`): worn, or carried (searching
 /// containers), by id, vnum or keyword.
 pub fn char_has_item<H: DgHost + ?Sized>(host: &H, item: &str, ch: Uid) -> bool {
-    if get_object_in_equip(host, ch, item).is_some() {
+    if get_object_in_equip_c(host, ch, item).is_some() {
         return true;
     }
-    item_in_list(host, item, &host.carrying(ch)) != 0
+    item_in_list_c(host, item, &host.carrying(ch)) != 0
 }
 
 /// `"1"` or `"0"`.
@@ -738,7 +735,7 @@ pub fn char_field<H: DgHost + ?Sized>(
         "saving_petri" => save(host, c, CharStat::SavePetri, sub),
         "saving_rod" => save(host, c, CharStat::SaveRod, sub),
         "saving_spell" => save(host, c, CharStat::SaveSpell, sub),
-        "sex" => table_name(host.char_fact(c, CharFact::Sex), GENDERS),
+        "sex" => table_name(host.char_stat(c, CharStat::Sex), GENDERS),
         "skill" => Some(skill_percent(host, c, sub)),
         "skillset" => {
             if !host.is_npc(c) && has_sub {
@@ -815,7 +812,7 @@ pub fn char_field<H: DgHost + ?Sized>(
 
 /// `HSSH`/`HMHR`/`HSHR`: `words` is the neutral, male and female form.
 fn pronoun<H: DgHost + ?Sized>(host: &H, c: Uid, words: [&str; 3]) -> String {
-    let sex = host.char_fact(c, CharFact::Sex);
+    let sex = host.char_stat(c, CharStat::Sex);
     let word = match sex {
         0 => words[0],
         1 => words[1],
@@ -1113,6 +1110,17 @@ mod tests {
         assert_eq!(f.s(mob, "exp", "5000"), "1010");
         assert_eq!(f.s(mob, "exp", "-4"), "1006");
         assert!(f.host.effects.iter().any(|e| e.starts_with("gain_exp")));
+    }
+
+    #[test]
+    fn practices_and_quest_points_are_full_ints() {
+        // spells_to_learn and questpoints are `int` in structs.h.
+        let mut f = fx();
+        let pc = f.pc;
+        assert_eq!(f.s(pc, "prac", "40000"), "40000");
+        assert_eq!(f.s(pc, "prac", "30000"), "70000");
+        assert_eq!(f.s(pc, "questpoints", "100000"), "100000");
+        assert_eq!(f.s(pc, "qp", "-1"), "99999");
     }
 
     #[test]
@@ -1446,6 +1454,7 @@ mod tests {
         // DEAD(ch) fact: an extracted mob has it, an act bit does not make it.
         f.host.set_num(mob, "act", 1 << 19);
         assert_eq!(f.s(mob, "npcflag", "DEAD"), "0");
+        assert!(!f.host.is_dead(mob));
         f.host.set_num(mob, "act", 0);
         f.host.extract_char(mob);
         assert_eq!(f.s(mob, "npcflag", "DEAD"), "1");
@@ -1878,20 +1887,28 @@ mod tests {
     }
 
     #[test]
-    fn has_item_still_compares_vnums_signed() {
-        // A known difference, from lookup::item_in_list (reported): the C
-        // narrows both sides to 16 bits, so a prototype-less object (host
-        // vnum -1) answers `has_item(65535)`. The VM answers 0 there, while
-        // `inventory(65535)` agrees with the C.
+    fn has_item_compares_vnums_as_sixteen_bit_idxtype() {
+        // item_in_list and get_object_in_equip compare `obj_vnum ovnum =
+        // atoi(item)` with GET_OBJ_VNUM, both ush_int: a prototype-less
+        // object (host vnum -1) is 65535, and 68556 is 3020.
         let mut f = fx();
         let pc = f.pc;
         let corpse = f.host.add_obj(-1, "a corpse");
         f.host.obj_to_char(corpse, pc);
         assert_eq!(f.s(pc, "inventory", "65535"), uid_text(corpse));
-        assert_eq!(f.s(pc, "has_item", "65535"), "0");
+        assert_eq!(f.s(pc, "has_item", "65535"), "1");
+        let lamp = f.host.add_obj(3020, "a lamp");
+        f.host.obj_to_char(lamp, pc);
+        assert_eq!(f.s(pc, "has_item", "68556"), "1");
+        assert_eq!(f.s(pc, "has_item", "3021"), "0");
+        // Worn objects compare the same way.
+        let ring = f.host.add_obj(-1, "a ring");
+        f.host.equip_char(pc, ring, 1);
+        f.host.extract_obj(corpse);
+        assert_eq!(f.s(pc, "has_item", "65535"), "1");
         // Looking it up by id or name works.
-        assert_eq!(f.s(pc, "has_item", &uid_text(corpse)), "1");
-        assert_eq!(f.s(pc, "has_item", "corpse"), "1");
+        assert_eq!(f.s(pc, "has_item", &uid_text(lamp)), "1");
+        assert_eq!(f.s(pc, "has_item", "lamp"), "1");
     }
 
     #[test]
@@ -2048,18 +2065,35 @@ mod tests {
         let (mob, pc) = (f.mob, f.pc);
         f.host.extract_char(mob);
         f.host.extract_char(pc);
-        // Neither dead bit is stored in the act array; reads answer is_dead.
+        // Neither dead bit is stored in the act array, and the act array
+        // never answers for them.
         assert_eq!(f.host.num(mob, "act"), 0);
         assert_eq!(f.host.num(pc, "act"), 0);
-        assert!(f.host.char_act_flagged(mob, 19));
-        assert!(f.host.char_act_flagged(pc, 16));
-        assert!(!f.host.char_act_flagged(mob, 16));
-        f.host.char_set_act_flag(mob, 19, false);
-        assert!(f.host.is_dead(mob));
-        f.host.set_num(mob, "dead", 0);
+        assert!(!f.host.char_act_flagged(mob, 19));
+        assert!(!f.host.char_act_flagged(pc, 16));
         f.host.char_set_act_flag(mob, 19, true);
+        assert!(f.host.is_dead(mob));
+        assert_eq!(f.host.num(mob, "act"), 1 << 19);
+        f.host.set_num(mob, "dead", 0);
         assert!(!f.host.is_dead(mob));
-        assert_eq!(f.host.num(mob, "act"), 0);
+    }
+
+    #[test]
+    fn nohassle_is_the_shared_key_in_pref_and_in_valid_dg_target() {
+        let mut f = fx();
+        let pc = f.pc;
+        f.host.set_num(pc, "level", 34);
+        // PRF_NOHASSLE is preference bit 8, "NO_HASS": the shared nohassle.
+        assert_eq!(f.s(pc, "pref", "NO_HASS"), "0");
+        assert!(f.host.valid_dg_target(pc, true));
+        f.host.set_num(pc, "nohassle", 1);
+        assert_eq!(f.s(pc, "pref", "NO_HASS"), "1");
+        assert!(!f.host.valid_dg_target(pc, true));
+        // A bit 8 of the pref array alone is not the preference.
+        f.host.set_num(pc, "nohassle", 0);
+        f.host.set_num(pc, "pref", 1 << 8);
+        assert_eq!(f.s(pc, "pref", "NO_HASS"), "0");
+        assert!(f.host.valid_dg_target(pc, true));
     }
 
     #[test]
