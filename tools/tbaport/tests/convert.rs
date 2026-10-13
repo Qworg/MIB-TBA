@@ -59,28 +59,34 @@ fn fixture_bundle_is_schema_exact_and_deterministic() {
     assert_eq!(first.report.totals.npcs, 2);
     assert_eq!(first.report.totals.items, 2);
     assert_eq!(first.report.totals.zone_commands, 7);
-    assert_eq!(first.report.totals.dangling, 0);
     assert_eq!(
-        first.report.totals.deferred, 2,
-        "the zone-reset T and V remain deferred; the essential trigger is emitted"
+        first.report.totals.dangling, 2,
+        "the unknown `T 9999` line and the `T` command naming room 9999"
+    );
+    assert_eq!(
+        first.report.totals.deferred, 0,
+        "zone-reset T and V are no longer deferred"
     );
     assert_eq!(first.report.totals.triggers_converted, 1);
 
-    // The fixture trigger is essential (demo zone + gatekeeper), so it lands
-    // in `tba.triggers` with its resolved attach and verbatim script.
+    // Every record is emitted with its own attach_type and raw type letters;
+    // the legacy `attach` is the first resolvable owner in label order (the
+    // bag's `T` line sorts before mob 3001's).
     let emitted = first
         .bundle
         .triggers
         .triggers
         .get(&mib_tba::triggers::content::TriggerId::from_vnum(3000))
         .expect("fixture trigger emitted");
-    assert_eq!(emitted.attach, "npc:tba_npc_3000");
+    assert_eq!(emitted.attach, "item:tba_item_3001");
+    assert_eq!(emitted.attach_type, "mob");
+    assert_eq!(emitted.flags, "q");
     assert_eq!(emitted.types, vec!["leave"]);
     assert!(emitted.script.contains("Hello from a DG trigger."));
     assert_eq!(first.report.trigger_coverage.records, 1);
     assert_eq!(first.report.trigger_coverage.parsed, 1);
 
-    // The trigger layer is classified, not just deferred. The fixture trigger
+    // The trigger layer is classified as well as emitted. The fixture trigger
     // (`0 q 100`, mob) is a `GatekeeperTransport`.
     let triage = &first.report.trigger_triage;
     assert_eq!(triage.records, 1);
@@ -616,8 +622,132 @@ where
     assert_eq!(body, again, "round-trip must be byte-stable");
 }
 
+/// The Phase-1 parser reads every record the converter emits. A handful of
+/// source scripts are structurally broken (an unmatched `end`/`done`), so the
+/// coverage counts their failures by name; none of them may be essential.
 #[test]
 fn every_essential_trigger_parses() {
+    let Some(root) = real_tbamud() else {
+        eprintln!("skipping: tbaMUD source not checked out (set TBAMUD_SOURCE)");
+        return;
+    };
+    let options = ConvertOptions {
+        source_root: root,
+        only: None,
+        start_room: Some(DEFAULT_START_ROOM),
+    };
+    let conversion = convert(&options).expect("full conversion");
+    let essential: std::collections::BTreeSet<i32> = tbaport::build_triage(&options)
+        .expect("full triage")
+        .records
+        .iter()
+        .filter(|record| record.essential)
+        .map(|record| record.vnum)
+        .collect();
+    assert_eq!(essential.len(), 133);
+
+    let mut failures = Vec::new();
+    for def in conversion.bundle.triggers.triggers.values() {
+        let program = mib_tba::triggers::ast::parse_script(&def.script);
+        if program.error.is_some() {
+            assert!(
+                !essential.contains(&def.vnum),
+                "essential trigger {} must parse",
+                def.vnum
+            );
+            failures.push(def.vnum);
+        }
+    }
+    let coverage = &conversion.report.trigger_coverage;
+    assert_eq!(
+        coverage.records, 1461,
+        "coverage spans every emitted record"
+    );
+    assert_eq!(coverage.parse_failures, failures.len(), "coverage agrees");
+    assert_eq!(coverage.parsed + coverage.parse_failures, coverage.records);
+}
+
+fn ids(vnums: &[i32]) -> Vec<mib_tba::triggers::content::TriggerId> {
+    vnums
+        .iter()
+        .map(|vnum| mib_tba::triggers::content::TriggerId::from_vnum(*vnum))
+        .collect()
+}
+
+#[test]
+fn fixture_attachments_follow_the_c_rules() {
+    let conversion = convert(&ConvertOptions {
+        source_root: fixture_root(),
+        only: Some(30),
+        start_room: Some(DEFAULT_START_ROOM),
+    })
+    .expect("fixture converts");
+    let lists = &conversion.bundle.triggers.attachments;
+
+    // Mob 3001 has a `T 3000` line. Mob 3000 has none, and gets the trigger
+    // from the zone's `M` + `T` reset commands; the second identical `T`
+    // command finds it already there and adds nothing.
+    assert_eq!(lists["npc:tba_npc_3001"], ids(&[3000]));
+    assert_eq!(lists["npc:tba_npc_3000"], ids(&[3000]));
+    // The bag's `T 3000` names a mob trigger: kept, and reported.
+    assert_eq!(lists["item:tba_item_3001"], ids(&[3000]));
+    // Room 3000 lists `T 3000`, `T 9999`, `T 3000`: the unknown trigger is
+    // skipped (`dg_read_trigger`), the repeat is attached twice.
+    assert_eq!(lists["room:tba.3000"], ids(&[3000, 3000]));
+    assert_eq!(lists.len(), 4);
+
+    let summary = &conversion.report.trigger_attachments;
+    assert_eq!(summary.owners, 4);
+    assert_eq!(summary.links, 5);
+    assert_eq!(summary.links_by_owner_kind["npc"], 2);
+    assert_eq!(summary.links_by_owner_kind["item"], 1);
+    assert_eq!(summary.links_by_owner_kind["room"], 2);
+    assert_eq!(summary.zone_reset_folded, 1);
+    assert_eq!(summary.zone_reset_already_present, 1);
+    assert_eq!(summary.unattached_triggers, 0);
+    assert_eq!(
+        summary.attach_type_mismatches, 3,
+        "the bag and both links in room 3000"
+    );
+    assert_eq!(summary.variable_commands, 1);
+
+    // `T 0 1 ...` follows a mob load, so there is no object to attach to;
+    // `T 0 2 ... 9999` names a room that does not exist (`renum_zone_table`
+    // disables it).
+    let zone = &conversion.report.zones[0];
+    assert!(
+        zone.unmapped
+            .iter()
+            .any(|entry| entry.kind == "zone_trigger_no_target")
+    );
+    assert!(
+        zone.dangling
+            .iter()
+            .any(|entry| entry.kind == "dangling_zone_trigger_room")
+    );
+    assert!(
+        zone.dangling
+            .iter()
+            .any(|entry| entry.kind == "dangling_trigger_ref")
+    );
+
+    // The `V` command is a named drop carrying everything needed to apply it.
+    let [variable] = zone.trigger_variables.as_slice() else {
+        panic!("one V command: {:?}", zone.trigger_variables);
+    };
+    assert_eq!(variable.kind, "zone_trigger_variable");
+    assert_eq!(variable.zone, 30);
+    assert_eq!(variable.attach, "mob");
+    assert_eq!(variable.target.as_deref(), Some("npc tba_npc_3000"));
+    assert_eq!(variable.context, 0);
+    assert_eq!(variable.name, "zonearg");
+    assert_eq!(variable.value, "varval");
+}
+
+/// Every `.trg` record is emitted, with its own `attach_type` and raw type
+/// letters, whether or not the triage calls it essential.
+#[test]
+fn full_conversion_emits_every_trigger() {
     let Some(root) = real_tbamud() else {
         eprintln!("skipping: tbaMUD source not checked out (set TBAMUD_SOURCE)");
         return;
@@ -628,19 +758,162 @@ fn every_essential_trigger_parses() {
         start_room: Some(DEFAULT_START_ROOM),
     })
     .expect("full conversion");
-    let mut failures = Vec::new();
-    for (id, def) in &conversion.bundle.triggers.triggers {
-        let program = mib_tba::triggers::ast::parse_script(&def.script);
-        if let Some(error) = &program.error {
-            failures.push(format!("{id} ({}): {error}", def.name));
-        }
+    let triggers = &conversion.bundle.triggers.triggers;
+    assert_eq!(triggers.len(), 1461);
+    assert_eq!(conversion.report.totals.triggers_converted, 1461);
+    assert_eq!(conversion.report.trigger_coverage.records, 1461);
+    assert_eq!(
+        conversion.report.totals.deferred, 0,
+        "nothing trigger-related is deferred any more"
+    );
+
+    let mut by_attach_type = std::collections::BTreeMap::new();
+    for def in triggers.values() {
+        *by_attach_type.entry(def.attach_type.as_str()).or_insert(0) += 1;
+        assert!(
+            !def.flags.is_empty(),
+            "trigger {} keeps its letters",
+            def.vnum
+        );
     }
-    assert!(
-        failures.is_empty(),
-        "every essential trigger must parse: {failures:#?}"
+    assert_eq!(
+        by_attach_type,
+        std::collections::BTreeMap::from([("mob", 795), ("obj", 282), ("wld", 384)]),
+        "the 795/282/384 split of the triage"
+    );
+
+    // Trigger 0 is `0 g 100` (mob, Greet) in 0.trg.
+    let first = &triggers[&mib_tba::triggers::content::TriggerId::from_vnum(0)];
+    assert_eq!(
+        (first.attach_type.as_str(), first.flags.as_str()),
+        ("mob", "g")
+    );
+    let ab = triggers
+        .values()
+        .find(|def| def.flags == "ab")
+        .expect("a two-letter record");
+    assert_eq!(ab.types.len(), 2);
+}
+
+/// Owner lists reproduce the `T` lines of the `.mob`/`.obj`/`.wld` record in
+/// file order. The expected lists were read off the source files by hand:
+/// `grep -A5 '^#3$' mob/0.mob` and so on.
+#[test]
+fn attachment_lists_reproduce_the_source_t_line_order() {
+    let Some(root) = real_tbamud() else {
+        eprintln!("skipping: tbaMUD source not checked out (set TBAMUD_SOURCE)");
+        return;
+    };
+    let conversion = convert(&ConvertOptions {
+        source_root: root,
+        only: None,
+        start_room: Some(DEFAULT_START_ROOM),
+    })
+    .expect("full conversion");
+    let lists = &conversion.bundle.triggers.attachments;
+
+    let expected: &[(&str, &[i32])] = &[
+        // mobs (mob/0.mob, mob/1.mob): note the non-ascending orders
+        ("npc:tba_npc_3", &[138, 139, 143]),
+        ("npc:tba_npc_14", &[3, 1]),
+        ("npc:tba_npc_24", &[4, 5, 7, 8]),
+        ("npc:tba_npc_25", &[192, 191, 190]),
+        ("npc:tba_npc_31", &[173, 72]),
+        // objects (obj/0.obj, obj/1.obj)
+        ("item:tba_item_15", &[141, 169]),
+        ("item:tba_item_16", &[140, 141, 142]),
+        ("item:tba_item_17", &[141]),
+        ("item:tba_item_89", &[89, 180]),
+        // rooms (wld/0.wld, wld/653.wld)
+        ("room:tba.94", &[172, 171]),
+        ("room:tba.97", &[170, 171, 172]),
+        // a trigger listed twice by one room is attached twice
+        ("room:tba.65306", &[65302, 65302]),
+        // the only zone-reset `T` (345.zon: `T 1 2 34509 34537`), folded in
+        ("room:tba.34537", &[34509]),
+    ];
+    for (owner, vnums) in expected {
+        assert_eq!(lists.get(*owner), Some(&ids(vnums)), "owner {owner}");
+    }
+
+    // A trigger attached to several owners is in each list.
+    let id = mib_tba::triggers::content::TriggerId::from_vnum(141);
+    let holders: Vec<&str> = lists
+        .iter()
+        .filter(|(_, list)| list.contains(&id))
+        .map(|(owner, _)| owner.as_str())
+        .collect();
+    assert_eq!(
+        holders,
+        ["item:tba_item_15", "item:tba_item_16", "item:tba_item_17"]
+    );
+    let id = mib_tba::triggers::content::TriggerId::from_vnum(171);
+    assert!(lists["room:tba.94"].contains(&id) && lists["room:tba.97"].contains(&id));
+
+    // Pinned totals, cross-checked against a scan of the source: 799 mob, 224
+    // object and 681 room `T` lines, plus the one folded reset command.
+    let summary = &conversion.report.trigger_attachments;
+    assert_eq!(summary.owners, 1295);
+    assert_eq!(summary.links, 1705);
+    assert_eq!(summary.links_by_owner_kind["npc"], 799);
+    assert_eq!(summary.links_by_owner_kind["item"], 224);
+    assert_eq!(summary.links_by_owner_kind["room"], 682);
+    assert_eq!(summary.zone_reset_folded, 1);
+    assert_eq!(summary.zone_reset_already_present, 0);
+    assert_eq!(summary.unattached_triggers, 432);
+    assert_eq!(summary.unattached.len(), 432);
+    assert_eq!(summary.variable_commands, 0, "no zone file has a V command");
+    assert_eq!(summary.attach_type_mismatches, 8);
+
+    // Trigger 180 is a world trigger that object 89 lists (obj/0.obj).
+    let zone_0 = &conversion.report.zones[0];
+    assert!(zone_0.unmapped.iter().any(|entry| {
+        entry.kind == "trigger_attach_type_mismatch"
+            && entry.object == "item tba_item_89"
+            && entry.name == "trigger 180"
+    }));
+}
+
+#[test]
+fn full_conversion_is_byte_deterministic() {
+    let Some(root) = real_tbamud() else {
+        eprintln!("skipping: tbaMUD source not checked out (set TBAMUD_SOURCE)");
+        return;
+    };
+    let options = ConvertOptions {
+        source_root: root,
+        only: None,
+        start_room: Some(DEFAULT_START_ROOM),
+    };
+    let first = convert(&options).expect("first conversion");
+    let second = convert(&options).expect("second conversion");
+    assert_eq!(
+        render(&first.bundle).unwrap(),
+        render(&second.bundle).unwrap(),
+        "YAML must be byte-identical"
     );
     assert_eq!(
-        conversion.report.trigger_coverage.parse_failures, 0,
-        "coverage agrees"
+        serde_json::to_string(&first.report).unwrap(),
+        serde_json::to_string(&second.report).unwrap(),
+        "drop report must be byte-identical"
     );
+
+    // Each owner key is in exactly one trigger shard (the pack loader rejects
+    // a repeated key), and the shards together carry every trigger.
+    let mut owner_shards = std::collections::BTreeMap::<String, usize>::new();
+    let mut trigger_count = 0;
+    for (name, yaml) in render(&first.bundle).unwrap() {
+        if !name.starts_with("tba.triggers.") {
+            continue;
+        }
+        let body = yaml.split_once('\n').expect("header line").1;
+        let shard: TriggersFile = serde_yaml::from_str(body).expect("shard parses");
+        trigger_count += shard.triggers.len();
+        for owner in shard.attachments.keys() {
+            *owner_shards.entry(owner.clone()).or_default() += 1;
+        }
+    }
+    assert_eq!(trigger_count, 1461);
+    assert_eq!(owner_shards.len(), 1295);
+    assert!(owner_shards.values().all(|count| *count == 1));
 }

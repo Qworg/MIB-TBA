@@ -143,18 +143,36 @@ fn zone_parses_header_flags_and_commands() {
     let codes: Vec<char> = zone.commands.iter().map(|c| c.code).collect();
     assert_eq!(
         codes,
-        vec!['O', 'M', 'G', 'E', 'P', 'D', 'R', 'T', 'V'],
+        vec!['O', 'M', 'T', 'T', 'T', 'T', 'V', 'G', 'E', 'P', 'D', 'R'],
         "comment lines are skipped and order is preserved"
     );
-    let give = zone.commands[2];
+    let give = &zone.commands[7];
     assert_eq!(give.code, 'G');
     assert_eq!(give.if_flag, 1);
-    let equip = zone.commands[3];
+    let equip = &zone.commands[8];
     assert_eq!(equip.arg3, 16, "equipment position is the source WEAR_*");
+
+    // `T <if> <attach> <trigger> <room>`: attach 2 is a world target, and the
+    // room is `arg3`.
+    let world_trigger = &zone.commands[5];
+    assert_eq!(
+        (world_trigger.arg1, world_trigger.arg2, world_trigger.arg3),
+        (2, 3000, 9999)
+    );
+    // `V <if> <attach> <arg2> <arg3> <name> <value>`.
+    let variable = &zone.commands[6];
+    assert_eq!(variable.code, 'V');
+    assert_eq!(
+        (variable.arg1, variable.arg2, variable.arg3),
+        (0, 0, 0),
+        "the four numbers are read before the name"
+    );
+    assert_eq!(variable.sarg1, "zonearg");
+    assert_eq!(variable.sarg2, "varval");
 }
 
 #[test]
-fn deferred_triggers_scan_their_records() {
+fn triggers_scan_their_records() {
     let mut triggers = source("trg", "30.trg");
     let triggers = scan_triggers(&mut triggers).expect("triggers scan");
     assert_eq!(triggers.len(), 1);
@@ -319,4 +337,21 @@ fn shops_parse_their_trade_records() {
         (shop.open1, shop.close1, shop.open2, shop.close2),
         (0, 28, 0, 0)
     );
+}
+
+#[test]
+fn trailing_t_lines_are_read_in_source_order() {
+    let mut rooms = source("wld", "30.wld");
+    let rooms = parse_rooms(&mut rooms).expect("rooms parse");
+    assert_eq!(
+        rooms[0].trigger_vnums,
+        vec![3000, 9999, 3000],
+        "a repeated or unknown trigger is kept as written"
+    );
+    assert!(rooms[1].trigger_vnums.is_empty());
+
+    let mut objs = source("obj", "30.obj");
+    let objs = parse_objs(&mut objs).expect("objects parse");
+    assert!(objs[0].trigger_vnums.is_empty());
+    assert_eq!(objs[1].trigger_vnums, vec![3000]);
 }

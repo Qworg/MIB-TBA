@@ -13,6 +13,9 @@ sign wall~
    A sign is bolted to the wall.
 ~
 S
+T 3000
+T 9999
+T 3000
 #3001
 Another Room~
    The room beyond the door.

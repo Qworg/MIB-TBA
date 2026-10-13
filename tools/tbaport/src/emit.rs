@@ -12,7 +12,7 @@ use mib_stdlib::content::{
     AreasFile, HelpFile, ItemsFile, NpcsFile, QuestsFile, RoomDef, RoomId, RoomsFile,
 };
 use mib_tba::content::{ShopsFile, SocialsFile, TbaItemsFile, TbaNpcStatsFile, ZonesFile};
-use mib_tba::triggers::content::{TriggerDef, TriggerId, TriggersFile};
+use mib_tba::triggers::content::TriggersFile;
 
 use crate::error::{ConvertError, Result};
 
@@ -30,7 +30,8 @@ pub struct OutputBundle {
     pub tba_items: TbaItemsFile,
     pub shops: ShopsFile,
     pub socials: SocialsFile,
-    /// `tba.triggers` — the essential DG scripts, sharded by source zone.
+    /// `tba.triggers` — every DG script and every owner's trigger list, sharded
+    /// by zone.
     pub triggers: TriggersFile,
 }
 
@@ -71,9 +72,7 @@ impl OutputBundle {
             socials: SocialsFile {
                 socials: Default::default(),
             },
-            triggers: TriggersFile {
-                triggers: Default::default(),
-            },
+            triggers: TriggersFile::default(),
         }
     }
 }
@@ -143,30 +142,47 @@ fn room_shards(rooms: &RoomsFile) -> Result<Vec<(String, String)>> {
     Ok(files)
 }
 
-/// One `tba.triggers.<zone>.yaml` shard per source zone.
+/// The zone of an attachments key (`npc:tba_npc_3`, `item:tba_item_16`,
+/// `room:tba.22`): Circle's vnum banding of the owner, which the `.mob`/`.obj`/
+/// `.wld` files follow for the whole corpus. An unparsable key lands in
+/// zone 0 rather than being dropped.
+fn owner_zone(owner: &str) -> u32 {
+    owner
+        .rsplit(['_', '.'])
+        .next()
+        .and_then(|vnum| vnum.parse::<i32>().ok())
+        .map_or(0, crate::triage::vnum_zone)
+}
+
+/// One `tba.triggers.<zone>.yaml` shard per zone that has a trigger record or
+/// an owner.
 ///
 /// A trigger's zone is Circle's vnum banding (`vnum / 100`), which the triage
-/// confirms equals the `.trg` file's zone for the whole corpus. Shards are
-/// emitted in ascending zone order so the staging directory is deterministic.
+/// confirms equals the `.trg` file's zone for the whole corpus. An owner's
+/// list goes in the shard of the owner's own zone, so each owner key appears
+/// in exactly one shard (the pack loader rejects a duplicate key) while the
+/// list may name triggers defined in other zones' shards: the sections are
+/// validated after the shards are merged. Shards are emitted in ascending
+/// zone order so the staging directory is deterministic.
 fn trigger_shards(triggers: &TriggersFile) -> Result<Vec<(String, String)>> {
-    let mut by_zone: BTreeMap<u32, BTreeMap<TriggerId, TriggerDef>> = BTreeMap::new();
+    let mut by_zone: BTreeMap<u32, TriggersFile> = BTreeMap::new();
     for (id, def) in &triggers.triggers {
-        let zone = if def.vnum < 0 {
-            0
-        } else {
-            (def.vnum / 100) as u32
-        };
         by_zone
-            .entry(zone)
+            .entry(crate::triage::vnum_zone(def.vnum))
             .or_default()
+            .triggers
             .insert(id.clone(), def.clone());
     }
+    for (owner, list) in &triggers.attachments {
+        by_zone
+            .entry(owner_zone(owner))
+            .or_default()
+            .attachments
+            .insert(owner.clone(), list.clone());
+    }
     let mut files = Vec::with_capacity(by_zone.len());
-    for (zone, triggers) in by_zone {
-        files.push((
-            format!("tba.triggers.{zone}.yaml"),
-            dump(&TriggersFile { triggers })?,
-        ));
+    for (zone, shard) in by_zone {
+        files.push((format!("tba.triggers.{zone}.yaml"), dump(&shard)?));
     }
     Ok(files)
 }

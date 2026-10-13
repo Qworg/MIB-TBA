@@ -215,6 +215,7 @@ mod tests {
             narg: 100,
             arglist: String::new(),
             script: "say hello\n".to_owned(),
+            ..Default::default()
         }
     }
 
