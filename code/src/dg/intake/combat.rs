@@ -130,8 +130,10 @@ pub fn death(host: &mut EcsHost<'_>, victim: Entity, killer: Entity) -> bool {
         .filter(|combatant| combatant.position == Position::Dead)
         .map(|mut combatant| combatant.position = Position::Standing)
         .is_some();
-    host.unsupported("death_cry", "the pack has no death cry to decide");
     let result = death_mtrigger(host, dying, killer);
+    if result == 0 {
+        host.unsupported("death_cry", "the pack has no death cry to suppress");
+    }
     if was_dead
         && let Some(mut combatant) = host.world.get_mut::<TbaCombatant>(victim)
         && combatant.position == Position::Standing
@@ -329,10 +331,6 @@ pub fn cast_gate(world: &mut World, mut state: Local<Option<SystemState<GatePara
                 return true;
             };
             let victim = cast.victim.and_then(|victim| host.uid(victim));
-            host.unsupported(
-                "cast_otrigger.no_object_target",
-                "the pack's cast resolves no object target",
-            );
             cast_allowed(host, caster, victim, None, cast.spellnum)
         });
         if allowed {

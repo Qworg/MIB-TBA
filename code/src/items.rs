@@ -32,7 +32,7 @@ use mib_core::prelude::*;
 use mib_stdlib::prelude::{Item, SaveRegistry};
 use serde::{Deserialize, Serialize};
 
-use crate::dg::script::DgScript;
+use crate::dg::script::{DgScript, DgScriptInit};
 use crate::module::TbaContent;
 
 /// Real seconds in one MUD hour (Circle's `SECS_PER_MUD_HOUR`,
@@ -178,7 +178,12 @@ pub fn attach_item_timers(
 pub fn tick_item_timers(
     time: Res<Time<Fixed>>,
     mut clock: ResMut<TbaObjectClock>,
-    mut timers: Query<(Entity, &mut TbaItemTimer, Option<&DgScript>)>,
+    mut timers: Query<(
+        Entity,
+        &mut TbaItemTimer,
+        Option<&DgScript>,
+        Has<DgScriptInit>,
+    )>,
     mut expired: Option<ResMut<ExpiredItemTimers>>,
     mut commands: Commands,
 ) {
@@ -189,7 +194,7 @@ pub fn tick_item_timers(
     // Advance the whole MUD calendar alongside the object timers, so shop
     // opening hours and the day/night predicate share the timer clock.
     clock.advance(hours);
-    for (entity, mut timer, script) in &mut timers {
+    for (entity, mut timer, script, initialised) in &mut timers {
         // A spent timer stays at zero, which is no timer (`point_update` ages
         // only a positive `GET_OBJ_TIMER`): it neither fires nor decays again.
         if timer.remaining == 0 {
@@ -201,11 +206,12 @@ pub fn tick_item_timers(
         }
         // An item with a DG `timer` trigger is Circle's timed object: the
         // trigger decides its fate (`point_update` calls `timer_otrigger` and
-        // nothing follows). It is handed to the DG intake instead of decaying.
-        match (&mut expired, script) {
-            (Some(expired), Some(script)) if script.0.check(OTRIG_TIMER) => {
-                expired.items.push(entity);
-            }
+        // nothing follows). It is handed to the DG intake instead of decaying;
+        // so is an item whose prototype scripts are not attached yet, which
+        // the intake despawns if it turns out to have no `timer` trigger.
+        let timed = script.is_some_and(|script| script.0.check(OTRIG_TIMER));
+        match &mut expired {
+            Some(expired) if timed || !initialised => expired.items.push(entity),
             _ => commands.entity(entity).despawn(),
         }
     }

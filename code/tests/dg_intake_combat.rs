@@ -121,6 +121,8 @@ const COUNT: &str = "global actor\nif %n%\n  eval n %n% + 1\nelse\n  set n 1\nen
 
 // -- fight and hitprcnt ------------------------------------------------------
 
+// Remove this ignore when the chars stream lands (it passes against a
+// target-based model of CharHost::char_fighting and the hit-point fields).
 #[ignore = "needs the chars stream: CharHost::char_fighting and the hit-point fields; verified against a target-based model"]
 #[test]
 fn fight_runs_once_per_round_for_a_fighting_npc_with_its_opponent() {
@@ -203,10 +205,45 @@ fn a_fight_between_characters_in_different_rooms_is_called_off() {
     fight(&mut app, thief, guard);
     round(&mut app);
     assert_eq!(hp(&app, guard), 100);
-    assert_eq!(app.world().get::<TbaCombatant>(thief).unwrap().target, None);
+    // The blow is abandoned; the mob keeps its target for `pursuit_system`.
+    assert_eq!(hp(&app, thief), 100);
     assert!(damage_events(&mut app).is_empty());
 }
 
+#[test]
+fn a_called_off_fight_stands_the_fighter_down() {
+    // `stop_fighting` leaves the character standing, so the AI can engage
+    // again; a mob keeps its target for `pursuit_system` to follow or drop.
+    let mut app = combat_app();
+    let hall = room(&mut app, 1);
+    let cellar = room(&mut app, 2);
+    let orc = npc(&mut app, hall, 10, "the orc");
+    let hero = npc(&mut app, cellar, 11, "the hero");
+    arm(&mut app, orc, 100, 5, true);
+    arm(&mut app, hero, 100, 5, true);
+    // The hero is a stand-in for a player: a character with no `Npc`.
+    app.world_mut().entity_mut(hero).remove::<Npc>();
+    fight(&mut app, orc, hero);
+    fight(&mut app, hero, orc);
+    app.world_mut()
+        .get_mut::<TbaCombatant>(orc)
+        .unwrap()
+        .position = Position::Fighting;
+    app.world_mut()
+        .get_mut::<TbaCombatant>(hero)
+        .unwrap()
+        .position = Position::Fighting;
+    round(&mut app);
+    let orc_state = app.world().get::<TbaCombatant>(orc).unwrap();
+    assert_eq!(orc_state.target, Some(hero), "the mob's pursuit decides");
+    assert_eq!(orc_state.position, Position::Fighting);
+    let hero_state = app.world().get::<TbaCombatant>(hero).unwrap();
+    assert_eq!(hero_state.target, None);
+    assert_eq!(hero_state.position, Position::Standing);
+}
+
+// Remove this ignore when the chars stream lands (it passes against a
+// target-based model of CharHost::char_fighting and the hit-point fields).
 #[ignore = "needs the chars stream: CharHost::char_fighting and the hit-point fields; verified against a target-based model"]
 #[test]
 fn hitprcnt_runs_for_the_victim_once_its_hit_points_fall_to_the_threshold() {
@@ -372,6 +409,32 @@ fn a_death_trigger_runs_with_the_killer_before_the_npc_is_removed() {
         .collect();
     assert_eq!(defeated, [(guard, goblin)]);
     assert_eq!(damage_events(&mut app), [(5, true)]);
+    // Only a script that returned `0` is a death cry the pack could not stop.
+    assert_eq!(
+        app.world()
+            .get_resource::<mib_tba::dg::DgLog>()
+            .map_or(0, |log| log.count("death_cry")),
+        1
+    );
+}
+
+#[test]
+fn an_ordinary_kill_records_no_unsupported_death_cry() {
+    let mut app = combat_app();
+    let hall = room(&mut app, 1);
+    let guard = npc(&mut app, hall, 10, "the guard");
+    let goblin = npc(&mut app, hall, 11, "the goblin");
+    arm(&mut app, guard, 5, 1, true);
+    arm(&mut app, goblin, 50, 5, true);
+    fight(&mut app, goblin, guard);
+    round(&mut app);
+    assert!(app.world().get_entity(guard).is_err());
+    assert_eq!(
+        app.world()
+            .get_resource::<mib_tba::dg::DgLog>()
+            .map_or(0, |log| log.count("death_cry")),
+        0
+    );
 }
 
 #[test]
@@ -1000,4 +1063,28 @@ fn an_item_a_timer_script_gave_a_new_timer_keeps_it() {
         app.world().get::<TbaItemTimer>(thing).map(|t| t.remaining),
         Some(3)
     );
+}
+
+#[test]
+fn an_item_expiring_before_its_scripts_attach_still_gets_its_timer_trigger() {
+    let mut app = timer_app();
+    define(&mut app, 1, "obj", "f", 100, "set n 1\nglobal n");
+    define(&mut app, 2, "obj", "g", 100, "set x 1");
+    attach(&mut app, "item:tba_item_20", &[1]);
+    attach(&mut app, "item:tba_item_21", &[2]);
+    let hall = room(&mut app, 1);
+    // Neither item has been through `with_host` yet: no script attached.
+    let timed = item_on_ground(&mut app, hall, 20, "an ice cream");
+    let plain = item_on_ground(&mut app, hall, 21, "a torch");
+    for item in [timed, plain] {
+        app.world_mut()
+            .entity_mut(item)
+            .insert(TbaItemTimer { remaining: 1 });
+    }
+
+    next_hour(&mut app);
+    assert!(app.world().get_entity(timed).is_ok(), "the trigger decides");
+    let i = uid(&mut app, timed);
+    assert_eq!(global(&mut app, i, "n").as_deref(), Some("1"));
+    assert!(app.world().get_entity(plain).is_err(), "no timer trigger");
 }

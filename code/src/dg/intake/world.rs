@@ -8,6 +8,10 @@
 //!   new mobs and objects load before the rooms' `reset` triggers run, which
 //!   is the C's order (`read_mobile` loads at creation; `reset_wtrigger` comes
 //!   last).
+//!   Losses: the C resets every zone in `boot_db`, so the `reset` triggers run
+//!   as the world comes up; the pack first resets a zone one lifespan after
+//!   start, and only then do they run. An `E` reset equips without the item's
+//!   `wear` trigger (counted as `reset_wear_otrigger`).
 //! - `timer_otrigger` when an object's timer runs out (`point_update`,
 //!   `limits.c`): [`item_timer_triggers`].
 
@@ -16,10 +20,12 @@ use mib_core::prelude::*;
 use mib_stdlib::prelude::Room;
 
 use crate::dg::ids;
+use crate::dg::script::DgScript;
 use crate::dg::waits::dg_pulse_system;
 use crate::dg::with_host;
-use crate::items::{ExpiredItemTimers, tick_item_timers};
+use crate::items::{ExpiredItemTimers, TbaItemTimer, tick_item_timers};
 use crate::zones::{ZoneResets, zone_reset_system};
+use dg_vm::types::trig::OTRIG_TIMER;
 
 /// Register this module's systems.
 pub fn register(app: &mut App) {
@@ -74,7 +80,9 @@ pub fn zone_reset_triggers(world: &mut World) {
 /// zero, which means no timer. The component stays at zero as the persisted
 /// "spent" state ([`tick_item_timers`] skips it, and a restored item is not
 /// re-armed from its prototype); a script that gave the item a new timer has
-/// replaced the zero.
+/// replaced the zero. Where the C walks `object_list` (newest first) after
+/// `check_time_triggers`, this runs before the hour's time triggers and in
+/// table order; several hours folded into one tick fire once.
 pub fn item_timer_triggers(world: &mut World) {
     let items: Vec<Entity> = match world.get_resource_mut::<ExpiredItemTimers>() {
         Some(mut expired) => std::mem::take(&mut expired.items),
@@ -90,4 +98,18 @@ pub fn item_timer_triggers(world: &mut World) {
             }
         }
     });
+    // An item handed over before its scripts were attached that has no
+    // `timer` trigger decays like any timed item.
+    for item in items {
+        let timed = world
+            .get::<DgScript>(item)
+            .is_some_and(|script| script.0.check(OTRIG_TIMER));
+        if !timed
+            && world
+                .get::<TbaItemTimer>(item)
+                .is_some_and(|timer| timer.remaining == 0)
+        {
+            world.despawn(item);
+        }
+    }
 }

@@ -219,6 +219,7 @@ fn execute_command(
                     let item_entity = spawn_item_carried_by_entity(world, mob_entity, item, &def);
                     stamp_spawn(world, item_entity);
                     equip_mob_item(world, mob_entity, *slot, item_entity);
+                    note_wear_trigger_gap(world, item_entity);
                     true
                 } else {
                     false
@@ -273,6 +274,35 @@ fn equip_mob_item(world: &mut World, mob: Entity, slot: WearSlot, item_entity: E
     let mut slots = std::collections::HashMap::new();
     slots.insert(slot, item_entity);
     world.entity_mut(mob).insert(TbaEquipment { slots });
+}
+
+/// `reset_zone` equips through `equip_char`, which runs the item's `wear`
+/// trigger; an `E` reset here does not. Count the item when it carries one, so
+/// the loss shows in the DG log.
+fn note_wear_trigger_gap(world: &mut World, item: Entity) {
+    use dg_vm::types::trig::OTRIG_WEAR;
+    let Some(def_id) = world.get::<Item>(item).map(|held| held.def_id.clone()) else {
+        return;
+    };
+    let carries_wear = world
+        .get_resource::<crate::dg::script::DgProtos>()
+        .is_some_and(|table| {
+            table.owner(&format!("item:{def_id}")).is_some_and(|vnums| {
+                vnums
+                    .iter()
+                    .filter_map(|vnum| table.get(*vnum))
+                    .any(|proto| proto.trigger_type & OTRIG_WEAR != 0)
+            })
+        });
+    if carries_wear {
+        world
+            .get_resource_or_insert_with(crate::dg::DgLog::default)
+            .record(
+                "reset_wear_otrigger",
+                "unsupported reset_wear_otrigger: an E reset does not run the wear trigger"
+                    .to_owned(),
+            );
+    }
 }
 
 /// Live NPC instances of `mob` (a despawned NPC is no longer an entity).

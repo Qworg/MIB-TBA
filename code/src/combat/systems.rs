@@ -129,10 +129,14 @@ fn apart(world: &World, a: Entity, b: Entity) -> bool {
     }
 }
 
-/// `stop_fighting(attacker)`.
+/// `stop_fighting(attacker)`: no target, and a fighter stands again (the
+/// position is what keeps the AI systems from engaging anyone else).
 fn stop_fighting(world: &mut World, attacker: Entity) {
     if let Some(mut combatant) = world.get_mut::<TbaCombatant>(attacker) {
         combatant.target = None;
+        if combatant.position == Position::Fighting {
+            combatant.position = Position::Standing;
+        }
     }
 }
 
@@ -143,7 +147,11 @@ fn blow(host: &mut EcsHost<'_>, attacker: Entity) {
         return;
     };
     if apart(host.world, attacker, first) {
-        stop_fighting(host.world, attacker);
+        // A mob keeps its target: `pursuit_system` follows the prey or gives
+        // up and stands the mob down. A player's fight ends here.
+        if host.world.get::<Npc>(attacker).is_none() {
+            stop_fighting(host.world, attacker);
+        }
         return;
     }
     dg_combat::fight(host, attacker);
@@ -183,6 +191,7 @@ fn start_fighting(world: &mut World, victim: Entity, attacker: Entity) {
         && combatant.target.is_none()
     {
         combatant.target = Some(attacker);
+        combatant.position = Position::Fighting;
     }
 }
 
