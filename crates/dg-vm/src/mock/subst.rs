@@ -6,11 +6,11 @@
 //! |---|---|---|
 //! | `globals` | `nums["happy:qp"]`, `nums["happy:exp"]`, `nums["happy:gold"]` | `happy_data.qp_rate`, `exp_rate`, `gold_rate` |
 //! | `globals` | `nums["happy:ticks"]` | `happy_data.ticks_left` |
-//!
 //! | `globals` | `nums["config:diagonal_dirs"]` | `CONFIG_DIAGONAL_DIRS` (nonzero = on) |
 //!
 //! An exit exists when the room has `links["exit:<dir>"]`, as in the shared
-//! data model.
+//! data model. The raw key is read (not `MockHost::link`), which matches the
+//! C's `R_EXIT(room, i)`: an exit structure counts even if it leads nowhere.
 
 use crate::mock::MockHost;
 use crate::subst::{HappyHour, SubstHost};

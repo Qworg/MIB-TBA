@@ -34,15 +34,18 @@
 //!   loop forever. [`MAX_NESTING`] bounds the nesting and [`MAX_WORK`] the
 //!   total number of nested substitutions under one top-level call; when
 //!   either trips, one log line is written and the whole top-level line
-//!   substitutes to nothing.
+//!   substitutes to nothing. Once a limit trips no further reference on the
+//!   line is evaluated (no `find_replacement`, no `eval`).
 //! - `%random.dir%` retries a random direction until it finds an exit; the
 //!   retry is capped at [`DIR_RETRIES`] and then takes the first exit, so a
 //!   host whose exits change underneath it cannot hang the VM. `DIR_COUNT` follows
 //!   `CONFIG_DIAGONAL_DIRS` ([`SubstHost::subst_diagonal_dirs`]): 6, or 10
 //!   with diagonals on, for both the exit count and the roll.
-//! - The vnum arguments of `%people%`, `%findmob%` and `%findobj%` are
-//!   narrowed to `IDXTYPE` (`u16`) as the C does, so `65535` is `NOBODY`
-//!   and `68537` is `3001`.
+//! - The vnum arguments of `%people%`, `%findmob%` and the room of
+//!   `%findobj%` are narrowed to `IDXTYPE` (`u16`) as the C does, so `65535`
+//!   is `NOBODY` and `68537` is `3001`. The object vnum of `%findobj%` goes
+//!   through `lookup::item_in_list`, which compares the un-narrowed value
+//!   (reported as a contract request).
 //! - `%global.name%` reads the script of `world[0]`; the port takes that to
 //!   be room vnum 0 (`real_room(0)`), the void the rest of the C names by
 //!   `r->number == 0`.
@@ -264,7 +267,7 @@ pub fn var_subst<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
     let mut left: usize = MAX_INPUT_LENGTH - 1;
     let mut paren_count: i32 = 0;
 
-    while at(&tmp, p) != 0 && left > 0 {
+    while at(&tmp, p) != 0 && left > 0 && !ABORTED.with(Cell::get) {
         // copy until we find the first %
         while at(&tmp, p) != 0 && at(&tmp, p) != b'%' && left > 0 {
             out.push(at(&tmp, p));
@@ -297,7 +300,10 @@ pub fn var_subst<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
                 p += 1;
                 let mut dots: i32 = 0;
                 field = p;
-                while at(&tmp, p) != 0 && (at(&tmp, p) != b'%' || paren_count > 0 || dots > 0) {
+                while at(&tmp, p) != 0
+                    && (at(&tmp, p) != b'%' || paren_count > 0 || dots > 0)
+                    && !ABORTED.with(Cell::get)
+                {
                     if dots > 0 {
                         put(&mut subfield, subfield_p, 0);
                         let replacement = find_replacement(
@@ -353,6 +359,10 @@ pub fn var_subst<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
                 );
             }
 
+            // a limit tripped: run nothing further on this line
+            if ABORTED.with(Cell::get) {
+                break;
+            }
             let replacement = find_replacement(
                 cx,
                 &c_string(&tmp, var),
@@ -1962,7 +1972,7 @@ mod tests {
 
     #[test]
     fn corpus_lines_substitute() {
-        // Lines from tbamud/lib/world/trg.
+        // Script-shaped lines in the style of tbamud/lib/world/trg.
         let mut w = world();
         let thug = w.thug;
         w.trig.vars.add_var("actor", &uid_text(thug), 0);
@@ -2078,9 +2088,72 @@ mod tests {
         set_global(&mut w, guard, "zzname", "Guard", 0);
         w.trig.vars.add_var("actor", "thug", 0);
         assert_eq!(sub(&mut w, "%actor.zzeq(wield).zzname%"), "Guard");
-        // the subfield is substituted before the link sees it
         w.trig.vars.add_var("pos", "wield", 0);
         assert_eq!(sub(&mut w, "%actor.zzeq(%pos%).zzname%"), "Guard");
+    }
+
+    #[test]
+    fn an_intermediate_link_sees_its_subfield_unexpanded() {
+        // C: the subfield is passed to find_replacement as captured; only the
+        // final call is preceded by `var_subst(subfield)`. So findmob sees
+        // atoi("%mv%") == 0 and counts mobs of vnum 0.
+        let mut w = world();
+        w.trig.vars.add_var("mv", "3000", 0);
+        sub(&mut w, "%findmob.3001(%mv%).zz%");
+        assert_eq!(
+            w.trig.vars.get("tmpvr").map(|v| v.value.clone()),
+            Some("0".to_owned())
+        );
+    }
+
+    #[test]
+    fn self_global_reads_the_owners_own_global() {
+        let mut w = world();
+        let guard = w.guard;
+        set_global(&mut w, guard, "zzx", "mine", 0);
+        assert_eq!(sub(&mut w, "%self.zzx%"), "mine");
+        // C: `%self.global(x)%` on an NPC with a script reads its global x
+        assert_eq!(sub(&mut w, "%self.global(zzx)%"), "mine");
+    }
+
+    #[test]
+    fn global_on_a_player_with_a_script_is_not_intercepted() {
+        // C: the `global` intercept needs IS_NPC; a PC goes to the char
+        // field table (None in this tree), then to its own globals by name.
+        let mut w = world();
+        let pc = w.host.add_player("Alice");
+        w.trig.vars.add_var("who", &uid_text(pc), 0);
+        set_global(&mut w, pc, "zzx", "val", 0);
+        assert_eq!(sub(&mut w, "%who.global(zzx)%"), "");
+        assert!(
+            w.host
+                .logs
+                .iter()
+                .any(|l| l.contains("unknown char field: 'global'"))
+        );
+        set_global(&mut w, pc, "global", "pcglobal", 0);
+        assert_eq!(sub(&mut w, "%who.global(zzx)%"), "pcglobal");
+    }
+
+    #[test]
+    fn a_tripped_limit_runs_nothing_later_on_the_line() {
+        let mut w = world();
+        let (thug, guard) = (w.thug, w.guard);
+        set_global(&mut w, thug, "zzloop", "%victim.zzloop.zzx%", 0);
+        set_global(&mut w, thug, "zzfoe", &uid_text(guard), 0);
+        set_global(&mut w, guard, "zzmood", "tense", 0);
+        w.trig.vars.add_var("victim", "thug", 0);
+        w.host.rolls.push_back(4);
+        let out = sub(
+            &mut w,
+            "%victim.zzloop.zzx% %victim.zzfoe.zzmood% %random.9%",
+        );
+        assert_eq!(out, "");
+        assert_eq!(w.host.rolls.len(), 1);
+        assert_ne!(
+            w.trig.vars.get("tmpvr").map(|v| v.value.clone()),
+            Some(uid_text(guard))
+        );
     }
 
     #[test]
