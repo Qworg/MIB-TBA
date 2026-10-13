@@ -32,6 +32,7 @@ use crate::content::{
     TbaClassesSection, TbaItemDef, TbaItemsSection, TbaNpcStats, TbaNpcStatsSection, ZoneDef,
     ZonesSection,
 };
+use crate::dg::script::DgProtos;
 use crate::dg::vars::TbaTriggerVars;
 use crate::equipment::TbaEquipmentSave;
 use crate::items::TbaObjectClock;
@@ -124,6 +125,10 @@ impl MibModule for TbaModule {
         let trigger_attachments = section_defs::<TriggersSection>(packs)
             .map(|defs| defs.attachments.clone())
             .unwrap_or_default();
+
+        // The DG trigger prototypes are parsed once here; a record that cannot
+        // load is counted and skipped, never fatal.
+        world.insert_resource(DgProtos::build(&triggers, &trigger_attachments));
 
         // The reset tracker is derived state, seeded from the same content so
         // it exists before the first `FixedUpdate`.
