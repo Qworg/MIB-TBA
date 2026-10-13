@@ -289,6 +289,9 @@ mod tests {
         let mut w = World::new();
         let (alice, guard, lamp, room, room2) = (w.player, w.mob, w.obj, w.room, w.room2);
         let before = w.host.room_people(room);
+        let lamp_carrier = w.host.obj_carried_by(lamp);
+        let lamp_room = w.host.in_room(lamp);
+        let room_items = w.host.room_contents(room);
         w.host
             .hook(None, "", MockAction::MoveChar { ch: 999_999, room });
         w.host.mud_command(alice, "1");
@@ -331,6 +334,11 @@ mod tests {
         assert_eq!(w.host.room_people(room), before);
         assert!(w.host.room_people(room2).is_empty());
         assert_eq!(w.host.in_room(alice), Some(room));
+        assert_eq!(w.host.in_room(guard), Some(room));
+        assert!(w.host.room_contents(room2).is_empty());
+        assert_eq!(w.host.room_contents(room), room_items);
+        assert_eq!(w.host.obj_carried_by(lamp), lamp_carrier);
+        assert_eq!(w.host.in_room(lamp), lamp_room);
         assert!(w.host.hooks.is_empty());
     }
 

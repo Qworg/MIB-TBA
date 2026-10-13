@@ -146,7 +146,9 @@ enum Step {
 ///
 /// The C's `go_adress` out-parameter, which it NULLs when an object owner
 /// purges itself, has no counterpart: after the call, a caller that the C
-/// guards with `if (!obj)` tests `!host.exists(owner)`.
+/// guards with `if (!obj)` tests `!host.exists(owner)` or
+/// [`crate::types::VmState::run_purged`], which reports that this run left
+/// through the purge path (the only place the C NULLs the pointer).
 pub fn script_driver<H: DgHost + ?Sized>(
     host: &mut H,
     owner: Uid,
@@ -168,6 +170,7 @@ pub fn script_driver_default<H: DgHost + ?Sized>(
     mode: Mode,
     default_ret: i32,
 ) -> i32 {
+    host.vm_state().run_purged = false;
     let Some(kind) = host.kind(owner) else {
         return default_ret;
     };
@@ -250,6 +253,7 @@ fn end_run<H: DgHost + ?Sized>(host: &mut H, owner: Uid, mut trig: TrigInstance,
         let depth = &mut host.vm_state().depth;
         *depth = depth.saturating_sub(1);
     }
+    host.vm_state().run_purged = matches!(outcome, Outcome::Purged);
     let id = trig.id;
     let kept = host
         .script_mut(owner)
