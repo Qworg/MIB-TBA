@@ -20,8 +20,9 @@ use crate::lookup::{NUM_WEARS, get_char_by_obj, get_obj_by_obj, obj_room};
 use crate::types::Uid;
 
 /// How many `oat` levels deep a command may nest (the C is bounded only by
-/// the length of the line).
-pub(crate) const MAX_NEST: u32 = 64;
+/// the length of the line; 256 covers a
+/// `MAX_INPUT_LENGTH` line of `wat 1 ` prefixes).
+pub(crate) const MAX_NEST: u32 = 256;
 
 /// `NUM_OBJ_VAL_POSITIONS`.
 const NUM_OBJ_VAL_POSITIONS: i32 = 4;
@@ -1125,7 +1126,7 @@ mod tests {
     #[test]
     fn oat_nesting_is_bounded() {
         let mut w = World::new();
-        let line = format!("{}olog deep", "oat 3001 ".repeat(100));
+        let line = format!("{}olog deep", "oat 3001 ".repeat(300));
         run(&mut w, &line);
         log_is(&w, "oat: commands nested too deeply");
         assert_eq!(w.host.logs.len(), 1);

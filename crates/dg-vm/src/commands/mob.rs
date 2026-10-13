@@ -1067,6 +1067,17 @@ mod tests {
     }
 
     #[test]
+    fn mzoneecho_finds_zones_numbered_above_63() {
+        let mut w = World::new();
+        let (alice, room) = (w.player, w.room);
+        w.host.set_num(room, "zone", 120);
+        w.host.globals.nums.insert("zone:120:bot".to_owned(), 3000);
+        w.host.globals.nums.insert("zone:120:top".to_owned(), 3099);
+        run(&mut w, "mzoneecho 3001 hello");
+        assert_eq!(w.sent_to(alice), ["hello\r\n"]);
+    }
+
+    #[test]
     fn mzoneecho_and_mrecho() {
         let mut w = World::new();
         let (alice, bob, room, room2) = (w.player, w.player2, w.room, w.room2);

@@ -772,9 +772,18 @@ mod tests {
     }
 
     #[test]
+    fn wat_accepts_the_nesting_a_c_line_can_hold() {
+        let mut w = World::new();
+        let line = format!("{}wlog deep", "wat 1 ".repeat(70));
+        assert!(line.len() < 512);
+        run(&mut w, &line);
+        assert!(w.host.logs.iter().all(|l| !l.contains("too deeply")));
+    }
+
+    #[test]
     fn wat_nesting_is_bounded() {
         let mut w = World::new();
-        let line = format!("{}wlog deep", "wat 3001 ".repeat(100));
+        let line = format!("{}wlog deep", "wat 3001 ".repeat(300));
         run(&mut w, &line);
         log_is(&w, "wat: commands nested too deeply");
         assert_eq!(w.host.logs.len(), 1);

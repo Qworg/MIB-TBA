@@ -260,7 +260,19 @@ impl CmdHost for MockHost {
     }
 
     fn cmd_zone_of_vnum(&self, vnum: i32) -> Option<i32> {
-        (0..64).find(|zone| {
+        let mut zones: Vec<i32> = self
+            .globals
+            .nums
+            .keys()
+            .filter_map(|key| {
+                key.strip_prefix("zone:")?
+                    .strip_suffix(":bot")?
+                    .parse()
+                    .ok()
+            })
+            .collect();
+        zones.sort_unstable();
+        zones.into_iter().find(|zone| {
             let bot = self.globals.nums.get(&format!("zone:{zone}:bot"));
             let top = self.globals.nums.get(&format!("zone:{zone}:top"));
             matches!((bot, top), (Some(bot), Some(top))

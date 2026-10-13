@@ -112,7 +112,7 @@ pub enum ExitField {
     Description(String),
     /// `exit_info`, already truncated to the C's `sh_int`.
     Flags(i32),
-    /// `key`.
+    /// `key`, an `obj_vnum`: already narrowed to 16 bits by the VM.
     Key(i32),
     /// `keyword`.
     Keyword(String),

@@ -133,7 +133,15 @@ pub(crate) fn door<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument: &st
         return;
     }
 
-    let Some(room) = get_room(host, &target) else {
+    // `get_room` hands `real_room` the unwrapped `atoi`; `real_room` takes a
+    // `room_vnum`, so a plain number is narrowed first. UIDs go through
+    // `get_room` as they are.
+    let room = if crate::types::parse_uid(&target).is_some() {
+        get_room(host, &target)
+    } else {
+        host.real_room(vnum16(atoi(&target)))
+    };
+    let Some(room) = room else {
         owner.log(
             host,
             &format!("{letter}door: invalid target (arg == {target})"),
@@ -170,7 +178,7 @@ pub(crate) fn door<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument: &st
             let flags = crate::types::trig::asciiflag_conv(value) as i16;
             host.cmd_exit_set(room, dir, ExitField::Flags(i32::from(flags)));
         }
-        3 => host.cmd_exit_set(room, dir, ExitField::Key(atoi(value))),
+        3 => host.cmd_exit_set(room, dir, ExitField::Key(vnum16(atoi(value)))),
         4 => host.cmd_exit_set(room, dir, ExitField::Keyword(value.to_owned())),
         _ => match host.real_room(vnum16(atoi(value))) {
             Some(to) => host.cmd_exit_set(room, dir, ExitField::ToRoom(Some(to))),
@@ -293,7 +301,7 @@ pub(crate) fn load<H: DgHost + ?Sized>(host: &mut H, owner: Owner, argument: &st
                     owner.log(
                         host,
                         &format!(
-                            "{letter}load: room target vnum doesn't exist (loading mob vnum {number} to room {target})"
+                            "{letter}load: room target vnum doesn't exist (loading mob vnum {raw_number} to room {target})"
                         ),
                     );
                     return;
@@ -553,6 +561,28 @@ mod tests {
 
     fn said(w: &World) -> Vec<String> {
         w.sent_to(w.player)
+    }
+
+    #[test]
+    fn load_log_prints_the_unwrapped_number_and_door_narrows_like_the_c() {
+        let mut w = World::new();
+        let room = w.room;
+        // C: `int number` is printed as written, narrowed only at read_mobile.
+        load(&mut w.host, Owner::Mob(w.mob), "mob 70000 x");
+        assert!(
+            w.host
+                .logs
+                .iter()
+                .any(|l| l.contains("loading mob vnum 70000 to room  x"))
+        );
+        // obj_vnum key is ush_int: -1 stores 65535, 70000 stores 4464.
+        door(&mut w.host, Owner::Mob(w.mob), "3001 north key -1");
+        assert_eq!(w.host.num(room, "exit:0:key"), 65535);
+        door(&mut w.host, Owner::Mob(w.mob), "3001 north key 70000");
+        assert_eq!(w.host.num(room, "exit:0:key"), 4464);
+        // room_vnum 68537 == 3001.
+        door(&mut w.host, Owner::Mob(w.mob), "68537 north purge");
+        assert_eq!(w.host.link(room, "exit:0"), None);
     }
 
     #[test]
