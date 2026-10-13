@@ -31,7 +31,7 @@
 //!   it over as `u8`, which holds every apply number (0..24) the same.
 //! - `GET_OBJ_VNUM` of an object with no prototype is `NOTHING`, 65535 in
 //!   this tree (`CIRCLE_UNSIGNED_INDEX`). A host may report any negative
-//!   number for such an object (the mock reports -1); [`obj_vnum`] maps it to
+//!   number for such an object (the mock reports -1); `obj_vnum` maps it to
 //!   65535, so `%corpse.vnum(65535)%` is 1 as stock scripts (30.trg:208)
 //!   expect.
 //!

@@ -2160,3 +2160,1062 @@ mod tests {
         assert_eq!(sub(&mut w, "eval r %%random.%n%%%"), "eval r %random.5%");
     }
 }
+
+/// `var_subst` through `find_replacement` into the real field tables, text
+/// functions, expression evaluator and spell code, on the mock world. Lines
+/// marked with a `.trg` file and line number are taken from
+/// `tbamud/lib/world/trg`; every expected value is derived from the C
+/// (`dg_variables.c`, `dg_scripts.c`, `dg_misc.c`), not from the Rust.
+#[cfg(test)]
+mod integration {
+    #![allow(clippy::expect_used, clippy::unwrap_used)]
+
+    use super::*;
+    use crate::driver::{Mode, script_driver};
+    use crate::expr::{eval_expr, process_eval, process_if};
+    use crate::host::WorldHost;
+    use crate::lookup::{WEAR_LEGS, WEAR_WIELD};
+    use crate::magic::{
+        MAG_GROUPS, SPELL_DG_AFFECT, TAR_CHAR_ROOM, TAR_IGNORE, TAR_OBJ_INV, do_dg_affect,
+        do_dg_cast,
+    };
+    use crate::mock::MockHost;
+    use crate::types::{ROOM_ID_BASE, TrigInstance, uid_text};
+
+    const ARMOR: i32 = 1;
+    const MAGIC_MISSILE: i32 = 32;
+    const IDENTIFY: i32 = 20;
+    const HEAL: i32 = 28;
+    const GROUP_HEAL: i32 = 64;
+
+    /// The Temple (3001, zone 30) holds the guard (owner of every trigger
+    /// here, level 17), the thug (3001, with a script) and Bob (a player of
+    /// level 5, 100 gold, 30 of 50 hit points, wielding a sword). The room's
+    /// floor has a brass lamp and a bag with two more; the guard carries a
+    /// brass key. North of the Temple is the Altar.
+    struct Game {
+        host: MockHost,
+        void: Uid,
+        temple: Uid,
+        altar: Uid,
+        guard: Uid,
+        thug: Uid,
+        bob: Uid,
+        sword: Uid,
+        key: Uid,
+        lamp: Uid,
+        bag: Uid,
+        trig: TrigInstance,
+    }
+
+    fn game() -> Game {
+        let mut host = MockHost::new();
+        let void = host.add_room(0, "The Void");
+        let temple = host.add_room(3001, "Temple");
+        let altar = host.add_room(3002, "Altar");
+        host.set_num(temple, "zone", 30);
+        host.globals
+            .texts
+            .insert("zone:30:name".to_owned(), "Midgaard".to_owned());
+        // `R_EXIT(temple, NORTH)` to the Altar, no flags, no key.
+        host.set_link(temple, "exit:0", Some(altar));
+
+        let guard = host.add_mob(3000, "guard");
+        host.set_num(guard, "level", 17);
+        let thug = host.add_mob(3001, "thug");
+        let bob = host.add_player("Bob");
+        host.set_num(bob, "level", 5);
+        host.set_num(bob, "gold", 100);
+        host.set_num(bob, "hit", 30);
+        host.set_num(bob, "max_hit", 50);
+        host.set_num(bob, "pos", 8);
+        host.set_num(bob, "sex", 1);
+        host.char_to_room(guard, temple);
+        host.char_to_room(thug, temple);
+        host.char_to_room(bob, temple);
+
+        let sword = host.add_obj(3020, "sword sharp");
+        host.set_text(sword, "name", "a sharp sword");
+        host.equip_char(bob, sword, WEAR_WIELD);
+        let key = host.add_obj(3022, "key brass");
+        host.set_text(key, "name", "a brass key");
+        host.obj_to_char(key, guard);
+        let bag = host.add_obj(3030, "bag");
+        host.set_text(bag, "name", "a leather bag");
+        host.set_num(bag, "type", 15);
+        let lamp = host.add_obj(3050, "lamp");
+        host.set_text(lamp, "name", "a brass lamp");
+        host.obj_to_room(bag, temple);
+        host.obj_to_room(lamp, temple);
+        for _ in 0..2 {
+            let inner = host.add_obj(3050, "lamp");
+            host.obj_to_obj(inner, bag);
+        }
+
+        host.add_spell("armor", ARMOR, TAR_CHAR_ROOM, 0);
+        host.add_spell("identify", IDENTIFY, TAR_CHAR_ROOM | TAR_OBJ_INV, 0);
+        host.add_spell("heal", HEAL, TAR_CHAR_ROOM, 0);
+        host.add_spell("magic missile", MAGIC_MISSILE, TAR_CHAR_ROOM, 0);
+        host.add_spell("group heal", GROUP_HEAL, TAR_IGNORE, MAG_GROUPS);
+        host.add_spell("Script-inflicted", SPELL_DG_AFFECT, 0, 0);
+        host.globals
+            .texts
+            .insert("mobproto:1".to_owned(), "caster".to_owned());
+
+        let proto = host.add_proto(7, AttachType::Mob, "g", 100, "", "say hi");
+        let mut trig = TrigInstance::new(0, proto);
+        trig.vars.add_var("actor", &uid_text(bob), 0);
+        Game {
+            host,
+            void,
+            temple,
+            altar,
+            guard,
+            thug,
+            bob,
+            sword,
+            key,
+            lamp,
+            bag,
+            trig,
+        }
+    }
+
+    impl Game {
+        fn script_var(&mut self, owner: Uid, name: &str, value: &str) {
+            self.host
+                .ensure_script(owner)
+                .unwrap()
+                .global_vars
+                .add_var(name, value, 0);
+        }
+
+        fn run<T>(
+            &mut self,
+            owner: Uid,
+            attach: AttachType,
+            f: impl FnOnce(&mut Cx<'_, MockHost>) -> T,
+        ) -> T {
+            let mut cx = Cx {
+                host: &mut self.host,
+                owner,
+                attach,
+                trig: &mut self.trig,
+            };
+            f(&mut cx)
+        }
+    }
+
+    /// `var_subst` as the guard's mob trigger.
+    fn sub(g: &mut Game, line: &str) -> String {
+        g.run(g.guard, AttachType::Mob, |cx| var_subst(cx, line))
+    }
+
+    /// `eval_expr` as the guard's mob trigger.
+    fn ev(g: &mut Game, line: &str) -> String {
+        g.run(g.guard, AttachType::Mob, |cx| eval_expr(cx, line))
+    }
+
+    /// `process_if` as the guard's mob trigger.
+    fn truth(g: &mut Game, line: &str) -> bool {
+        g.run(g.guard, AttachType::Mob, |cx| process_if(cx, line))
+    }
+
+    /// Substitute, then run `dg_cast`, as the driver does for the line.
+    fn cast(g: &mut Game, owner: Uid, attach: AttachType, line: &str) {
+        g.run(owner, attach, |cx| {
+            let line = var_subst(cx, line);
+            do_dg_cast(cx, &line);
+        });
+    }
+
+    fn affect(g: &mut Game, line: &str) {
+        g.run(g.guard, AttachType::Mob, |cx| {
+            let line = var_subst(cx, line);
+            do_dg_affect(cx, &line);
+        });
+    }
+
+    #[test]
+    fn character_fields_read_through_the_variable() {
+        let mut g = game();
+        assert_eq!(sub(&mut g, "%actor.name%"), "Bob");
+        assert_eq!(
+            sub(&mut g, "%actor.level% %actor.gold% %actor.hitp%"),
+            "5 100 30"
+        );
+        assert_eq!(
+            sub(&mut g, "%actor.sex% %actor.heshe% %actor.hisher%"),
+            "male he his"
+        );
+        assert_eq!(sub(&mut g, "%actor.id%"), "1");
+        assert_eq!(sub(&mut g, "%actor.is_pc% %actor.vnum%"), "1 -1");
+        assert_eq!(sub(&mut g, "%actor.room%"), uid_text(g.temple));
+        // Case does not matter for the variable or the field.
+        assert_eq!(sub(&mut g, "%ACTOR.Name%"), "Bob");
+        // 117.trg:133, with an object owner: `%send%` is osend there.
+        let leggings = g.host.add_obj(11722, "boots large");
+        g.host.set_text(leggings, "name", "The large boots");
+        let greaves = g.host.add_obj(11700, "greaves iron");
+        g.host.set_text(greaves, "name", "the iron greaves");
+        g.host.equip_char(g.bob, greaves, WEAR_LEGS);
+        g.host.obj_to_room(leggings, g.temple);
+        let line = "%send% %actor% %self.shortdesc% cover your entire legs. You must remove  \
+                    %actor.eq(legs).shortdesc% to wear them.";
+        let out = g.run(leggings, AttachType::Obj, |cx| var_subst(cx, line));
+        assert_eq!(
+            out,
+            format!(
+                "osend  {} The large boots cover your entire legs. You must remove  \
+                 the iron greaves to wear them.",
+                uid_text(g.bob)
+            )
+        );
+        // The same line is the world's own `wsend` for a room owner.
+        let out = g.run(g.temple, AttachType::Wld, |cx| {
+            var_subst(cx, "%send% %actor% in %self.name%")
+        });
+        assert_eq!(out, format!("wsend  {} in Temple", uid_text(g.bob)));
+    }
+
+    #[test]
+    fn dead_is_read_from_the_shared_is_dead_fact() {
+        // DEAD(ch) is MOB_NOTDEADYET for an NPC: `npcflag(DEAD)` prints it
+        // from WorldHost::is_dead once the mob is extracted, and the act
+        // array never holds it.
+        let mut g = game();
+        g.trig.vars.add_var("mob", &uid_text(g.thug), 0);
+        assert_eq!(sub(&mut g, "%mob.npcflag(DEAD)%"), "0");
+        g.host.extract_char(g.thug);
+        assert_eq!(sub(&mut g, "%mob.npcflag(DEAD)%"), "1");
+        assert_eq!(g.host.num(g.thug, "act"), 0);
+        g.host.set_num(g.thug, "dead", 0);
+        assert_eq!(sub(&mut g, "%mob.npcflag(DEAD)%"), "0");
+    }
+
+    #[test]
+    fn dotted_chains_go_through_the_temporary_variable() {
+        let mut g = game();
+        assert_eq!(sub(&mut g, "%actor.room.vnum%"), "3001");
+        assert_eq!(
+            sub(&mut g, "%actor.room.name% in %actor.room.zonename%"),
+            "Temple in Midgaard"
+        );
+        assert_eq!(sub(&mut g, "%actor.room.zonenumber%"), "30");
+        // 11.trg:114 `eval origin %actor.room.vnum%` is the same chain.
+        assert_eq!(
+            sub(&mut g, "eval origin %actor.room.vnum%"),
+            "eval origin 3001"
+        );
+        // `self` is only four characters, but the overwritten bytes are the
+        // dead ones before the second field.
+        assert_eq!(sub(&mut g, "%self.room.vnum%"), "3001");
+        // A link with a subfield, then a last link: the exit's destination.
+        assert_eq!(sub(&mut g, "%actor.room.north(vnum)%"), "3002");
+        assert_eq!(sub(&mut g, "%actor.room.north(room).name%"), "Altar");
+        // The subfield buffer is never cleared, so the last link still sees
+        // "room": `vnum(room)` asks whether the room's vnum is atoi("room").
+        assert_eq!(sub(&mut g, "%actor.room.north(room).vnum%"), "0");
+        // A room's first object and first occupant, then a field of each.
+        assert_eq!(
+            sub(&mut g, "%actor.room.contents(3050).shortdesc%"),
+            "a brass lamp"
+        );
+        assert_eq!(sub(&mut g, "%actor.room.people.name%"), "Bob");
+        // The chain leaves the temporary variable behind.
+        // The last link evaluated was `people`: Bob, the head of the list.
+        assert_eq!(
+            g.trig.vars.get("tmpvr").map(|v| v.value.clone()),
+            Some(uid_text(g.bob))
+        );
+        // A link that yields text becomes a text variable: %actor.name.strlen%.
+        assert_eq!(
+            sub(&mut g, "%actor.name.strlen% %actor.name.toupper%"),
+            "3 Bob"
+        );
+        // 130.trg:514 `eval length %name.strlen%` on a plain variable.
+        g.trig.vars.add_var("name", "  Gandalf the Grey ", 0);
+        assert_eq!(
+            sub(&mut g, "%name.strlen% [%name.trim%]"),
+            "19 [Gandalf the Grey]"
+        );
+    }
+
+    #[test]
+    fn a_chain_value_is_evaluated_as_an_expression() {
+        // `eval tmpvr <value>` runs the value through eval_expr, so a value
+        // with an operator in it is computed: "a long-sword" is
+        // atoi("a long") - atoi("sword") = 0.
+        let mut g = game();
+        g.host.set_text(g.sword, "name", "a long-sword");
+        assert_eq!(sub(&mut g, "%actor.eq(wield).shortdesc%"), "a long-sword");
+        assert_eq!(sub(&mut g, "%actor.eq(wield).shortdesc.strlen%"), "1");
+        // A plain name is its own value.
+        g.host.set_text(g.sword, "name", "a sharp sword");
+        assert_eq!(sub(&mut g, "%actor.eq(wield).shortdesc.strlen%"), "13");
+    }
+
+    #[test]
+    fn inventory_equipment_and_object_fields() {
+        let mut g = game();
+        let (key, sword) = (uid_text(g.key), uid_text(g.sword));
+        assert_eq!(sub(&mut g, "%self.inventory(3022)%"), key);
+        assert_eq!(sub(&mut g, "%self.inventory%"), key);
+        assert_eq!(sub(&mut g, "[%self.inventory(9999)%]"), "[]");
+        assert_eq!(
+            sub(&mut g, "%self.inventory(3022).shortdesc%"),
+            "a brass key"
+        );
+        // 117.trg:62 `%purge% %actor.inventory(11719)%`: nothing carried.
+        assert_eq!(
+            sub(&mut g, "%purge% [%actor.inventory(11719)%]"),
+            "mpurge  []"
+        );
+        assert_eq!(sub(&mut g, "%self.has_item(3022)%"), "1");
+        assert_eq!(sub(&mut g, "%self.has_item(key)%"), "1");
+        assert_eq!(sub(&mut g, "%self.has_item(zz)%"), "0");
+        assert_eq!(sub(&mut g, "%actor.has_item(3020)%"), "1");
+        assert_eq!(sub(&mut g, "%actor.eq(wield)%"), sword);
+        assert_eq!(sub(&mut g, "%actor.eq(wield).shortdesc%"), "a sharp sword");
+        // The last link still sees the first link's subfield "wield" (the
+        // buffer is never cleared), so `vnum` is the boolean form
+        // `vnum(wield)`, false; a second subfield is appended to the first.
+        assert_eq!(sub(&mut g, "%actor.eq(wield).vnum%"), "0");
+        assert_eq!(sub(&mut g, "%actor.eq(wield).vnum(3020)%"), "0");
+        // Through a variable the subfield is the caller's own.
+        g.trig.vars.add_var("blade", &sword, 0);
+        assert_eq!(sub(&mut g, "%blade.vnum% %blade.vnum%"), "3020 3020");
+        assert_eq!(sub(&mut g, "%blade.vnum(3020)%"), "1");
+        assert_eq!(sub(&mut g, "[%actor.eq(head)%]"), "[]");
+        assert_eq!(sub(&mut g, "%actor.eq(*)% [%self.eq(*)%]"), "1 []");
+        // 118.trg:1203 `with %weapon.shortdesc%`.
+        g.trig.vars.add_var("weapon", &sword, 0);
+        assert_eq!(
+            sub(&mut g, "with %weapon.shortdesc%."),
+            "with a sharp sword."
+        );
+        // The object's own links and a container.
+        let (bag, lamp, temple) = (uid_text(g.bag), uid_text(g.lamp), uid_text(g.temple));
+        g.trig.vars.add_var("bag", &bag, 0);
+        assert_eq!(
+            sub(&mut g, "%bag.type% %bag.is_inroom% %bag.next_in_list%"),
+            format!("CONTAINER {temple} {lamp}")
+        );
+        assert_eq!(sub(&mut g, "%bag.count(lamp)%"), "2");
+        assert_eq!(sub(&mut g, "%bag.has_in(lamp)%"), "1");
+        assert_eq!(sub(&mut g, "%bag.has_in(key)%"), "0");
+        assert_eq!(
+            sub(&mut g, "%weapon.worn_by% %weapon.carried_by%."),
+            format!("{} .", uid_text(g.bob))
+        );
+    }
+
+    #[test]
+    fn a_corpse_has_the_nothing_vnum() {
+        // 30.trg:208 `if %item.vnum(65535)%`: GET_OBJ_VNUM of an object with
+        // no prototype is NOTHING, 65535 in this tree.
+        let mut g = game();
+        let corpse = g.host.add_obj(-1, "corpse");
+        g.trig.vars.add_var("item", &uid_text(corpse), 0);
+        assert!(truth(&mut g, "%item.vnum(65535)%"));
+        assert_eq!(sub(&mut g, "%item.vnum%"), "65535");
+        assert!(truth(&mut g, "%item.vnum% == 65535"));
+        assert!(!truth(&mut g, "%item.vnum(3020)%"));
+        // A mob is not a corpse either way.
+        g.trig.vars.add_var("item", &uid_text(g.sword), 0);
+        assert!(!truth(&mut g, "%item.vnum(65535)%"));
+    }
+
+    #[test]
+    fn setters_change_the_character_and_return_the_new_value() {
+        let mut g = game();
+        // 104.trg:180 `nop %actor.gold(150)%`: the line is still substituted.
+        assert_eq!(sub(&mut g, "nop %actor.gold(150)%"), "nop 250");
+        assert_eq!(g.host.num(g.bob, "gold"), 250);
+        // increase_gold clamps at 0.
+        assert_eq!(sub(&mut g, "%actor.gold(-1000)%"), "0");
+        assert_eq!(g.host.num(g.bob, "gold"), 0);
+        // A subfield with a reference is substituted first.
+        g.trig.vars.add_var("amount", "7", 0);
+        assert_eq!(sub(&mut g, "%actor.gold(%amount%)%"), "7");
+        // A later reference without parentheses sees the earlier subfield
+        // text again (subfield_p is never reset): gold(7) once more.
+        assert_eq!(sub(&mut g, "%actor.gold(3)% %actor.gold%"), "10 13");
+        // Alignment is clamped to -1000..1000.
+        assert_eq!(sub(&mut g, "%actor.align(5000)%"), "1000");
+        assert_eq!(sub(&mut g, "%actor.align(-5000)%"), "-1000");
+        // Hit points add, and update_pos follows: 30 - 40 = -10 is
+        // mortally wounded.
+        assert_eq!(sub(&mut g, "%actor.hitp(-40)%"), "-10");
+        assert_eq!(sub(&mut g, "%actor.pos%"), "Mortally wounded");
+        // A position is set by name (Sleeping..Standing only).
+        assert_eq!(sub(&mut g, "%actor.pos(sit)%"), "Sitting");
+        // The pools are shorts: 32767 + 1 wraps.
+        g.host.set_num(g.bob, "mana", 32767);
+        assert_eq!(sub(&mut g, "%actor.mana(1)%"), "-32768");
+        // `level(<n>)` stores the level but, like the C, prints nothing and
+        // reaches the unknown-field log.
+        g.host.logs.clear();
+        assert_eq!(sub(&mut g, "[%actor.level(3)%]"), "[]");
+        assert_eq!(g.host.level(g.bob), 3);
+        assert_eq!(
+            g.host.logs,
+            vec!["Trigger: trigger 7, VNum 7. unknown char field: 'level'"]
+        );
+        assert_eq!(sub(&mut g, "%actor.level%"), "3");
+        // skillset prints nothing; skill reads the value back through the
+        // spell table.
+        assert_eq!(sub(&mut g, "[%actor.skillset(armor 55)%]"), "[]");
+        assert_eq!(sub(&mut g, "%actor.skill(armor)%"), "55");
+        assert_eq!(sub(&mut g, "%actor.skill(nothing)%"), "unknown skill");
+    }
+
+    #[test]
+    fn an_unknown_field_falls_back_to_the_entitys_globals_then_the_log() {
+        let mut g = game();
+        g.script_var(g.bob, "zzcustom", "hello");
+        g.host.logs.clear();
+        assert_eq!(sub(&mut g, "%actor.zzcustom%"), "hello");
+        assert!(g.host.logs.is_empty());
+        // 11.trg:550 `%actor.roomstocheck.cdr%`: a global field then a text
+        // function on the chain's result.
+        g.script_var(g.bob, "roomstocheck", "3001 3002 3003");
+        assert_eq!(sub(&mut g, "%actor.roomstocheck.cdr%"), "3002 3003");
+        assert_eq!(sub(&mut g, "%actor.roomstocheck.car%"), "3001");
+        // The fallback compares names with str_cmp.
+        assert_eq!(sub(&mut g, "%actor.ZZCUSTOM%"), "hello");
+        // No such global: empty and logged, naming the trigger.
+        assert_eq!(sub(&mut g, "[%actor.zznone%]"), "[]");
+        assert_eq!(
+            g.host.logs,
+            vec!["Trigger: trigger 7, VNum 7. unknown char field: 'zznone'"]
+        );
+        // A character with no script at all is logged the same way.
+        g.host.logs.clear();
+        g.trig.vars.add_var("mob", &uid_text(g.guard), 0);
+        assert_eq!(sub(&mut g, "[%mob.zznone%]"), "[]");
+        assert_eq!(g.host.logs.len(), 1);
+        // Objects and rooms log with the owner's type.
+        g.host.logs.clear();
+        g.trig.vars.add_var("weapon", &uid_text(g.sword), 0);
+        assert_eq!(sub(&mut g, "[%weapon.zzx%]"), "[]");
+        assert_eq!(sub(&mut g, "[%actor.room.zzy%]"), "[]");
+        assert_eq!(
+            g.host.logs,
+            vec![
+                "Trigger: trigger 7, VNum 7, type: 0. unknown object field: 'zzx'",
+                "Trigger: trigger 7, VNum 7, type: 0. unknown room field: 'zzy'",
+            ]
+        );
+        // An object's global is found the same way.
+        g.script_var(g.sword, "zzx", "forged");
+        assert_eq!(sub(&mut g, "%weapon.zzx%"), "forged");
+    }
+
+    #[test]
+    fn varexists_and_global_read_another_entitys_variables() {
+        let mut g = game();
+        g.script_var(g.bob, "solved", "1");
+        g.script_var(g.thug, "v", "thug value");
+        // 14.trg:127 and 11.trg:342.
+        assert_eq!(sub(&mut g, "%actor.varexists(solved)%"), "1");
+        assert_eq!(sub(&mut g, "%actor.varexists(SOLVED)%"), "1");
+        assert_eq!(sub(&mut g, "%actor.varexists(other)%"), "0");
+        assert!(truth(&mut g, "%actor.varexists(solved)%"));
+        assert!(!truth(&mut g, "!%actor.varexists(solved)%"));
+        assert!(truth(&mut g, "!(%actor.varexists(roomstocheck)%)"));
+        // A character with no script has no variables.
+        g.trig.vars.add_var("mob", &uid_text(g.guard), 0);
+        assert_eq!(sub(&mut g, "%mob.varexists(solved)%"), "0");
+        // %npc.global(v)%: the variable is looked up in the NPC's script.
+        g.trig.vars.add_var("npc", &uid_text(g.thug), 0);
+        assert_eq!(sub(&mut g, "%npc.global(v)%"), "thug value");
+        assert_eq!(sub(&mut g, "[%npc.global(nope)%]"), "[]");
+        // A player is not intercepted: "global" is an unknown field for it.
+        g.host.logs.clear();
+        g.trig.vars.add_var("pc", &uid_text(g.bob), 0);
+        assert_eq!(sub(&mut g, "[%pc.global(v)%]"), "[]");
+        assert_eq!(g.host.logs.len(), 1);
+        assert!(g.host.logs[0].ends_with("unknown char field: 'global'"));
+        // The void's globals are read by %global.name%.
+        g.script_var(g.void, "worldvar", "everywhere");
+        assert_eq!(sub(&mut g, "%global.worldvar%"), "everywhere");
+        assert_eq!(sub(&mut g, "%global%"), ROOM_ID_BASE.to_string());
+    }
+
+    #[test]
+    fn text_functions_take_precedence_over_entity_fields() {
+        let mut g = game();
+        // `actor` holds "}1": its text functions answer before the entity.
+        assert_eq!(
+            sub(&mut g, "%actor.strlen% %actor.car% %actor.charat(2)%"),
+            "2 }1 1"
+        );
+        g.trig.vars.add_var("speech", "heal me please", 0);
+        // 0.trg:1645 and 211.trg:299.
+        assert_eq!(sub(&mut g, "%speech.car%|%speech.cdr%"), "heal|me please");
+        assert_eq!(sub(&mut g, "%speech.contains(ME)%"), "1");
+        assert_eq!(sub(&mut g, "%speech.contains(you)%"), "0");
+        assert_eq!(sub(&mut g, "%speech.charat(1)%"), "h");
+        assert_eq!(sub(&mut g, "[%speech.charat(99)%]"), "[]");
+        assert_eq!(sub(&mut g, "%speech.toupper%"), "Heal me please");
+        // 118.trg:935 `%speech.contains(dg_cast)%`.
+        g.trig.vars.add_var("speech", "do dg_cast now", 0);
+        assert!(truth(
+            &mut g,
+            "%speech.contains(mdamage)% || %speech.contains(dg_cast)%"
+        ));
+        // The non-backtracking str_str is shared by contains and /=.
+        g.trig.vars.add_var("txt", "aaab", 0);
+        assert_eq!(sub(&mut g, "%txt.contains(aab)%"), "0");
+        assert_eq!(sub(&mut g, "%txt.contains(aaa)%"), "1");
+        assert_eq!(sub(&mut g, "%txt.contains(ab)%"), "1");
+        // Several subfielded references on one line share the subfield
+        // buffer, which is never cleared: the second sees "aab" + "aaa".
+        assert_eq!(
+            sub(&mut g, "%txt.contains(aab)% %txt.contains(aaa)%"),
+            "0 0"
+        );
+        assert!(!truth(&mut g, "%txt% /= aab"));
+        assert!(truth(&mut g, "%txt% /= aaa"));
+        // A word that is no text function falls to the entities. get_room
+        // takes atoi("zzword") == 0 for a room vnum, which is the void, so
+        // the field is looked up in the void's globals (dg_variables.c,
+        // "special handling of the void").
+        g.host.logs.clear();
+        g.trig.vars.add_var("word", "zzword", 0);
+        assert_eq!(sub(&mut g, "[%word.name%]"), "[]");
+        assert_eq!(
+            g.host.logs,
+            vec![
+                "Trigger: trigger 7, Vnum 7, type 0. Trying to access Global var list of \
+                 void. Apparently this has not been set up!"
+            ]
+        );
+        g.script_var(g.void, "zzfoo", "from the void");
+        assert_eq!(sub(&mut g, "%word.zzfoo%"), "from the void");
+    }
+
+    #[test]
+    fn mudcommand_names_the_command_a_word_abbreviates() {
+        // 14.trg:219 `if %cmd.mudcommand% == wake && ...`.
+        let mut g = game();
+        g.host
+            .globals
+            .texts
+            .insert("commands".to_owned(), "north wake say".to_owned());
+        g.trig.vars.add_var("cmd", "wa", 0);
+        assert_eq!(sub(&mut g, "%cmd.mudcommand%"), "wake");
+        assert!(truth(
+            &mut g,
+            "%cmd.mudcommand% == wake && %actor.level% == 5"
+        ));
+        g.trig.vars.add_var("cmd", "no", 0);
+        assert!(!truth(
+            &mut g,
+            "%cmd.mudcommand% == wake && %actor.level% == 5"
+        ));
+    }
+
+    #[test]
+    fn the_special_variables() {
+        let mut g = game();
+        // %people.<vnum>% counts the occupants.
+        assert_eq!(sub(&mut g, "%people.3001%"), "3");
+        assert_eq!(sub(&mut g, "%people.3002%"), "0");
+        assert_eq!(sub(&mut g, "%people.0%"), "0");
+        g.host.logs.clear();
+        assert_eq!(sub(&mut g, "%people.4444%"), "-1");
+        assert_eq!(g.host.logs, vec!["people.vnum: world[rnum] does not exist"]);
+        // 130.trg:927 `eval total %%people.%thisRoom%%%`.
+        g.trig.vars.add_var("thisroom", "3001", 0);
+        assert_eq!(
+            sub(&mut g, "eval total %%people.%thisRoom%%%"),
+            "eval total %people.3001%"
+        );
+        let line = sub(&mut g, "eval total %%people.%thisRoom%%%");
+        g.run(g.guard, AttachType::Mob, |cx| process_eval(cx, &line));
+        assert_eq!(
+            g.trig.vars.get("total").map(|v| v.value.clone()),
+            Some("3".to_owned())
+        );
+        // %findobj% counts through containers, by vnum, id or name.
+        assert_eq!(sub(&mut g, "%findobj.3001(3050)%"), "3");
+        assert_eq!(sub(&mut g, "%findobj.3001(lamp)%"), "3");
+        assert_eq!(sub(&mut g, "%findobj.3001(bag)%"), "1");
+        assert_eq!(sub(&mut g, "%findobj.3001(%lampid%)%"), "0");
+        g.trig.vars.add_var("lampid", &uid_text(g.lamp), 0);
+        assert_eq!(sub(&mut g, "%findobj.3001(%lampid%)%"), "1");
+        g.host.logs.clear();
+        assert_eq!(sub(&mut g, "%findobj.9999(1)%"), "0");
+        assert_eq!(sub(&mut g, "%findobj.3001()%"), "0");
+        assert_eq!(g.host.logs.len(), 2);
+        // %findmob%: mobs by vnum, and players are vnum -1.
+        assert_eq!(sub(&mut g, "%findmob.3001(3001)%"), "1");
+        assert_eq!(sub(&mut g, "%findmob.3001(3000)%"), "1");
+        assert_eq!(sub(&mut g, "%findmob.3001(-1)%"), "1");
+        assert_eq!(sub(&mut g, "%findmob.3002(3001)%"), "0");
+        // %random.<n>% rolls 1..n; <= 0 gives 0.
+        g.host.rolls.push_back(4);
+        assert_eq!(sub(&mut g, "%random.6% %random.0%"), "4 0");
+        // %random.dir% names an exit: the Temple's only one is north.
+        assert_eq!(sub(&mut g, "%random.dir%"), "north");
+        // 14.trg:11.trg `if %here.north%`: an exit with no flags prints
+        // NOBITS, which is true; no exit is empty.
+        g.trig.vars.add_var("here", "3001", 0);
+        assert!(truth(&mut g, "%here.north%"));
+        assert!(!truth(&mut g, "%here.east%"));
+        assert_eq!(sub(&mut g, "%here.north(vnum)%"), "3002");
+        assert_eq!(sub(&mut g, "%here.north(key)%"), "65535");
+    }
+
+    #[test]
+    fn random_char_picks_one_of_the_others_by_the_c_reservoir_rule() {
+        let mut g = game();
+        let (bob, thug) = (uid_text(g.bob), uid_text(g.thug));
+        // The room's list is bob, thug, guard; the guard is excluded, so the
+        // candidates are bob (count 0) then thug (count 1). rand_number(0, n)
+        // == 0 takes the candidate.
+        g.host.rolls.clear();
+        g.host.rolls.extend([0, 1]);
+        assert_eq!(sub(&mut g, "%random.char%"), bob);
+        g.host.rolls.clear();
+        g.host.rolls.extend([0, 0]);
+        assert_eq!(sub(&mut g, "%random.char%"), thug);
+        // 14.trg:206: `if %random.char%` is true while anyone else is here.
+        g.host.rolls.clear();
+        g.host.rolls.extend([0, 1]);
+        assert!(truth(&mut g, "%random.char%"));
+        // CAN_SEE(guard, bob) fails: bob is not a candidate.
+        if let Some(entity) = g.host.entity_mut(g.guard) {
+            entity.lists.insert("cannot_see".to_owned(), vec![g.bob]);
+        }
+        g.host.rolls.clear();
+        g.host.rolls.extend([0, 1]);
+        assert_eq!(sub(&mut g, "%random.char%"), thug);
+        // Nobody to pick: empty.
+        if let Some(entity) = g.host.entity_mut(g.guard) {
+            entity
+                .lists
+                .insert("cannot_see".to_owned(), vec![g.bob, g.thug]);
+        }
+        assert_eq!(sub(&mut g, "[%random.char%]"), "[]");
+        // An object or a room picks among everyone, itself excluded by nothing.
+        let guard = uid_text(g.guard);
+        g.host.rolls.clear();
+        g.host.rolls.extend([0, 1, 1]);
+        let out = g.run(g.sword, AttachType::Obj, |cx| {
+            var_subst(cx, "%random.char%")
+        });
+        // The sword is worn by bob in the Temple: candidates bob, thug,
+        // guard; only the first roll (0) takes.
+        assert_eq!(out, bob);
+        g.host.rolls.clear();
+        g.host.rolls.extend([0, 0, 0]);
+        let out = g.run(g.temple, AttachType::Wld, |cx| {
+            var_subst(cx, "%random.char%")
+        });
+        assert_eq!(out, guard);
+    }
+
+    #[test]
+    fn an_expression_over_fields_follows_the_c_precedence() {
+        let mut g = game();
+        // Right-leaning splits: the first '-' in the line is the operator.
+        assert_eq!(ev(&mut g, "%actor.gold% - 40 - 10"), "70");
+        assert_eq!(ev(&mut g, "%actor.gold% / 10 / 5"), "50");
+        assert_eq!(ev(&mut g, "%actor.gold% + 5 * 2"), "110");
+        assert_eq!(ev(&mut g, "2 * 3 + 4"), "10");
+        // || binds loosest, && next, comparisons tighter than both.
+        assert_eq!(
+            ev(&mut g, "%actor.level% > 3 || %actor.gold% < 0 && 0"),
+            "1"
+        );
+        assert_eq!(
+            ev(&mut g, "%actor.level% > 9 || %actor.gold% < 0 && 1"),
+            "0"
+        );
+        // 14.trg:157.
+        g.trig.vars.add_var("object", &uid_text(g.sword), 0);
+        g.host.set_num(g.sword, "vnum", 47);
+        assert!(truth(
+            &mut g,
+            "(%object.vnum% == 47) && !%actor.varexists(solved_example_quest_zone_0)%"
+        ));
+        g.script_var(g.bob, "solved_example_quest_zone_0", "1");
+        assert!(!truth(
+            &mut g,
+            "(%object.vnum% == 47) && !%actor.varexists(solved_example_quest_zone_0)%"
+        ));
+        // != yields the str_cmp value for text, so "sword" != "axe" is not 1.
+        g.host.set_num(g.sword, "vnum", 3020);
+        assert_eq!(ev(&mut g, "%actor.name% != Bob"), "0");
+        assert_eq!(ev(&mut g, "%actor.name% != Zed"), "-24");
+        assert_eq!(ev(&mut g, "%actor.name% == bob"), "1");
+        assert_eq!(ev(&mut g, "%actor.name% /= ob"), "1");
+        // A number against a non-number compares as text: "100" < "5x".
+        assert_eq!(ev(&mut g, "%actor.gold% < 5"), "0");
+        assert_eq!(ev(&mut g, "%actor.gold% < 5x"), "1");
+        assert_eq!(ev(&mut g, "%actor.gold% == 100"), "1");
+        assert_eq!(ev(&mut g, "%actor.gold% == 100.0"), "0");
+        // The weapon under /=: the leaf is substituted after the split.
+        assert!(truth(&mut g, "%actor.eq(wield).shortdesc% /= sharp"));
+        assert!(!truth(&mut g, "%actor.eq(wield).shortdesc% /= dull"));
+        // 30.trg:3011: a string and a numeric test joined by &&.
+        g.trig.vars.add_var("item", &uid_text(g.lamp), 0);
+        g.host.set_num(g.lamp, "cost", 10);
+        assert!(truth(
+            &mut g,
+            "%item.type% != FOUNTAIN && %item.cost% <= 15"
+        ));
+        g.host.set_num(g.lamp, "cost", 16);
+        assert!(!truth(
+            &mut g,
+            "%item.type% != FOUNTAIN && %item.cost% <= 15"
+        ));
+        g.host.set_num(g.lamp, "cost", 10);
+        g.host.set_num(g.lamp, "type", 23);
+        assert!(!truth(
+            &mut g,
+            "%item.type% != FOUNTAIN && %item.cost% <= 15"
+        ));
+        // An unknown variable is empty, which is false.
+        assert!(!truth(&mut g, "%nothing%"));
+        assert!(!truth(&mut g, "%nothing.name%"));
+    }
+
+    #[test]
+    fn dg_cast_resolves_its_target_from_the_actor() {
+        let mut g = game();
+        let (guard, bob) = (g.guard, g.bob);
+        // 0.trg:1788 `dg_cast 'magic missile' %actor%`.
+        cast(
+            &mut g,
+            guard,
+            AttachType::Mob,
+            "dg_cast 'magic missile' %actor%",
+        );
+        assert_eq!(
+            g.host.effects,
+            vec![format!(
+                "call_magic spell=32 level=17 caster={guard} victim={bob} obj=- room={}",
+                g.temple
+            )]
+        );
+        // 274.trg:8 `dg_cast 'heal' %actor.name%`: the target by name.
+        g.host.effects.clear();
+        cast(
+            &mut g,
+            guard,
+            AttachType::Mob,
+            "dg_cast 'heal' %actor.name%",
+        );
+        assert_eq!(g.host.effects.len(), 1);
+        assert!(g.host.effects[0].starts_with("call_magic spell=28 level=17"));
+        assert!(g.host.effects[0].contains(&format!("victim={bob} ")));
+        // A target reached through a chain: the thug's room-mate.
+        g.host.effects.clear();
+        cast(
+            &mut g,
+            guard,
+            AttachType::Mob,
+            "dg_cast 'armor' %actor.room.people%",
+        );
+        assert!(g.host.effects[0].contains(&format!("victim={bob} ")));
+        // An object target from the caster's inventory (TAR_OBJ_INV).
+        g.host.effects.clear();
+        cast(
+            &mut g,
+            guard,
+            AttachType::Mob,
+            "dg_cast 'identify' %self.inventory(3022)%",
+        );
+        assert!(
+            g.host.effects[0].contains(&format!("obj={}", g.key)),
+            "{:?}",
+            g.host.effects
+        );
+        // A group spell is refused whatever the target.
+        g.host.effects.clear();
+        g.host.logs.clear();
+        cast(
+            &mut g,
+            guard,
+            AttachType::Mob,
+            "dg_cast 'group heal' %actor%",
+        );
+        assert!(g.host.effects.is_empty());
+        assert!(g.host.logs[0].contains("dg_cast: group spells not permitted"));
+        // 118.trg:1201 `dg_cast '%spell%' %people%` with an unknown spell and
+        // an empty target.
+        g.host.logs.clear();
+        g.trig.vars.add_var("spell", "zz", 0);
+        cast(&mut g, guard, AttachType::Mob, "dg_cast '%spell%' %people%");
+        assert!(g.host.logs[0].contains("dg_cast: invalid spell name"));
+    }
+
+    #[test]
+    fn an_object_or_room_casts_through_a_proxy_caster() {
+        let mut g = game();
+        let bob = g.bob;
+        // A room-owned trigger in the Altar (with only Bob in it) targets
+        // %random.char%.
+        g.host.char_to_room(bob, g.altar);
+        g.host.rolls.push_back(0);
+        let altar = g.altar;
+        cast(
+            &mut g,
+            altar,
+            AttachType::Wld,
+            "dg_cast 'magic missile' %random.char%",
+        );
+        assert_eq!(g.host.effects.len(), 2, "{:?}", g.host.effects);
+        let call = g
+            .host
+            .effects
+            .iter()
+            .find(|e| e.starts_with("call_magic"))
+            .unwrap();
+        assert!(call.contains("level=25"), "{call}");
+        assert!(call.contains(&format!("victim={bob} ")), "{call}");
+        assert!(call.ends_with(&format!("room={altar}")), "{call}");
+        // The proxy is gone again.
+        assert!(g.host.effects.iter().any(|e| e.starts_with("extract_char")));
+    }
+
+    #[test]
+    fn dg_affect_marks_the_character_the_field_table_can_see() {
+        let mut g = game();
+        // `%actor.affect(...)%` asks affected_by_spell for the spell the
+        // name matches; dg_affect files its affects under SPELL_DG_AFFECT.
+        assert_eq!(sub(&mut g, "%actor.affect(script-inflicted)%"), "0");
+        affect(&mut g, "dg_affect %actor% SANCT 1 10");
+        assert_eq!(g.host.num(g.bob, &format!("spell:{SPELL_DG_AFFECT}")), 1);
+        assert_eq!(g.host.num(g.bob, "aff:8"), 1);
+        assert_eq!(sub(&mut g, "%actor.affect(script-inflicted)%"), "1");
+        assert_eq!(sub(&mut g, "%actor.affect%"), "0");
+        assert!(
+            g.host
+                .effects
+                .iter()
+                .any(|e| e.contains("duration=9 bit=8"))
+        );
+        // `off` removes everything the script inflicted.
+        affect(&mut g, "dg_affect %actor% SANCT off 1");
+        assert_eq!(g.host.num(g.bob, "aff:8"), 0);
+        assert_eq!(sub(&mut g, "%actor.affect(script-inflicted)%"), "0");
+        // An apply adds to the attribute: the modifier is the value.
+        g.host.effects.clear();
+        affect(&mut g, "dg_affect %actor.name% STR 3 5");
+        assert_eq!(g.host.effects.len(), 1);
+        assert!(g.host.effects[0].contains("location=1 modifier=3 duration=4"));
+        // A bad target substitutes to nothing and is logged.
+        g.host.logs.clear();
+        affect(&mut g, "dg_affect %nobody% STR 3 5");
+        assert!(
+            g.host.logs[0].contains("dg_affect usage"),
+            "{:?}",
+            g.host.logs
+        );
+    }
+
+    /// Give the trigger on `owner` the variables `vars`, run it and return
+    /// the commands it had `owner` perform.
+    fn run_trigger(
+        g: &mut Game,
+        owner: Uid,
+        attach: AttachType,
+        types: &str,
+        vars: &[(&str, String)],
+        body: &str,
+    ) -> Vec<String> {
+        let proto = g.host.add_proto(900, attach, types, 100, "", body);
+        let id = g.host.attach(owner, &proto).unwrap();
+        let slot = g
+            .host
+            .script_mut(owner)
+            .and_then(|script| script.trigger_mut(id))
+            .unwrap();
+        for (name, value) in vars {
+            slot.vars.add_var(name, value, 0);
+        }
+        g.host.mud_commands.clear();
+        script_driver(&mut g.host, owner, id, Mode::New);
+        g.host
+            .mud_commands
+            .iter()
+            .filter(|(ch, _)| *ch == owner)
+            .map(|(_, line)| line.clone())
+            .collect()
+    }
+
+    #[test]
+    fn the_stock_fido_eats_the_corpse() {
+        // 30.trg #3010, verbatim.
+        let body = "set inroom %self.room%\n\
+set item %inroom.contents%\n\
+while %item%\n\
+  * Target the next item in room. In case it is devoured.\n\
+  set next_item %item.next_in_list%\n\
+  * Check for a corpse. Corpse on TBA is vnum 65535. Stock is -1.\n\
+  if %item.vnum(65535)%\n\
+    emote savagely devours a corpse.\n\
+    %purge% %item%\n\
+    halt\n\
+  end\n\
+  set item %next_item%\n\
+  * Loop back\n\
+done";
+        let mut g = game();
+        let corpse = g.host.add_obj(-1, "corpse");
+        g.host.obj_to_room(corpse, g.temple);
+        let tail = g.host.add_obj(3051, "rag");
+        g.host.obj_to_room(tail, g.temple);
+        let guard = g.guard;
+        let said = run_trigger(&mut g, guard, AttachType::Mob, "b", &[], body);
+        assert_eq!(said, vec!["emote savagely devours a corpse."]);
+        assert!(!g.host.exists(corpse));
+        assert!(g.host.exists(tail) && g.host.exists(g.lamp));
+        // Without a corpse it eats nothing.
+        let said = run_trigger(&mut g, guard, AttachType::Mob, "b", &[], body);
+        assert!(said.is_empty());
+        assert!(g.host.exists(tail));
+    }
+
+    #[test]
+    fn the_stock_janitor_takes_cheap_things_but_not_fountains() {
+        // 30.trg #3011, verbatim (the TODO comment line included).
+        let body = "eval inroom %self.room%\n\
+eval item %inroom.contents%\n\
+while %item%\n\
+  * Target the next item in room. In case it is picked up.\n\
+  set next_item %item.next_in_list%\n\
+* TODO: if %item.wearflag(take)%\n\
+  * Check for fountains and expensive items.\n\
+  if %item.type% != FOUNTAIN && %item.cost% <= 15\n\
+    take %item.name%\n\
+  end\n\
+  set item %next_item%\n\
+  * Loop back\n\
+done";
+        let mut g = game();
+        // The floor: bag (cost 100), lamp (cost 10), fountain (cost 0),
+        // rag (cost 15), gem (cost 16).
+        g.host.set_num(g.bag, "cost", 100);
+        g.host.set_num(g.lamp, "cost", 10);
+        let fountain = g.host.add_obj(3052, "fountain marble");
+        g.host.set_num(fountain, "type", 23);
+        let rag = g.host.add_obj(3051, "rag");
+        g.host.set_num(rag, "cost", 15);
+        let gem = g.host.add_obj(3053, "gem");
+        g.host.set_num(gem, "cost", 16);
+        for obj in [fountain, rag, gem] {
+            g.host.obj_to_room(obj, g.temple);
+        }
+        let guard = g.guard;
+        let said = run_trigger(&mut g, guard, AttachType::Mob, "b", &[], body);
+        assert_eq!(said, vec!["take lamp", "take rag"]);
+    }
+
+    #[test]
+    fn the_speech_variable_checker_reads_a_variable_named_by_the_speaker() {
+        // 13.trg #1344, with the continuation line of the echo left out.
+        let body = "eval name %actor.car%\n\
+eval test %%name.varexists(%speech.cdr%)%%\n\
+if %test%\n\
+  eval var %%name.%speech.cdr%%%\n\
+  say %name.name% has remote variable %speech.cdr% which has the value of '%var%'.\n\
+else\n\
+  say %name.name% doesnt have the variable %speech.cdr%.\n\
+end";
+        let mut g = game();
+        g.script_var(g.bob, "zzcustom", "hello");
+        let bob = uid_text(g.bob);
+        let guard = g.guard;
+        let said = run_trigger(
+            &mut g,
+            guard,
+            AttachType::Mob,
+            "d",
+            &[
+                ("actor", bob.clone()),
+                ("speech", "Bob zzcustom".to_owned()),
+            ],
+            // The speaker's own words are "Bob zzcustom": the first word is
+            // the target; here that is the actor car.
+            &body.replace("%actor.car%", "%actor%"),
+        );
+        assert_eq!(
+            said,
+            vec!["say Bob has remote variable zzcustom which has the value of 'hello'."]
+        );
+        let said = run_trigger(
+            &mut g,
+            guard,
+            AttachType::Mob,
+            "d",
+            &[("actor", bob), ("speech", "Bob nosuch".to_owned())],
+            &body.replace("%actor.car%", "%actor%"),
+        );
+        assert_eq!(said, vec!["say Bob doesnt have the variable nosuch."]);
+    }
+
+    #[test]
+    fn object_and_room_owners_read_their_own_fields() {
+        let mut g = game();
+        // `%self%` is the sword for an object trigger: the C's `o` branch.
+        let out = g.run(g.sword, AttachType::Obj, |cx| {
+            var_subst(
+                cx,
+                "%self.worn_by.name% %self.vnum% %self.room.vnum% %self.shortdesc%",
+            )
+        });
+        assert_eq!(out, "Bob 3020 3001 a sharp sword");
+        // And the Temple for a world trigger.
+        let out = g.run(g.temple, AttachType::Wld, |cx| {
+            var_subst(
+                cx,
+                "%self.contents.shortdesc% %self.name% %self.vnum% %self.people.name% %self.north(vnum)%",
+            )
+        });
+        assert_eq!(out, "a leather bag Temple 3001 Bob 3002");
+        // `%actor%` resolves for them too, through get_char_by_obj/_by_room.
+        let out = g.run(g.sword, AttachType::Obj, |cx| {
+            var_subst(cx, "%actor.name% %actor.room.name%")
+        });
+        assert_eq!(out, "Bob Temple");
+        let out = g.run(g.temple, AttachType::Wld, |cx| {
+            var_subst(cx, "%actor.name% %actor.eq(wield).shortdesc%")
+        });
+        assert_eq!(out, "Bob a sharp sword");
+    }
+
+    #[test]
+    fn a_zone_echo_line_and_the_dynamic_path_trick_substitute() {
+        let mut g = game();
+        // 30.trg:3013 (the Newbie Tour Guide Loader).
+        g.trig.vars.add_var("inroom", &uid_text(g.temple), 0);
+        assert_eq!(
+            sub(
+                &mut g,
+                "%zoneecho% %inroom.vnum% %self.name% shouts, 'Welcome, %actor.name%!'"
+            ),
+            "mzoneecho  3001 guard shouts, 'Welcome, Bob!'"
+        );
+        // 11.trg:355: `%%actor.%here%%%` builds the reference
+        // `%actor.<room vnum>%`, which names a global of the actor.
+        g.script_var(g.bob, "3001", "  n 3002 ");
+        g.trig.vars.add_var("here", "3001", 0);
+        let line = sub(&mut g, "eval path %%actor.%here%%%");
+        assert_eq!(line, "eval path %actor.3001%");
+        g.run(g.guard, AttachType::Mob, |cx| process_eval(cx, &line));
+        // eval_expr trims the expression before substituting, so the value
+        // keeps its own spaces; the script trims it with `.trim`.
+        assert_eq!(
+            g.trig.vars.get("path").map(|v| v.value.clone()),
+            Some("  n 3002 ".to_owned())
+        );
+        assert_eq!(sub(&mut g, "[%path.trim%]"), "[n 3002]");
+        assert!(!truth(&mut g, "%path.trim% == here"));
+    }
+}

@@ -179,8 +179,6 @@ pub enum CharStat {
     Move,
     /// `GET_MAX_MOVE(ch)` (`sh_int`).
     MaxMove,
-    /// `GET_SEX(ch)`.
-    Sex,
     /// `GET_CLASS(ch)`.
     Class,
     /// `GET_POS(ch)`.
@@ -211,7 +209,7 @@ pub enum CharStat {
 
 /// A character attribute the field table only reads. Gold and experience are
 /// changed through [`CharHost::char_increase_gold`] and
-/// [`CharHost::char_gain_exp`]; weight is never written.
+/// [`CharHost::char_gain_exp`]; weight and sex are never written.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CharFact {
     /// `GET_GOLD(ch)`.
@@ -220,6 +218,8 @@ pub enum CharFact {
     Exp,
     /// `GET_WEIGHT(ch)` (`ubyte`).
     Weight,
+    /// `GET_SEX(ch)`.
+    Sex,
 }
 
 /// An ability score.
@@ -738,7 +738,7 @@ pub fn char_field<H: DgHost + ?Sized>(
         "saving_petri" => save(host, c, CharStat::SavePetri, sub),
         "saving_rod" => save(host, c, CharStat::SaveRod, sub),
         "saving_spell" => save(host, c, CharStat::SaveSpell, sub),
-        "sex" => table_name(host.char_stat(c, CharStat::Sex), GENDERS),
+        "sex" => table_name(host.char_fact(c, CharFact::Sex), GENDERS),
         "skill" => Some(skill_percent(host, c, sub)),
         "skillset" => {
             if !host.is_npc(c) && has_sub {
@@ -815,7 +815,7 @@ pub fn char_field<H: DgHost + ?Sized>(
 
 /// `HSSH`/`HMHR`/`HSHR`: `words` is the neutral, male and female form.
 fn pronoun<H: DgHost + ?Sized>(host: &H, c: Uid, words: [&str; 3]) -> String {
-    let sex = host.char_stat(c, CharStat::Sex);
+    let sex = host.char_fact(c, CharFact::Sex);
     let word = match sex {
         0 => words[0],
         1 => words[1],

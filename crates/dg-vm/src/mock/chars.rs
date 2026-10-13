@@ -59,7 +59,6 @@ fn stat_key(stat: CharStat) -> &'static str {
         CharStat::MaxMana => "max_mana",
         CharStat::Move => "move",
         CharStat::MaxMove => "max_move",
-        CharStat::Sex => "sex",
         CharStat::Class => "class",
         CharStat::Pos => "pos",
         CharStat::Practices => "prac",
@@ -160,6 +159,7 @@ impl CharHost for MockHost {
                 CharFact::Gold => "gold",
                 CharFact::Exp => "exp",
                 CharFact::Weight => "weight",
+                CharFact::Sex => "sex",
             },
         )
     }
