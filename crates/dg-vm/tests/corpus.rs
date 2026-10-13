@@ -116,7 +116,178 @@ struct Refs {
     objs: BTreeSet<i32>,
     rooms: BTreeSet<i32>,
     spells: BTreeSet<String>,
+    /// Names of characters a script addresses (`%at% rumble ...`).
+    people: BTreeSet<String>,
 }
+
+/// What a first run of a trigger showed its world to lack, learned from the
+/// `script_log` lines of that run: the next run's world has it.
+#[derive(Default, Clone, PartialEq, Eq)]
+struct Needs {
+    rooms: BTreeSet<i32>,
+    people: BTreeSet<String>,
+    /// The `arg` the command triggers receive is the name of a character
+    /// (the script sends to it or reads its fields).
+    arg_is_character: bool,
+}
+
+/// Learn what the world lacked from a run's log. Returns whether anything
+/// was learned that the run did not already have.
+fn harvest(logs: &[String], needs: &mut Needs) -> bool {
+    let before = needs.clone();
+    for message in logs {
+        // `wat: location not found (2301)`, `wat: ... (rumble)`.
+        if let Some(at) = message.find("location not found (") {
+            let name = message[at + 20..].trim_end_matches(')');
+            match name.parse::<i32>() {
+                Ok(room) => {
+                    needs.rooms.insert(room);
+                }
+                Err(_) => {
+                    needs.people.insert(name.to_owned());
+                }
+            }
+        }
+        // `findmob.vnum(ovnum): No room with vnum 21102`.
+        if let Some(at) = message.find("No room with vnum ")
+            && let Ok(room) = message[at + 18..].trim().parse::<i32>()
+        {
+            needs.rooms.insert(room);
+        }
+        // `msend: victim (sword) does not exist`.
+        if let Some(at) = message.find(": victim (")
+            && let Some(name) = message[at + 10..].strip_suffix(") does not exist")
+        {
+            if name == EVENT_ARG {
+                needs.arg_is_character = true;
+            } else {
+                needs.people.insert(name.to_owned());
+            }
+        }
+    }
+    *needs != before
+}
+
+/// The text of `text` with the `%var%` references to the constants in `vars`
+/// replaced, and `%random.N%` by 1, the mock's roll when none is scripted.
+fn substitute_constants(text: &str, vars: &BTreeMap<String, String>) -> String {
+    let mut out = String::new();
+    let mut rest = text;
+    while let Some(open) = rest.find('%') {
+        out.push_str(&rest[..open]);
+        let after = &rest[open + 1..];
+        let Some(close) = after.find('%') else {
+            out.push_str(&rest[open..]);
+            return out;
+        };
+        let name = &after[..close];
+        if let Some(value) = vars.get(name) {
+            out.push_str(value);
+        } else if name.starts_with("random.") {
+            out.push('1');
+        } else {
+            out.push('%');
+            out.push_str(name);
+            out.push('%');
+        }
+        rest = &after[close + 1..];
+    }
+    out.push_str(rest);
+    out
+}
+
+/// `eval`'s arithmetic on constants: integers joined by `+ - * /`, with `*`
+/// and `/` binding tighter. `None` for anything else.
+fn evaluate_constants(expr: &str) -> Option<i64> {
+    let mut terms: Vec<(char, i64)> = Vec::new();
+    let mut sign = '+';
+    let mut product: Option<i64> = None;
+    let mut times = '*';
+    let mut number = String::new();
+    let flush = |number: &mut String, product: &mut Option<i64>, times: char| -> Option<()> {
+        if number.is_empty() {
+            return None;
+        }
+        let value: i64 = number.parse().ok()?;
+        number.clear();
+        *product = Some(match *product {
+            None => value,
+            Some(left) if times == '*' => left.checked_mul(value)?,
+            Some(left) => left.checked_div(value)?,
+        });
+        Some(())
+    };
+    for c in expr.chars().filter(|c| !c.is_whitespace()) {
+        match c {
+            '0'..='9' => number.push(c),
+            '*' | '/' => {
+                flush(&mut number, &mut product, times)?;
+                times = c;
+            }
+            '+' | '-' => {
+                flush(&mut number, &mut product, times)?;
+                terms.push((sign, product.take()?));
+                sign = c;
+                times = '*';
+            }
+            _ => return None,
+        }
+    }
+    flush(&mut number, &mut product, times)?;
+    terms.push((sign, product?));
+    terms.into_iter().try_fold(0i64, |sum, (sign, value)| {
+        if sign == '+' {
+            sum.checked_add(value)
+        } else {
+            sum.checked_sub(value)
+        }
+    })
+}
+
+/// The integers a script uses or computes from constants: the digit runs of
+/// three or more digits on every line, and the values of the `set` and `eval`
+/// lines whose operands are known (`eval num %random.99% + 2300`, `set zone
+/// 211` followed by `mgoto %zone%02`). Straight-line only: both branches of
+/// an `if` and every pass of a loop are read once.
+fn candidate_numbers(body: &str) -> BTreeSet<i32> {
+    let mut vars: BTreeMap<String, String> = BTreeMap::new();
+    let mut found = BTreeSet::new();
+    let mut note = |text: &str, shortest: usize| {
+        for run in text.split(|c: char| !c.is_ascii_digit()) {
+            if run.len() >= shortest
+                && let Ok(number) = run.parse::<i32>()
+            {
+                found.insert(number);
+            }
+        }
+    };
+    for line in body.lines() {
+        let line = line.trim();
+        if line.starts_with('*') {
+            continue;
+        }
+        let text = substitute_constants(line, &vars);
+        note(&text, 3);
+        let mut words = text.splitn(3, char::is_whitespace);
+        let (Some(verb), Some(name), Some(value)) = (words.next(), words.next(), words.next())
+        else {
+            continue;
+        };
+        let value = value.trim();
+        let value = match verb {
+            "set" => value.to_owned(),
+            "eval" => evaluate_constants(value).map_or_else(|| value.to_owned(), |n| n.to_string()),
+            _ => continue,
+        };
+        note(&value, 1);
+        vars.insert(name.to_owned(), value);
+    }
+    found
+}
+
+/// The `arg` the command and act triggers are given unless a run learned
+/// that the script wants a character.
+const EVENT_ARG: &str = "sword";
 
 /// `is_abbrev(arg, full)` (`utils.c`): a non-empty prefix of `full`, any case.
 fn is_abbrev(arg: &str, full: &str) -> bool {
@@ -221,12 +392,36 @@ fn referenced_vnums(record: &Record) -> Refs {
             }
         }
     }
+    // Numbers the script computes may name a room, an object or a mobile.
+    for number in candidate_numbers(&record.body) {
+        refs.rooms.insert(number);
+        refs.objs.insert(number);
+        refs.mobs.insert(number);
+    }
+    // `%at% rumble ...`: the character it names stands somewhere.
+    for line in record.body.lines() {
+        let words: Vec<&str> = line.split_whitespace().collect();
+        if let Some(position) = words
+            .iter()
+            .position(|word| matches!(word.trim_matches('%'), "at" | "mat" | "wat" | "oat"))
+            && let Some(target) = words.get(position + 1)
+            && !target.starts_with('%')
+            && target.parse::<i32>().is_err()
+        {
+            refs.people.insert((*target).to_owned());
+        }
+    }
     refs
 }
 
 /// How the owner is placed: objects rotate through lying in the room,
 /// carried by the player and worn by the player.
-fn build(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: usize) -> BuiltWorld {
+fn build(
+    record: &Record,
+    protos: &BTreeMap<i32, Arc<TrigProto>>,
+    index: usize,
+    needs: &Needs,
+) -> BuiltWorld {
     let mut fx = Fixture::new();
     fx.host.protos = protos.clone();
     let proto = Arc::clone(&protos[&record.vnum]);
@@ -235,7 +430,17 @@ fn build(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: usize) 
         .globals
         .texts
         .insert("mobproto:1".to_owned(), "a caster proxy".to_owned());
-    let refs = referenced_vnums(record);
+    let mut refs = referenced_vnums(record);
+    refs.rooms.extend(needs.rooms.iter().copied());
+    refs.people.extend(needs.people.iter().cloned());
+    // Each character a script addresses by name stands in a room of its own.
+    let people: Vec<(String, i32)> = refs
+        .people
+        .iter()
+        .zip(98_000..)
+        .map(|(name, vnum)| (name.clone(), vnum))
+        .collect();
+    refs.rooms.extend(people.iter().map(|(_, vnum)| *vnum));
     for vnum in &refs.mobs {
         fx.host
             .globals
@@ -298,6 +503,13 @@ fn build(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: usize) 
     for room in rooms {
         fx.host.set_num(room, "zone", 30);
     }
+    for (name, vnum) in &people {
+        if let Some(room) = fx.host.real_room(*vnum) {
+            let person = fx.host.add_player(name);
+            common::world::dress_player(&mut fx.host, person, 10);
+            fx.host.char_to_room(person, room);
+        }
+    }
     let attach = AttachType::from_index(record.attach_type).unwrap_or(AttachType::Mob);
     let owner = match attach {
         AttachType::Mob => {
@@ -337,6 +549,11 @@ fn build(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: usize) 
         victim: dg_vm::types::uid_text(fx.guard),
         object: dg_vm::types::uid_text(object),
         target: dg_vm::types::uid_text(fx.inventory[0]),
+        arg: if needs.arg_is_character {
+            "Tester".to_owned()
+        } else {
+            EVENT_ARG.to_owned()
+        },
     };
     let vars = event_vars(record, attach, &cast);
     let vars: Vec<(&str, String)> = vars.iter().map(|(k, v)| (k.as_str(), v.clone())).collect();
@@ -384,8 +601,29 @@ fn proto_table(records: &[Record]) -> BTreeMap<i32, Arc<TrigProto>> {
         .collect()
 }
 
+/// Most runs of one trigger: each learns what the world lacked (see
+/// [`harvest`]) for the next.
+const MAX_ROUNDS: usize = 4;
+
 fn run_record(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: usize) -> Outcome {
-    let mut world = build(record, protos, index);
+    let mut needs = Needs::default();
+    let mut outcome = run_once(record, protos, index, &needs);
+    for _ in 1..MAX_ROUNDS {
+        if !harvest(&outcome.logs, &mut needs) {
+            break;
+        }
+        outcome = run_once(record, protos, index, &needs);
+    }
+    outcome
+}
+
+fn run_once(
+    record: &Record,
+    protos: &BTreeMap<i32, Arc<TrigProto>>,
+    index: usize,
+    needs: &Needs,
+) -> Outcome {
+    let mut world = build(record, protos, index, needs);
     let mut problems = Vec::new();
     script_driver(&mut world.host, world.owner, world.id, Mode::New);
     let resumes = run_waits(&mut world.host, 25);

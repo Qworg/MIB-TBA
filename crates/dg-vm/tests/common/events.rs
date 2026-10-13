@@ -23,6 +23,9 @@ pub struct Cast {
     pub victim: String,
     pub object: String,
     pub target: String,
+    /// The `arg` of the command triggers: what the typed command was
+    /// followed by.
+    pub arg: String,
 }
 
 /// The variable set for a record, by attach type and type letters.
@@ -40,7 +43,7 @@ pub fn event_vars(record: &Record, owner_kind: AttachType, cast: &Cast) -> Vec<(
         AttachType::Mob => {
             if has(2) {
                 put("actor", &cast.actor);
-                put("arg", "sword");
+                put("arg", &cast.arg);
                 put("cmd", &command);
             }
             if has(3) {
@@ -100,7 +103,7 @@ pub fn event_vars(record: &Record, owner_kind: AttachType, cast: &Cast) -> Vec<(
         AttachType::Obj => {
             if has(2) {
                 put("actor", &cast.actor);
-                put("arg", "sword");
+                put("arg", &cast.arg);
                 put("cmd", &command);
             }
             // get, drop, wear, remove
@@ -133,7 +136,7 @@ pub fn event_vars(record: &Record, owner_kind: AttachType, cast: &Cast) -> Vec<(
         AttachType::Wld => {
             if has(2) {
                 put("actor", &cast.actor);
-                put("arg", "sword");
+                put("arg", &cast.arg);
                 put("cmd", &command);
             }
             if has(3) {
