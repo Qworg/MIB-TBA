@@ -8,6 +8,7 @@ license.workspace = true
 
 [dependencies]
 mib-protocol.workspace = true
+dg-vm = { path = "../crates/dg-vm" }
 mib-core.workspace = true
 mib-stdlib.workspace = true
 mib-content.workspace = true

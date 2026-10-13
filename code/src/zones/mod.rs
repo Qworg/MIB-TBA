@@ -24,7 +24,6 @@ use mib_stdlib::prelude::{
 
 use crate::content::{DoorReset, ResetMode, WearSlot, ZoneCommandKind, ZoneDef};
 use crate::equipment::TbaEquipment;
-use crate::triggers::events::{TriggerEvent, TriggerKind, TriggerQueue};
 
 /// Per-zone reset age, keyed in the same order as [`TbaContent::zones`].
 ///
@@ -132,15 +131,6 @@ fn execute_zone(world: &mut World, def: &ZoneDef) {
     }
 }
 
-/// The entity of a room key, for a `load` trigger event.
-fn room_entity_for(world: &mut World, key: &mib_stdlib::prelude::RoomId) -> Option<Entity> {
-    let mut query = world.query::<(Entity, &Room)>();
-    query
-        .iter(world)
-        .find(|(_, room)| room.key == key.0)
-        .map(|(entity, _)| entity)
-}
-
 /// Run one command body, returning its Circle `last_cmd` outcome.
 ///
 /// `None` means Circle left `last_cmd` unchanged (a disabled `G`/`E`/`P` whose
@@ -163,19 +153,6 @@ fn execute_command(
             } else {
                 None
             };
-            if let Some(entity) = spawned {
-                let room_entity = room_entity_for(world, room);
-                if let (Some(room_entity), Some(mut queue)) =
-                    (room_entity, world.get_resource_mut::<TriggerQueue>())
-                {
-                    queue.enqueue(TriggerEvent {
-                        kind: TriggerKind::Load,
-                        room: room_entity,
-                        self_entity: Some(entity),
-                        ..TriggerEvent::default()
-                    });
-                }
-            }
             *last_mob = spawned;
             Some(succeeded)
         }

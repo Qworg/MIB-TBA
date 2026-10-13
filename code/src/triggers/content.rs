@@ -5,11 +5,10 @@
 //! converter writes the record's own `attach_type` and raw type letters, the
 //! lowercased expanded type letters, the `narg`, the DG `arglist`, and the
 //! script body verbatim (colour-stripped). The runtime parses `script` once at
-//! world build/reload into an AST ([`crate::triggers::ast`]).
+//! world build/reload.
 //!
 //! Which triggers an entity carries is [`TriggersFile::attachments`]: the
-//! entity's `proto_script` list, in source order. [`TriggerDef::attach`] is
-//! the older single-owner spelling and is kept for the existing runtime.
+//! entity's `proto_script` list, in source order.
 //!
 //! The section keys by a stable [`TriggerId`] (`tba_trig_<vnum>`) so a script
 //! survives a re-conversion even if the zone file moves.
@@ -66,9 +65,7 @@ impl TriggerId {
 
 /// One DG trigger record.
 ///
-/// `attach` names the first resolvable owner: `npc:<id>`, `item:<id>`, or
-/// `room:<id>`. It is empty for a trigger no emitted entity owns. The full
-/// owner lists are [`TriggersFile::attachments`].
+/// Which entities carry a trigger is [`TriggersFile::attachments`].
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct TriggerDef {
@@ -76,10 +73,6 @@ pub struct TriggerDef {
     pub vnum: i32,
     /// The trigger name (the `name~` field).
     pub name: String,
-    /// The resolved attachment (`npc:tba_npc_3` / `item:tba_item_16` /
-    /// `room:tba.22`), or empty when unattached.
-    #[serde(default)]
-    pub attach: String,
     /// The record's own `attach_type` (`mob`, `obj` or `wld`; `parse_trigger`,
     /// `dg_db_scripts.c:53`), or empty when the file predates the field. The
     /// owner that lists the trigger decides how its type letters are read;
@@ -103,15 +96,7 @@ pub struct TriggerDef {
     pub script: String,
 }
 
-impl TriggerDef {
-    /// The three-part split of [`TriggerDef::attach`], or `None` when it is
-    /// empty/malformed.
-    pub fn attach_target(&self) -> Option<AttachTarget<'_>> {
-        AttachTarget::parse(&self.attach)
-    }
-}
-
-/// A parsed `attach` reference.
+/// A parsed attachment owner (`npc:<id>`, `item:<id>`, `room:<id>`).
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AttachTarget<'a> {
     /// `npc:<id>`.
@@ -146,8 +131,8 @@ pub struct TriggersFile {
     /// Each owner's trigger list in `proto_script` order: the order of the `T`
     /// lines in its `.mob`/`.obj`/`.wld` record (`dg_read_trigger` appends),
     /// followed by any zone-reset `T` commands folded in. Keyed by the owner
-    /// in the [`TriggerDef::attach`] spelling (`npc:<id>`, `item:<id>`,
-    /// `room:<id>`). A trigger listed twice is attached twice, as in the C.
+    /// as `npc:<id>`, `item:<id>` or
+    /// `room:<id>`. A trigger listed twice is attached twice, as in the C.
     ///
     /// Per-zone shards of this section merge by key, so a shard may list a
     /// trigger defined in another zone's shard, and an owner must appear in
@@ -205,29 +190,6 @@ impl PackSection for TriggersSection {
                     format!("{field}.flags"),
                     format!("flags `{}` must be a single token", trigger.flags),
                 );
-            }
-            if trigger.attach.trim().is_empty() {
-                // An unattached trigger is legal content (the converter records
-                // it as a named dangling drop); it simply never fires.
-                continue;
-            }
-            match trigger.attach_target() {
-                Some(AttachTarget::Npc(npc)) => {
-                    require_npc(ctx, &format!("{field}.attach"), &NpcId::from(npc), &npcs)
-                }
-                Some(AttachTarget::Item(item)) => {
-                    require_item(ctx, &format!("{field}.attach"), &ItemId::from(item), &items)
-                }
-                Some(AttachTarget::Room(room)) => {
-                    require_room(ctx, &format!("{field}.attach"), &RoomId::from(room), &rooms)
-                }
-                None => ctx.error_at(
-                    format!("{field}.attach"),
-                    format!(
-                        "attach `{}` must be `npc:<id>`, `item:<id>`, or `room:<id>`",
-                        trigger.attach
-                    ),
-                ),
             }
         }
 
