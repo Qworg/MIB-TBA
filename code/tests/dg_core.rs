@@ -1471,3 +1471,268 @@ fn the_real_pack_loads_every_trigger_and_resolves_every_attachment() {
         .count();
     assert_eq!(with_scripts, room_lists, "every room list found its room");
 }
+
+// -- review regressions -------------------------------------------------------
+
+/// Spawn-then-move in one fixed interval: the entity got its first stamp after
+/// the stamp system ran, and the game then moved it. handler.c `char_to_room`
+/// prepends, so the arrival is the head.
+#[test]
+fn a_game_move_after_the_first_stamp_still_heads_the_room() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let altar = room(&mut app, 2);
+    let old = npc(&mut app, temple, 1, "old guard");
+    let room_id = uid(&mut app, temple);
+    tick(&mut app, Duration::from_millis(100));
+
+    let alice = player(&mut app, altar, "Alice", 1);
+    let young = npc(&mut app, temple, 2, "young guard");
+    tick(&mut app, Duration::from_millis(100));
+    let (a, y, o) = (
+        uid(&mut app, alice),
+        uid(&mut app, young),
+        uid(&mut app, old),
+    );
+    app.world_mut().get_mut::<Location>(alice).unwrap().room = temple;
+    tick(&mut app, Duration::from_millis(100));
+    run(&mut app, |host| {
+        assert_eq!(host.room_people(room_id), vec![a, y, o]);
+    });
+}
+
+/// A host stamp followed by a later game move: only the move newer than the
+/// stamp restamps.
+#[test]
+fn a_game_move_after_a_host_stamp_is_newer_than_the_stamp() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let altar = room(&mut app, 2);
+    let first = npc(&mut app, temple, 1, "first guard");
+    let alice = player(&mut app, altar, "Alice", 1);
+    let room_id = uid(&mut app, temple);
+    let (f, a) = (uid(&mut app, first), uid(&mut app, alice));
+    tick(&mut app, Duration::from_millis(100));
+
+    run(&mut app, |host| host.stamp_order(alice));
+    let second = npc(&mut app, temple, 2, "second guard");
+    let s = uid(&mut app, second);
+    app.world_mut().get_mut::<Location>(alice).unwrap().room = temple;
+    tick(&mut app, Duration::from_millis(100));
+    run(&mut app, |host| {
+        assert_eq!(host.room_people(room_id), vec![a, s, f]);
+    });
+}
+
+/// A move the host made and stamped is not stamped again by the system.
+#[test]
+fn a_host_stamped_move_keeps_its_stamp() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let altar = room(&mut app, 2);
+    let alice = player(&mut app, altar, "Alice", 1);
+    let guard = npc(&mut app, temple, 1, "guard");
+    let room_id = uid(&mut app, temple);
+    let (a, g) = (uid(&mut app, alice), uid(&mut app, guard));
+    tick(&mut app, Duration::from_millis(100));
+
+    app.world_mut().get_mut::<Location>(alice).unwrap().room = temple;
+    run(&mut app, |host| host.stamp_order(alice));
+    let late = npc(&mut app, temple, 2, "late guard");
+    let l = uid(&mut app, late);
+    tick(&mut app, Duration::from_millis(100));
+    run(&mut app, |host| {
+        assert_eq!(host.room_people(room_id), vec![l, a, g]);
+    });
+}
+
+/// handler.c `obj_to_char` prepends, and unequipping goes through it.
+#[test]
+fn taking_off_a_worn_item_puts_it_at_the_head_of_carrying() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let alice = player(&mut app, temple, "Alice", 1);
+    let helm = item_worn(&mut app, alice, WearSlot::Head, 12, "a helm");
+    let coin = item_carried(&mut app, alice, 13, "a coin");
+    let (a, h, c) = (
+        uid(&mut app, alice),
+        uid(&mut app, helm),
+        uid(&mut app, coin),
+    );
+    tick(&mut app, Duration::from_millis(100));
+    tick(&mut app, Duration::from_millis(100));
+    app.world_mut()
+        .get_mut::<TbaEquipment>(alice)
+        .unwrap()
+        .slots
+        .clear();
+    tick(&mut app, Duration::from_millis(100));
+    run(&mut app, |host| {
+        assert_eq!(host.carrying(a), vec![h, c]);
+    });
+}
+
+#[test]
+fn stamping_without_the_id_table_does_not_panic() {
+    let mut world = World::new();
+    let entity = world.spawn_empty().id();
+    let mut host = mib_tba::dg::host::EcsHost { world: &mut world };
+    host.stamp_order(entity);
+}
+
+/// HOST.md `schedule_wait`: fewer than one pulse is one.
+#[test]
+fn wait_zero_resumes_on_the_next_pulse_not_the_same_one() {
+    let mut app = app();
+    define(
+        &mut app,
+        300,
+        "mob",
+        "g",
+        0,
+        "wait 0\nset after 1\nglobal after",
+    );
+    attach(&mut app, "npc:tba_npc_1", &[300]);
+    let temple = room(&mut app, 1);
+    let guard = npc(&mut app, temple, 1, "guard");
+    let g = uid(&mut app, guard);
+    run_trigger(&mut app, g, 300);
+    assert_eq!(app.world().resource::<DgWaits>().waits[0].due, 1);
+    assert_eq!(global(&mut app, g, "after"), None);
+    tick_pulses(&mut app, 1);
+    assert_eq!(global(&mut app, g, "after").as_deref(), Some("1"));
+}
+
+/// Truth is "non-empty and not starting with 0": `0abc` and `00` are falsy.
+#[test]
+fn quest_truth_is_not_starting_with_zero() {
+    let mut app = app();
+    for (vnum, value) in [(600, "0abc"), (601, "00"), (602, "abc0")] {
+        define(
+            &mut app,
+            vnum,
+            "mob",
+            "g",
+            0,
+            &format!("set flag {value}\nremote flag 5"),
+        );
+    }
+    attach(&mut app, "npc:tba_npc_1", &[600, 601, 602]);
+    let temple = room(&mut app, 1);
+    let _alice = player(&mut app, temple, "Alice", 5);
+    let guard = npc(&mut app, temple, 1, "guard");
+    let g = uid(&mut app, guard);
+    run_trigger(&mut app, g, 600);
+    run_trigger(&mut app, g, 601);
+    assert!(quest_flags(&mut app).is_empty());
+    run_trigger(&mut app, g, 602);
+    assert_eq!(quest_flags(&mut app).len(), 1);
+}
+
+/// A saved TbaTriggerVars that lands after the player's script exists is
+/// kept: the next write must not erase it.
+#[test]
+fn variables_restored_late_survive_the_next_write() {
+    let mut app = app();
+    define(&mut app, 600, "mob", "g", 0, "set d 4\nremote d 5");
+    attach(&mut app, "npc:tba_npc_1", &[600]);
+    let temple = room(&mut app, 1);
+    let alice = player(&mut app, temple, "Alice", 5);
+    app.world_mut()
+        .entity_mut(alice)
+        .insert(PendingBundleRestore);
+    let guard = npc(&mut app, temple, 1, "guard");
+    let (a, g) = (uid(&mut app, alice), uid(&mut app, guard));
+    run(&mut app, |host| {
+        use dg_vm::BaseHost;
+        assert!(
+            host.ensure_script(a).is_none(),
+            "no script before the restore"
+        );
+    });
+
+    // The restore lands after a script was created some other way.
+    app.world_mut()
+        .entity_mut(alice)
+        .remove::<PendingBundleRestore>();
+    run(&mut app, |_| {});
+    assert!(app.world().get::<DgScript>(alice).is_some());
+    let mut saved = TbaTriggerVars::default();
+    saved.remote.insert("saved".into(), "1".into());
+    app.world_mut().entity_mut(alice).insert(saved);
+
+    run_trigger(&mut app, g, 600);
+    let vars = app.world().get::<TbaTriggerVars>(alice).unwrap();
+    assert_eq!(vars.remote.get("saved").map(String::as_str), Some("1"));
+    assert_eq!(vars.remote.get("d").map(String::as_str), Some("4"));
+    assert!(
+        quest_flags(&mut app)
+            .iter()
+            .all(|(_, flag)| flag.as_str() == "d"),
+        "restored variables are not new quest flags"
+    );
+}
+
+/// dg_db_scripts.c `assign_triggers` appends to a script that exists.
+#[test]
+fn prototype_triggers_are_appended_to_an_existing_script() {
+    let mut app = app();
+    define(&mut app, 200, "mob", "g", 0, "set a 1");
+    define(&mut app, 201, "mob", "g", 0, "set b 1");
+    attach(&mut app, "npc:tba_npc_1", &[200]);
+    let temple = room(&mut app, 1);
+    let guard = npc(&mut app, temple, 1, "guard");
+    let proto = app.world().resource::<DgProtos>().get(201).unwrap();
+    let mut script = DgScript::default();
+    script.0.add_trigger(proto, -1);
+    app.world_mut().entity_mut(guard).insert(script);
+    let g = uid(&mut app, guard);
+    assert_eq!(trigger_vnums(&mut app, g), vec![201, 200]);
+}
+
+/// An item parked for an offline holder is not in the game: the C extracts a
+/// quitting player's objects.
+#[test]
+fn items_parked_for_an_offline_holder_are_not_in_the_world() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let alice = player(&mut app, temple, "Alice", 1);
+    let coin = item_carried(&mut app, alice, 13, "a coin");
+    let c = uid(&mut app, coin);
+    app.world_mut()
+        .entity_mut(coin)
+        .insert(PendingHolder("alice".into()));
+    run(&mut app, |host| {
+        assert!(!host.object_list().contains(&c));
+        assert!(!host.exists(c));
+    });
+    app.world_mut().entity_mut(coin).remove::<PendingHolder>();
+    run(&mut app, |host| {
+        assert!(host.object_list().contains(&c));
+    });
+}
+
+#[test]
+fn a_waiting_owner_the_game_despawned_is_forgotten_on_the_random_sweep() {
+    let mut app = app();
+    define(&mut app, 300, "mob", "g", 0, "wait 100000 s\nset late 1");
+    attach(&mut app, "npc:tba_npc_1", &[300]);
+    let temple = room(&mut app, 1);
+    let guard = npc(&mut app, temple, 1, "guard");
+    let g = uid(&mut app, guard);
+    run_trigger(&mut app, g, 300);
+    assert_eq!(app.world().resource::<DgWaits>().waits.len(), 1);
+    app.world_mut().despawn(guard);
+    tick_pulses(&mut app, dg_vm::types::PULSE_DG_SCRIPT as u64);
+    assert!(app.world().resource::<DgWaits>().waits.is_empty());
+}
+
+#[test]
+fn a_player_without_a_session_is_a_valid_target() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let alice = player(&mut app, temple, "Alice", 1);
+    app.world_mut().entity_mut(alice).remove::<Session>();
+    let a = uid(&mut app, alice);
+    run(&mut app, |host| assert!(host.valid_dg_target(a, false)));
+}

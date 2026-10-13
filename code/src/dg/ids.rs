@@ -13,10 +13,14 @@
 
 use std::collections::HashMap;
 
+use crate::equipment::TbaEquipment;
 use dg_vm::Uid;
 use dg_vm::types::{MOB_ID_BASE, OBJ_ID_BASE, ROOM_ID_BASE};
-use mib_stdlib::prelude::{CarriedBy, ContainedBy, Item, Location, Npc, Player, Room};
+use mib_stdlib::prelude::{
+    CarriedBy, ContainedBy, Item, Location, Npc, PendingHolder, Player, Room,
+};
 
+use bevy::ecs::system::SystemChangeTick;
 use mib_core::prelude::*;
 
 use super::host::EcsHost;
@@ -216,24 +220,73 @@ pub fn ensure_ids(world: &mut World) {
                 .entity_mut(entity)
                 .insert((DgId(uid), DgOrder(stamp), DgBirth(stamp)));
         }
+        // Placement changes the game makes after this pass are newer than the
+        // stamps it just gave.
+        world.increment_change_tick();
     });
 }
 
 /// Entities whose placement changed.
 type Moved = Or<(Changed<Location>, Changed<CarriedBy>, Changed<ContainedBy>)>;
 
+/// The placement-changed entities with their stamp and placement components.
+type MovedQuery<'w, 's> = Query<
+    'w,
+    's,
+    (
+        &'static mut DgOrder,
+        Option<Ref<'static, Location>>,
+        Option<Ref<'static, CarriedBy>>,
+        Option<Ref<'static, ContainedBy>>,
+    ),
+    Moved,
+>;
+
 /// `FixedUpdate`: restamp every character and item whose placement the rest
 /// of the game changed since this system last ran, so a newly arrived player
 /// is at the head of the room's `people` and a newly carried item at the head
-/// of `carrying`. An entity the host itself stamped in the same interval keeps
-/// that stamp, so the order the host chose between two moves survives.
-pub fn stamp_placement_order(mut ids: ResMut<DgIds>, mut moved: Query<&mut DgOrder, Moved>) {
-    for mut order in &mut moved {
-        if order.is_changed() {
-            continue;
+/// of `carrying`. A placement change older than the entity's stamp (one the
+/// host made and stamped itself, or one before the entity's first stamp) is
+/// already ordered and keeps that stamp; a change newer than the stamp
+/// restamps it. A worn item taken off is restamped too, because unequipping
+/// puts it at the head of `carrying` (`obj_to_char`).
+///
+/// Moves made between two runs of this system are stamped in query order, not
+/// move order. A dispatch run outside `FixedUpdate` straight after a game move
+/// must call [`EcsHost::stamp_order`] on the mover first.
+pub fn stamp_placement_order(
+    mut ids: ResMut<DgIds>,
+    ticks: SystemChangeTick,
+    mut queries: ParamSet<(MovedQuery, Query<&mut DgOrder>)>,
+    equipped: Query<(), With<TbaEquipment>>,
+    holders: Query<(Entity, &TbaEquipment), Changed<TbaEquipment>>,
+    mut worn_before: Local<HashMap<Entity, Vec<Entity>>>,
+) {
+    for (mut order, location, carried, contained) in &mut queries.p0() {
+        let stamped = order.last_changed();
+        let newest_move = [
+            location.map(|r| r.last_changed()),
+            carried.map(|r| r.last_changed()),
+            contained.map(|r| r.last_changed()),
+        ]
+        .into_iter()
+        .flatten()
+        .any(|tick| tick.is_newer_than(stamped, ticks.this_run()));
+        if newest_move {
+            order.0 = ids.stamp();
         }
-        order.0 = ids.stamp();
     }
+
+    for (holder, equipment) in &holders {
+        let now: Vec<Entity> = equipment.slots.values().copied().collect();
+        let before = worn_before.insert(holder, now.clone()).unwrap_or_default();
+        for item in before.into_iter().filter(|item| !now.contains(item)) {
+            if let Ok(mut order) = queries.p1().get_mut(item) {
+                order.0 = ids.stamp();
+            }
+        }
+    }
+    worn_before.retain(|holder, _| equipped.contains(*holder));
 }
 
 impl EcsHost<'_> {
@@ -241,6 +294,10 @@ impl EcsHost<'_> {
     pub fn entity(&self, uid: Uid) -> Option<Entity> {
         let entity = self.world.get_resource::<DgIds>()?.get(uid)?;
         self.world.get_entity(entity).ok()?;
+        // An item parked for an offline holder is not in the game.
+        if self.world.get::<PendingHolder>(entity).is_some() {
+            return None;
+        }
         (self.world.get::<DgId>(entity)?.0 == uid).then_some(entity)
     }
 
@@ -251,9 +308,14 @@ impl EcsHost<'_> {
 
     /// Stamp the entity as having just changed place, after the host moved it.
     pub fn stamp_order(&mut self, entity: Entity) {
-        let stamp = self.world.resource_mut::<DgIds>().stamp();
+        let stamp = self
+            .world
+            .get_resource_or_insert_with(DgIds::default)
+            .stamp();
         if self.world.get_entity(entity).is_ok() {
             self.world.entity_mut(entity).insert(DgOrder(stamp));
+            // Anything the game changes from here on is newer than the stamp.
+            self.world.increment_change_tick();
         }
     }
 }

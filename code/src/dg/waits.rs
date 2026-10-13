@@ -133,6 +133,7 @@ pub fn dg_pulse_system(world: &mut World) {
     with_host(world, |host| {
         resume_due(host, pulse);
         if random_due {
+            drop_orphan_waits(host);
             script_trigger_check(host);
         }
         if hour_changed {
@@ -158,5 +159,22 @@ fn resume_due(host: &mut EcsHost<'_>, pulse: i64) {
         if alive {
             resume(host, wait.owner, wait.trigger);
         }
+    }
+}
+
+/// Forget the waits of owners the game despawned, so a long wait on a mob
+/// that was killed does not linger until its due pulse.
+fn drop_orphan_waits(host: &mut EcsHost<'_>) {
+    let Some(waits) = host.world.get_resource::<DgWaits>() else {
+        return;
+    };
+    let gone: std::collections::HashSet<Uid> = waits
+        .waits
+        .iter()
+        .map(|wait| wait.owner)
+        .filter(|owner| host.entity(*owner).is_none())
+        .collect();
+    if let Some(mut waits) = host.world.get_resource_mut::<DgWaits>() {
+        waits.waits.retain(|wait| !gone.contains(&wait.owner));
     }
 }

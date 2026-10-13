@@ -176,8 +176,14 @@ pub fn attach_proto_scripts_to(world: &mut World, entity: Entity) -> bool {
     };
     let mut entity_mut = world.entity_mut(entity);
     entity_mut.insert(DgScriptInit);
-    if !protos.is_empty() && entity_mut.get::<DgScript>().is_none() {
-        let mut script = dg_vm::Script::default();
+    if !protos.is_empty() {
+        // An entity that already has a script (a trigger attached to it before
+        // its pass) keeps it: the prototype triggers are appended
+        // (`assign_triggers`).
+        let mut script = entity_mut
+            .take::<DgScript>()
+            .map(|script| script.0)
+            .unwrap_or_default();
         for proto in protos {
             script.add_trigger(proto, -1);
         }

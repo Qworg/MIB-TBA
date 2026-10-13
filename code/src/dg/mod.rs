@@ -57,7 +57,16 @@
 //! `load` trigger of each new mob and object, runs the caller's closure with
 //! an [`host::EcsHost`], and, when the outermost call ends with the VM idle,
 //! sweeps the dead and mirrors player variables ([`vars`]). A nested call
-//! (from inside the closure) does none of that.
+//! (from inside the closure) does none of that. Every entity seen for the
+//! first time gets its `load` trigger, which is broader than the C: the C
+//! fires it only from the zone reset, the script and wizard `load` commands and
+//! spell creation, so an item restored from a save or bought in a shop also
+//! runs its `load` trigger here.
+//!
+//! **Dispatch from `Update`.** The placement stamps of moves the game makes are
+//! applied by a `FixedUpdate` system, so a dispatch run from `Update` straight
+//! after a move must call [`host::EcsHost::stamp_order`] on the mover first, or
+//! it sees the order from before the move.
 //!
 //! **Pulses.** [`waits::dg_pulse_system`] advances a pulse counter (a tenth of
 //! a second) from the fixed clock and runs the C's script heartbeat once per
@@ -162,8 +171,9 @@ pub fn register_runtime(app: &mut App) {
     app.init_resource::<DgPulse>();
     app.init_resource::<DgWaits>();
     app.add_message::<mib_stdlib::prelude::QuestEvent>();
-    // After the zone reset and the item timers, so what they created this tick
-    // is initialised in the same tick; before the save set, so a variable a
+    // After the zone reset, the item timers and the rest of the pack's fixed
+    // chain, so what they created this tick is complete (combatant state
+    // included) when its triggers first run; before the save set, so a variable a
     // script changed is persisted with the tick that changed it.
     app.add_systems(
         FixedUpdate,
@@ -172,6 +182,7 @@ pub fn register_runtime(app: &mut App) {
             .after(zone_reset_system)
             .after(tick_item_timers)
             .after(mib_stdlib::prelude::maintain_room_occupants)
+            .after(crate::party::cleanup_parties_on_logout)
             .before(mib_stdlib::prelude::SaveSet),
     );
 }
@@ -180,8 +191,8 @@ pub fn register_runtime(app: &mut App) {
 ///
 /// Before `f`: ids are ensured, players get their scripts, every new room, NPC
 /// and item gets its prototype triggers, and each new mob and object has its
-/// `load` trigger fired (the C calls those when the zone reset or a load
-/// command creates the entity). After the outermost call, once the VM is idle:
+/// `load` trigger fired (the C fires it from the zone reset and the load
+/// commands only; here every entity seen for the first time gets it). After the outermost call, once the VM is idle:
 /// characters scripts extracted are swept and player variables are mirrored
 /// into their persisted form. A nested call does only the id pass.
 pub fn with_host<R>(world: &mut World, f: impl FnOnce(&mut EcsHost<'_>) -> R) -> R {

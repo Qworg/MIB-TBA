@@ -31,8 +31,8 @@ use dg_vm::types::{MudTime, ScriptMemory, VmState};
 use dg_vm::{BaseHost, Kind, Script, TrigProto, Uid, WorldHost};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{
-    CarriedBy, ContainedBy, GroundItem, Item, Location, Npc, NpcKey, Perceiver, Perception, Player,
-    Room, Session, SessionState, perceive,
+    CarriedBy, ContainedBy, GroundItem, Item, Location, Npc, NpcKey, PendingBundleRestore,
+    PendingHolder, Perceiver, Perception, Player, Room, Session, SessionState, perceive,
 };
 
 use super::script::{DgDead, DgMemory, DgProtos, DgScript};
@@ -284,6 +284,11 @@ impl BaseHost for EcsHost<'_> {
         let entity = self.entity(uid)?;
         if self.world.get::<DgScript>(entity).is_none() {
             if self.world.get::<Player>(entity).is_some() {
+                // A player whose saved variables are not restored yet has no
+                // script until they are.
+                if self.world.get::<PendingBundleRestore>(entity).is_some() {
+                    return None;
+                }
                 seed_player_script(self.world, entity);
             } else {
                 self.world.entity_mut(entity).insert(DgScript::default());
@@ -426,7 +431,7 @@ impl WorldHost for EcsHost<'_> {
             && self
                 .world
                 .get::<Session>(entity)
-                .is_some_and(|session| matches!(session.state, SessionState::Playing))
+                .is_none_or(|session| matches!(session.state, SessionState::Playing))
     }
 
     fn name(&self, uid: Uid) -> String {
@@ -595,7 +600,11 @@ impl WorldHost for EcsHost<'_> {
     }
 
     fn object_list(&self) -> Vec<Uid> {
-        self.ordered(self.all_with::<Item>(), Self::birth, true)
+        let present = self
+            .all_with::<Item>()
+            .into_iter()
+            .filter(|entity| self.world.get::<PendingHolder>(*entity).is_none());
+        self.ordered(present, Self::birth, true)
     }
 
     fn real_room(&self, vnum: i32) -> Option<Uid> {

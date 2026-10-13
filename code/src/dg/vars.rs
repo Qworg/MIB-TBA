@@ -111,6 +111,33 @@ pub fn seed_player_scripts(world: &mut World) {
     }
 }
 
+/// Take into the script the persisted variables the script has never seen: a
+/// `TbaTriggerVars` restored after the player's script was created. They join
+/// both the baseline and the current globals, so they are neither lost at the
+/// next write nor reported as new quest flags.
+fn adopt_late_vars(
+    world: &mut World,
+    entity: Entity,
+    before: &mut BTreeMap<String, String>,
+    current: &mut BTreeMap<String, String>,
+) {
+    let late: Vec<(String, String)> = seeded_vars(world.get::<TbaTriggerVars>(entity))
+        .into_iter()
+        .filter(|(name, _)| !before.contains_key(name) && !current.contains_key(name))
+        .collect();
+    if late.is_empty() {
+        return;
+    }
+    if let Some(mut script) = world.get_mut::<DgScript>(entity) {
+        for (name, value) in late {
+            if script.0.global_vars.add_var(&name, &value, 0) {
+                before.insert(name.clone(), value.clone());
+                current.insert(name, value);
+            }
+        }
+    }
+}
+
 /// Mirror every player's changed globals into [`TbaTriggerVars`] and emit the
 /// quest flags that became truthy.
 pub fn sync_player_vars(world: &mut World) {
@@ -120,14 +147,15 @@ pub fn sync_player_vars(world: &mut World) {
         let Some(script) = world.get::<DgScript>(entity) else {
             continue;
         };
-        let current = context_zero_globals(&script.0);
-        let before = match world.get::<DgVarSync>(entity) {
+        let mut current = context_zero_globals(&script.0);
+        let mut before = match world.get::<DgVarSync>(entity) {
             Some(sync) => sync.0.clone(),
             None => {
                 world.entity_mut(entity).insert(DgVarSync(current));
                 continue;
             }
         };
+        adopt_late_vars(world, entity, &mut before, &mut current);
         if current == before {
             continue;
         }
