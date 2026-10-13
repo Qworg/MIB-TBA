@@ -12,6 +12,13 @@
 //! excepted), so by the time a handler runs the mark says nothing about a
 //! trigger. [`DgClaimed`] holds only what the DG intake claimed this frame.
 //!
+//! Every command received in a frame is offered to the gate (and to the
+//! pre-commit triggers in [`super::movement`]) before any is routed, so a
+//! second command from one session in the same frame is judged against the
+//! room the player stood in when the frame began. Client input arrives one
+//! line per frame in practice; the C, which runs each line to completion,
+//! would differ only for several lines packed into one frame.
+//!
 //! [`speech_and_acts`] runs after the router: the `speech` triggers of a
 //! player's `say` (`do_say`) and the `act` triggers of a social, both in
 //! [`acts`].
@@ -19,6 +26,7 @@
 use std::collections::HashSet;
 
 use bevy::ecs::message::MessageCursor;
+use dg_vm::BaseHost;
 use dg_vm::dispatch::{
     command_mtrigger, command_otrigger, command_wtrigger, speech_mtrigger, speech_wtrigger,
 };
@@ -240,8 +248,21 @@ pub fn speech_and_acts(world: &mut World, mut cursor: Local<MessageCursor<Comman
         }
         if let Some(Command::Say { text }) = typed_command(&msg.input) {
             say_triggers(world, msg.session, &text);
+        } else if is_bare_say(&msg.input) {
+            // `do_say` offers the empty string to the speech triggers too.
+            say_triggers(world, msg.session, "");
         }
     }
+}
+
+/// Whether the input is `say` (or `'`) with nothing after it, which the
+/// grammar rejects but `do_say` still passes to the speech triggers.
+fn is_bare_say(input: &PlayerInput) -> bool {
+    let PlayerInput::RawLine(line) = input else {
+        return false;
+    };
+    split_line(line)
+        .is_some_and(|(word, rest)| (word == "say" || word == "'") && rest.trim().is_empty())
 }
 
 /// `speech_mtrigger` and `speech_wtrigger` for what `speaker` said.
@@ -251,6 +272,8 @@ fn say_triggers(world: &mut World, speaker: Entity, text: &str) {
         let Some(actor) = host.uid(speaker) else {
             return;
         };
+        // `do_say`'s own `act(..., DG_NO_TRIG)` switches `dg_act_check` off.
+        host.vm_state().act_check = false;
         speech_mtrigger(host, actor, spoken);
         speech_wtrigger(host, actor, spoken);
     });
@@ -265,5 +288,11 @@ pub fn register(app: &mut App) {
         Update,
         DgIntake::CommandGate.before(crate::visibility::intercept_who),
     );
-    app.add_systems(Update, speech_and_acts.in_set(DgIntake::PostRoute));
+    app.add_systems(
+        Update,
+        speech_and_acts
+            .in_set(DgIntake::PostRoute)
+            .after(crate::socials::handle_social_commands)
+            .after(super::movement::typed_arrivals),
+    );
 }

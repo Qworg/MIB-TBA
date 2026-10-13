@@ -22,9 +22,10 @@
 mod dg_common;
 
 use dg_common::*;
-use dg_vm::BaseHost;
 use dg_vm::fields_char::{CharHost, CharStat};
 use dg_vm::types::POS_SLEEPING;
+use dg_vm::types::ScriptMemory;
+use dg_vm::{BaseHost, WorldHost};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::*;
 use mib_tba::dg::intake::DgIntake;
@@ -1172,4 +1173,486 @@ fn login_runs_the_room_trigger_before_the_greeters() {
         global(&mut app, greeter_id, "direction").as_deref(),
         Some("none")
     );
+}
+
+// -- regressions ---------------------------------------------------------------
+
+/// The text a command shows, leaving out the prompts.
+fn shown(app: &mut App) -> Vec<String> {
+    output(app)
+        .into_iter()
+        .filter(|text| text.trim() != ">" && !text.trim().is_empty())
+        .collect()
+}
+
+/// A counter the trigger bumps each time it runs, then returns `ret`.
+fn counting(ret: i32) -> String {
+    format!(
+        "if %count%\n  eval count %count% + 1\nelse\n  set count 1\nend\nglobal count\nreturn {ret}"
+    )
+}
+
+fn count_of(app: &mut App, owner: Entity) -> i32 {
+    let id = uid(app, owner);
+    global(app, id, "count")
+        .and_then(|text| text.trim().parse().ok())
+        .unwrap_or(0)
+}
+
+/// Record the player in the engine's online table, as the engine does.
+fn put_online(app: &mut App, who: Entity, room: Entity) {
+    app.init_resource::<OnlinePlayers>();
+    app.world_mut().resource_mut::<OnlinePlayers>().map.insert(
+        1,
+        OnlinePlayer {
+            entity: who,
+            name: "Alice".to_owned(),
+            room,
+            account_id: 7,
+        },
+    );
+}
+
+fn online_room(app: &App) -> Entity {
+    app.world()
+        .resource::<OnlinePlayers>()
+        .map
+        .values()
+        .next()
+        .expect("record")
+        .room
+}
+
+/// Marks the mob a test wants extracted the moment its place is stamped.
+#[derive(Component)]
+struct DieOnStamp;
+
+#[test]
+fn a_mover_a_trigger_extracted_is_left_alone() {
+    let mut app = intake_app();
+    let (a, b) = two_rooms(&mut app);
+    define_arg(&mut app, 47, "wld", "g", 100, "*", &ran_then(1));
+    attach(&mut app, "room:tba.2", &[47]);
+    app.world_mut().add_observer(
+        |trigger: On<Insert<mib_tba::dg::ids::DgOrder>>,
+         marked: Query<(), With<DieOnStamp>>,
+         mut commands: Commands| {
+            if marked.contains(trigger.event_target()) {
+                commands
+                    .entity(trigger.event_target())
+                    .insert(mib_tba::dg::script::DgDead);
+            }
+        },
+    );
+    let walker = npc(&mut app, a, 5, "the walker");
+    tick_pulses(&mut app, 1);
+    app.world_mut().entity_mut(walker).insert(DieOnStamp);
+    app.world_mut()
+        .get_mut::<Location>(walker)
+        .expect("location")
+        .room = b;
+    tick_pulses(&mut app, 2);
+    assert!(
+        app.world().get_entity(walker).is_err(),
+        "the extracted walker was swept"
+    );
+}
+
+#[test]
+fn a_relocation_that_follows_no_exit_runs_no_leave_trigger_and_is_not_undone() {
+    let mut app = intake_app();
+    let (a, _b) = two_rooms(&mut app);
+    let c = room(&mut app, 3);
+    define_arg(&mut app, 40, "wld", "q", 100, "*", &counting(0));
+    attach(&mut app, "room:tba.1", &[40]);
+    let alice = seated_player(&mut app, a);
+    tick_pulses(&mut app, 1);
+    // The death respawn: the engine puts the player in the start room.
+    app.world_mut()
+        .entity_mut(alice)
+        .insert(Location { room: c });
+    tick_pulses(&mut app, 2);
+    assert_eq!(room_of(&app, alice), c);
+    assert_eq!(count_of(&mut app, a), 0, "no leave trigger for a transport");
+    assert_eq!(
+        app.world().get::<DgLastRoom>(alice).map(|last| last.0),
+        Some(c)
+    );
+}
+
+#[test]
+fn a_transported_mob_greets_with_no_direction_and_is_not_sent_back() {
+    let mut app = intake_app();
+    let (a, _b) = two_rooms(&mut app);
+    let c = room(&mut app, 3);
+    define_arg(
+        &mut app,
+        44,
+        "mob",
+        "g",
+        100,
+        "*",
+        &format!("{DIRECTION}\nreturn 0"),
+    );
+    attach(&mut app, "npc:tba_npc_6", &[44]);
+    let greeter = npc(&mut app, c, 6, "the greeter");
+    let alice = seated_player(&mut app, a);
+    if !mob_is_awake(&mut app, greeter) {
+        return;
+    }
+    tick_pulses(&mut app, 1);
+    app.world_mut()
+        .entity_mut(alice)
+        .insert(Location { room: c });
+    tick_pulses(&mut app, 2);
+    assert_eq!(room_of(&app, alice), c, "the result is ignored");
+    let greeter_id = uid(&mut app, greeter);
+    assert_eq!(
+        global(&mut app, greeter_id, "direction").as_deref(),
+        Some("none")
+    );
+}
+
+#[test]
+fn a_walking_npc_a_trigger_refused_is_not_offered_the_move_every_tick() {
+    let mut app = intake_app();
+    let (a, b) = two_rooms(&mut app);
+    define_arg(&mut app, 40, "wld", "q", 100, "*", &counting(0));
+    attach(&mut app, "room:tba.1", &[40]);
+    let walker = npc(&mut app, a, 7, "the walker");
+    tick_pulses(&mut app, 1);
+    for _ in 0..20 {
+        app.world_mut()
+            .entity_mut(walker)
+            .insert(Location { room: b });
+        tick_pulses(&mut app, 1);
+        assert_eq!(room_of(&app, walker), a);
+    }
+    assert_eq!(count_of(&mut app, a), 1, "the leave trigger ran once");
+
+    // Once the cooldown is over the move is offered again.
+    for _ in 0..100 {
+        tick_pulses(&mut app, 1);
+    }
+    app.world_mut()
+        .entity_mut(walker)
+        .insert(Location { room: b });
+    tick_pulses(&mut app, 1);
+    assert_eq!(count_of(&mut app, a), 2);
+}
+
+#[test]
+fn a_refused_leave_of_a_player_the_game_moved_restores_the_online_record() {
+    let mut app = intake_app();
+    let (a, b) = two_rooms(&mut app);
+    define_arg(&mut app, 40, "wld", "q", 100, "*", &ran_then(0));
+    attach(&mut app, "room:tba.1", &[40]);
+    let alice = seated_player(&mut app, a);
+    put_online(&mut app, alice, a);
+    tick_pulses(&mut app, 1);
+    // A flee: the pack inserts the room and records it as the player's.
+    app.world_mut()
+        .entity_mut(alice)
+        .insert(Location { room: b });
+    app.world_mut()
+        .resource_mut::<OnlinePlayers>()
+        .map
+        .values_mut()
+        .for_each(|record| record.room = b);
+    tick_pulses(&mut app, 1);
+    assert!(ran(&mut app, a));
+    assert_eq!(room_of(&app, alice), a);
+    assert_eq!(online_room(&app), a);
+}
+
+#[test]
+fn an_enter_refusal_restores_the_online_record() {
+    let mut app = intake_app();
+    let (a, _b) = two_rooms(&mut app);
+    define_arg(&mut app, 43, "wld", "g", 100, "*", &ran_then(0));
+    attach(&mut app, "room:tba.2", &[43]);
+    let alice = seated_player(&mut app, a);
+    put_online(&mut app, alice, a);
+    send(&mut app, 1, alice, go_north());
+    assert_eq!(room_of(&app, alice), a);
+    assert_eq!(online_room(&app), a);
+}
+
+#[test]
+fn a_player_who_flees_along_an_exit_gets_leave_and_arrival_triggers() {
+    let mut app = intake_app();
+    let (a, b) = two_rooms(&mut app);
+    define_arg(
+        &mut app,
+        40,
+        "wld",
+        "q",
+        100,
+        "*",
+        &format!("{DIRECTION}\nreturn 1"),
+    );
+    define_arg(&mut app, 47, "wld", "g", 100, "*", DIRECTION);
+    attach(&mut app, "room:tba.1", &[40]);
+    attach(&mut app, "room:tba.2", &[47]);
+    let alice = seated_player(&mut app, a);
+    tick_pulses(&mut app, 1);
+    app.world_mut()
+        .entity_mut(alice)
+        .insert(Location { room: b });
+    tick_pulses(&mut app, 1);
+    let (a_id, b_id) = (uid(&mut app, a), uid(&mut app, b));
+    assert_eq!(
+        global(&mut app, a_id, "direction").as_deref(),
+        Some("north")
+    );
+    assert_eq!(
+        global(&mut app, b_id, "direction").as_deref(),
+        Some("south")
+    );
+    assert_eq!(room_of(&app, alice), b);
+}
+
+#[test]
+fn a_walker_is_stamped_as_the_newest_arrival() {
+    let mut app = intake_app();
+    let (a, b) = two_rooms(&mut app);
+    let resident = npc(&mut app, b, 5, "the resident");
+    let alice = seated_player(&mut app, a);
+    send(&mut app, 1, alice, go_north());
+    let (alice_id, resident_id) = (uid(&mut app, alice), uid(&mut app, resident));
+    let room_id = uid(&mut app, b);
+    let people = run(&mut app, |host| host.room_people(room_id));
+    assert_eq!(people.first(), Some(&alice_id), "{people:?} {resident_id}");
+}
+
+#[test]
+fn no_leave_trigger_runs_for_a_closed_door_or_a_hidden_exit() {
+    let (mut app, a, alice) = door_world();
+    define_arg(&mut app, 40, "wld", "q", 100, "*", &counting(1));
+    attach(&mut app, "room:tba.1", &[40]);
+    send(&mut app, 1, alice, go_north());
+    assert_eq!(count_of(&mut app, a), 0, "the door is closed");
+
+    app.world_mut()
+        .get_mut::<RoomState>(a)
+        .expect("state")
+        .doors
+        .clear();
+    app.world_mut().entity_mut(a).remove::<Doors>();
+    app.world_mut()
+        .get_mut::<Exits>(a)
+        .expect("exits")
+        .hidden
+        .insert(ExitKey::North);
+    send(&mut app, 2, alice, go_north());
+    assert_eq!(count_of(&mut app, a), 0, "nobody found the exit");
+}
+
+/// Room 1 with a locked, pickable door to the north and a player in it.
+fn locked_door_world() -> (App, Entity, Entity) {
+    let (mut app, a, alice) = door_world();
+    let mut doors = Doors::default();
+    doors.by_dir.insert(
+        ExitKey::North,
+        Door {
+            key: None,
+            name: Some("gate".to_owned()),
+            pickable: true,
+            difficulty: 0,
+            default_closed: true,
+            default_locked: true,
+        },
+    );
+    app.world_mut().entity_mut(a).insert(doors);
+    (app, a, alice)
+}
+
+#[test]
+fn the_packs_pick_lock_verb_is_offered_to_the_door_triggers_as_pick() {
+    let (mut app, a, alice) = locked_door_world();
+    define_arg(&mut app, 51, "wld", "r", 100, "*", &door_script(0));
+    attach(&mut app, "room:tba.1", &[51]);
+    send(&mut app, 1, alice, line("pick_lock north"));
+    let room_id = uid(&mut app, a);
+    assert_eq!(global(&mut app, room_id, "cmd").as_deref(), Some("pick"));
+    assert!(claimed(&app, 1));
+}
+
+#[test]
+fn picking_a_lock_that_is_not_locked_runs_no_door_trigger() {
+    let (mut app, a, alice) = door_world();
+    define_arg(&mut app, 51, "wld", "r", 100, "*", &door_script(0));
+    attach(&mut app, "room:tba.1", &[51]);
+    send(
+        &mut app,
+        1,
+        alice,
+        typed(Command::Pick {
+            target: Some("north".to_owned()),
+        }),
+    );
+    send(&mut app, 2, alice, line("pick_lock north"));
+    assert!(!ran(&mut app, a));
+}
+
+#[test]
+fn a_bare_say_still_reaches_the_speech_triggers() {
+    let mut app = intake_app();
+    let a = room(&mut app, 1);
+    define_arg(&mut app, 20, "wld", "d", 0, "*", SPEECH);
+    attach(&mut app, "room:tba.1", &[20]);
+    let alice = seated_player(&mut app, a);
+    send(&mut app, 1, alice, line("say"));
+    assert!(ran(&mut app, a));
+    let room_id = uid(&mut app, a);
+    assert_eq!(global(&mut app, room_id, "speech").as_deref(), Some(""));
+}
+
+#[test]
+fn act_check_is_on_for_a_social_walk_and_off_after_a_say() {
+    let mut app = intake_app();
+    let a = room(&mut app, 1);
+    let alice = seated_player(&mut app, a);
+    app.world_mut()
+        .resource_mut::<TbaContent>()
+        .socials
+        .insert("wave".into(), wave());
+    npc(&mut app, a, 5, "the guard");
+    send(&mut app, 1, alice, line("social wave"));
+    assert!(run(&mut app, |host| host.vm_state().act_check));
+    send(&mut app, 2, alice, line("say hi"));
+    assert!(!run(&mut app, |host| host.vm_state().act_check));
+}
+
+// -- memory triggers ---------------------------------------------------------
+
+/// `memory` trigger letter for a mob.
+const MEMORY: &str = "o";
+
+fn remember(app: &mut App, mob: Entity, who: Entity) {
+    let (mob_id, who_id) = (uid(app, mob), uid(app, who));
+    run(app, |host| {
+        host.set_script_mem(
+            mob_id,
+            vec![ScriptMemory {
+                id: who_id,
+                cmd: None,
+            }],
+        );
+    });
+}
+
+#[test]
+fn a_mob_that_remembers_a_player_runs_its_memory_trigger_when_they_arrive() {
+    let mut app = intake_app();
+    let (a, b) = two_rooms(&mut app);
+    define_arg(&mut app, 70, "mob", MEMORY, 100, "*", &ran_then(1));
+    attach(&mut app, "npc:tba_npc_6", &[70]);
+    let watcher = npc(&mut app, b, 6, "the watcher");
+    let alice = seated_player(&mut app, a);
+    if !mob_is_awake(&mut app, watcher) {
+        return;
+    }
+    remember(&mut app, watcher, alice);
+    send(&mut app, 1, alice, go_north());
+    assert!(ran(&mut app, watcher), "greet_memory_mtrigger ran");
+    let watcher_id = uid(&mut app, watcher);
+    assert!(run(&mut app, |host| host.script_mem(watcher_id)).is_empty());
+}
+
+#[test]
+fn a_mob_that_arrives_where_it_remembers_someone_runs_its_memory_trigger() {
+    let mut app = intake_app();
+    let (a, b) = two_rooms(&mut app);
+    define_arg(&mut app, 70, "mob", MEMORY, 100, "*", &ran_then(1));
+    attach(&mut app, "npc:tba_npc_6", &[70]);
+    let walker = npc(&mut app, a, 6, "the walker");
+    let alice = seated_player(&mut app, b);
+    if !mob_is_awake(&mut app, walker) {
+        return;
+    }
+    remember(&mut app, walker, alice);
+    tick_pulses(&mut app, 1);
+    app.world_mut()
+        .entity_mut(walker)
+        .insert(Location { room: b });
+    tick_pulses(&mut app, 1);
+    assert!(ran(&mut app, walker), "entry_memory_mtrigger ran");
+}
+
+// -- pack handlers -------------------------------------------------------------
+
+/// A pack handler answers `input`, and stays silent once a `command` trigger
+/// has taken the line over.
+macro_rules! assert_skips_claimed {
+    ($handler:path, $input:expr, $setup:expr) => {
+        for taken in [false, true] {
+            let mut app = intake_app();
+            let setup: fn(&mut App) = $setup;
+            setup(&mut app);
+            app.add_systems(Update, $handler.after(DgIntake::CommandGate));
+            let a = room(&mut app, 1);
+            if taken {
+                define_arg(&mut app, 90, "wld", "c", 0, "*", &ran_then(1));
+                attach(&mut app, "room:tba.1", &[90]);
+            }
+            let alice = seated_player(&mut app, a);
+            send(&mut app, 1, alice, line($input));
+            let text = shown(&mut app);
+            if taken {
+                assert!(claimed(&app, 1));
+                assert!(
+                    text.is_empty(),
+                    "`{}` was answered anyway: {text:?}",
+                    $input
+                );
+            } else {
+                assert!(!text.is_empty(), "`{}` is answered when free", $input);
+            }
+        }
+    };
+}
+
+#[test]
+fn the_time_handler_skips_a_taken_over_command() {
+    assert_skips_claimed!(mib_tba::clock::handle_time_command, "time", |_| {});
+}
+
+#[test]
+fn the_skill_handler_skips_a_taken_over_command() {
+    assert_skips_claimed!(mib_tba::skills::handle_skill_commands, "hide", |app| {
+        app.init_resource::<VisibilityPolicy>();
+        app.init_resource::<RoomOccupants>();
+        app.add_message::<PlayerDefeated>();
+        app.add_message::<NpcDefeated>();
+        app.add_message::<TbaDamage>();
+    });
+}
+
+#[test]
+fn the_social_handler_skips_a_taken_over_command() {
+    assert_skips_claimed!(mib_tba::socials::handle_social_commands, "socials", |_| {});
+}
+
+#[test]
+fn the_party_handler_skips_a_taken_over_command() {
+    assert_skips_claimed!(mib_tba::party::handle_party_commands, "group", |app| {
+        app.init_resource::<mib_tba::party::TbaParties>();
+    });
+}
+
+#[test]
+fn the_shop_handler_skips_a_taken_over_command() {
+    assert_skips_claimed!(mib_tba::shops::handle_shop_commands, "list", |app| {
+        app.init_resource::<VisibilityPolicy>();
+        app.init_resource::<RoomOccupants>();
+    });
+}
+
+#[test]
+fn the_combat_handler_skips_a_taken_over_command() {
+    assert_skips_claimed!(mib_tba::combat::handle_combat_commands, "flee", |app| {
+        app.init_resource::<VisibilityPolicy>();
+        app.init_resource::<RoomOccupants>();
+    });
 }

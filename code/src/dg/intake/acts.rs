@@ -12,7 +12,7 @@
 //! makes. A `say` is not one: `do_say` acts with `DG_NO_TRIG`.
 
 use dg_vm::dispatch::act_mtrigger;
-use dg_vm::{Uid, WorldHost};
+use dg_vm::{BaseHost, Uid, WorldHost};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{CarriedBy, Item, Location, Npc, Player};
 
@@ -180,6 +180,9 @@ fn deliver(host: &mut EcsHost<'_>, lines: &Lines) {
         .map(|player| player.name.clone())
         .unwrap_or_default();
     for (template, audience) in &lines.acts {
+        // Every `act()` with text sets `dg_act_check`; an `act` trigger that
+        // makes a `say` clears it for the rest of this walk.
+        host.vm_state().act_check = true;
         for recipient in host.room_people(room) {
             show(
                 host,
@@ -242,6 +245,9 @@ fn show(
     // `dg_victim` is the recipient itself for `TO_VICT`, and the victim when
     // the text names it with `$N`, `$M`, `$S` or `$E`.
     let victim = victim.filter(|_| is_victim || names_victim(template));
+    if !host.vm_state().act_check {
+        return;
+    }
     act_mtrigger(
         host,
         recipient,

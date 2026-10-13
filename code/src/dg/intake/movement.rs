@@ -12,10 +12,21 @@
 //!   `greet_mtrigger` and `greet_memory_mtrigger`. A refusal by `entry`, `enter`
 //!   or `greet` puts the mover back in the room it came from.
 //! - [`observe_movement`] (`FixedUpdate`): every other change of a character's
-//!   `Location` made by the game (the engine's wander, pursuit, follow, flee)
-//!   gets the same treatment, leave triggers included, which can undo the move.
+//!   `Location` made by the game gets the treatment its kind has in the C. A
+//!   move along an exit (the engine's wander, pursuit, follow, flee) is
+//!   `do_simple_move`: leave triggers, then the arrival triggers, either of
+//!   which can undo the move. Any other relocation (the death respawn, a verb's
+//!   teleport) is a transport: `entry_memory_mtrigger`, `greet_mtrigger(-1)`
+//!   and `greet_memory_mtrigger` with the results ignored, as `spells.c` does,
+//!   and it is never undone. A walking NPC whose move was refused is not
+//!   offered the same move again for [`REFUSAL_COOLDOWN`] ticks (the C retries
+//!   a hunting mob once per `PULSE_MOBILE`); the move is put back silently.
 //! - [`player_logins`] (`DgIntake::PostRoute`): `enter_player_game` and `nanny`'s
 //!   `login_wtrigger`, `greet_mtrigger(-1)` and `greet_memory_mtrigger`.
+//!
+//! The engine has finished a typed move (the `Visited` quest event, the scene
+//! and the prompt) when the arrival triggers run, and nothing here can retract
+//! them; a refused arrival shows the room it returns to in a plain form.
 //!
 //! # Moves the host made
 //!
@@ -23,7 +34,9 @@
 //! [`DgOrder`] straight after changing its `Location`. The C runs no
 //! `entry`/`greet` for those (a script `teleport` calls `enter_wtrigger` and
 //! nothing else), so [`observe_movement`] leaves a `Location` change alone when
-//! the character's `DgOrder` is at least as new as the change.
+//! the character's `DgOrder` is at least as new as the change. A dispatch from
+//! `Update` that stamps a character the game has just moved, before this
+//! system has seen the move, hides that move from it.
 //!
 //! # Directions
 //!
@@ -52,6 +65,7 @@ use crate::dg::host::EcsHost;
 use crate::dg::ids::DgOrder;
 use crate::dg::out::{is_playing, send_to_char};
 use crate::dg::with_host;
+use crate::skills::{SkillCommand, parse_skill_line};
 
 /// `SCMD_OPEN`, `SCMD_CLOSE`, `SCMD_UNLOCK`, `SCMD_LOCK`, `SCMD_PICK`.
 const SCMD_OPEN: i32 = 0;
@@ -105,17 +119,16 @@ fn room_of(world: &World, entity: Entity) -> Option<Entity> {
 }
 
 /// The direction of the exit that leads from `from` to `to`: the lowest DG
-/// number if several do, `-1` if none does (a teleport).
-fn dir_between(world: &World, from: Entity, to: Entity) -> i32 {
+/// number if several do, `-1` if only `in` or `out` does, `None` if no exit
+/// does (a transport).
+fn dir_between(world: &World, from: Entity, to: Entity) -> Option<i32> {
     world
         .get::<Exits>(from)
         .into_iter()
         .flat_map(|exits| exits.map.iter())
         .filter(|(_, destination)| **destination == to)
         .map(|(key, _)| dg_dir(*key))
-        .filter(|dir| *dir >= 0)
-        .min()
-        .unwrap_or(-1)
+        .min_by_key(|dir| if *dir < 0 { i32::MAX } else { *dir })
 }
 
 /// Whether a door is closed (a locked door is closed too), from the room's
@@ -256,6 +269,15 @@ pub fn precommit(world: &mut World, mut cursor: Local<MessageCursor<CommandRecei
         if already_handled(world, msg.id) {
             continue;
         }
+        if let PlayerInput::RawLine(line) = &msg.input
+            && let Some(SkillCommand::PickLock { direction }) = parse_skill_line(line)
+        {
+            // The pack's own lock-picking verb is `do_gen_door`'s `pick`.
+            if !before_door(world, msg.session, SCMD_PICK, Some(&direction)) {
+                claim(world, &msg);
+            }
+            continue;
+        }
         let Some(command) = typed_command(&msg.input) else {
             continue;
         };
@@ -333,49 +355,70 @@ fn describe_room(world: &World, room: Entity) -> String {
     text
 }
 
-/// Put a character back in the room it came from and, if it is a player, show
-/// it that room (`look_at_room`).
-fn send_back(world: &mut World, mover: Entity, was_in: Entity) {
-    if let Some(mut location) = world.get_mut::<Location>(mover) {
-        location.room = was_in;
+/// Put a character in `room` again after a move was undone: its `Location`,
+/// the engine's record of where the player is, its last-room record and its
+/// place in the room's people list. Does nothing for a despawned character.
+fn restore(world: &mut World, mover: Entity, room: Entity) {
+    let Ok(mut entity) = world.get_entity_mut(mover) else {
+        return;
+    };
+    if let Some(mut location) = entity.get_mut::<Location>() {
+        location.room = room;
     }
+    entity.insert(DgLastRoom(room));
     if let Some(mut online) = world.get_resource_mut::<OnlinePlayers>() {
         for record in online.map.values_mut() {
             if record.entity == mover {
-                record.room = was_in;
+                record.room = room;
             }
         }
     }
-    world.entity_mut(mover).insert(DgLastRoom(was_in));
     with_host(world, |host| host.stamp_order(mover));
+}
+
+/// Put a character back in the room it came from and, if it is a player, show
+/// it that room (`look_at_room`).
+fn send_back(world: &mut World, mover: Entity, was_in: Entity) {
+    restore(world, mover, was_in);
     if world.get::<Player>(mover).is_some() {
         let text = describe_room(world, was_in);
         send_to_char(world, mover, &text);
     }
 }
 
-/// What the arrival triggers decided.
-enum Verdict {
-    Stay,
-    Back,
+/// How a character got to its new room.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Travel {
+    /// Along an exit, in this direction (`do_simple_move`).
+    Walk(i32),
+    /// Some other way (a transport): nothing can refuse it.
+    Jump,
 }
 
-/// The triggers of `do_simple_move` after the mover is in its new room, in the
-/// C's order: `entry_mtrigger` and `enter_wtrigger` (either refusing sends the
-/// mover back), `entry_memory_mtrigger`, then `greet_mtrigger` (refusing sends
-/// the mover back) and `greet_memory_mtrigger`.
+/// The triggers after the mover is in its new room, in the C's order. A walk
+/// is `do_simple_move`: `entry_mtrigger` and `enter_wtrigger` (either refusing
+/// sends the mover back), `entry_memory_mtrigger`, then `greet_mtrigger`
+/// (refusing sends the mover back) and `greet_memory_mtrigger`. A jump is what
+/// `spells.c` does after a transport: `entry_memory_mtrigger`,
+/// `greet_mtrigger(-1)` and `greet_memory_mtrigger`, results ignored.
 ///
 /// The router has already shown the new room, so a mover sent back is shown the
 /// one it returns to, whichever trigger refused. The C shows it only after a
-/// `greet` refusal.
-fn arrive(world: &mut World, mover: Entity, from: Entity, dir: i32) {
+/// `greet` refusal. Returns whether the mover was sent back.
+fn arrive(world: &mut World, mover: Entity, from: Entity, travel: Travel) -> bool {
     let Some(to) = room_of(world, mover) else {
-        return;
+        return false;
     };
     let verdict = with_host(world, |host| {
         // This runs straight after a move the game made.
         host.stamp_order(mover);
         let Some(actor) = host.uid(mover) else {
+            return Verdict::Stay;
+        };
+        let Travel::Walk(dir) = travel else {
+            entry_memory_mtrigger(host, actor);
+            greet_mtrigger(host, actor, -1);
+            greet_memory_mtrigger(host, actor);
             return Verdict::Stay;
         };
         let Some(room) = host.in_room(actor) else {
@@ -391,12 +434,28 @@ fn arrive(world: &mut World, mover: Entity, from: Entity, dir: i32) {
         greet_memory_mtrigger(host, actor);
         Verdict::Stay
     });
+    // A trigger may have extracted the mover; the sweep despawned it.
+    if world.get_entity(mover).is_err() {
+        return false;
+    }
     match verdict {
-        Verdict::Back => send_back(world, mover, from),
+        Verdict::Back => {
+            send_back(world, mover, from);
+            true
+        }
         Verdict::Stay => {
-            world.entity_mut(mover).insert(DgLastRoom(to));
+            if let Ok(mut entity) = world.get_entity_mut(mover) {
+                entity.insert(DgLastRoom(to));
+            }
+            false
         }
     }
+}
+
+/// What the arrival triggers decided.
+enum Verdict {
+    Stay,
+    Back,
 }
 
 /// `DgIntake::PostRoute`: the arrival triggers of the typed moves
@@ -409,7 +468,9 @@ pub fn typed_arrivals(world: &mut World) {
         .collect();
     for (mover, pre) in pending {
         match room_of(world, mover) {
-            Some(now) if now != pre.from => arrive(world, mover, pre.from, pre.dir),
+            Some(now) if now != pre.from => {
+                arrive(world, mover, pre.from, Travel::Walk(pre.dir));
+            }
             _ => {}
         }
     }
@@ -472,28 +533,85 @@ fn game_moves(world: &mut World) -> Vec<Mover> {
     moved
 }
 
+/// How many fixed ticks a walking NPC whose move a trigger refused is not
+/// offered the same move again (`PULSE_MOBILE`, ten seconds at ten ticks a
+/// second): the pack's pursuit retries on every tick.
+pub const REFUSAL_COOLDOWN: u32 = 100;
+
+/// The moves of NPCs that triggers refused, with the ticks left on each.
+#[derive(Resource, Debug, Default)]
+pub struct DgRefusals {
+    tick: u32,
+    moves: HashMap<Entity, (Entity, Entity, u32)>,
+}
+
+impl DgRefusals {
+    /// Advance one tick and forget the refusals that ran out.
+    fn advance(&mut self) {
+        self.tick = self.tick.wrapping_add(1);
+        let now = self.tick;
+        self.moves
+            .retain(|_, (_, _, until)| until.wrapping_sub(now) < REFUSAL_COOLDOWN);
+    }
+
+    /// Whether the move `from` to `to` was refused recently for `mover`.
+    fn refused(&self, mover: Entity, from: Entity, to: Entity) -> bool {
+        self.moves
+            .get(&mover)
+            .is_some_and(|(was, wanted, _)| *was == from && *wanted == to)
+    }
+
+    fn refuse(&mut self, mover: Entity, from: Entity, to: Entity) {
+        let until = self.tick.wrapping_add(REFUSAL_COOLDOWN);
+        self.moves.insert(mover, (from, to, until));
+    }
+}
+
 /// `FixedUpdate`: the movement triggers for every move the game made that was
 /// not a typed player move.
 ///
 /// The move is already done when this sees it, so the leave triggers run with
 /// the mover put back in the room it left, and a refusal leaves it there
-/// (`do_simple_move` returns before the character leaves).
+/// (`do_simple_move` returns before the character leaves). A move along no exit
+/// is a transport, which no trigger can refuse.
 pub fn observe_movement(world: &mut World) {
+    world
+        .get_resource_or_insert_with(DgRefusals::default)
+        .advance();
     for mover in game_moves(world) {
-        let dir = dir_between(world, mover.from, mover.to);
+        let Some(dir) = dir_between(world, mover.from, mover.to) else {
+            arrive(world, mover.entity, mover.from, Travel::Jump);
+            continue;
+        };
+        let is_npc = world.get::<Npc>(mover.entity).is_some();
+        let cooling = is_npc
+            && world
+                .get_resource::<DgRefusals>()
+                .is_some_and(|refusals| refusals.refused(mover.entity, mover.from, mover.to));
+        if cooling {
+            restore(world, mover.entity, mover.from);
+            continue;
+        }
         if let Some(mut location) = world.get_mut::<Location>(mover.entity) {
             location.room = mover.from;
         }
         let allowed = with_host(world, |host| {
             leave_allowed(host, mover.entity, mover.from, dir)
         });
-        if !allowed {
-            continue;
+        let sent_back = if allowed {
+            if let Some(mut location) = world.get_mut::<Location>(mover.entity) {
+                location.room = mover.to;
+            }
+            arrive(world, mover.entity, mover.from, Travel::Walk(dir))
+        } else {
+            restore(world, mover.entity, mover.from);
+            true
+        };
+        if sent_back && is_npc {
+            world
+                .get_resource_or_insert_with(DgRefusals::default)
+                .refuse(mover.entity, mover.from, mover.to);
         }
-        if let Some(mut location) = world.get_mut::<Location>(mover.entity) {
-            location.room = mover.to;
-        }
-        arrive(world, mover.entity, mover.from, dir);
     }
 }
 
@@ -531,6 +649,7 @@ pub fn player_logins(world: &mut World) {
 /// Register this module's systems.
 pub fn register(app: &mut App) {
     app.init_resource::<DgPreMoves>();
+    app.init_resource::<DgRefusals>();
     app.add_systems(Update, precommit.in_set(DgIntake::PreCommit));
     app.add_systems(
         Update,
