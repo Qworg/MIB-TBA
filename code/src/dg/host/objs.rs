@@ -15,9 +15,13 @@
 //! a corpse (it fires the Timer trigger and keeps any other object), so a
 //! script-set timer must never reach it: setting one parks the component at
 //! [`PARKED`], a value `tick_item_timers` cannot run down in practice and
-//! `attach_item_timers` leaves alone. Until the intake stream fires the Timer
-//! trigger the countdown only reads; and the override is not saved, so a
-//! restored item reads zero.
+//! `attach_item_timers` leaves alone. The parked component is saved, and
+//! `tick_item_timers` keeps counting it down, so a value above
+//! [`PARKED_FLOOR`] means "parked" and a restored item (whose override is not
+//! saved) reads zero. Nothing fires the Timer trigger yet: the intake stream
+//! can ask [`script_timer_expired`] each MUD hour (it needs `objs` and this
+//! function re-exported from `host/mod.rs`, and a real countdown in
+//! `items.rs` would replace the sentinel altogether).
 //!
 //! Script writes to the values, cost, rent, weight and applies are seen by
 //! scripts only: the pack's combat, equipment and shops read the prototype.
@@ -47,6 +51,39 @@ const TEXT_MAX: usize = 4096;
 /// beyond any real life, so the pack's decay neither reaches zero nor
 /// despawns the item.
 const PARKED: u32 = u32::MAX / 2;
+
+/// Any [`TbaItemTimer`] at or above this is a parked one: the hourly decay and
+/// a save in between only lower [`PARKED`] a little.
+const PARKED_FLOOR: u32 = PARKED / 2;
+
+/// Whether a script-set timer on the item has just aged to zero from a
+/// positive value, which is when the C's `point_update` fires the Timer
+/// trigger (limits.c:471). The caller fires it once and then clears the
+/// timer (`obj_set_timer(obj, 0)`).
+#[allow(dead_code)]
+pub fn script_timer_expired(world: &World, entity: Entity) -> bool {
+    let Some((value, set_at)) = world
+        .get::<DgObjOverride>(entity)
+        .and_then(|over| over.timer)
+    else {
+        return false;
+    };
+    value > 0 && mud_hours(world).saturating_sub(set_at) >= u64::try_from(value).unwrap_or(0)
+}
+
+/// MUD hours elapsed on the pack's clock since year 0 (zero without one).
+fn mud_hours(world: &World) -> u64 {
+    let Some(clock) = world.get_resource::<TbaObjectClock>() else {
+        return 0;
+    };
+    let days = u64::from(clock.year)
+        .saturating_mul(17)
+        .saturating_add(u64::from(clock.month))
+        .saturating_mul(35)
+        .saturating_add(u64::from(clock.day));
+    days.saturating_mul(24)
+        .saturating_add(u64::from(clock.hour_of_day))
+}
 
 /// Per-instance changes a script made to an object's prototype data. A field
 /// that is `None` still reads from the prototype. Runtime-only: it is not
@@ -157,20 +194,6 @@ impl EcsHost<'_> {
         Some(entity)
     }
 
-    /// MUD hours elapsed on the pack's clock since year 0 (zero without one).
-    fn mud_hours(&self) -> u64 {
-        let Some(clock) = self.world.get_resource::<TbaObjectClock>() else {
-            return 0;
-        };
-        let days = u64::from(clock.year)
-            .saturating_mul(17)
-            .saturating_add(u64::from(clock.month))
-            .saturating_mul(35)
-            .saturating_add(u64::from(clock.day));
-        days.saturating_mul(24)
-            .saturating_add(u64::from(clock.hour_of_day))
-    }
-
     /// The object's per-instance changes, if it has any.
     fn obj_override(&self, entity: Entity) -> Option<&DgObjOverride> {
         self.world.get::<DgObjOverride>(entity)
@@ -212,6 +235,9 @@ impl ObjHost for EcsHost<'_> {
         let Some(entity) = self.item_entity(obj) else {
             return;
         };
+        if idx >= 4 {
+            return;
+        }
         self.with_override(entity, |over| {
             if let Some(slot) = over.values.get_mut(idx) {
                 *slot = Some(value);
@@ -230,12 +256,12 @@ impl ObjHost for EcsHost<'_> {
             if value <= 0 {
                 return value;
             }
-            let elapsed = self.mud_hours().saturating_sub(set_at);
+            let elapsed = mud_hours(self.world).saturating_sub(set_at);
             let left = i64::from(value).saturating_sub(i64::try_from(elapsed).unwrap_or(i64::MAX));
             return i32::try_from(left.max(0)).unwrap_or(i32::MAX);
         }
         if let Some(timer) = self.world.get::<TbaItemTimer>(entity) {
-            return if timer.remaining >= PARKED {
+            return if timer.remaining >= PARKED_FLOOR {
                 0
             } else {
                 to_i32(timer.remaining)
@@ -252,7 +278,7 @@ impl ObjHost for EcsHost<'_> {
         let Some(entity) = self.item_entity(obj) else {
             return;
         };
-        let now = self.mud_hours();
+        let now = mud_hours(self.world);
         self.with_override(entity, |over| over.timer = Some((value, now)));
         self.world
             .entity_mut(entity)
@@ -350,6 +376,9 @@ impl ObjHost for EcsHost<'_> {
         let Some(entity) = self.item_entity(obj) else {
             return;
         };
+        if slot >= MAX_OBJ_AFFECT {
+            return;
+        }
         self.with_override(entity, |over| {
             if let Some(cell) = over.applies.get_mut(slot) {
                 *cell = Some((location, modifier));

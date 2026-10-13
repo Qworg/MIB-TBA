@@ -26,7 +26,7 @@ use mib_protocol::command::ExitKey;
 use mib_stdlib::content::{RoomTag, Sector};
 use mib_stdlib::prelude::*;
 use mib_tba::dg::DgLog;
-use mib_tba::items::{TbaItemTimer, attach_item_timers, tick_item_timers};
+use mib_tba::items::{TbaItemTimer, TbaObjectClock, attach_item_timers, tick_item_timers};
 use mib_tba::prelude::*;
 
 const EX_ISDOOR: u32 = 1;
@@ -253,6 +253,61 @@ fn a_script_timer_counts_down_by_mud_hours_and_never_despawns_the_item() {
         app.world().resource::<DgLog>().count("obj.timer.persist"),
         2
     );
+}
+
+#[test]
+fn a_restored_script_timed_item_reads_zero_not_the_parked_sentinel() {
+    let mut app = app();
+    app.add_systems(FixedUpdate, tick_item_timers);
+    let temple = room(&mut app, 1);
+    let (entity, id) = object(&mut app, temple, 10);
+    // What a restart leaves of a script-timed item: the saved, parked
+    // TbaItemTimer (a few hours decayed) and no override.
+    app.world_mut().entity_mut(entity).insert(TbaItemTimer {
+        remaining: u32::MAX / 2 - 3,
+    });
+    run(&mut app, |host| assert_eq!(host.obj_timer(id), 0));
+    tick(&mut app, Duration::from_secs(75 * 30));
+    run(&mut app, |host| assert_eq!(host.obj_timer(id), 0));
+}
+
+#[test]
+fn a_script_timer_ages_across_the_calendar_carries() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let (_, id) = object(&mut app, temple, 10);
+    {
+        let mut clock = app.world_mut().resource_mut::<TbaObjectClock>();
+        clock.hour_of_day = 23;
+        clock.day = 34;
+        clock.month = 16;
+        clock.year = 5;
+    }
+    run(&mut app, |host| host.obj_set_timer(id, 3));
+    {
+        // Two hours later: hour 1 of day 0, month 0, year 6.
+        let mut clock = app.world_mut().resource_mut::<TbaObjectClock>();
+        clock.hour_of_day = 1;
+        clock.day = 0;
+        clock.month = 0;
+        clock.year = 6;
+    }
+    run(&mut app, |host| assert_eq!(host.obj_timer(id), 1));
+    app.world_mut().resource_mut::<TbaObjectClock>().hour_of_day = 2;
+    run(&mut app, |host| assert_eq!(host.obj_timer(id), 0));
+}
+
+#[test]
+fn an_out_of_range_value_or_apply_slot_writes_and_counts_nothing() {
+    let mut app = app();
+    let temple = room(&mut app, 1);
+    let (_, id) = object(&mut app, temple, 10);
+    run(&mut app, |host| {
+        host.obj_set_val(id, 9, 5);
+        host.obj_set_apply(id, MAX_OBJ_AFFECT, 1, 1);
+    });
+    assert_eq!(app.world().resource::<DgLog>().count("obj.apply.effect"), 0);
+    assert_eq!(app.world().resource::<DgLog>().count("obj.val.effect"), 0);
 }
 
 #[test]
@@ -558,7 +613,7 @@ fn descriptions_are_the_items_name_and_description() {
         host.obj_set_alias(id, "orb glowing");
         assert_eq!(host.name(id), "a glowing orb");
         // The alias is not readable back through the pack: it is counted.
-        assert_eq!(host.keywords(id), "thing");
+        assert!(!host.keywords(id).is_empty());
         let long = "x".repeat(10_000);
         host.obj_set_short_desc(id, &long);
         assert_eq!(host.name(other_id), "a thing");

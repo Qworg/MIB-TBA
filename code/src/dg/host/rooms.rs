@@ -10,7 +10,8 @@
 //! The weather is not modelled: the pack has no sky. The room reads take
 //! `&self`, so the unmodelled ones (the weather, the `ROOM_*` bits with no tag)
 //! answer their neutral value without a `BaseHost::unsupported` count; only a
-//! `&mut self` method can report.
+//! `&mut self` method can report. `host/mod.rs` has to re-export [`exit_key`],
+//! [`dir_number`] and `objs::DgObjOverride` for the intake stream to use them.
 
 use dg_vm::Uid;
 use dg_vm::fields_room::{RoomExit, RoomHost};
@@ -118,7 +119,10 @@ impl RoomHost for EcsHost<'_> {
     /// authored [`Doors`] entry, as the engine's movement gate treats it (a
     /// [`RoomState`] door entry alone is not one); its closed and locked state
     /// is the runtime one, falling back to the authored default. The key is the
-    /// vnum of the door's key item. `EX_HIDDEN` is a direction in
+    /// vnum of the door's key item. The converter keeps a key only for a door
+    /// with a real key item, so every other exit, including a C key of 0, reads
+    /// `65535` (`NOTHING`). Exits with no destination room (description-only
+    /// ones) are dropped by the converter and read as no exit. `EX_HIDDEN` is a direction in
     /// [`Exits::hidden`].
     fn room_exit(&self, room: Uid, dir: usize) -> Option<RoomExit> {
         let (entity, _) = self.room_entity(room)?;
