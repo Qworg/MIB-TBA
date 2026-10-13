@@ -64,8 +64,8 @@ fn a_mob_that_purges_itself_does_not_run_another_line() {
     // The mob is only marked: it stays until the end of the pulse.
     assert!(w.host.exists(mob));
     assert!(w.host.is_dead(mob));
-    assert!(w.host.owner_purged);
-    assert_eq!(w.host.depth, 0);
+    assert!(w.host.vm.owner_purged);
+    assert_eq!(w.host.vm.depth, 0);
 }
 
 #[test]
@@ -78,7 +78,7 @@ fn a_mob_that_purges_another_mob_goes_on() {
     run_script(&mut w, mob, "mpurge rat\nmlog after", None);
     assert!(w.host.is_dead(rat));
     assert!(!w.host.is_dead(mob));
-    assert!(!w.host.owner_purged);
+    assert!(!w.host.vm.owner_purged);
     assert_eq!(logs(&w), [format!("{MOB}after")]);
 }
 
@@ -89,8 +89,8 @@ fn an_object_that_purges_itself_does_not_run_another_line() {
     run_script(&mut w, lamp, "olog before\nopurge %self%\nolog after", None);
     assert_eq!(logs(&w), [format!("{OBJ}before")]);
     assert!(!w.host.exists(lamp));
-    assert!(w.host.owner_purged);
-    assert_eq!(w.host.depth, 0);
+    assert!(w.host.vm.owner_purged);
+    assert_eq!(w.host.vm.depth, 0);
 }
 
 #[test]
@@ -106,7 +106,7 @@ fn an_object_that_purges_its_container_does_not_run_another_line() {
     // The container took the running object with it.
     assert!(!w.host.exists(sack));
     assert!(!w.host.exists(lamp));
-    assert!(w.host.owner_purged);
+    assert!(w.host.vm.owner_purged);
 }
 
 #[test]
@@ -122,7 +122,7 @@ fn an_object_that_purges_something_else_goes_on() {
     run_script(&mut w, lamp, &script, None);
     assert!(!w.host.exists(rock));
     assert!(w.host.exists(lamp));
-    assert!(!w.host.owner_purged);
+    assert!(!w.host.vm.owner_purged);
     assert_eq!(logs(&w), [format!("{OBJ}after")]);
 }
 
@@ -133,7 +133,7 @@ fn a_room_script_purging_everything_goes_on() {
     run_script(&mut w, room, "wpurge\nwlog after", None);
     assert!(!w.host.exists(lamp));
     assert!(w.host.is_dead(mob));
-    assert!(!w.host.owner_purged);
+    assert!(!w.host.vm.owner_purged);
     assert_eq!(logs(&w), [format!("{WLD}after")]);
 }
 
@@ -146,7 +146,7 @@ fn oat_puts_the_flag_back_when_the_copy_purges_itself() {
     // The copy is the only lamp in room 3002.
     run_script(&mut w, lamp, "oat 3002 opurge lamp\nolog survived", None);
     assert!(w.host.exists(lamp));
-    assert!(!w.host.owner_purged);
+    assert!(!w.host.vm.owner_purged);
     assert_eq!(logs(&w), [format!("{OBJ}survived")]);
     assert_eq!(w.host.object_list, [lamp]);
 }
@@ -158,7 +158,7 @@ fn oat_stops_the_script_when_the_command_purges_the_real_object() {
     let script = format!("oat 3002 opurge {}\nolog after", uid_text(lamp));
     run_script(&mut w, lamp, &script, None);
     assert!(!w.host.exists(lamp));
-    assert!(w.host.owner_purged);
+    assert!(w.host.vm.owner_purged);
     assert!(logs(&w).is_empty());
     // The copy went too.
     assert!(w.host.object_list.is_empty());
@@ -168,12 +168,12 @@ fn oat_stops_the_script_when_the_command_purges_the_real_object() {
 fn oat_hands_back_the_flag_it_was_given() {
     let mut w = World::new();
     let lamp = w.obj;
-    *w.host.owner_purged_mut() = true;
+    w.host.vm.owner_purged = true;
     w.run_obj(lamp, "oat 3002 olog x");
-    assert!(w.host.owner_purged);
-    *w.host.owner_purged_mut() = false;
+    assert!(w.host.vm.owner_purged);
+    w.host.vm.owner_purged = false;
     w.run_obj(lamp, "oat 3002 olog x");
-    assert!(!w.host.owner_purged);
+    assert!(!w.host.vm.owner_purged);
 }
 
 // ---- force and at with a real target ----------------------------------

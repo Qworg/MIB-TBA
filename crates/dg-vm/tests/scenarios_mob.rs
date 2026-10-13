@@ -112,7 +112,7 @@ fn guild_guard(vnum: i32, blocked_dir: &str, guild_class: i64) {
             }
             assert!(scene.fx.host.mud_commands.is_empty(), "{label}");
             assert!(scene.fx.host.logs.is_empty(), "{label}");
-            assert_eq!(scene.fx.host.depth, 0);
+            assert_eq!(scene.fx.host.vm.depth, 0);
             assert!(scene.fx.host.waits.is_empty());
         }
     }
@@ -189,7 +189,7 @@ fn tutorial_9_greets_a_newcomer_after_one_second() {
     let trigger = scene.fx.host.script(owner).unwrap().trigger(id).unwrap();
     assert!(!trigger.is_busy());
     assert!(trigger.vars.is_empty());
-    assert_eq!(scene.fx.host.depth, 0);
+    assert_eq!(scene.fx.host.vm.depth, 0);
     assert!(scene.fx.host.logs.is_empty());
 }
 

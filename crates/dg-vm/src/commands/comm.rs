@@ -427,11 +427,11 @@ fn act_line<H: DgHost + ?Sized>(host: &mut H, orig: &str, ch: Uid, to: Uid) -> S
 
 /// `IS_NPC(to) && dg_act_check && to != ch`: whether `perform_act` offers the
 /// line to `to`'s `act` triggers. `dg_act_check` is the global every `act()`
-/// call overwrites ([`CmdHost::cmd_act_check`]), so an `act` trigger that
+/// call overwrites ([`VmState::act_check`](crate::types::VmState)), so an `act` trigger that
 /// says something (`do_say` passes `DG_NO_TRIG`) switches it off for the
 /// rest of the outer walk.
-fn offers_to_triggers<H: DgHost + ?Sized>(host: &H, ch: Uid, to: Uid) -> bool {
-    host.is_npc(to) && host.cmd_act_check() && to != ch
+fn offers_to_triggers<H: DgHost + ?Sized>(host: &mut H, ch: Uid, to: Uid) -> bool {
+    host.is_npc(to) && host.vm_state().act_check && to != ch
 }
 
 /// `perform_act(orig, ch, NULL, NULL, to)`.
@@ -455,7 +455,7 @@ pub fn act<H: DgHost + ?Sized>(host: &mut H, text: &str, hide_invisible: bool, c
     }
     // `dg_act_check = !IS_SET(type, DG_NO_TRIG)`: the script commands never
     // pass `DG_NO_TRIG`.
-    host.cmd_set_act_check(true);
+    host.vm_state().act_check = true;
     if kind == TO_CHAR {
         if sendok(host, ch, false) {
             perform_act(host, text, ch, ch);
@@ -542,7 +542,6 @@ mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
 
     use super::*;
-    use crate::commands::CmdHost;
     use crate::commands::support::World;
     use crate::host::{BaseHost, WorldHost};
     use crate::types::AttachType;
@@ -897,18 +896,18 @@ mod tests {
         let mut w = World::new();
         let (alice, bob, mob) = (w.player, w.player2, w.mob);
         let rat = w.host.add_mob(3001, "a rat");
-        w.host.cmd_set_act_check(true);
-        assert!(offers_to_triggers(&w.host, bob, mob));
-        assert!(offers_to_triggers(&w.host, mob, rat));
+        w.host.vm_state().act_check = true;
+        assert!(offers_to_triggers(&mut w.host, bob, mob));
+        assert!(offers_to_triggers(&mut w.host, mob, rat));
         // Players are never offered it, and an NPC is not offered its own
         // TO_CHAR line.
-        assert!(!offers_to_triggers(&w.host, bob, alice));
-        assert!(!offers_to_triggers(&w.host, mob, mob));
-        assert!(!offers_to_triggers(&w.host, alice, alice));
+        assert!(!offers_to_triggers(&mut w.host, bob, alice));
+        assert!(!offers_to_triggers(&mut w.host, mob, mob));
+        assert!(!offers_to_triggers(&mut w.host, alice, alice));
         // `dg_act_check` off (an `act()` made with `DG_NO_TRIG`): no NPC is.
-        w.host.cmd_set_act_check(false);
-        assert!(!offers_to_triggers(&w.host, bob, mob));
-        assert!(!offers_to_triggers(&w.host, mob, rat));
+        w.host.vm.act_check = false;
+        assert!(!offers_to_triggers(&mut w.host, bob, mob));
+        assert!(!offers_to_triggers(&mut w.host, mob, rat));
     }
 
     #[test]
@@ -980,25 +979,25 @@ mod tests {
         let mut w = World::new();
         let (alice, mob) = (w.player, w.mob);
         let people = all_listening(&mut w);
-        w.host.cmd_set_act_check(false);
+        w.host.vm.act_check = false;
         act(&mut w.host, "hush", false, alice, TO_ROOM);
-        assert!(w.host.cmd_act_check());
-        assert!(offers_to_triggers(&w.host, alice, mob));
+        assert!(w.host.vm.act_check);
+        assert!(offers_to_triggers(&mut w.host, alice, mob));
         let first = people.iter().find(|p| **p != alice).copied().unwrap();
         w.host
             .globals
             .texts
             .insert(format!("hook:send:{first}"), "noact".to_owned());
         act(&mut w.host, "hush", false, alice, TO_ROOM);
-        assert!(!w.host.cmd_act_check());
-        assert!(!offers_to_triggers(&w.host, alice, mob));
+        assert!(!w.host.vm.act_check);
+        assert!(!offers_to_triggers(&mut w.host, alice, mob));
         // The next `act()` switches it on again.
         act(&mut w.host, "hush", false, alice, TO_CHAR);
-        assert!(w.host.cmd_act_check());
+        assert!(w.host.vm.act_check);
         // An empty string returns before touching it.
-        w.host.cmd_set_act_check(false);
+        w.host.vm.act_check = false;
         act(&mut w.host, "", false, alice, TO_ROOM);
-        assert!(!w.host.cmd_act_check());
+        assert!(!w.host.vm.act_check);
     }
 
     #[test]

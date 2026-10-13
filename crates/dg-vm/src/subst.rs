@@ -56,7 +56,6 @@
 //!   running trigger's owner whatever its kind; the C casts `go` to a
 //!   character.
 
-use std::cell::Cell;
 
 use crate::cstr::{atoi, str_eq};
 use crate::expr::process_eval;
@@ -66,7 +65,7 @@ use crate::lookup::{
     get_obj_by_room, get_obj_in_list, get_room, obj_room, trgvar_in_room,
 };
 use crate::text::text_processed;
-use crate::types::{AttachType, DIRS, MAX_INPUT_LENGTH, NUM_OF_DIRS, ROOM_ID_BASE, Uid, uid_text};
+use crate::types::{AttachType, VmState, DIRS, MAX_INPUT_LENGTH, NUM_OF_DIRS, ROOM_ID_BASE, Uid, uid_text};
 use crate::{fields_char, fields_obj, fields_room};
 
 /// `happy_data` (`act.h`): the happy-hour state `%happyhour%` reports.
@@ -117,17 +116,7 @@ pub const MAX_WORK: u32 = 300;
 /// exit.
 pub const DIR_RETRIES: u32 = 1000;
 
-thread_local! {
-    static NESTING: Cell<u32> = const { Cell::new(0) };
-    static WORK: Cell<u32> = const { Cell::new(0) };
-    static ABORTED: Cell<bool> = const { Cell::new(false) };
-}
-
-/// Decrements [`NESTING`] when a `var_subst` call ends; the outermost call
-/// also resets the work count and the abort flag.
-struct NestGuard;
-
-/// Why [`NestGuard::enter`] refused.
+/// Why [`nest_enter`] refused.
 enum Refusal {
     /// A limit tripped on this call: log it.
     Tripped,
@@ -135,34 +124,28 @@ enum Refusal {
     Aborted,
 }
 
-impl NestGuard {
-    fn enter() -> Result<Self, Refusal> {
-        if ABORTED.with(Cell::get) {
-            return Err(Refusal::Aborted);
-        }
-        let depth = NESTING.with(Cell::get);
-        let work = WORK.with(Cell::get);
-        if depth >= MAX_NESTING || work >= MAX_WORK {
-            ABORTED.with(|flag| flag.set(true));
-            return Err(Refusal::Tripped);
-        }
-        NESTING.with(|d| d.set(depth + 1));
-        WORK.with(|w| w.set(work + 1));
-        Ok(NestGuard)
+/// Count a `var_subst` call into the nesting and work totals in
+/// [`VmState`]; every `Ok` is paired with a [`nest_leave`].
+fn nest_enter(vm: &mut VmState) -> Result<(), Refusal> {
+    if vm.subst_aborted {
+        return Err(Refusal::Aborted);
     }
+    if vm.subst_nesting >= MAX_NESTING || vm.subst_work >= MAX_WORK {
+        vm.subst_aborted = true;
+        return Err(Refusal::Tripped);
+    }
+    vm.subst_nesting += 1;
+    vm.subst_work += 1;
+    Ok(())
 }
 
-impl Drop for NestGuard {
-    fn drop(&mut self) {
-        let depth = NESTING.with(|d| {
-            let depth = d.get().saturating_sub(1);
-            d.set(depth);
-            depth
-        });
-        if depth == 0 {
-            WORK.with(|w| w.set(0));
-            ABORTED.with(|flag| flag.set(false));
-        }
+/// End a `var_subst` call; the outermost one resets the work count and the
+/// abort flag.
+fn nest_leave(vm: &mut VmState) {
+    vm.subst_nesting = vm.subst_nesting.saturating_sub(1);
+    if vm.subst_nesting == 0 {
+        vm.subst_work = 0;
+        vm.subst_aborted = false;
     }
 }
 
@@ -240,16 +223,19 @@ pub fn var_subst<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
         return line.to_owned();
     }
 
-    let _guard = match NestGuard::enter() {
-        Ok(guard) => guard,
-        Err(refusal) => {
-            if matches!(refusal, Refusal::Tripped) {
-                cx.log("variable substitution nested too deeply");
-            }
-            return String::new();
+    if let Err(refusal) = nest_enter(cx.host.vm_state()) {
+        if matches!(refusal, Refusal::Tripped) {
+            cx.log("variable substitution nested too deeply");
         }
-    };
+        return String::new();
+    }
+    let result = subst_line(cx, line);
+    nest_leave(cx.host.vm_state());
+    result
+}
 
+/// The body of [`var_subst`] once the nesting counters have admitted it.
+fn subst_line<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
     let mut tmp = vec![0u8; MAX_INPUT_LENGTH];
     if let Some(head) = tmp.get_mut(..line.len()) {
         head.copy_from_slice(line.as_bytes());
@@ -261,7 +247,7 @@ pub fn var_subst<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
     let mut left: usize = MAX_INPUT_LENGTH - 1;
     let mut paren_count: i32 = 0;
 
-    while at(&tmp, p) != 0 && left > 0 && !ABORTED.with(Cell::get) {
+    while at(&tmp, p) != 0 && left > 0 && !cx.host.vm_state().subst_aborted {
         // copy until we find the first %
         while at(&tmp, p) != 0 && at(&tmp, p) != b'%' && left > 0 {
             out.push(at(&tmp, p));
@@ -296,7 +282,7 @@ pub fn var_subst<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
                 field = p;
                 while at(&tmp, p) != 0
                     && (at(&tmp, p) != b'%' || paren_count > 0 || dots > 0)
-                    && !ABORTED.with(Cell::get)
+                    && !cx.host.vm_state().subst_aborted
                 {
                     if dots > 0 {
                         put(&mut subfield, subfield_p, 0);
@@ -354,7 +340,7 @@ pub fn var_subst<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
             }
 
             // a limit tripped: run nothing further on this line
-            if ABORTED.with(Cell::get) {
+            if cx.host.vm_state().subst_aborted {
                 break;
             }
             let replacement = find_replacement(
@@ -372,7 +358,7 @@ pub fn var_subst<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
     }
     // A limit tripped somewhere below: the whole line substitutes to nothing,
     // as the over-length refusal does, rather than running half-expanded.
-    if ABORTED.with(Cell::get) {
+    if cx.host.vm_state().subst_aborted {
         return String::new();
     }
     cap(bytes_to_string(out), MAX_INPUT_LENGTH - 1)

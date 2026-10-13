@@ -61,8 +61,10 @@
 
 use crate::cstr::{is_space, matching_quote, skip_spaces, starts_with_ci, str_str};
 use crate::driver::{Mode, script_driver, script_driver_default};
+use crate::fields_char::CharStat;
 use crate::host::DgHost;
 use crate::lookup::NUM_WEARS;
+use crate::magic::TOP_SPELL_DEFINE;
 use crate::types::trig::{
     MTRIG_ACT, MTRIG_BRIBE, MTRIG_CAST, MTRIG_COMMAND, MTRIG_DAMAGE, MTRIG_DEATH, MTRIG_DOOR,
     MTRIG_ENTRY, MTRIG_FIGHT, MTRIG_GREET, MTRIG_GREET_ALL, MTRIG_HITPRCNT, MTRIG_LEAVE,
@@ -99,13 +101,16 @@ pub trait DispatchHost {
 /// `cmd_door[]` (`act.movement.c`), indexed by `SCMD_OPEN`..`SCMD_PICK`.
 const CMD_DOOR: [&str; 5] = ["open", "close", "unlock", "lock", "pick"];
 
+/// `PRF_NOHASSLE`: a bit of the preference flags.
+const PRF_NOHASSLE: u32 = 8;
+
 /// `POS_SLEEPING`: `AWAKE(ch)` is `GET_POS(ch) > POS_SLEEPING`.
 const POS_SLEEPING: i32 = 4;
 
 /// `skill_name(num)` (`spell_parser.c`).
 fn skill_name<H: DgHost + ?Sized>(host: &H, num: i32) -> String {
-    if num > 0 && num <= host.char_top_spell() {
-        host.char_spell_name(num)
+    if num > 0 && num <= TOP_SPELL_DEFINE {
+        host.magic_spell_name(num)
             .unwrap_or_else(|| "!UNUSED!".to_owned())
     } else if num == -1 {
         "UNUSED".to_owned()
@@ -119,13 +124,13 @@ fn skill_name<H: DgHost + ?Sized>(host: &H, num: i32) -> String {
 /// (`!IS_NPC && GET_LEVEL >= LVL_IMMORT && PRF_FLAGGED(PRF_NOHASSLE)`).
 /// Gates the random and time triggers of anything without the `GLOBAL` bit.
 fn zone_empty<H: DgHost + ?Sized>(host: &H, room: Uid) -> bool {
-    let zone = host.cmd_room_zone(room);
+    let zone = host.room_zone_number(room);
     !host.cmd_playing_characters().into_iter().any(|ch| {
         let Some(here) = room_of(host, ch) else {
             return false;
         };
-        host.cmd_room_zone(here) == zone
-            && !(!host.is_npc(ch) && host.level(ch) >= LVL_IMMORT && host.cmd_nohassle(ch))
+        host.room_zone_number(here) == zone
+            && !(!host.is_npc(ch) && host.level(ch) >= LVL_IMMORT && host.char_pref_flagged(ch, PRF_NOHASSLE))
     })
 }
 
@@ -136,7 +141,7 @@ fn script_check<H: DgHost + ?Sized>(host: &H, go: Uid, type_bit: u32) -> bool {
 
 /// `AWAKE(ch)`.
 fn awake<H: DgHost + ?Sized>(host: &H, ch: Uid) -> bool {
-    host.cmd_pos(ch) > POS_SLEEPING
+    host.char_stat(ch, CharStat::Pos) > POS_SLEEPING
 }
 
 /// `FIGHTING(ch) != NULL`.
@@ -337,7 +342,7 @@ fn find_narg<H: DgHost + ?Sized>(
 /// opposite when `reversed`, for `dir` in `0..DIR_COUNT`; otherwise `none`.
 fn direction_text<H: DgHost + ?Sized>(host: &H, dir: i32, reversed: bool) -> &'static str {
     match usize::try_from(dir) {
-        Ok(dir) if dir < host.cmd_dir_count() && dir < NUM_OF_DIRS => {
+        Ok(dir) if dir < if host.subst_diagonal_dirs() { 10 } else { 6 } && dir < NUM_OF_DIRS => {
             DIRS[if reversed { REV_DIR[dir] } else { dir }]
         }
         _ => "none",
@@ -958,11 +963,11 @@ pub fn hitprcnt_mtrigger<H: DgHost + ?Sized>(host: &mut H, ch: Uid) {
     if !script_check(host, ch, MTRIG_HITPRCNT) || !fighting(host, ch) || charmed(host, ch) {
         return;
     }
-    let max_hit = host.cmd_max_hit(ch);
+    let max_hit = host.char_stat(ch, CharStat::MaxHit);
     if max_hit == 0 {
         return;
     }
-    let percent = host.cmd_hit(ch).wrapping_mul(100).wrapping_div(max_hit);
+    let percent = host.char_stat(ch, CharStat::Hit).wrapping_mul(100).wrapping_div(max_hit);
     if let Some(id) = find_narg(host, ch, MTRIG_HITPRCNT, |narg| percent <= narg) {
         if let Some(actor) = host.char_fighting(ch) {
             set_uid_var(host, ch, id, "actor", actor);
@@ -3179,7 +3184,7 @@ mod tests {
         // the prototype loses its script.
         let mut w = W::new();
         w.trig(w.guard, 1, "n", 100, "", RAN);
-        w.h.depth = MAX_SCRIPT_DEPTH + 1;
+        w.h.vm.depth = MAX_SCRIPT_DEPTH + 1;
         load_mtrigger(&mut w.h, w.guard);
         assert_eq!(w.h.effects, [format!("free_proto_script {}", w.guard)]);
         // Mobs with no script, or no load trigger, are left alone.
@@ -3797,7 +3802,7 @@ mod tests {
         load_otrigger(&mut w.h, rock);
         assert!(w.ran(rock));
         assert!(w.h.effects.is_empty());
-        w.h.depth = MAX_SCRIPT_DEPTH + 1;
+        w.h.vm.depth = MAX_SCRIPT_DEPTH + 1;
         w.rolls(&[1]);
         load_otrigger(&mut w.h, rock);
         assert_eq!(w.h.effects, [format!("free_proto_script {rock}")]);
@@ -4546,9 +4551,9 @@ mod tests {
         w.trig(orb, 1, "g", 100, "", "return 1");
         // A flag a nested script left set does not make a live object gone
         // (C: `go_adress` is NULLed only when the script purged its owner).
-        w.h.owner_purged = true;
+        w.h.vm.owner_purged = true;
         assert_eq!(get_otrigger(&mut w.h, orb, w.alice), 1);
-        w.h.owner_purged = true;
+        w.h.vm.owner_purged = true;
         assert!(!object_gone(&w.h, orb));
         // An extracted object is gone.
         w.h.extract_obj(orb);

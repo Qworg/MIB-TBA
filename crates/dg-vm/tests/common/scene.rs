@@ -108,7 +108,7 @@ pub fn other_effects(host: &MockHost) -> Vec<String> {
 /// The end state every finished run must share: the depth counter is back to
 /// zero and no instance is left checked out of its slot.
 pub fn assert_clean(host: &MockHost) {
-    assert_eq!(host.depth, 0, "depth counter");
+    assert_eq!(host.vm.depth, 0, "depth counter");
     assert!(super::world::checked_out(host).is_empty());
 }
 

@@ -176,17 +176,6 @@ pub trait CmdHost {
     /// (`i->character` for each `!i->connected`), in list order.
     fn cmd_playing_characters(&self) -> Vec<Uid>;
 
-    // ---- act() ---------------------------------------------------------
-
-    /// The static `dg_act_check` of `comm.c`, which `act()` and the `act()`
-    /// of the game share: whether the `act()` call in progress (the latest
-    /// one, nested calls included) offers its lines to `act` triggers.
-    fn cmd_act_check(&self) -> bool;
-
-    /// `dg_act_check = on`: what `act()` does on entry (`on` is
-    /// `!IS_SET(type, DG_NO_TRIG)`).
-    fn cmd_set_act_check(&mut self, on: bool);
-
     // ---- character facts -----------------------------------------------
 
     /// `AFF_FLAGGED(ch, AFF_CHARM)`.

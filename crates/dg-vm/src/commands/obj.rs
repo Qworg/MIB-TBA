@@ -278,7 +278,7 @@ fn do_opurge<H: DgHost + ?Sized>(host: &mut H, obj: Uid, argument: &str) {
                 // running object is gone either way: named directly, or
                 // held by the thing that was named.
                 if o == obj || obj_contains_obj(host, o, obj) {
-                    *host.owner_purged_mut() = true;
+                    host.vm_state().owner_purged = true;
                 }
                 host.cmd_extract_obj(o);
             }
@@ -439,8 +439,8 @@ fn do_oat<H: DgHost + ?Sized>(host: &mut H, obj: Uid, argument: &str, nest: u32)
     // The command may purge the duplicate, or the object this script runs
     // on. The caller's own purge flag is put back afterwards, unless the
     // owner is gone, in which case its script must stop.
-    let saved_purged = *host.owner_purged_mut();
-    *host.owner_purged_mut() = false;
+    let saved_purged = host.vm_state().owner_purged;
+    host.vm_state().owner_purged = false;
 
     host.cmd_obj_to_room(object, loc);
     interpret_nested(host, object, command, nest + 1);
@@ -452,7 +452,7 @@ fn do_oat<H: DgHost + ?Sized>(host: &mut H, obj: Uid, argument: &str, nest: u32)
         host.cmd_extract_obj(object);
     }
 
-    *host.owner_purged_mut() = if host.exists(obj) { saved_purged } else { true };
+    host.vm_state().owner_purged = if host.exists(obj) { saved_purged } else { true };
 }
 
 fn do_omove<H: DgHost + ?Sized>(host: &mut H, obj: Uid, argument: &str) {
@@ -791,7 +791,7 @@ mod tests {
         assert!(!w.host.exists(rock));
         assert!(w.host.exists(sack) && w.host.exists(lamp));
         assert!(w.host.is_dead(mob) && !w.host.is_dead(alice));
-        assert!(!*w.host.owner_purged_mut());
+        assert!(!w.host.vm.owner_purged);
         // The same with the object on the floor: it keeps itself.
         let mut w = World::new();
         let (lamp, room) = (w.obj, w.room);
@@ -811,7 +811,7 @@ mod tests {
         let (lamp, room, mob, alice) = (w.obj, w.room, w.mob, w.player);
         run(&mut w, "opurge guard");
         assert!(w.host.is_dead(mob));
-        assert!(!*w.host.owner_purged_mut());
+        assert!(!w.host.vm.owner_purged);
         run(&mut w, "opurge alice");
         log_is(&w, "opurge: purging a PC");
         assert!(!w.host.is_dead(alice));
@@ -821,10 +821,10 @@ mod tests {
         let rock = w.host.add_obj(1, "a rock");
         w.host.obj_to_room(rock, room);
         run(&mut w, "opurge rock");
-        assert!(!w.host.exists(rock) && !*w.host.owner_purged_mut());
+        assert!(!w.host.exists(rock) && !w.host.vm.owner_purged);
         // Itself: the flag.
         run(&mut w, "opurge lamp");
-        assert!(!w.host.exists(lamp) && *w.host.owner_purged_mut());
+        assert!(!w.host.exists(lamp) && w.host.vm.owner_purged);
     }
 
     #[test]
@@ -837,7 +837,7 @@ mod tests {
         w.host.obj_to_obj(lamp, sack);
         run(&mut w, "opurge sack");
         assert!(!w.host.exists(sack) && !w.host.exists(lamp));
-        assert!(*w.host.owner_purged_mut());
+        assert!(w.host.vm.owner_purged);
     }
 
     // ---- teleporting ----------------------------------------------------
@@ -1172,15 +1172,15 @@ mod tests {
         let lamp = w.obj;
         // The copy purges itself: the caller's flag is as it was.
         run(&mut w, "oat 3002 opurge lamp");
-        assert!(!*w.host.owner_purged_mut());
-        *w.host.owner_purged_mut() = true;
+        assert!(!w.host.vm.owner_purged);
+        w.host.vm.owner_purged = true;
         run(&mut w, "oat 3002 opurge lamp");
-        assert!(*w.host.owner_purged_mut());
-        *w.host.owner_purged_mut() = false;
+        assert!(w.host.vm.owner_purged);
+        w.host.vm.owner_purged = false;
         // The command purges the real object: the script must stop.
         run(&mut w, &format!("oat 3002 opurge {}", uid_text(lamp)));
         assert!(!w.host.exists(lamp));
-        assert!(*w.host.owner_purged_mut());
+        assert!(w.host.vm.owner_purged);
     }
 
     #[test]

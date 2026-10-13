@@ -190,7 +190,7 @@ pub fn script_driver_default<H: DgHost + ?Sized>(
         return default_ret;
     };
 
-    if *host.depth_mut() > MAX_SCRIPT_DEPTH {
+    if host.vm_state().depth > MAX_SCRIPT_DEPTH {
         host.script_log(&format!(
             "Trigger {vnum} recursed beyond maximum allowed depth."
         ));
@@ -212,7 +212,7 @@ pub fn script_driver_default<H: DgHost + ?Sized>(
     };
 
     {
-        let depth = host.depth_mut();
+        let depth = &mut host.vm_state().depth;
         *depth = depth.saturating_add(1);
     }
     if mode == Mode::New {
@@ -222,7 +222,7 @@ pub fn script_driver_default<H: DgHost + ?Sized>(
             script.context = 0;
         }
     }
-    *host.owner_purged_mut() = false;
+    host.vm_state().owner_purged = false;
 
     let start = if mode == Mode::New {
         0
@@ -253,7 +253,7 @@ fn end_run<H: DgHost + ?Sized>(host: &mut H, owner: Uid, mut trig: TrigInstance,
         trig.run.depth = 0;
     }
     {
-        let depth = host.depth_mut();
+        let depth = &mut host.vm_state().depth;
         *depth = depth.saturating_sub(1);
     }
     let id = trig.id;
@@ -498,7 +498,7 @@ fn command_line<H: DgHost + ?Sized>(
             AttachType::Obj => crate::commands::obj_command_interpreter(cx, cmd),
             AttachType::Wld => crate::commands::wld_command_interpreter(cx, cmd),
         }
-        if *cx.host.owner_purged_mut() {
+        if cx.host.vm_state().owner_purged {
             return Step::Yield(Outcome::Purged);
         }
     }
@@ -1316,7 +1316,7 @@ mod tests {
         let trigger = host.script(mob).unwrap().trigger(id).unwrap();
         assert!(trigger.vars.is_empty());
         assert_eq!(trigger.run.depth, 0);
-        assert_eq!(host.depth, 0);
+        assert_eq!(host.vm.depth, 0);
     }
 
     #[test]
@@ -1531,7 +1531,7 @@ mod tests {
         );
         assert!(!cmds(&host).contains(&"say never".to_owned()));
         assert_eq!(state(&host, mob, id).depth, 0);
-        assert_eq!(host.depth, 0);
+        assert_eq!(host.vm.depth, 0);
         // The instance can run again from the top. `cl->loops` of the while
         // line was left at 10 by the run that hit the cap (only a false
         // condition resets it), so the next wait comes after 20 more loops.
@@ -1692,7 +1692,7 @@ mod tests {
             assert!(host.mud_commands.is_empty(), "{line}");
             // Waiting or stuck: the trigger stays active either way.
             assert!(state(&host, mob, id).is_active(), "{line}");
-            assert_eq!(host.depth, 0);
+            assert_eq!(host.vm.depth, 0);
         }
     }
 
@@ -2243,7 +2243,7 @@ mod tests {
         assert!(host.script(mob).is_none());
         assert!(host.waits.is_empty());
         assert!(host.cancelled_waits.contains(&(mob, id)));
-        assert_eq!(host.depth, 0);
+        assert_eq!(host.vm.depth, 0);
     }
 
     #[test]
@@ -2493,7 +2493,7 @@ mod tests {
     #[test]
     fn depth_cap_logs_and_extracts_the_script() {
         let (mut host, mob, id) = world("say a");
-        host.depth = 11;
+        host.vm.depth = 11;
         assert_eq!(run(&mut host, mob, id), SCRIPT_ERROR_CODE);
         assert_eq!(
             host.logs,
@@ -2504,14 +2504,14 @@ mod tests {
         );
         assert!(host.script(mob).is_none());
         assert!(host.mud_commands.is_empty());
-        assert_eq!(host.depth, 11);
+        assert_eq!(host.vm.depth, 11);
 
         // Ten deep is still allowed, and the counter is restored.
         let (mut host, mob, id) = world("say a");
-        host.depth = 10;
+        host.vm.depth = 10;
         assert_eq!(run(&mut host, mob, id), 1);
         assert_eq!(cmds(&host), vec!["say a"]);
-        assert_eq!(host.depth, 10);
+        assert_eq!(host.vm.depth, 10);
     }
 
     #[test]
@@ -2520,7 +2520,7 @@ mod tests {
         run(&mut host, mob, id);
         let proto = host.protos[&5].clone();
         let other = host.attach(mob, &proto).unwrap();
-        host.depth = 11;
+        host.vm.depth = 11;
         assert_eq!(run(&mut host, mob, other), SCRIPT_ERROR_CODE);
         assert!(host.waits.is_empty());
         assert!(host.cancelled_waits.contains(&(mob, id)));
@@ -2529,10 +2529,10 @@ mod tests {
     #[test]
     fn owner_purged_flag_is_zeroed_on_entry_and_stops_the_script_when_set() {
         let (mut host, mob, id) = world("say a\nsay b");
-        host.owner_purged = true;
+        host.vm.owner_purged = true;
         run(&mut host, mob, id);
         assert_eq!(cmds(&host), vec!["say a", "say b"]);
-        assert!(!host.owner_purged);
+        assert!(!host.vm.owner_purged);
 
         // With the flag raised after a command, the run stops there: no
         // cleanup, the trigger keeps its variables and depth.
@@ -2540,7 +2540,7 @@ mod tests {
         let mut trig = TrigInstance::new(0, proto);
         trig.run.depth = 1;
         trig.vars.add_var("keep", "1", 0);
-        host.owner_purged = true;
+        host.vm.owner_purged = true;
         let mut cx = Cx {
             host: &mut host,
             owner: mob,
@@ -2566,7 +2566,7 @@ mod tests {
         let proto = host.protos[&5].clone();
         let mut trig = TrigInstance::new(id, proto);
         trig.run.depth = 1;
-        host.owner_purged = true;
+        host.vm.owner_purged = true;
         let mut cx = Cx {
             host: &mut host,
             owner: mob,
@@ -2643,7 +2643,7 @@ mod tests {
             ),
             None => assert!(host.logs.is_empty(), "script {script:?}: {:?}", host.logs),
         }
-        assert_eq!(host.depth, 0);
+        assert_eq!(host.vm.depth, 0);
         assert!(host.script(mob).unwrap().trigger(id).is_some());
     }
 
@@ -2711,7 +2711,7 @@ mod tests {
             format!("dg_letter l 5 {long}"),
         ] {
             let (host, _, _) = run_script(&script);
-            assert_eq!(host.depth, 0);
+            assert_eq!(host.vm.depth, 0);
         }
         // Driver-owned parsing handles long text directly.
         let (mut host, mob, id) = world("");
@@ -2745,7 +2745,7 @@ mod tests {
     fn check_out_running(host: &mut MockHost, owner: Uid, id: u64) -> TrigInstance {
         let mut trig = host.script_mut(owner).unwrap().check_out(id).unwrap();
         trig.run.depth = 1;
-        *host.depth_mut() += 1;
+        host.vm.depth += 1;
         trig
     }
 
@@ -2757,7 +2757,7 @@ mod tests {
         let mut trig = check_out_running(&mut host, mob, a);
         // The nested run happens while A is checked out.
         assert_eq!(script_driver(&mut host, mob, sibling, Mode::New), 1);
-        assert_eq!(host.depth, 1);
+        assert_eq!(host.vm.depth, 1);
         let cx = Cx {
             host: &mut host,
             owner: mob,
@@ -2775,7 +2775,7 @@ mod tests {
         let proto = host.protos[&5].clone();
         let b = host.attach(mob, &proto).unwrap();
         let mut trig = check_out_running(&mut host, mob, a);
-        *host.depth_mut() = 11;
+        host.vm.depth = 11;
         assert_eq!(
             script_driver(&mut host, mob, b, Mode::New),
             SCRIPT_ERROR_CODE
@@ -2814,7 +2814,7 @@ mod tests {
         // The script went with its only trigger; the yield found no slot.
         assert!(host.script(mob).is_none());
         assert!(host.waits.is_empty());
-        assert_eq!(host.depth, 0);
+        assert_eq!(host.vm.depth, 0);
         assert_eq!(cmds(&host).len(), 30);
     }
 
@@ -2852,7 +2852,7 @@ mod tests {
             let proto = host.add_proto(6, attach, "b", 100, "", "set x 1");
             let id = host.attach(owner, &proto).unwrap();
             host.logs.clear();
-            host.depth = 11;
+            host.vm.depth = 11;
             assert_eq!(
                 script_driver(&mut host, owner, id, Mode::New),
                 SCRIPT_ERROR_CODE
@@ -3044,7 +3044,7 @@ mod tests {
         let slot = host.script(mob).unwrap().trigger(id).unwrap();
         assert!(slot.vars.is_empty());
         assert_eq!(slot.run.depth, 0);
-        assert_eq!(host.depth, 0);
+        assert_eq!(host.vm.depth, 0);
 
         // A purged run is returned as it was: variables kept, depth set, and
         // no wait queued.
@@ -3053,7 +3053,7 @@ mod tests {
         let slot = host.script(mob).unwrap().trigger(id).unwrap();
         assert!(slot.vars.get("keep").is_some());
         assert_eq!(slot.run.depth, 1);
-        assert_eq!(host.depth, 0);
+        assert_eq!(host.vm.depth, 0);
         assert!(host.waits.is_empty());
     }
 
@@ -3083,7 +3083,7 @@ mod tests {
         extract_script(&mut host, mob);
         end_run(&mut host, mob, trig, Outcome::Wait(Some(7)));
         assert!(host.waits.is_empty());
-        assert_eq!(host.depth, 0);
+        assert_eq!(host.vm.depth, 0);
     }
 
     #[test]
@@ -3375,8 +3375,8 @@ mod tests {
         assert_eq!(trigger.vars.get("x").unwrap().value, "1");
         assert!(trigger.vars.get("y").is_none());
         assert!(host.waits.is_empty());
-        assert_eq!(host.depth, 0);
-        assert!(host.owner_purged);
+        assert_eq!(host.vm.depth, 0);
+        assert!(host.vm.owner_purged);
     }
 
     #[test]
@@ -3397,7 +3397,7 @@ mod tests {
         run(&mut host, obj, id);
         assert!(!host.exists(obj));
         assert!(host.effects.iter().all(|e| !e.starts_with("send")));
-        assert_eq!(host.depth, 0);
+        assert_eq!(host.vm.depth, 0);
     }
 
     /// A second mob (vnum 101) in room 1 with a script, so it holds globals.
@@ -3593,7 +3593,7 @@ mod tests {
     #[test]
     fn a_stale_trigger_id_beyond_the_depth_cap_gets_the_default() {
         let (mut host, mob, _) = world("say a");
-        host.depth = 11;
+        host.vm.depth = 11;
         assert_eq!(script_driver(&mut host, mob, 999, Mode::New), 1);
         assert!(host.logs.is_empty());
         assert!(host.script(mob).is_some());
@@ -3999,7 +3999,7 @@ mod tests {
             vec!["My trigger commandlist is not complete!\r\n"]
         );
         assert!(host.logs.is_empty(), "{:?}", host.logs);
-        assert_eq!(host.depth, 0);
+        assert_eq!(host.vm.depth, 0);
     }
 
     #[test]
@@ -4135,7 +4135,7 @@ mod tests {
         // `%purge% %self%` ended the run: the `end` below it never ran.
         assert!(!host.exists(obj));
         assert_eq!(count_logs(&host, "'end' without 'if'"), 0);
-        assert_eq!(host.depth, 0);
+        assert_eq!(host.vm.depth, 0);
     }
 
     #[test]
@@ -4154,12 +4154,12 @@ mod tests {
             let proto = host.add_proto(rec.vnum, rec.attach, "a", 100, "", &rec.body);
             let id = host.attach(owner, &proto).unwrap();
             script_driver(&mut host, owner, id, Mode::New);
-            assert_eq!(host.depth, 0, "trigger {}", rec.vnum);
+            assert_eq!(host.vm.depth, 0, "trigger {}", rec.vnum);
             // The trigger may have detached itself, or its owner may be
             // gone; otherwise it ended idle, waiting or with a log line.
             // A purged owner leaves the trigger as it was (the C returns
             // without cleanup), so only the other outcomes are checked.
-            if !host.owner_purged
+            if !host.vm.owner_purged
                 && let Some(trigger) = host.script(owner).and_then(|s| s.trigger(id))
             {
                 assert!(

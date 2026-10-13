@@ -69,7 +69,7 @@ use crate::host::{BaseHost, WorldHost};
 use crate::script::Program;
 use crate::types::{
     AttachType, Kind, LVL_GRGOD, LVL_IMMORT, MOB_ID_BASE, MudTime, OBJ_ID_BASE, ROOM_ID_BASE,
-    Script, ScriptMemory, TrigProto, Uid, trig::asciiflag_conv,
+    Script, ScriptMemory, TrigProto, Uid, VmState, trig::asciiflag_conv,
 };
 
 mod chars;
@@ -121,14 +121,13 @@ pub struct MockHost {
     pub globals: MockEntity,
     /// The global `pulse` counter.
     pub pulse: i64,
-    /// `dg_owner_purged`.
-    pub owner_purged: bool,
+    /// The interpreter's shared state ([`BaseHost::vm_state`]).
+    pub vm: VmState,
     /// Every [`BaseHost::cancel_wait`] call: `(owner, trigger id)`.
     pub cancelled_waits: Vec<(Uid, u64)>,
     /// Trigger prototypes by vnum, for `attach`.
     pub protos: BTreeMap<i32, Arc<TrigProto>>,
     pub time: MudTime,
-    pub depth: u32,
     /// Scripted results for [`BaseHost::rand_number`], consumed front first
     /// and clamped into the requested range. When empty, the low bound is
     /// returned.
@@ -486,12 +485,8 @@ impl BaseHost for MockHost {
         self.entity_mut(uid).and_then(|entity| entity.script.take())
     }
 
-    fn depth_mut(&mut self) -> &mut u32 {
-        &mut self.depth
-    }
-
-    fn owner_purged_mut(&mut self) -> &mut bool {
-        &mut self.owner_purged
+    fn vm_state(&mut self) -> &mut VmState {
+        &mut self.vm
     }
 
     fn script_players(&self) -> bool {

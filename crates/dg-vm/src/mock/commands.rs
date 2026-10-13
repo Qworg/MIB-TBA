@@ -57,7 +57,7 @@ impl MockHost {
             return;
         };
         if spec.trim() == "noact" {
-            self.cmd_set_act_check(false);
+            self.vm.act_check = false;
             return;
         }
         let mut words = spec.split_whitespace();
@@ -127,19 +127,6 @@ impl CmdHost for MockHost {
             self.effect(format!("send {ch}: {text}"));
             self.run_hook(&format!("hook:send:{ch}"), ch);
         }
-    }
-
-    fn cmd_act_check(&self) -> bool {
-        self.globals
-            .nums
-            .get("act_check")
-            .is_some_and(|on| *on != 0)
-    }
-
-    fn cmd_set_act_check(&mut self, on: bool) {
-        self.globals
-            .nums
-            .insert("act_check".to_owned(), i64::from(on));
     }
 
     fn cmd_desc(&self, ch: Uid) -> Option<Option<Uid>> {

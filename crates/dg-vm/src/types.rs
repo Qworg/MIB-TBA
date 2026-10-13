@@ -294,6 +294,34 @@ pub struct TrigProto {
     pub program: Arc<Program>,
 }
 
+/// What the interpreter shares across nested runs: the C's file-scope
+/// globals and function statics. The host owns one and hands it out through
+/// [`crate::host::BaseHost::vm_state`]; the crate keeps no state of its own.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct VmState {
+    /// `script_driver`'s `static int depth`: the current trigger nesting.
+    pub depth: u32,
+    /// The global `dg_owner_purged`: set by a purge command when it removes
+    /// the running trigger's own owner, zeroed on entry to `script_driver`,
+    /// and tested after each command to stop the script. It is a flag, not an
+    /// existence test: a purged mob still exists until the end of the pulse.
+    pub owner_purged: bool,
+    /// `comm.c`'s `static int dg_act_check`, which every `act()` call sets.
+    pub act_check: bool,
+    /// How deeply `var_subst` is nested right now.
+    pub subst_nesting: u32,
+    /// How many `var_subst` entries the current top-level call has made.
+    pub subst_work: u32,
+    /// A `var_subst` limit tripped; the rest of the top-level call runs
+    /// nothing.
+    pub subst_aborted: bool,
+    /// How deeply `eval_expr` is nested right now.
+    pub expr_depth: usize,
+    /// A level past the `eval_expr` depth limit was refused; the outermost
+    /// call then answers the empty string.
+    pub expr_poisoned: bool,
+}
+
 /// A trigger attached to an entity (`trig_data`).
 #[derive(Debug, Clone)]
 pub struct TrigInstance {

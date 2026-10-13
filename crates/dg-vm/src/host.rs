@@ -55,7 +55,9 @@
 
 use std::sync::Arc;
 
-use crate::types::{AttachType, Kind, MudTime, Script, ScriptMemory, TrigInstance, TrigProto, Uid};
+use crate::types::{
+    AttachType, Kind, MudTime, Script, ScriptMemory, TrigInstance, TrigProto, Uid, VmState,
+};
 
 /// What the interpreter core needs from the world.
 pub trait BaseHost {
@@ -78,14 +80,9 @@ pub trait BaseHost {
     /// globals and all. The caller cancels the triggers' waits first.
     fn remove_script(&mut self, uid: Uid) -> Option<Script>;
 
-    /// `script_driver`'s `static int depth`: the current trigger nesting.
-    fn depth_mut(&mut self) -> &mut u32;
-
-    /// The global `dg_owner_purged`: set by a purge command when it removes
-    /// the running trigger's own owner, zeroed on entry to `script_driver`,
-    /// and tested after each command to stop the script. It is a flag, not an
-    /// existence test: a purged mob still exists until the end of the pulse.
-    fn owner_purged_mut(&mut self) -> &mut bool;
+    /// The C globals and statics the interpreter shares across nested runs
+    /// (see [`VmState`]). The host stores one for the life of the world.
+    fn vm_state(&mut self) -> &mut VmState;
 
     /// `CONFIG_SCRIPT_PLAYERS`: whether triggers may be attached to players.
     fn script_players(&self) -> bool;

@@ -389,8 +389,8 @@ fn run_record(record: &Record, protos: &BTreeMap<i32, Arc<TrigProto>>, index: us
     let mut problems = Vec::new();
     script_driver(&mut world.host, world.owner, world.id, Mode::New);
     let resumes = run_waits(&mut world.host, 25);
-    if world.host.depth != 0 {
-        problems.push(format!("depth counter is {}", world.host.depth));
+    if world.host.vm.depth != 0 {
+        problems.push(format!("depth counter is {}", world.host.vm.depth));
     }
     let stuck = checked_out(&world.host);
     if !stuck.is_empty() {

@@ -457,7 +457,7 @@ fn do_mpurge<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         return;
     }
     if victim == ch {
-        *host.owner_purged_mut() = true;
+        host.vm_state().owner_purged = true;
     }
     host.cmd_extract_char(victim);
 }
@@ -1597,7 +1597,7 @@ mod tests {
         assert!(w.host.is_dead(rat));
         assert!(!w.host.is_dead(mob) && !w.host.is_dead(alice));
         assert!(!w.host.exists(lamp));
-        assert!(!*w.host.owner_purged_mut());
+        assert!(!w.host.vm.owner_purged);
     }
 
     #[test]
@@ -1608,7 +1608,7 @@ mod tests {
         w.host.set_text(rat, "alias", "rat");
         run(&mut w, "mpurge rat");
         assert!(w.host.is_dead(rat));
-        assert!(!*w.host.owner_purged_mut());
+        assert!(!w.host.vm.owner_purged);
         run(&mut w, "mpurge alice");
         log_is(&w, "mpurge: purging a PC");
         assert!(!w.host.is_dead(alice));
@@ -1621,7 +1621,7 @@ mod tests {
         // Purging oneself raises the flag the driver watches.
         run(&mut w, "mpurge guard");
         assert!(w.host.is_dead(mob));
-        assert!(*w.host.owner_purged_mut());
+        assert!(w.host.vm.owner_purged);
     }
 
     #[test]
@@ -1630,7 +1630,7 @@ mod tests {
         let lamp = w.obj;
         run(&mut w, "mpurge lamp");
         assert!(!w.host.exists(lamp));
-        assert!(!*w.host.owner_purged_mut());
+        assert!(!w.host.vm.owner_purged);
         // In no room there is nothing to sweep.
         w.host.char_from_room(w.mob);
         run(&mut w, "mpurge");

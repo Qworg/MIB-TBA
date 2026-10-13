@@ -42,23 +42,6 @@ use crate::types::MAX_INPUT_LENGTH;
 /// The deepest `eval_expr` nesting accepted (see the module deviations).
 pub const MAX_DEPTH: usize = 256;
 
-thread_local! {
-    /// Current `eval_expr` nesting on this thread.
-    static DEPTH: std::cell::Cell<usize> = const { std::cell::Cell::new(0) };
-    /// Set when a level past [`MAX_DEPTH`] was refused; the outermost
-    /// `eval_expr` then answers the empty string.
-    static POISONED: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
-}
-
-/// Decrements [`DEPTH`] when an `eval_expr` level ends.
-struct DepthGuard;
-
-impl Drop for DepthGuard {
-    fn drop(&mut self) {
-        DEPTH.with(|depth| depth.set(depth.get().saturating_sub(1)));
-    }
-}
-
 /// The operators in priority order (`eval_lhs_op_rhs`'s `ops[]`). The order
 /// matters: `!=` must precede `!`, and `/=` must precede `/`.
 const OPS: &[&str] = &[
@@ -70,17 +53,17 @@ const OPS: &[&str] = &[
 /// An expression of `MAX_INPUT_LENGTH` bytes or more is refused (logged) and
 /// evaluates to the empty string, which reads as false.
 pub fn eval_expr<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
-    let level = DEPTH.with(|depth| {
-        depth.set(depth.get().saturating_add(1));
-        depth.get()
-    });
-    let _guard = DepthGuard;
+    let vm = cx.host.vm_state();
+    vm.expr_depth = vm.expr_depth.saturating_add(1);
+    let level = vm.expr_depth;
     if level == 1 {
-        POISONED.with(|poisoned| poisoned.set(false));
+        vm.expr_poisoned = false;
     }
     let result = eval_level(cx, line, level);
-    if level == 1 && POISONED.with(std::cell::Cell::get) {
-        POISONED.with(|poisoned| poisoned.set(false));
+    let vm = cx.host.vm_state();
+    vm.expr_depth = vm.expr_depth.saturating_sub(1);
+    if level == 1 && vm.expr_poisoned {
+        vm.expr_poisoned = false;
         return String::new();
     }
     result
@@ -89,7 +72,7 @@ pub fn eval_expr<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str) -> String {
 /// One level of [`eval_expr`]; `level` is its nesting depth.
 fn eval_level<H: DgHost + ?Sized>(cx: &mut Cx<'_, H>, line: &str, level: usize) -> String {
     if level > MAX_DEPTH {
-        if !POISONED.with(|poisoned| poisoned.replace(true)) {
+        if !std::mem::replace(&mut cx.host.vm_state().expr_poisoned, true) {
             cx.log(&format!("Expression nested over {MAX_DEPTH} levels deep."));
         }
         return String::new();
