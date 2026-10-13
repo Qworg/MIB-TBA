@@ -82,6 +82,10 @@ pub const POSITION_TYPES: &[&str] = &[
     "Fighting",
     "Standing",
 ];
+/// The bit number of the `"\n"` that ends the `action_bits` name table, one
+/// past the last name: `sprintbitarray` prints `UNDEFINED` for a set bit there.
+const ACTION_TERMINATOR_BIT: u32 = 20;
+
 /// `action_bits` (`constants.c`), the NPC act flag names.
 pub const ACTION_BITS: &[&str] = &[
     "SPEC",
@@ -646,9 +650,10 @@ pub fn char_field<H: DgHost + ?Sized>(
                         buf.push(' ');
                     }
                 }
-                // The name table's "\n" terminator is bit 20: a set bit there
-                // prints UNDEFINED, and the C stops after it.
-                if host.char_act_flagged(c, 20) {
+                // The name table's "\n" terminator is the bit after the last
+                // name: a set bit there prints UNDEFINED, and the C stops
+                // after it.
+                if host.char_act_flagged(c, ACTION_TERMINATOR_BIT) {
                     buf.push_str("UNDEFINED ");
                 }
                 // sprintbitarray's fallback when nothing was printed.
@@ -1659,6 +1664,11 @@ mod tests {
         // The ISNPC name is printed for an NPC, whose is_npc supplies bit 3.
         assert_eq!(f.s(mob, "npcflag", "ISNPC"), "1");
         assert_eq!(f.s(pc, "npcflag", "ISNPC"), "0");
+    }
+
+    #[test]
+    fn the_action_table_ends_at_the_terminator_bit() {
+        assert_eq!(ACTION_BITS.len(), ACTION_TERMINATOR_BIT as usize);
     }
 
     #[test]

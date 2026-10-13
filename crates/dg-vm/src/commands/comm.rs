@@ -229,7 +229,7 @@ pub(crate) fn sub_write_in<H: DgHost + ?Sized>(
                 // A backslash at the very end escapes nothing; the C steps
                 // over it and stops (its comment explains the overrun it
                 // would otherwise cause).
-                rest = &rest[1..];
+                rest = &rest[c.len_utf8()..];
                 if let Some(escaped) = rest.chars().next() {
                     if let Some(token) = tokens.last_mut() {
                         token.push(escaped);
@@ -526,7 +526,9 @@ fn next_in_room<H: DgHost + ?Sized>(host: &H, to: Uid) -> Option<Uid> {
 /// `act_to_room(str, room)` (`dg_wldcmd.c`): `act()` to everyone in a room
 /// by way of its first occupant (`TO_ROOM`, then `TO_CHAR` for the occupant
 /// at the head of the room by then: `room->people` is read for each call, and
-/// an act trigger fired by the first may have changed it).
+/// an act trigger fired by the first may have changed it). The second `act()`
+/// runs even with nobody left at the head (`ch` NULL): it still overwrites
+/// `dg_act_check`.
 pub fn act_to_room<H: DgHost + ?Sized>(host: &mut H, text: &str, room: Uid) {
     let Some(first) = host.room_people(room).first().copied() else {
         return;
@@ -534,6 +536,8 @@ pub fn act_to_room<H: DgHost + ?Sized>(host: &mut H, text: &str, room: Uid) {
     act(host, text, false, first, TO_ROOM);
     if let Some(head) = host.room_people(room).first().copied() {
         act(host, text, false, head, TO_CHAR);
+    } else if !text.is_empty() {
+        host.vm_state().act_check = true;
     }
 }
 
@@ -544,6 +548,7 @@ mod tests {
     use super::*;
     use crate::commands::support::World;
     use crate::host::{BaseHost, WorldHost};
+    use crate::mock::MockAction;
     use crate::types::AttachType;
 
     #[test]
@@ -911,7 +916,6 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "needs the dispatch bodies: act_mtrigger must fire the act trigger"]
     fn act_offers_each_npc_in_the_room_its_line_through_the_dispatch_module() {
         // `perform_act` calls `act_mtrigger(to, lbuf, ch, ...)` for an NPC
         // recipient other than `ch`; the line is the buffer up to `\r` and
@@ -957,12 +961,20 @@ mod tests {
         // TO_CHAR line goes to the new head, a mob nobody can write to, and
         // the old head hears nothing.
         let mut w = World::new();
-        let room = w.room;
+        let (room, bob, guard, alice) = (w.room, w.player2, w.mob, w.player);
+        w.seat(room, &[bob, guard, alice]);
         let people = all_listening(&mut w);
-        w.host
-            .globals
-            .texts
-            .insert(format!("hook:send:{}", people[1]), "load 3100".to_owned());
+        // The guard's act trigger says something; the command (`say`)
+        // loads a rat at the head of the room.
+        w.listen_for(guard, "hush", "say loading");
+        w.host.hook(
+            Some(guard),
+            "say",
+            MockAction::LoadMob {
+                vnum: 3100,
+                near: guard,
+            },
+        );
         act_to_room(&mut w.host, "hush", room);
         assert!(w.sent_to(people[0]).is_empty());
         assert_eq!(w.sent_to(people[1]), ["Hush\r\n"]);
@@ -978,16 +990,13 @@ mod tests {
         // the outer walk.
         let mut w = World::new();
         let (alice, mob) = (w.player, w.mob);
-        let people = all_listening(&mut w);
+        all_listening(&mut w);
         w.host.vm.act_check = false;
         act(&mut w.host, "hush", false, alice, TO_ROOM);
         assert!(w.host.vm.act_check);
         assert!(offers_to_triggers(&mut w.host, alice, mob));
-        let first = people.iter().find(|p| **p != alice).copied().unwrap();
-        w.host
-            .globals
-            .texts
-            .insert(format!("hook:send:{first}"), "noact".to_owned());
+        w.listen_for(mob, "hush", "say hmm");
+        w.host.hook(Some(mob), "say", MockAction::ActNoTrig);
         act(&mut w.host, "hush", false, alice, TO_ROOM);
         assert!(!w.host.vm.act_check);
         assert!(!offers_to_triggers(&mut w.host, alice, mob));
@@ -998,6 +1007,40 @@ mod tests {
         w.host.vm.act_check = false;
         act(&mut w.host, "", false, alice, TO_ROOM);
         assert!(!w.host.vm.act_check);
+    }
+
+    #[test]
+    fn act_to_room_second_act_overwrites_the_check_even_when_the_room_emptied() {
+        // `act(str, FALSE, room->people, 0, 0, TO_CHAR)` with `room->people`
+        // NULL still runs `dg_act_check = !IS_SET(type, DG_NO_TRIG)` before
+        // it finds nobody to write to.
+        let mut w = World::new();
+        let (room, room2, bob, guard, alice) = (w.room, w.room2, w.player2, w.mob, w.player);
+        w.host.char_from_room(alice);
+        w.host.char_to_room(alice, room2);
+        w.seat(room, &[bob, guard]);
+        all_listening(&mut w);
+        w.listen_for(guard, "hush", "say a\nsay b\nsay c");
+        w.host.hook(Some(guard), "say", MockAction::ActNoTrig);
+        w.host.hook(
+            Some(guard),
+            "say",
+            MockAction::MoveChar {
+                ch: bob,
+                room: room2,
+            },
+        );
+        w.host.hook(
+            Some(guard),
+            "say",
+            MockAction::MoveChar {
+                ch: guard,
+                room: room2,
+            },
+        );
+        act_to_room(&mut w.host, "hush", room);
+        assert!(w.host.room_people(room).is_empty());
+        assert!(w.host.vm.act_check);
     }
 
     #[test]
@@ -1038,18 +1081,25 @@ mod tests {
         // delivered: a recipient that an act trigger took to another room
         // carries the walk into that room's list.
         let mut w = World::new();
-        let room2 = w.room2;
+        let (room, room2, alice, guard, bob) = (w.room, w.room2, w.player, w.mob, w.player2);
+        w.seat(room, &[alice, guard, bob]);
         let people = all_listening(&mut w);
         let resident = w.host.add_mob(3100, "a rat");
         w.host.set_num(resident, "desc", 1);
         w.host.set_num(resident, "pos", 8);
         w.host.char_to_room(resident, room2);
-        // `people[0]` acts to the room: `people[1]` is told first and moves
-        // to room 2, where the walk goes on to the rat.
-        w.host
-            .globals
-            .texts
-            .insert(format!("hook:send:{}", people[1]), "move 3002".to_owned());
+        // `people[0]` acts to the room: the guard (`people[1]`) is told
+        // first, its act trigger runs a command that takes it to room 2,
+        // where the walk goes on to the rat.
+        w.listen_for(guard, "hush", "say off");
+        w.host.hook(
+            Some(guard),
+            "say",
+            MockAction::MoveChar {
+                ch: guard,
+                room: room2,
+            },
+        );
         act(&mut w.host, "hush", false, people[0], TO_ROOM);
         assert_eq!(w.sent_to(people[1]), ["Hush\r\n"]);
         assert_eq!(w.sent_to(resident), ["Hush\r\n"]);

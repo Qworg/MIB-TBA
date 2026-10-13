@@ -763,10 +763,9 @@ fn do_mtransform<H: DgHost + ?Sized>(host: &mut H, ch: Uid, argument: &str) {
         log.log(host, "mtransform: bad argument");
     } else {
         // A leading `-` keeps the old hit points out of the new mob.
-        let (vnum, keep_hp) = if starts_with_digit(&arg) {
-            (idx_vnum(atoi(&arg)), true)
-        } else {
-            (idx_vnum(atoi(&arg[1..])), false)
+        let (vnum, keep_hp) = match arg.strip_prefix('-') {
+            Some(digits) => (idx_vnum(atoi(digits)), false),
+            None => (idx_vnum(atoi(&arg)), true),
         };
         let Some(new_mob) = host.cmd_read_mobile(vnum) else {
             log.log(host, "mtransform: bad mobile vnum");
@@ -880,6 +879,7 @@ mod tests {
     use crate::commands::CmdHost;
     use crate::commands::support::World;
     use crate::host::{BaseHost, WorldHost};
+    use crate::mock::MockAction;
     use crate::types::{AttachType, uid_text};
 
     const PREFIX: &str = "Mob (the guard, VNum 3000):: ";
@@ -1709,16 +1709,19 @@ mod tests {
     #[test]
     fn mat_leaves_the_mob_where_the_command_put_it() {
         // `if (IN_ROOM(ch) == location)`: when the command took the mob
-        // somewhere else (`at XXXX quit`), it is not put back. The mock's
-        // `hook:arrive` stands in for the command and moves the mob on to a
-        // third room as it arrives.
+        // somewhere else (`at XXXX quit`), it is not put back. A mock hook
+        // stands in for the command and moves the mob on to a third room.
         let mut w = World::new();
         let mob = w.mob;
         let room3 = w.host.add_room(3003, "The Cellar");
-        w.host
-            .globals
-            .texts
-            .insert(format!("hook:arrive:{mob}"), "move 3003".to_owned());
+        w.host.hook(
+            Some(mob),
+            "look",
+            MockAction::MoveChar {
+                ch: mob,
+                room: room3,
+            },
+        );
         run(&mut w, "mat 3002 look");
         assert_eq!(w.host.mud_commands, [(mob, " look".to_owned())]);
         assert_eq!(w.host.in_room(mob), Some(room3));

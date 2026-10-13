@@ -64,8 +64,8 @@ impl World {
             .texts
             .insert("objproto:7000".to_owned(), "a lamp".to_owned());
         // A GLOBAL trigger ('a'): no event the commands raise (a load, an
-        // entry, an act line) can fire it, so the fixture does not depend on
-        // the dispatch stubs being inert.
+        // entry, an act line) can fire it, so the fixture's owners stay
+        // quiet unless a test attaches a trigger of its own.
         let proto = host.add_proto(900, AttachType::Mob, "a", 100, "", "say hi");
         for owner in [mob, obj, room] {
             host.attach(owner, &proto);
@@ -117,6 +117,24 @@ impl World {
         self.cx_run(room, AttachType::Wld, |cx| {
             super::wld_command_interpreter(cx, line);
         });
+    }
+
+    /// Put `order` at the head of `room`'s people, first element first.
+    pub fn seat(&mut self, room: Uid, order: &[Uid]) {
+        for ch in order.iter().rev() {
+            self.host.char_from_room(*ch);
+            self.host.char_to_room(*ch, room);
+        }
+    }
+
+    /// Give `ch` an `act` trigger (phrase `phrase`) that runs `script`; the
+    /// instance id.
+    pub fn listen_for(&mut self, ch: Uid, phrase: &str, script: &str) -> Option<u64> {
+        let vnum = 2000 + i32::try_from(self.host.protos.len()).unwrap_or(0);
+        let proto = self
+            .host
+            .add_proto(vnum, AttachType::Mob, "e", 0, phrase, script);
+        self.host.attach(ch, &proto)
     }
 
     /// Set or clear `PRF_NOHASSLE`.

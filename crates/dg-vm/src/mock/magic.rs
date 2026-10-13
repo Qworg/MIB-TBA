@@ -13,6 +13,10 @@
 //! `texts["mobproto:<vnum>"]`). `dg_affect` sets the shared
 //! `nums["spell:<n>"]` and `nums["aff:<n>"]` keys.
 //!
+//! A spell cast through `call_magic` runs the victim's `cast` triggers
+//! ([`crate::dispatch::cast_mtrigger`], which the host's `call_magic` does in
+//! the C) when `globals.nums["cast_triggers"]` is non-zero.
+//!
 //! Effects recorded: `call_magic …`, `affect_to_char …`,
 //! `affect_from_char <uid>`.
 
@@ -79,6 +83,9 @@ impl MagicHost for MockHost {
             show(victim),
             show(obj)
         ));
+        if self.globals.nums.get("cast_triggers").copied().unwrap_or(0) != 0 {
+            crate::dispatch::cast_mtrigger(self, caster, victim, spellnum);
+        }
     }
 
     fn magic_remove_dg_affects(&mut self, ch: Uid, spell: i32) {

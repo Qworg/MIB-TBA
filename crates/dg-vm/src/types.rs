@@ -306,7 +306,19 @@ pub struct VmState {
     /// and tested after each command to stop the script. It is a flag, not an
     /// existence test: a purged mob still exists until the end of the pulse.
     pub owner_purged: bool,
+    /// Whether the most recently finished `script_driver` run left through
+    /// its purge path (`dg_owner_purged` tested after a command sent to the
+    /// command interpreter), where the C NULLs `go_adress`. Cleared on every
+    /// driver entry, so it is read only straight after a run. Unlike
+    /// `owner_purged` it is not set by a nested script left running under a
+    /// `dg_cast`, `dg_affect` or other line the driver does not test the
+    /// flag after.
+    pub run_purged: bool,
     /// `comm.c`'s `static int dg_act_check`, which every `act()` call sets.
+    /// The host's `act()` must write `!IS_SET(type, DG_NO_TRIG)` here on every
+    /// call that has text (nested ones included), and its `perform_act` must
+    /// read this field, not the line's own flag, in `IS_NPC(to) &&
+    /// dg_act_check && to != ch` before calling `act_mtrigger`.
     pub act_check: bool,
     /// How deeply `var_subst` is nested right now.
     pub subst_nesting: u32,

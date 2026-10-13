@@ -61,7 +61,7 @@
 //!   that selects the NULL `RESERVED` table entry, a trailing `$` in `act`,
 //!   the fixed-size `sprintf` buffers of the zone echoes, `wmove` of an object
 //!   that is not lying in a room, and the unbounded recursion of `oat`/`wat`
-//!   (nesting is capped at [`obj::MAX_NEST`] levels, 256).
+//!   (nesting is capped at `obj::MAX_NEST` levels, 256).
 //! - The `SYSERR` lines written when an object or mob is placed in `NOWHERE`
 //!   (`obj_to_room`, `char_to_room`) and when `wmove` finds an object that is
 //!   not in a room are approximations of the C text: the C prints a pointer
@@ -76,7 +76,7 @@
 //!   C (`char_from_room` leaves its `next_in_room` NULL). The `all` forms of
 //!   `oforce`, `wforce`, `mteleport`, `oteleport` and `wteleport` save
 //!   `next_ch` before their body and follow it the same way
-//!   ([`comm::for_each_occupant`]). Both walks are cut off after 100000
+//!   (`comm::for_each_occupant`). Both walks are cut off after 100000
 //!   steps, which the C does not do.
 //! - `dg_act_check`, the static of `comm.c` that every `act()` overwrites, is
 //!   [`crate::types::VmState::act_check`], so that the `act()` of the game
@@ -115,7 +115,7 @@ pub mod wld;
 #[cfg(test)]
 mod script_tests;
 #[cfg(test)]
-mod support;
+pub(crate) mod support;
 
 use crate::cstr::{any_one_arg, skip_spaces};
 use crate::host::{Cx, DgHost};

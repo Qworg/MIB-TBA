@@ -15,7 +15,6 @@
 //! | world | `nums["house_enter:<vnum>"]` | `House_can_enter(ch, vnum)` |
 //! | world | `nums["objproto:<vnum>:wear"]`, `nums["objproto:<vnum>:type"]` | a loadable object's wear flags and type |
 //! | world | `nums["zone:<n>:bot"]`, `nums["zone:<n>:top"]` | a zone's vnum range |
-//! | world | `texts["hook:send:<ch>"]`, `texts["hook:arrive:<ch>"]` | a test hook, run once and removed: after the next text delivered to `<ch>` (what an `act` trigger of `<ch>` would do) or after the next time `<ch>` is put into a room (what the command of an `at` would do). `load <mob vnum>` puts a new mob at the head of `<ch>`'s room, `move <room vnum>` takes `<ch>` to that room, `pull <room vnum> <uid>` takes the character `<uid>` there, `noact` clears `VmState::act_check` (a nested `act()` with `DG_NO_TRIG`) |
 //! | world | `nums["mobtrig:<vnum>"]`, `nums["objtrig:<vnum>"]` | a trigger (a `protos` key) that `read_mobile` / `read_object` attach to what they build, as the prototype's trigger list does |
 //!
 //! A character is on `descriptor_list` playing when it has `desc` and its
@@ -48,45 +47,6 @@ impl MockHost {
     fn has_exit(&self, room: Uid, dir: usize) -> bool {
         self.link(room, &Self::exit_key(dir, "")).is_some()
             || self.num(room, &Self::exit_key(dir, "nowhere")) != 0
-    }
-
-    /// Run the one-shot test hook `key` for `ch` (see the module table).
-    fn run_hook(&mut self, key: &str, ch: Uid) {
-        let Some(spec) = self.globals.texts.remove(key) else {
-            return;
-        };
-        if spec.trim() == "noact" {
-            self.vm.act_check = false;
-            return;
-        }
-        let mut words = spec.split_whitespace();
-        let (Some(action), Some(vnum)) = (words.next(), words.next()) else {
-            return;
-        };
-        let Ok(vnum) = vnum.parse::<i32>() else {
-            return;
-        };
-        let other = words.next().and_then(|word| word.parse::<Uid>().ok());
-        match action {
-            "pull" => {
-                if let (Some(room), Some(other)) = (self.real_room(vnum), other) {
-                    self.char_from_room(other);
-                    self.char_to_room(other, room);
-                }
-            }
-            "load" => {
-                if let (Some(mob), Some(room)) = (self.cmd_read_mobile(vnum), self.in_room(ch)) {
-                    self.char_to_room(mob, room);
-                }
-            }
-            "move" => {
-                if let Some(room) = self.real_room(vnum) {
-                    self.char_from_room(ch);
-                    self.char_to_room(ch, room);
-                }
-            }
-            _ => {}
-        }
     }
 
     /// Attach the trigger the world key names (a vnum in `protos`) to `uid`.
@@ -124,7 +84,6 @@ impl CmdHost for MockHost {
     fn cmd_send(&mut self, ch: Uid, text: &str) {
         if self.num(ch, "desc") != 0 {
             self.effect(format!("send {ch}: {text}"));
-            self.run_hook(&format!("hook:send:{ch}"), ch);
         }
     }
 
@@ -271,7 +230,6 @@ impl CmdHost for MockHost {
 
     fn cmd_char_to_room(&mut self, ch: Uid, room: Uid) {
         self.char_to_room(ch, room);
-        self.run_hook(&format!("hook:arrive:{ch}"), ch);
     }
 
     fn cmd_obj_to_room(&mut self, obj: Uid, room: Uid) {
