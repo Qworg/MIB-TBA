@@ -960,6 +960,9 @@ mod tests {
         assert_eq!(arm_names_of(source), ["a", "b", "c", "d"]);
     }
 
+    /// The list is compared with the `match` arms of the source text, so a
+    /// name answered outside those arms (before the `match`) is not seen: a
+    /// known limit, covered only by the corpus-names probe below.
     #[test]
     fn field_names_match_the_table() {
         let mut listed: Vec<String> = FIELD_NAMES.iter().map(|n| (*n).to_owned()).collect();

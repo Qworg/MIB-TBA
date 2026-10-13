@@ -50,9 +50,21 @@
 //!   class, and both are counted ([`Analysis::over_length_lines`]) with their
 //!   references unscanned.
 //! - `case` labels are compared raw by `find_case`, never substituted, so they
-//!   hold no references. `default` reached by falling through a `case` is
-//!   dispatched as a command by the driver; it is counted as the label it
-//!   usually is.
+//!   hold no references. `default` is a label only after `switch`, `break`,
+//!   `halt` or `return`; reached any other way (by falling through a `case`)
+//!   the driver dispatches it as a command, and so does the analysis.
+//! - Blocks are matched on one stack in line order, which is an approximation
+//!   of the driver's scans: `find_end`, `find_else_end`, `find_done` and
+//!   `find_case` start from the branch actually taken, so a contrived script
+//!   (a `case` label inside an `if` body, `don…` lines read by `find_done`)
+//!   can log an error the stack does not name, or the reverse. On the corpus
+//!   the stack and the scans name the same scripts.
+//! - `time` is both an event variable and a special variable, so `%time.hour%`
+//!   always counts as the special form; in a time trigger the trigger's own
+//!   `time` variable shadows it at run time.
+//! - A first word that the script resolves only at run time is a dynamic
+//!   command and is counted by the word as written ([`Analysis::dynamic_commands`]),
+//!   so a variable nothing provides shows up by name.
 //! - A variable is "assigned" when any line of the script assigns it, in any
 //!   order.
 
@@ -207,6 +219,8 @@ pub struct Analysis {
     /// Mob-owned lines that go to the game's command interpreter, by first
     /// word.
     pub mud_commands: BTreeMap<String, usize>,
+    /// Dynamic-command lines by first word as written (`%echoround%`).
+    pub dynamic_commands: BTreeMap<String, usize>,
     /// Lines of [`MAX_INPUT_LENGTH`] bytes or more (a command line of them is
     /// [`LineClass::OverLength`]), which `var_subst` refuses.
     pub over_length_lines: usize,
@@ -274,6 +288,7 @@ impl Analysis {
                 &other.unknown_world_commands,
             ),
             (&mut self.mud_commands, &other.mud_commands),
+            (&mut self.dynamic_commands, &other.dynamic_commands),
             (&mut self.text_functions, &other.text_functions),
             (&mut self.char_fields, &other.char_fields),
             (&mut self.obj_fields, &other.obj_fields),
@@ -310,6 +325,8 @@ pub struct Corpus {
     pub unknown_object_vnums: BTreeMap<String, BTreeSet<i32>>,
     /// Each unknown world command word and the scripts that use it.
     pub unknown_world_vnums: BTreeMap<String, BTreeSet<i32>>,
+    /// Each dynamic-command first word and the scripts that use it.
+    pub dynamic_vnums: BTreeMap<String, BTreeSet<i32>>,
 }
 
 impl Corpus {
@@ -331,6 +348,7 @@ impl Corpus {
                 &analysis.unknown_world_commands,
                 &mut self.unknown_world_vnums,
             ),
+            (&analysis.dynamic_commands, &mut self.dynamic_vnums),
         ] {
             for word in words.keys() {
                 vnums.entry(word.clone()).or_default().insert(vnum);
@@ -354,9 +372,17 @@ pub fn analyze(body: &str, attach: AttachType) -> Analysis {
         lines: lines.len(),
         ..Analysis::default()
     };
+    // Whether the last executable line leaves a following `default` as the
+    // label `find_case` jumps to; reached any other way it is a command.
+    let mut label_ok = true;
     for line in lines {
         let body = line.body();
-        let (class, substituted) = classify(&mut out, body, attach, &assigned);
+        let (class, substituted) = classify(&mut out, body, attach, &assigned, label_ok);
+        if !matches!(class, LineClass::Comment | LineClass::Blank) {
+            label_ok = ["switch", "break", "halt", "return"]
+                .iter()
+                .any(|keyword| starts_with_ci(body, keyword));
+        }
         bump(&mut out.classes, class);
         if let Some(text) = substituted {
             if text.len() >= MAX_INPUT_LENGTH {
@@ -388,6 +414,7 @@ fn classify<'a>(
     body: &'a str,
     attach: AttachType,
     assigned: &BTreeSet<String>,
+    label_ok: bool,
 ) -> (LineClass, Option<&'a str>) {
     if body.starts_with('*') {
         return (LineClass::Comment, None);
@@ -395,7 +422,8 @@ fn classify<'a>(
     if body.is_empty() {
         return (LineClass::Blank, None);
     }
-    if let Some(keyword) = control_keyword(body) {
+    if let Some(keyword) = control_keyword(body).filter(|keyword| *keyword != "default" || label_ok)
+    {
         bump(&mut out.controls, keyword.to_owned());
         // The condition of these is substituted; the other keywords carry
         // none, and `case` labels are compared as written.
@@ -436,6 +464,8 @@ fn classify<'a>(
     }
 
     let Some(word) = command_word(body, attach, assigned) else {
+        let (first, _) = any_one_arg(body);
+        bump(&mut out.dynamic_commands, first.to_owned());
         return (LineClass::DynamicCommand, Some(body));
     };
     let class = match attach {
@@ -770,6 +800,9 @@ fn structure(lines: &[Line]) -> Vec<StructuralError> {
     let mut errors = Vec::new();
     // Openers still waiting for their closer, with their line indexes.
     let mut open: Vec<(Block, usize)> = Vec::new();
+    // How many `if` blocks and loops are open, so that a closer with no
+    // opener of its kind is answered without scanning the stack.
+    let (mut ifs, mut loops) = (0usize, 0usize);
     let unclosed = |errors: &mut Vec<StructuralError>, (block, index): (Block, usize)| {
         errors.push(StructuralError {
             line: index + 1,
@@ -786,9 +819,18 @@ fn structure(lines: &[Line]) -> Vec<StructuralError> {
             kind,
         };
         match control_keyword(line.body()) {
-            Some("if") => open.push((Block::If, index)),
-            Some("while") => open.push((Block::While, index)),
-            Some("switch") => open.push((Block::Switch, index)),
+            Some("if") => {
+                ifs += 1;
+                open.push((Block::If, index));
+            }
+            Some("while") => {
+                loops += 1;
+                open.push((Block::While, index));
+            }
+            Some("switch") => {
+                loops += 1;
+                open.push((Block::Switch, index));
+            }
             Some("elseif" | "else") => {
                 if open.last().map(|(block, _)| *block) != Some(Block::If) {
                     errors.push(stray(StructuralErrorKind::ElseWithoutIf));
@@ -796,10 +838,23 @@ fn structure(lines: &[Line]) -> Vec<StructuralError> {
             }
             Some(closer @ ("end" | "done")) => {
                 let closes = |block: Block| (closer == "end") == (block == Block::If);
-                match open.iter().rposition(|(block, _)| closes(*block)) {
+                let have = if closer == "end" { ifs } else { loops };
+                let at = if have > 0 {
+                    open.iter().rposition(|(block, _)| closes(*block))
+                } else {
+                    None
+                };
+                match at {
                     Some(at) => {
-                        for opener in open.drain(at..).skip(1) {
-                            unclosed(&mut errors, opener);
+                        for (n, opener) in open.drain(at..).enumerate() {
+                            if opener.0 == Block::If {
+                                ifs -= 1;
+                            } else {
+                                loops -= 1;
+                            }
+                            if n > 0 {
+                                unclosed(&mut errors, opener);
+                            }
                         }
                     }
                     None => errors.push(stray(if closer == "end" {
@@ -859,7 +914,7 @@ mod tests {
     #[test]
     fn control_lines_follow_the_drivers_prefix_tests() {
         let a = mob(
-            "if 1\nelseif 2\nelse\nend\nwhile 0\nswitch 1\ncase 1\ndefault\nbreak\ndone\nIF 1\nend",
+            "if 1\nelseif 2\nelse\nend\nwhile 0\nswitch 1\ncase 1\nbreak\ndefault\nbreak\ndone\nIF 1\nend",
         );
         for (word, want) in [
             ("if", 2),
@@ -870,7 +925,7 @@ mod tests {
             ("switch", 1),
             ("case", 1),
             ("default", 1),
-            ("break", 1),
+            ("break", 2),
             ("done", 1),
         ] {
             assert_eq!(count(&a.controls, word), want, "{word}");
@@ -882,6 +937,44 @@ mod tests {
         assert_eq!(count(&a.controls, "end"), 1);
         assert_eq!(class_count(&a, LineClass::MudCommand), 2);
         assert_eq!(count(&a.mud_commands, "if"), 1);
+    }
+
+    #[test]
+    fn default_reached_by_falling_through_is_a_command() {
+        let body = "switch 1\ncase 1\nsay a\ndefault\nsay b\nbreak\ndone";
+        let a = mob(body);
+        assert_eq!(count(&a.controls, "default"), 0);
+        assert_eq!(count(&a.mud_commands, "default"), 1);
+        let a = analyze(body, AttachType::Obj);
+        assert_eq!(count(&a.unknown_object_commands, "default"), 1);
+        // After `switch`, `break`, `halt` or `return` it is the label.
+        for lead in ["switch 1", "break", "halt", "return 1"] {
+            let a = mob(&format!("{lead}\ndefault"));
+            assert_eq!(count(&a.controls, "default"), 1, "{lead}");
+        }
+    }
+
+    #[test]
+    fn dynamic_commands_are_counted_by_first_word() {
+        let a = mob("%echoround% hi\n%echoround% there\n%kill% x");
+        assert_eq!(count(&a.dynamic_commands, "%echoround%"), 2);
+        assert_eq!(count(&a.dynamic_commands, "%kill%"), 1);
+        let mut corpus = Corpus::default();
+        corpus.add(5, &a);
+        assert_eq!(corpus.dynamic_vnums["%kill%"], BTreeSet::from([5]));
+    }
+
+    #[test]
+    fn a_closer_with_no_opener_of_its_kind_is_stray_among_many_openers() {
+        let body = format!("{}{}", "if 1\n".repeat(5), "done\n".repeat(5));
+        let a = mob(&body);
+        let stray = a
+            .structural
+            .iter()
+            .filter(|e| e.kind == StructuralErrorKind::DoneWithoutLoop)
+            .count();
+        assert_eq!(stray, 5);
+        assert_eq!(a.structural.len(), 10);
     }
 
     #[test]

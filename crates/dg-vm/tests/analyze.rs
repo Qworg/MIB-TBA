@@ -253,6 +253,13 @@ fn corpus_commands_and_references_match_independent_counts() {
             .all(|w| w.starts_with(|c: char| c.is_ascii_alphabetic()) || w.chars().count() == 1)
     );
 
+    // Counted by first word, from `grep` over the leading `%name%` words.
+    assert_eq!(totals.dynamic_commands.values().sum::<usize>(), 71);
+    assert_eq!(count(&totals.dynamic_commands, "%echoround%"), 2);
+    assert_eq!(count(&totals.dynamic_commands, "%kill%"), 2);
+    assert_eq!(count(&totals.dynamic_commands, "%echaround%"), 1);
+    assert_eq!(count(&totals.dynamic_commands, "%context%"), 1);
+
     assert_eq!(totals.unknown_object_commands.values().sum::<usize>(), 16);
     assert_eq!(totals.unknown_world_commands.values().sum::<usize>(), 29);
     assert_eq!(count(&totals.unknown_object_commands, "load"), 3);

@@ -230,7 +230,8 @@ pub struct TriggerCoverage {
     /// The record's `attach_type` (`mob`, `obj`, `wld`) -> records.
     pub by_attach_type: BTreeMap<String, usize>,
     /// Lines by class: `comment`, `blank`, `control`, `statement`, `magic`,
-    /// `script_command`, `unknown_command`, `mud_command`, `dynamic_command`.
+    /// `script_command`, `unknown_command`, `mud_command`, `dynamic_command`,
+    /// `over_length`.
     pub lines_by_class: BTreeMap<String, usize>,
     /// Control lines by keyword (`if`, `end`, `case`, `default`, ...).
     pub controls: BTreeMap<String, usize>,
@@ -255,6 +256,9 @@ pub struct TriggerCoverage {
     /// Lines whose first word is a variable that cannot be resolved without
     /// running the script (also in `lines_by_class`).
     pub dynamic_commands: usize,
+    /// The dynamic-command lines by first word as written (`%echoround%`),
+    /// with the scripts using each.
+    pub dynamic_command_words: BTreeMap<String, UnknownCommand>,
     /// Lines of `MAX_INPUT_LENGTH` (512) bytes or more, which the VM's
     /// substitution refuses: the driver runs nothing for them.
     pub over_length_lines: usize,
@@ -344,6 +348,7 @@ impl TriggerCoverage {
                 .get(&dg_vm::analyze::LineClass::DynamicCommand)
                 .copied()
                 .unwrap_or(0),
+            dynamic_command_words: unknown(&totals.dynamic_commands, &corpus.dynamic_vnums),
             over_length_lines: totals.over_length_lines,
             structural_errors,
             field_references: FieldReferences {
@@ -787,6 +792,7 @@ impl DropReport {
         for (title, unknown) in [
             ("Unknown object commands", &coverage.unknown_object_commands),
             ("Unknown world commands", &coverage.unknown_world_commands),
+            ("Dynamic commands", &coverage.dynamic_command_words),
         ] {
             let _ = writeln!(
                 out,
@@ -828,6 +834,10 @@ impl DropReport {
             out,
             "\n### Substitution fields ({} references)\n",
             refs.total
+        );
+        let _ = writeln!(
+            out,
+            "A name that several tables know is counted in each of them.\n"
         );
         let _ = writeln!(out, "| table | distinct names | references |");
         let _ = writeln!(out, "|---|---:|---:|");
