@@ -29,6 +29,7 @@ use crate::combat::TbaGold;
 use crate::combat::commands::{broadcast, deny, text};
 use crate::combat::model::{EVIL_ALIGNMENT, GOOD_ALIGNMENT, TbaAlignment, TbaProgress};
 use crate::content::{ShopDef, ShopTrade};
+use crate::dg::intake::commands::{DgClaimed, is_claimed};
 use crate::items::TbaObjectClock;
 use crate::module::TbaContent;
 
@@ -466,6 +467,7 @@ fn shop_sell(
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn handle_shop_commands(
     mut reader: MessageReader<CommandReceived>,
+    claimed: Option<Res<DgClaimed>>,
     sessions: Query<&Session>,
     players: Query<(Entity, &Player, &Location)>,
     alignments: Query<&TbaAlignment>,
@@ -492,6 +494,9 @@ pub fn handle_shop_commands(
             .map(|session| session.state == SessionState::Playing)
             .unwrap_or(false);
         if !playing {
+            continue;
+        }
+        if is_claimed(claimed.as_deref(), msg.id) {
             continue;
         }
         let PlayerInput::RawLine(line) = &msg.input else {

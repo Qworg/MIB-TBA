@@ -14,6 +14,7 @@
 //! and reproduces the stdlib line with the engine [`perceive`] predicate
 //! applied. Every other command passes through untouched.
 
+use crate::dg::intake::commands::{DgClaimed, is_claimed};
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{
@@ -26,6 +27,7 @@ use mib_stdlib::prelude::{
 /// the scene projection, so `who` and `look` agree on who is concealed. `who`
 /// is global, so the darkness arm is neutralised (lit room); only concealment
 /// is considered.
+#[allow(clippy::too_many_arguments)]
 pub fn intercept_who(
     mut reader: MessageReader<CommandReceived>,
     sessions: Query<&Session>,
@@ -33,9 +35,14 @@ pub fn intercept_who(
     concealment: Query<&Concealment>,
     perception: Query<&Perception>,
     mut handled: ResMut<HandledCommands>,
+    claimed: Option<Res<DgClaimed>>,
     mut output: MessageWriter<OutputEvent>,
 ) {
     for msg in reader.read() {
+        // A `command` trigger took the line over; `who` is not answered.
+        if is_claimed(claimed.as_deref(), msg.id) {
+            continue;
+        }
         // Login/registration input must reach the login flow untouched.
         let playing = sessions
             .get(msg.session)
