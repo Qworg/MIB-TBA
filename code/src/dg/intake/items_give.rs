@@ -11,7 +11,7 @@ use dg_vm::Uid;
 use dg_vm::dispatch::{bribe_mtrigger, give_otrigger, receive_mtrigger};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{
-    CarriedBy, ContainedBy, GroundItem, Item, Location, Npc, Player, QuestEvent,
+    CarriedBy, ContainedBy, GroundItem, Item, Location, Npc, NpcKey, Player, QuestEvent,
 };
 
 use super::common::{
@@ -22,6 +22,7 @@ use super::gate::{has_extra_flag, item_name};
 use crate::combat::TbaGold;
 use crate::content::ItemExtraFlag;
 use crate::dg::host::EcsHost;
+use crate::module::TbaContent;
 use dg_vm::{BaseHost, WorldHost};
 
 /// The coins a non-player character carries.
@@ -29,8 +30,8 @@ use dg_vm::{BaseHost, WorldHost};
 /// The pack models a purse for players only (`TbaGold`); this holds what a
 /// player gives an NPC, so `give <n> coins <mob>` and the `bribe` trigger have
 /// something to move.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Component)]
-pub struct DgNpcGold(pub u32);
+pub use crate::dg::chardata::TbaNpcPurse;
+pub type DgNpcGold = TbaNpcPurse;
 
 /// What a `give` command hands over.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -245,7 +246,19 @@ fn perform_give(host: &mut EcsHost<'_>, ch: Entity, victim: Entity, obj: Uid) {
 /// The coins a character holds.
 pub fn gold_of(world: &World, ch: Entity) -> u32 {
     if world.get::<Npc>(ch).is_some() {
-        world.get::<DgNpcGold>(ch).map_or(0, |gold| gold.0)
+        if let Some(purse) = world.get::<TbaNpcPurse>(ch) {
+            return u32::try_from(purse.gold.max(0)).unwrap_or(u32::MAX);
+        }
+        world
+            .get::<NpcKey>(ch)
+            .and_then(|key| {
+                world
+                    .get_resource::<TbaContent>()?
+                    .npc_stats
+                    .get(&key.0)
+                    .map(|stats| stats.gold)
+            })
+            .unwrap_or(0)
     } else {
         world.get::<TbaGold>(ch).map_or(0, |gold| gold.0)
     }
@@ -254,7 +267,26 @@ pub fn gold_of(world: &World, ch: Entity) -> u32 {
 /// Set the coins a character holds.
 fn set_gold(world: &mut World, ch: Entity, amount: u32) {
     if world.get::<Npc>(ch).is_some() {
-        world.entity_mut(ch).insert(DgNpcGold(amount));
+        let amount_i32 = i32::try_from(amount).unwrap_or(i32::MAX);
+        match world.get_mut::<TbaNpcPurse>(ch) {
+            Some(mut purse) => purse.gold = amount_i32,
+            None => {
+                let exp = world
+                    .get::<NpcKey>(ch)
+                    .and_then(|key| {
+                        world
+                            .get_resource::<TbaContent>()?
+                            .npc_stats
+                            .get(&key.0)
+                            .map(|stats| i32::try_from(stats.experience).unwrap_or(i32::MAX))
+                    })
+                    .unwrap_or(0);
+                world.entity_mut(ch).insert(TbaNpcPurse {
+                    gold: amount_i32,
+                    exp,
+                });
+            }
+        }
     } else if world.get::<Player>(ch).is_some() {
         world.entity_mut(ch).insert(TbaGold(amount));
     }

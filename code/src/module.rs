@@ -189,6 +189,19 @@ impl Plugin for TbaPlugin {
             // Quest variables (`remote`/`global`) survive reconnect in the
             // player's character bundle.
             registry.register::<TbaTriggerVars>("TbaTriggerVars", DocKind::Player);
+            // The character facts a script reads and writes (title, practices,
+            // quest points, conditions, skill percentages), the act-array bits
+            // it set or cleared, and the affects it applied are part of the
+            // player's character bundle.
+            registry
+                .register::<crate::dg::chardata::TbaCharExtras>("TbaCharExtras", DocKind::Player);
+            registry.register::<crate::dg::chardata::TbaActFlags>("TbaActFlags", DocKind::Player);
+            registry.register::<crate::dg::chardata::TbaDgAffects>("TbaDgAffects", DocKind::Player);
+            // A script's write to an NPC's gold or experience is saved with the
+            // NPC's own document. Every persistent NPC carries
+            // `SaveKind(DocKind::Npc)`, so the changed purse survives a
+            // restart and its kill still pays what it now holds.
+            registry.register::<crate::dg::chardata::TbaNpcPurse>("TbaNpcPurse", DocKind::Npc);
             // Item timers are item-scoped; `DocKind::Item` is already writable
             // because the stdlib registers `Item` under it.
             crate::items::register(&mut registry);
@@ -397,9 +410,17 @@ mod tests {
         assert!(registered.contains(&"TbaBuffs"), "{registered:?}");
         assert!(registered.contains(&"TbaItemTimer"), "{registered:?}");
         assert!(registered.contains(&"TbaTriggerVars"), "{registered:?}");
+        assert!(registered.contains(&"TbaNpcPurse"), "{registered:?}");
+        assert!(registered.contains(&"TbaCharExtras"), "{registered:?}");
+        assert!(registered.contains(&"TbaActFlags"), "{registered:?}");
+        assert!(registered.contains(&"TbaDgAffects"), "{registered:?}");
         assert!(
             registry.kinds().contains(&DocKind::Player),
             "player-scoped docs must be writable"
+        );
+        assert!(
+            registry.kinds().contains(&DocKind::Npc),
+            "the NPC purse must be writable"
         );
     }
 

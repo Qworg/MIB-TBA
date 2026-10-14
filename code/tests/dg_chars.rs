@@ -1885,7 +1885,7 @@ fn many_unmodelled_reads_do_not_evict_script_errors() {
 }
 
 #[test]
-fn a_changed_npc_purse_is_logged_once_as_not_paid_by_the_kill() {
+fn a_changed_npc_purse_is_what_the_kill_pays() {
     let mut app = pack_app();
     let temple = room(&mut app, 1);
     let guard = mob(&mut app, temple, 3, "the guard", 4);
@@ -1896,7 +1896,16 @@ fn a_changed_npc_purse_is_logged_once_as_not_paid_by_the_kill() {
         host.char_increase_gold(g, 5);
         assert_eq!(host.char_fact(g, CharFact::Gold), 5);
     });
-    assert_eq!(count(&app, "char_npc_purse_reward"), 1);
+    let (_, gold) = {
+        let content = app.world().resource::<TbaContent>();
+        let key = app.world().get::<NpcKey>(guard);
+        let purse = app.world().get::<mib_tba::dg::chardata::TbaNpcPurse>(guard);
+        mib_tba::combat::npc_reward(content, key, purse)
+    };
+    assert_eq!(
+        gold, 5,
+        "the kill pays the changed purse, not the prototype"
+    );
 }
 
 #[test]

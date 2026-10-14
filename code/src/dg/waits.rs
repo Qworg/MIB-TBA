@@ -15,6 +15,7 @@ use dg_vm::driver::resume;
 use dg_vm::types::PULSE_DG_SCRIPT;
 use mib_core::prelude::*;
 
+use super::chardata::TbaDgAffects;
 use super::host::EcsHost;
 use super::with_host;
 use crate::items::TbaObjectClock;
@@ -130,6 +131,8 @@ pub fn dg_pulse_system(world: &mut World) {
     let random_due =
         advanced > 0 && pulse.div_euclid(PULSE_DG_SCRIPT) > before.div_euclid(PULSE_DG_SCRIPT);
 
+    age_dg_affects(world, advanced);
+
     with_host(world, |host| {
         resume_due(host, pulse);
         if random_due {
@@ -140,6 +143,23 @@ pub fn dg_pulse_system(world: &mut World) {
             check_time_triggers(host);
         }
     });
+}
+
+/// Age every timed script affect by the pulses this tick made. `DgAffect`
+/// stores its life as a remaining count, so a marker is meaningful across a
+/// restart; this is the only place time takes it down.
+fn age_dg_affects(world: &mut World, pulses: i64) {
+    if pulses <= 0 {
+        return;
+    }
+    let mut query = world.query::<&mut TbaDgAffects>();
+    for mut marks in query.iter_mut(world) {
+        for mark in &mut marks.0 {
+            if let Some(expires) = mark.expires.as_mut() {
+                *expires = expires.saturating_sub(pulses);
+            }
+        }
+    }
 }
 
 /// Resume every wait due by `pulse`, earliest first. A wait whose owner or

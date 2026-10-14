@@ -32,8 +32,7 @@
 //! resource is created by that first mutable call, so reads before it go
 //! uncounted unless the runtime creates it at start.
 
-#[path = "../chardata.rs"]
-pub mod chardata;
+pub use crate::dg::chardata;
 
 use bevy::ecs::change_detection::Ref;
 use dg_vm::fields_char::{CharAbil, CharFact, CharHost, CharStat};
@@ -888,7 +887,6 @@ impl CharHost for EcsHost<'_> {
             return;
         };
         if self.is_npc_entity(entity) {
-            self.note_npc_purse(entity);
             let (gold, exp) = self.purse(entity);
             self.world.entity_mut(entity).insert(TbaNpcPurse {
                 gold,
@@ -932,16 +930,12 @@ impl CharHost for EcsHost<'_> {
 
     /// `increase_gold`: clamped to `0..=MAX_GOLD`, with the C's line when a
     /// player reaches the maximum. A player's purse is `TbaGold`; an NPC's is
-    /// its [`TbaNpcPurse`], which the kill reward does not read (logged on the
-    /// first change).
+    /// its [`TbaNpcPurse`].
     fn char_increase_gold(&mut self, ch: Uid, amt: i32) {
         self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
-        if self.is_npc_entity(entity) {
-            self.note_npc_purse(entity);
-        }
         let (gold, exp) = self.purse(entity);
         let next = (i64::from(gold) + i64::from(amt)).clamp(0, MAX_GOLD);
         let next = i32::try_from(next).unwrap_or(i32::MAX);
@@ -1285,13 +1279,12 @@ impl EcsHost<'_> {
     /// tag, but a script's pinned buffs never read as a cast spell), or the
     /// true sight a detect spell grants.
     pub(super) fn affected_by(&self, entity: Entity, spell: i32) -> bool {
-        let pulse = self.pulse();
         let player = self.world.get::<Player>(entity).is_some();
         let buffs = self.world.get::<TbaBuffs>(entity);
         let marked = self.world.get::<TbaDgAffects>(entity).is_some_and(|marks| {
             marks.0.iter().any(|mark| {
                 mark.spell == spell
-                    && mark.expires.is_none_or(|expires| expires > pulse)
+                    && mark.expires.is_none_or(|expires| expires > 0)
                     && match (&mark.numeric, player) {
                         (Some(affect), true) => buffs.is_some_and(|buffs| {
                             buffs
@@ -1322,11 +1315,10 @@ impl EcsHost<'_> {
         });
         // True sight a script's affect created is the affect's, not the
         // spell's (`SPELL_DG_AFFECT` is a different spell).
-        let pulse = self.pulse();
         let script_sight = self.world.get::<TbaDgAffects>(entity).is_some_and(|marks| {
             marks.0.iter().any(|mark| {
                 mark.owns_bit
-                    && mark.expires.is_none_or(|expires| expires > pulse)
+                    && mark.expires.is_none_or(|expires| expires > 0)
                     && mark
                         .bit
                         .is_some_and(|bit| bit == AFF_DETECT_INVIS || bit == AFF_SENSE_LIFE)
@@ -1339,16 +1331,5 @@ impl EcsHost<'_> {
                 .get::<crate::stealth::TbaTrueSight>(entity)
                 .is_some();
         by_buff || by_sight
-    }
-
-    /// Log the first script write to an NPC's purse: the kill reward reads the
-    /// prototype's gold and experience, not the purse.
-    fn note_npc_purse(&mut self, entity: Entity) {
-        if self.world.get::<TbaNpcPurse>(entity).is_none() {
-            self.unsupported(
-                "char_npc_purse_reward",
-                "an NPC's changed gold and experience are not what its kill pays",
-            );
-        }
     }
 }

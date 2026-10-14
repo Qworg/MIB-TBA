@@ -42,7 +42,7 @@ use smol_str::SmolStr;
 use crate::combat::commands::{
     StealthView, broadcast, deny, entity_name, find_target_in_room, text,
 };
-use crate::combat::rewards::{NpcDefeated, TbaDamage, alignment_for, reward_for};
+use crate::combat::rewards::{NpcDefeated, TbaDamage, alignment_for, npc_reward};
 use crate::combat::{
     SaveType, TbaCombatant, TbaHidden, TbaProgress, TbaRng, default_class, mag_savingthrow,
 };
@@ -524,17 +524,15 @@ pub fn handle_cast_command(
     ),
     mut commands: Commands,
     mut output: MessageWriter<OutputEvent>,
-    refused: Option<Res<crate::dg::intake::combat::RefusedCasts>>,
+    claimed: Option<Res<crate::dg::intake::commands::DgClaimed>>,
+    purses: Query<&crate::dg::chardata::TbaNpcPurse>,
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
 
     for msg in reader.read() {
-        // A `cast` trigger that refused the spell has already taken the line.
-        if refused
-            .as_ref()
-            .is_some_and(|refused| refused.contains(msg.id))
-        {
+        // A trigger that claimed or refused the command has already taken it.
+        if crate::dg::intake::commands::is_claimed(claimed.as_deref(), msg.id) {
             continue;
         }
         let session = msg.session;
@@ -616,6 +614,7 @@ pub fn handle_cast_command(
                 &npcs,
                 &progress,
                 &keys,
+                &purses,
                 &mut combatants,
                 &mut buffs,
                 &mut rng,
@@ -672,6 +671,7 @@ fn apply_spell_to_target(
     npcs: &Query<(Entity, &Npc, &Location)>,
     progress: &Query<&TbaProgress>,
     keys: &Query<&NpcKey>,
+    purses: &Query<&crate::dg::chardata::TbaNpcPurse>,
     combatants: &mut Query<&mut TbaCombatant>,
     buffs: &mut Query<&mut TbaBuffs>,
     rng: &mut TbaRng,
@@ -928,22 +928,14 @@ fn apply_spell_to_target(
         if players.get(target).is_ok() {
             defeated.write(PlayerDefeated { player: target });
         } else if npcs.get(target).is_ok() {
-            let (experience, gold) = keys
-                .get(target)
-                .ok()
-                .map(|key| reward_for(content, key))
-                .unwrap_or((0, 0));
-            let alignment = keys
-                .get(target)
-                .ok()
-                .map(|key| alignment_for(content, key))
-                .unwrap_or(0);
+            let key = keys.get(target).ok();
+            let purse = purses.get(target).ok();
+            let (experience, gold) = npc_reward(content, key, purse);
+            let alignment = key.map(|key| alignment_for(content, key)).unwrap_or(0);
             npc_defeated.write(NpcDefeated {
                 victim: target,
                 killer: session,
-                npc: keys
-                    .get(target)
-                    .ok()
+                npc: key
                     .map(|key| key.0.clone())
                     .unwrap_or_else(|| NpcId::from("")),
                 experience,
@@ -996,6 +988,7 @@ pub fn cast_spell_at_level(
         MessageWriter<'w, PlayerDefeated>,
         MessageWriter<'w, NpcDefeated>,
         MessageWriter<'w, TbaDamage>,
+        Query<'w, 's, &'static crate::dg::chardata::TbaNpcPurse>,
     );
 
     world.init_resource::<TbaRng>();
@@ -1021,6 +1014,7 @@ pub fn cast_spell_at_level(
             mut defeated,
             mut npc_defeated,
             mut damage_events,
+            purses,
         )) = state.get_mut(world)
         else {
             return false;
@@ -1080,6 +1074,7 @@ pub fn cast_spell_at_level(
                 &npcs,
                 &progress,
                 &keys,
+                &purses,
                 &mut combatants,
                 &mut buffs,
                 &mut rng,

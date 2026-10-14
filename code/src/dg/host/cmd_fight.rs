@@ -5,7 +5,7 @@ use mib_stdlib::prelude::{
     Location, Npc, NpcId, NpcKey, Player, PlayerDefeated, Room, RoomState, RoomTag,
 };
 
-use crate::combat::{NpcDefeated, TbaAttackerMemory, TbaCombatant, alignment_for, reward_for};
+use crate::combat::{NpcDefeated, TbaAttackerMemory, TbaCombatant, alignment_for, npc_reward};
 use crate::content::{NpcBehaviour, Position};
 use crate::dg::script::DgDead;
 use crate::module::TbaContent;
@@ -165,7 +165,9 @@ pub(super) fn die(world: &mut World, ch: Entity) {
         let (npc, experience, gold, alignment) = match world.get::<NpcKey>(ch) {
             Some(key) => {
                 let content = world.get_resource::<TbaContent>();
-                let (experience, gold) = content.map_or((0, 0), |content| reward_for(content, key));
+                let purse = world.get::<crate::dg::chardata::TbaNpcPurse>(ch);
+                let (experience, gold) =
+                    content.map_or((0, 0), |content| npc_reward(content, Some(key), purse));
                 let alignment = content.map_or(0, |content| alignment_for(content, key));
                 (key.0.clone(), experience, gold, alignment)
             }
@@ -181,6 +183,11 @@ pub(super) fn die(world: &mut World, ch: Entity) {
                 alignment,
             });
         }
+        crate::dg::with_host(world, |host| {
+            if let Some(dead) = host.uid(ch) {
+                dg_vm::dispatch::death_mtrigger(host, dead, None);
+            }
+        });
     }
     super::place::extract_char(world, ch);
 }

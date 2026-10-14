@@ -8,11 +8,11 @@
 //! these components; they exist so a script's write is visible to the next
 //! script's read.
 //!
-//! The components derive serde so they can be registered with the stdlib
-//! `SaveRegistry` under `DocKind::Player`; registration is `module.rs`'s and
-//! needs this module re-exported from `dg::host`. Until it is done they last
-//! for the life of the entity. (A character's permanent stat adjustments are
-//! not here: they are pinned entries of `TbaBuffs`, which is saved.)
+//! The components derive serde and are registered with the stdlib
+//! `SaveRegistry` in `module.rs`: the character facts, the act flags and the
+//! script affects under `DocKind::Player`, the NPC purse under
+//! `DocKind::Npc`. (A character's permanent stat adjustments are not here: they
+//! are pinned entries of `TbaBuffs`, which is saved.)
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Mutex;
@@ -31,7 +31,7 @@ pub const FULL_CONDITION: i32 = 24;
 /// the title (`ch->player.title`).
 ///
 /// A player gets one on a script's first write; until then every field reads
-/// as a freshly created character's. Persisted with the player once registered.
+/// as a freshly created character's. Persisted with the player.
 #[derive(Debug, Clone, PartialEq, Eq, Component, Serialize, Deserialize)]
 pub struct TbaCharExtras {
     /// `GET_TITLE`; `None` is the C's NULL pointer.
@@ -92,8 +92,9 @@ pub struct TbaDummyMob {
 
 /// An NPC's gold and experience, which the pack keeps only on the prototype
 /// (`tba.npc_stats`). Inserted on the first script write, from the prototype's
-/// values. The kill reward still reads the prototype (logged as
-/// `char_npc_purse_reward` on the first change).
+/// values, and saved with the NPC's `DocKind::Npc` document. The kill reward
+/// reads it when it is present (`combat::rewards::npc_reward`), so a script
+/// that changes a purse also changes what the kill pays.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Component, Serialize, Deserialize)]
 pub struct TbaNpcPurse {
     /// `GET_GOLD` of the mob.
@@ -130,9 +131,10 @@ pub struct DgAffect {
     pub modifier: i8,
     /// The `AFF_*` bit, for a bit affect.
     pub bit: Option<u32>,
-    /// The pulse (`DgPulse`) after which the affect has worn off; `None` is
-    /// permanent (`duration == -1`). A pulse count since boot: it has to become
-    /// a remaining duration before it is saved.
+    /// The pulses (`DgPulse`) left before the affect wears off; `0` (or less)
+    /// is spent and `None` is permanent (`duration == -1`). A remaining count
+    /// rather than a pulse stamp, so it is meaningful across a restart when
+    /// [`TbaDgAffects`] is loaded from a save.
     pub expires: Option<i64>,
     /// The `TbaBuffs` entry that makes a numeric affect count.
     pub numeric: Option<AffectDef>,

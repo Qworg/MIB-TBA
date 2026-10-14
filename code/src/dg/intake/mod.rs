@@ -16,13 +16,15 @@
 //!    `receive`, `bribe`, `wear`, `remove`, `consume`, `cast`). A refusal
 //!    marks the command handled.
 //! 3. The engine routes the command, and the pack's own handlers run. Every
-//!    one of them skips a command already marked handled.
+//!    pack handler tests [`commands::is_claimed`](commands::is_claimed) to
+//!    skip commands taken over by a trigger or carried out by pre-commit intake.
 //! 4. [`DgIntake::PostRoute`] — the triggers that react to what happened
 //!    (`speech`, `act`, `enter`, `greet`, `entry`, `memory`).
 //!
-//! "Handled" is the engine's `HandledCommands`: a system in step 1 or 2 calls
-//! `mark_handled(id)`, and every later consumer of `CommandReceived` tests
-//! `is_handled(id)` first.
+//! "Claimed" is recorded in [`commands::DgClaimed`](commands::DgClaimed):
+//! a system in step 1 or 2 calls `claim(world, msg)` or records the refusal,
+//! marking the command handled in the engine's `HandledCommands` for the router
+//! and recording it in `DgClaimed` for the pack's handlers.
 
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{CommandSet, route_commands};

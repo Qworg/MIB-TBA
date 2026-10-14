@@ -31,7 +31,7 @@ use crate::module::TbaContent;
 
 use super::model::{TbaAttackDice, TbaCombatant, WieldedWeapon};
 use super::progression::TbaRng;
-use super::rewards::{NpcDefeated, TbaDamage, alignment_for, reward_for};
+use super::rewards::{NpcDefeated, TbaDamage, alignment_for, npc_reward};
 
 /// Unarmed damage. An equipped weapon's `tba.items` dice replace this through
 /// [`weapon_dice`] once the equipment pass sets [`WieldedWeapon`].
@@ -134,7 +134,7 @@ fn apart(world: &World, a: Entity, b: Entity) -> bool {
 fn stop_fighting(world: &mut World, attacker: Entity) {
     if let Some(mut combatant) = world.get_mut::<TbaCombatant>(attacker) {
         combatant.target = None;
-        if combatant.position == Position::Fighting {
+        if combatant.is_alive() {
             combatant.position = Position::Standing;
         }
     }
@@ -265,10 +265,10 @@ fn defeat(host: &mut EcsHost<'_>, victim: Entity, killer: Entity) {
         // The reward data is read here, before the despawn applies, so the
         // consumer never races the dropped entity.
         let key = world.get::<NpcKey>(victim).map(|key| NpcKey(key.0.clone()));
+        let purse = world.get::<crate::dg::chardata::TbaNpcPurse>(victim);
         let content = world.get_resource::<TbaContent>();
-        let (experience, gold) = key
-            .as_ref()
-            .and_then(|key| content.map(|content| reward_for(content, key)))
+        let (experience, gold) = content
+            .map(|content| npc_reward(content, key.as_ref(), purse))
             .unwrap_or((0, 0));
         let alignment = key
             .as_ref()

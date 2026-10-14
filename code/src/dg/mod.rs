@@ -83,6 +83,7 @@
 //! `valid_dg_target` are moot: every NPC and every playing player is a valid
 //! target.
 
+pub mod chardata;
 pub mod host;
 pub mod ids;
 pub mod intake;

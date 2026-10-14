@@ -760,7 +760,7 @@ fn gold_of(app: &App, who: Entity) -> u32 {
         .or_else(|| {
             app.world()
                 .get::<mib_tba::dg::mobcmd::TbaNpcGold>(who)
-                .map(|g| g.0)
+                .map(|g| u32::try_from(g.gold.max(0)).unwrap_or(0))
         })
         .unwrap_or(0)
 }
@@ -1042,7 +1042,7 @@ fn give_coins_moves_gold_and_fires_the_bribe_trigger() {
     s.app
         .world_mut()
         .entity_mut(s.guard)
-        .insert(mib_tba::dg::mobcmd::TbaNpcGold(100));
+        .insert(mib_tba::dg::mobcmd::TbaNpcGold { gold: 100, exp: 0 });
 
     cmd(&mut s.app, s.guard_id, "give 5 coins clerk");
     assert_eq!(gold_of(&s.app, s.guard), 95);
@@ -1079,7 +1079,7 @@ fn dropping_gold_makes_a_pile_that_picking_up_turns_back_into_gold() {
     s.app
         .world_mut()
         .entity_mut(s.guard)
-        .insert(mib_tba::dg::mobcmd::TbaNpcGold(50));
+        .insert(mib_tba::dg::mobcmd::TbaNpcGold { gold: 50, exp: 0 });
     cmd(&mut s.app, s.guard_id, "drop 30 coins");
     assert_eq!(gold_of(&s.app, s.guard), 20);
     let pile = {

@@ -564,7 +564,7 @@ fn coins_leave_the_purse_and_reach_the_npc_and_the_bribe_trigger_runs() {
 
     let said = say(&mut s.app, s.alice, "give 30 coins guard");
     assert_eq!(s.app.world().get::<TbaGold>(s.alice).unwrap().0, 70);
-    assert_eq!(s.app.world().get::<DgNpcGold>(s.guard).unwrap().0, 30);
+    assert_eq!(s.app.world().get::<DgNpcGold>(s.guard).unwrap().gold, 30);
     let alice_id = id_of(&mut s.app, s.alice);
     assert_eq!(seen(&mut s.app, s.guard, "actor"), Some(alice_id));
     assert_eq!(seen(&mut s.app, s.guard, "amount"), Some("30".to_owned()));
@@ -578,7 +578,7 @@ fn a_bribe_below_the_trigger_amount_does_not_run_it() {
     attach(&mut s.app, "npc:tba_npc_10", &[301]);
 
     say(&mut s.app, s.alice, "give 30 coins guard");
-    assert_eq!(s.app.world().get::<DgNpcGold>(s.guard).unwrap().0, 30);
+    assert_eq!(s.app.world().get::<DgNpcGold>(s.guard).unwrap().gold, 30);
     assert!(seen(&mut s.app, s.guard, "amount").is_none());
 }
 
@@ -1898,7 +1898,7 @@ fn structured_commands_and_the_grab_verb_reach_the_intake() {
         80,
         "{said}"
     );
-    assert_eq!(s.app.world().get::<DgNpcGold>(s.guard).unwrap().0, 20);
+    assert_eq!(s.app.world().get::<DgNpcGold>(s.guard).unwrap().gold, 20);
 
     let ball = item_on_ground(&mut s.app, s.temple, 6, "a red ball");
     typed(

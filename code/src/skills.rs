@@ -89,7 +89,7 @@ use mib_stdlib::prelude::{
 use crate::combat::commands::{
     StealthView, broadcast, deny, entity_name, find_target_in_room, text,
 };
-use crate::combat::rewards::{NpcDefeated, TbaDamage, alignment_for, reward_for};
+use crate::combat::rewards::{NpcDefeated, TbaDamage, alignment_for, npc_reward};
 use crate::combat::{
     TbaAttackerMemory, TbaCombatant, TbaHidden, TbaProgress, TbaRng, TbaSneaking, WieldedWeapon,
     combat_dice,
@@ -351,6 +351,7 @@ fn deal_damage(
     players: &Query<(Entity, &Player, &Location)>,
     npcs: &Query<(Entity, &Npc, &Location)>,
     keys: &Query<&NpcKey>,
+    purses: &Query<&crate::dg::chardata::TbaNpcPurse>,
     combatants: &mut Query<&mut TbaCombatant>,
     defeated: &mut MessageWriter<PlayerDefeated>,
     npc_defeated: &mut MessageWriter<NpcDefeated>,
@@ -381,29 +382,23 @@ fn deal_damage(
     if players.get(target).is_ok() {
         defeated.write(PlayerDefeated { player: target });
     } else if npcs.get(target).is_ok() {
-        let (experience, gold) = keys
-            .get(target)
-            .ok()
-            .map(|key| reward_for(content, key))
-            .unwrap_or((0, 0));
-        let alignment = keys
-            .get(target)
-            .ok()
-            .map(|key| alignment_for(content, key))
-            .unwrap_or(0);
+        let key = keys.get(target).ok();
+        let purse = purses.get(target).ok();
+        let (experience, gold) = npc_reward(content, key, purse);
+        let alignment = key.map(|key| alignment_for(content, key)).unwrap_or(0);
         npc_defeated.write(NpcDefeated {
             victim: target,
             killer: attacker,
-            npc: keys
-                .get(target)
-                .ok()
+            npc: key
                 .map(|key| key.0.clone())
                 .unwrap_or_else(|| NpcId::from("")),
             experience,
             gold,
             alignment,
         });
-        commands.entity(target).despawn();
+        commands.queue(move |world: &mut World| {
+            crate::dg::intake::combat::finish_kill(world, target, attacker);
+        });
     }
     true
 }
@@ -423,6 +418,7 @@ pub struct SkillQueries<'w, 's> {
     pub occupants: Res<'w, RoomOccupants>,
     pub rooms: Query<'w, 's, (&'static Room, &'static RoomState)>,
     pub wielded: Query<'w, 's, &'static WieldedWeapon>,
+    pub purses: Query<'w, 's, &'static crate::dg::chardata::TbaNpcPurse>,
 }
 
 /// `BridgeSet::Game`: translate the issue #25 skill verbs into effects.
@@ -594,6 +590,7 @@ pub fn handle_skill_commands(
                     &queries.players,
                     &queries.npcs,
                     &queries.keys,
+                    &queries.purses,
                     &mut combatants,
                     &mut defeated,
                     &mut npc_defeated,
@@ -695,6 +692,7 @@ pub fn handle_skill_commands(
                         &queries.players,
                         &queries.npcs,
                         &queries.keys,
+                        &queries.purses,
                         &mut combatants,
                         &mut defeated,
                         &mut npc_defeated,
@@ -811,6 +809,7 @@ pub fn handle_skill_commands(
                     &queries.players,
                     &queries.npcs,
                     &queries.keys,
+                    &queries.purses,
                     &mut combatants,
                     &mut defeated,
                     &mut npc_defeated,

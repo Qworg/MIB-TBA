@@ -563,13 +563,12 @@ impl EcsHost<'_> {
     /// Drop the script affects that have worn off. Their buffs run out on
     /// the round clock by themselves; the bit components go with the marker.
     pub(super) fn expire_dg_affects(&mut self, entity: Entity) {
-        let pulse = self.pulse();
         let Some(mut marks) = self.world.get_mut::<TbaDgAffects>(entity) else {
             return;
         };
         let (live, dead): (Vec<DgAffect>, Vec<DgAffect>) = std::mem::take(&mut marks.0)
             .into_iter()
-            .partition(|mark| mark.expires.is_none_or(|expires| expires > pulse));
+            .partition(|mark| mark.expires.is_none_or(|expires| expires > 0));
         marks.0 = live;
         for mark in &dead {
             self.release_bit(entity, mark);
@@ -632,14 +631,14 @@ impl EcsHost<'_> {
         let Some(bit) = mark.bit else {
             return;
         };
-        let pulse = self.pulse();
         let sights = [AFF_DETECT_INVIS, AFF_SENSE_LIFE];
         let shared =
             |other: u32| other == bit || (sights.contains(&bit) && sights.contains(&other));
         if let Some(mut marks) = self.world.get_mut::<TbaDgAffects>(entity)
-            && let Some(holder) = marks.0.iter_mut().find(|other| {
-                other.bit.is_some_and(shared) && other.expires.is_none_or(|e| e > pulse)
-            })
+            && let Some(holder) = marks
+                .0
+                .iter_mut()
+                .find(|other| other.bit.is_some_and(shared) && other.expires.is_none_or(|e| e > 0))
         {
             holder.owns_bit |= mark.owns_bit;
             return;
@@ -935,7 +934,7 @@ impl MagicHost for EcsHost<'_> {
         self.expire_dg_affects(entity);
         let permanent = duration < 0;
         let hours = i64::from(duration.max(0)) + 1;
-        let expires = (!permanent).then(|| self.pulse().saturating_add(hours * HOUR_PULSES));
+        let expires = (!permanent).then_some(hours * HOUR_PULSES);
         let numeric = affect_location(location)
             .filter(|_| modifier != 0)
             .map(|location| AffectDef {

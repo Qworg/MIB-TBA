@@ -30,8 +30,8 @@ use crate::party::TbaFollowing;
 /// only as prototype data (`TbaNpcStats::gold`), so an NPC that has never
 /// given or received coins has no component and its purse is the
 /// prototype's; the first change writes this component.
-#[derive(Debug, Clone, Copy, Component, PartialEq, Eq)]
-pub struct TbaNpcGold(pub u32);
+pub use crate::dg::chardata::TbaNpcPurse;
+pub type TbaNpcGold = TbaNpcPurse;
 
 // -- positions and fighting ---------------------------------------------------
 
@@ -163,8 +163,8 @@ pub fn gold(host: &EcsHost<'_>, ch: Uid) -> i64 {
             .get::<TbaGold>(entity)
             .map_or(0, |gold| i64::from(gold.0));
     }
-    if let Some(gold) = host.world.get::<TbaNpcGold>(entity) {
-        return i64::from(gold.0);
+    if let Some(purse) = host.world.get::<TbaNpcPurse>(entity) {
+        return i64::from(purse.gold);
     }
     host.world
         .get::<NpcKey>(entity)
@@ -183,16 +183,36 @@ pub fn set_gold(host: &mut EcsHost<'_>, ch: Uid, amount: i64) {
     let Some(entity) = host.entity(ch) else {
         return;
     };
-    let amount = u32::try_from(amount.max(0)).unwrap_or(u32::MAX);
+    let amount_u32 = u32::try_from(amount.max(0)).unwrap_or(u32::MAX);
+    let amount_i32 = i32::try_from(amount.max(0)).unwrap_or(i32::MAX);
     if host.world.get::<Player>(entity).is_some() {
         match host.world.get_mut::<TbaGold>(entity) {
-            Some(mut gold) => gold.0 = amount,
+            Some(mut gold) => gold.0 = amount_u32,
             None => {
-                host.world.entity_mut(entity).insert(TbaGold(amount));
+                host.world.entity_mut(entity).insert(TbaGold(amount_u32));
             }
         }
     } else if host.world.get::<Npc>(entity).is_some() {
-        host.world.entity_mut(entity).insert(TbaNpcGold(amount));
+        match host.world.get_mut::<TbaNpcPurse>(entity) {
+            Some(mut purse) => purse.gold = amount_i32,
+            None => {
+                let exp = host
+                    .world
+                    .get::<NpcKey>(entity)
+                    .and_then(|key| {
+                        host.world
+                            .get_resource::<TbaContent>()?
+                            .npc_stats
+                            .get(&key.0)
+                            .map(|stats| i32::try_from(stats.experience).unwrap_or(i32::MAX))
+                    })
+                    .unwrap_or(0);
+                host.world.entity_mut(entity).insert(TbaNpcPurse {
+                    gold: amount_i32,
+                    exp,
+                });
+            }
+        }
     }
 }
 

@@ -129,6 +129,9 @@ fn mark_handled(world: &mut World, id: CommandId) {
     if let Some(mut handled) = world.get_resource_mut::<HandledCommands>() {
         handled.mark_handled(id);
     }
+    world
+        .get_resource_or_insert_with(crate::dg::intake::commands::DgClaimed::default)
+        .insert(id);
 }
 
 /// Carry out an action that needs nothing from the engine.

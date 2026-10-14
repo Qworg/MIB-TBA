@@ -436,13 +436,15 @@ pub fn handle_equipment_commands(
     mut saves: Query<Option<&mut TbaEquipmentSave>>,
     mut commands: Commands,
     mut output: MessageWriter<OutputEvent>,
+    claimed: Option<Res<crate::dg::intake::commands::DgClaimed>>,
     mut vetoes: Option<ResMut<EquipmentVetoes>>,
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
 
     for msg in reader.read() {
-        if vetoes.as_mut().is_some_and(|vetoes| vetoes.take(msg)) {
+        let vetoed = vetoes.as_mut().is_some_and(|vetoes| vetoes.take(msg));
+        if crate::dg::intake::commands::is_claimed(claimed.as_deref(), msg.id) || vetoed {
             continue;
         }
         let session = msg.session;

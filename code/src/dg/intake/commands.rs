@@ -71,22 +71,28 @@ pub fn is_claimed(claimed: Option<&DgClaimed>, id: CommandId) -> bool {
     claimed.is_some_and(|claimed| claimed.contains(id))
 }
 
-/// Take a command over: mark it handled for the engine router, record it for
-/// the pack handlers, and give the player a prompt (the line the command would
-/// have ended with).
-pub(super) fn claim(world: &mut World, msg: &CommandReceived) {
+/// Take a command over by ID: mark it handled for the engine router, record
+/// it for the pack handlers in [`DgClaimed`], and give the player a prompt.
+pub fn claim_id(world: &mut World, id: CommandId, session: Entity) {
     world
         .get_resource_or_insert_with(DgClaimed::default)
-        .insert(msg.id);
+        .insert(id);
     if let Some(mut handled) = world.get_resource_mut::<HandledCommands>() {
-        handled.mark_handled(msg.id);
+        handled.mark_handled(id);
     }
     if let Some(mut output) = world.get_resource_mut::<Messages<OutputEvent>>() {
         output.write(OutputEvent {
-            session: msg.session,
+            session,
             payload: OutboundPayload::text(TextChannel::Prompt, "> "),
         });
     }
+}
+
+/// Take a command over: mark it handled for the engine router, record it for
+/// the pack handlers, and give the player a prompt (the line the command would
+/// have ended with).
+pub fn claim(world: &mut World, msg: &CommandReceived) {
+    claim_id(world, msg.id, msg.session);
 }
 
 /// After `DgIntake::PreCommit` and before the router: record in [`DgClaimed`]
@@ -230,6 +236,13 @@ pub fn command_words(input: &PlayerInput) -> Option<(String, String)> {
 /// handler runs it.
 ///
 /// Public so other intake systems can order against it.
+///
+/// A claimed command never reaches the engine router, which is where the
+/// per-session `CommandRate` bucket is spent, so it is not rate-limited. That
+/// is deliberate: the bucket guards the router's own dispatch, the gate runs
+/// before the router, and pricing a command here would charge twice every
+/// command that does go on to reach the router. The item intake, which carries
+/// some verbs out in the router's place, applies the cap itself.
 pub fn command_gate(world: &mut World, mut cursor: Local<MessageCursor<CommandReceived>>) {
     world
         .get_resource_or_insert_with(DgClaimed::default)

@@ -350,6 +350,11 @@ pub fn cast_gate(world: &mut World, mut state: Local<Option<SystemState<GatePara
         return;
     };
     record.ids.extend(refused.iter().map(|cast| cast.id));
+    let mut claimed =
+        world.get_resource_or_insert_with(crate::dg::intake::commands::DgClaimed::default);
+    for cast in &refused {
+        claimed.insert(cast.id);
+    }
     if let Some(mut handled) = world.get_resource_mut::<HandledCommands>() {
         for cast in &refused {
             handled.mark_handled(cast.id);
