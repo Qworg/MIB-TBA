@@ -54,6 +54,16 @@ pub struct ZoneState {
     pub age_mins: f32,
 }
 
+/// The room-number bounds `(bot, top)` of the zones that reset during the
+/// latest [`zone_reset_system`] run, in zone order. Replaced at the start of
+/// every run, so a consumer ordered after the system sees exactly this tick's
+/// resets (the DG `reset` triggers, which `reset_zone` fires once the reset
+/// commands have run).
+#[derive(Resource, Debug, Default)]
+pub struct ZoneResets {
+    pub zones: Vec<(u32, u32)>,
+}
+
 /// `FixedUpdate`: age zones and run the resets that are due.
 pub fn zone_reset_system(world: &mut World) {
     let delta_secs = world
@@ -65,6 +75,8 @@ pub fn zone_reset_system(world: &mut World) {
     // Take the tracker out so the body can hold `&mut World` freely; it is
     // always put back, so a reset never loses the resource.
     let mut tracker = world.remove_resource::<ZoneTracker>().unwrap_or_default();
+    let mut resets = world.remove_resource::<ZoneResets>().unwrap_or_default();
+    resets.zones.clear();
 
     for zone in &mut tracker.zones {
         zone.age_mins += delta_mins;
@@ -83,10 +95,12 @@ pub fn zone_reset_system(world: &mut World) {
             continue;
         }
         execute_zone(world, &zone.def);
+        resets.zones.push((zone.def.bot, zone.def.top));
         zone.age_mins = 0.0;
     }
 
     world.insert_resource(tracker);
+    world.insert_resource(resets);
 }
 
 /// Is any player inside the zone's `[bot, top]` room-number bounds?
@@ -205,6 +219,7 @@ fn execute_command(
                     let item_entity = spawn_item_carried_by_entity(world, mob_entity, item, &def);
                     stamp_spawn(world, item_entity);
                     equip_mob_item(world, mob_entity, *slot, item_entity);
+                    note_wear_trigger_gap(world, item_entity);
                     true
                 } else {
                     false
@@ -259,6 +274,35 @@ fn equip_mob_item(world: &mut World, mob: Entity, slot: WearSlot, item_entity: E
     let mut slots = std::collections::HashMap::new();
     slots.insert(slot, item_entity);
     world.entity_mut(mob).insert(TbaEquipment { slots });
+}
+
+/// `reset_zone` equips through `equip_char`, which runs the item's `wear`
+/// trigger; an `E` reset here does not. Count the item when it carries one, so
+/// the loss shows in the DG log.
+fn note_wear_trigger_gap(world: &mut World, item: Entity) {
+    use dg_vm::types::trig::OTRIG_WEAR;
+    let Some(def_id) = world.get::<Item>(item).map(|held| held.def_id.clone()) else {
+        return;
+    };
+    let carries_wear = world
+        .get_resource::<crate::dg::script::DgProtos>()
+        .is_some_and(|table| {
+            table.owner(&format!("item:{def_id}")).is_some_and(|vnums| {
+                vnums
+                    .iter()
+                    .filter_map(|vnum| table.get(*vnum))
+                    .any(|proto| proto.trigger_type & OTRIG_WEAR != 0)
+            })
+        });
+    if carries_wear {
+        world
+            .get_resource_or_insert_with(crate::dg::DgLog::default)
+            .record(
+                "reset_wear_otrigger",
+                "unsupported reset_wear_otrigger: an E reset does not run the wear trigger"
+                    .to_owned(),
+            );
+    }
 }
 
 /// Live NPC instances of `mob` (a despawned NPC is no longer an entity).
