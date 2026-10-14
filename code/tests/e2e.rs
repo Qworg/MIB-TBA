@@ -85,33 +85,82 @@ fn a_leave_trigger_can_block_a_move() {
     );
 }
 
-/// The real `tba_trig_66` greets, teleports from the `down` direction and
-/// forces a `look`.
+/// The real `tba_trig_66` greets, teleports when the player arrived from the
+/// `down` direction (so moved up) and forces a `look`.
 #[test]
-#[ignore = "the greet dispatch path in the headless playtest harness needs work; covered by the dg_intake_commands suite"]
 fn a_greet_can_teleport_and_force_a_command() {
     let mut play = Play::new("Aria");
-    let above = play.spawn_room(65530);
+    let below = play.spawn_room(65530);
     let here = play.spawn_room(65531);
-    play.link(above, ExitKey::Down, here);
+    play.link(below, ExitKey::Up, here);
     let destination = play.room_by_key("tba.1300");
     play.spawn_npc(here, "tba_npc_66");
     // The converter does not attach `tba_trig_66` to the unplaced NPC.
     play.attach("npc:tba_npc_66", &[66]);
-    play.move_player(above);
+    play.move_player(below);
 
-    let _ = play.send("down");
+    let mut out = play.send("up");
     play.tick(0.1);
+    out.extend(play.text());
     let session = play.session();
     assert_eq!(
         play.location(session),
         Some(destination),
         "the greet teleported the player to room 1300"
     );
-    let out = play.text();
     assert!(
         out.iter().any(|line| line.contains("welcome")),
         "the greet spoke: {out:?}"
+    );
+}
+
+/// The zone-0 Tutorial Quest 1317 opening: the questmaster greets a player who
+/// arrives from the south, and accepts a `yes` after its own waits.
+#[test]
+fn tutorial_1317_greets_and_accepts() {
+    let mut play = Play::new("Aria");
+    let south = play.spawn_room(65530);
+    let room = play.spawn_room(65531);
+    play.link(south, ExitKey::North, room);
+    play.spawn_npc(room, "tba_npc_1317");
+    // The converter attaches the 1300-series triggers, not 9-11.
+    play.attach("npc:tba_npc_1317", &[9, 10]);
+    play.move_player(south);
+
+    let mut out = play.send("north");
+    play.tick(1.0);
+    out.extend(play.text());
+    assert!(
+        out.iter()
+            .any(|line| line.contains("Could you find me the magic eight ball")),
+        "the greet spoke: {out:?}"
+    );
+
+    let mut out = play.send("say yes");
+    play.tick(1.0);
+    out.extend(play.text());
+    assert!(
+        out.iter().any(|line| line.contains("I'll make this easy")),
+        "the accept speech spoke: {out:?}"
+    );
+}
+
+/// The real `tba_trig_3000` leaves on the Mages' Guild guard: a warrior
+/// walking south into the guild is refused.
+#[test]
+fn a_guild_guard_blocks_a_wrong_class_from_the_guild() {
+    let mut play = Play::new("Aria");
+    let entrance = play.room_by_key("tba.3017");
+    // The zone reset that places the guard may not have run yet.
+    play.spawn_npc(entrance, "tba_npc_3024");
+    play.move_player(entrance);
+
+    let out = play.send("south");
+    let session = play.session();
+    assert_eq!(
+        play.location(session),
+        Some(entrance),
+        "the guild guard refused the warrior: {out:?}"
     );
 }
 
