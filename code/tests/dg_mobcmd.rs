@@ -629,6 +629,88 @@ fn a_soundproof_room_keeps_shouts_in() {
     assert!(texts(&mut s.app).is_empty());
 }
 
+#[test]
+fn a_tell_to_an_npc_in_a_soundproof_room_is_refused() {
+    // `do_tell` needs LVL_IMMORT to look the victim up anywhere; below
+    // LVL_GOD the victim's soundproof room still refuses the tell.
+    let mut open = scene();
+    define_npc_level(&mut open.app, 1, 31);
+    let far = room(&mut open.app, 200);
+    let listener = npc(&mut open.app, far, 2, "Listener");
+    define_arg(
+        &mut open.app,
+        40,
+        "mob",
+        "e",
+        0,
+        "tells you",
+        "set heard %arg%\nglobal heard",
+    );
+    attach(&mut open.app, "npc:tba_npc_2", &[40]);
+    let listener_id = uid(&mut open.app, listener);
+    cmd(&mut open.app, open.guard_id, "tell listener hello");
+    assert!(
+        global(&mut open.app, listener_id, "heard").is_some(),
+        "control: an ordinary room lets the tell through"
+    );
+
+    let mut s = scene();
+    define_npc_level(&mut s.app, 1, 31);
+    let quiet = room(&mut s.app, 200);
+    s.app
+        .world_mut()
+        .get_mut::<Room>(quiet)
+        .unwrap()
+        .tags
+        .insert(RoomTag::Soundproof);
+    let listener = npc(&mut s.app, quiet, 2, "Listener");
+    define_arg(
+        &mut s.app,
+        40,
+        "mob",
+        "e",
+        0,
+        "tells you",
+        "set heard %arg%\nglobal heard",
+    );
+    attach(&mut s.app, "npc:tba_npc_2", &[40]);
+    let listener_id = uid(&mut s.app, listener);
+    cmd(&mut s.app, s.guard_id, "tell listener hello");
+    assert!(
+        global(&mut s.app, listener_id, "heard").is_none(),
+        "the soundproof room refuses the tell to an NPC"
+    );
+}
+
+#[test]
+fn a_social_restarts_the_count_for_the_floor_list() {
+    let mut s = scene();
+    define_item(&mut s.app, 50, TbaItemKind::Treasure, &[], &["sword"]);
+    define_item(&mut s.app, 51, TbaItemKind::Treasure, &[], &["sword"]);
+    item_on_ground(&mut s.app, s.room, 50, "first sword");
+    item_on_ground(&mut s.app, s.room, 51, "second sword");
+    let mut g = social(
+        "grope",
+        Some("You grope the air."),
+        Some("$n gropes the air."),
+        Some("You grope $N."),
+        Some("$n gropes $N."),
+        Some("$n gropes you."),
+    );
+    g.1.char_obj_found = Some("You grope $p.".to_owned());
+    g.1.others_obj_found = Some("$n gropes $p.".to_owned());
+    install_socials(&mut s.app, vec![g]);
+    // `do_action` looks in the carrying list first; that lookup consumes the
+    // `2.` prefix, so the floor list starts counting at one again and the
+    // first floor sword is the one found.
+    cmd(&mut s.app, s.guard_id, "grope 2.sword");
+    let lines = texts(&mut s.app);
+    assert!(
+        lines.iter().any(|line| line.contains("first sword")),
+        "the floor list restarts its count: {lines:?}"
+    );
+}
+
 // -- positions gate commands ---------------------------------------------------
 
 #[test]

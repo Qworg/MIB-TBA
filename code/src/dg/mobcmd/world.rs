@@ -9,6 +9,7 @@ use std::collections::BTreeMap;
 
 use bevy::ecs::system::RunSystemOnce;
 use dg_vm::Uid;
+use dg_vm::fields_char::CharHost;
 use mib_core::prelude::*;
 use mib_protocol::prelude::ExitKey;
 use mib_stdlib::prelude::{
@@ -139,7 +140,9 @@ pub fn remember_attacker(host: &mut EcsHost<'_>, victim: Uid, attacker: Uid) {
     }
 }
 
-/// `stop_fighting(ch)`: the character stands up out of the fight.
+/// `stop_fighting(ch)`: the character stands up out of the fight, then
+/// `update_pos` lowers the position again if the hit points cannot hold it up
+/// (`fight.c`).
 pub fn stop_fighting(host: &mut EcsHost<'_>, ch: Uid) {
     let Some(entity) = host.entity(ch) else {
         return;
@@ -148,6 +151,7 @@ pub fn stop_fighting(host: &mut EcsHost<'_>, ch: Uid) {
         combatant.target = None;
         combatant.position = Position::Standing;
     }
+    host.char_update_pos(ch);
 }
 
 // -- purses -------------------------------------------------------------------

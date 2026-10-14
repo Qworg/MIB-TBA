@@ -3,6 +3,7 @@
 //! in `command_interpreter`).
 
 use dg_vm::Uid;
+use dg_vm::WorldHost;
 use dg_vm::cstr::{one_argument, str_cmp, two_arguments};
 use dg_vm::lookup::get_char_room_vis;
 
@@ -74,7 +75,15 @@ pub fn do_action(host: &mut EcsHost<'_>, ch: Uid, action: &SocialDef, argument: 
 
     let Some(vict) = get_char_room_vis(host, ch, &arg) else {
         if action.char_obj_found.is_some() {
-            let target = super::item::find_inv_or_room(host, ch, &arg).map(|(obj, _)| obj);
+            // `do_action` looks in the actor's carrying list and, if that
+            // fails, in the room's contents. The first lookup consumes the
+            // `N.` prefix, so the second starts its count at 1 again.
+            let mut arg = arg.clone();
+            let target =
+                super::item::pull_obj(host, ch, &mut arg, &host.carrying(ch)).or_else(|| {
+                    let room = host.in_room(ch)?;
+                    super::item::pull_obj(host, ch, &mut arg, &host.room_contents(room))
+                });
             if let Some(target) = target {
                 if let Some(line) = &action.char_obj_found {
                     act_full(

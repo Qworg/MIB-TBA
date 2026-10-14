@@ -9,15 +9,18 @@
 //! many items already. Text only the acting NPC would receive is not
 //! produced; see [`super`].
 
+use dg_vm::BaseHost;
+use dg_vm::Uid;
+use dg_vm::WorldHost;
 use dg_vm::cstr::{atoi, is_number, one_argument, search_block, str_cmp, two_arguments};
 use dg_vm::dispatch::{
     bribe_mtrigger, drop_otrigger, drop_wtrigger, get_otrigger, give_otrigger, receive_mtrigger,
     remove_otrigger, wear_otrigger,
 };
+use dg_vm::fields_char::CharHost;
 use dg_vm::lookup::{
     FIND_INDEX_LAST, NUM_WEARS, get_char_room_vis, get_number, get_obj_in_list_vis, isname,
 };
-use dg_vm::{BaseHost, Uid, WorldHost};
 use mib_stdlib::prelude::{Container, Item};
 
 use super::act::{To, act, act_obj, act_obj_obj, act_obj_vict, act_vict};
@@ -148,7 +151,7 @@ pub(super) fn obj_vis_counted(
 /// `get_obj_in_list_vis(ch, arg, NULL, list)` on a buffer the C edits in
 /// place: `get_number` cuts the `N.` prefix out of `arg`, so a loop that looks
 /// again in the rest of the list searches the bare keyword.
-fn pull_obj(
+pub(super) fn pull_obj(
     host: &crate::dg::host::EcsHost<'_>,
     ch: Uid,
     arg: &mut String,
@@ -1200,8 +1203,8 @@ pub fn do_remove(host: Host<'_, '_>, ch: Uid, argument: &str) {
 
 // -- sacrifice ----------------------------------------------------------------
 
-/// `do_sac`: the item goes to the gods and what it held falls to the floor.
-/// An NPC has no experience to gain, so only the coin rewards are kept.
+/// `do_sac`: the item goes to the gods and what it held falls to the floor;
+/// the roll pays gold or experience.
 pub fn do_sac(host: Host<'_, '_>, ch: Uid, argument: &str) {
     let (arg, _) = one_argument(argument);
     if arg.is_empty() {
@@ -1220,15 +1223,13 @@ pub fn do_sac(host: Host<'_, '_>, ch: Uid, argument: &str) {
     };
     act_obj(host, "$n sacrifices $p.", false, ch, obj, To::Room);
     let level = i64::from(item_def(host, obj).map_or(0, |def| def.min_level));
-    let reward = match host.rand_number(0, 5) {
-        0 => 1,
-        4 => level.saturating_add(1),
-        5 => level.saturating_mul(2).saturating_add(1),
-        _ => 0,
-    };
-    if reward > 0 {
+    let (gold, experience) = sac_reward(host.rand_number(0, 5), level);
+    if gold > 0 {
         let purse = world::gold(host, ch);
-        world::set_gold(host, ch, purse.saturating_add(reward));
+        world::set_gold(host, ch, purse.saturating_add(gold));
+    }
+    if experience > 0 {
+        host.char_gain_exp(ch, i32::try_from(experience).unwrap_or(i32::MAX));
     }
     let (Some(obj_entity), Some(room_entity)) = (host.entity(obj), host.entity(room)) else {
         return;
@@ -1238,4 +1239,36 @@ pub fn do_sac(host: Host<'_, '_>, ch: Uid, argument: &str) {
         world::obj_to_room(host, item, room_entity);
     }
     world::extract_obj(host, obj_entity);
+}
+
+/// `do_sac`'s `rand_number(0, 5)` reward as `(gold, experience)`
+/// (`act.item.c:1599`). The pack's NPCs gain experience too, so a scripted
+/// sacrifice can award it.
+fn sac_reward(roll: i64, level: i64) -> (i64, i64) {
+    match roll {
+        0 => (1, 0),
+        2 => (0, level.saturating_mul(2).saturating_add(1)),
+        3 => (0, level.saturating_add(1)),
+        4 => (level.saturating_add(1), 0),
+        5 => (level.saturating_mul(2).saturating_add(1), 0),
+        _ => (0, 0),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #![allow(clippy::expect_used, clippy::unwrap_used)]
+
+    use super::sac_reward;
+
+    #[test]
+    fn sacrifice_rewards_match_the_c() {
+        // `do_sac`'s `rand_number(0, 5)` switch.
+        assert_eq!(sac_reward(0, 10), (1, 0));
+        assert_eq!(sac_reward(1, 10), (0, 0));
+        assert_eq!(sac_reward(2, 10), (0, 21));
+        assert_eq!(sac_reward(3, 10), (0, 11));
+        assert_eq!(sac_reward(4, 10), (11, 0));
+        assert_eq!(sac_reward(5, 10), (21, 0));
+    }
 }

@@ -88,28 +88,6 @@ fn tell_ok(host: &mut EcsHost<'_>, ch: Uid, vict: Uid) -> bool {
     {
         return false;
     }
-    let playing = host
-        .entity(vict)
-        .is_some_and(|entity| out::is_playing(host.world, entity));
-    if host.is_npc(vict) || !playing {
-        if !host.is_npc(vict) {
-            act_full(
-                host,
-                "$E's linkless at the moment.",
-                false,
-                Some(ch),
-                ActObj::None,
-                ActVict::Char(vict),
-                To::Char,
-                Flags {
-                    sleep: true,
-                    no_trig: false,
-                },
-            );
-            return false;
-        }
-        return true;
-    }
     let vict_room = host
         .entity(vict)
         .and_then(|e| host.world.get::<mib_stdlib::prelude::Location>(e))
@@ -132,6 +110,28 @@ fn tell_ok(host: &mut EcsHost<'_>, ch: Uid, vict: Uid) -> bool {
             },
         );
         return false;
+    }
+    let playing = host
+        .entity(vict)
+        .is_some_and(|entity| out::is_playing(host.world, entity));
+    if host.is_npc(vict) || !playing {
+        if !host.is_npc(vict) {
+            act_full(
+                host,
+                "$E's linkless at the moment.",
+                false,
+                Some(ch),
+                ActObj::None,
+                ActVict::Char(vict),
+                To::Char,
+                Flags {
+                    sleep: true,
+                    no_trig: false,
+                },
+            );
+            return false;
+        }
+        return true;
     }
     true
 }
