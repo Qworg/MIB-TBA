@@ -303,3 +303,15 @@ pub fn mud_command_name(prefix: &str) -> Option<String> {
         .find(|cmd| cmd.name.starts_with(prefix))
         .map(|cmd| cmd.name.to_owned())
 }
+
+/// The mob command words the pack models, in `cmd_info[]` order: every command
+/// the game's `command_interpreter` recognizes whose handler is not
+/// [`Handler::Unmodelled`](table::Handler::Unmodelled). The converter's corpus
+/// coverage reports a mob line whose first word is one of these as supported.
+pub fn supported_mob_words() -> Vec<&'static str> {
+    COMMANDS
+        .iter()
+        .filter(|cmd| !matches!(cmd.handler, Handler::Unmodelled))
+        .map(|cmd| cmd.name)
+        .collect()
+}

@@ -1377,24 +1377,29 @@ fn a_bit_affect_is_found_by_its_spell_and_logged_as_inert() {
 }
 
 #[test]
-fn affects_on_an_npc_are_recorded_but_change_no_statistic() {
+fn affects_on_an_npc_change_its_statistics() {
     let mut app = pack_app();
     let temple = room(&mut app, 1);
     let guard = mob(&mut app, temple, 3, "g", 4);
     let g = uid(&mut app, guard);
     let before = app.world().get::<TbaCombatant>(guard).unwrap().clone();
     run(&mut app, |host| {
+        // APPLY_DAMROLL +6, permanent: the buff counts for an NPC too.
         host.magic_add_dg_affect(g, SPELL_DG_AFFECT, 19, 6, -1, None);
         assert!(host.char_affected_by_spell(g, SPELL_DG_AFFECT));
         host.char_affect_total(g);
     });
-    assert_eq!(*app.world().get::<TbaCombatant>(guard).unwrap(), before);
-    assert_eq!(count(&app, "magic_npc_affect"), 1);
-    assert_eq!(count(&app, "char_npc_affects"), 1);
+    assert_ne!(
+        *app.world().get::<TbaCombatant>(guard).unwrap(),
+        before,
+        "the NPC's buff is folded into its combatant"
+    );
     run(&mut app, |host| {
         host.magic_remove_dg_affects(g, SPELL_DG_AFFECT);
         assert!(!host.char_affected_by_spell(g, SPELL_DG_AFFECT));
+        host.char_affect_total(g);
     });
+    assert_eq!(*app.world().get::<TbaCombatant>(guard).unwrap(), before);
 }
 
 #[test]
@@ -1603,7 +1608,7 @@ fn spells_without_a_pack_effect_are_counted() {
 }
 
 #[test]
-fn a_cast_on_an_npc_logs_that_buffs_do_nothing_there() {
+fn a_cast_on_an_npc_folds_its_buff_into_the_combatant() {
     let mut app = pack_app();
     let temple = room(&mut app, 1);
     let alice = hero(&mut app, temple, "Alice", 7, "cleric", 10);
@@ -1613,7 +1618,7 @@ fn a_cast_on_an_npc_logs_that_buffs_do_nothing_there() {
         host.magic_call_magic(a, Some(g), None, 39, 10);
         assert!(host.char_affected_by_spell(g, 39));
     });
-    assert_eq!(count(&app, "magic_npc_affect"), 1);
+    assert_eq!(count(&app, "magic_npc_affect"), 0);
 }
 
 #[test]

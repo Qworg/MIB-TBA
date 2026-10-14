@@ -376,9 +376,9 @@ pub struct UnknownCommand {
 
 /// The mob-owned lines handed to the game's command interpreter.
 ///
-/// The game's list of supported mob command words is wired in separately
-/// ([`split_mud_commands`]); until then it is empty, so every word is
-/// unsupported.
+/// The game's list of supported mob command words comes from the NPC command
+/// interpreter's `cmd_info[]` table ([`split_mud_commands`]); a word is
+/// supported when the interpreter recognizes it and models its outcome.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize)]
 pub struct MudCommandCoverage {
     /// Lines in all.

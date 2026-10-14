@@ -37,11 +37,9 @@
 //! (`AFF_DETECT_INVIS`, `AFF_SENSE_LIFE`, `AFF_SNEAK`, `AFF_HIDE`) sets it
 //! while the marker lives; hide and sneak have no clock of their own, so a
 //! timed one ends when the marker is next pruned (any `dg_affect` or
-//! `affect_from_char` on the character). Buffs only take effect on players:
-//! the NPC recompute passes none (see `recompute_npc_equipment_affects`), so an
-//! NPC's affect (script or cast) is recorded, found by `affected_by_spell` and
-//! removable, but changes no statistic; that gap is logged as
-//! `magic_npc_affect`.
+//! `affect_from_char` on the character). Buffs take effect on players and on
+//! NPCs alike: `recompute_equipment_affects` and
+//! `recompute_npc_equipment_affects` fold them into the combatant.
 
 use dg_vm::dispatch::{cast_mtrigger, cast_otrigger, cast_wtrigger};
 use dg_vm::fields_char::CharHost;
@@ -846,14 +844,7 @@ impl MagicHost for EcsHost<'_> {
                         .any(|buff| !buff.is_pinned() && &buff.affect == affect)
                 })
             {
-                if npc {
-                    self.unsupported(
-                        "magic_npc_affect",
-                        "buffs do not change an NPC's statistics",
-                    );
-                } else {
-                    self.rebuild(entity);
-                }
+                self.rebuild(entity);
             }
         }
     }
@@ -982,12 +973,6 @@ impl MagicHost for EcsHost<'_> {
                 self.world
                     .entity_mut(entity)
                     .insert(TbaBuffs { buffs: vec![buff] });
-            }
-            if self.world.get::<Npc>(entity).is_some() {
-                self.unsupported(
-                    "magic_npc_affect",
-                    "buffs do not change an NPC's statistics",
-                );
             }
         }
         let mark = DgAffect {

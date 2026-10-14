@@ -2345,8 +2345,10 @@ fn map_triggers(source: &ZoneSource, bundle: &mut OutputBundle) {
 /// The corpus coverage of every emitted script, from `dg_vm::analyze`.
 ///
 /// Each script is analysed as the owner type its record was authored for. The
-/// game's list of mob command words is not wired in yet, so every mob mud
-/// command counts as unsupported.
+/// game's supported mob command words come from the NPC command interpreter's
+/// `cmd_info[]` table (`mib_tba::dg::mobcmd`), so a mob line is unsupported
+/// only when the interpreter does not model its first word (or does not
+/// recognize it at all).
 fn trigger_coverage(triggers: &TriggersFile) -> TriggerCoverage {
     let mut corpus = Corpus::default();
     let mut by_attach_type: BTreeMap<String, usize> = BTreeMap::new();
@@ -2362,7 +2364,8 @@ fn trigger_coverage(triggers: &TriggersFile) -> TriggerCoverage {
         };
         corpus.add(def.vnum, &analyze(&def.script, attach));
     }
-    let mut coverage = TriggerCoverage::from_corpus(&corpus, by_attach_type, &[]);
+    let supported = mib_tba::dg::mobcmd::supported_mob_words();
+    let mut coverage = TriggerCoverage::from_corpus(&corpus, by_attach_type, &supported);
     coverage.records = triggers.triggers.len();
     coverage
 }

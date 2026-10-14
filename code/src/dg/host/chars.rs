@@ -356,8 +356,8 @@ impl EcsHost<'_> {
     }
 
     /// Rebuild a character's `TbaCombatant` now, as the frame's recompute
-    /// would: from class and level (players) or `TbaNpcBase` (equipped NPCs),
-    /// worn items and, for players, buffs.
+    /// would: from class and level (players) or `TbaNpcBase` (NPCs), worn
+    /// items and buffs.
     pub(super) fn rebuild(&mut self, entity: Entity) {
         let Some(current) = self.world.get::<TbaCombatant>(entity).cloned() else {
             return;
@@ -379,11 +379,13 @@ impl EcsHost<'_> {
                 .map(|buffs| buffs.affects().cloned().collect())
                 .unwrap_or_default();
             recompute_combatant_full(&current, base, worn.iter(), buffs.iter())
-        } else if let (Some(base), Some(_)) = (
-            self.world.get::<TbaNpcBase>(entity),
-            self.world.get::<TbaEquipment>(entity),
-        ) {
-            recompute_combatant_full(&current, base.0.clone(), worn.iter(), std::iter::empty())
+        } else if let Some(base) = self.world.get::<TbaNpcBase>(entity) {
+            let buffs: Vec<AffectDef> = self
+                .world
+                .get::<TbaBuffs>(entity)
+                .map(|buffs| buffs.affects().cloned().collect())
+                .unwrap_or_default();
+            recompute_combatant_full(&current, base.0.clone(), worn.iter(), buffs.iter())
         } else {
             return;
         };
@@ -802,26 +804,13 @@ impl CharHost for EcsHost<'_> {
     }
 
     /// Rebuilds the combatant from its definition now rather than at the next
-    /// frame (`affect_total`). An NPC without equipment has nothing to
-    /// rebuild: its buffs do not count in the pack (the recompute for NPCs
-    /// passes none), which is logged when it carries any.
+    /// frame (`affect_total`). NPC buffs count, like a player's.
     fn char_affect_total(&mut self, ch: Uid) {
         self.flush_reads();
         let Some(entity) = self.character(ch) else {
             return;
         };
         self.rebuild(entity);
-        if self.is_npc_entity(entity)
-            && self
-                .world
-                .get::<TbaDgAffects>(entity)
-                .is_some_and(|affects| !affects.0.is_empty())
-        {
-            self.unsupported(
-                "char_npc_affects",
-                "buffs and script affects do not change an NPC's statistics",
-            );
-        }
     }
 
     /// `compute_armor_class`: `GET_AC` plus ten times the dexterity bonus for

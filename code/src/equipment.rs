@@ -794,21 +794,33 @@ pub fn recompute_equipment_affects(
 #[allow(clippy::type_complexity)] // one ECS view per optional NPC component.
 pub fn recompute_npc_equipment_affects(
     content: Option<Res<TbaContent>>,
-    npcs: Query<(Entity, &TbaNpcBase, &TbaEquipment, &mut TbaCombatant), Without<Player>>,
+    npcs: Query<
+        (
+            Entity,
+            &TbaNpcBase,
+            Option<&TbaEquipment>,
+            Option<&TbaBuffs>,
+            &mut TbaCombatant,
+        ),
+        Without<Player>,
+    >,
     items: Query<&Item>,
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
-    for (_npc, base, equipment, mut combatant) in npcs {
+    for (_npc, base, equipment, buffs, mut combatant) in npcs {
         let worn: Vec<&TbaItemDef> = equipment
-            .slots
-            .values()
+            .into_iter()
+            .flat_map(|equipment| equipment.slots.values())
             .filter_map(|item_entity| {
                 let prototype = items.get(*item_entity).ok()?;
                 content.items.get(&prototype.def_id)
             })
             .collect();
-        let next = recompute_combatant_full(&combatant, base.0.clone(), worn, std::iter::empty());
+        let buff_affects: Vec<&AffectDef> = buffs
+            .map(|buffs| buffs.affects().collect())
+            .unwrap_or_default();
+        let next = recompute_combatant_full(&combatant, base.0.clone(), worn, buff_affects);
         if *combatant != next {
             *combatant = next;
         }

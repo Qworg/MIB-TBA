@@ -100,12 +100,12 @@ fn fixture_bundle_is_schema_exact_and_deterministic() {
         Some(&1)
     );
     // `say Hello from a DG trigger.` on a mob is a line for the game's
-    // command interpreter, and no word is supported yet.
+    // command interpreter, and `say` is a command the interpreter models.
     let coverage = &first.report.trigger_coverage;
     assert_eq!(coverage.lines_by_class.get("mud_command"), Some(&1));
     assert_eq!(coverage.mud_commands.lines, 1);
-    assert_eq!(coverage.mud_commands.unsupported.get("say"), Some(&1));
-    assert!(coverage.mud_commands.supported.is_empty());
+    assert_eq!(coverage.mud_commands.supported.get("say"), Some(&1));
+    assert!(coverage.mud_commands.unsupported.is_empty());
     assert_eq!(coverage.structural_errors.count, 0);
     assert!(coverage.unknown_object_commands.is_empty());
 
@@ -1374,15 +1374,20 @@ fn trigger_coverage_reports_the_analysis_totals() {
         assert!(word.vnums.windows(2).all(|pair| pair[0] < pair[1]));
     }
 
-    // The game's word list is not wired in: every mob mud command is
-    // unsupported.
+    // The game's word list is wired in from the NPC command interpreter
+    // (`cmd_info[]`): a word it models is supported, the rest are gaps.
     let mud = &coverage.mud_commands;
     assert_eq!(mud.lines, coverage.lines_by_class["mud_command"]);
-    assert!(mud.supported.is_empty());
-    assert_eq!(mud.unsupported.values().sum::<usize>(), mud.lines);
+    assert!(!mud.supported.is_empty());
+    assert_eq!(
+        mud.supported.values().sum::<usize>() + mud.unsupported.values().sum::<usize>(),
+        mud.lines
+    );
+    assert!(mud.supported.contains_key("say"));
     // A line that does not start with a letter is keyed by its first
-    // character, as the game's command interpreter takes it.
-    assert!(mud.unsupported.contains_key("'"));
+    // character (`'` is `say`), as the game's command interpreter takes it.
+    assert!(mud.supported.contains_key("'"));
+    assert!(!mud.supported.contains_key("'but"));
     assert!(!mud.unsupported.contains_key("'but"));
 
     assert_eq!(
