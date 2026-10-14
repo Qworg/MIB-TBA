@@ -2941,6 +2941,7 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "dg-vm",
+ "mib-bridge",
  "mib-content",
  "mib-core",
  "mib-host",

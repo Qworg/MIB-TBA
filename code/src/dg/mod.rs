@@ -156,6 +156,13 @@ impl DgLog {
     pub fn count(&self, key: &str) -> u64 {
         self.counts.get(key).copied().unwrap_or(0)
     }
+
+    /// Every key reported so far, with its count (for the corpus smoke).
+    pub fn keys(&self) -> impl Iterator<Item = (&str, u64)> {
+        self.counts
+            .iter()
+            .map(|(key, count)| (key.as_str(), *count))
+    }
 }
 
 /// Install the runtime's resources and systems.
