@@ -478,21 +478,10 @@ pub fn unequip_char(host: &mut EcsHost<'_>, ch: Entity, slot: WearSlot) -> Optio
 
 // -- moving characters and following ------------------------------------------
 
-/// The pack's exit for a direction index of the C (`NORTH`..`SOUTHWEST`).
+/// The pack's exit for a direction index of the C (`NORTH`..`SOUTHWEST`),
+/// from the host's one direction table.
 pub fn exit_key(dir: usize) -> Option<ExitKey> {
-    Some(match dir {
-        0 => ExitKey::North,
-        1 => ExitKey::East,
-        2 => ExitKey::South,
-        3 => ExitKey::West,
-        4 => ExitKey::Up,
-        5 => ExitKey::Down,
-        6 => ExitKey::Northwest,
-        7 => ExitKey::Northeast,
-        8 => ExitKey::Southeast,
-        9 => ExitKey::Southwest,
-        _ => return None,
-    })
+    crate::dg::host::exit_key(dir)
 }
 
 /// `rev_dir[dir]`.

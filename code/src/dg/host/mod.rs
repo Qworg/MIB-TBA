@@ -20,6 +20,9 @@ mod rooms;
 mod subst;
 
 pub use objs::DgObjOverride;
+pub use rooms::{dir_number, exit_key};
+
+pub use commands::DgNowhereExits;
 
 use std::collections::HashSet;
 use std::sync::Arc;

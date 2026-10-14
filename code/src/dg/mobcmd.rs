@@ -180,7 +180,10 @@ pub struct ForcedCommands {
 const FORCED_KEPT: usize = 256;
 
 impl ForcedCommands {
-    fn record(&mut self, id: CommandId, busy: Vec<(Uid, u64)>) {
+    /// Remember that command `id` was forced while the triggers in `busy` were
+    /// running or waiting. Called by `force_player`; public so the command
+    /// gate's test can seed a record.
+    pub fn record(&mut self, id: CommandId, busy: Vec<(Uid, u64)>) {
         if self.entries.len() >= FORCED_KEPT {
             self.entries.pop_front();
         }
@@ -194,6 +197,18 @@ impl ForcedCommands {
         self.entries
             .iter()
             .any(|(forced, busy)| *forced == id && busy.contains(&(owner, trigger)))
+    }
+
+    /// The `(owner, trigger)` pairs that were running or waiting when command
+    /// `id` was forced. The command gate holds each busy for the length of the
+    /// offer, which is how `TRIGGER_CHECK` skips the trigger when the forced
+    /// command runs inside the trigger that forced it.
+    pub fn busy_for(&self, id: CommandId) -> Vec<(Uid, u64)> {
+        self.entries
+            .iter()
+            .find(|(forced, _)| *forced == id)
+            .map(|(_, busy)| busy.clone())
+            .unwrap_or_default()
     }
 
     /// Forget command `id` once it has been routed.

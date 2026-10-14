@@ -21,6 +21,7 @@ use mib_stdlib::content::{RoomTag, Sector};
 use mib_stdlib::prelude::{Doors, Exits, Room, RoomState};
 
 use super::EcsHost;
+use super::commands::DgNowhereExits;
 use crate::dg::ids::vnum_from_id;
 
 /// `EX_ISDOOR`, `EX_CLOSED`, `EX_LOCKED`, `EX_PICKPROOF` and `EX_HIDDEN` of
@@ -56,7 +57,6 @@ pub fn exit_key(dir: usize) -> Option<ExitKey> {
 
 /// The DG direction number of an engine direction. `In` and `Out` have none.
 /// The inverse of [`exit_key`], for the host traits that take an engine exit.
-#[allow(dead_code)]
 pub fn dir_number(key: ExitKey) -> Option<usize> {
     DIR_KEYS.iter().position(|candidate| *candidate == key)
 }
@@ -115,23 +115,32 @@ impl EcsHost<'_> {
 }
 
 impl RoomHost for EcsHost<'_> {
-    /// `to_room` is `None` when the exit's destination is gone. A door is an
-    /// authored [`Doors`] entry, as the engine's movement gate treats it (a
-    /// [`RoomState`] door entry alone is not one); its closed and locked state
-    /// is the runtime one, falling back to the authored default. The key is the
-    /// vnum of the door's key item. The converter keeps a key only for a door
-    /// with a real key item, so every other exit, including a C key of 0, reads
-    /// `65535` (`NOTHING`). Exits with no destination room (description-only
-    /// ones) are dropped by the converter and read as no exit. `EX_HIDDEN` is a direction in
-    /// [`Exits::hidden`].
+    /// `to_room` is `None` when the exit's destination is gone or leads
+    /// `NOWHERE`. A door is an authored [`Doors`] entry, as the engine's
+    /// movement gate treats it (a [`RoomState`] door entry alone is not one);
+    /// its closed and locked state is the runtime one, falling back to the
+    /// authored default. The key is the vnum of the door's key item. The
+    /// converter keeps a key only for a door with a real key item, so every
+    /// other exit, including a C key of 0, reads `65535` (`NOTHING`). Exits
+    /// with no destination room (description-only ones) are dropped by the
+    /// converter and read as no exit, unless a script's `set exit` marked the
+    /// direction as leading `NOWHERE` ([`DgNowhereExits`]), which is still an
+    /// exit. `EX_HIDDEN` is a direction in [`Exits::hidden`].
     fn room_exit(&self, room: Uid, dir: usize) -> Option<RoomExit> {
         let (entity, _) = self.room_entity(room)?;
         let key = exit_key(dir)?;
-        let destination = *self.world.get::<Exits>(entity)?.map.get(&key)?;
-        let to_room = self
+        let exits = self.world.get::<Exits>(entity);
+        let destination = exits.and_then(|exits| exits.map.get(&key).copied());
+        let nowhere = self
             .world
-            .get::<Room>(destination)
-            .and_then(|_| self.uid(destination));
+            .get::<DgNowhereExits>(entity)
+            .is_some_and(|nowhere| nowhere.0.contains(&key));
+        if destination.is_none() && !nowhere {
+            return None;
+        }
+        let to_room = destination
+            .and_then(|destination| self.world.get::<Room>(destination).map(|_| destination))
+            .and_then(|destination| self.uid(destination));
         let door = self
             .world
             .get::<Doors>(entity)
@@ -144,11 +153,7 @@ impl RoomHost for EcsHost<'_> {
         if door.is_some() {
             info |= EX_ISDOOR;
         }
-        if self
-            .world
-            .get::<Exits>(entity)
-            .is_some_and(|exits| exits.hidden.contains(&key))
-        {
+        if exits.is_some_and(|exits| exits.hidden.contains(&key)) {
             info |= EX_HIDDEN;
         }
         let closed = door.is_some()

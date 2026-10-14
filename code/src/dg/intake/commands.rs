@@ -259,12 +259,53 @@ pub fn command_gate(world: &mut World, mut cursor: Local<MessageCursor<CommandRe
             let Some(actor) = host.uid(msg.session) else {
                 return false;
             };
-            command_wtrigger(host, actor, &cmd, &argument) != 0
+            // The triggers that were running when this line was forced stay
+            // busy for the offer, as `TRIGGER_CHECK` would find them if the
+            // forced command ran inside the trigger that forced it.
+            let held = hold_busy(host, msg.id);
+            let taken = command_wtrigger(host, actor, &cmd, &argument) != 0
                 || command_mtrigger(host, actor, &cmd, &argument) != 0
-                || command_otrigger(host, actor, &cmd, &argument) != 0
+                || command_otrigger(host, actor, &cmd, &argument) != 0;
+            release_busy(host, &held);
+            taken
         });
         if taken {
             claim(world, &msg);
+        }
+        // The record of what was busy is spent once the command was offered.
+        if let Some(mut forced) = world.get_resource_mut::<crate::dg::mobcmd::ForcedCommands>() {
+            forced.forget(msg.id);
+        }
+    }
+}
+
+/// Hold busy, for the length of the offer, every trigger that was running or
+/// waiting when command `id` was forced. Returns the pairs held.
+fn hold_busy(host: &mut EcsHost<'_>, id: CommandId) -> Vec<(dg_vm::Uid, u64)> {
+    let busy = host
+        .world
+        .get_resource::<crate::dg::mobcmd::ForcedCommands>()
+        .map(|forced| forced.busy_for(id))
+        .unwrap_or_default();
+    for (owner, trigger) in &busy {
+        if let Some(trig) = host
+            .script_mut(*owner)
+            .and_then(|script| script.trigger_mut(*trigger))
+        {
+            trig.run.depth = trig.run.depth.max(1);
+        }
+    }
+    busy
+}
+
+/// Let the triggers [`hold_busy`] held go idle again.
+fn release_busy(host: &mut EcsHost<'_>, held: &[(dg_vm::Uid, u64)]) {
+    for (owner, trigger) in held {
+        if let Some(trig) = host
+            .script_mut(*owner)
+            .and_then(|script| script.trigger_mut(*trigger))
+        {
+            trig.run.depth = 0;
         }
     }
 }

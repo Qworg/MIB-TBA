@@ -1308,6 +1308,26 @@ fn an_exit_whose_destination_is_gone_leads_nowhere_but_exists() {
 }
 
 #[test]
+fn a_script_exit_to_nowhere_still_reads_as_an_exit() {
+    let mut app = app();
+    let hall = room(&mut app, 1);
+    let hall_id = uid(&mut app, hall);
+    // What `set exit <dir> none` leaves: no destination, but the direction is
+    // still an exit that leads NOWHERE.
+    app.world_mut()
+        .entity_mut(hall)
+        .insert(mib_tba::dg::host::DgNowhereExits(
+            std::collections::BTreeSet::from([ExitKey::East]),
+        ));
+    run(&mut app, |host| {
+        let exit = host.room_exit(hall_id, 1).expect("the nowhere exit exists");
+        assert_eq!(exit.to_room, None);
+        // A direction with no exit at all is still none.
+        assert_eq!(host.room_exit(hall_id, 2), None);
+    });
+}
+
+#[test]
 fn the_room_field_table_reads_exits_zones_and_flags() {
     let mut app = app();
     zone(&mut app, 30, "Midgaard", 3000, 3099);

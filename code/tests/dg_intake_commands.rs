@@ -482,6 +482,49 @@ fn a_say_a_command_trigger_took_over_is_not_spoken() {
     assert!(is_handled(&app, 1));
 }
 
+#[test]
+fn a_forced_command_is_not_offered_to_the_trigger_that_was_running() {
+    use mib_tba::dg::mobcmd::ForcedCommands;
+    use mib_tba::dg::script::DgScript;
+    let mut app = intake_app();
+    let a = room(&mut app, 1);
+    define_arg(&mut app, 11, "mob", "c", 0, "*", &ran_then(1));
+    attach(&mut app, "npc:tba_npc_5", &[11]);
+    let guard = npc(&mut app, a, 5, "the guard");
+    let alice = seated_player(&mut app, a);
+    // `uid` attaches the prototype triggers, so the script exists.
+    let guard_id = uid(&mut app, guard);
+    // The guard's trigger is running while it forces the player's line.
+    let trigger = {
+        let mut script = app.world_mut().get_mut::<DgScript>(guard).unwrap();
+        let trigger = script.0.triggers.first_mut().unwrap();
+        trigger.run.depth = 1;
+        trigger.id
+    };
+    let id = 41;
+    app.world_mut()
+        .get_resource_or_insert_with(ForcedCommands::default)
+        .record(CommandId(id), vec![(guard_id, trigger)]);
+    send(&mut app, id, alice, line("look"));
+    assert!(
+        !ran(&mut app, guard),
+        "the forcer does not catch its own line"
+    );
+    assert_eq!(
+        app.world()
+            .get::<DgScript>(guard)
+            .unwrap()
+            .0
+            .triggers
+            .first()
+            .unwrap()
+            .run
+            .depth,
+        0,
+        "the trigger is idle again after the offer"
+    );
+}
+
 fn wave() -> SocialDef {
     SocialDef {
         sort_as: "wave".into(),

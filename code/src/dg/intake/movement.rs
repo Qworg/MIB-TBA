@@ -107,21 +107,9 @@ struct PreMove {
 pub struct DgPreMoves(HashMap<Entity, PreMove>);
 
 /// The DG direction number (`NORTH`..`SOUTHWEST`) of an exit, or `-1` for the
-/// pack's `in` and `out`.
+/// pack's `in` and `out`, from the host's one direction table.
 pub fn dg_dir(key: ExitKey) -> i32 {
-    match key {
-        ExitKey::North => 0,
-        ExitKey::East => 1,
-        ExitKey::South => 2,
-        ExitKey::West => 3,
-        ExitKey::Up => 4,
-        ExitKey::Down => 5,
-        ExitKey::Northwest => 6,
-        ExitKey::Northeast => 7,
-        ExitKey::Southeast => 8,
-        ExitKey::Southwest => 9,
-        ExitKey::In | ExitKey::Out => -1,
-    }
+    crate::dg::host::dir_number(key).map_or(-1, |dir| i32::try_from(dir).unwrap_or(-1))
 }
 
 /// The room an entity stands in.

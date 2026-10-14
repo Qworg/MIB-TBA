@@ -44,21 +44,10 @@ pub(super) enum Field {
 /// `BaseHost::unsupported`.
 pub(super) type Unmodelled = (&'static str, &'static str);
 
-/// The exit of a DG direction number (`NORTH` 0 to `SOUTHWEST` 9).
+/// The exit of a DG direction number (`NORTH` 0 to `SOUTHWEST` 9), from the
+/// host's one direction table.
 pub(super) fn dir_key(dir: usize) -> Option<ExitKey> {
-    const DIRS: [ExitKey; 10] = [
-        ExitKey::North,
-        ExitKey::East,
-        ExitKey::South,
-        ExitKey::West,
-        ExitKey::Up,
-        ExitKey::Down,
-        ExitKey::Northwest,
-        ExitKey::Northeast,
-        ExitKey::Southeast,
-        ExitKey::Southwest,
-    ];
-    DIRS.get(dir).copied()
+    crate::dg::host::exit_key(dir)
 }
 
 /// Whether the room has an exit that way, leading anywhere or `NOWHERE`.
