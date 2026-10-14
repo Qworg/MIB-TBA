@@ -129,14 +129,18 @@ fn apart(world: &World, a: Entity, b: Entity) -> bool {
     }
 }
 
-/// `stop_fighting(attacker)`: no target, and a fighter stands again (the
-/// position is what keeps the AI systems from engaging anyone else).
+/// `stop_fighting(attacker)`: no target, and the position follows the hit
+/// points as `fight.c` does (set `POS_STANDING`, then `update_pos` corrects
+/// it). A fighter still on its feet stands again, which is what lets
+/// `auto_engage_system` engage it later; one at zero hit points stays dead.
 fn stop_fighting(world: &mut World, attacker: Entity) {
     if let Some(mut combatant) = world.get_mut::<TbaCombatant>(attacker) {
         combatant.target = None;
-        if combatant.is_alive() {
-            combatant.position = Position::Standing;
-        }
+        combatant.position = if combatant.hp > 0 {
+            Position::Standing
+        } else {
+            Position::Dead
+        };
     }
 }
 
