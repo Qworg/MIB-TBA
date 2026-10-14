@@ -87,3 +87,33 @@ verbs:
   pick_lock:
     description: Pick a locked door in a named direction.
     effects: []
+  wear:
+    description: Wear an object, optionally on a named part of the body.
+    effects: []
+  wield:
+    description: Wield a weapon.
+    effects: []
+  hold:
+    description: Hold an object, or light a light.
+    effects: []
+  grab:
+    description: Hold an object, or light a light.
+    effects: []
+  remove:
+    description: Stop using something you wear.
+    effects: []
+  eat:
+    description: Eat some food.
+    effects: []
+  taste:
+    description: Taste some food or a drink.
+    effects: []
+  drink:
+    description: Drink from a container or a fountain.
+    effects: []
+  sip:
+    description: Sip from a container or a fountain.
+    effects: []
+  quaff:
+    description: Drink a potion.
+    effects: []
