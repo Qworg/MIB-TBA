@@ -673,6 +673,40 @@ fn lethal_hit_on_an_npc_despawns_it() {
 // ---------------------------------------------------------------------------
 
 #[test]
+fn pursuit_does_not_offer_a_move_a_trigger_refused() {
+    use mib_tba::dg::intake::movement::DgRefusals;
+    let mut app = test_app(content_with(&[("wolf", Vec::new())]));
+    let world = app.world_mut();
+    let home = spawn_room(world);
+    let chase = spawn_room(world);
+    let player = spawn_player(world, chase, 0);
+    let wolf = spawn_npc(world, home, "wolf");
+    world.entity_mut(home).insert(Exits {
+        map: HashMap::from([(
+            ExitKey::from_word("north").expect("north is a direction"),
+            chase,
+        )]),
+        hidden: BTreeSet::new(),
+    });
+    run_fixed(&mut app);
+    app.world_mut()
+        .get_mut::<TbaCombatant>(wolf)
+        .unwrap()
+        .target = Some(player);
+    // A leave trigger refused this very move (`observe_movement` records it).
+    app.world_mut().insert_resource(DgRefusals::default());
+    app.world_mut()
+        .resource_mut::<DgRefusals>()
+        .refuse(wolf, home, chase);
+    run_fixed(&mut app);
+    assert_eq!(
+        app.world().get::<Location>(wolf).unwrap().room,
+        home,
+        "pursuit does not re-offer a move a trigger refused"
+    );
+}
+
+#[test]
 fn sentinel_holds_its_room_while_a_plain_mob_follows() {
     let mut app = test_app(content_with(&[
         ("guard", vec![NpcBehaviour::Sentinel]),

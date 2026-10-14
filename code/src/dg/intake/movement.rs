@@ -611,7 +611,10 @@ impl DgRefusals {
             .is_some_and(|(was, wanted, _)| *was == from && *wanted == to)
     }
 
-    fn refuse(&mut self, mover: Entity, from: Entity, to: Entity) {
+    /// Record that `mover`'s move from `from` to `to` was refused, so it is
+    /// not offered again until the refusal cools. Public so a test can seed
+    /// one; `observe_movement` calls it on a sent-back NPC.
+    pub fn refuse(&mut self, mover: Entity, from: Entity, to: Entity) {
         let until = self.tick.wrapping_add(REFUSAL_COOLDOWN);
         self.moves.insert(mover, (from, to, until));
     }
