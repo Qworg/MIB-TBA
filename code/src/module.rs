@@ -205,6 +205,9 @@ impl Plugin for TbaPlugin {
             // Item timers are item-scoped; `DocKind::Item` is already writable
             // because the stdlib registers `Item` under it.
             crate::items::register(&mut registry);
+            // A script's per-instance object changes (values, cost, rent,
+            // weight, applies, alias) are saved with the item too.
+            registry.register::<crate::dg::host::DgObjOverride>("DgObjOverride", DocKind::Item);
         }
 
         // Register the messages the gameplay reads so a bare `TbaPlugin`
@@ -409,6 +412,7 @@ mod tests {
         assert!(registered.contains(&"TbaEquipment"), "{registered:?}");
         assert!(registered.contains(&"TbaBuffs"), "{registered:?}");
         assert!(registered.contains(&"TbaItemTimer"), "{registered:?}");
+        assert!(registered.contains(&"DgObjOverride"), "{registered:?}");
         assert!(registered.contains(&"TbaTriggerVars"), "{registered:?}");
         assert!(registered.contains(&"TbaNpcPurse"), "{registered:?}");
         assert!(registered.contains(&"TbaCharExtras"), "{registered:?}");

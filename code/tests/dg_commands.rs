@@ -17,6 +17,7 @@ use std::path::PathBuf;
 
 use dg_common::*;
 use dg_vm::commands::{CmdHost, ExitField};
+use dg_vm::fields_obj::ObjHost;
 use dg_vm::lookup::{WEAR_BODY, WEAR_HEAD, WEAR_WIELD};
 use dg_vm::types::UID_CHAR;
 use dg_vm::{BaseHost, Uid, WorldHost};
@@ -1883,6 +1884,8 @@ fn an_object_transformed_takes_the_new_prototypes_timer() {
         .entity_mut(old)
         .insert(TbaItemTimer { remaining: 9 });
     let o = uid(&mut app, old);
+    // A script change on the object is part of what the transform replaces.
+    run(&mut app, |host| host.obj_set_cost(o, 999));
     // The new prototype has no timer: the old one goes.
     define_item(&mut app, 3001, TbaItemKind::Other, &[], &["sword"]);
     let temp = run(&mut app, |host| host.cmd_read_object(3001)).unwrap();
@@ -1891,6 +1894,11 @@ fn an_object_transformed_takes_the_new_prototypes_timer() {
         host.cmd_extract_obj(temp);
     });
     assert!(app.world().get::<TbaItemTimer>(old).is_none());
+    assert_eq!(
+        run(&mut app, |host| host.obj_cost(o)),
+        0,
+        "the transform clears the script's override"
+    );
     // A prototype with a timer gives it, though the template never had one.
     define_item(&mut app, 3002, TbaItemKind::Other, &[], &["sack"]);
     app.world_mut()

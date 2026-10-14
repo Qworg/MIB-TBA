@@ -16,17 +16,17 @@ use std::collections::BTreeMap;
 use std::time::Duration;
 
 use dg_common::*;
+use dg_vm::WorldHost;
 use dg_vm::dispatch::DispatchHost;
 use dg_vm::fields_obj::{ITEM_TYPES, MAX_OBJ_AFFECT, ObjHost};
 use dg_vm::fields_room::{RoomExit, RoomHost};
 use dg_vm::types::{ROOM_ID_BASE, Uid};
-use dg_vm::{BaseHost, WorldHost};
 use mib_core::prelude::*;
 use mib_protocol::command::ExitKey;
 use mib_stdlib::content::{RoomTag, Sector};
 use mib_stdlib::prelude::*;
 use mib_tba::dg::DgLog;
-use mib_tba::items::{TbaItemTimer, TbaObjectClock, attach_item_timers, tick_item_timers};
+use mib_tba::items::{TbaItemTimer, attach_item_timers, tick_item_timers};
 use mib_tba::prelude::*;
 
 const EX_ISDOOR: u32 = 1;
@@ -214,7 +214,7 @@ fn a_prototype_number_beyond_an_int_saturates() {
 // -- timer -------------------------------------------------------------------
 
 #[test]
-fn a_script_timer_counts_down_by_mud_hours_and_never_despawns_the_item() {
+fn a_script_timer_counts_down_by_mud_hours_and_the_item_decays() {
     let mut app = app();
     app.add_systems(FixedUpdate, tick_item_timers);
     let temple = room(&mut app, 1);
@@ -230,71 +230,60 @@ fn a_script_timer_counts_down_by_mud_hours_and_never_despawns_the_item() {
         .insert(TbaItemTimer { remaining: 3 });
     run(&mut app, |host| assert_eq!(host.obj_timer(id), 3));
 
-    // `otimer 4`, as the cooldown items do.
+    // `otimer 4`, as the cooldown items do: one fact, the item's timer.
     run(&mut app, |host| host.obj_set_timer(id, 4));
     run(&mut app, |host| assert_eq!(host.obj_timer(id), 4));
+    assert_eq!(
+        app.world().get::<TbaItemTimer>(entity).map(|t| t.remaining),
+        Some(4)
+    );
 
     // One MUD hour is 75 seconds.
     tick(&mut app, Duration::from_secs(75));
     run(&mut app, |host| assert_eq!(host.obj_timer(id), 3));
 
-    // limits.c:469-473: at zero the C fires the Timer trigger and keeps the
-    // object; it reads 0 and stays at 0.
+    // limits.c:469-473: at zero the C runs the item's Timer trigger; this
+    // item has none, so the pack's decay takes it (`tick_item_timers`).
     tick(&mut app, Duration::from_secs(75 * 10));
-    assert!(app.world().get_entity(entity).is_ok(), "the item survives");
-    run(&mut app, |host| {
-        assert_eq!(host.obj_timer(id), 0);
-        assert!(host.exists(id));
-    });
-    // Restarting works again.
-    run(&mut app, |host| host.obj_set_timer(id, 20));
-    run(&mut app, |host| assert_eq!(host.obj_timer(id), 20));
-    assert_eq!(
-        app.world().resource::<DgLog>().count("obj.timer.persist"),
-        2
+    assert!(
+        app.world().get_entity(entity).is_err(),
+        "a timed item without a timer trigger decays"
     );
 }
 
 #[test]
-fn a_restored_script_timed_item_reads_zero_not_the_parked_sentinel() {
+fn a_restored_item_timer_reads_its_saved_value() {
     let mut app = app();
     app.add_systems(FixedUpdate, tick_item_timers);
     let temple = room(&mut app, 1);
     let (entity, id) = object(&mut app, temple, 10);
-    // What a restart leaves of a script-timed item: the saved, parked
-    // TbaItemTimer (a few hours decayed) and no override.
-    app.world_mut().entity_mut(entity).insert(TbaItemTimer {
-        remaining: u32::MAX / 2 - 3,
-    });
-    run(&mut app, |host| assert_eq!(host.obj_timer(id), 0));
+    // `TbaItemTimer` is item-scoped and saved, so a restored item reads the
+    // remaining life it was saved with, not a parked placeholder.
+    app.world_mut()
+        .entity_mut(entity)
+        .insert(TbaItemTimer { remaining: 7 });
+    run(&mut app, |host| assert_eq!(host.obj_timer(id), 7));
     tick(&mut app, Duration::from_secs(75 * 30));
-    run(&mut app, |host| assert_eq!(host.obj_timer(id), 0));
+    assert!(
+        app.world().get_entity(entity).is_err(),
+        "a restored timer ages out"
+    );
 }
 
 #[test]
-fn a_script_timer_ages_across_the_calendar_carries() {
+fn a_restored_item_timer_is_not_clobbered_by_the_prototype() {
     let mut app = app();
+    app.add_systems(FixedUpdate, (attach_item_timers, tick_item_timers).chain());
     let temple = room(&mut app, 1);
-    let (_, id) = object(&mut app, temple, 10);
-    {
-        let mut clock = app.world_mut().resource_mut::<TbaObjectClock>();
-        clock.hour_of_day = 23;
-        clock.day = 34;
-        clock.month = 16;
-        clock.year = 5;
-    }
-    run(&mut app, |host| host.obj_set_timer(id, 3));
-    {
-        // Two hours later: hour 1 of day 0, month 0, year 6.
-        let mut clock = app.world_mut().resource_mut::<TbaObjectClock>();
-        clock.hour_of_day = 1;
-        clock.day = 0;
-        clock.month = 0;
-        clock.year = 6;
-    }
-    run(&mut app, |host| assert_eq!(host.obj_timer(id), 1));
-    app.world_mut().resource_mut::<TbaObjectClock>().hour_of_day = 2;
-    run(&mut app, |host| assert_eq!(host.obj_timer(id), 0));
+    let (entity, id) = object(&mut app, temple, 10);
+    tweak(&mut app, 10, |def| def.timer = Some(9));
+    // A saved timer wins over the prototype: `attach_item_timers` leaves an
+    // existing component alone.
+    app.world_mut()
+        .entity_mut(entity)
+        .insert(TbaItemTimer { remaining: 3 });
+    tick(&mut app, Duration::from_secs(75));
+    run(&mut app, |host| assert_eq!(host.obj_timer(id), 2));
 }
 
 #[test]
@@ -311,7 +300,7 @@ fn an_out_of_range_value_or_apply_slot_writes_and_counts_nothing() {
 }
 
 #[test]
-fn a_timer_of_zero_or_less_stops_the_decay_whatever_the_prototype_says() {
+fn a_timer_of_zero_or_less_is_a_spent_timer() {
     let mut app = app();
     app.add_systems(FixedUpdate, tick_item_timers);
     let temple = room(&mut app, 1);
@@ -328,14 +317,16 @@ fn a_timer_of_zero_or_less_stops_the_decay_whatever_the_prototype_says() {
     run(&mut app, |host| assert_eq!(host.obj_timer(id), 0));
 
     run(&mut app, |host| {
+        // A negative timer is the C's spent timer (`point_update` ages only a
+        // positive one), which the pack stores as zero.
         host.obj_set_timer(id, -3);
-        assert_eq!(host.obj_timer(id), -3);
+        assert_eq!(host.obj_timer(id), 0);
         host.obj_set_timer(id, 2);
         assert_eq!(host.obj_timer(id), 2);
         host.obj_set_timer(id, i32::MAX);
         assert_eq!(host.obj_timer(id), i32::MAX);
         host.obj_set_timer(id, i32::MIN);
-        assert_eq!(host.obj_timer(id), i32::MIN);
+        assert_eq!(host.obj_timer(id), 0);
     });
 }
 
@@ -612,8 +603,9 @@ fn descriptions_are_the_items_name_and_description() {
         host.obj_set_long_desc(id, "A glowing orb floats here.");
         host.obj_set_alias(id, "orb glowing");
         assert_eq!(host.name(id), "a glowing orb");
-        // The alias is not readable back through the pack: it is counted.
-        assert!(!host.keywords(id).is_empty());
+        // `oset alias` changes the keywords scripts read back; the pack's own
+        // matching still uses the prototype, so the write is counted.
+        assert_eq!(host.keywords(id), "orb glowing");
         let long = "x".repeat(10_000);
         host.obj_set_short_desc(id, &long);
         assert_eq!(host.name(other_id), "a thing");

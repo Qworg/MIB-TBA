@@ -19,6 +19,8 @@ mod objs;
 mod rooms;
 mod subst;
 
+pub use objs::DgObjOverride;
+
 use std::collections::HashSet;
 use std::sync::Arc;
 
@@ -461,6 +463,14 @@ impl WorldHost for EcsHost<'_> {
             return npc_keywords(&npc.name);
         }
         if let Some(item) = self.world.get::<Item>(entity) {
+            if let Some(alias) = self
+                .world
+                .get::<objs::DgObjOverride>(entity)
+                .and_then(|over| over.alias.as_deref())
+                .filter(|alias| !alias.is_empty())
+            {
+                return alias.to_owned();
+            }
             return match self.item_def(entity) {
                 Some(def) if !def.keywords.is_empty() => def.keywords.join(" "),
                 _ => npc_keywords(&item.name),

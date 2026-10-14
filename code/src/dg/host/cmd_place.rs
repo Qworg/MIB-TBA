@@ -21,6 +21,7 @@ use crate::combat::{
 };
 use crate::content::WearSlot;
 use crate::dg::DgLog;
+use crate::dg::host::DgObjOverride;
 use crate::equipment::{TbaEquipment, TbaEquipmentSave};
 use crate::items::TbaItemTimer;
 use crate::module::TbaContent;
@@ -560,6 +561,9 @@ pub(super) fn overwrite_obj(world: &mut World, obj: Entity, from: Entity) {
         .map(|container| container.contents.clone());
     let mut entity = world.entity_mut(obj);
     entity.insert(item);
+    // `memcpy(obj, &tmpobj, ...)` replaces the whole object: a script's
+    // per-instance changes do not carry over.
+    entity.remove::<DgObjOverride>();
     match (capacity, held) {
         (Some(capacity), held) => {
             entity.insert(Container {
