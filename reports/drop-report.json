@@ -229,7 +229,1004 @@
       "mob": 795,
       "obj": 282,
       "wld": 384
-    }
+    },
+    "lines_by_class": {
+      "comment": 1809,
+      "control": 8085,
+      "dynamic_command": 71,
+      "magic": 395,
+      "mud_command": 2668,
+      "script_command": 4985,
+      "statement": 8247,
+      "unknown_command": 45
+    },
+    "controls": {
+      "break": 1195,
+      "case": 1509,
+      "default": 137,
+      "done": 286,
+      "else": 723,
+      "elseif": 454,
+      "end": 1745,
+      "if": 1749,
+      "switch": 161,
+      "while": 126
+    },
+    "statements": {
+      "attach": 14,
+      "context": 13,
+      "detach": 26,
+      "dg_affect": 59,
+      "dg_cast": 336,
+      "eval": 1073,
+      "extract": 18,
+      "global": 338,
+      "halt": 168,
+      "makeuid": 2,
+      "nop": 106,
+      "rdelete": 135,
+      "remote": 178,
+      "return": 360,
+      "set": 3845,
+      "unset": 38,
+      "wait": 1933
+    },
+    "wait_forms": {
+      "dynamic": 3,
+      "pulses": 179,
+      "seconds": 1706,
+      "ticks": 3,
+      "until": 42
+    },
+    "script_commands": {
+      "masound": 5,
+      "mat": 44,
+      "mdamage": 23,
+      "mdoor": 41,
+      "mecho": 430,
+      "mechoaround": 142,
+      "mfollow": 4,
+      "mforce": 46,
+      "mforget": 3,
+      "mgoto": 28,
+      "mhunt": 4,
+      "mkill": 9,
+      "mload": 379,
+      "mpurge": 94,
+      "mremember": 2,
+      "msend": 279,
+      "mteleport": 64,
+      "mtransform": 7,
+      "mzoneecho": 8,
+      "oasound": 2,
+      "oat": 35,
+      "odamage": 31,
+      "odoor": 5,
+      "oecho": 203,
+      "oechoaround": 226,
+      "oforce": 102,
+      "oload": 64,
+      "opurge": 94,
+      "osend": 637,
+      "osetval": 5,
+      "oteleport": 55,
+      "otimer": 9,
+      "otransform": 11,
+      "ozoneecho": 6,
+      "wasound": 2,
+      "wat": 57,
+      "wdamage": 74,
+      "wdoor": 290,
+      "wecho": 621,
+      "wechoaround": 163,
+      "wforce": 81,
+      "wload": 95,
+      "wpurge": 30,
+      "wsend": 382,
+      "wteleport": 87,
+      "wzoneecho": 6
+    },
+    "unknown_object_commands": {
+      "\"kamehameha!!!!\"": {
+        "count": 1,
+        "vnums": [
+          10330
+        ]
+      },
+      "adjust,": {
+        "count": 1,
+        "vnums": [
+          10308
+        ]
+      },
+      "and": {
+        "count": 1,
+        "vnums": [
+          10330
+        ]
+      },
+      "blinded": {
+        "count": 1,
+        "vnums": [
+          10308
+        ]
+      },
+      "down.": {
+        "count": 1,
+        "vnums": [
+          11837
+        ]
+      },
+      "great": {
+        "count": 1,
+        "vnums": [
+          313
+        ]
+      },
+      "honorable": {
+        "count": 1,
+        "vnums": [
+          313
+        ]
+      },
+      "ki": {
+        "count": 1,
+        "vnums": [
+          10330
+        ]
+      },
+      "light": {
+        "count": 1,
+        "vnums": [
+          10308
+        ]
+      },
+      "load": {
+        "count": 3,
+        "vnums": [
+          11712
+        ]
+      },
+      "say": {
+        "count": 1,
+        "vnums": [
+          5794
+        ]
+      },
+      "sending": {
+        "count": 1,
+        "vnums": [
+          10330
+        ]
+      },
+      "those": {
+        "count": 1,
+        "vnums": [
+          313
+        ]
+      },
+      "you,": {
+        "count": 1,
+        "vnums": [
+          10308
+        ]
+      }
+    },
+    "unknown_world_commands": {
+      "%send%": {
+        "count": 1,
+        "vnums": [
+          332
+        ]
+      },
+      "and": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "awakend": {
+        "count": 2,
+        "vnums": [
+          10362,
+          10364
+        ]
+      },
+      "batch": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "but": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "commands:": {
+        "count": 1,
+        "vnums": [
+          26
+        ]
+      },
+      "excellent": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "flavor.": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "for": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "funny": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "matches": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "much": {
+        "count": 2,
+        "vnums": [
+          1425
+        ]
+      },
+      "my": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "name:": {
+        "count": 1,
+        "vnums": [
+          26
+        ]
+      },
+      "note.": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "pipe": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "than": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "this": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "time.": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "tobacco,": {
+        "count": 2,
+        "vnums": [
+          1425
+        ]
+      },
+      "tobacco.": {
+        "count": 2,
+        "vnums": [
+          1425
+        ]
+      },
+      "trigger": {
+        "count": 2,
+        "vnums": [
+          26
+        ]
+      },
+      "virginia/burley": {
+        "count": 1,
+        "vnums": [
+          1425
+        ]
+      },
+      "while": {
+        "count": 1,
+        "vnums": [
+          1292
+        ]
+      }
+    },
+    "mud_commands": {
+      "lines": 2668,
+      "supported": {
+        "'": 3,
+        "assist": 6,
+        "bash": 1,
+        "bug": 1,
+        "close": 20,
+        "down": 4,
+        "drop": 117,
+        "east": 12,
+        "emote": 420,
+        "flee": 1,
+        "follow": 7,
+        "get": 1,
+        "give": 164,
+        "hold": 3,
+        "junk": 5,
+        "kill": 24,
+        "load": 3,
+        "lock": 10,
+        "look": 3,
+        "north": 9,
+        "open": 21,
+        "remove": 3,
+        "rescue": 2,
+        "rest": 3,
+        "say": 1436,
+        "sell": 1,
+        "shout": 2,
+        "sit": 2,
+        "sleep": 8,
+        "south": 13,
+        "stand": 12,
+        "take": 2,
+        "tell": 35,
+        "time": 1,
+        "unlock": 5,
+        "up": 4,
+        "value": 1,
+        "wake": 9,
+        "wear": 24,
+        "west": 9,
+        "whisper": 3,
+        "wield": 18
+      },
+      "unsupported": {
+        "1": 1,
+        "any": 1,
+        "awakend": 1,
+        "barf": 1,
+        "beam": 2,
+        "bounce": 1,
+        "bow": 8,
+        "cackle": 3,
+        "caress": 1,
+        "chuckle": 4,
+        "clap": 4,
+        "commands:": 1,
+        "cry": 2,
+        "d": 1,
+        "damage": 4,
+        "dance": 6,
+        "disarm": 1,
+        "drink": 1,
+        "drool": 1,
+        "e": 1,
+        "em": 2,
+        "except": 1,
+        "eyebrow": 1,
+        "flex": 2,
+        "fol": 4,
+        "frown": 2,
+        "gaze": 1,
+        "giggle": 2,
+        "glare": 2,
+        "grimace": 1,
+        "grin": 4,
+        "growl": 5,
+        "grumble": 1,
+        "hiss": 1,
+        "hug": 6,
+        "i": 1,
+        "in": 1,
+        "kiss": 5,
+        "laugh": 3,
+        "lick": 3,
+        "m": 1,
+        "meow": 1,
+        "mua": 2,
+        "mumble": 4,
+        "n": 4,
+        "nod": 11,
+        "ogle": 1,
+        "oom": 1,
+        "order": 1,
+        "pat": 1,
+        "peer": 2,
+        "pet": 1,
+        "phoenix2": 1,
+        "picknose": 1,
+        "play": 4,
+        "poke": 3,
+        "ponder": 1,
+        "pout": 2,
+        "rem": 1,
+        "roll": 3,
+        "ruffle": 1,
+        "s": 5,
+        "sac": 1,
+        "shake": 3,
+        "shiver": 2,
+        "sigh": 6,
+        "sing": 3,
+        "slap": 2,
+        "smile": 38,
+        "smirk": 2,
+        "snarl": 2,
+        "sneer": 1,
+        "sneeze": 1,
+        "sniff": 1,
+        "snigger": 1,
+        "snort": 1,
+        "spit": 1,
+        "squeeze": 1,
+        "strut": 2,
+        "swoon": 1,
+        "test": 1,
+        "think": 1,
+        "trigger": 2,
+        "tube": 1,
+        "twiddle": 1,
+        "use": 1,
+        "w": 1,
+        "wai": 1,
+        "wave": 1,
+        "welcome": 1,
+        "wink": 5,
+        "xxassistxx": 1,
+        "xxtestxx": 1,
+        "yawn": 8
+      }
+    },
+    "dynamic_commands": 71,
+    "dynamic_command_words": {
+      "%actor.class(cleric)%": {
+        "count": 1,
+        "vnums": [
+          1137
+        ]
+      },
+      "%actor.hisher%": {
+        "count": 1,
+        "vnums": [
+          10308
+        ]
+      },
+      "%answer_no%": {
+        "count": 4,
+        "vnums": [
+          1298
+        ]
+      },
+      "%answer_reward%": {
+        "count": 1,
+        "vnums": [
+          1298
+        ]
+      },
+      "%answer_yes%": {
+        "count": 4,
+        "vnums": [
+          1298
+        ]
+      },
+      "%context%": {
+        "count": 1,
+        "vnums": [
+          11852
+        ]
+      },
+      "%echaround%": {
+        "count": 1,
+        "vnums": [
+          10410
+        ]
+      },
+      "%echoround%": {
+        "count": 2,
+        "vnums": [
+          62,
+          65
+        ]
+      },
+      "%kill%": {
+        "count": 2,
+        "vnums": [
+          23701,
+          23702
+        ]
+      },
+      "%look%": {
+        "count": 10,
+        "vnums": [
+          23606
+        ]
+      },
+      "%passdown%": {
+        "count": 4,
+        "vnums": [
+          23606
+        ]
+      },
+      "%passup%": {
+        "count": 4,
+        "vnums": [
+          23606
+        ]
+      },
+      "%random.dir%": {
+        "count": 7,
+        "vnums": [
+          41,
+          174
+        ]
+      },
+      "%snd%": {
+        "count": 26,
+        "vnums": [
+          1212
+        ]
+      },
+      "%speech%": {
+        "count": 1,
+        "vnums": [
+          11836
+        ]
+      },
+      "%targetname%'portal'": {
+        "count": 1,
+        "vnums": [
+          12500
+        ]
+      },
+      "%time.year%": {
+        "count": 1,
+        "vnums": [
+          1337
+        ]
+      }
+    },
+    "over_length_lines": 0,
+    "structural_errors": {
+      "count": 30,
+      "scripts": 15,
+      "by_vnum": {
+        "1106": [
+          "line 8: 'switch' without 'done'",
+          "line 9: 'else' without 'if'",
+          "line 10: 'switch' without 'done'",
+          "line 11: 'else' without 'if'",
+          "line 12: 'switch' without 'done'",
+          "line 13: 'else' without 'if'",
+          "line 14: 'switch' without 'done'",
+          "line 55: 'done' without 'while'",
+          "line 56: 'done' without 'while'",
+          "line 57: 'done' without 'while'",
+          "line 58: 'done' without 'while'"
+        ],
+        "1133": [
+          "line 9: 'if' without 'end'",
+          "line 105: 'else' without 'if'",
+          "line 107: 'end' without 'if'"
+        ],
+        "1292": [
+          "line 2: 'while' without 'done'"
+        ],
+        "1324": [
+          "line 18: 'if' without 'end'"
+        ],
+        "1338": [
+          "line 1: 'if' without 'end'"
+        ],
+        "1385": [
+          "line 1: 'if' without 'end'",
+          "line 3: 'if' without 'end'"
+        ],
+        "1939": [
+          "line 1: 'if' without 'end'"
+        ],
+        "1959": [
+          "line 11: 'done' without 'while'"
+        ],
+        "2737": [
+          "line 1: 'if' without 'end'"
+        ],
+        "4601": [
+          "line 8: 'else' without 'if'",
+          "line 10: 'end' without 'if'"
+        ],
+        "8315": [
+          "line 7: 'end' without 'if'"
+        ],
+        "13005": [
+          "line 184: 'done' without 'while'"
+        ],
+        "21101": [
+          "line 4: 'switch' without 'done'",
+          "line 29: 'end' without 'if'"
+        ],
+        "34302": [
+          "line 3: 'switch' without 'done'"
+        ],
+        "55513": [
+          "line 2: 'if' without 'end'"
+        ]
+      }
+    },
+    "field_references": {
+      "total": 5545,
+      "text_functions": {
+        "car": 107,
+        "cdr": 56,
+        "charat": 15,
+        "contains": 48,
+        "mudcommand": 184,
+        "strlen": 13,
+        "trim": 20
+      },
+      "character": {
+        "affect": 14,
+        "alias": 11,
+        "align": 41,
+        "armor": 1,
+        "canbeseen": 5,
+        "cha": 11,
+        "class": 69,
+        "con": 3,
+        "dex": 9,
+        "drunk": 10,
+        "eq": 131,
+        "exp": 28,
+        "fighting": 52,
+        "follower": 9,
+        "gold": 75,
+        "has_item": 32,
+        "heshe": 24,
+        "himher": 59,
+        "hisher": 153,
+        "hitp": 77,
+        "hunger": 13,
+        "id": 414,
+        "int": 4,
+        "inventory": 98,
+        "is_killer": 7,
+        "is_pc": 160,
+        "is_thief": 7,
+        "level": 68,
+        "mana": 9,
+        "master": 13,
+        "maxhitp": 15,
+        "maxmana": 5,
+        "maxmove": 4,
+        "move": 7,
+        "name": 1669,
+        "next_in_room": 24,
+        "pos": 11,
+        "prac": 1,
+        "pref": 29,
+        "questpoints": 11,
+        "room": 166,
+        "saving_breath": 1,
+        "saving_para": 1,
+        "saving_petri": 1,
+        "saving_rod": 1,
+        "saving_spell": 1,
+        "sex": 82,
+        "skill": 4,
+        "str": 7,
+        "stradd": 2,
+        "thirst": 14,
+        "title": 4,
+        "varexists": 242,
+        "vnum": 458,
+        "wait": 1,
+        "weight": 22,
+        "wis": 3
+      },
+      "object": {
+        "affects": 22,
+        "carried_by": 18,
+        "contents": 30,
+        "cost": 28,
+        "cost_per_day": 2,
+        "count": 1,
+        "has_in": 1,
+        "id": 414,
+        "is_inroom": 1,
+        "is_pc": 160,
+        "name": 1669,
+        "next_in_list": 26,
+        "room": 166,
+        "shortdesc": 175,
+        "timer": 25,
+        "type": 34,
+        "val0": 20,
+        "val1": 22,
+        "val2": 20,
+        "val3": 23,
+        "vnum": 458,
+        "wearflag": 1,
+        "weight": 22,
+        "worn_by": 18
+      },
+      "room": {
+        "contents": 30,
+        "down": 12,
+        "east": 17,
+        "id": 414,
+        "name": 1669,
+        "north": 15,
+        "people": 47,
+        "roomflag": 13,
+        "sector": 5,
+        "south": 19,
+        "up": 12,
+        "vnum": 458,
+        "weather": 4,
+        "west": 15
+      },
+      "unknown_or_global": {
+        "6^": 1,
+        "8^": 6,
+        "age": 2,
+        "catched": 1,
+        "cmd": 1,
+        "cushion_old_title": 1,
+        "damage": 1,
+        "dir": 1,
+        "globalname": 1,
+        "keychain_return_room": 1,
+        "northeast": 1,
+        "northwest": 1,
+        "on_quest_zone_1": 4,
+        "originset": 2,
+        "race": 1,
+        "random": 1,
+        "remotes": 2,
+        "roomstocheck": 13,
+        "set_life_counter": 2,
+        "southeast": 1,
+        "southwest": 1,
+        "spech": 1,
+        "tba_trial_vnum": 20,
+        "teleporter_return_room": 2,
+        "test": 1,
+        "var": 1,
+        "zn118_a": 2,
+        "zn118_blindquest": 1,
+        "zn118_focus_return": 1,
+        "zn118_knifestart": 3,
+        "zn118_ruthpearl": 1,
+        "zn118_scarredquest": 2,
+        "zn118_tunnelquest": 2,
+        "zone_12_reward_number": 1
+      }
+    },
+    "unknown_variable_heads": {
+      "(": 1,
+      ")": 2,
+      "1999_age": 5,
+      "1999_choice": 2,
+      "1999_recip": 5,
+      "all": 1,
+      "attacking_queen": 1,
+      "bad_guy": 1,
+      "black": 1,
+      "blue1": 1,
+      "blue2": 1,
+      "bribed": 1,
+      "burn^random": 1,
+      "cardchoice": 1,
+      "cardpos": 25,
+      "container": 1,
+      "contents": 2,
+      "context": 1,
+      "corr": 1,
+      "drying^random": 1,
+      "echaround": 1,
+      "echoround": 2,
+      "exx": 2,
+      "global_example_actor": 1,
+      "global_example_speech": 1,
+      "green1": 1,
+      "green2": 1,
+      "has_bribed_guard": 2,
+      "hisher": 2,
+      "kill": 2,
+      "ll1": 1,
+      "ll2": 1,
+      "ll3": 1,
+      "ll4": 1,
+      "llc": 7,
+      "lln": 1,
+      "lm1": 1,
+      "lm2": 1,
+      "lm3": 1,
+      "lm4": 1,
+      "lmc": 7,
+      "lmn": 1,
+      "location": 2,
+      "look^random": 1,
+      "lr1": 1,
+      "lr2": 1,
+      "lr3": 1,
+      "lr4": 1,
+      "lrc": 7,
+      "lrn": 1,
+      "maxphrases": 1,
+      "mix^random": 1,
+      "ml1": 1,
+      "ml2": 1,
+      "ml3": 1,
+      "ml4": 1,
+      "mlc": 7,
+      "mln": 1,
+      "mm1": 1,
+      "mm2": 1,
+      "mm3": 1,
+      "mm4": 1,
+      "mmc": 7,
+      "mmn": 1,
+      "moisture^random": 1,
+      "mr1": 1,
+      "mr2": 1,
+      "mr3": 1,
+      "mr4": 1,
+      "mrc": 7,
+      "mrn": 1,
+      "mudcommand": 1,
+      "musicplaying": 1,
+      "nextlev_s": 2,
+      "number": 1,
+      "obj": 1,
+      "opening^random": 1,
+      "phrase(": 1,
+      "phrase(1)": 2,
+      "phrase(10)": 1,
+      "phrase(2)": 2,
+      "phrase(3)": 2,
+      "phrase(4)": 1,
+      "phrase(5)": 1,
+      "phrase(6)": 1,
+      "phrase(7)": 1,
+      "phrase(8)": 1,
+      "phrase(9)": 1,
+      "points": 3,
+      "porthole_opened": 1,
+      "price^random": 1,
+      "printrow1": 1,
+      "printrow10": 1,
+      "printrow2": 1,
+      "printrow3": 1,
+      "printrow4": 1,
+      "printrow5": 1,
+      "printrow6": 1,
+      "printrow7": 1,
+      "printrow8": 1,
+      "printrow9": 1,
+      "pushed_purple": 2,
+      "reader1": 6,
+      "reader2": 4,
+      "reader3": 2,
+      "red1": 1,
+      "red2": 1,
+      "room": 2,
+      "sctor": 1,
+      "talk1": 1,
+      "talk10": 1,
+      "talk2": 1,
+      "talk3": 1,
+      "talk4": 1,
+      "talk5": 1,
+      "talk6": 1,
+      "talk7": 1,
+      "talk8": 1,
+      "talk9": 1,
+      "tmp_target": 2,
+      "ul1": 1,
+      "ul2": 1,
+      "ul3": 1,
+      "ul4": 1,
+      "ulc": 7,
+      "uln": 1,
+      "um1": 1,
+      "um2": 1,
+      "um3": 1,
+      "um4": 1,
+      "umc": 7,
+      "umn": 1,
+      "unreader1": 2,
+      "unreader2": 1,
+      "ur1": 1,
+      "ur2": 1,
+      "ur3": 1,
+      "ur4": 1,
+      "urc": 7,
+      "urn": 1,
+      "var": 3,
+      "var2": 1,
+      "variable": 2,
+      "vict": 1,
+      "world_global": 2,
+      "x11": 1,
+      "x12": 1,
+      "x13": 1,
+      "x14": 1,
+      "x15": 1,
+      "x21": 1,
+      "x22": 1,
+      "x24": 1,
+      "x25": 1,
+      "x31": 1,
+      "x35": 1,
+      "x41": 1,
+      "x42": 1,
+      "x44": 1,
+      "x45": 1,
+      "x51": 1,
+      "x52": 1,
+      "x53": 1,
+      "x54": 1,
+      "x55": 1,
+      "zn27_class": 1
+    },
+    "provided_variable_heads": {
+      "actor": 5276,
+      "amount": 22,
+      "arg": 514,
+      "asound": 9,
+      "at": 137,
+      "cmd": 257,
+      "command": 3,
+      "damage": 142,
+      "direction": 93,
+      "door": 334,
+      "echo": 1305,
+      "echoaround": 526,
+      "findmob": 4,
+      "findobj": 11,
+      "force": 233,
+      "load": 560,
+      "object": 145,
+      "people": 5,
+      "purge": 228,
+      "random": 325,
+      "self": 1130,
+      "send": 1293,
+      "speech": 180,
+      "spell": 3,
+      "spellname": 7,
+      "teleport": 208,
+      "time": 45,
+      "transform": 13,
+      "victim": 3,
+      "zoneecho": 20
+    },
+    "assigned_variable_references": 4119
   },
   "trigger_attachments": {
     "owners": 1295,

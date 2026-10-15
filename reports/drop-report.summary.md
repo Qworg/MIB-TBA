@@ -128,8 +128,11 @@
 
 ## DG trigger corpus (#15)
 
+Counts describe the emitted scripts (colour codes stripped), so they can differ from a count over the raw `.trg` bodies.
+
 - emitted records: 1461
 - script lines: 26305
+- lines over the substitution limit: 0
 
 ### Records by attach type
 
@@ -138,6 +141,241 @@
 | `mob` | 795 |
 | `obj` | 282 |
 | `wld` | 384 |
+
+### Lines by class
+
+| class | count |
+|---|---:|
+| `comment` | 1809 |
+| `control` | 8085 |
+| `dynamic_command` | 71 |
+| `magic` | 395 |
+| `mud_command` | 2668 |
+| `script_command` | 4985 |
+| `statement` | 8247 |
+| `unknown_command` | 45 |
+
+### Control lines
+
+| keyword | count |
+|---|---:|
+| `break` | 1195 |
+| `case` | 1509 |
+| `default` | 137 |
+| `done` | 286 |
+| `else` | 723 |
+| `elseif` | 454 |
+| `end` | 1745 |
+| `if` | 1749 |
+| `switch` | 161 |
+| `while` | 126 |
+
+### Statements
+
+| statement | count |
+|---|---:|
+| `attach` | 14 |
+| `context` | 13 |
+| `detach` | 26 |
+| `dg_affect` | 59 |
+| `dg_cast` | 336 |
+| `eval` | 1073 |
+| `extract` | 18 |
+| `global` | 338 |
+| `halt` | 168 |
+| `makeuid` | 2 |
+| `nop` | 106 |
+| `rdelete` | 135 |
+| `remote` | 178 |
+| `return` | 360 |
+| `set` | 3845 |
+| `unset` | 38 |
+| `wait` | 1933 |
+
+### `wait` forms
+
+| form | count |
+|---|---:|
+| `dynamic` | 3 |
+| `pulses` | 179 |
+| `seconds` | 1706 |
+| `ticks` | 3 |
+| `until` | 42 |
+
+### Script commands (top 15 of 46)
+
+| command | count |
+|---|---:|
+| `osend` | 637 |
+| `wecho` | 621 |
+| `mecho` | 430 |
+| `wsend` | 382 |
+| `mload` | 379 |
+| `wdoor` | 290 |
+| `msend` | 279 |
+| `oechoaround` | 226 |
+| `oecho` | 203 |
+| `wechoaround` | 163 |
+| `mechoaround` | 142 |
+| `oforce` | 102 |
+| `wload` | 95 |
+| `mpurge` | 94 |
+| `opurge` | 94 |
+
+### Structural errors
+
+30 errors in 15 scripts.
+
+| trigger | errors |
+|---:|---|
+| 1106 | line 8: 'switch' without 'done'; line 9: 'else' without 'if'; line 10: 'switch' without 'done'; line 11: 'else' without 'if'; line 12: 'switch' without 'done'; line 13: 'else' without 'if'; line 14: 'switch' without 'done'; line 55: 'done' without 'while'; line 56: 'done' without 'while'; line 57: 'done' without 'while'; line 58: 'done' without 'while' |
+| 1133 | line 9: 'if' without 'end'; line 105: 'else' without 'if'; line 107: 'end' without 'if' |
+| 1292 | line 2: 'while' without 'done' |
+| 1324 | line 18: 'if' without 'end' |
+| 1338 | line 1: 'if' without 'end' |
+| 1385 | line 1: 'if' without 'end'; line 3: 'if' without 'end' |
+| 1939 | line 1: 'if' without 'end' |
+| 1959 | line 11: 'done' without 'while' |
+| 2737 | line 1: 'if' without 'end' |
+| 4601 | line 8: 'else' without 'if'; line 10: 'end' without 'if' |
+| 8315 | line 7: 'end' without 'if' |
+| 13005 | line 184: 'done' without 'while' |
+| 21101 | line 4: 'switch' without 'done'; line 29: 'end' without 'if' |
+| 34302 | line 3: 'switch' without 'done' |
+| 55513 | line 2: 'if' without 'end' |
+
+### Unknown object commands (top 14 of 14 words)
+
+| word | lines | triggers |
+|---|---:|---|
+| `load` | 3 | 11712 |
+| `"kamehameha!!!!"` | 1 | 10330 |
+| `adjust,` | 1 | 10308 |
+| `and` | 1 | 10330 |
+| `blinded` | 1 | 10308 |
+| `down.` | 1 | 11837 |
+| `great` | 1 | 313 |
+| `honorable` | 1 | 313 |
+| `ki` | 1 | 10330 |
+| `light` | 1 | 10308 |
+| `say` | 1 | 5794 |
+| `sending` | 1 | 10330 |
+| `those` | 1 | 313 |
+| `you,` | 1 | 10308 |
+
+### Unknown world commands (top 15 of 24 words)
+
+| word | lines | triggers |
+|---|---:|---|
+| `awakend` | 2 | 10362, 10364 |
+| `much` | 2 | 1425 |
+| `tobacco,` | 2 | 1425 |
+| `tobacco.` | 2 | 1425 |
+| `trigger` | 2 | 26 |
+| `%send%` | 1 | 332 |
+| `and` | 1 | 1425 |
+| `batch` | 1 | 1425 |
+| `but` | 1 | 1425 |
+| `commands:` | 1 | 26 |
+| `excellent` | 1 | 1425 |
+| `flavor.` | 1 | 1425 |
+| `for` | 1 | 1425 |
+| `funny` | 1 | 1425 |
+| `matches` | 1 | 1425 |
+
+### Dynamic commands (top 15 of 17 words)
+
+| word | lines | triggers |
+|---|---:|---|
+| `%snd%` | 26 | 1212 |
+| `%look%` | 10 | 23606 |
+| `%random.dir%` | 7 | 41, 174 |
+| `%answer_no%` | 4 | 1298 |
+| `%answer_yes%` | 4 | 1298 |
+| `%passdown%` | 4 | 23606 |
+| `%passup%` | 4 | 23606 |
+| `%echoround%` | 2 | 62, 65 |
+| `%kill%` | 2 | 23701, 23702 |
+| `%actor.class(cleric)%` | 1 | 1137 |
+| `%actor.hisher%` | 1 | 10308 |
+| `%answer_reward%` | 1 | 1298 |
+| `%context%` | 1 | 11852 |
+| `%echaround%` | 1 | 10410 |
+| `%speech%` | 1 | 11836 |
+
+### Mob commands for the game (2668 lines)
+
+Supported words: 42; unsupported words: 94 (top 15 below).
+
+| unsupported word | count |
+|---|---:|
+| `smile` | 38 |
+| `nod` | 11 |
+| `bow` | 8 |
+| `yawn` | 8 |
+| `dance` | 6 |
+| `hug` | 6 |
+| `sigh` | 6 |
+| `growl` | 5 |
+| `kiss` | 5 |
+| `s` | 5 |
+| `wink` | 5 |
+| `chuckle` | 4 |
+| `clap` | 4 |
+| `damage` | 4 |
+| `fol` | 4 |
+
+### Substitution fields (5545 references)
+
+A name that several tables know is counted in each of them.
+
+| table | distinct names | references |
+|---|---:|---:|
+| text function | 7 | 443 |
+| character | 57 | 4393 |
+| object | 24 | 3356 |
+| room | 14 | 2730 |
+| unknown or global | 34 | 83 |
+
+Unknown or global names (top 15 of 34):
+
+| name | count |
+|---|---:|
+| `tba_trial_vnum` | 20 |
+| `roomstocheck` | 13 |
+| `8^` | 6 |
+| `on_quest_zone_1` | 4 |
+| `zn118_knifestart` | 3 |
+| `age` | 2 |
+| `originset` | 2 |
+| `remotes` | 2 |
+| `set_life_counter` | 2 |
+| `teleporter_return_room` | 2 |
+| `zn118_a` | 2 |
+| `zn118_scarredquest` | 2 |
+| `zn118_tunnelquest` | 2 |
+| `6^` | 1 |
+| `catched` | 1 |
+
+### Variables read but never provided or assigned (top 15 of 166 names)
+
+| variable | count |
+|---|---:|
+| `cardpos` | 25 |
+| `llc` | 7 |
+| `lmc` | 7 |
+| `lrc` | 7 |
+| `mlc` | 7 |
+| `mmc` | 7 |
+| `mrc` | 7 |
+| `ulc` | 7 |
+| `umc` | 7 |
+| `urc` | 7 |
+| `reader1` | 6 |
+| `1999_age` | 5 |
+| `1999_recip` | 5 |
+| `reader2` | 4 |
+| `points` | 3 |
 
 ## Global permanent drops
 
