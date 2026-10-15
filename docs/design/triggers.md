@@ -1,14 +1,15 @@
-# DG Script Triggers (TBA-E20) — triage and Phase-2 native design
+# DG Script Triggers (TBA-E20) — corpus, converter schema, and runtime
 
-Status: **triage + design only**. This document classifies the tbaMUD DG
-trigger corpus and specifies how the game re-authors it natively. No runtime
-trigger behaviour is added by this change; `docs/03-tba-pack.md` §10 remains
-the phased contract, and this document fills in its Phase-2 scope.
+Status: **built**. This document classifies the tbaMUD DG trigger corpus,
+describes how the converter emits it (`tba.triggers`), and how the game runs it
+(the `crates/dg-vm` port hosted by `code/src/dg/`). `docs/03-tba-pack.md` §10 is
+the pack-level summary; §6 below is the detailed design.
 
-Machine-readable companion: [`reports/trigger-triage.json`](../../reports/trigger-triage.json),
-regenerated with `tbaport triage` (§8). The per-zone classification also ships
-inside [`reports/drop-report.json`](../../reports/drop-report.json)
-(`trigger_triage` plus each zone's `triggers[]`).
+Machine-readable companions: [`reports/trigger-triage.json`](../../reports/trigger-triage.json),
+regenerated with `tbaport triage` (§8), and the trigger section of
+[`reports/drop-report.json`](../../reports/drop-report.json) (`trigger_triage`,
+per-zone `triggers[]`, `trigger_coverage` and the attachment roll-up). The host
+contract is documented in [`crates/dg-vm/HOST.md`](../../crates/dg-vm/HOST.md).
 
 ---
 
@@ -24,12 +25,12 @@ inside [`reports/drop-report.json`](../../reports/drop-report.json)
   player-visible scripted behaviour a demo can notice. It is concentrated in
   the Builder Academy tutorial (zone 0, 40), the Sanctus quest area (zone 1,
   57), and the newbie/Midgaard spine (zones 5/28/30/54/74/...).
-- **Recommendation:** a **hybrid, interpreter-led** Phase 2 — a *minimal
-  pack-native DG interpreter* (option **b**) is the backbone for the essential
-  interactive/gatekeeping/ambience triggers, with the **structured
-  objectives/rewards** carried by `stdlib.quests` (option **a**'s strong half).
-  Pure re-authoring (a) cannot express the conditional dialogue and gate
-  behaviour; the full DG VM (spec Phase 3) stays separately costed.
+- **Built:** an interpreter-led runtime, as recommended. The interpreter became
+  the complete `dg-vm` port of every `dg_*.c` (`crates/dg-vm`), hosted by
+  `code/src/dg/`; `stdlib.quests` still carries the structured
+  objectives/rewards through a kill bridge. All 1,461 records are emitted and
+  dispatched. Pure re-authoring could not express the conditional dialogue and
+  gate behaviour.
 
 ---
 
@@ -82,7 +83,7 @@ triage expands the 70 multi-letter records too (`ab` ×19, `gh` ×16, `bg` ×11,
 
 Triggers attach through `T <vnum>` lines in `.mob`/`.obj`/`.wld` records and
 through zone-reset `T <attach> <vnum>` commands (see
-`docs/05-converter.md` §4).
+`docs/05-converter.md` §2).
 
 ### 3.2 Type letters
 
@@ -268,7 +269,7 @@ without re-parsing.
 
 ### 5.1 Selection rule
 
-The **demo spine** is the set of zones a Phase-2 playtest exercises. It is
+The **demo spine** is the set of zones the demo playtest exercises. It is
 defined in `crate::triage::DEMO_ZONES`:
 
 - every zone reachable on foot from the start room `tba.3001` (the Temple of
@@ -313,7 +314,7 @@ By attach: mob 122, object 6, world 5. By home zone: 0→40, 1→57, 3→1, 5→
 
 ### 5.3 What remains
 
-The other **1,328 records (90.9%)** are not demo-visible for Phase 2:
+The other **1,328 records (90.9%)** are outside the demo spine:
 
 | bucket | non-essential | note |
 |---|---:|---|
@@ -323,9 +324,10 @@ The other **1,328 records (90.9%)** are not demo-visible for Phase 2:
 | gatekeeper_transport | 86 | gates in non-demo zones |
 | quest_objective | 54 | quest chains in non-demo zones |
 
-These stay deferred (tracked in #27). None is silently dropped: every record is itemised in
-`drop-report.json` with its bucket, and the essential flag distinguishes the
-Phase-2 scope from the rest.
+These are all emitted and dispatched too — the essential flag is a demo-impact
+ranking, not a coverage boundary (#27 is resolved: all 1,461 records convert).
+None is silently dropped: every record is itemised in `drop-report.json` with
+its bucket.
 
 ### 5.4 Curated table
 
@@ -486,222 +488,195 @@ Builder Academy examples are deliberately unattached).
 
 ---
 
-## 6. Phase-2 native design
+## 6. Native design (built)
 
-### 6.1 The options
+### 6.1 Decision: interpreter-led, now the whole VM
 
-**(a) Re-author the essential set as `stdlib.quests` + `stdlib.verbs` +
-dialogue.**
+The design chose the **hybrid, interpreter-led** path: keep the scripts as
+scripts and evaluate them against engine events rather than re-authoring them
+as `stdlib.quests`/`stdlib.verbs`/LLM dialogue, which cannot express the
+conditional text, waits and gates the corpus uses; `stdlib.quests` keeps the
+structured objectives and rewards. Option (b)'s "bounded subset" grew into the
+**complete** `dg-vm`, a line-faithful, engine-agnostic port of every `dg_*.c`.
+`code/src/dg/` is the game's host side; `code/src/triggers/` keeps only the
+content schema and the kill-to-`QuestEvent` bridge. `docs/03-tba-pack.md` §10
+is the pack-level summary of the same system.
 
-`stdlib.quests` is a good fit for structured objectives: it already models
-`Kill`/`Visit`/`Collect`/`Flag` steps, per-player progress, rewards, and a
-turn-in flow, and it is driven by `QuestEvent`s (`packs/stdlib/code/src/quests.rs`).
-But it cannot express *presentation*: "greet the player, wait a second, branch
-on a variable, teleport them". `stdlib.verbs` is static-effect-only — its
-`VerbEffect` list is `teleport`/`say`/`give`/`set_flag`/`set_room_flag`/`spawn`
-with no argument grammar and no conditionals (`packs/stdlib/code/src/verbs.rs`).
-And the available dialogue system (`stdlib::dialogue`) is an **LLM** path
-(`packs/stdlib/code/src/dialogue.rs`), not the `DialogueGraph` the spec names:
-it builds a prompt and streams a generated reply. That is non-deterministic and
-unsuitable for reproducing scripted quest text and exact gate logic.
+### 6.2 Content schema (`tba.triggers`)
 
-**(b) Minimal pack-native DG interpreter for a language subset.**
-
-Keep the scripts as scripts. A `mib-tba` system parses a bounded subset of the
-DG language and evaluates it against engine events. The subset that covers the
-corpus is small and well known:
-
-- text: `say`, `emote`, `echo`/`%echo%`, `%echoaround%`, `%send%`, `%zoneecho%`,
-  `%at%`;
-- control: `if`/`elseif`/`else`/`end`, `switch`/`case`/`break`/`default`/`done`,
-  `return`, `nop`, `halt`, `while` (iteration-capped);
-- state: `set`, `eval`, `unset`, `remote`, `global`, `local`, and the
-  `%actor%`/`%self%`/`%object%`/`%victim%`/`%target%` variable namespaces;
-- effects: `%load%`, `%purge%`, `%force%`, `%teleport%`, `%door%`, `%damage%`,
-  `dg_cast`, `give`, `drop`, `kill`;
-- timing: `wait <n> [sec|s|tick]`, `wait until <hh:mm>`.
-
-The runtime cost is a parser, a context/substitution engine, a small evaluator,
-and a timer queue. That is more code than (a), but it preserves the original
-behaviour and text exactly and covers the gatekeepers, dialogue chains and
-objective loops uniformly.
-
-**(c) Hybrid, interpreter-led.**
-
-Use the interpreter (b) for interactive responses, gatekeepers, ambience and
-combat triggers, and `stdlib.quests` (a's strong half) for the *structured*
-kill/fetch/visit objectives and rewards. The interpreter emits `QuestEvent`s
-(through the existing `Flags` component) when a script satisfies a step, so the
-quest log/journal/turn-in work keeps the stdlib implementation instead of being
-re-built inside the VM.
-
-### 6.2 Recommendation: (c)
-
-The hybrid is the only option that both reproduces the scripted interactions
-and reuses the working quest machinery. It is essentially (b) plus a thin
-bridge to (a), so it does not add a second interpretation engine — it adds a
-data path.
-
-- The essential set is **22 quest objectives, 25 gatekeepers, 86 dialogue/
-  interaction** triggers. Only the 22 are a natural `stdlib.quests` fit; the
-  other 111 need conditional text, movement and timers that quests/verbs
-  cannot express. Pure (a) would leave most of the demo silently inert.
-- The interpreter, not LLM dialogue, owns scripted text. That keeps the demo
-  deterministic and source-faithful; the LLM dialogue path stays for
-  free-form NPC conversation and is orthogonal.
-- `stdlib.quests` keeps objective/reward persistence and journal UI out of the
-  VM.
-
-### 6.3 Content schema
-
-The converter emits a pack-owned section, `tba.triggers` (per-zone shards like
-`stdlib.rooms`, so a single zone can be re-converted). The schema is the DG
-record plus its attachment, *not* a re-authoring:
+The converter ([`tools/tbaport`], `docs/05-converter.md`) emits one shard per
+zone, `tba.triggers.<zone>.yaml` (like `stdlib.rooms`, so a zone re-converts
+alone). It writes **all** 1,461 records, not just the demo set — `attach_type`,
+the raw `flags` letters and the lowercased expanded `types`, `narg`, `arglist`,
+the verbatim (colour-stripped) `script`, and the ordered `attachments` map:
 
 ```yaml
-# tba.triggers.1.yaml (generated; hand-editable)
+# tba.triggers.1.yaml — generated, hand-editable
 triggers:
   tba_trig_139:
     vnum: 139
     name: Questmaster Quest Assignment - 3
-    attach: npc:tba_npc_3          # or room:tba.22 / item:tba_item_16
-    types: [speech]                # lowercased expanded types
+    attach_type: mob               # the kind the record was authored for
+    flags: d                       # raw .trg letters
+    types: [speech]                # lowercased expanded letters (per attach)
     narg: 100
-    arglist: ""                    # DG arglist (match text for speech/command)
+    arglist: ""                    # match text for speech/command
     script: |-                     # the DG body, verbatim (colour-stripped)
       if %actor.is_pc% && !%actor.varexists(quest_mice)%
         say Can you help me, %actor.name%?
-        ...
+attachments:                       # owner -> trigger ids, in source order
+  npc:tba_npc_3:
+  - tba_trig_139
 ```
 
-The runtime parses `script` once at world build (and on hot reload) into an AST
-and reports the constructs it does not understand as **named drops** in the
-conversion report, so coverage is explicit rather than silent.
+`attach_type` is the kind the record was authored for; `types` is expanded from
+it **per the record's `attach_type`** via the `trig_types[]`/`otrig_types[]`/
+`wtrig_types[]` tables (§3.2). `attachments` is the owner's `proto_script`
+order from its `T` lines, followed by any zone-reset `T <attach> <vnum>`
+commands folded into prototypes; a trigger listed twice is attached twice.
+Owners are `npc:<id>`, `item:<id>` or `room:<id>`, and the pack loader merges
+per-zone shards and rejects a duplicate owner key. `code/src/triggers/content.rs`
+is the serde schema and validation; the runtime parses each `script` once at
+world build (and on hot reload) into the VM's `Program`.
 
-### 6.4 Runtime systems (`code/src/triggers/`)
+Coverage comes from `dg_vm::analyze`, run by the converter over every emitted
+script and written to `reports/drop-report.json` (`trigger_coverage`): line
+classes, control keywords, statements, `wait` forms, script commands,
+unknown/dynamic commands, field references and structural errors. The report's
+supported-mob-command list comes from the game's `cmd_info[]` table through
+`mib_tba::dg::mobcmd::supported_mob_words()`. Regeneration is in
+`docs/runbook.md` §5.
 
-| system | responsibility |
+### 6.3 The `dg-vm` crate and its host contract
+
+`crates/dg-vm` is deliberately dependency-free (empty `[dependencies]`) and
+engine-agnostic: it reaches the world only through the `DgHost` trait, so it
+builds and tests in seconds without the engine and the converter uses its
+analyzer without linking the game (969 tests). `crates/dg-vm/src/lib.rs` carries
+the model and call graph; the layering is:
+
+- `types` (ids, variables, `Script`/`TrigInstance`s, trigger-type bits,
+  `MAX_SCRIPT_DEPTH`), `cstr` (the C string helpers), `lookup` (text name →
+  entity, shared by every module);
+- `script` (a body as classified lines, `Program`), `driver` (`script_driver`:
+  control flow and built-in statements), `expr` (`eval_expr`/`eval_op`), `subst`
+  (`%…%`), `text` (string functions), `fields_char`/`fields_obj`/`fields_room`
+  (the field tables);
+- `commands` (the `m*`/`o*`/`w*` script commands), `magic` (`dg_cast`/
+  `dg_affect`), `dispatch` (`dg_triggers.c`: which trigger fires for which
+  event), `analyze` (static coverage), `mock` (an in-memory host for tests).
+
+A script command can fire further triggers, so the graph is re-entrant through
+the host and bounded by `types::MAX_SCRIPT_DEPTH`.
+
+`DgHost` unions nine traits — `BaseHost`, `WorldHost`, `SubstHost`, `CharHost`,
+`ObjHost`, `RoomHost`, `CmdHost`, `MagicHost`, `DispatchHost` — **134 methods**,
+each a typed, data-level fact naming the C expression it stands for. Every
+method's C expression, unmodelled return value and VM callers, plus the numbers
+a host interprets (directions, wear positions, flags, levels, spells), are in
+`crates/dg-vm/HOST.md`. A primitive handed a dead `Uid` does nothing and
+returns the neutral value; a fact the host does not model is reported through
+`BaseHost::unsupported` (§6.5).
+
+### 6.4 The game runtime (`code/src/dg/`)
+
+`code/src/dg/` is the ECS side of the contract:
+
+| module | responsibility |
 |---|---|
-| `content` | serde types for `tba.triggers`; section registration beside `tba.zones`. |
-| `index` | `TriggerIndex` resource: attach entity → `Vec<TriggerId>` by type; rebuilt at build/reload like `RoomIndex`. |
-| `events` | `TriggerEvent` intake (speech, command, act, greet, entry, leave, receive, death, fight, damage, door, load, timer, time) assembled from existing seams (`CommandReceived`, `RoomOccupants` diffs, `NpcDefeated`/`PlayerDefeated`, `TbaRound`, the clock). |
-| `context` | `TriggerContext` (actor, self, object, victim, target, direction, room) and the `%substitution%` resolver. |
-| `eval` | the AST interpreter: conditions, `if`/`switch`/`while`, variables, text commands, effect directives, depth guard, iteration cap. |
-| `timers` | `TriggerTimers`: `wait` queue keyed on the engine clock; survives no reboot (DG parity). |
-| `quests` | bridge that turns a satisfied step into `QuestEvent::FlagSet`/`Collected` via the stdlib `Flags` component. |
-| `persist` | `TbaTriggerVars` (`DocKind::Player`) for `remote`/`global` variables, so quest state survives reconnect. |
+| `mod.rs` | `register`/`register_runtime`, the `DgVm` run state, and `with_host`. |
+| `host/` | `EcsHost`: the nine `DgHost` traits against the world, one file per trait. |
+| `intake/` | the systems that observe gameplay and call `dg_vm::dispatch` (`commands`, `movement`, `items`, `combat`, `world`, `acts`). |
+| `mobcmd` | the NPC command interpreter (`cmd_info[]`) behind `mud_command`, and the `mudcommand` text function. |
+| `ids` | `Uid` ↔ `Entity` mapping and the `DgOrder`/`DgBirth` stamps that reproduce the C's linked-list order. |
+| `script` | `DgScript`/`DgMemory` per entity; `DgProtos` and `attach_proto_scripts` built from `tba.triggers`. |
+| `waits` | the pulse clock and the `wait` queue (the random/time heartbeats). |
+| `vars` | `TbaTriggerVars`, the persisted player `remote`/`global` variables. |
+| `chardata` | facts the pack has no component for (title, practices, quest points, conditions, script affects, NPC purse), so a script's write is visible to the next read. |
+| `out` | text delivery to the players a script addresses. |
 
-### 6.5 The hard DG features
+**`with_host`** is the single entry point for trigger activity. Each call
+ensures ids, gives players their scripts, attaches prototype triggers, fires the
+`load` trigger of every mob and object it sees for the first time, and runs the
+caller's closure with an `EcsHost`. Only when the outermost call ends with the
+VM idle does it sweep extracted characters and mirror player variables back to
+`TbaTriggerVars`; a nested call does only the id pass, matching the C's depth
+behaviour.
 
-| feature | Phase-2 coverage |
+**Intake** reproduces `command_interpreter`'s fixed sequence around the engine
+router (`intake/mod.rs`, `DgIntake`):
+
+1. **`CommandGate`** (pre-route) — world, then mob, then object `command`
+   triggers; the first non-zero return claims the command.
+2. **`PreCommit`** (pre-route) — the triggers that can refuse an action before
+   it happens (`leave`, `door`, `get`, `drop`, `give`, `receive`, `bribe`,
+   `wear`, `remove`, `consume`, `cast`); a refusal claims the command.
+3. the engine routes the command and the pack's handlers run, honouring
+   `is_claimed`.
+4. **`PostRoute`** — the reactions (`speech`, `act`, `enter`, `greet`, `entry`,
+   `memory`).
+
+Combat (`fight`/`hitprcnt`/`damage`/`death`/`cast`), movement and login, item
+actions, zone/load/timer and the periodic `random`/`global`/`time` heartbeats
+hang off the same dispatch functions. `docs/runbook.md` §6 lists the systems and
+their schedules.
+
+### 6.5 What stays unmodelled
+
+The VM implements the language; the remaining gaps are facts the **game host**
+does not model. Each is reported through `BaseHost::unsupported` with a short
+stable key and counted in `DgLog` (a bounded ring plus a per-key count) — never
+silently dropped. `code/tests/e2e_corpus.rs` runs every record once in-game and
+allow-lists the eight keys the corpus exercises:
+`char_npc_no_combat_state`, `char_pref_flags`, `char_set_stat_no_combat_state`,
+`char_sex`, `char_update_pos_dead`, `char_weight`, `magic_affect_bit`,
+`mtransform.stats`. `script_log` is the VM's error sink, not an unmodelled key.
+
+The full set the host reports (from `code/src/dg/host/*`, `code/src/dg/intake/*`,
+`code/src/dg/mobcmd*`, and the pack handlers they call: `chardata.rs`,
+`consume.rs`, `zones/mod.rs`):
+
+| group | keys |
 |---|---|
-| **variables** | `set`/`eval`/`unset`, trigger-local frame, `remote`/`global` persisted in `TbaTriggerVars`, `local` scoped to one record. Built-in pseudo-arrays supported: `%actor.inventory%`, `%self.contents%`, `%random.char%`, `%random.<n>%`, `%random.99%`; user arrays deferred. |
-| **`%actor%` context** | `TriggerContext` with `actor`/`self`/`object`/`victim`/`target`, `%direction%`, `%cmd%`, `%speech%`, `%object.vnum%`, etc. |
-| **timers/`wait`** | `TriggerTimers`; `wait N sec` suspends the record's program counter; `wait until hh:mm` hooks the in-world clock (`mib_tba::clock`). |
-| **`%load%`** | `%load% obj <vnum> [victim] [wear]` / `%load% mob <vnum>` route to the existing spawner/world spawn path. |
-| **nested triggers** | A depth guard plus a serialized pending queue, mirroring DG's `GET_TRIG_DEPTH`/`TRIGGER_CHECK` (`dg_scripts.h:419,446`); `%attach%` deferred, `detach` supported (session-scoped). |
-| **`while`/`switch`** | supported, with a per-record iteration cap to prevent a bad script wedging a tick. |
-| **combat** (Phase 5) | `fight`/`hitprcnt` fire once per round from `TbaRound`; `damage`/`death`/`cast`/`load`/`door` fire from the combat/spawn/door seams; `%damage%`, `mkill`, and `detach` apply; `dg_cast` maps to `tba.spells`. |
+| character | `char_sex` / `char_set_sex`, `char_weight`, `char_str_add` / `char_set_str_add`, `char_wait_state` / `char_set_wait_state`, `char_pref_flags`, `char_act_flag_inert`, `char_quest_completed`, `char_set_class`, `char_set_level_npc`, `char_npc_no_combat_state`, `char_set_stat_no_combat_state`, `char_update_pos_dead` |
+| object | `obj.alias`, `obj.val.effect`, `obj.cost.effect`, `obj.rent.effect`, `obj.weight.effect`, `obj.apply.effect` |
+| magic | `magic_spell_not_carried`, `magic_obj_target`, `magic_alter_objs`, `magic_spell_inert`, `magic_affect_apply`, `magic_affect_bit` |
+| world / items | `mhunt`, `mtransform.stats`, `exit.description`, `carry_limit`, `put_curse_container`, `food_bites`, `food_poison`, `drink_level`, `drink_poison`, `quaff_wait_state`, `death_cry`, `reset_wear_otrigger` |
+| NPC interpreter | `mobcmd.aff_flying`, `mobcmd.aff_waterwalk`, `mobcmd.indoors`, `mobcmd.container_closed`, `mobcmd.container_door`, `mobcmd.gemote`, `mobcmd.force_player`, and `mobcmd.<command>` for every `cmd_info[]` row whose handler is `Unmodelled` |
 
-**Explicitly not covered** (tracked in #28; the full VM is #29):
-complete expression precedence and every `%…%` substitution; `dg_cast` of a
-spell the catalog does not carry (named-dropped); `%transform%`,
-`dg_affect`/full affect application, `mfollow`, `mremember`, `context` scope,
-`%attach%`, OLC/`rdelete`, user-defined arrays (`set_array`), and `remote` to
-offline players. Each is recorded as a named drop when a script uses it.
-
-**Event types with no intake.** `TriggerKind` (`code/src/triggers/events.rs`)
-dispatches `speech`, `command`, `act`, `greet`/`greet-all`, `entry`/`enter`,
-`leave`, `fight`, `hitprcnt`, `damage`, `death`, `cast`, `load`, `door`,
-`random`, `global`, `timer` and `time`. The remaining corpus types have no
-variant, so a record of one of these types is emitted and parsed but never
-fires (corpus counts from `reports/trigger-triage.json`): `receive` (42),
-`wear` (22), `drop` (19), `get` (18), `bribe` (10), `zone reset` (10),
-`remove` (9), `consume` (6), `memory` (6), `give` (4) and `login` (3). Twelve
-of those records are in the essential set (`receive` 7, `bribe` 3, `get` 1,
-`zone reset` 1).
+A write/read pair (`char_str_add` / `char_set_str_add`, `char_sex` /
+`char_set_sex`, `char_wait_state` / `char_set_wait_state`) logs the read key and
+the write key separately; a script that only reads logs the read key. The
+`obj.*.effect` and `char_act_flag_inert` keys mean the write is recorded in the
+per-instance override but no pack system reads it (the pack reads the
+prototype), so the value is visible to the next script but not to the pack's own
+systems. A `mobcmd.*` key is a command word the interpreter recognises but does
+not model; a word it does not recognise is `Huh?!?`, not an unmodelled key.
 
 ---
 
-## 7. Phased plan for #15
+## 7. Phased plan for #15 (complete)
 
-Sizes are honest engineering estimates for one contributor, excluding review.
+All phases shipped on `feat/dg-vm`; the sizes below were the original
+one-contributor estimates.
 
-### Phase 0 — triage + design (this change) — done
+- **Phase 0 — triage + design.** This document, `reports/trigger-triage.json`,
+  the converter classification, and the `tbaport triage` subcommand.
+- **Phase 1 — `tba.triggers` content + parser.** Every record emitted as
+  `tba.triggers.<zone>.yaml` and parsed into `Program` at build/reload.
+- **Phase 2 — evaluation core.** Context, `%…%` substitution, text and control.
+- **Phase 3 — state + quests.** Variables, `remote`/`global` persistence, and
+  the `stdlib.quests` kill bridge (`NpcDefeated` → `QuestEvent::Killed`).
+- **Phase 4 — time + movement.** `wait`, doors, gates and teleport.
+- **Phase 5 — combat + hardening.** Combat and periodic events, `dg_cast`
+  mapping, the nested-trigger depth cap, and the corpus smoke test.
 
-Deliverables: this document, `reports/trigger-triage.json`, the converter
-classification, and the regenerating `tbaport triage` subcommand.
-
-Acceptance:
-- `docs/design/triggers.md` cites the letter mapping and counts to source.
-- `reports/trigger-triage.json` is deterministic (byte-equal on re-run) and its
-  pinned corpus totals match `tbaport triage`.
-- `reports/drop-report.json` carries `trigger_triage` and per-zone `triggers[]`.
-- `cargo test -p tbaport`, `cargo fmt --check`, and `cargo clippy -D warnings`
-  are green; no pack runtime behaviour changes.
-
-### Phase 1 — `tba.triggers` content + parser (no evaluation) — done (est. ~2–3 days)
-
-Emit the **essential** scripts as `tba.triggers.<zone>.yaml`; parse them into an
-AST at build/reload; keep the rest deferred and itemised.
-
-Acceptance:
-- The section loads, validates, and round-trips through the pack registry.
-- Every essential record parses; every parse failure is a named, counted drop.
-- A coverage report states the per-construct and per-record coverage.
-- No behaviours fire yet; existing packs stay green.
-
-### Phase 2 — evaluation core: context, substitutions, text, control — done (est. ~1 week)
-
-`say`/`emote`/`echo`/`%echoaround%`/`%send%`, `if`/`elseif`/`else`/`end`,
-`switch`/`case`, `return`/`nop`, substitutions, and the `speech`/`command`/
-`greet` event intake.
-
-Acceptance:
-- Unit tests for substitution and condition evaluation.
-- The tutorial greet/speech records produce the expected lines against a
-  scripted harness; unknown substitutions resolve to a named drop.
-- A malformed/looping script cannot panic or wedge a tick (iteration cap).
-
-### Phase 3 — state + quests: variables, `%load%`/`%purge%`, bridge — done (est. ~1 week)
-
-`set`/`eval`, `remote`/`global` with `TbaTriggerVars` persistence, and the
-`stdlib.quests` bridge emitting `QuestEvent`s.
-
-Acceptance:
-- The zone-1 "Kill the Mice!" quest and the zone-0 Tutorial Quest 1317 chain
-  complete end-to-end (accept → objective → turn-in → reward).
-- Quest variables survive reconnect; `%load% obj`/`%purge%` behave once per
-  step.
-- Quest journal shows the steps and the ready-to-turn-in state.
-
-### Phase 4 — time + movement: `wait`, doors, gates, teleport — done (est. ~1 week)
-
-`TriggerTimers` and the movement/gate/door events.
-
-Acceptance:
-- Guild guards gate directions; `wait` sequences preserve order; a teleport
-  trigger lands the player in the right room.
-- Timers are cancelled when their owner is purged; no timer leaks across reset.
-
-### Phase 5 — combat triggers + hardening — done
-
-`fight`/`hitprcnt`/`death`/`damage`/`cast`/`load`/`door`/`random`/`global`/
-`timer`/`time`, `dg_cast` mapping, the nested-trigger depth cap and serialized
-pending queue, telemetry, and the curated-zone playtest.
-
-Acceptance:
-- Combat triggers fire once per round (never per damage point) with a depth cap.
-- The curated demo checklist passes in zones 0/1/30/74.
-- Final corpus coverage published: essential records firing vs named-dropped.
-- The 133 essential records parse and dispatch without panicking (fuzz test).
-
-### Deferred — full DG VM
-
-The spec's Phase 3 (a clean Rust parser for the whole DG AST in
-`code/src/triggers/`) remains separately costed (tracked in #29). Phase 1's parser is designed
-so the AST is the same shape the full VM can extend, but no commitment is made
-here beyond the subset in §6.5.
+The **full DG VM** was then built as `crates/dg-vm` (#29) and hosted by
+`code/src/dg/`, superseding the bounded subset the phases assumed. What
+remains is not interpreter coverage but the host facts in §6.5; the
+corpus-level quirks are the 8 `attach_type` mismatches (kept, named drops) and
+the 432 records no owner attaches. `docs/runbook.md` §8 tracks the runtime-side
+gaps.
 
 ---
 
