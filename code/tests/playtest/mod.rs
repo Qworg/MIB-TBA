@@ -393,9 +393,11 @@ impl Play {
             .insert(DgLastRoom(room));
     }
 
-    /// Run one combat round (`TbaRound`), as the round clock does.
+    /// Run one combat round (`TbaRound`), then `Update` so the bridge delivers
+    /// what the round produced.
     pub fn round(&mut self) {
         self.app.world_mut().run_schedule(TbaRound);
+        self.app.update();
         self.app.world_mut().flush();
     }
 
