@@ -4,13 +4,16 @@
 //! `GET_OBJ_TIMER`). `point_update` (`src/limits.c:469`) runs once per **MUD
 //! hour** (`src/comm.c:1074`, `SECS_PER_MUD_HOUR * PASSES_PER_SEC`; the hour is
 //! 75 real seconds, `src/utils.h:193`) and decrements every positive timer,
-//! extracting the object when it reaches zero. This module reproduces that
-//! cadence on the engine's fixed world-simulation tick:
+//! running the object's Timer trigger (`timer_otrigger`, `dg_triggers.c:682`)
+//! when it reaches zero. That trigger returns immediately for an object with no
+//! Timer trigger, so tbaMUD leaves a non-corpse object in place; the pack
+//! instead decays it (see [`tick_item_timers`]). This module reproduces the
+//! hourly cadence on the engine's fixed world-simulation tick:
 //!
 //! * [`attach_item_timers`] gives every newly spawned [`Item`] whose
 //!   `tba.items` prototype carries a `timer` a [`TbaItemTimer`].
-//! * [`tick_item_timers`] ages those timers by whole MUD hours and despawns the
-//!   item at zero.
+//! * [`tick_item_timers`] ages those timers by whole MUD hours; at zero it
+//!   hands the item to its Timer trigger, or despawns it when it has none.
 //!
 //! ## Persistence split
 //!

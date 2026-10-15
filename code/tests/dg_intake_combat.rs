@@ -121,9 +121,6 @@ const COUNT: &str = "global actor\nif %n%\n  eval n %n% + 1\nelse\n  set n 1\nen
 
 // -- fight and hitprcnt ------------------------------------------------------
 
-// Remove this ignore when the chars stream lands (it passes against a
-// target-based model of CharHost::char_fighting and the hit-point fields).
-#[ignore = "needs the chars stream: CharHost::char_fighting and the hit-point fields; verified against a target-based model"]
 #[test]
 fn fight_runs_once_per_round_for_a_fighting_npc_with_its_opponent() {
     let mut app = combat_app();
@@ -242,9 +239,6 @@ fn a_called_off_fight_stands_the_fighter_down() {
     assert_eq!(hero_state.position, Position::Standing);
 }
 
-// Remove this ignore when the chars stream lands (it passes against a
-// target-based model of CharHost::char_fighting and the hit-point fields).
-#[ignore = "needs the chars stream: CharHost::char_fighting and the hit-point fields; verified against a target-based model"]
 #[test]
 fn hitprcnt_runs_for_the_victim_once_its_hit_points_fall_to_the_threshold() {
     let mut app = combat_app();

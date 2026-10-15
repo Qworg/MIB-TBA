@@ -875,8 +875,7 @@ impl MagicHost for EcsHost<'_> {
         }
         if spell == SPELL_DG_AFFECT {
             // A pinned buff no remaining marker accounts for belongs to a
-            // script affect whose marker was lost (it is saved, the marker is
-            // not).
+            // script affect whose marker was lost.
             let owned: Vec<AffectDef> = self
                 .world
                 .get::<TbaDgAffects>(entity)
