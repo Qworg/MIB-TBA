@@ -50,7 +50,7 @@
     {
       "kind": "out_of_scope",
       "name": "lib/text/help",
-      "reason": "legacy `help.hlp` database; the generated command catalog plus the converted `lib/text` and `lib/misc/messages` topics supersede it (issue #18)"
+      "reason": "legacy `help.hlp` database; the generated command catalog plus the converted `lib/text` and `lib/misc/messages` topics supersede it, except its `CIRCLEMUD` entry, which is preserved as the `circlemud` topic for the CircleMUD licence (issue #18)"
     },
     {
       "kind": "social_code",

@@ -43,7 +43,7 @@ const TBA_SHOPS: usize = 327;
 /// Issue #17: every `socials.new` record converts.
 const TBA_SOCIALS: usize = 491;
 /// Issue #18: the eleven `lib/text` files plus one topic per combat attack type.
-const TBA_HELP_TOPICS: usize = 49;
+const TBA_HELP_TOPICS: usize = 50;
 /// Issue #16: the only non-empty `.qst` record in the source world.
 const TBA_QUESTS: usize = 1;
 /// Issue #15: every DG trigger record emitted into `tba.triggers`.
@@ -203,6 +203,12 @@ fn tba_pack_loads_and_validates_with_the_expected_sections() {
     assert_eq!(
         help.topics.get("motd").map(|topic| topic.title.as_str()),
         Some("Message of the Day")
+    );
+    // The CircleMUD licence requires the `CIRCLEMUD` entry to be kept intact
+    // and shown for `help circlemud`.
+    assert!(
+        help.topics.contains_key("circlemud"),
+        "the CIRCLEMUD help entry is preserved"
     );
 
     // Issue #16: the single quest maps its objective and giver.

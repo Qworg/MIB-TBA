@@ -1,0 +1,83 @@
+NOTICE
+======
+
+This repository is a game pack for [MIB](https://github.com/Qworg/MIB). It
+contains material derived from **The Builder Academy (tbaMUD)**, which is itself
+derived from **CircleMUD**, which is derived from **DikuMUD**. That material is
+governed by the CircleMUD and DikuMUD licences, which are included in full and
+unaltered in [`LICENSE-TBAMUD`](LICENSE-TBAMUD). Read them before using,
+running, or redistributing this repository or anything built from it.
+
+Required credit
+---------------
+
+The DikuMUD and CircleMUD licences require that the authors of DikuMUD and
+CircleMUD are credited. They are:
+
+**DikuMUD** — originally developed at DIKU (Department of Computer Science,
+University of Copenhagen) by:
+
+- Sebastian Hammer
+- Michael Seifert
+- Hans Henrik Staerfeldt
+- Tom Madsen
+- Katja Nyboe
+
+**CircleMUD** — created by Jeremy Elson (Johns Hopkins University, Department of
+Computer Science). Code unique to CircleMUD is protected by a copyright held by
+the Trustees of the Johns Hopkins University; additional development was
+coordinated by Alex Fletcher, George Greer and Daniel Koepke.
+
+**tbaMUD (The Builder Academy)** — maintained at <https://tbamud.com/> by
+Rumble, Welcor, Wyld and Opie, with contributions from the wider MUD community.
+
+What is derived from tbaMUD
+---------------------------
+
+- **`content/`** — the world and game data. Every `*.yaml` file is converted by
+  `tools/tbaport` from the tbaMUD world files (`lib/world/**`), the tbaMUD
+  text and message files (`lib/text/*`, `lib/misc/messages`), and the DG Script
+  trigger records (`*.trg`). Area designs, room/mob/object descriptions and
+  scripts are the work of their original tbaMUD authors, credited in the source
+  files and in the converted content.
+- **`crates/dg-vm/`** — a line-faithful Rust port of tbaMUD's DG Scripts
+  interpreter (`tbamud/src/dg_*.c`, `dg_scripts.c`, `dg_triggers.c`,
+  `dg_mobcmd.c`, `dg_objcmd.c`, `dg_variables.c`). The port is the authors'
+  original Rust expression, but it is a derivative work of that C source and is
+  subject to the same terms.
+- **`reports/`** and parts of **`docs/`** — describe and summarise that
+  converted content.
+
+The Rust engine glue (the `mib-tba` crate in `code/`, the `dg-vm` host
+implementation, and the `tbaport` converter itself) is original code under the
+MIT licence in [`LICENSE`](LICENSE). The MIT licence does not apply to the
+tbaMUD-derived material above.
+
+The non-commercial condition
+----------------------------
+
+The CircleMUD and DikuMUD licences **forbid making money from the game or its
+code or data in any way**. In particular, you may not charge for playing, sell
+or license the game, solicit or accept donations in exchange for running it or
+for in-game advantages, or accept reimbursement for running it. If you deploy
+this pack, you must comply with this condition. This is a summary for
+convenience only; `LICENSE-TBAMUD` is the authoritative text.
+
+Obligations when running the game
+---------------------------------
+
+The CircleMUD licence additionally requires a running derivative to:
+
+1. preserve the `credits` text and **display it for the in-game `credits`
+   command**, unchanged (the converted topic is `content/stdlib.help.yaml` →
+   `credits`, from tbaMUD's `lib/text/credits`);
+2. maintain the **`CIRCLEMUD` help entry** intact and display it for
+   `help circlemud`; and
+3. include the **names of the DikuMUD and CircleMUD creators in the login
+   sequence** (the text shown between connecting and starting play).
+
+Upstream tbaMUD sources for the credit texts: `lib/text/credits`,
+`lib/text/help/help.hlp` (`CIRCLEMUD`), and `lib/text/greetings`.
+
+Do not remove, change or modify any notice of copyright, licensing or
+authorship found in tbaMUD-derived material.

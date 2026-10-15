@@ -414,8 +414,8 @@ change the world rather than omit a field.
 
 ### 3.8 Help topics (`stdlib.help`)
 
-The eleven `lib/text/` files and `lib/misc/messages` have no MIB home, so they
-become authored `stdlib.help` topics.
+The eleven `lib/text/` files, the `CIRCLEMUD` entry of `lib/text/help/help.hlp`
+and `lib/misc/messages` become authored `stdlib.help` topics.
 
 | Source | Topic id | Audience |
 |---|---|---|
@@ -430,6 +430,7 @@ become authored `stdlib.help` topics.
 | `lib/text/wizlist` | `wizlist` | staff |
 | `lib/text/greetings` | `greetings` | public |
 | `lib/text/immlist` | `immlist` | staff |
+| `lib/text/help/help.hlp` `CIRCLEMUD` | `circlemud` | public |
 | `lib/misc/messages` attack type `N` | `combat-message-N` | public |
 
 **Colour.** The text files carry Circle `@`-codes (`@RHELP COLORCODES@n`).
@@ -445,7 +446,9 @@ attacker/victim/room; a line beginning with `#` is Circle's NULL). Several `M`
 entries may share a type — those are random variants — and the converter groups
 them under one topic body that labels all twelve slots. The `*`-comment name
 (for example `burning hands`) titles the topic. The legacy `lib/text/help/`
-database (`help.hlp` and friends) is *not* converted; it is recorded once as
+database (`help.hlp` and friends) is *not* converted, except its `CIRCLEMUD`
+entry, which is kept as the `circlemud` topic: the CircleMUD licence requires
+`help circlemud` to display that entry intact. The rest is recorded once as
 `global_drops`/`out_of_scope` because the generated command catalog plus these
 topics supersede it.
 
@@ -769,7 +772,8 @@ and `reports/drop-report.summary.md` groups the surviving drops by reason.
   source's one real quest (`tba_quest_100`) converts.
 - **Text and combat messages** now convert to `stdlib.help` topics (issue
   #18). The legacy `lib/text/help/help.hlp` database is an `out_of_scope`
-  global drop.
+  global drop, except its `CIRCLEMUD` entry, which is preserved as the
+  `circlemud` topic for the CircleMUD licence.
 - **Socials** now convert to `tba.socials` (issue #17). The source's stray
   `$i` code and the legacy old-format `lib/misc/socials` are named global
   drops; pronouns render neutral (MIB models no sex).

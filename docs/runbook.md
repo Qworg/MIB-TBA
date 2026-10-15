@@ -337,7 +337,10 @@ These are recorded, not silent:
   `OBJ_RETURN`/`ROOM_CLEAR` objective and the reward/condition fields with no
   `QuestDef` home are named drops (`docs/05-converter.md` §3.7).
 - **Text and combat messages** convert to `stdlib.help` topics; the legacy
-  `lib/text/help/help.hlp` database is an `out_of_scope` global drop.
+  `lib/text/help/help.hlp` database is an `out_of_scope` global drop, **except
+  its `CIRCLEMUD` entry**, which the converter preserves as the `circlemud`
+  topic because the CircleMUD licence requires `help circlemud` to keep it
+  intact (see [`NOTICE`](../NOTICE)).
 - **Socials** (`socials.new`) convert to `tba.socials`; the runtime serves
   `social <name> [target] [body part]` and `socials`. MIB models no sex, so the
   `$e`/`$m`/`$s` pronouns render as neutral singular *they/them/their*, and the
@@ -437,3 +440,16 @@ These are recorded, not silent:
 For a released game, replace the `path` deps in `Cargo.toml` with `git` deps
 pinned to an engine revision. That is what "targets MIB vX" means here, and it
 insulates the game from engine churn.
+
+---
+
+## 11. Licence and attribution
+
+The world and game rules are derived from The Builder Academy (tbaMUD), which is
+derived from CircleMUD and DikuMUD. Those licences are included in full at
+[`LICENSE-TBAMUD`](../LICENSE-TBAMUD) and apply to the converted `content/` and
+the `crates/dg-vm` port; the original Rust code is MIT ([`LICENSE`](../LICENSE)).
+The required attribution and the obligations a deployment takes on are in
+[`NOTICE`](../NOTICE); read it before running or redistributing this pack. In
+particular, the CircleMUD/DikuMUD licences **forbid making money from the game,
+its code or its data in any way**.

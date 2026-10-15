@@ -43,7 +43,7 @@ use crate::source::{
     room::RawRoom,
     shop::{RawShop, parse_shops},
     social::{RawSocial, parse_socials},
-    text::{load_message_topics, load_text_topics},
+    text::{load_circle_help, load_message_topics, load_text_topics},
     tokens::Source,
     zone::{RawZone, parse_zone},
 };
@@ -706,8 +706,9 @@ fn global_drops() -> Vec<GlobalDrop> {
         kind: "out_of_scope".to_owned(),
         name: "lib/text/help".to_owned(),
         reason: "legacy `help.hlp` database; the generated command catalog plus the \
-                 converted `lib/text` and `lib/misc/messages` topics supersede it \
-                 (issue #18)"
+                 converted `lib/text` and `lib/misc/messages` topics supersede it, \
+                 except its `CIRCLEMUD` entry, which is preserved as the `circlemud` \
+                 topic for the CircleMUD licence (issue #18)"
             .to_owned(),
     });
     drops
@@ -2176,9 +2177,17 @@ fn record_quest_conditions(raw: &RawQuest, label: &str, zr: &mut ZoneReport) {
 // Help topics + socials (world-global)
 // ---------------------------------------------------------------------------
 
-/// Load `lib/text/*` and `lib/misc/messages` into `stdlib.help` topics.
+/// Load `lib/text/*`, the `CIRCLEMUD` entry of `lib/text/help/help.hlp`, and
+/// `lib/misc/messages` into `stdlib.help` topics.
 fn load_help(source_root: &Path, bundle: &mut OutputBundle) -> Result<()> {
-    for (id, topic) in load_text_topics(&source_root.join("lib/text"))? {
+    let text_dir = source_root.join("lib/text");
+    for (id, topic) in load_text_topics(&text_dir)? {
+        bundle.help.topics.insert(SmolStr::new(id), topic);
+    }
+    // The CircleMUD licence requires the `CIRCLEMUD` entry to be maintained
+    // intact and shown for `help circlemud`, so it is kept even though the rest
+    // of the legacy `help.hlp` database is dropped.
+    if let Some((id, topic)) = load_circle_help(&text_dir)? {
         bundle.help.topics.insert(SmolStr::new(id), topic);
     }
     for (id, topic) in load_message_topics(&source_root.join("lib/misc/messages"))? {

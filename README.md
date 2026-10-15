@@ -89,3 +89,24 @@ by rebuilding the engine. See `docs/03-tba-pack.md` §2.
 TBA is an **independent game**, not a layer on `classic-rpg`: it depends on
 `mib-stdlib` only. Circle round-based combat is not classic-rpg's 3×3 tactical
 grid, so the two games coexist rather than stack.
+
+## Credits and licence
+
+The world and game rules come from **[The Builder Academy
+(tbaMUD)](https://github.com/tbamud/tbamud)**, which is derived from
+**CircleMUD** by Jeremy Elson, which is derived from **DikuMUD** by Sebastian
+Hammer, Michael Seifert, Hans Henrik Staerfeldt, Tom Madsen and Katja Nyboe. The
+converted `content/` and the `crates/dg-vm` port are derivative works of that
+source; please credit its authors.
+
+This repository therefore carries two licences:
+
+- **[`LICENSE`](LICENSE)** (MIT) — the original Rust code in this repository
+  (the `mib-tba` crate, `crates/dg-vm`, and `tools/tbaport`).
+- **[`LICENSE-TBAMUD`](LICENSE-TBAMUD)** — the CircleMUD and DikuMUD licences,
+  included in full and unaltered. They apply to everything derived from tbaMUD
+  and **forbid making money from the game, its code or its data in any way**.
+
+See **[`NOTICE`](NOTICE)** for the required attribution and the obligations a
+running deployment takes on (the `credits` text, the `CIRCLEMUD` help entry,
+and the DikuMUD/CircleMUD creators named in the login sequence).
