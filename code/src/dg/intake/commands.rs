@@ -224,6 +224,7 @@ pub fn command_words(input: &PlayerInput) -> Option<(String, String)> {
         Command::TalkTo { npc, text } => ("talk", format!("{npc} {text}")),
         Command::Quit => ("quit", String::new()),
         Command::Help { topic } => ("help", optional(topic)),
+        Command::Credits => ("credits", String::new()),
         Command::Custom { verb, args } => return Some((verb.to_lowercase(), args.join(" "))),
     };
     Some((word.to_owned(), args))

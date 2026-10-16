@@ -20,8 +20,8 @@ use std::path::{Path, PathBuf};
 use mib_content::prelude::{MibModule, SectionRegistry, load_packs, registry_for, validate_all};
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{
-    ContentRegistry, HelpSection, ItemId, Modules, NpcId, QuestId, QuestStepDef, RoomId, RoomIndex,
-    StdlibModule, StdlibPlugin,
+    ContentRegistry, CreditsSection, HelpSection, ItemId, Modules, NpcId, QuestId, QuestStepDef,
+    RoomId, RoomIndex, StdlibModule, StdlibPlugin,
 };
 use mib_tba::prelude::{
     SaveEffect, ShopDef, ShopsSection, SocialDef, SocialsSection, SpellKind, SpellTarget,
@@ -43,7 +43,7 @@ const TBA_SHOPS: usize = 327;
 /// Issue #17: every `socials.new` record converts.
 const TBA_SOCIALS: usize = 491;
 /// Issue #18: the eleven `lib/text` files plus one topic per combat attack type.
-const TBA_HELP_TOPICS: usize = 50;
+const TBA_HELP_TOPICS: usize = 49;
 /// Issue #16: the only non-empty `.qst` record in the source world.
 const TBA_QUESTS: usize = 1;
 /// Issue #15: every DG trigger record emitted into `tba.triggers`.
@@ -209,6 +209,19 @@ fn tba_pack_loads_and_validates_with_the_expected_sections() {
     assert!(
         help.topics.contains_key("circlemud"),
         "the CIRCLEMUD help entry is preserved"
+    );
+
+    // The CircleMUD/DikuMUD licences require a `credits` command, which the
+    // engine aggregates across every loaded pack (MIB #22); this pack supplies
+    // its lineage as its own `stdlib.credits` section.
+    let credits = tba.section::<CreditsSection>().expect("credits");
+    assert!(
+        credits
+            .credits
+            .iter()
+            .any(|entry| entry.name == "CircleMUD credits"),
+        "the pack credits its upstream lineage: {:?}",
+        credits.credits.iter().map(|e| &e.name).collect::<Vec<_>>()
     );
 
     // Issue #16: the single quest maps its objective and giver.

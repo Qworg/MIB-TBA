@@ -68,13 +68,17 @@ Obligations when running the game
 
 The CircleMUD licence additionally requires a running derivative to:
 
-1. preserve the `credits` text and **display it for the in-game `credits`
-   command**, unchanged (the converted topic is `content/stdlib.help.yaml` →
-   `credits`, from tbaMUD's `lib/text/credits`);
+1. show the credit text for the in-game **`credits` command**. The engine owns
+   that command and aggregates every loaded pack's `stdlib.credits` section
+   (MIB issue #22), so this pack ships
+   [`content/stdlib.credits.yaml`](content/stdlib.credits.yaml) alongside the
+   base stdlib pack's; the converted tbaMUD `lib/text/credits` text is also
+   preserved as the `credits` help topic in `content/stdlib.help.yaml`;
 2. maintain the **`CIRCLEMUD` help entry** intact and display it for
-   `help circlemud`; and
+   `help circlemud`: the converter preserves it as the `circlemud` help topic
+   (see `docs/05-converter.md` §3.8); and
 3. include the **names of the DikuMUD and CircleMUD creators in the login
-   sequence** (the text shown between connecting and starting play).
+   sequence**: the pack's server binary sets a default `game.motd` naming them.
 
 Upstream tbaMUD sources for the credit texts: `lib/text/credits`,
 `lib/text/help/help.hlp` (`CIRCLEMUD`), and `lib/text/greetings`.

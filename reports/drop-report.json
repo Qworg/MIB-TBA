@@ -49,6 +49,11 @@
     },
     {
       "kind": "out_of_scope",
+      "name": "lib/text/credits",
+      "reason": "the credit text is served by the engine's `credits` command from the pack's hand-authored `stdlib.credits` section (MIB #22), not as a help topic: a topic id equal to a command name is unreachable"
+    },
+    {
+      "kind": "out_of_scope",
       "name": "lib/text/help",
       "reason": "legacy `help.hlp` database; the generated command catalog plus the converted `lib/text` and `lib/misc/messages` topics supersede it, except its `CIRCLEMUD` entry, which is preserved as the `circlemud` topic for the CircleMUD licence (issue #18)"
     },
@@ -1685,7 +1690,7 @@
     "deferred": 0,
     "dangling": 15,
     "unmapped": 17593,
-    "global_drops": 10,
+    "global_drops": 11,
     "unmapped_by_kind": {
       "affect_location": 40,
       "exit_description_only": 108,

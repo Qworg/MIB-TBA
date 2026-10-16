@@ -704,6 +704,14 @@ fn global_drops() -> Vec<GlobalDrop> {
     });
     drops.push(GlobalDrop {
         kind: "out_of_scope".to_owned(),
+        name: "lib/text/credits".to_owned(),
+        reason: "the credit text is served by the engine's `credits` command from the \
+                 pack's hand-authored `stdlib.credits` section (MIB #22), not as a help \
+                 topic: a topic id equal to a command name is unreachable"
+            .to_owned(),
+    });
+    drops.push(GlobalDrop {
+        kind: "out_of_scope".to_owned(),
         name: "lib/text/help".to_owned(),
         reason: "legacy `help.hlp` database; the generated command catalog plus the \
                  converted `lib/text` and `lib/misc/messages` topics supersede it, \

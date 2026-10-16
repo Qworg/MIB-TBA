@@ -414,15 +414,17 @@ change the world rather than omit a field.
 
 ### 3.8 Help topics (`stdlib.help`)
 
-The eleven `lib/text/` files, the `CIRCLEMUD` entry of `lib/text/help/help.hlp`
-and `lib/misc/messages` become authored `stdlib.help` topics.
+The ten `lib/text/` files (all but `credits`), the `CIRCLEMUD` entry of
+`lib/text/help/help.hlp` and `lib/misc/messages` become authored `stdlib.help`
+topics. `lib/text/credits` is *not* a help topic: the engine's `credits`
+command owns that name, and the pack serves the credit text from its
+hand-authored `stdlib.credits` section (see §8).
 
 | Source | Topic id | Audience |
 |---|---|---|
 | `lib/text/motd` | `motd` | public |
 | `lib/text/imotd` | `imotd` | staff |
 | `lib/text/news` | `news` | public |
-| `lib/text/credits` | `credits` | public |
 | `lib/text/handbook` | `handbook` | staff |
 | `lib/text/policies` | `policies` | public |
 | `lib/text/background` | `background` | public |
@@ -773,7 +775,10 @@ and `reports/drop-report.summary.md` groups the surviving drops by reason.
 - **Text and combat messages** now convert to `stdlib.help` topics (issue
   #18). The legacy `lib/text/help/help.hlp` database is an `out_of_scope`
   global drop, except its `CIRCLEMUD` entry, which is preserved as the
-  `circlemud` topic for the CircleMUD licence.
+  `circlemud` topic for the CircleMUD licence. `lib/text/credits` is a named
+  `out_of_scope` drop too: its text is served by the engine's `credits` command
+  from the pack's hand-authored `stdlib.credits` section (MIB #22), because a
+  help topic whose id is a command name is unreachable.
 - **Socials** now convert to `tba.socials` (issue #17). The source's stray
   `$i` code and the legacy old-format `lib/misc/socials` are named global
   drops; pronouns render neutral (MIB models no sex).

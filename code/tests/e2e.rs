@@ -20,6 +20,19 @@ fn a_logged_in_player_can_look() {
     assert!(!out.is_empty(), "look produced output: {out:?}");
 }
 
+/// The engine's `credits` command aggregates every loaded pack's attribution
+/// (MIB issue #22): the base stdlib pack and this game pack.
+#[test]
+fn the_credits_command_lists_every_loaded_pack() {
+    let mut play = Play::new("Aria");
+    let text = play.send("credits").join("\n");
+    assert!(text.contains("MIB"), "the stdlib credits appear: {text}");
+    assert!(
+        text.contains("The Builder Academy"),
+        "the tba pack's credits appear: {text}"
+    );
+}
+
 /// A `command` trigger that answers in two parts separated by `wait`: the
 /// second line must not appear until the wait elapses.
 #[test]

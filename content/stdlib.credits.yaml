@@ -1,0 +1,19 @@
+# The tbaMUD / CircleMUD / DikuMUD attribution.
+#
+# The engine aggregates every loaded pack's `stdlib.credits` entries into
+# the `credits` command (MIB issue #22), so these appear alongside the base
+# stdlib pack's. The CircleMUD licence requires the CircleMUD credit text
+# below to be preserved and displayed by the `credits` command; see
+# LICENSE-TBAMUD and NOTICE.
+credits:
+- name: CircleMUD credits
+  text: "                          C  I  R  C  L  E  M  U  D \n\n\nCircleMUD was developed from DikuMUD (Gamma 0.0) by Jeremy \"Ras\" Elson at\nJohns Hopkins University's Department of Computer Science.  All code unique\nto CircleMUD is protected under a copyright by the Trustees of the Johns\nHopkins University.  Additional development coordinated by Alex Fletcher,\nGeorge Greer, and Daniel Koepke with feedback from CircleMUD mailing list.\n\nCircleMUD is freeware and can be downloaded via tbamud.com.\n\nType HELP CIRCLEMUD for more information.\n\n============================================================================\n\n                   Original game idea, concept, and design:\n\n                    Katja Nyboe               [Superwoman]\n                    Tom Madsen              [Stormbringer]\n                    Hans Henrik Staerfeldt           [God]\n                    Michael Seifert                 [Papi]\n                    Sebastian Hammer               [Quinn]\n\n\
+    ------------------------------------------------------------------------------\nAdditional contributions from Michael Curran, Bill Wisner, Mads Haar, and\nStephan Dahl.\n\nOriginally developed at:\n  DIKU - The Department of Computer Science at the University of Copenhagen."
+  url: https://github.com/tbamud/tbamud
+- name: The Builder Academy (tbaMUD)
+  text: |
+    The Builder Academy (tbaMUD) - the world in this pack is converted from
+    the tbaMUD distribution and its DG Scripts triggers run on the ported
+    `dg-vm`. tbaMUD is maintained at tbamud.com by Rumble, Welcor, Wyld and
+    Opie, with contributions from the wider MUD community.
+  url: https://tbamud.com/

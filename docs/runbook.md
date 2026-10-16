@@ -232,7 +232,7 @@ must replace the converted files and preserve the hand-authored ones.
 | `stdlib.areas.yaml` | `tba.classes.yaml` |
 | `stdlib.rooms.<zone>.yaml` (one shard per zone) | `tba.spells.yaml` |
 | `stdlib.npcs.yaml` | `stdlib.verbs.yaml` |
-| `stdlib.items.yaml` | |
+| `stdlib.items.yaml` | `stdlib.credits.yaml` |
 | `stdlib.quests.yaml` | |
 | `stdlib.help.yaml` | |
 | `tba.zones.yaml` | |
@@ -249,7 +249,7 @@ Procedure:
 2. Remove the old `content/stdlib.rooms.yaml` and copy the converted files over
    `content/` (the room shards **replace** the single file; keeping both would
    make the engine report a duplicate key).
-3. Leave the three hand-authored files untouched.
+3. Leave the four hand-authored files untouched.
 4. Update the pinned counts in `code/tests/pack.rs` if the world changed.
 5. Run: `cargo test -p tbaport && cargo test -p mib-tba && cargo run -p mib-tba -- validate-packs`.
 
@@ -453,3 +453,9 @@ The required attribution and the obligations a deployment takes on are in
 [`NOTICE`](../NOTICE); read it before running or redistributing this pack. In
 particular, the CircleMUD/DikuMUD licences **forbid making money from the game,
 its code or its data in any way**.
+
+The engine's `credits` command shows every loaded pack's attribution: this pack
+ships [`content/stdlib.credits.yaml`](../content/stdlib.credits.yaml), which the
+engine merges with the base stdlib pack's own entries (MIB issue #22).
+`help circlemud` shows the preserved `CIRCLEMUD` entry and `help credits` the
+converted tbaMUD credits text.

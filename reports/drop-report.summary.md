@@ -10,7 +10,7 @@
 - deferred: 0
 - dangling: 15
 - unmapped: 17593
-- global permanent drops: 10
+- global permanent drops: 11
 - DG triggers emitted: 1461
 - DG trigger owners: 1295 (1705 links)
 
@@ -387,5 +387,6 @@ Unknown or global names (top 15 of 34):
 - `combat_skill` / `rescue`: Circle class ability `rescue`; implemented as tba pack gameplay (issue #25), not lost by conversion
 - `no_source_field` / `room coord`: tbaMUD `struct room_data` has no coordinates; `RoomDef::coord` is always `None`
 - `out_of_scope` / `lib/misc/socials`: legacy old-format social file; `CONFIG_NEW_SOCIALS` is YES, so the run-time reads `lib/misc/socials.new` (issue #17)
+- `out_of_scope` / `lib/text/credits`: the credit text is served by the engine's `credits` command from the pack's hand-authored `stdlib.credits` section (MIB #22), not as a help topic: a topic id equal to a command name is unreachable
 - `out_of_scope` / `lib/text/help`: legacy `help.hlp` database; the generated command catalog plus the converted `lib/text` and `lib/misc/messages` topics supersede it, except its `CIRCLEMUD` entry, which is preserved as the `circlemud` topic for the CircleMUD licence (issue #18)
 - `social_code` / `$i`: tbaMUD `perform_act` has no `$i` case; the code is preserved in `tba.socials` and expands to nothing at run time

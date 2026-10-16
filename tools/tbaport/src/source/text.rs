@@ -38,11 +38,12 @@ struct TextFile {
     audience: HelpAudience,
 }
 
-/// The eleven `lib/text/` files converted by issue #18. `imotd`, `handbook`,
+/// The ten `lib/text/` files converted by issue #18. `imotd`, `handbook`,
 /// `wizlist` and `immlist` are immortal-facing in Circle, so they become
 /// [`HelpAudience::Staff`] topics (hidden from non-admins at list and detail
-/// time).
-const TEXT_FILES: [TextFile; 11] = [
+/// time). `lib/text/credits` is not a help topic: the engine's `credits`
+/// command serves the credit text, from the pack's `stdlib.credits` section.
+const TEXT_FILES: [TextFile; 10] = [
     TextFile {
         file: "motd",
         id: "motd",
@@ -61,13 +62,6 @@ const TEXT_FILES: [TextFile; 11] = [
         file: "news",
         id: "news",
         title: "News",
-        category: "information",
-        audience: HelpAudience::Public,
-    },
-    TextFile {
-        file: "credits",
-        id: "credits",
-        title: "Credits",
         category: "information",
         audience: HelpAudience::Public,
     },
