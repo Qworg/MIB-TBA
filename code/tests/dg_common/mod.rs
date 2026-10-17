@@ -209,6 +209,8 @@ pub fn define_npc_level(app: &mut App, vnum: u32, level: u32) {
                 default_position: Position::Standing,
                 behaviour: Vec::new(),
                 damage: None,
+                attributes: TbaAttributes::mob_default(),
+                saves: TbaSaves::default(),
             },
         );
 }

@@ -54,6 +54,8 @@ fn stats(level: u32, behaviour: Vec<NpcBehaviour>) -> TbaNpcStats {
         default_position: Position::Standing,
         behaviour,
         damage: None,
+        attributes: TbaAttributes::mob_default(),
+        saves: TbaSaves::default(),
     }
 }
 

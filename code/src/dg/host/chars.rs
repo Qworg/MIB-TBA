@@ -718,8 +718,9 @@ impl CharHost for EcsHost<'_> {
         }
     }
 
-    /// `aff_abils`: the combatant's attributes, base 13 plus worn items and
-    /// buffs. `str_add` is not modelled: 0.
+    /// `aff_abils`: the combatant's attributes (a player's baseline 13, an
+    /// NPC's prototype e-specs) plus worn items and buffs. `str_add` is not
+    /// modelled: 0.
     fn char_abil(&self, ch: Uid, abil: CharAbil) -> i32 {
         let Some(location) = abil_location(abil) else {
             self.note_read("char_str_add", "the pack models no exceptional strength");
@@ -733,8 +734,9 @@ impl CharHost for EcsHost<'_> {
             .map_or(0, |combatant| derived_value(combatant, location))
     }
 
-    /// `real_abils`: the attribute without affects. The pack gives every
-    /// character the baseline 13; a script's `char_set_real_abil` moves it.
+    /// `real_abils`: the attribute without affects. A player starts at the
+    /// baseline 13; an NPC starts from its prototype's e-spec attributes (the
+    /// loader's 11 when it has none). A script's `char_set_real_abil` moves it.
     fn char_real_abil(&self, ch: Uid, abil: CharAbil) -> i32 {
         let Some(location) = abil_location(abil) else {
             self.note_read("char_str_add", "the pack models no exceptional strength");

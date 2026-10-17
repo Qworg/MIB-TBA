@@ -1158,6 +1158,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 2d2+2
+    attributes:
+      strength: 3
+      dexterity: 3
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_10603:
     hp: 2d2+100
     level: 10
@@ -1179,6 +1186,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2+1
+    attributes:
+      strength: 20
+      dexterity: 20
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_10605:
     hp: 1d1+70
     level: 7
@@ -1322,6 +1336,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_10615:
     hp: 2d2+100
     level: 10
@@ -1385,6 +1406,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 20
+      dexterity: 20
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_10633:
     hp: 1d1+70
     level: 7
@@ -1399,6 +1427,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 10
+      dexterity: 10
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_10634:
     hp: 2d2+100
     level: 10
@@ -1413,6 +1448,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 20
+      dexterity: 20
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_10635:
     hp: 1d1+70
     level: 7
@@ -1441,6 +1483,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 5
+      dexterity: 5
+      intelligence: 5
+      wisdom: 5
+      constitution: 11
+      charisma: 11
   tba_npc_10637:
     hp: 1d1+70
     level: 7
@@ -1474,6 +1523,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 25
+      intelligence: 25
+      wisdom: 10
+      constitution: 11
+      charisma: 11
   tba_npc_10639:
     hp: 1d1+70
     level: 7
@@ -1493,6 +1549,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 20
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_10640:
     hp: 2d2+140
     level: 14
@@ -2228,6 +2291,13 @@ npc_stats:
     - memory
     - no_charm
     damage: 1d2+1
+    attributes:
+      strength: 20
+      dexterity: 20
+      intelligence: 9
+      wisdom: 9
+      constitution: 11
+      charisma: 11
   tba_npc_11509:
     hp: 1d1+70
     level: 7
@@ -2293,6 +2363,13 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 1d2+1
+    attributes:
+      strength: 20
+      dexterity: 7
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_11513:
     hp: 1d1+70
     level: 7
@@ -2459,6 +2536,13 @@ npc_stats:
     - sentinel
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 3
+      dexterity: 3
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_11524:
     hp: '30'
     level: 3
@@ -2583,6 +2667,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 9
+      dexterity: 20
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_11537:
     hp: '30'
     level: 3
@@ -2598,6 +2689,13 @@ npc_stats:
     - sentinel
     - aware
     damage: 1d2
+    attributes:
+      strength: 3
+      dexterity: 3
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_11538:
     hp: '30'
     level: 3
@@ -2626,6 +2724,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 25
+      dexterity: 25
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_11541:
     hp: '30'
     level: 3
@@ -2641,6 +2746,13 @@ npc_stats:
     - sentinel
     - memory
     damage: 1d2
+    attributes:
+      strength: 25
+      dexterity: 3
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_11553:
     hp: '30'
     level: 3
@@ -2669,6 +2781,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 20
+      dexterity: 16
+      intelligence: 9
+      wisdom: 9
+      constitution: 11
+      charisma: 11
   tba_npc_11564:
     hp: 1d1+70
     level: 7
@@ -2702,6 +2821,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 3
+      dexterity: 20
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_11585:
     hp: '30'
     level: 3
@@ -2716,6 +2842,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2
+    attributes:
+      strength: 20
+      dexterity: 3
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_11588:
     hp: 1d1+70
     level: 7
@@ -2730,6 +2863,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 25
+      dexterity: 25
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_11589:
     hp: '30'
     level: 3
@@ -4079,6 +4219,12 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_11850:
     hp: '20'
     level: 2
@@ -4533,6 +4679,13 @@ npc_stats:
     - sentinel
     - memory
     damage: 3d3+3
+    attributes:
+      strength: 18
+      dexterity: 11
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_12022:
     hp: 4d4+210
     level: 21
@@ -4581,6 +4734,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 2d2+2
+    attributes:
+      strength: 11
+      dexterity: 11
+      intelligence: 3
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_12025:
     hp: 4d4+230
     level: 23
@@ -4703,6 +4863,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    attributes:
+      strength: 25
+      dexterity: 25
+      intelligence: 25
+      wisdom: 25
+      constitution: 11
+      charisma: 11
   tba_npc_12031:
     hp: 5d5+280
     level: 28
@@ -4724,6 +4891,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 20
+      dexterity: 20
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_12032:
     hp: 5d5+270
     level: 27
@@ -4745,6 +4919,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 25
+      dexterity: 20
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_12033:
     hp: 5d5+260
     level: 26
@@ -4766,6 +4947,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 20
+      dexterity: 25
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_12034:
     hp: 4d4+230
     level: 23
@@ -4963,6 +5151,13 @@ npc_stats:
     - no_summon
     - no_bash
     damage: 5d5+5
+    attributes:
+      strength: 25
+      dexterity: 25
+      intelligence: 25
+      wisdom: 25
+      constitution: 11
+      charisma: 11
   tba_npc_1211:
     hp: 6d6+300
     level: 30
@@ -5142,6 +5337,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 25
+      dexterity: 20
+      intelligence: 12
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_12503:
     hp: 1d1+70
     level: 7
@@ -5156,6 +5358,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 25
+      wisdom: 25
+      constitution: 11
+      charisma: 11
   tba_npc_12504:
     hp: 1d1+70
     level: 7
@@ -5170,6 +5379,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 25
+      dexterity: 25
+      intelligence: 25
+      wisdom: 25
+      constitution: 11
+      charisma: 11
   tba_npc_12505:
     hp: 2d2+100
     level: 10
@@ -5372,6 +5588,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 25
+      dexterity: 25
+      intelligence: 25
+      wisdom: 25
+      constitution: 11
+      charisma: 11
   tba_npc_12598:
     hp: 1d1+70
     level: 7
@@ -5386,6 +5609,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 25
+      dexterity: 25
+      intelligence: 12
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_126:
     hp: 4d4+200
     level: 20
@@ -5538,6 +5768,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 25
+      dexterity: 25
+      intelligence: 25
+      wisdom: 25
+      constitution: 11
+      charisma: 11
   tba_npc_13000:
     hp: 4d4+200
     level: 20
@@ -7837,6 +8074,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 2d2+2
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 10
+      wisdom: 10
+      constitution: 11
+      charisma: 11
   tba_npc_1606:
     hp: 2d2+140
     level: 14
@@ -8414,6 +8658,13 @@ npc_stats:
     - aggressive
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 11
+      intelligence: 5
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_16901:
     hp: '30'
     level: 3
@@ -8445,6 +8696,13 @@ npc_stats:
     - scavenger
     - wimpy
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 11
+      intelligence: 15
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_16903:
     hp: '30'
     level: 3
@@ -8476,6 +8734,13 @@ npc_stats:
     - stay_zone
     - scavenger
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 11
+      intelligence: 5
+      wisdom: 5
+      constitution: 11
+      charisma: 11
   tba_npc_16905:
     hp: 1d1+70
     level: 7
@@ -8491,6 +8756,13 @@ npc_stats:
     - sentinel
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 14
+      dexterity: 8
+      intelligence: 6
+      wisdom: 7
+      constitution: 11
+      charisma: 11
   tba_npc_16906:
     hp: '30'
     level: 3
@@ -8506,6 +8778,13 @@ npc_stats:
     - aggressive
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 10
+      dexterity: 7
+      intelligence: 11
+      wisdom: 5
+      constitution: 11
+      charisma: 11
   tba_npc_16907:
     hp: '30'
     level: 3
@@ -8520,6 +8799,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 11
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_16908:
     hp: 1d1+70
     level: 7
@@ -8535,6 +8821,13 @@ npc_stats:
     - aggressive
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 11
+      dexterity: 11
+      intelligence: 11
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_16909:
     hp: '30'
     level: 3
@@ -8550,6 +8843,13 @@ npc_stats:
     - stay_zone
     - wimpy
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 11
+      intelligence: 18
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_16921:
     hp: 1d1+70
     level: 7
@@ -8565,6 +8865,13 @@ npc_stats:
     - aggressive
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 11
+      dexterity: 4
+      intelligence: 3
+      wisdom: 4
+      constitution: 11
+      charisma: 11
   tba_npc_17:
     hp: 6d6+340
     level: 34
@@ -9240,6 +9547,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 3d3+3
+    attributes:
+      strength: 11
+      dexterity: 11
+      intelligence: 18
+      wisdom: 18
+      constitution: 11
+      charisma: 11
   tba_npc_17501:
     hp: 3d3+180
     level: 18
@@ -9335,6 +9649,13 @@ npc_stats:
     - aggr_evil
     - sentinel
     damage: 3d3+3
+    attributes:
+      strength: 11
+      dexterity: 11
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_17507:
     hp: 3d3+180
     level: 18
@@ -9350,6 +9671,13 @@ npc_stats:
     - sentinel
     - helper
     damage: 3d3+3
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 5
+      wisdom: 5
+      constitution: 11
+      charisma: 11
   tba_npc_17508:
     hp: 3d3+180
     level: 18
@@ -9365,6 +9693,13 @@ npc_stats:
     - sentinel
     - helper
     damage: 3d3+3
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 5
+      wisdom: 5
+      constitution: 11
+      charisma: 11
   tba_npc_17509:
     hp: 3d3+180
     level: 18
@@ -9408,6 +9743,13 @@ npc_stats:
     - aggr_good
     - sentinel
     damage: 3d3+3
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 11
+      charisma: 11
   tba_npc_17512:
     hp: 3d3+180
     level: 18
@@ -12055,6 +12397,12 @@ npc_stats:
     default_position: standing
     behaviour: []
     damage: 1d2+1
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_22:
     hp: 6d6+340
     level: 34
@@ -14236,6 +14584,13 @@ npc_stats:
     - scavenger
     - aware
     damage: 3d3+3
+    attributes:
+      strength: 25
+      dexterity: 9
+      intelligence: 4
+      wisdom: 5
+      constitution: 11
+      charisma: 11
   tba_npc_23842:
     hp: 4d4+220
     level: 22
@@ -14251,6 +14606,13 @@ npc_stats:
     - sentinel
     - aware
     damage: 3d3+3
+    attributes:
+      strength: 3
+      dexterity: 4
+      intelligence: 4
+      wisdom: 4
+      constitution: 11
+      charisma: 11
   tba_npc_23849:
     hp: 5d5+260
     level: 26
@@ -14265,6 +14627,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 4d4+4
+    attributes:
+      strength: 25
+      dexterity: 3
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_23851:
     hp: 4d4+240
     level: 24
@@ -14295,6 +14664,13 @@ npc_stats:
     - sentinel
     - no_charm
     damage: 4d4+4
+    attributes:
+      strength: 5
+      dexterity: 14
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_23860:
     hp: 5d5+260
     level: 26
@@ -14309,6 +14685,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 4d4+4
+    attributes:
+      strength: 20
+      dexterity: 10
+      intelligence: 20
+      wisdom: 25
+      constitution: 11
+      charisma: 11
   tba_npc_23874:
     hp: 5d5+260
     level: 26
@@ -14337,6 +14720,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 4d4+4
+    attributes:
+      strength: 18
+      dexterity: 3
+      intelligence: 13
+      wisdom: 18
+      constitution: 11
+      charisma: 11
   tba_npc_23876:
     hp: 5d5+250
     level: 25
@@ -14365,6 +14755,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 3
+      dexterity: 20
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_23878:
     hp: 4d4+220
     level: 22
@@ -15518,6 +15915,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 11
+      charisma: 11
   tba_npc_24101:
     hp: 5d5+290
     level: 29
@@ -15540,6 +15944,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 20
+      dexterity: 20
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_24102:
     hp: 5d5+290
     level: 29
@@ -15559,6 +15970,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 19
+      dexterity: 17
+      intelligence: 17
+      wisdom: 17
+      constitution: 11
+      charisma: 11
   tba_npc_24103:
     hp: 5d5+260
     level: 26
@@ -15578,6 +15996,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 11
+      charisma: 11
   tba_npc_24104:
     hp: 5d5+270
     level: 27
@@ -15597,6 +16022,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 11
+      charisma: 11
   tba_npc_24105:
     hp: 5d5+290
     level: 29
@@ -15616,6 +16048,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 11
+      charisma: 11
   tba_npc_24106:
     hp: 6d6+300
     level: 30
@@ -15638,6 +16077,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    attributes:
+      strength: 25
+      dexterity: 25
+      intelligence: 25
+      wisdom: 25
+      constitution: 11
+      charisma: 11
   tba_npc_24107:
     hp: 5d5+260
     level: 26
@@ -15658,6 +16104,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 11
+      charisma: 11
   tba_npc_24108:
     hp: 5d5+280
     level: 28
@@ -15678,6 +16131,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 11
+      charisma: 11
   tba_npc_24109:
     hp: 5d5+260
     level: 26
@@ -15698,6 +16158,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 13
+      dexterity: 13
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_24110:
     hp: 5d5+270
     level: 27
@@ -15716,6 +16183,13 @@ npc_stats:
     - helper
     - no_charm
     damage: 4d4+4
+    attributes:
+      strength: 13
+      dexterity: 13
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_24111:
     hp: 5d5+270
     level: 27
@@ -15734,6 +16208,13 @@ npc_stats:
     - helper
     - no_charm
     damage: 4d4+4
+    attributes:
+      strength: 13
+      dexterity: 13
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_24112:
     hp: 5d5+260
     level: 26
@@ -15753,6 +16234,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 14
+      dexterity: 14
+      intelligence: 14
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_24113:
     hp: 5d5+260
     level: 26
@@ -15772,6 +16260,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 4d4+4
+    attributes:
+      strength: 14
+      dexterity: 14
+      intelligence: 14
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_24114:
     hp: 4d4+200
     level: 20
@@ -15907,6 +16402,13 @@ npc_stats:
     - aware
     - no_charm
     damage: 1d2+1
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 11
+      charisma: 11
   tba_npc_24203:
     hp: 1d1+60
     level: 6
@@ -15924,6 +16426,13 @@ npc_stats:
     - aware
     - no_charm
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_24204:
     hp: '30'
     level: 3
@@ -16102,6 +16611,13 @@ npc_stats:
     - scavenger
     - no_blind
     damage: 1d2+1
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 11
+      charisma: 11
   tba_npc_24301:
     hp: 1d1+70
     level: 7
@@ -16118,6 +16634,13 @@ npc_stats:
     - scavenger
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 12
+      dexterity: 12
+      intelligence: 12
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_24302:
     hp: 2d2+100
     level: 10
@@ -16137,6 +16660,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 1d2+1
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 11
+      charisma: 11
   tba_npc_24303:
     hp: 1d1+80
     level: 8
@@ -16152,6 +16682,13 @@ npc_stats:
     - stay_zone
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 11
+      charisma: 11
   tba_npc_24304:
     hp: 1d1+90
     level: 9
@@ -16167,6 +16704,13 @@ npc_stats:
     - stay_zone
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 11
+      charisma: 11
   tba_npc_24305:
     hp: 1d1+90
     level: 9
@@ -16186,6 +16730,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 1d2+1
+    attributes:
+      strength: 20
+      dexterity: 20
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_24306:
     hp: 2d2+100
     level: 10
@@ -16226,6 +16777,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2+1
+    attributes:
+      strength: 17
+      dexterity: 17
+      intelligence: 17
+      wisdom: 17
+      constitution: 11
+      charisma: 11
   tba_npc_24308:
     hp: 1d1+70
     level: 7
@@ -16265,6 +16823,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 11
+      charisma: 11
   tba_npc_24401:
     hp: 6d6+300
     level: 30
@@ -16284,6 +16849,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 11
+      charisma: 11
   tba_npc_24500:
     hp: 4d4+200
     level: 20
@@ -17466,6 +18038,13 @@ npc_stats:
     - stay_zone
     - wimpy
     damage: 3d3+3
+    attributes:
+      strength: 12
+      dexterity: 12
+      intelligence: 12
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_25103:
     hp: 4d4+200
     level: 20
@@ -17480,6 +18059,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 12
+      dexterity: 12
+      intelligence: 12
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_25104:
     hp: 4d4+210
     level: 21
@@ -17494,6 +18080,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 12
+      dexterity: 12
+      intelligence: 12
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_25105:
     hp: 3d3+180
     level: 18
@@ -17555,6 +18148,13 @@ npc_stats:
     - no_charm
     - no_blind
     damage: 3d3+3
+    attributes:
+      strength: 17
+      dexterity: 17
+      intelligence: 17
+      wisdom: 17
+      constitution: 11
+      charisma: 11
   tba_npc_25109:
     hp: 4d4+210
     level: 21
@@ -17571,6 +18171,13 @@ npc_stats:
     - wimpy
     - no_charm
     damage: 3d3+3
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 11
+      charisma: 11
   tba_npc_2511:
     hp: 1d1+70
     level: 7
@@ -17608,6 +18215,13 @@ npc_stats:
     - stay_zone
     - no_charm
     damage: 3d3+3
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_25111:
     hp: 3d3+190
     level: 19
@@ -17623,6 +18237,13 @@ npc_stats:
     - sentinel
     - no_charm
     damage: 3d3+3
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_25112:
     hp: 4d4+220
     level: 22
@@ -17638,6 +18259,13 @@ npc_stats:
     - stay_zone
     - scavenger
     damage: 3d3+3
+    attributes:
+      strength: 12
+      dexterity: 12
+      intelligence: 12
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_25113:
     hp: 4d4+220
     level: 22
@@ -17655,6 +18283,13 @@ npc_stats:
     - scavenger
     - no_sleep
     damage: 3d3+3
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_25114:
     hp: 4d4+220
     level: 22
@@ -22660,6 +23295,13 @@ npc_stats:
     - stay_zone
     - helper
     damage: 2d2+2
+    attributes:
+      strength: 11
+      dexterity: 11
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_26905:
     hp: 3d3+190
     level: 19
@@ -22678,6 +23320,13 @@ npc_stats:
     - scavenger
     - no_sleep
     damage: 3d3+3
+    attributes:
+      strength: 15
+      dexterity: 18
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_26906:
     hp: 3d3+190
     level: 19
@@ -22764,6 +23413,13 @@ npc_stats:
     - aware
     - no_summon
     damage: 3d3+3
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 11
+      charisma: 11
   tba_npc_26911:
     hp: 3d3+180
     level: 18
@@ -24566,6 +25222,13 @@ npc_stats:
     - stay_zone
     - helper
     damage: 4d4+4
+    attributes:
+      strength: 22
+      dexterity: 22
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_27302:
     hp: 6d6+300
     level: 30
@@ -24587,6 +25250,13 @@ npc_stats:
     - no_sleep
     - no_bash
     damage: 5d5+5
+    attributes:
+      strength: 24
+      dexterity: 20
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_27303:
     hp: 5d5+290
     level: 29
@@ -24609,6 +25279,13 @@ npc_stats:
     - no_summon
     - no_bash
     damage: 4d4+4
+    attributes:
+      strength: 24
+      dexterity: 24
+      intelligence: 22
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_27304:
     hp: 5d5+260
     level: 26
@@ -24627,6 +25304,13 @@ npc_stats:
     - scavenger
     - wimpy
     damage: 4d4+4
+    attributes:
+      strength: 20
+      dexterity: 20
+      intelligence: 19
+      wisdom: 18
+      constitution: 11
+      charisma: 11
   tba_npc_27305:
     hp: 5d5+270
     level: 27
@@ -24643,6 +25327,13 @@ npc_stats:
     - stay_zone
     - memory
     damage: 4d4+4
+    attributes:
+      strength: 24
+      dexterity: 23
+      intelligence: 12
+      wisdom: 7
+      constitution: 11
+      charisma: 11
   tba_npc_27306:
     hp: 5d5+280
     level: 28
@@ -24660,6 +25351,13 @@ npc_stats:
     - scavenger
     - wimpy
     damage: 4d4+4
+    attributes:
+      strength: 18
+      dexterity: 19
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_27307:
     hp: 5d5+290
     level: 29
@@ -24680,6 +25378,13 @@ npc_stats:
     - scavenger
     - wimpy
     damage: 4d4+4
+    attributes:
+      strength: 23
+      dexterity: 23
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_27308:
     hp: 5d5+250
     level: 25
@@ -24720,6 +25425,19 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_27401:
     hp: 7d6+340
     level: 34
@@ -24743,6 +25461,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 16
+      intelligence: 11
+      wisdom: 13
+      constitution: 11
+      charisma: 12
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_27402:
     hp: 1d1
     level: 34
@@ -24767,6 +25498,13 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 1d1
+    attributes:
+      strength: 20
+      dexterity: 17
+      intelligence: 12
+      wisdom: 12
+      constitution: 20
+      charisma: 13
   tba_npc_27403:
     hp: 6d6+340
     level: 34
@@ -24791,6 +25529,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    attributes:
+      strength: 20
+      dexterity: 17
+      intelligence: 13
+      wisdom: 15
+      constitution: 11
+      charisma: 11
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_27404:
     hp: 6d6+340
     level: 34
@@ -24815,6 +25566,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    attributes:
+      strength: 20
+      dexterity: 17
+      intelligence: 13
+      wisdom: 15
+      constitution: 11
+      charisma: 11
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_27405:
     hp: 6d6+340
     level: 34
@@ -24839,6 +25603,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    attributes:
+      strength: 20
+      dexterity: 17
+      intelligence: 13
+      wisdom: 15
+      constitution: 11
+      charisma: 11
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_27406:
     hp: 6d6+340
     level: 34
@@ -24863,6 +25640,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    attributes:
+      strength: 20
+      dexterity: 17
+      intelligence: 13
+      wisdom: 15
+      constitution: 18
+      charisma: 22
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_27407:
     hp: 6d6+340
     level: 34
@@ -24887,6 +25677,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    attributes:
+      strength: 25
+      dexterity: 17
+      intelligence: 13
+      wisdom: 15
+      constitution: 11
+      charisma: 11
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_27408:
     hp: 6d6+340
     level: 34
@@ -24911,6 +25714,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    attributes:
+      strength: 20
+      dexterity: 17
+      intelligence: 13
+      wisdom: 15
+      constitution: 11
+      charisma: 11
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_27409:
     hp: 6d6+340
     level: 34
@@ -24935,6 +25751,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    attributes:
+      strength: 20
+      dexterity: 17
+      intelligence: 13
+      wisdom: 15
+      constitution: 11
+      charisma: 11
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_27410:
     hp: 3d3+150
     level: 15
@@ -24954,6 +25783,19 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 2d2+2
+    attributes:
+      strength: 16
+      dexterity: 15
+      intelligence: 11
+      wisdom: 13
+      constitution: 20
+      charisma: 22
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_27411:
     hp: 2d2+100
     level: 10
@@ -24973,6 +25815,19 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 1d2+1
+    attributes:
+      strength: 16
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 18
+      charisma: 13
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_27413:
     hp: 1d1+70
     level: 7
@@ -24992,6 +25847,19 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 11
+      wisdom: 12
+      constitution: 17
+      charisma: 13
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_27414:
     hp: 1d1+70
     level: 7
@@ -25011,6 +25879,19 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 11
+      wisdom: 12
+      constitution: 17
+      charisma: 13
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_27415:
     hp: 1d1+70
     level: 7
@@ -25030,6 +25911,19 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 11
+      wisdom: 12
+      constitution: 17
+      charisma: 13
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_27416:
     hp: '20'
     level: 4
@@ -25044,6 +25938,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 12
+      dexterity: 15
+      intelligence: 13
+      wisdom: 15
+      constitution: 17
+      charisma: 15
   tba_npc_27417:
     hp: 1d1+60
     level: 6
@@ -25064,6 +25965,19 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 1d2+1
+    attributes:
+      strength: 12
+      dexterity: 13
+      intelligence: 14
+      wisdom: 18
+      constitution: 20
+      charisma: 20
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_27418:
     hp: 1d1+50
     level: 5
@@ -25086,6 +26000,19 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 15
+      dexterity: 19
+      intelligence: 11
+      wisdom: 16
+      constitution: 20
+      charisma: 11
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_27419:
     hp: 1d1+50
     level: 5
@@ -25108,6 +26035,19 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 15
+      dexterity: 19
+      intelligence: 11
+      wisdom: 16
+      constitution: 20
+      charisma: 11
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_27420:
     hp: 1d1+50
     level: 5
@@ -25130,6 +26070,19 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 15
+      dexterity: 19
+      intelligence: 11
+      wisdom: 16
+      constitution: 20
+      charisma: 11
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_27421:
     hp: '30'
     level: 3
@@ -25152,6 +26105,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 17
+      intelligence: 11
+      wisdom: 16
+      constitution: 15
+      charisma: 12
   tba_npc_27422:
     hp: '20'
     level: 5
@@ -25173,6 +26133,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 13
+      dexterity: 17
+      intelligence: 14
+      wisdom: 14
+      constitution: 16
+      charisma: 15
   tba_npc_27423:
     hp: '20'
     level: 5
@@ -25193,6 +26160,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 12
+      dexterity: 15
+      intelligence: 13
+      wisdom: 15
+      constitution: 17
+      charisma: 15
   tba_npc_27424:
     hp: '20'
     level: 3
@@ -25216,6 +26190,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 14
+      dexterity: 13
+      intelligence: 14
+      wisdom: 14
+      constitution: 15
+      charisma: 16
   tba_npc_27425:
     hp: '20'
     level: 4
@@ -25230,6 +26211,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 12
+      dexterity: 15
+      intelligence: 13
+      wisdom: 15
+      constitution: 17
+      charisma: 15
   tba_npc_27426:
     hp: 2d2+100
     level: 10
@@ -25251,6 +26239,19 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2+1
+    attributes:
+      strength: 17
+      dexterity: 13
+      intelligence: 13
+      wisdom: 15
+      constitution: 17
+      charisma: 16
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_27428:
     hp: 1d1+90
     level: 9
@@ -25265,6 +26266,19 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 16
+      intelligence: 11
+      wisdom: 12
+      constitution: 16
+      charisma: 12
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_27429:
     hp: 6d6+340
     level: 34
@@ -25289,6 +26303,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    attributes:
+      strength: 20
+      dexterity: 17
+      intelligence: 13
+      wisdom: 15
+      constitution: 18
+      charisma: 22
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_27430:
     hp: 1d1+60
     level: 6
@@ -25309,6 +26336,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 1d2+1
+    attributes:
+      strength: 16
+      dexterity: 14
+      intelligence: 12
+      wisdom: 12
+      constitution: 14
+      charisma: 16
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_27431:
     hp: '20'
     level: 8
@@ -25328,6 +26368,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 1d2+1
+    attributes:
+      strength: 12
+      dexterity: 15
+      intelligence: 13
+      wisdom: 15
+      constitution: 17
+      charisma: 15
   tba_npc_27432:
     hp: 1d1+90
     level: 9
@@ -25345,6 +26392,19 @@ npc_stats:
     - scavenger
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 16
+      intelligence: 11
+      wisdom: 12
+      constitution: 16
+      charisma: 12
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_27433:
     hp: '20'
     level: 5
@@ -25366,6 +26426,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 13
+      dexterity: 17
+      intelligence: 14
+      wisdom: 14
+      constitution: 16
+      charisma: 15
   tba_npc_27434:
     hp: '20'
     level: 5
@@ -25387,6 +26454,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 13
+      dexterity: 17
+      intelligence: 14
+      wisdom: 14
+      constitution: 16
+      charisma: 15
   tba_npc_27435:
     hp: '20'
     level: 5
@@ -25407,6 +26481,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 12
+      dexterity: 15
+      intelligence: 13
+      wisdom: 15
+      constitution: 17
+      charisma: 15
   tba_npc_27436:
     hp: '20'
     level: 5
@@ -25428,6 +26509,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 13
+      dexterity: 17
+      intelligence: 14
+      wisdom: 14
+      constitution: 16
+      charisma: 15
   tba_npc_27500:
     hp: 2d2+100
     level: 10
@@ -28559,6 +29647,13 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    attributes:
+      strength: 17
+      dexterity: 15
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28301:
     hp: 5d5+290
     level: 29
@@ -28580,6 +29675,13 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 4d4+4
+    attributes:
+      strength: 9
+      dexterity: 5
+      intelligence: 18
+      wisdom: 18
+      constitution: 11
+      charisma: 11
   tba_npc_28302:
     hp: 5d5+280
     level: 28
@@ -28599,6 +29701,13 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 4d4+4
+    attributes:
+      strength: 20
+      dexterity: 18
+      intelligence: 3
+      wisdom: 7
+      constitution: 11
+      charisma: 11
   tba_npc_28303:
     hp: 5d5+270
     level: 27
@@ -28619,6 +29728,13 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 4d4+4
+    attributes:
+      strength: 25
+      dexterity: 10
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28304:
     hp: 4d4+200
     level: 20
@@ -28639,6 +29755,13 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 3d3+3
+    attributes:
+      strength: 18
+      dexterity: 15
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28305:
     hp: 6d6+300
     level: 30
@@ -28661,6 +29784,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 11
+      charisma: 11
   tba_npc_28306:
     hp: 4d4+210
     level: 21
@@ -28683,6 +29813,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 3d3+3
+    attributes:
+      strength: 11
+      dexterity: 17
+      intelligence: 3
+      wisdom: 4
+      constitution: 11
+      charisma: 11
   tba_npc_28307:
     hp: 4d4+210
     level: 21
@@ -28745,6 +29882,13 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 4d4+4
+    attributes:
+      strength: 17
+      dexterity: 18
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28310:
     hp: 4d4+230
     level: 23
@@ -28765,6 +29909,13 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 3d3+3
+    attributes:
+      strength: 7
+      dexterity: 13
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28311:
     hp: 4d4+220
     level: 22
@@ -28785,6 +29936,13 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 3d3+3
+    attributes:
+      strength: 6
+      dexterity: 8
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28312:
     hp: 4d4+210
     level: 21
@@ -28806,6 +29964,13 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 3d3+3
+    attributes:
+      strength: 10
+      dexterity: 4
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28313:
     hp: 4d4+200
     level: 20
@@ -28826,6 +29991,13 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 3d3+3
+    attributes:
+      strength: 11
+      dexterity: 14
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28314:
     hp: 4d4+200
     level: 20
@@ -28882,6 +30054,13 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 4d4+4
+    attributes:
+      strength: 14
+      dexterity: 10
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28317:
     hp: 5d5+250
     level: 25
@@ -28902,6 +30081,13 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 4d4+4
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 16
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28318:
     hp: 4d4+240
     level: 24
@@ -28918,6 +30104,13 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 4d4+4
+    attributes:
+      strength: 4
+      dexterity: 7
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28319:
     hp: 4d4+230
     level: 23
@@ -28937,6 +30130,13 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 3d3+3
+    attributes:
+      strength: 11
+      dexterity: 6
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28320:
     hp: 5d5+270
     level: 27
@@ -28956,6 +30156,13 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 4d4+4
+    attributes:
+      strength: 17
+      dexterity: 8
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28321:
     hp: 5d5+250
     level: 25
@@ -28976,6 +30183,13 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 4d4+4
+    attributes:
+      strength: 15
+      dexterity: 18
+      intelligence: 8
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_28322:
     hp: 5d5+250
     level: 25
@@ -28996,6 +30210,13 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 4d4+4
+    attributes:
+      strength: 6
+      dexterity: 3
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28323:
     hp: 6d6+300
     level: 30
@@ -29019,6 +30240,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    attributes:
+      strength: 25
+      dexterity: 16
+      intelligence: 4
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_28400:
     hp: 6d6+300
     level: 30
@@ -30845,6 +32073,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 11
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_28701:
     hp: 3d3+150
     level: 15
@@ -31663,6 +32898,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 2d2+2
+    attributes:
+      strength: 3
+      dexterity: 3
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_28748:
     hp: 1d1+60
     level: 6
@@ -31971,6 +33213,13 @@ npc_stats:
     - helper
     - wimpy
     damage: 2d2+2
+    attributes:
+      strength: 24
+      dexterity: 11
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_28766:
     hp: 1d1+80
     level: 8
@@ -32135,6 +33384,13 @@ npc_stats:
     - helper
     - scavenger
     damage: 3d3+3
+    attributes:
+      strength: 25
+      dexterity: 11
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_28775:
     hp: 4d4+230
     level: 23
@@ -33115,6 +34371,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 5d5+5
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29101:
     hp: 2d2+120
     level: 12
@@ -33131,6 +34394,13 @@ npc_stats:
     - memory
     - no_sleep
     damage: 2d2+2
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29102:
     hp: 2d2+100
     level: 10
@@ -33145,6 +34415,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29105:
     hp: 3d3+150
     level: 15
@@ -33160,6 +34437,13 @@ npc_stats:
     - stay_zone
     - wimpy
     damage: 2d2+2
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29106:
     hp: 4d4+220
     level: 22
@@ -33176,6 +34460,13 @@ npc_stats:
     - memory
     - wimpy
     damage: 3d3+3
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29107:
     hp: 6d6+300
     level: 30
@@ -33190,6 +34481,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29108:
     hp: 5d5+260
     level: 26
@@ -33205,6 +34503,13 @@ npc_stats:
     - stay_zone
     - wimpy
     damage: 4d4+4
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29110:
     hp: 4d4+220
     level: 22
@@ -33220,6 +34525,13 @@ npc_stats:
     - stay_zone
     - helper
     damage: 3d3+3
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29111:
     hp: 6d6+300
     level: 30
@@ -33235,6 +34547,13 @@ npc_stats:
     - aggressive
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29112:
     hp: 6d6+300
     level: 30
@@ -33251,6 +34570,13 @@ npc_stats:
     - no_charm
     - no_sleep
     damage: 5d5+5
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29113:
     hp: 2d2+100
     level: 10
@@ -33267,6 +34593,13 @@ npc_stats:
     - helper
     - no_sleep
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29114:
     hp: 6d6+300
     level: 30
@@ -33283,6 +34616,13 @@ npc_stats:
     - no_charm
     - no_sleep
     damage: 5d5+5
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29115:
     hp: 6d6+300
     level: 30
@@ -33299,6 +34639,13 @@ npc_stats:
     - scavenger
     - no_charm
     damage: 5d5+5
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29116:
     hp: 5d5+250
     level: 25
@@ -33314,6 +34661,13 @@ npc_stats:
     - sentinel
     - helper
     damage: 4d4+4
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29117:
     hp: 2d2+100
     level: 10
@@ -33328,6 +34682,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29119:
     hp: 6d6+300
     level: 30
@@ -33347,6 +34708,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29130:
     hp: 4d4+200
     level: 20
@@ -33376,6 +34744,13 @@ npc_stats:
     - stay_zone
     - helper
     damage: 5d5+5
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29150:
     hp: 6d6+300
     level: 30
@@ -33390,6 +34765,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 5d5+5
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29175:
     hp: 2d2+100
     level: 10
@@ -33404,6 +34786,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29180:
     hp: 2d2+100
     level: 10
@@ -33419,6 +34808,13 @@ npc_stats:
     - sentinel
     - helper
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29181:
     hp: 4d4+220
     level: 22
@@ -33433,6 +34829,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 3d3+3
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29199:
     hp: 2d2+100
     level: 10
@@ -33447,6 +34850,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_29200:
     hp: 1d1+50
     level: 5
@@ -36550,6 +37960,12 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_30130:
     hp: '30'
     level: 3
@@ -37537,6 +38953,13 @@ npc_stats:
     - stay_zone
     - no_summon
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30601:
     hp: '10'
     level: 1
@@ -37551,6 +38974,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30602:
     hp: '10'
     level: 1
@@ -37565,6 +38995,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30603:
     hp: '20'
     level: 2
@@ -37579,6 +39016,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30604:
     hp: '20'
     level: 2
@@ -37593,6 +39037,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30605:
     hp: '30'
     level: 3
@@ -37607,6 +39058,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30606:
     hp: '30'
     level: 3
@@ -37621,6 +39079,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30607:
     hp: 1d1+70
     level: 7
@@ -37635,6 +39100,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30608:
     hp: 1d1+60
     level: 6
@@ -37649,6 +39121,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30609:
     hp: 1d1+50
     level: 5
@@ -37663,6 +39142,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_3061:
     hp: '10'
     level: 1
@@ -37692,6 +39178,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30611:
     hp: 1d1+80
     level: 8
@@ -37706,6 +39199,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30612:
     hp: 1d1+80
     level: 8
@@ -37720,6 +39220,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30613:
     hp: 1d1+80
     level: 8
@@ -37734,6 +39241,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30614:
     hp: 1d1+90
     level: 9
@@ -37749,6 +39263,13 @@ npc_stats:
     - sentinel
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30615:
     hp: 1d1+70
     level: 7
@@ -37763,6 +39284,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30616:
     hp: '10'
     level: 1
@@ -37777,6 +39305,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30617:
     hp: 1d1+50
     level: 5
@@ -37791,6 +39326,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_30618:
     hp: '40'
     level: 4
@@ -37805,6 +39347,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 12
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_3062:
     hp: '10'
     level: 1
@@ -45945,6 +47494,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    attributes:
+      strength: 25
+      dexterity: 25
+      intelligence: 25
+      wisdom: 25
+      constitution: 11
+      charisma: 11
   tba_npc_3306:
     hp: 3d3+160
     level: 16
@@ -46205,6 +47761,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 10
   tba_npc_34301:
     hp: 5d5+250
     level: 25
@@ -46227,6 +47796,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 14
+      wisdom: 12
+      constitution: 18
+      charisma: 19
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_34302:
     hp: 6d6+310
     level: 31
@@ -46250,6 +47832,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 7
+      rod: 7
+      petri: 7
+      breath: 7
+      spell: 7
   tba_npc_34303:
     hp: 6d6+310
     level: 31
@@ -46270,6 +47865,19 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 7
+      rod: 7
+      petri: 7
+      breath: 7
+      spell: 7
   tba_npc_34304:
     hp: 2d2+140
     level: 14
@@ -46291,6 +47899,12 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 2d2+2
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_34305:
     hp: 2d2+140
     level: 14
@@ -46312,6 +47926,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 2d2+2
+    attributes:
+      strength: 16
+      dexterity: 17
+      intelligence: 13
+      wisdom: 12
+      constitution: 16
+      charisma: 19
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_34306:
     hp: 5d5+250
     level: 25
@@ -46334,6 +47961,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 16
+      charisma: 16
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_34307:
     hp: 5d5+250
     level: 25
@@ -46356,6 +47996,19 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 16
+      charisma: 16
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_34500:
     hp: 10d5+60
     level: 6
@@ -47079,6 +48732,13 @@ npc_stats:
     - memory
     - no_charm
     damage: 2d2+2
+    attributes:
+      strength: 17
+      dexterity: 15
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_3913:
     hp: 2d2+100
     level: 10
@@ -47095,6 +48755,13 @@ npc_stats:
     - memory
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 14
+      dexterity: 13
+      intelligence: 14
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_3914:
     hp: 2d2+100
     level: 10
@@ -47110,6 +48777,13 @@ npc_stats:
     - stay_zone
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 13
+      intelligence: 12
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_3915:
     hp: 1d1+70
     level: 7
@@ -47125,6 +48799,13 @@ npc_stats:
     - stay_zone
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 14
+      dexterity: 12
+      intelligence: 14
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_3916:
     hp: 2d2+100
     level: 10
@@ -47140,6 +48821,13 @@ npc_stats:
     - sentinel
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 16
+      dexterity: 10
+      intelligence: 16
+      wisdom: 16
+      constitution: 11
+      charisma: 11
   tba_npc_3917:
     hp: 2d2+100
     level: 10
@@ -47170,6 +48858,13 @@ npc_stats:
     - sentinel
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 14
+      dexterity: 11
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_3919:
     hp: 1d1+70
     level: 7
@@ -47186,6 +48881,13 @@ npc_stats:
     - scavenger
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 11
+      dexterity: 13
+      intelligence: 14
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_3920:
     hp: 2d2+100
     level: 10
@@ -47200,6 +48902,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 10
+      dexterity: 11
+      intelligence: 16
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_3921:
     hp: 2d2+140
     level: 14
@@ -47216,6 +48925,13 @@ npc_stats:
     - memory
     - helper
     damage: 2d2+2
+    attributes:
+      strength: 13
+      dexterity: 13
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_3922:
     hp: 2d2+140
     level: 14
@@ -47232,6 +48948,13 @@ npc_stats:
     - memory
     - helper
     damage: 2d2+2
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_3923:
     hp: 2d2+140
     level: 14
@@ -47248,6 +48971,13 @@ npc_stats:
     - memory
     - helper
     damage: 2d2+2
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_3924:
     hp: 2d2+100
     level: 10
@@ -47279,6 +49009,13 @@ npc_stats:
     - memory
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 12
+      dexterity: 11
+      intelligence: 15
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_3926:
     hp: 1d1+70
     level: 7
@@ -47295,6 +49032,13 @@ npc_stats:
     - memory
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 13
+      dexterity: 16
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_3927:
     hp: 2d2+100
     level: 10
@@ -47373,6 +49117,13 @@ npc_stats:
     - stay_zone
     - wimpy
     damage: 1d2
+    attributes:
+      strength: 11
+      dexterity: 15
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_3932:
     hp: 1d1+70
     level: 7
@@ -47438,6 +49189,13 @@ npc_stats:
     - memory
     - helper
     damage: 1d2+1
+    attributes:
+      strength: 14
+      dexterity: 13
+      intelligence: 15
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_3936:
     hp: 2d2+100
     level: 10
@@ -47454,6 +49212,13 @@ npc_stats:
     - memory
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 9
+      dexterity: 13
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_3937:
     hp: 2d2+100
     level: 10
@@ -47486,6 +49251,13 @@ npc_stats:
     - memory
     - helper
     damage: 1d2+1
+    attributes:
+      strength: 14
+      dexterity: 14
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_3939:
     hp: 2d2+100
     level: 10
@@ -47503,6 +49275,13 @@ npc_stats:
     - memory
     - helper
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 12
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_3940:
     hp: 1d1+70
     level: 7
@@ -47518,6 +49297,13 @@ npc_stats:
     - stay_zone
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 13
+      dexterity: 13
+      intelligence: 10
+      wisdom: 10
+      constitution: 11
+      charisma: 11
   tba_npc_3941:
     hp: 2d2+100
     level: 10
@@ -47535,6 +49321,13 @@ npc_stats:
     - wimpy
     - aware
     damage: 1d2+1
+    attributes:
+      strength: 13
+      dexterity: 14
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_3942:
     hp: 2d2+100
     level: 10
@@ -47565,6 +49358,13 @@ npc_stats:
     - memory
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 11
+      dexterity: 10
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_3944:
     hp: 2d2+100
     level: 10
@@ -47581,6 +49381,13 @@ npc_stats:
     - memory
     - scavenger
     damage: 1d2+1
+    attributes:
+      strength: 14
+      dexterity: 13
+      intelligence: 15
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_3945:
     hp: 2d2+100
     level: 10
@@ -47597,6 +49404,13 @@ npc_stats:
     - stay_zone
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 14
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_3946:
     hp: 2d2+100
     level: 10
@@ -47628,6 +49442,13 @@ npc_stats:
     - stay_zone
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 16
+      dexterity: 15
+      intelligence: 13
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_3948:
     hp: 2d2+100
     level: 10
@@ -47645,6 +49466,13 @@ npc_stats:
     - memory
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 14
+      dexterity: 12
+      intelligence: 16
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_3949:
     hp: 1d1+70
     level: 7
@@ -47676,6 +49504,13 @@ npc_stats:
     - sentinel
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 14
+      dexterity: 14
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_3951:
     hp: 2d2+100
     level: 10
@@ -47706,6 +49541,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 12
+      dexterity: 13
+      intelligence: 14
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_3953:
     hp: 2d2+100
     level: 10
@@ -47738,6 +49580,13 @@ npc_stats:
     - sentinel
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 11
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_3955:
     hp: 2d2+140
     level: 14
@@ -47789,6 +49638,13 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 2d2+2
+    attributes:
+      strength: 13
+      dexterity: 13
+      intelligence: 16
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_3958:
     hp: 1d1+70
     level: 7
@@ -47804,6 +49660,13 @@ npc_stats:
     - stay_zone
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 12
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_3959:
     hp: 1d1+70
     level: 7
@@ -47819,6 +49682,13 @@ npc_stats:
     - sentinel
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 11
+      dexterity: 13
+      intelligence: 10
+      wisdom: 10
+      constitution: 11
+      charisma: 11
   tba_npc_3960:
     hp: 2d2+100
     level: 10
@@ -47835,6 +49705,13 @@ npc_stats:
     - memory
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 14
+      dexterity: 13
+      intelligence: 13
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_3961:
     hp: 2d2+100
     level: 10
@@ -47850,6 +49727,13 @@ npc_stats:
     - stay_zone
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 14
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_3962:
     hp: 2d2+100
     level: 10
@@ -47865,6 +49749,13 @@ npc_stats:
     - stay_zone
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 14
+      dexterity: 14
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_3963:
     hp: 2d2+100
     level: 10
@@ -47896,6 +49787,13 @@ npc_stats:
     - memory
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 11
+      dexterity: 16
+      intelligence: 13
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_3965:
     hp: 2d2+140
     level: 14
@@ -47912,6 +49810,13 @@ npc_stats:
     - sentinel
     - memory
     damage: 2d2+2
+    attributes:
+      strength: 16
+      dexterity: 15
+      intelligence: 14
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_3966:
     hp: 2d2+100
     level: 10
@@ -47942,6 +49847,13 @@ npc_stats:
     - sentinel
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 16
+      dexterity: 15
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_3968:
     hp: 2d2+100
     level: 10
@@ -47971,6 +49883,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 14
+      dexterity: 12
+      intelligence: 15
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_3970:
     hp: 2d2+100
     level: 10
@@ -47986,6 +49905,13 @@ npc_stats:
     - sentinel
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 13
+      dexterity: 14
+      intelligence: 10
+      wisdom: 10
+      constitution: 11
+      charisma: 11
   tba_npc_3971:
     hp: 2d2+140
     level: 14
@@ -48003,6 +49929,13 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 2d2+2
+    attributes:
+      strength: 16
+      dexterity: 13
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_3972:
     hp: 2d2+100
     level: 10
@@ -48017,6 +49950,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 8
+      dexterity: 7
+      intelligence: 7
+      wisdom: 6
+      constitution: 11
+      charisma: 11
   tba_npc_3973:
     hp: 2d2+140
     level: 14
@@ -48034,6 +49974,13 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 2d2+2
+    attributes:
+      strength: 16
+      dexterity: 15
+      intelligence: 15
+      wisdom: 16
+      constitution: 11
+      charisma: 11
   tba_npc_3974:
     hp: 2d2+100
     level: 10
@@ -48049,6 +49996,13 @@ npc_stats:
     - stay_zone
     - memory
     damage: 1d2+1
+    attributes:
+      strength: 17
+      dexterity: 12
+      intelligence: 10
+      wisdom: 10
+      constitution: 11
+      charisma: 11
   tba_npc_3975:
     hp: 1d1+70
     level: 7
@@ -48065,6 +50019,13 @@ npc_stats:
     - memory
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 9
+      dexterity: 15
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_3976:
     hp: 1d1+70
     level: 7
@@ -48081,6 +50042,13 @@ npc_stats:
     - memory
     - wimpy
     damage: 1d2+1
+    attributes:
+      strength: 9
+      dexterity: 15
+      intelligence: 10
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_3977:
     hp: 1d1+70
     level: 7
@@ -48292,6 +50260,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    attributes:
+      strength: 16
+      dexterity: 15
+      intelligence: 11
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_3991:
     hp: 2d2+100
     level: 10
@@ -48928,6 +50903,13 @@ npc_stats:
     - aggressive
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 25
+      dexterity: 20
+      intelligence: 25
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_4202:
     hp: 4d4+220
     level: 22
@@ -49049,6 +51031,13 @@ npc_stats:
     - no_summon
     - no_bash
     damage: 4d4+4
+    attributes:
+      strength: 20
+      dexterity: 20
+      intelligence: 20
+      wisdom: 20
+      constitution: 11
+      charisma: 11
   tba_npc_421:
     hp: 2d2+110
     level: 11
@@ -49162,6 +51151,13 @@ npc_stats:
     - stay_zone
     - scavenger
     damage: 2d2+2
+    attributes:
+      strength: 8
+      dexterity: 16
+      intelligence: 9
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_4302:
     hp: 2d2+140
     level: 14
@@ -49177,6 +51173,13 @@ npc_stats:
     - stay_zone
     - scavenger
     damage: 2d2+2
+    attributes:
+      strength: 3
+      dexterity: 18
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_4303:
     hp: 3d3+180
     level: 18
@@ -49191,6 +51194,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 16
+      dexterity: 11
+      intelligence: 13
+      wisdom: 8
+      constitution: 11
+      charisma: 11
   tba_npc_4304:
     hp: 3d3+180
     level: 18
@@ -49205,6 +51215,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 3d3+3
+    attributes:
+      strength: 17
+      dexterity: 12
+      intelligence: 9
+      wisdom: 7
+      constitution: 11
+      charisma: 11
   tba_npc_4305:
     hp: 2d2+140
     level: 14
@@ -49219,6 +51236,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 2d2+2
+    attributes:
+      strength: 9
+      dexterity: 11
+      intelligence: 12
+      wisdom: 10
+      constitution: 11
+      charisma: 11
   tba_npc_4306:
     hp: 2d2+140
     level: 14
@@ -49234,6 +51258,13 @@ npc_stats:
     - sentinel
     - aware
     damage: 2d2+2
+    attributes:
+      strength: 11
+      dexterity: 15
+      intelligence: 14
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_4307:
     hp: 2d2+140
     level: 14
@@ -49249,6 +51280,13 @@ npc_stats:
     - sentinel
     - aware
     damage: 2d2+2
+    attributes:
+      strength: 14
+      dexterity: 7
+      intelligence: 9
+      wisdom: 10
+      constitution: 11
+      charisma: 11
   tba_npc_4308:
     hp: 3d3+180
     level: 18
@@ -49263,6 +51301,13 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 14
+      dexterity: 11
+      intelligence: 7
+      wisdom: 6
+      constitution: 11
+      charisma: 11
   tba_npc_4309:
     hp: 2d2+140
     level: 14
@@ -49485,6 +51530,13 @@ npc_stats:
     - helper
     - scavenger
     damage: 1d2+1
+    attributes:
+      strength: 21
+      dexterity: 11
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_4407:
     hp: 1d1+70
     level: 7
@@ -53006,6 +55058,12 @@ npc_stats:
     - stay_zone
     - scavenger
     damage: 1d2
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_55506:
     hp: 1d1+50
     level: 5
@@ -53021,6 +55079,12 @@ npc_stats:
     - aggressive
     - stay_zone
     damage: 1d2
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_55507:
     hp: 1d1+60
     level: 6
@@ -53037,6 +55101,12 @@ npc_stats:
     - sentinel
     - scavenger
     damage: 1d2+1
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_55508:
     hp: 1d1+60
     level: 6
@@ -53051,6 +55121,12 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_55509:
     hp: 4d4+200
     level: 20
@@ -53065,6 +55141,19 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 3d3+3
+    attributes:
+      strength: 13
+      dexterity: 13
+      intelligence: 13
+      wisdom: 13
+      constitution: 13
+      charisma: 13
+    saves:
+      para: 5
+      rod: 5
+      petri: 5
+      breath: 5
+      spell: 5
   tba_npc_55510:
     hp: 1d1+80
     level: 8
@@ -53079,6 +55168,12 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_55511:
     hp: 1d1+70
     level: 7
@@ -53095,6 +55190,12 @@ npc_stats:
     - stay_zone
     - wimpy
     damage: 1d2+1
+    saves:
+      para: 1
+      rod: 1
+      petri: 1
+      breath: 1
+      spell: 1
   tba_npc_55512:
     hp: 1d1+90
     level: 9
@@ -53111,6 +55212,12 @@ npc_stats:
     - stay_zone
     - wimpy
     damage: 1d2+1
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_55513:
     hp: 3d3+150
     level: 15
@@ -53125,6 +55232,12 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 2d2+2
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_55514:
     hp: 1d1+90
     level: 9
@@ -53139,6 +55252,12 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_55515:
     hp: 1d1+80
     level: 8
@@ -53153,6 +55272,12 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_55516:
     hp: 2d2+120
     level: 12
@@ -53167,6 +55292,12 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 2d2+2
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_55517:
     hp: 5d5+250
     level: 25
@@ -53181,6 +55312,19 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 16
+      charisma: 16
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_55518:
     hp: 1d1+90
     level: 9
@@ -53195,6 +55339,12 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_55519:
     hp: 5d5+250
     level: 25
@@ -53209,6 +55359,19 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 16
+      charisma: 16
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_55520:
     hp: 2d2+110
     level: 11
@@ -53225,6 +55388,12 @@ npc_stats:
     - stay_zone
     - wimpy
     damage: 1d2+1
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_55521:
     hp: 2d2+130
     level: 13
@@ -53240,6 +55409,12 @@ npc_stats:
     - aggressive
     - stay_zone
     damage: 2d2+2
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_55522:
     hp: 3d3+150
     level: 15
@@ -53255,6 +55430,12 @@ npc_stats:
     - stay_zone
     - scavenger
     damage: 2d2+2
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_55523:
     hp: 2d2+140
     level: 14
@@ -53269,6 +55450,12 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 2d2+2
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_55524:
     hp: 2d2+140
     level: 14
@@ -53283,6 +55470,12 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 2d2+2
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_55525:
     hp: 5d5+250
     level: 25
@@ -53297,6 +55490,19 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 16
+      charisma: 16
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_55526:
     hp: 3d3+160
     level: 16
@@ -53311,6 +55517,12 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 2d2+2
+    saves:
+      para: 4
+      rod: 4
+      petri: 4
+      breath: 4
+      spell: 4
   tba_npc_55527:
     hp: 2d2+110
     level: 11
@@ -53325,6 +55537,12 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_55528:
     hp: 2d2+140
     level: 14
@@ -53340,6 +55558,12 @@ npc_stats:
     - aggressive
     - sentinel
     damage: 2d2+2
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_55529:
     hp: 2d2+130
     level: 13
@@ -53355,6 +55579,12 @@ npc_stats:
     - stay_zone
     - wimpy
     damage: 2d2+2
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_55530:
     hp: 2d2+100
     level: 10
@@ -53370,6 +55600,12 @@ npc_stats:
     - sentinel
     - stay_zone
     damage: 1d2+1
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_55531:
     hp: 2d2+130
     level: 13
@@ -53384,6 +55620,12 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 2d2+2
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_55532:
     hp: 3d3+150
     level: 15
@@ -53399,6 +55641,12 @@ npc_stats:
     - aggressive
     - stay_zone
     damage: 2d2+2
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_55533:
     hp: 3d3+150
     level: 15
@@ -53415,6 +55663,12 @@ npc_stats:
     - scavenger
     - wimpy
     damage: 2d2+2
+    saves:
+      para: 3
+      rod: 3
+      petri: 3
+      breath: 3
+      spell: 3
   tba_npc_55534:
     hp: 3d3+190
     level: 19
@@ -53430,6 +55684,19 @@ npc_stats:
     - aggressive
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 12
+      dexterity: 12
+      intelligence: 12
+      wisdom: 12
+      constitution: 12
+      charisma: 12
+    saves:
+      para: 4
+      rod: 4
+      petri: 4
+      breath: 4
+      spell: 4
   tba_npc_55535:
     hp: 3d3+180
     level: 18
@@ -53444,6 +55711,19 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 12
+      dexterity: 12
+      intelligence: 12
+      wisdom: 12
+      constitution: 12
+      charisma: 12
+    saves:
+      para: 4
+      rod: 4
+      petri: 4
+      breath: 4
+      spell: 4
   tba_npc_55536:
     hp: 4d4+200
     level: 20
@@ -53458,6 +55738,19 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 13
+      dexterity: 13
+      intelligence: 13
+      wisdom: 13
+      constitution: 13
+      charisma: 13
+    saves:
+      para: 5
+      rod: 5
+      petri: 5
+      breath: 5
+      spell: 5
   tba_npc_55537:
     hp: 5d5+250
     level: 25
@@ -53472,6 +55765,19 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 16
+      charisma: 16
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_55538:
     hp: 4d4+210
     level: 21
@@ -53487,6 +55793,19 @@ npc_stats:
     - aggressive
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 14
+      dexterity: 14
+      intelligence: 14
+      wisdom: 14
+      constitution: 14
+      charisma: 14
+    saves:
+      para: 5
+      rod: 5
+      petri: 5
+      breath: 5
+      spell: 5
   tba_npc_55539:
     hp: 4d4+210
     level: 21
@@ -53502,6 +55821,19 @@ npc_stats:
     - aggressive
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 14
+      dexterity: 14
+      intelligence: 14
+      wisdom: 14
+      constitution: 14
+      charisma: 14
+    saves:
+      para: 5
+      rod: 5
+      petri: 5
+      breath: 5
+      spell: 5
   tba_npc_55540:
     hp: 4d4+220
     level: 22
@@ -53516,6 +55848,19 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 14
+      dexterity: 14
+      intelligence: 14
+      wisdom: 14
+      constitution: 14
+      charisma: 14
+    saves:
+      para: 5
+      rod: 5
+      petri: 5
+      breath: 5
+      spell: 5
   tba_npc_55541:
     hp: 4d4+240
     level: 24
@@ -53530,6 +55875,19 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 16
+      charisma: 16
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_55542:
     hp: 6d6+300
     level: 30
@@ -53544,6 +55902,19 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 7
+      rod: 7
+      petri: 7
+      breath: 7
+      spell: 7
   tba_npc_55543:
     hp: 3d3+180
     level: 18
@@ -53561,6 +55932,19 @@ npc_stats:
     - scavenger
     - wimpy
     damage: 3d3+3
+    attributes:
+      strength: 12
+      dexterity: 12
+      intelligence: 12
+      wisdom: 12
+      constitution: 12
+      charisma: 12
+    saves:
+      para: 4
+      rod: 4
+      petri: 4
+      breath: 4
+      spell: 4
   tba_npc_55544:
     hp: 4d4+200
     level: 20
@@ -53576,6 +55960,19 @@ npc_stats:
     - aggressive
     - sentinel
     damage: 3d3+3
+    attributes:
+      strength: 13
+      dexterity: 13
+      intelligence: 13
+      wisdom: 13
+      constitution: 13
+      charisma: 13
+    saves:
+      para: 5
+      rod: 5
+      petri: 5
+      breath: 5
+      spell: 5
   tba_npc_55545:
     hp: 4d4+200
     level: 20
@@ -53590,6 +55987,19 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 13
+      dexterity: 13
+      intelligence: 13
+      wisdom: 13
+      constitution: 13
+      charisma: 13
+    saves:
+      para: 5
+      rod: 5
+      petri: 5
+      breath: 5
+      spell: 5
   tba_npc_55546:
     hp: 5d5+250
     level: 25
@@ -53604,6 +56014,19 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 16
+      charisma: 16
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_55547:
     hp: 3d3+180
     level: 18
@@ -53619,6 +56042,19 @@ npc_stats:
     - aggressive
     - sentinel
     damage: 3d3+3
+    attributes:
+      strength: 12
+      dexterity: 12
+      intelligence: 12
+      wisdom: 12
+      constitution: 12
+      charisma: 12
+    saves:
+      para: 4
+      rod: 4
+      petri: 4
+      breath: 4
+      spell: 4
   tba_npc_55548:
     hp: 5d5+250
     level: 25
@@ -53633,6 +56069,19 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 16
+      charisma: 16
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_55549:
     hp: 5d5+250
     level: 25
@@ -53647,6 +56096,19 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 16
+      charisma: 16
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_55550:
     hp: 5d5+250
     level: 25
@@ -53662,6 +56124,19 @@ npc_stats:
     - aggressive
     - stay_zone
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 16
+      charisma: 16
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_55551:
     hp: 4d4+230
     level: 23
@@ -53677,6 +56152,19 @@ npc_stats:
     - aggressive
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 15
+      charisma: 15
+    saves:
+      para: 5
+      rod: 5
+      petri: 5
+      breath: 5
+      spell: 5
   tba_npc_55552:
     hp: 4d4+230
     level: 23
@@ -53692,6 +56180,19 @@ npc_stats:
     - aggressive
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 15
+      charisma: 15
+    saves:
+      para: 5
+      rod: 5
+      petri: 5
+      breath: 5
+      spell: 5
   tba_npc_55553:
     hp: 4d4+230
     level: 23
@@ -53706,6 +56207,19 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 15
+      wisdom: 15
+      constitution: 15
+      charisma: 15
+    saves:
+      para: 5
+      rod: 5
+      petri: 5
+      breath: 5
+      spell: 5
   tba_npc_55554:
     hp: 5d5+250
     level: 25
@@ -53720,6 +56234,19 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 16
+      charisma: 16
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_55555:
     hp: 6d6+300
     level: 30
@@ -53734,6 +56261,19 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 7
+      rod: 7
+      petri: 7
+      breath: 7
+      spell: 7
   tba_npc_55556:
     hp: 6d6+300
     level: 30
@@ -53749,6 +56289,19 @@ npc_stats:
     - aggressive
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 7
+      rod: 7
+      petri: 7
+      breath: 7
+      spell: 7
   tba_npc_55557:
     hp: 6d6+300
     level: 30
@@ -53764,6 +56317,19 @@ npc_stats:
     - aggressive
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 7
+      rod: 7
+      petri: 7
+      breath: 7
+      spell: 7
   tba_npc_55558:
     hp: 6d6+300
     level: 30
@@ -53779,6 +56345,19 @@ npc_stats:
     - aggressive
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 7
+      rod: 7
+      petri: 7
+      breath: 7
+      spell: 7
   tba_npc_55559:
     hp: 6d6+300
     level: 30
@@ -53794,6 +56373,19 @@ npc_stats:
     - aggressive
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 7
+      rod: 7
+      petri: 7
+      breath: 7
+      spell: 7
   tba_npc_55560:
     hp: 6d6+300
     level: 30
@@ -53809,6 +56401,19 @@ npc_stats:
     - aggressive
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 7
+      rod: 7
+      petri: 7
+      breath: 7
+      spell: 7
   tba_npc_55561:
     hp: 5d5+250
     level: 25
@@ -53823,6 +56428,19 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 4d4+4
+    attributes:
+      strength: 16
+      dexterity: 16
+      intelligence: 16
+      wisdom: 16
+      constitution: 16
+      charisma: 16
+    saves:
+      para: 6
+      rod: 6
+      petri: 6
+      breath: 6
+      spell: 6
   tba_npc_55562:
     hp: 6d6+300
     level: 30
@@ -53838,6 +56456,19 @@ npc_stats:
     - stay_zone
     - scavenger
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 7
+      rod: 7
+      petri: 7
+      breath: 7
+      spell: 7
   tba_npc_55563:
     hp: 6d6+320
     level: 32
@@ -53852,6 +56483,19 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_55564:
     hp: 6d6+320
     level: 32
@@ -53866,6 +56510,19 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_55565:
     hp: 4d4+210
     level: 21
@@ -53881,6 +56538,19 @@ npc_stats:
     - aggressive
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 14
+      dexterity: 14
+      intelligence: 14
+      wisdom: 14
+      constitution: 14
+      charisma: 14
+    saves:
+      para: 5
+      rod: 5
+      petri: 5
+      breath: 5
+      spell: 5
   tba_npc_55566:
     hp: 4d4+210
     level: 21
@@ -53895,6 +56565,19 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 14
+      dexterity: 14
+      intelligence: 14
+      wisdom: 14
+      constitution: 14
+      charisma: 14
+    saves:
+      para: 5
+      rod: 5
+      petri: 5
+      breath: 5
+      spell: 5
   tba_npc_55567:
     hp: 4d4+210
     level: 21
@@ -53910,6 +56593,19 @@ npc_stats:
     - aggressive
     - stay_zone
     damage: 3d3+3
+    attributes:
+      strength: 14
+      dexterity: 14
+      intelligence: 14
+      wisdom: 14
+      constitution: 14
+      charisma: 14
+    saves:
+      para: 5
+      rod: 5
+      petri: 5
+      breath: 5
+      spell: 5
   tba_npc_55568:
     hp: 6d6+320
     level: 32
@@ -53924,6 +56620,19 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_55569:
     hp: 6d6+320
     level: 32
@@ -53938,6 +56647,19 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_55570:
     hp: 6d6+320
     level: 32
@@ -53952,6 +56674,19 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 5d5+5
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 18
+      constitution: 18
+      charisma: 18
+    saves:
+      para: 8
+      rod: 8
+      petri: 8
+      breath: 8
+      spell: 8
   tba_npc_563:
     hp: 1d1+70
     level: 7
@@ -54043,6 +56778,13 @@ npc_stats:
     - aggressive
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 15
+      dexterity: 17
+      intelligence: 19
+      wisdom: 19
+      constitution: 11
+      charisma: 11
   tba_npc_5702:
     hp: 2d2+140
     level: 14
@@ -54058,6 +56800,13 @@ npc_stats:
     - aggr_good
     - sentinel
     damage: 2d2+2
+    attributes:
+      strength: 17
+      dexterity: 18
+      intelligence: 13
+      wisdom: 13
+      constitution: 11
+      charisma: 11
   tba_npc_5703:
     hp: 2d2+140
     level: 14
@@ -54110,6 +56859,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 2d2+2
+    attributes:
+      strength: 18
+      dexterity: 17
+      intelligence: 9
+      wisdom: 9
+      constitution: 11
+      charisma: 11
   tba_npc_5706:
     hp: 2d2+140
     level: 14
@@ -54139,6 +56895,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 2d2+2
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 17
+      wisdom: 18
+      constitution: 11
+      charisma: 11
   tba_npc_5712:
     hp: 2d2+140
     level: 14
@@ -54156,6 +56919,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 2d2+2
+    attributes:
+      strength: 11
+      dexterity: 18
+      intelligence: 18
+      wisdom: 17
+      constitution: 11
+      charisma: 11
   tba_npc_5713:
     hp: 2d2+140
     level: 14
@@ -54205,6 +56975,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 2d2+2
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 18
+      wisdom: 17
+      constitution: 11
+      charisma: 11
   tba_npc_5727:
     hp: 2d2+120
     level: 12
@@ -54220,6 +56997,13 @@ npc_stats:
     - sentinel
     - helper
     damage: 2d2+2
+    attributes:
+      strength: 15
+      dexterity: 18
+      intelligence: 10
+      wisdom: 9
+      constitution: 11
+      charisma: 11
   tba_npc_5730:
     hp: 2d2+130
     level: 13
@@ -54256,6 +57040,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 2d2+2
+    attributes:
+      strength: 18
+      dexterity: 18
+      intelligence: 17
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_580:
     hp: '30'
     level: 3
@@ -56703,6 +59494,13 @@ npc_stats:
     - wimpy
     - no_summon
     damage: 1d2
+    attributes:
+      strength: 8
+      dexterity: 15
+      intelligence: 9
+      wisdom: 5
+      constitution: 11
+      charisma: 11
   tba_npc_7402:
     hp: '30'
     level: 3
@@ -56752,6 +59550,13 @@ npc_stats:
     - wimpy
     - no_summon
     damage: 1d2
+    attributes:
+      strength: 15
+      dexterity: 8
+      intelligence: 10
+      wisdom: 10
+      constitution: 11
+      charisma: 11
   tba_npc_7405:
     hp: '30'
     level: 3
@@ -56875,6 +59680,13 @@ npc_stats:
     - sentinel
     - scavenger
     damage: 1d2
+    attributes:
+      strength: 12
+      dexterity: 17
+      intelligence: 12
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_7413:
     hp: '30'
     level: 3
@@ -56893,6 +59705,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 1d2
+    attributes:
+      strength: 18
+      dexterity: 6
+      intelligence: 3
+      wisdom: 3
+      constitution: 11
+      charisma: 11
   tba_npc_7414:
     hp: '30'
     level: 3
@@ -56978,6 +59797,13 @@ npc_stats:
     - sentinel
     - scavenger
     damage: 2d2+2
+    attributes:
+      strength: 12
+      dexterity: 18
+      intelligence: 9
+      wisdom: 9
+      constitution: 11
+      charisma: 11
   tba_npc_7505:
     hp: 2d2+140
     level: 14
@@ -57010,6 +59836,13 @@ npc_stats:
     - scavenger
     - no_charm
     damage: 3d3+3
+    attributes:
+      strength: 11
+      dexterity: 14
+      intelligence: 8
+      wisdom: 8
+      constitution: 11
+      charisma: 11
   tba_npc_7511:
     hp: 2d2+140
     level: 14
@@ -57026,6 +59859,13 @@ npc_stats:
     - helper
     - aware
     damage: 2d2+2
+    attributes:
+      strength: 14
+      dexterity: 12
+      intelligence: 10
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_7512:
     hp: 2d2+140
     level: 14
@@ -57056,6 +59896,13 @@ npc_stats:
     - helper
     - scavenger
     damage: 2d2+2
+    attributes:
+      strength: 11
+      dexterity: 8
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_7515:
     hp: 2d2+140
     level: 14
@@ -57071,6 +59918,13 @@ npc_stats:
     - sentinel
     - stay_zone
     damage: 2d2+2
+    attributes:
+      strength: 8
+      dexterity: 20
+      intelligence: 10
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_7518:
     hp: 2d2+140
     level: 14
@@ -57087,6 +59941,13 @@ npc_stats:
     - memory
     - wimpy
     damage: 2d2+2
+    attributes:
+      strength: 13
+      dexterity: 15
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_7519:
     hp: 2d2+140
     level: 14
@@ -57138,6 +59999,13 @@ npc_stats:
     - scavenger
     - no_bash
     damage: 2d2+2
+    attributes:
+      strength: 8
+      dexterity: 11
+      intelligence: 7
+      wisdom: 7
+      constitution: 11
+      charisma: 11
   tba_npc_7524:
     hp: 2d2+140
     level: 14
@@ -57171,6 +60039,13 @@ npc_stats:
     - no_summon
     - no_bash
     damage: 2d2+2
+    attributes:
+      strength: 14
+      dexterity: 14
+      intelligence: 11
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_7526:
     hp: 2d2+140
     level: 14
@@ -57186,6 +60061,13 @@ npc_stats:
     - sentinel
     - helper
     damage: 2d2+2
+    attributes:
+      strength: 10
+      dexterity: 14
+      intelligence: 6
+      wisdom: 6
+      constitution: 11
+      charisma: 11
   tba_npc_7528:
     hp: 2d2+140
     level: 14
@@ -57202,6 +60084,13 @@ npc_stats:
     - helper
     - scavenger
     damage: 2d2+2
+    attributes:
+      strength: 15
+      dexterity: 9
+      intelligence: 9
+      wisdom: 9
+      constitution: 11
+      charisma: 11
   tba_npc_7530:
     hp: 2d2+140
     level: 14
@@ -57219,6 +60108,13 @@ npc_stats:
     - aggr_neutral
     - sentinel
     damage: 2d2+2
+    attributes:
+      strength: 12
+      dexterity: 13
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_7531:
     hp: 2d2+140
     level: 14
@@ -57236,6 +60132,13 @@ npc_stats:
     - scavenger
     - no_summon
     damage: 2d2+2
+    attributes:
+      strength: 15
+      dexterity: 12
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_7535:
     hp: 2d2+140
     level: 14
@@ -57268,6 +60171,13 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 3d3+3
+    attributes:
+      strength: 15
+      dexterity: 13
+      intelligence: 15
+      wisdom: 15
+      constitution: 11
+      charisma: 11
   tba_npc_7545:
     hp: 2d2+140
     level: 14
@@ -57286,6 +60196,13 @@ npc_stats:
     - aware
     - no_summon
     damage: 2d2+2
+    attributes:
+      strength: 15
+      dexterity: 16
+      intelligence: 11
+      wisdom: 10
+      constitution: 11
+      charisma: 11
   tba_npc_7552:
     hp: 2d2+140
     level: 14
@@ -57304,6 +60221,13 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 2d2+2
+    attributes:
+      strength: 11
+      dexterity: 20
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_7558:
     hp: 2d2+140
     level: 14
@@ -57320,6 +60244,13 @@ npc_stats:
     - memory
     - no_summon
     damage: 2d2+2
+    attributes:
+      strength: 15
+      dexterity: 15
+      intelligence: 19
+      wisdom: 19
+      constitution: 11
+      charisma: 11
   tba_npc_7559:
     hp: 2d2+140
     level: 14
@@ -57337,6 +60268,13 @@ npc_stats:
     - aware
     - no_summon
     damage: 2d2+2
+    attributes:
+      strength: 10
+      dexterity: 15
+      intelligence: 13
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_7561:
     hp: 2d2+140
     level: 14
@@ -57387,6 +60325,13 @@ npc_stats:
     - aware
     - no_summon
     damage: 2d2+2
+    attributes:
+      strength: 15
+      dexterity: 10
+      intelligence: 12
+      wisdom: 12
+      constitution: 11
+      charisma: 11
   tba_npc_7571:
     hp: 2d2+140
     level: 14
@@ -57406,6 +60351,13 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 2d2+2
+    attributes:
+      strength: 12
+      dexterity: 14
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_7572:
     hp: 2d2+140
     level: 14
@@ -57444,6 +60396,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 3d3+3
+    attributes:
+      strength: 11
+      dexterity: 9
+      intelligence: 9
+      wisdom: 9
+      constitution: 11
+      charisma: 11
   tba_npc_7583:
     hp: 2d2+140
     level: 14
@@ -57523,6 +60482,13 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    attributes:
+      strength: 12
+      dexterity: 8
+      intelligence: 18
+      wisdom: 14
+      constitution: 11
+      charisma: 11
   tba_npc_7592:
     hp: 2d2+140
     level: 14
@@ -57539,6 +60505,13 @@ npc_stats:
     - memory
     - scavenger
     damage: 2d2+2
+    attributes:
+      strength: 13
+      dexterity: 13
+      intelligence: 10
+      wisdom: 10
+      constitution: 11
+      charisma: 11
   tba_npc_7801:
     hp: 1d1+70
     level: 7
@@ -58696,6 +61669,13 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2+1
+    attributes:
+      strength: 18
+      dexterity: 11
+      intelligence: 11
+      wisdom: 11
+      constitution: 11
+      charisma: 11
   tba_npc_9651:
     hp: 2d2+100
     level: 10
@@ -58740,6 +61720,12 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 1d2+1
+    saves:
+      para: 2
+      rod: 2
+      petri: 2
+      breath: 2
+      spell: 2
   tba_npc_98:
     hp: 6d6+300
     level: 30
