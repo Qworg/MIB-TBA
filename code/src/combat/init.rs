@@ -348,6 +348,7 @@ mod tests {
                 spell: 2,
                 ..TbaSaves::default()
             },
+            spec_proc: None,
         };
         let mut rng = TbaRng::from_seed(1);
         let combatant = npc_combatant_from_stats(&stats, &mut rng);
@@ -382,6 +383,7 @@ mod tests {
             damage: None,
             attributes: TbaAttributes::mob_default(),
             saves: TbaSaves::default(),
+            spec_proc: None,
         };
         let mut rng = TbaRng::from_seed(1);
         let combatant = npc_combatant_from_stats(&stats, &mut rng);

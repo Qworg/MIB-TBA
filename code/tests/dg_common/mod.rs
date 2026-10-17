@@ -211,6 +211,7 @@ pub fn define_npc_level(app: &mut App, vnum: u32, level: u32) {
                 damage: None,
                 attributes: TbaAttributes::mob_default(),
                 saves: TbaSaves::default(),
+                spec_proc: None,
             },
         );
 }

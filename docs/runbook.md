@@ -191,7 +191,7 @@ human-readable **`reports/drop-report.summary.md`** beside it (the same run
 writes both). Both are deterministic and diffable: every vector is sorted, and
 the summary groups the surviving drops by reason. The report's totals are now
 189 zones / 12,700 rooms / 3,705 NPCs / 4,765 source items / 18,513 zone
-commands, with 0 deferred, 15 dangling and 15,742 unmapped records. The trigger
+commands, with 0 deferred, 15 dangling and 15,697 unmapped records. The trigger
 corpus is analysed in place with `dg_vm::analyze` (`trigger_coverage`): lines by
 class, the control and statement histograms, `wait` forms, script commands, the
 structural errors and the mob-command coverage ("Supported words: 42;
@@ -414,10 +414,12 @@ These are recorded, not silent:
   - `kick`/`bash` deduct `SKILL_MOVE_COST` (10) movement and refuse at zero.
     This tbaMUD revision's `do_kick`/`do_bash` no longer contains the `GET_MOVE`
     check; the pack reinstates the classic Circle cost.
-- **`MOB_SPEC` special procedures** are a non-goal (#31); the flag is a named
-  `mob_flag` drop in the report. It is only a legacy marker — the behaviour is
-  assigned in C (`spec_assign.c`/`castle.c`), not carried by the world file.
-  NPC e-specs (`mob_espec`) are now mapped onto `tba.npc_stats.attributes` and
+- **`MOB_SPEC` special procedures** are no longer a non-goal: the converter
+  emits the real assignment as `tba.npc_stats.spec_proc` (78 mobs), transcribed
+  from `spec_assign.c`/`castle.c`, and the flag itself is no longer a drop.
+  Eight flagged mobs have no procedure at all. The runtime implementations are
+  tracked in #31.
+  NPC e-specs (`mob_espec`) are mapped onto `tba.npc_stats.attributes` and
   `.saves`; only `BareHandAttack` (display-only) and `StrAdd` (exceptional
   strength) remain named `mob_espec` drops.
 - The converter's drop report lists every unmapped source flag and field, with

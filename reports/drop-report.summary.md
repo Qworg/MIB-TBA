@@ -9,7 +9,7 @@
 - zone commands: 18513
 - deferred: 0
 - dangling: 15
-- unmapped: 15742
+- unmapped: 15697
 - global permanent drops: 11
 - DG triggers emitted: 1461
 - DG trigger owners: 1295 (1705 links)
@@ -25,7 +25,6 @@
 | `item_extra_descriptions` | 2497 |
 | `mob_aff` | 2069 |
 | `mob_espec` | 954 |
-| `mob_flag` | 45 |
 | `mob_sex` | 3705 |
 | `npc_keywords` | 3705 |
 | `quest_condition` | 3 |

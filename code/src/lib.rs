@@ -64,7 +64,7 @@ pub mod prelude {
     };
     pub use crate::content::{
         AffectDef, AffectLocation, Attribute, DoorReset, ItemAffectFlag, ItemExtraFlag, LevelBonus,
-        NpcBehaviour, Position, ResetMode, SaveEffect, SpellDef, SpellKind, SpellTarget,
+        NpcBehaviour, Position, ResetMode, SaveEffect, SpecProc, SpellDef, SpellKind, SpellTarget,
         SpellsFile, SpellsSection, TbaClassDef, TbaClassesFile, TbaClassesSection, TbaItemDef,
         TbaItemKind, TbaItemsFile, TbaItemsSection, TbaNpcStats, TbaNpcStatsFile,
         TbaNpcStatsSection, WearSlot, ZoneCommand, ZoneCommandKind, ZoneDef, ZonesFile,

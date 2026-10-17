@@ -1689,7 +1689,7 @@
     "zone_commands": 18513,
     "deferred": 0,
     "dangling": 15,
-    "unmapped": 15742,
+    "unmapped": 15697,
     "global_drops": 11,
     "unmapped_by_kind": {
       "affect_location": 40,
@@ -1699,7 +1699,6 @@
       "item_extra_descriptions": 2497,
       "mob_aff": 2069,
       "mob_espec": 954,
-      "mob_flag": 45,
       "mob_sex": 3705,
       "npc_keywords": 3705,
       "quest_condition": 3,
@@ -41461,12 +41460,6 @@
         },
         {
           "object": "npc tba_npc_3000",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_3000",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -41482,12 +41475,6 @@
           "kind": "mob_aff",
           "name": "DETECT_INVIS",
           "detail": "permanent drop: TbaNpcStats has no affect-flag field"
-        },
-        {
-          "object": "npc tba_npc_3001",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_3001",
@@ -41509,12 +41496,6 @@
         },
         {
           "object": "npc tba_npc_3002",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_3002",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -41533,12 +41514,6 @@
         },
         {
           "object": "npc tba_npc_3003",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_3003",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -41554,12 +41529,6 @@
           "kind": "mob_aff",
           "name": "DETECT_INVIS",
           "detail": "permanent drop: TbaNpcStats has no affect-flag field"
-        },
-        {
-          "object": "npc tba_npc_3004",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_3004",
@@ -41593,12 +41562,6 @@
         },
         {
           "object": "npc tba_npc_3005",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_3005",
           "kind": "mob_sex",
           "name": "2",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -41614,12 +41577,6 @@
           "kind": "mob_aff",
           "name": "DETECT_INVIS",
           "detail": "permanent drop: TbaNpcStats has no affect-flag field"
-        },
-        {
-          "object": "npc tba_npc_3006",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_3006",
@@ -41647,12 +41604,6 @@
         },
         {
           "object": "npc tba_npc_3008",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_3008",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -41668,12 +41619,6 @@
           "kind": "mob_aff",
           "name": "DETECT_INVIS",
           "detail": "permanent drop: TbaNpcStats has no affect-flag field"
-        },
-        {
-          "object": "npc tba_npc_3009",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_3009",
@@ -41773,12 +41718,6 @@
         },
         {
           "object": "npc tba_npc_3020",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_3020",
           "kind": "mob_sex",
           "name": "2",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -41794,12 +41733,6 @@
           "kind": "mob_aff",
           "name": "DETECT_INVIS",
           "detail": "permanent drop: TbaNpcStats has no affect-flag field"
-        },
-        {
-          "object": "npc tba_npc_3021",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_3021",
@@ -41821,12 +41754,6 @@
         },
         {
           "object": "npc tba_npc_3022",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_3022",
           "kind": "mob_sex",
           "name": "2",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -41836,12 +41763,6 @@
           "kind": "npc_keywords",
           "name": "guildmasters master beggar thief",
           "detail": "permanent drop: stdlib.npcs has no keyword list"
-        },
-        {
-          "object": "npc tba_npc_3023",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_3023",
@@ -42346,12 +42267,6 @@
           "kind": "mob_aff",
           "name": "SENSE_LIFE",
           "detail": "permanent drop: TbaNpcStats has no affect-flag field"
-        },
-        {
-          "object": "npc tba_npc_3095",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_3095",
@@ -43801,12 +43716,6 @@
         },
         {
           "object": "npc tba_npc_3100",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_3100",
           "kind": "mob_sex",
           "name": "2",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -43876,12 +43785,6 @@
           "kind": "mob_aff",
           "name": "DETECT_INVIS",
           "detail": "permanent drop: TbaNpcStats has no affect-flag field"
-        },
-        {
-          "object": "npc tba_npc_3105",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_3105",
@@ -61429,12 +61332,6 @@
         },
         {
           "object": "npc tba_npc_5400",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_5400",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -61450,12 +61347,6 @@
           "kind": "mob_aff",
           "name": "DETECT_INVIS",
           "detail": "permanent drop: TbaNpcStats has no affect-flag field"
-        },
-        {
-          "object": "npc tba_npc_5401",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_5401",
@@ -61477,12 +61368,6 @@
         },
         {
           "object": "npc tba_npc_5402",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_5402",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -61501,12 +61386,6 @@
         },
         {
           "object": "npc tba_npc_5403",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_5403",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -61522,12 +61401,6 @@
           "kind": "mob_aff",
           "name": "DETECT_INVIS",
           "detail": "permanent drop: TbaNpcStats has no affect-flag field"
-        },
-        {
-          "object": "npc tba_npc_5404",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_5404",
@@ -96936,12 +96809,6 @@
         },
         {
           "object": "npc tba_npc_15000",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15000",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -96957,12 +96824,6 @@
           "kind": "mob_aff",
           "name": "DETECT_INVIS",
           "detail": "permanent drop: TbaNpcStats has no affect-flag field"
-        },
-        {
-          "object": "npc tba_npc_15001",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_15001",
@@ -97002,12 +96863,6 @@
         },
         {
           "object": "npc tba_npc_15003",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15003",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -97017,12 +96872,6 @@
           "kind": "npc_keywords",
           "name": "jim guard royal",
           "detail": "permanent drop: stdlib.npcs has no keyword list"
-        },
-        {
-          "object": "npc tba_npc_15004",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_15004",
@@ -97038,12 +96887,6 @@
         },
         {
           "object": "npc tba_npc_15005",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15005",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -97053,12 +96896,6 @@
           "kind": "npc_keywords",
           "name": "mick guard royal",
           "detail": "permanent drop: stdlib.npcs has no keyword list"
-        },
-        {
-          "object": "npc tba_npc_15006",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_15006",
@@ -97074,12 +96911,6 @@
         },
         {
           "object": "npc tba_npc_15007",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15007",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -97089,12 +96920,6 @@
           "kind": "npc_keywords",
           "name": "jochem guard royal",
           "detail": "permanent drop: stdlib.npcs has no keyword list"
-        },
-        {
-          "object": "npc tba_npc_15008",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_15008",
@@ -97110,12 +96935,6 @@
         },
         {
           "object": "npc tba_npc_15009",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15009",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -97125,12 +96944,6 @@
           "kind": "npc_keywords",
           "name": "andrew guard royal",
           "detail": "permanent drop: stdlib.npcs has no keyword list"
-        },
-        {
-          "object": "npc tba_npc_15010",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_15010",
@@ -97146,12 +96959,6 @@
         },
         {
           "object": "npc tba_npc_15011",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15011",
           "kind": "mob_sex",
           "name": "2",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -97164,12 +96971,6 @@
         },
         {
           "object": "npc tba_npc_15012",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15012",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -97179,12 +96980,6 @@
           "kind": "npc_keywords",
           "name": "peter captain guard royal",
           "detail": "permanent drop: stdlib.npcs has no keyword list"
-        },
-        {
-          "object": "npc tba_npc_15013",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_15013",
@@ -97236,12 +97031,6 @@
         },
         {
           "object": "npc tba_npc_15016",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15016",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -97251,12 +97040,6 @@
           "kind": "npc_keywords",
           "name": "butler james",
           "detail": "permanent drop: stdlib.npcs has no keyword list"
-        },
-        {
-          "object": "npc tba_npc_15017",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_15017",
@@ -97284,12 +97067,6 @@
         },
         {
           "object": "npc tba_npc_15019",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15019",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -97308,12 +97085,6 @@
         },
         {
           "object": "npc tba_npc_15020",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15020",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -97329,12 +97100,6 @@
           "kind": "mob_aff",
           "name": "DETECT_INVIS",
           "detail": "permanent drop: TbaNpcStats has no affect-flag field"
-        },
-        {
-          "object": "npc tba_npc_15021",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_15021",
@@ -97380,12 +97145,6 @@
         },
         {
           "object": "npc tba_npc_15024",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15024",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -97404,12 +97163,6 @@
         },
         {
           "object": "npc tba_npc_15025",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15025",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -97419,12 +97172,6 @@
           "kind": "npc_keywords",
           "name": "dick man guard",
           "detail": "permanent drop: stdlib.npcs has no keyword list"
-        },
-        {
-          "object": "npc tba_npc_15026",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_15026",
@@ -97440,12 +97187,6 @@
         },
         {
           "object": "npc tba_npc_15027",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15027",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -97458,12 +97199,6 @@
         },
         {
           "object": "npc tba_npc_15028",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
-        },
-        {
-          "object": "npc tba_npc_15028",
           "kind": "mob_sex",
           "name": "1",
           "detail": "permanent drop: TbaNpcStats has no sex field"
@@ -97473,12 +97208,6 @@
           "kind": "npc_keywords",
           "name": "hans guard royal",
           "detail": "permanent drop: stdlib.npcs has no keyword list"
-        },
-        {
-          "object": "npc tba_npc_15029",
-          "kind": "mob_flag",
-          "name": "SPEC",
-          "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)"
         },
         {
           "object": "npc tba_npc_15029",

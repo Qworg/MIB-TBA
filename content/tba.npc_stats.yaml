@@ -1033,6 +1033,7 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    spec_proc: postmaster
   tba_npc_10413:
     hp: 6d6+340
     level: 34
@@ -1900,6 +1901,7 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 4d4+4
+    spec_proc: postmaster
   tba_npc_108:
     hp: 6d6+330
     level: 33
@@ -1977,6 +1979,7 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    spec_proc: postmaster
   tba_npc_1100:
     hp: 6d6+100
     level: 33
@@ -2463,6 +2466,7 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 1d2+1
+    spec_proc: guild
   tba_npc_11519:
     hp: '30'
     level: 3
@@ -4305,6 +4309,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_1200:
     hp: 2d2+140
     level: 14
@@ -4323,6 +4328,7 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 2d2+2
+    spec_proc: receptionist
   tba_npc_12000:
     hp: 2d2+120
     level: 12
@@ -4470,6 +4476,7 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 2d2+2
+    spec_proc: postmaster
   tba_npc_12010:
     hp: 2d2+100
     level: 10
@@ -5135,6 +5142,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_1210:
     hp: 6d6+310
     level: 31
@@ -5230,6 +5238,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_123:
     hp: 6d6+340
     level: 34
@@ -5249,6 +5258,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_1233:
     hp: '10'
     level: 1
@@ -6978,6 +6988,7 @@ npc_stats:
     - sentinel
     - stay_zone
     damage: 1d2+1
+    spec_proc: castle_guard
   tba_npc_15001:
     hp: 6d6+330
     level: 33
@@ -6992,6 +7003,7 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 5d5+5
+    spec_proc: king_welmar
   tba_npc_15002:
     hp: 3d3+150
     level: 15
@@ -7028,6 +7040,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    spec_proc: castle_guard
   tba_npc_15004:
     hp: 2d2+110
     level: 11
@@ -7043,6 +7056,7 @@ npc_stats:
     - sentinel
     - stay_zone
     damage: 1d2+1
+    spec_proc: castle_guard
   tba_npc_15005:
     hp: 2d2+110
     level: 11
@@ -7058,6 +7072,7 @@ npc_stats:
     - sentinel
     - stay_zone
     damage: 1d2+1
+    spec_proc: castle_guard
   tba_npc_15006:
     hp: 2d2+110
     level: 11
@@ -7072,6 +7087,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    spec_proc: castle_guard
   tba_npc_15007:
     hp: 2d2+130
     level: 13
@@ -7086,6 +7102,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 2d2+2
+    spec_proc: castle_guard
   tba_npc_15008:
     hp: 2d2+130
     level: 13
@@ -7100,6 +7117,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 2d2+2
+    spec_proc: castle_guard
   tba_npc_15009:
     hp: 2d2+130
     level: 13
@@ -7114,6 +7132,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 2d2+2
+    spec_proc: castle_guard
   tba_npc_1501:
     hp: 5d5+290
     level: 29
@@ -7143,6 +7162,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 2d2+2
+    spec_proc: castle_guard
   tba_npc_15011:
     hp: 3d3+150
     level: 15
@@ -7157,6 +7177,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 2d2+2
+    spec_proc: castle_guard
   tba_npc_15012:
     hp: 3d3+190
     level: 19
@@ -7171,6 +7192,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 3d3+3
+    spec_proc: peter
   tba_npc_15013:
     hp: 3d3+180
     level: 18
@@ -7186,6 +7208,7 @@ npc_stats:
     - sentinel
     - stay_zone
     damage: 3d3+3
+    spec_proc: training_master
   tba_npc_15014:
     hp: 3d3+180
     level: 18
@@ -7234,6 +7257,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    spec_proc: james
   tba_npc_15017:
     hp: '10'
     level: 1
@@ -7248,6 +7272,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2
+    spec_proc: cleaning
   tba_npc_15018:
     hp: '40'
     level: 4
@@ -7312,6 +7337,7 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 2d2+2
+    spec_proc: tim
   tba_npc_15021:
     hp: 3d3+170
     level: 17
@@ -7326,6 +7352,7 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 2d2+2
+    spec_proc: tom
   tba_npc_15022:
     hp: 3d3+190
     level: 19
@@ -7374,6 +7401,7 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 3d3+3
+    spec_proc: dickn_david
   tba_npc_15025:
     hp: 3d3+190
     level: 19
@@ -7388,6 +7416,7 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 3d3+3
+    spec_proc: dickn_david
   tba_npc_15026:
     hp: 2d2+110
     level: 11
@@ -7402,6 +7431,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    spec_proc: jerry
   tba_npc_15027:
     hp: 2d2+110
     level: 11
@@ -7416,6 +7446,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 1d2+1
+    spec_proc: castle_guard
   tba_npc_15028:
     hp: 2d2+130
     level: 13
@@ -7430,6 +7461,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 2d2+2
+    spec_proc: castle_guard
   tba_npc_15029:
     hp: 3d3+150
     level: 15
@@ -7444,6 +7476,7 @@ npc_stats:
     behaviour:
     - stay_zone
     damage: 2d2+2
+    spec_proc: castle_guard
   tba_npc_1503:
     hp: 5d5+290
     level: 29
@@ -19758,6 +19791,7 @@ npc_stats:
     - memory
     - scavenger
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_2557:
     hp: 4d4+200
     level: 20
@@ -19809,6 +19843,7 @@ npc_stats:
     - memory
     - scavenger
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_2560:
     hp: 4d4+200
     level: 20
@@ -20076,6 +20111,7 @@ npc_stats:
     - memory
     - scavenger
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_2563:
     hp: 5d5+250
     level: 25
@@ -20107,6 +20143,7 @@ npc_stats:
     - memory
     - scavenger
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_25650:
     hp: 3d3+150
     level: 15
@@ -20332,6 +20369,7 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    spec_proc: postmaster
   tba_npc_25712:
     hp: 6d6+330
     level: 33
@@ -20503,6 +20541,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_25721:
     hp: 6d6+340
     level: 34
@@ -20522,6 +20561,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_25722:
     hp: 6d6+340
     level: 34
@@ -20541,6 +20581,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_25723:
     hp: 6d6+340
     level: 34
@@ -20560,6 +20601,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_25724:
     hp: 6d6+330
     level: 33
@@ -20611,6 +20653,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_25727:
     hp: 6d6+330
     level: 33
@@ -20726,6 +20769,7 @@ npc_stats:
     - no_sleep
     - no_blind
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_25733:
     hp: 6d6+330
     level: 33
@@ -24922,6 +24966,7 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 1d2
+    spec_proc: postmaster
   tba_npc_27165:
     hp: 1d1+70
     level: 7
@@ -27607,6 +27652,7 @@ npc_stats:
     - sentinel
     - no_summon
     damage: 1d2+1
+    spec_proc: guild
   tba_npc_27573:
     hp: 2d2+100
     level: 10
@@ -27622,6 +27668,7 @@ npc_stats:
     - sentinel
     - no_summon
     damage: 1d2+1
+    spec_proc: guild
   tba_npc_27574:
     hp: 2d2+100
     level: 10
@@ -27637,6 +27684,7 @@ npc_stats:
     - sentinel
     - no_summon
     damage: 1d2+1
+    spec_proc: guild
   tba_npc_27575:
     hp: 2d2+100
     level: 10
@@ -27652,6 +27700,7 @@ npc_stats:
     - sentinel
     - no_summon
     damage: 1d2+1
+    spec_proc: guild
   tba_npc_27576:
     hp: 1d1+90
     level: 9
@@ -28100,6 +28149,7 @@ npc_stats:
     - sentinel
     - stay_zone
     damage: 2d2+2
+    spec_proc: receptionist
   tba_npc_27714:
     hp: 1d1+60
     level: 6
@@ -28214,6 +28264,7 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 4d4+4
+    spec_proc: guild
   tba_npc_27722:
     hp: '30'
     level: 3
@@ -28329,6 +28380,7 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 2d2+2
+    spec_proc: receptionist
   tba_npc_27731:
     hp: 2d2+120
     level: 12
@@ -29106,6 +29158,7 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 1d2
+    spec_proc: guild
   tba_npc_28000:
     hp: 5d5+280
     level: 28
@@ -34933,6 +34986,7 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 4d4+4
+    spec_proc: guild
   tba_npc_29205:
     hp: 2d2+140
     level: 14
@@ -35285,6 +35339,7 @@ npc_stats:
     - sentinel
     - no_summon
     damage: 4d4+4
+    spec_proc: guild
   tba_npc_29228:
     hp: 4d4+230
     level: 23
@@ -37381,6 +37436,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: receptionist
   tba_npc_3006:
     hp: 6d6+330
     level: 33
@@ -37484,6 +37540,7 @@ npc_stats:
     - no_blind
     - no_kill
     damage: 5d5+5
+    spec_proc: postmaster
   tba_npc_30100:
     hp: 2d2+110
     level: 11
@@ -37932,6 +37989,7 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 2d2+2
+    spec_proc: postmaster
   tba_npc_30129:
     hp: 3d3+150
     level: 15
@@ -38266,6 +38324,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_3021:
     hp: 6d6+340
     level: 34
@@ -38285,6 +38344,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_3022:
     hp: 6d6+340
     level: 34
@@ -38304,6 +38364,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_3023:
     hp: 6d6+340
     level: 34
@@ -38323,6 +38384,7 @@ npc_stats:
     - no_summon
     - no_sleep
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_3024:
     hp: 6d6+330
     level: 33
@@ -41051,6 +41113,7 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 5d5+5
+    spec_proc: cryogenicist
   tba_npc_31:
     hp: 2d2+100
     level: 10
@@ -41414,6 +41477,7 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 4d4+4
+    spec_proc: mayor
   tba_npc_3106:
     hp: '10'
     level: 1
@@ -42627,6 +42691,7 @@ npc_stats:
     behaviour:
     - sentinel
     damage: 5d5+5
+    spec_proc: postmaster
   tba_npc_31511:
     hp: 6d6+300
     level: 30
@@ -43519,6 +43584,7 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_31602:
     hp: 6d6+300
     level: 30
@@ -43557,6 +43623,7 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_31604:
     hp: 6d6+300
     level: 30
@@ -43595,6 +43662,7 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_31606:
     hp: 6d6+300
     level: 30
@@ -43633,6 +43701,7 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_31608:
     hp: 6d6+300
     level: 30
@@ -43671,6 +43740,7 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_31610:
     hp: 6d6+300
     level: 30
@@ -43709,6 +43779,7 @@ npc_stats:
     - no_bash
     - no_blind
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_31612:
     hp: 6d6+300
     level: 30
@@ -44179,6 +44250,7 @@ npc_stats:
     - sentinel
     - no_summon
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_31640:
     hp: 6d6+300
     level: 30
@@ -44213,6 +44285,7 @@ npc_stats:
     - sentinel
     - no_summon
     damage: 5d5+5
+    spec_proc: guild
   tba_npc_31700:
     hp: 6d6+340
     level: 34
@@ -53342,6 +53415,7 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 2d2+2
+    spec_proc: guild
   tba_npc_5401:
     hp: 3d3+160
     level: 16
@@ -53359,6 +53433,7 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 2d2+2
+    spec_proc: guild
   tba_npc_5402:
     hp: 3d3+160
     level: 16
@@ -53376,6 +53451,7 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 2d2+2
+    spec_proc: guild
   tba_npc_5403:
     hp: 3d3+160
     level: 16
@@ -53393,6 +53469,7 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 2d2+2
+    spec_proc: guild
   tba_npc_5404:
     hp: 2d2+100
     level: 10
@@ -53410,6 +53487,7 @@ npc_stats:
     - no_charm
     - no_summon
     damage: 1d2+1
+    spec_proc: receptionist
   tba_npc_5405:
     hp: 6d6+300
     level: 30

@@ -87,6 +87,7 @@ fn world() -> App {
                 damage: None,
                 attributes: TbaAttributes::mob_default(),
                 saves: TbaSaves::default(),
+                spec_proc: None,
             },
         );
     app
