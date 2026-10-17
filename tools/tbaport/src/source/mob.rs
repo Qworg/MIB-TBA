@@ -21,7 +21,8 @@ pub struct RawMob {
     pub alignment: i32,
     /// True for the `E` (enhanced) form, which appends an e-spec section.
     pub enhanced: bool,
-    /// Raw e-spec lines (recorded in the drop report; no target fields).
+    /// Raw `Keyword: value` e-spec lines; `map_especs` decodes them onto
+    /// `tba.npc_stats.attributes`/`.saves` (the unnamed keywords are reported).
     pub especs: Vec<String>,
     pub level: i32,
     /// The file's second stat: `GET_HITROLL = 20 - field`.

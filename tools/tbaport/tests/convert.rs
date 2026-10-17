@@ -209,6 +209,24 @@ fn fixture_content_maps_the_expected_fields() {
         Some(mib_core::prelude::Dice::new(2, 6, 3)),
         "the source damage dice are carried"
     );
+    assert!(
+        guard.attributes.is_mob_default(),
+        "a simple mob keeps the loader's 11 baseline"
+    );
+    assert!(guard.saves.is_default());
+
+    // The enhanced mob's `Str: 18` / `Int: 25` e-specs map onto the runtime
+    // attributes; the other four keep the mob baseline.
+    let mage = conversion
+        .bundle
+        .npc_stats
+        .npc_stats
+        .get(&NpcId::from("tba_npc_3001"))
+        .expect("mage stats");
+    assert_eq!(mage.attributes.strength, 18);
+    assert_eq!(mage.attributes.intelligence, 25);
+    assert_eq!(mage.attributes.dexterity, 11);
+    assert!(mage.saves.is_default());
 
     let sword = conversion
         .bundle

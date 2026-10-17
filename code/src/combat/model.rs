@@ -131,6 +131,32 @@ impl TbaAttributes {
         }
     }
 
+    /// The loader's baseline for a mobile, which is **11**, not 13.
+    ///
+    /// `parse_simple_mob` sets all six prime attributes to 11 before reading
+    /// the enhanced-mob e-specs (`tbamud/src/db.c:1682-1687`), so a mob with no
+    /// `Str`/`Int`/… line has a genuine −2 INT/WIS THAC0 penalty relative to a
+    /// player. [`TbaAttributes::neutral`] is the player-side baseline.
+    pub const fn mob_default() -> Self {
+        const MOB_ATTRIBUTE: i32 = 11;
+        Self {
+            strength: MOB_ATTRIBUTE,
+            dexterity: MOB_ATTRIBUTE,
+            intelligence: MOB_ATTRIBUTE,
+            wisdom: MOB_ATTRIBUTE,
+            constitution: MOB_ATTRIBUTE,
+            charisma: MOB_ATTRIBUTE,
+        }
+    }
+
+    /// True when this is exactly [`TbaAttributes::mob_default`].
+    ///
+    /// Used by `tba.npc_stats` to omit the block from generated content when
+    /// the mob carries no e-specs.
+    pub fn is_mob_default(&self) -> bool {
+        *self == Self::mob_default()
+    }
+
     /// The THAC0 reduction contributed by INT and WIS.
     ///
     /// Exactly `compute_thaco`'s terms (`tbamud/src/fight.c:832-833`): the C
@@ -235,6 +261,14 @@ impl TbaSaves {
             SaveType::Breath => self.breath,
             SaveType::Spell => self.spell,
         }
+    }
+
+    /// True when every modifier is zero (the loader's default).
+    ///
+    /// Used by `tba.npc_stats` to omit the block from generated content when
+    /// the mob carries no `Saving*` e-specs.
+    pub fn is_default(&self) -> bool {
+        *self == Self::default()
     }
 }
 
@@ -369,6 +403,20 @@ mod tests {
         assert_eq!(attributes.to_hit_bonus(), 0, "13 is Circle's zero point");
         assert_eq!(TbaAttributes::default(), attributes);
         assert_eq!(TbaSaves::default().spell, 0);
+    }
+
+    #[test]
+    fn mob_default_attributes_are_eleven() {
+        let attributes = TbaAttributes::mob_default();
+        assert_eq!(attributes.strength, 11);
+        assert_eq!(attributes.intelligence, 11);
+        assert!(attributes.is_mob_default());
+        assert!(!TbaAttributes::neutral().is_mob_default());
+        assert_eq!(
+            attributes.to_hit_bonus(),
+            -2,
+            "11 is two points below Circle's zero point for INT and WIS"
+        );
     }
 
     #[test]

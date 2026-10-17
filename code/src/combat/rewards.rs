@@ -322,6 +322,7 @@ mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
 
     use super::*;
+    use crate::combat::{TbaAttributes, TbaSaves};
     use mib_core::prelude::Dice;
     use smol_str::SmolStr;
 
@@ -403,6 +404,8 @@ mod tests {
                     default_position: crate::content::Position::Standing,
                     behaviour: Vec::new(),
                     damage: None,
+                    attributes: TbaAttributes::mob_default(),
+                    saves: TbaSaves::default(),
                 },
             )]),
             ..TbaContent::default()
@@ -434,6 +437,8 @@ mod tests {
                     default_position: crate::content::Position::Standing,
                     behaviour: Vec::new(),
                     damage: None,
+                    attributes: TbaAttributes::mob_default(),
+                    saves: TbaSaves::default(),
                 },
             )]),
             ..TbaContent::default()

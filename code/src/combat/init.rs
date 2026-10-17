@@ -117,8 +117,8 @@ pub fn npc_combatant_from_stats(stats: &TbaNpcStats, rng: &mut TbaRng) -> TbaCom
         damroll: stats.damroll,
         armor_class: stats.armor_class,
         thaco: if stats.thaco == 0 { 20 } else { stats.thaco },
-        attributes: TbaAttributes::neutral(),
-        saves: TbaSaves::default(),
+        attributes: stats.attributes,
+        saves: stats.saves,
         position: stats.default_position,
         target: None,
     }
@@ -141,7 +141,7 @@ pub fn fallback_combatant() -> TbaCombatant {
         damroll: 0,
         armor_class: NAKED_ARMOR_CLASS,
         thaco: 20,
-        attributes: TbaAttributes::neutral(),
+        attributes: TbaAttributes::mob_default(),
         saves: TbaSaves::default(),
         position: Position::Standing,
         target: None,
@@ -339,6 +339,15 @@ mod tests {
             default_position: Position::Standing,
             behaviour: vec![crate::content::NpcBehaviour::Aggressive],
             damage: None,
+            attributes: TbaAttributes {
+                strength: 18,
+                intelligence: 25,
+                ..TbaAttributes::mob_default()
+            },
+            saves: TbaSaves {
+                spell: 2,
+                ..TbaSaves::default()
+            },
         };
         let mut rng = TbaRng::from_seed(1);
         let combatant = npc_combatant_from_stats(&stats, &mut rng);
@@ -346,6 +355,12 @@ mod tests {
         assert_eq!(combatant.damroll, 4);
         assert_eq!(combatant.armor_class, 20);
         assert_eq!(combatant.thaco, 18);
+        assert_eq!(
+            combatant.attributes.strength, 18,
+            "e-specs reach the combatant"
+        );
+        assert_eq!(combatant.attributes.intelligence, 25);
+        assert_eq!(combatant.saves.spell, 2);
         assert!(combatant.max_hp >= 4 && combatant.max_hp <= 18);
         assert_eq!(combatant.hp, combatant.max_hp);
     }
@@ -365,6 +380,8 @@ mod tests {
             default_position: Position::Standing,
             behaviour: Vec::new(),
             damage: None,
+            attributes: TbaAttributes::mob_default(),
+            saves: TbaSaves::default(),
         };
         let mut rng = TbaRng::from_seed(1);
         let combatant = npc_combatant_from_stats(&stats, &mut rng);
