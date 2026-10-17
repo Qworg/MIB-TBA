@@ -4,7 +4,13 @@ description = "Engine-agnostic DG Scripts virtual machine: a line-faithful port 
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
-license.workspace = true
+# The crate is a line-faithful port of tbaMUD's C interpreter, so it is a
+# derivative work governed by the CircleMUD and DikuMUD terms. Point the
+# package metadata at those terms (bundled in the crate) rather than
+# inheriting the workspace's MIT: MIT does not cover a derivative of that
+# source. The root `LICENSE` still covers the original Rust expression; see
+# `NOTICE`.
+license-file = "LICENSE-TBAMUD"
 
 # Deliberately dependency-free. The VM talks to the game world only through the
 # `DgHost` trait, so it builds and tests in seconds without the engine, and the

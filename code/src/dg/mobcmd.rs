@@ -176,6 +176,17 @@ pub struct ForcedCommands {
     entries: VecDeque<(CommandId, Vec<(Uid, u64)>)>,
 }
 
+/// Forced player input waiting to be published into the command queue.
+///
+/// A `%force%` runs inside the forcing trigger. Writing straight into
+/// `Messages<CommandReceived>` would let the later pre-commit intake and the
+/// router read the line in the same frame, before the `command` triggers have
+/// been offered it (the C's `command_interpreter` offers the forced line to
+/// them). The command gate drains this queue at the start of its next run, so
+/// the line is gated like any other input and then flows downstream.
+#[derive(Resource, Debug, Default)]
+pub struct ForcedInputs(pub VecDeque<CommandReceived>);
+
 /// The most forced commands [`ForcedCommands`] remembers.
 const FORCED_KEPT: usize = 256;
 
@@ -286,12 +297,17 @@ fn force_player(host: &mut EcsHost<'_>, player: Entity, line: &str) {
             .get_resource_or_insert_with(ForcedCommands::default)
             .record(id, busy);
     }
-    host.world.write_message(CommandReceived::new(
-        id,
-        player,
-        session_id,
-        PlayerInput::RawLine(line.to_owned()),
-    ));
+    // Stage it: the command gate publishes it at the start of its next run, so
+    // it is offered to the `command` triggers before the router can see it.
+    host.world
+        .get_resource_or_insert_with(ForcedInputs::default)
+        .0
+        .push_back(CommandReceived::new(
+            id,
+            player,
+            session_id,
+            PlayerInput::RawLine(line.to_owned()),
+        ));
 }
 
 /// The full name of the first game command that `prefix` abbreviates: the

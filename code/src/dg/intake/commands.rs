@@ -245,6 +245,21 @@ pub fn command_words(input: &PlayerInput) -> Option<(String, String)> {
 /// command that does go on to reach the router. The item intake, which carries
 /// some verbs out in the router's place, applies the cap itself.
 pub fn command_gate(world: &mut World, mut cursor: Local<MessageCursor<CommandReceived>>) {
+    // Publish input a script forced since the last gate. Staging it (rather
+    // than writing the queue directly from `force_player`) keeps it out of the
+    // pre-commit intake and the router until the `command` triggers have been
+    // offered it here.
+    let forced: Vec<CommandReceived> = world
+        .get_resource_mut::<crate::dg::mobcmd::ForcedInputs>()
+        .map(|mut queue| queue.0.drain(..).collect())
+        .unwrap_or_default();
+    if !forced.is_empty()
+        && let Some(mut messages) = world.get_resource_mut::<Messages<CommandReceived>>()
+    {
+        for msg in forced {
+            messages.write(msg);
+        }
+    }
     world
         .get_resource_or_insert_with(DgClaimed::default)
         .0

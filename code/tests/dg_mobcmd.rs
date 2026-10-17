@@ -2304,13 +2304,21 @@ fn drained(app: &mut App) -> Vec<CommandReceived> {
         .collect()
 }
 
+/// The forced input a script staged for the next command gate.
+fn forced_inputs(app: &mut App) -> Vec<CommandReceived> {
+    app.world_mut()
+        .get_resource_mut::<mib_tba::dg::mobcmd::ForcedInputs>()
+        .map(|mut queue| queue.0.drain(..).collect())
+        .unwrap_or_default()
+}
+
 #[test]
 fn a_forced_player_gets_the_line_as_its_own_input_with_a_fresh_id_each_time() {
     let mut s = scene();
     online(&mut s.app, s.alice, s.room, 42);
     cmd(&mut s.app, s.alice_id, "say I was forced");
     cmd(&mut s.app, s.alice_id, "north");
-    let sent = drained(&mut s.app);
+    let sent = forced_inputs(&mut s.app);
     assert_eq!(sent.len(), 2);
     assert_eq!(sent[0].session, s.alice);
     assert_eq!(sent[0].session_id, 42);
@@ -2518,7 +2526,7 @@ fn a_forced_command_is_not_offered_to_the_triggers_running_when_it_was_forced() 
         trig.id
     };
     cmd(&mut s.app, s.alice_id, "sleep");
-    let sent = drained(&mut s.app);
+    let sent = forced_inputs(&mut s.app);
     assert_eq!(sent.len(), 1);
     let forced = s.app.world().resource::<ForcedCommands>();
     assert!(forced.skips(sent[0].id, s.guard_id, trig));
