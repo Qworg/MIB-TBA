@@ -4,13 +4,16 @@
 //! `GET_OBJ_TIMER`). `point_update` (`src/limits.c:469`) runs once per **MUD
 //! hour** (`src/comm.c:1074`, `SECS_PER_MUD_HOUR * PASSES_PER_SEC`; the hour is
 //! 75 real seconds, `src/utils.h:193`) and decrements every positive timer,
-//! extracting the object when it reaches zero. This module reproduces that
-//! cadence on the engine's fixed world-simulation tick:
+//! running the object's Timer trigger (`timer_otrigger`, `dg_triggers.c:682`)
+//! when it reaches zero. That trigger returns immediately for an object with no
+//! Timer trigger, so tbaMUD leaves a non-corpse object in place; the pack
+//! instead decays it (see [`tick_item_timers`]). This module reproduces the
+//! hourly cadence on the engine's fixed world-simulation tick:
 //!
 //! * [`attach_item_timers`] gives every newly spawned [`Item`] whose
 //!   `tba.items` prototype carries a `timer` a [`TbaItemTimer`].
-//! * [`tick_item_timers`] ages those timers by whole MUD hours and despawns the
-//!   item at zero.
+//! * [`tick_item_timers`] ages those timers by whole MUD hours; at zero it
+//!   hands the item to its Timer trigger, or despawns it when it has none.
 //!
 //! ## Persistence split
 //!
@@ -27,10 +30,12 @@
 //! already has [`TbaItemTimer`] is left alone, so a save always beats the
 //! prototype default.
 
+use dg_vm::types::trig::OTRIG_TIMER;
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{Item, SaveRegistry};
 use serde::{Deserialize, Serialize};
 
+use crate::dg::script::{DgScript, DgScriptInit};
 use crate::module::TbaContent;
 
 /// Real seconds in one MUD hour (Circle's `SECS_PER_MUD_HOUR`,
@@ -47,6 +52,15 @@ pub const MUD_HOUR_SECONDS: f32 = 75.0;
 pub struct TbaItemTimer {
     /// Whole MUD hours left before the item decays.
     pub remaining: u32,
+}
+
+/// The items whose timer ran out in the latest [`tick_item_timers`] run and
+/// that carry a DG `timer` trigger, left in the world for the DG intake to run
+/// `timer_otrigger` on. Cleared by its consumer. Absent when no DG intake is
+/// installed, in which case every expired item decays.
+#[derive(Resource, Debug, Default)]
+pub struct ExpiredItemTimers {
+    pub items: Vec<Entity>,
 }
 
 /// Frame-time accumulator that converts the fixed tick into whole MUD hours.
@@ -167,7 +181,13 @@ pub fn attach_item_timers(
 pub fn tick_item_timers(
     time: Res<Time<Fixed>>,
     mut clock: ResMut<TbaObjectClock>,
-    mut timers: Query<(Entity, &mut TbaItemTimer)>,
+    mut timers: Query<(
+        Entity,
+        &mut TbaItemTimer,
+        Option<&DgScript>,
+        Has<DgScriptInit>,
+    )>,
+    mut expired: Option<ResMut<ExpiredItemTimers>>,
     mut commands: Commands,
 ) {
     let hours = clock.due_hours(time.delta_secs());
@@ -177,10 +197,25 @@ pub fn tick_item_timers(
     // Advance the whole MUD calendar alongside the object timers, so shop
     // opening hours and the day/night predicate share the timer clock.
     clock.advance(hours);
-    for (entity, mut timer) in &mut timers {
-        timer.remaining = timer.remaining.saturating_sub(hours);
+    for (entity, mut timer, script, initialised) in &mut timers {
+        // A spent timer stays at zero, which is no timer (`point_update` ages
+        // only a positive `GET_OBJ_TIMER`): it neither fires nor decays again.
         if timer.remaining == 0 {
-            commands.entity(entity).despawn();
+            continue;
+        }
+        timer.remaining = timer.remaining.saturating_sub(hours);
+        if timer.remaining != 0 {
+            continue;
+        }
+        // An item with a DG `timer` trigger is Circle's timed object: the
+        // trigger decides its fate (`point_update` calls `timer_otrigger` and
+        // nothing follows). It is handed to the DG intake instead of decaying;
+        // so is an item whose prototype scripts are not attached yet, which
+        // the intake despawns if it turns out to have no `timer` trigger.
+        let timed = script.is_some_and(|script| script.0.check(OTRIG_TIMER));
+        match &mut expired {
+            Some(expired) if timed || !initialised => expired.items.push(entity),
+            _ => commands.entity(entity).despawn(),
         }
     }
 }

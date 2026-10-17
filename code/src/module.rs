@@ -32,21 +32,13 @@ use crate::content::{
     TbaClassesSection, TbaItemDef, TbaItemsSection, TbaNpcStats, TbaNpcStatsSection, ZoneDef,
     ZonesSection,
 };
+use crate::dg::script::DgProtos;
+use crate::dg::vars::TbaTriggerVars;
 use crate::equipment::TbaEquipmentSave;
 use crate::items::TbaObjectClock;
 use crate::party::TbaParties;
 use crate::triggers::content::{TriggerDef, TriggerId, TriggersSection};
-use crate::triggers::effects::{
-    PendingTriggerOps, TbaTriggerVars, TriggerDropLog, trigger_effects_system,
-};
-use crate::triggers::events::{
-    TriggerDeathSeen, TriggerLastRoom, TriggerPeriodic, TriggerQueue, trigger_command_system,
-    trigger_damage_system, trigger_death_reset_system, trigger_death_system, trigger_greet_system,
-    trigger_leave_system, trigger_periodic_system, trigger_queue_system, trigger_round_system,
-};
-use crate::triggers::index::TbaTriggers;
 use crate::triggers::quests::trigger_quest_bridge_system;
-use crate::triggers::timers::{TriggerTimers, trigger_timer_system};
 use crate::zones::ZoneTracker;
 
 /// Module id; matches `[code] module = "tba"` in `packs/tba/pack.toml`.
@@ -80,6 +72,9 @@ pub struct TbaContent {
     pub socials: BTreeMap<SmolStr, SocialDef>,
     /// `tba.triggers` — keyed by [`TriggerId`] (issue #15).
     pub triggers: BTreeMap<TriggerId, TriggerDef>,
+    /// `tba.triggers.attachments` — each owner's ordered trigger list, keyed
+    /// `npc:<id>`, `item:<id>` or `room:<id>`.
+    pub trigger_attachments: BTreeMap<String, Vec<TriggerId>>,
 }
 
 /// The TBA game module.
@@ -127,12 +122,17 @@ impl MibModule for TbaModule {
         let triggers = section_defs::<TriggersSection>(packs)
             .map(|defs| defs.triggers.clone())
             .unwrap_or_default();
+        let trigger_attachments = section_defs::<TriggersSection>(packs)
+            .map(|defs| defs.attachments.clone())
+            .unwrap_or_default();
+
+        // The DG trigger prototypes are parsed once here; a record that cannot
+        // load is counted and skipped, never fatal.
+        world.insert_resource(DgProtos::build(&triggers, &trigger_attachments));
 
         // The reset tracker is derived state, seeded from the same content so
-        // it exists before the first `FixedUpdate`. The parsed trigger corpus
-        // is derived the same way (Phase 1 parses once at build/reload).
+        // it exists before the first `FixedUpdate`.
         world.insert_resource(ZoneTracker::from_zones(&zones));
-        world.insert_resource(TbaTriggers::build(triggers.clone()));
         world.insert_resource(TbaContent {
             zones,
             npc_stats,
@@ -143,6 +143,7 @@ impl MibModule for TbaModule {
             shops,
             socials,
             triggers,
+            trigger_attachments,
         });
     }
 }
@@ -170,15 +171,8 @@ impl Plugin for TbaPlugin {
         app.init_resource::<TbaRoundClock>();
         app.init_resource::<TbaObjectClock>();
         app.init_resource::<TbaParties>();
-        app.init_resource::<TriggerLastRoom>();
-        app.init_resource::<TbaTriggers>();
-        app.init_resource::<PendingTriggerOps>();
-        app.init_resource::<TriggerDropLog>();
-        app.init_resource::<TriggerTimers>();
-        app.init_resource::<TriggerQueue>();
-        app.init_resource::<TriggerPeriodic>();
-        app.init_resource::<TriggerDeathSeen>();
         app.init_schedule(TbaRound);
+        crate::dg::register(app);
 
         // Each component owner owns its schema (the classic-rpg idiom): the
         // player-scoped progression and vitals live in the same registry the
@@ -192,12 +186,28 @@ impl Plugin for TbaPlugin {
             registry.register::<TbaGold>("TbaGold", DocKind::Player);
             registry.register::<TbaEquipmentSave>("TbaEquipment", DocKind::Player);
             registry.register::<crate::spells::TbaBuffs>("TbaBuffs", DocKind::Player);
-            // Issue #15 Phase 3: quest variables (`remote`/`global`) survive
-            // reconnect in the player's character bundle.
+            // Quest variables (`remote`/`global`) survive reconnect in the
+            // player's character bundle.
             registry.register::<TbaTriggerVars>("TbaTriggerVars", DocKind::Player);
+            // The character facts a script reads and writes (title, practices,
+            // quest points, conditions, skill percentages), the act-array bits
+            // it set or cleared, and the affects it applied are part of the
+            // player's character bundle.
+            registry
+                .register::<crate::dg::chardata::TbaCharExtras>("TbaCharExtras", DocKind::Player);
+            registry.register::<crate::dg::chardata::TbaActFlags>("TbaActFlags", DocKind::Player);
+            registry.register::<crate::dg::chardata::TbaDgAffects>("TbaDgAffects", DocKind::Player);
+            // A script's write to an NPC's gold or experience is saved with the
+            // NPC's own document. Every persistent NPC carries
+            // `SaveKind(DocKind::Npc)`, so the changed purse survives a
+            // restart and its kill still pays what it now holds.
+            registry.register::<crate::dg::chardata::TbaNpcPurse>("TbaNpcPurse", DocKind::Npc);
             // Item timers are item-scoped; `DocKind::Item` is already writable
             // because the stdlib registers `Item` under it.
             crate::items::register(&mut registry);
+            // A script's per-instance object changes (values, cost, rent,
+            // weight, applies, alias) are saved with the item too.
+            registry.register::<crate::dg::host::DgObjOverride>("DgObjOverride", DocKind::Item);
         }
 
         // Register the messages the gameplay reads so a bare `TbaPlugin`
@@ -205,12 +215,12 @@ impl Plugin for TbaPlugin {
         app.add_message::<CharacterCreated>();
         app.add_message::<PlayerDefeated>();
         app.add_message::<NpcDefeated>();
-        // Issue #15 Phase 5: every hit-point reduction emits a `TbaDamage` so
-        // `damage` triggers fire once per blow, from one intake seam.
+        // Every hit-point reduction emits a `TbaDamage`, one seam for
+        // anything that reacts to a blow.
         app.add_message::<crate::combat::TbaDamage>();
         app.add_message::<CommandReceived>();
         app.add_message::<OutputEvent>();
-        // Issue #15 Phase 3: the quest bridge emits stdlib quest events.
+        // The quest bridge emits stdlib quest events.
         app.add_message::<QuestEvent>();
 
         // The `who` filter is the pack's only remaining visibility surface;
@@ -222,11 +232,6 @@ impl Plugin for TbaPlugin {
             Update,
             crate::visibility::intercept_who.in_set(CommandSet::PreRoute),
         );
-        // Issue #15 Phase 4: `leave` triggers gate movement in `PreRoute`, before
-        // `route_commands` commits the move. A `return 0` marks the command
-        // handled so the move never applies.
-        app.add_systems(Update, trigger_leave_system.in_set(CommandSet::PreRoute));
-
         // Player progression and the genre command seam, after the stdlib
         // router that emits `CharacterCreated` and no-ops `attack`/`flee`.
         // Equipment commands join the same chain; the affect recompute and
@@ -253,45 +258,10 @@ impl Plugin for TbaPlugin {
                 // them, so the carriers are current by the end of the frame.
                 crate::stealth::sync_concealment,
                 crate::stealth::sync_perception,
-                // Issue #15: speech/command/act trigger intake reads the same
-                // `CommandReceived` stream the router does, after movement has
-                // been applied so the actor's room is current. The exclusive
-                // effect drain applies any `%load%`/`%purge%`/variable writes.
-                trigger_command_system,
-                trigger_effects_system,
             )
                 .chain()
                 .in_set(BridgeSet::Game)
                 .after(route_commands),
-        );
-
-        // Issue #15 Phase 5: resolve a queued `dg_cast` against `tba.spells`
-        // before the exclusive drain takes the rest of the pending effects.
-        app.add_systems(
-            Update,
-            crate::spells::apply_trigger_casts
-                .in_set(BridgeSet::Game)
-                .after(trigger_command_system)
-                .before(trigger_effects_system),
-        );
-        // The serialized queue drains the events the combat round and periodic
-        // heartbeats enqueued, after the drain applied their predecessor's
-        // direct effects.
-        app.add_systems(
-            Update,
-            trigger_queue_system
-                .in_set(BridgeSet::Game)
-                .after(trigger_effects_system),
-        );
-        // Phase 5 combat intake: `damage` and `death` fire once per blow/kill
-        // after the round and the spell/skill chains have produced them.
-        app.add_systems(
-            Update,
-            trigger_death_reset_system.before(crate::combat::run_due_round),
-        );
-        app.add_systems(
-            Update,
-            (trigger_damage_system, trigger_death_system).after(crate::combat::run_due_round),
         );
 
         // TBA-E09: the genre death rules (XP loss + gold to a carried pile)
@@ -343,12 +313,6 @@ impl Plugin for TbaPlugin {
             )
                 .chain(),
         );
-        // Phase 5: `fight`/`hitprcnt` records enqueue once per fighting owner
-        // per round, and `death` fires before the round's despawn applies.
-        app.add_systems(
-            TbaRound,
-            (trigger_round_system, trigger_death_system).after(crate::combat::resolve_rounds),
-        );
         app.add_systems(Update, crate::combat::run_due_round.after(BridgeSet::Game));
 
         // Kill rewards: read every `NpcDefeated` produced this frame — melee
@@ -360,7 +324,7 @@ impl Plugin for TbaPlugin {
             crate::combat::award_kill_rewards.after(crate::combat::run_due_round),
         );
 
-        // Issue #15 Phase 3: translate each native kill into a stdlib
+        // Translate each native kill into a stdlib
         // `QuestEvent::Killed`, after the reward pass read the same stream.
         app.add_systems(
             Update,
@@ -385,16 +349,6 @@ impl Plugin for TbaPlugin {
                 crate::combat::pursuit_system,
                 crate::party::follow_system,
                 crate::party::cleanup_parties_on_logout,
-                // Issue #15: greet/entry fires on a room change, after the
-                // stdlib spatial index is current. The wait queue resumes
-                // before greet on the same fixed tick; the effects drain
-                // applies any queued spawns/purges/movement requests.
-                trigger_timer_system,
-                trigger_greet_system,
-                trigger_periodic_system,
-                trigger_queue_system,
-                crate::spells::apply_trigger_casts,
-                trigger_effects_system,
             )
                 .chain()
                 .after(maintain_room_occupants)
@@ -442,6 +396,7 @@ mod tests {
         assert!(content.spells.is_empty());
         assert!(content.shops.is_empty());
         assert!(content.triggers.is_empty());
+        assert!(content.trigger_attachments.is_empty());
     }
 
     #[test]
@@ -457,9 +412,19 @@ mod tests {
         assert!(registered.contains(&"TbaEquipment"), "{registered:?}");
         assert!(registered.contains(&"TbaBuffs"), "{registered:?}");
         assert!(registered.contains(&"TbaItemTimer"), "{registered:?}");
+        assert!(registered.contains(&"DgObjOverride"), "{registered:?}");
+        assert!(registered.contains(&"TbaTriggerVars"), "{registered:?}");
+        assert!(registered.contains(&"TbaNpcPurse"), "{registered:?}");
+        assert!(registered.contains(&"TbaCharExtras"), "{registered:?}");
+        assert!(registered.contains(&"TbaActFlags"), "{registered:?}");
+        assert!(registered.contains(&"TbaDgAffects"), "{registered:?}");
         assert!(
             registry.kinds().contains(&DocKind::Player),
             "player-scoped docs must be writable"
+        );
+        assert!(
+            registry.kinds().contains(&DocKind::Npc),
+            "the NPC purse must be writable"
         );
     }
 
@@ -472,12 +437,8 @@ mod tests {
             "the party resource is installed by the plugin"
         );
         assert!(
-            app.world().get_resource::<TbaTriggers>().is_some(),
-            "the parsed trigger corpus is installed by the plugin"
-        );
-        assert!(
-            app.world().get_resource::<TriggerLastRoom>().is_some(),
-            "the greet direction log is installed by the plugin"
+            app.world().get_resource::<crate::dg::DgVm>().is_some(),
+            "the script runtime state is installed by the plugin"
         );
     }
 

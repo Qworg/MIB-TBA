@@ -24,7 +24,7 @@ use super::model::{TbaAlignment, TbaCombatant, TbaGold, TbaProgress};
 use super::progression::level_for_xp;
 use crate::content::Position;
 
-/// A `TbaRound`/spell/skill damage application (issue #15, Phase 5).
+/// A `TbaRound`/spell/skill damage application.
 ///
 /// Emitted wherever a combatant's hit points drop, so the trigger intake can
 /// fire `damage` records without every damage site knowing about triggers. The
@@ -152,6 +152,25 @@ pub fn reward_for(content: &TbaContent, npc: &NpcKey) -> (u64, u32) {
         .get(&npc.0)
         .map(|stats| (u64::from(stats.experience), stats.gold))
         .unwrap_or((0, 0))
+}
+
+/// The `(experience, gold)` an NPC yields.
+///
+/// A script that changes an NPC's gold or experience writes a
+/// [`crate::dg::chardata::TbaNpcPurse`] holding the character's live values, so
+/// when one is present it is the reward ([`reward_for`] would return the
+/// prototype the character was spawned from).
+pub fn npc_reward(
+    content: &TbaContent,
+    npc: Option<&NpcKey>,
+    purse: Option<&crate::dg::chardata::TbaNpcPurse>,
+) -> (u64, u32) {
+    if let Some(purse) = purse {
+        let exp = u64::try_from(purse.exp.max(0)).unwrap_or(u64::MAX);
+        let gold = u32::try_from(purse.gold.max(0)).unwrap_or(u32::MAX);
+        return (exp, gold);
+    }
+    npc.map(|key| reward_for(content, key)).unwrap_or((0, 0))
 }
 
 /// The moral alignment an NPC prototype carries, or `0` (neutral) when it has

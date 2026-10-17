@@ -1,14 +1,12 @@
-//! The `stdlib.quests` bridge (issue #15, Phase 3).
+//! The `stdlib.quests` bridge (issue #15).
 //!
 //! The hybrid the design recommends splits responsibility two ways:
 //!
 //! - the DG interpreter owns scripted text and gate conditions;
 //! - `stdlib.quests` owns objective persistence, the journal, and rewards.
 //!
-//! The interpreter already turns a satisfied objective into
-//! [`EvalOutcome::flags`](crate::triggers::eval::EvalOutcome::flags) (a truthy
-//! `remote` write), which the effect drain forwards as
-//! [`QuestEvent::FlagSet`]. This module supplies the other half: TBA native
+//! A satisfied objective reaches `stdlib.quests` as a [`QuestEvent::FlagSet`].
+//! This module supplies the other half: TBA native
 //! combat (melee, skills, spells) emits its own
 //! [`NpcDefeated`](crate::combat::rewards::NpcDefeated) rather than
 //! `classic-rpg`'s, so nothing was translating a kill into

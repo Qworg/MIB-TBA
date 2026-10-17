@@ -54,8 +54,9 @@ cd MIB-TBA
 cargo build -p mib-tba              # the game runtime
 cargo build -p tbaport             # the converter (build-time tool)
 
-cargo test -p mib-tba              # unit + combat/death/equipment/shops/spells/rewards/pack
-cargo test -p tbaport             # 22 tests: parsers, determinism, full-conversion validation
+cargo test -p mib-tba              # 833 tests: unit + combat/death/equipment/shops/spells/rewards/DG/pack
+cargo test -p dg-vm                # 969 tests: the DG interpreter and corpus smoke
+cargo test -p tbaport              # 62 tests: parsers, determinism, full-conversion validation
 ```
 
 `cargo test -p mib-tba --test pack` is the pack contract test: it loads
@@ -69,15 +70,17 @@ Lint/format gates (the workspace denies `unwrap_used`/`expect_used` and
 
 ```sh
 cargo clippy -p mib-tba --lib --tests
+cargo clippy -p dg-vm --all-targets
 cargo clippy -p tbaport --all-targets
 cargo fmt --all -- --check
 ```
 
 All of the above run in CI on every push and pull request
 (`.github/workflows/ci.yml`): it checks out the MIB engine and tbaMUD as
-siblings of this repository, then runs fmt, clippy with `-D warnings`, both
-test suites (the converter suite includes the full-conversion registry
-validation), and `validate-packs`.
+siblings of this repository, then runs fmt, clippy with `-D warnings`, all
+three test suites (the DG VM suite runs the 1,461-record corpus smoke, and the
+converter suite includes the full-conversion registry validation), and
+`validate-packs`.
 
 ---
 
@@ -186,8 +189,14 @@ cargo run -p tbaport -- convert --source ../tbamud --out target/tbaport/content 
 The committed drop report lives at **`reports/drop-report.json`** with a
 human-readable **`reports/drop-report.summary.md`** beside it (the same run
 writes both). Both are deterministic and diffable: every vector is sorted, and
-the summary groups the surviving drops by reason. `docs/05-converter.md` §8 is
-the narrative disposition table.
+the summary groups the surviving drops by reason. The report's totals are now
+189 zones / 12,700 rooms / 3,705 NPCs / 4,765 source items / 18,513 zone
+commands, with 0 deferred, 15 dangling and 17,593 unmapped records. The trigger
+corpus is analysed in place with `dg_vm::analyze` (`trigger_coverage`): lines by
+class, the control and statement histograms, `wait` forms, script commands, the
+structural errors and the mob-command coverage ("Supported words: 42;
+unsupported words: 94"). `docs/05-converter.md` §8 is the narrative disposition
+table.
 
 CLI:
 
@@ -207,7 +216,7 @@ tbaport triage  --source DIR [--out FILE] [--only ZONE]
 The converter is **deterministic** — sorted zone/vnum iteration; converting the
 same source twice is byte-identical. It reports (rather than silently drops)
 every source feature with no schema home, with reason codes such as
-`dangling_door_key`, `dangling_shop_produce`, and `deferred` (e.g. DG triggers).
+`dangling_door_key`, `dangling_shop_produce`, and `trigger_attach_type_mismatch`.
 
 `cargo test -p tbaport` includes a test that converts all 189 zones and loads
 the result through the real `stdlib + tba` registry, asserting `validate_all` is
@@ -223,7 +232,7 @@ must replace the converted files and preserve the hand-authored ones.
 | `stdlib.areas.yaml` | `tba.classes.yaml` |
 | `stdlib.rooms.<zone>.yaml` (one shard per zone) | `tba.spells.yaml` |
 | `stdlib.npcs.yaml` | `stdlib.verbs.yaml` |
-| `stdlib.items.yaml` | |
+| `stdlib.items.yaml` | `stdlib.credits.yaml` |
 | `stdlib.quests.yaml` | |
 | `stdlib.help.yaml` | |
 | `tba.zones.yaml` | |
@@ -240,7 +249,7 @@ Procedure:
 2. Remove the old `content/stdlib.rooms.yaml` and copy the converted files over
    `content/` (the room shards **replace** the single file; keeping both would
    make the engine report a duplicate key).
-3. Leave the three hand-authored files untouched.
+3. Leave the four hand-authored files untouched.
 4. Update the pinned counts in `code/tests/pack.rs` if the world changed.
 5. Run: `cargo test -p tbaport && cargo test -p mib-tba && cargo run -p mib-tba -- validate-packs`.
 
@@ -263,17 +272,16 @@ reason the item count is one higher than the source object count.
 | `sync_concealment`, `sync_perception` | `Update`, `BridgeSet::Game` (after the genre command chain) | Mirror the pack's private `TbaHidden`/`TbaSneaking` into the engine `Concealment` and the pack's `TbaTrueSight` into the engine `Perception`, removing each carrier when its pack state clears. This is how the pack drives the engine's observer-aware projection. |
 | `tick_true_sight` | `TbaRound` | Ages the pack's `TbaTrueSight` true-sight grant one combat round; `sync_perception` then drops the engine `Perception`. |
 | `follow_system` | `FixedUpdate` (after `maintain_room_occupants`) | Drags a follower into the leader's new room only when the follower was standing in the leader's previous room, so a follower who wandered off is never teleported. |
-| `trigger_command_system` | `Update`, `BridgeSet::Game`, after `route_commands` | Issue #15: the `speech`/`command`/`act` DG trigger intake. It reads the same `CommandReceived` stream the router does, matches the trigger `arglist`, and evaluates the supported subset (`say`/`emote`/`echo`/`%send%`/`%echoaround%`, `if`/`switch`/`while`, conditions, `set`/`eval`/`unset`/`remote`/`global`/`local`/`rdelete`, `%load%`/`%purge%`) with `%…%` substitution. It only queues effects; the drain, the timer system and `apply_trigger_casts` below apply them. A construct outside the supported subset (#28) is counted in the runtime drop log. |
-| `trigger_leave_system` | `Update`, `CommandSet::PreRoute` (before `route_commands`) | Issue #15 Phase 4: runs `leave` triggers before movement commits. A record that `return 0`s marks the command handled so the move never applies (DG's `leave_wtrigger`/`leave_mtrigger` gate). |
-| `trigger_timer_system` | `FixedUpdate`, before the effect drain | Issue #15 Phase 4: resumes every due `wait` (`wait N sec|tick`, `wait until HH:MM`) from `TriggerTimers`. Timers are runtime-only and do not survive a restart (DG parity). |
-| `trigger_periodic_system` | `FixedUpdate`, after `trigger_greet_system` | Issue #15 Phase 5: the periodic `random`/`global`/`timer`/`time` heartbeats. |
-| `trigger_round_system` | `TbaRound`, after `resolve_rounds` | Issue #15 Phase 5: enqueues `fight`/`hitprcnt` records once per fighting owner per round. |
-| `trigger_damage_system`, `trigger_death_system`, `trigger_death_reset_system` | `Update` around `run_due_round`; `trigger_death_system` also on `TbaRound` | Issue #15 Phase 5: `damage` fires once per hit-point loss and `death` once per defeated NPC. The `TbaRound` instance of the death reader runs before the round's despawn applies; the `Update` instance covers spell/skill kills, and `TriggerDeathSeen` (cleared each frame by the reset system) keeps the two from firing twice. |
-| `trigger_queue_system` | `Update` (`BridgeSet::Game`, after the drain) and `FixedUpdate` | Issue #15 Phase 5: drains the serialized `TriggerQueue` and dispatches each event in order, so nested and per-round firings never interleave. |
-| `apply_trigger_casts` | `Update` (`BridgeSet::Game`, between the intake and the drain) and `FixedUpdate` | Issue #15 Phase 5: resolves a queued `dg_cast` against `tba.spells`. A spell the catalog does not carry is a `dg_cast_spell` named drop. `dg_cast` spends no mana and has no class gate. |
-| `trigger_effects_system` | `Update` (`BridgeSet::Game`) and `FixedUpdate`, after the trigger intake | Issue #15 Phase 3: the exclusive drain for `%load%`/`%purge%` (routing through the stdlib `spawn_item_on_ground`/`spawn_item_carried_by_entity`/`spawn_npc_from_content` helpers, which take `&mut World`), for `remote`/`global` variable writes (`TbaTriggerVars`), and for the Phase 4/5 world effects (`%teleport%`, `%door%`, `%force%`, `%damage%`). It also forwards a satisfied objective's flag to the stdlib as `QuestEvent::FlagSet` and accumulates runtime named drops in `TriggerDropLog`. |
-| `trigger_quest_bridge_system` | `Update`, after `award_kill_rewards` | Issue #15 Phase 3: translates each TBA native kill (`NpcDefeated`) into a stdlib `QuestEvent::Killed`, so `stdlib.quests` `Kill` steps advance. The prototype id rides on the message because the victim is despawned the same frame. `stdlib.quests` owns objective persistence, the journal, and rewards. |
-| `trigger_greet_system` | `FixedUpdate`, after `maintain_room_occupants` | Issue #15: the `greet`/`greet-all`/`entry` DG trigger intake on a player room change (`Changed<Location>`), with `%direction%` derived from the exit graph. |
+| `dg::with_host` | called from the intake systems | The single DG entry point. It ensures entity ids, attaches prototype triggers in attachment order, fires `load` for each new mob/object, runs the caller's `EcsHost` closure, then — when the VM goes idle — sweeps script-extracted characters and mirrors player globals into `TbaTriggerVars`. |
+| `DgIntake::CommandGate` (`command_gate`) | `Update`, `CommandSet::PreRoute`, before `route_commands` | The `command` triggers (world → mob → object). A non-zero return marks the command handled; `fold_handled` copies that into the engine's `HandledCommands`. |
+| `DgIntake::PreCommit` (`precommit`, `items_intake`, `cast_gate`) | `Update`, `CommandSet::PreRoute`, before `route_commands` | The triggers that can refuse an action: `leave`, `door`, `get`, `drop`, `give`, `receive`, `bribe`, `wear`, `remove`, `consume`, `cast`. A refusal marks the command handled. |
+| `DgIntake::PostRoute` (`speech_and_acts`, `player_logins`, `typed_arrivals`) | `Update`, `BridgeSet::Game`, after `route_commands` and the pack handlers | The triggers that react to what happened: `speech`, `act`, `enter`, `greet`, `entry`, `memory`, `login`. |
+| `observe_movement` | `FixedUpdate`, after `wander_system`/`pursuit_system`/`follow_system`, before `stamp_placement_order` | `leave` triggers for moves the game itself makes (NPC wander, pursuit, follow), so a script sees them before the placement order is restamped. |
+| `zone_reset_triggers`, `item_timer_triggers` | `FixedUpdate`, after `zone_reset_system`/`tick_item_timers` | `reset` for every room of a zone that reset this tick, and `timer` for each object whose timer expired. |
+| `dg_pulse_system` | `FixedUpdate` (registered with `stamp_placement_order`) | The pulse clock and script heartbeat: resumes due `wait`s, fires `random` triggers on their period, and `time` triggers when the mud hour changes. |
+| combat intake (`fight`, `hitprcnt`, `damage`, `death`) | called from `resolve_rounds`/`deal_damage`/`raw_kill` | Dispatched inside the combat and spell systems so a script sees the live blow; `damage` runs for melee rounds only, and `death` only for a kill with a killer. |
+| `trigger_quest_bridge_system` | `Update`, after `award_kill_rewards` | Translates each native kill (`NpcDefeated`) into a stdlib `QuestEvent::Killed`, so `stdlib.quests` `Kill` steps advance; a satisfied script objective reaches stdlib as `QuestEvent::FlagSet`. |
+| `DgLog` | runtime | A bounded ring plus per-key counts of script lines and host primitives the game does not model (the runtime named-drop log). |
 | `apply_death_penalty` | `Update`, `.before(handle_player_death)` | 25% of current-level XP (floored); converts `TbaGold` to a carried `tba_gold` item so the stdlib corpse sweep lands it in the corpse. |
 | `player_combatant_system` | `Update`, `BridgeSet::Game` | On `CharacterCreated`, inserts `TbaProgress` + `derive_vitals` from `tba.classes`. |
 
@@ -306,28 +314,33 @@ No TBA-specific environment variables exist. The pack's tunables are content
 
 These are recorded, not silent:
 
-- **DG triggers (TBA-E20)** are ported for the essential 133-record set
-  (#15, Phases 1–5). It is emitted into `tba.triggers.<zone>.yaml` and
-  evaluated natively: text/control, variables, `%load%`/`%purge%`, the
-  `stdlib.quests` bridge, `wait`/timers, doors/gates/teleport, and the combat
-  and periodic events. Three things stay deferred: the other 1,328 triggers
-  (#27); the unsupported constructs and the event types with no intake —
-  `receive`, `wear`, `drop`, `get`, `bribe`, `zone reset`, `remove`,
-  `consume`, `memory`, `give`, `login` — which include 12 essential records
-  that are emitted but never fire (#28); and the full DG VM (#29). Every
-  trigger is
-  itemised in [`reports/drop-report.json`](../reports/drop-report.json)
-  (grouped in [`reports/drop-report.summary.md`](../reports/drop-report.summary.md))
-  and classified (attach, expanded type, interactivity bucket, script size) in
-  the triage JSON [`reports/trigger-triage.json`](../reports/trigger-triage.json).
-  The classification, the curated 133-trigger essential set, and the native
-  design live in [`docs/design/triggers.md`](design/triggers.md); the parser's
-  per-construct coverage and runtime named drops are both in the drop report.
+- **DG triggers (TBA-E20)** are ported in full. The converter emits all 1,461
+  records into `tba.triggers.<zone>.yaml` (each owner's ordered attachment list
+  in `attachments`), and `code/src/dg/` hosts the `crates/dg-vm` interpreter:
+  text/control, variables, `dg_cast`/`dg_affect`, `%load%`/`%purge%`, the
+  `stdlib.quests` bridge, `wait`/timers, doors/gates/teleport, and every item,
+  movement, combat and periodic event. The legacy AST interpreter and its tests
+  are gone. What remains unmodelled is named, not silently dropped: the
+  `attach_type` mismatches (8) and zone-reset `V` commands in the report, the 15
+  structurally broken source scripts (`dg_vm::analyze` reports 30 control-flow
+  errors), and any host primitive the VM does not model, counted in the runtime
+  `DgLog`. Every trigger and the corpus analysis (lines by class, control and
+  statement histograms, `wait` forms, script commands, structural errors, and
+  the "Supported words: 42; unsupported words: 94" mob-command coverage) is in
+  [`reports/drop-report.json`](../reports/drop-report.json)
+  (grouped in [`reports/drop-report.summary.md`](../reports/drop-report.summary.md));
+  the standalone classification is
+  [`reports/trigger-triage.json`](../reports/trigger-triage.json).
+  [`docs/design/triggers.md`](design/triggers.md) is the detailed corpus,
+  converter and runtime design.
 - **Quests** (`.qst`) convert to `stdlib.quests`; a `MOB_FIND`/`MOB_SAVE`/
   `OBJ_RETURN`/`ROOM_CLEAR` objective and the reward/condition fields with no
   `QuestDef` home are named drops (`docs/05-converter.md` §3.7).
 - **Text and combat messages** convert to `stdlib.help` topics; the legacy
-  `lib/text/help/help.hlp` database is an `out_of_scope` global drop.
+  `lib/text/help/help.hlp` database is an `out_of_scope` global drop, **except
+  its `CIRCLEMUD` entry**, which the converter preserves as the `circlemud`
+  topic because the CircleMUD licence requires `help circlemud` to keep it
+  intact (see [`NOTICE`](../NOTICE)).
 - **Socials** (`socials.new`) convert to `tba.socials`; the runtime serves
   `social <name> [target] [body part]` and `socials`. MIB models no sex, so the
   `$e`/`$m`/`$s` pronouns render as neutral singular *they/them/their*, and the
@@ -427,3 +440,22 @@ These are recorded, not silent:
 For a released game, replace the `path` deps in `Cargo.toml` with `git` deps
 pinned to an engine revision. That is what "targets MIB vX" means here, and it
 insulates the game from engine churn.
+
+---
+
+## 11. Licence and attribution
+
+The world and game rules are derived from The Builder Academy (tbaMUD), which is
+derived from CircleMUD and DikuMUD. Those licences are included in full at
+[`LICENSE-TBAMUD`](../LICENSE-TBAMUD) and apply to the converted `content/` and
+the `crates/dg-vm` port; the original Rust code is MIT ([`LICENSE`](../LICENSE)).
+The required attribution and the obligations a deployment takes on are in
+[`NOTICE`](../NOTICE); read it before running or redistributing this pack. In
+particular, the CircleMUD/DikuMUD licences **forbid making money from the game,
+its code or its data in any way**.
+
+The engine's `credits` command shows every loaded pack's attribution: this pack
+ships [`content/stdlib.credits.yaml`](../content/stdlib.credits.yaml), which the
+engine merges with the base stdlib pack's own entries (MIB issue #22).
+`help circlemud` shows the preserved `CIRCLEMUD` entry and `help credits` the
+converted tbaMUD credits text.

@@ -5,11 +5,14 @@ Fixture Zone~
 * a comment command
 O 0 3000 1 3000
 M 0 3000 1 3001
+T 0 0 3000 3001
+T 0 0 3000 3001
+T 0 1 3000 3001
+T 0 2 3000 9999
+V 0 0 7 3001 zonearg varval
 G 1 3000 1 -1
 E 1 3000 1 16
 P 1 3000 1 3001
 D 0 3001 2 1
 R 0 3000 3000
-T 0 0 3000 -1
-V 0 1 0 0 zonearg varval
 S

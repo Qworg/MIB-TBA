@@ -40,17 +40,19 @@ the running server and links only the schema crates (`mib-stdlib`, `mib-tba`,
    description); **`tba.npc_stats`** carries the Diku numbers and AI flags.
 7. **`stdlib.items`** gets name + description + container/tags; **`tba.items`**
    carries kind, slots, values, affects and the economy fields.
-8. **DG triggers (`.trg`) are deferred** (doc §10). No section is emitted for
-them; each record is written to the drop report with vnum and attachment point
-so a later phase can rebuild it, and each is **classified** (attach type,
-expanded trigger type, interactivity bucket, script size) into
-`trigger_triage` / per-zone `triggers[]`. `tbaport triage` writes the same
-classification as a standalone `reports/trigger-triage.json`; see
-[`docs/design/triggers.md`](design/triggers.md). **Shops (`.shp`)** are parsed and emitted as
-`tba.shops` (see §3.6); **quests (`.qst`)** are parsed and emitted as
-`stdlib.quests` (see §3.7); **`lib/text`, `lib/misc/messages`** become
-`stdlib.help` topics (see §3.8) and **`lib/misc/socials.new`** becomes
-`tba.socials` (see §3.9).
+8. **DG triggers (`.trg`) are converted.** All 1,461 records are emitted into
+`tba.triggers.<zone>.yaml`, one shard per zone (see §2.6 and §3.4). Each record
+maps to a `TriggerDef` (`attach_type` + `flags`, with the expanded `types`), and
+each owner's ordered trigger list is carried by `TriggersFile.attachments`.
+Every script is **analysed** with `dg_vm::analyze`, and the result is written
+into the drop report's `trigger_coverage` (lines by class, control and statement
+histograms, `wait` forms, script commands, structural errors and the
+supported/unsupported mob-command words). `tbaport triage` still writes the
+standalone classification `reports/trigger-triage.json`. **Shops (`.shp`)** are
+parsed and emitted as `tba.shops` (see §3.6); **quests (`.qst`)** are parsed
+and emitted as `stdlib.quests` (see §3.7); **`lib/text`,
+`lib/misc/messages`** become `stdlib.help` topics (see §3.8) and
+**`lib/misc/socials.new`** becomes `tba.socials` (see §3.9).
 9. **Determinism.** Zones are iterated in ascending numeric order and every
    section is a `BTreeMap`; converting the same source twice is byte-identical.
    Rooms are sharded one file per zone (TBA-E01, §6) and the committed drop
@@ -116,7 +118,7 @@ T <trigger vnum>          (zero or more, after S)
   in the file).
 - `key` of `-1`/`65535` and `to_room` of `-1`/`0`/`65535` are `NOWHERE`.
 - `E` blocks append to a linked list; `tbaport` keeps file order.
-- Trailing `T <vnum>` lines attach DG triggers (deferred).
+- Trailing `T <vnum>` lines attach DG triggers; `attachments` keeps them in source order.
 
 ### 2.3 `.mob` — `parse_mobile` (`db.c:1890`)
 
@@ -190,11 +192,11 @@ S | $
 `renum_zone_table` (`db.c:1623`) confirms the argument roles. `reset_mode`:
 `0` never, `1` when deserted, `2` always.
 
-### 2.6 Deferred readers and the world-global readers
+### 2.6 Record readers and the world-global readers
 
 | File | C source | Header scanned | Attachment |
 | --- | --- | --- | --- |
-| `.trg` | `parse_trigger` (`dg_db_scripts.c:30`) | `#vnum`, name, `<attach> <flags> <narg>`, arg list, body | `0` mob, `1` object, `2` world; classified into `reports/trigger-triage.json` |
+| `.trg` | `parse_trigger` (`dg_db_scripts.c:30`) | `#vnum`, name, `<attach> <flags> <narg>`, arg list, body | `attach_type` `mob`/`obj`/`wld`; emitted as `tba.triggers`, classified into `reports/trigger-triage.json` |
 | `.qst` | `parse_quest` (`quest.c:129`) | `#vnum`, five strings, three numeric lines, `S` | questmaster vnum from line 1 |
 | `lib/misc/socials.new` | `boot_social_messages` (`db.c:195`), `save_socials` (`aedit.c:341`) | `~<command> <sort_as> <hide> <min_char_pos> <min_victim_pos> <min_level>`, thirteen message lines | command word |
 | `lib/text/*` | `MOTD_FILE`/`NEWS_FILE`/… (`db.h:90`) | raw prose | file name |
@@ -235,7 +237,7 @@ grammars and their mappings. `CONFIG_NEW_SOCIALS` is `YES` in the source
 | `sector` 0..9 | `Sector::{Inside,City,Field,Forest,Hills,Mountain,WaterSwim,WaterNoSwim,Flying,Underwater}` |
 | `D` blocks | `BTreeMap<SmolStr, ExitDef>` keyed by `dirs[]` |
 | `E` blocks | `RoomDef::extra_descriptions` (keywords split on whitespace) |
-| `T` lines | deferred trigger metadata |
+| `T` lines | the room's entry in `tba.triggers.attachments` (source order) |
 | `coord` | **permanent drop, recorded once** in `global_drops` |
 
 Every source flag either maps to a `RoomTag` or produces a permanent-drop
@@ -287,6 +289,7 @@ dangling destination and is recorded as `dangling_exit` instead.
 | e-specs | **permanent drop** (`mob_espec`): no target field |
 | sex | **permanent drop** (`mob_sex`): `TbaNpcStats` has no sex field |
 | keyword list | **permanent drop** (`npc_keywords`): `stdlib.npcs` has no keyword list |
+| `T` lines | the NPC's entry in `tba.triggers.attachments` (source order) |
 
 `MOB_ISNPC` and `MOB_NOTDEADYET` are loader bookkeeping and are not reported.
 
@@ -318,6 +321,7 @@ The per-class minimum levels live in `tba.classes.skill_levels`.
 | `AFF_*` affect-flags | `TbaItemDef::affect_flags` (`ItemAffectFlag`); the `DONTUSE`/`UNUSED`/`FREE` placeholder bits are **permanent drops** |
 | action description | **permanent drop** (`item_action_description`): `stdlib.items` has no action description |
 | `E` extra descriptions | **permanent drop** (`item_extra_descriptions`): `stdlib.items` has no extra-description field |
+| `T` lines | the item's entry in `tba.triggers.attachments` (source order) |
 | `APPLY_CLASS/LEVEL/AGE/CHAR_WEIGHT/CHAR_HEIGHT/GOLD/EXP` | **permanent drop** (`affect_location`): no `AffectLocation` variant, and no runtime consumer |
 
 `APPLY_*` → `AffectLocation`: `1..6` → Str/Dex/Int/Wis/Con/Cha, `12` →
@@ -335,7 +339,8 @@ MaxMana, `13` → MaxHp, `14` → MaxMove, `17` → ArmorClass, `18` → Hitroll
 | `P` | `PutItem` | `item=tba_item_<a1>`, `container=tba_item_<a3>`, `max_in_world=a2` |
 | `D` | `DoorState` | `room=tba.<a1>`, `exit=dirs[a2]`, `state` from `a3` (0 open/1 closed/2 locked) |
 | `R` | `RemoveItem` | `room=tba.<a1>`, `item=tba_item_<a2>` |
-| `T`/`V` | — | deferred (trigger / trigger variable) |
+| `T` | — | folded into the owner's `tba.triggers.attachments` list |
+| `V` | — | reported as a trigger-variable drop (no schema home) |
 | `*` | — | skipped (comment) |
 
 Each mapped command is wrapped in `ZoneCommand { if_flag, command }`. The
@@ -409,15 +414,17 @@ change the world rather than omit a field.
 
 ### 3.8 Help topics (`stdlib.help`)
 
-The eleven `lib/text/` files and `lib/misc/messages` have no MIB home, so they
-become authored `stdlib.help` topics.
+The ten `lib/text/` files (all but `credits`), the `CIRCLEMUD` entry of
+`lib/text/help/help.hlp` and `lib/misc/messages` become authored `stdlib.help`
+topics. `lib/text/credits` is *not* a help topic: the engine's `credits`
+command owns that name, and the pack serves the credit text from its
+hand-authored `stdlib.credits` section (see §8).
 
 | Source | Topic id | Audience |
 |---|---|---|
 | `lib/text/motd` | `motd` | public |
 | `lib/text/imotd` | `imotd` | staff |
 | `lib/text/news` | `news` | public |
-| `lib/text/credits` | `credits` | public |
 | `lib/text/handbook` | `handbook` | staff |
 | `lib/text/policies` | `policies` | public |
 | `lib/text/background` | `background` | public |
@@ -425,6 +432,7 @@ become authored `stdlib.help` topics.
 | `lib/text/wizlist` | `wizlist` | staff |
 | `lib/text/greetings` | `greetings` | public |
 | `lib/text/immlist` | `immlist` | staff |
+| `lib/text/help/help.hlp` `CIRCLEMUD` | `circlemud` | public |
 | `lib/misc/messages` attack type `N` | `combat-message-N` | public |
 
 **Colour.** The text files carry Circle `@`-codes (`@RHELP COLORCODES@n`).
@@ -440,7 +448,9 @@ attacker/victim/room; a line beginning with `#` is Circle's NULL). Several `M`
 entries may share a type — those are random variants — and the converter groups
 them under one topic body that labels all twelve slots. The `*`-comment name
 (for example `burning hands`) titles the topic. The legacy `lib/text/help/`
-database (`help.hlp` and friends) is *not* converted; it is recorded once as
+database (`help.hlp` and friends) is *not* converted, except its `CIRCLEMUD`
+entry, which is kept as the `circlemud` topic: the CircleMUD licence requires
+`help circlemud` to display that entry intact. The rest is recorded once as
 `global_drops`/`out_of_scope` because the generated command catalog plus these
 topics supersede it.
 
@@ -469,6 +479,33 @@ once as a `social_code` global drop. MIB models no sex, so the pronouns render
 as neutral singular *they/them/their*. The legacy `lib/misc/socials` old-format
 file is a `global_drops`/`out_of_scope` entry (`CONFIG_NEW_SOCIALS` is `YES`).
 
+### 3.10 DG triggers (`tba.triggers`)
+
+One `tba.triggers.<zone>.yaml` shard per zone; the pack loader merges them back
+into the `TriggersFile` the engine loads. The `.trg` reader
+(`source/deferred.rs`) emits one `TriggerDef` per record and one
+order-preserving attachment list per owner.
+
+| Source (`.trg` / owner `T` line) | `tba.triggers` |
+|---|---|
+| `#<vnum>` | `TriggerId` `tba_trig_<vnum>` |
+| `name~` | `TriggerDef::name` |
+| `<attach_type>` (`0`/`1`/`2`) | `TriggerDef::attach_type` (`mob`/`obj`/`wld`) |
+| type field | `TriggerDef::flags` (the raw token) and `TriggerDef::types` (the expanded lowercase names from `expand_types`) |
+| `narg` | `TriggerDef::narg` |
+| arg list | `TriggerDef::arglist` |
+| script body | `TriggerDef::script` (colour-stripped, verbatim) |
+| owner `T <vnum>` lines, in order | the owner's `TriggersFile::attachments` list (`npc:<id>` / `item:<id>` / `room:<id>`) |
+| zone-reset `T <if> …` | folded into the target prototype's list |
+| zone-reset `V …` | **reported** as a trigger-variable drop (no schema home) |
+
+The legacy `attach` field is gone: the owner's kind decides how the record's
+type letters are read (`mapping/attach.rs`), and a record whose `attach_type`
+differs from its owner is kept and named (`trigger_attach_type_mismatch`). An
+owner `T` line that names no emitted trigger is a `dangling_trigger_ref` drop;
+a zone-reset `T` that cannot resolve is a `dangling_zone_trigger` /
+`dangling_zone_trigger_room` drop.
+
 ---
 
 ## 4. Drop-report schema
@@ -492,8 +529,8 @@ before writing, so the report is deterministic. Schema `2`:
   ],
   "totals": {
     "zones": 189, "rooms": 12700, "npcs": 3705, "items": 4765,
-    "zone_commands": 18513, "deferred": 3160,
-    "dangling": 15, "unmapped": 17585, "global_drops": 10,
+    "zone_commands": 18513, "deferred": 0,
+    "dangling": 15, "unmapped": 17593, "global_drops": 10,
     "unmapped_by_kind": { "room_flag": 1726, "mob_sex": 3705, ... },
     "dangling_by_kind": { "dangling_door_key": 3, ... }
   },
@@ -506,10 +543,13 @@ before writing, so the report is deterministic. Schema `2`:
       "rooms": 58, "npcs": 46, "items": 63, "commands": 169,
       "source_files": { "wld": true, "mob": true, "obj": true,
                         "zon": true, "shp": true, "trg": true, "qst": false },
-      "deferred": [
-        { "section": "triggers", "vnum": 3000, "attach": "mob",
-          "detail": "Fixture Trigger", "reason": "DG scripts are deferred (doc §10)" }
+      "deferred": [],
+      "triggers": [
+        { "vnum": 3000, "name": "Fixture Trigger", "attach": "mob",
+          "flags": "a", "types": ["speech"], "narg": 0,
+          "bucket": "interactive_response", "lines": 12, "raw_lines": 15 }
       ],
+      "trigger_variables": [],
       "dangling": [
         { "kind": "dangling_door_key",
           "from": "room tba.3040 exit west door.key",
@@ -537,8 +577,10 @@ Finding kinds:
   implemented as pack gameplay in `mib_tba::skills`, issue #25),
   `out_of_scope` (the legacy `lib/misc/socials` and `lib/text/help` files),
   `social_code` (a `$`-code `perform_act` cannot resolve), `duplicate_social`.
-- `deferred.section`: `triggers`, `trigger_variables`. Quests are no longer
-  deferred (issue #16).
+- `deferred` is empty: every remaining source feature has a schema home or a
+  named `unmapped`/`dangling` entry. Triggers are emitted (issue #27) and quests
+  convert (issue #16); the zone-reset `V` commands land in `trigger_variables`,
+  so nothing writes a `deferred` record now.
 - `dangling.kind`: `dangling_door_key`, `dangling_exit`, `dangling_reset_mob`,
   `dangling_reset_item`, `dangling_reset_container`, `dangling_reset_room`,
   `dangling_shop_keeper`, `dangling_shop_produce`, `dangling_shop_room`,
@@ -556,6 +598,16 @@ Finding kinds:
   `shop_bitvector`, `shop_record`, `shop_profit_buy`, `quest_objective`,
   `quest_gold_reward`, `quest_text`, `quest_flag`, `quest_link`,
   `quest_condition`.
+- `trigger_coverage`: the `dg_vm::analyze` roll-up of every emitted script —
+  `records`, `script_lines`, `by_attach_type`, `lines_by_class`, `controls`,
+  `statements`, `wait_forms`, `script_commands`, `unknown_object_commands` /
+  `unknown_world_commands`, `mud_commands` (the supported/unsupported words),
+  `dynamic_commands`, `over_length_lines` and `structural_errors`.
+- `trigger_triage`: the corpus classification (attach, expanded type,
+  interactivity bucket, script size), per zone and as a whole.
+- `trigger_attachments`: the owner/link roll-up — `owners`, `links`,
+  `links_by_owner_kind`, `zone_reset_folded` / `zone_reset_already_present`,
+  `unattached_triggers`, `attach_type_mismatches` and `variable_commands`.
 
 `command_flags` remains the raw carrier for the Circle `if_flag`: one entry per
 parsed command, in source order, keyed by its index in the reset program
@@ -563,7 +615,9 @@ parsed command, in source order, keyed by its index in the reset program
 
 `DropReport::write` also emits a Markdown summary beside the JSON
 (`reports/drop-report.summary.md`), grouping every `unmapped` and `dangling`
-entry by reason and listing the global drops.
+entry by reason, listing the global drops, and printing the trigger-corpus
+coverage (lines by class, the control and statement histograms, and
+"Supported words: 42; unsupported words: 94").
 
 ---
 
@@ -588,7 +642,7 @@ tools/tbaport/
 │   │   ├── quest.rs           # parse_quest (.qst → stdlib.quests)
 │   │   ├── social.rs          # socials.new → tba.socials
 │   │   ├── text.rs            # lib/text + lib/misc/messages → stdlib.help
-│   │   └── deferred.rs        # .trg scanner
+│   │   └── deferred.rs        # .trg record reader
 │   ├── mapping.rs             # raw records → mib-stdlib/mib-tba types
 │   ├── emit.rs                # OutputBundle + YAML writers
 │   └── report.rs              # DropReport types + JSON writer
@@ -621,15 +675,17 @@ tbaport triage  --source DIR [--out FILE] [--only ZONE]
   --validate-only    parse/map and write the report, but emit no YAML
 ```
 
-`tbaport triage` performs no mapping: it reads the `.trg` records, classifies
-every one, marks the curated essential-interactivity set, and writes the
-deterministic `reports/trigger-triage.json` (see `docs/design/triggers.md`).
+`tbaport convert` writes the `.trg` coverage into the drop report's
+`trigger_coverage`; `tbaport triage` does no mapping, reads the `.trg` records,
+classifies every one, marks the curated essential-interactivity set, and writes
+the deterministic `reports/trigger-triage.json` (see `docs/design/triggers.md`).
 
 Files written: `stdlib.areas.yaml`, `stdlib.rooms.<zone>.yaml` (one shard per
 zone, TBA-E01), `stdlib.npcs.yaml`, `stdlib.items.yaml`,
 `stdlib.quests.yaml`, `stdlib.help.yaml`, `tba.zones.yaml`,
 `tba.npc_stats.yaml`, `tba.items.yaml`, `tba.shops.yaml`, `tba.socials.yaml`,
-plus the report and its Markdown summary. `tba.classes.yaml`,
+`tba.triggers.<zone>.yaml` (one shard per zone), plus the report and its
+Markdown summary. `tba.classes.yaml`,
 `tba.spells.yaml` and `stdlib.verbs.yaml` are **not** converter output: the
 Diku classes live in `class.c` and the spell catalog and verb list were
 transcribed by hand, so they stay hand-authored (a world swap must preserve
@@ -658,7 +714,7 @@ conversion.report.write(Path::new("target/tbaport/drop-report.json"))?;
 | Mobs | `tests/parse.rs` | simple `S` and enhanced `E` forms; flag words, dice, stats, e-specs |
 | Objects | `tests/parse.rs` | 13-field flags, holds terminator for the caller, affects, container capacity |
 | Zones | `tests/parse.rs` | header/bounds/reset mode, comment skipping, command order, `if_flag`, `E` wear position |
-| Deferred | `tests/parse.rs` | one trigger (attach `mob`); quests are parsed as real records |
+| Triggers | `tests/parse.rs` | trigger records, their type letters, and the trailing `T` lines; quests are parsed as real records |
 | Quests | `tests/parse.rs`, `tests/convert.rs` | the `.qst` header/objectives/rewards, and the mapped `QuestDef` (giver, kill step, count) |
 | Socials | `tests/parse.rs`, `tests/convert.rs` | the new-format header and thirteen sets, `#`→`None`, and the mapped `SocialDef` |
 | Help | `tests/parse.rs`, `tests/convert.rs` | text files become topics with `@`-codes stripped; `messages` groups by attack type |
@@ -678,10 +734,9 @@ against the sibling checkout when present (`TBAMUD_SOURCE` or
 
 ## 8. Known gaps (all recorded in the drop report)
 
-Every gap below is a **named permanent drop**: it appears in
-`reports/drop-report.json` as a `global_drops` / `unmapped` / `dangling` /
-`deferred` entry, and `reports/drop-report.summary.md` groups the surviving
-drops by reason.
+Every gap below is a **named drop**: it appears in
+`reports/drop-report.json` as a `global_drops` / `unmapped` / `dangling` entry,
+and `reports/drop-report.summary.md` groups the surviving drops by reason.
 
 - **Room coordinates.** tbaMUD's `struct room_data` has no coordinate field, so
   `RoomDef::coord` is always `None` (`global_drops`: `no_source_field` / `room
@@ -719,13 +774,23 @@ drops by reason.
   source's one real quest (`tba_quest_100`) converts.
 - **Text and combat messages** now convert to `stdlib.help` topics (issue
   #18). The legacy `lib/text/help/help.hlp` database is an `out_of_scope`
-  global drop.
+  global drop, except its `CIRCLEMUD` entry, which is preserved as the
+  `circlemud` topic for the CircleMUD licence. `lib/text/credits` is a named
+  `out_of_scope` drop too: its text is served by the engine's `credits` command
+  from the pack's hand-authored `stdlib.credits` section (MIB #22), because a
+  help topic whose id is a command name is unreachable.
 - **Socials** now convert to `tba.socials` (issue #17). The source's stray
   `$i` code and the legacy old-format `lib/misc/socials` are named global
   drops; pronouns render neutral (MIB models no sex).
-- **DG triggers** remain deferred wholesale (`deferred`), but each is now
-  classified into the drop report's `trigger_triage` and the per-zone
+- **DG triggers** convert (issue #27). All 1,461 records are emitted into
+  `tba.triggers.<zone>.yaml`; each owner's ordered attachment list is in
+  `TriggersFile.attachments`, and zone-reset `T` commands are folded in. What
+  is not modelled is named: the `attach_type` mismatches (8), the 15 scripts
+  with structural errors (30 control-flow errors, from `dg_vm::analyze`), the
+  zone-reset `V` commands (none in this source) and any host primitive the
+  runtime does not model. Every script's coverage is in the drop report's
+  `trigger_coverage`, the classification in `trigger_triage` and the per-zone
   `triggers[]`, and the standalone `reports/trigger-triage.json`
-  (`tbaport triage`). Phase-2 scope and design: `docs/design/triggers.md`.
+  (`tbaport triage`).
 
 None of these is silently discarded.

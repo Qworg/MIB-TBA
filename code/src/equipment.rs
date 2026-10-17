@@ -84,6 +84,115 @@ pub struct TbaEquipmentSave {
     pub worn: BTreeMap<WearSlot, String>,
 }
 
+/// Equipment commands a trigger or an earlier stage took over this frame.
+///
+/// The engine's router marks every raw line handled once it has run, including
+/// the `equip` family it leaves to this module, so [`HandledCommands`] cannot
+/// tell "refused before routing" from "routed". The item intake in front of the
+/// router records every `equip` or `unequip` it carried out or that the command
+/// gate took over here instead, and [`handle_equipment_commands`] skips each of
+/// them once.
+#[derive(Debug, Default, Resource)]
+pub struct EquipmentVetoes {
+    taken: Vec<(CommandId, Entity, PlayerInput)>,
+}
+
+impl EquipmentVetoes {
+    /// Forget every record (the start of a frame's gate).
+    pub fn clear(&mut self) {
+        self.taken.clear();
+    }
+
+    /// Whether no command is recorded as taken over.
+    pub fn is_empty(&self) -> bool {
+        self.taken.is_empty()
+    }
+
+    /// Record a command as taken over.
+    pub fn veto(&mut self, msg: &CommandReceived) {
+        self.taken.push((msg.id, msg.session, msg.input.clone()));
+    }
+
+    /// Whether the command was taken over; each record answers once.
+    pub fn take(&mut self, msg: &CommandReceived) -> bool {
+        let position = self.taken.iter().position(|(id, session, input)| {
+            *id == msg.id && *session == msg.session && *input == msg.input
+        });
+        match position {
+            Some(index) => {
+                self.taken.swap_remove(index);
+                true
+            }
+            None => false,
+        }
+    }
+}
+
+/// The persisted shadow of a worn map: each occupied position and the
+/// [`SaveId`] of its item. An item without one is dropped from the shadow.
+fn persisted_from_world(
+    world: &World,
+    slots: &HashMap<WearSlot, Entity>,
+) -> BTreeMap<WearSlot, String> {
+    slots
+        .iter()
+        .filter_map(|(slot, entity)| {
+            world
+                .get::<SaveId>(*entity)
+                .map(|save_id| (*slot, save_id.0.to_string()))
+        })
+        .collect()
+}
+
+/// Rewrite a holder's runtime and persisted worn maps from `slots`.
+fn store_worn(world: &mut World, holder: Entity, slots: HashMap<WearSlot, Entity>) {
+    let worn = persisted_from_world(world, &slots);
+    let Ok(mut entity) = world.get_entity_mut(holder) else {
+        return;
+    };
+    entity.insert((TbaEquipment { slots }, TbaEquipmentSave { worn }));
+}
+
+/// Put `item` on `holder` in `slot`, replacing whatever the slot held. The item
+/// stays `CarriedBy` the holder, as the pack's equipment model has it.
+pub fn set_worn(world: &mut World, holder: Entity, slot: WearSlot, item: Entity) {
+    let mut slots = world
+        .get::<TbaEquipment>(holder)
+        .map(|equipment| equipment.slots.clone())
+        .unwrap_or_default();
+    slots.insert(slot, item);
+    store_worn(world, holder, slots);
+}
+
+/// Take whatever `holder` wears in `slot` off, returning it.
+pub fn clear_worn(world: &mut World, holder: Entity, slot: WearSlot) -> Option<Entity> {
+    let mut slots = world.get::<TbaEquipment>(holder)?.slots.clone();
+    let item = slots.remove(&slot)?;
+    store_worn(world, holder, slots);
+    Some(item)
+}
+
+/// Take `item` out of its wearer's equipment, if it is worn. Called before the
+/// item is destroyed, so no slot keeps pointing at it.
+pub fn forget_worn(world: &mut World, item: Entity) {
+    let Some(holder) = world.get::<CarriedBy>(item).map(|carried| carried.0) else {
+        return;
+    };
+    let Some(equipment) = world.get::<TbaEquipment>(holder) else {
+        return;
+    };
+    if !equipment.slots.values().any(|worn| *worn == item) {
+        return;
+    }
+    let slots: HashMap<WearSlot, Entity> = equipment
+        .slots
+        .iter()
+        .filter(|(_, worn)| **worn != item)
+        .map(|(slot, worn)| (*slot, *worn))
+        .collect();
+    store_worn(world, holder, slots);
+}
+
 // -- wear-slot vocabulary ---------------------------------------------------
 
 impl WearSlot {
@@ -312,6 +421,9 @@ type CarriedQuery<'w, 's> = Query<'w, 's, (Entity, &'static Item, &'static Carri
 /// [`sync_wielded_weapon`] see the change in the same frame; the persisted
 /// [`TbaEquipmentSave`] is rewritten in lockstep. A player who has never worn
 /// anything has neither component yet, so both are inserted on first equip.
+///
+/// A command a wear or remove trigger refused, or that an earlier stage took
+/// over, is in [`EquipmentVetoes`] and is skipped.
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn handle_equipment_commands(
     mut reader: MessageReader<CommandReceived>,
@@ -324,11 +436,17 @@ pub fn handle_equipment_commands(
     mut saves: Query<Option<&mut TbaEquipmentSave>>,
     mut commands: Commands,
     mut output: MessageWriter<OutputEvent>,
+    claimed: Option<Res<crate::dg::intake::commands::DgClaimed>>,
+    mut vetoes: Option<ResMut<EquipmentVetoes>>,
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
 
     for msg in reader.read() {
+        let vetoed = vetoes.as_mut().is_some_and(|vetoes| vetoes.take(msg));
+        if crate::dg::intake::commands::is_claimed(claimed.as_deref(), msg.id) || vetoed {
+            continue;
+        }
         let session = msg.session;
         let playing = sessions
             .get(session)
@@ -382,11 +500,16 @@ fn name_matches(needle: &str, name: &str) -> bool {
     !needle.is_empty() && name.to_lowercase().contains(&needle)
 }
 
-/// The carried item matching `needle`, if any.
+/// The carried item matching `needle`, if any; `N.name` picks the Nth match.
 fn find_carried(actor: Entity, needle: &str, items: &CarriedQuery<'_, '_>) -> Option<Entity> {
-    items.iter().find_map(|(entity, item, carried)| {
-        (carried.0 == actor && name_matches(needle, &item.name)).then_some(entity)
-    })
+    let selector = TargetSelector::parse(needle);
+    items
+        .iter()
+        .filter(|(_, item, carried)| {
+            carried.0 == actor && name_matches(&selector.keyword, &item.name)
+        })
+        .nth(selector.ordinal.saturating_sub(1))
+        .map(|(entity, ..)| entity)
 }
 
 /// A system-channel notice plus the prompt.
@@ -671,21 +794,33 @@ pub fn recompute_equipment_affects(
 #[allow(clippy::type_complexity)] // one ECS view per optional NPC component.
 pub fn recompute_npc_equipment_affects(
     content: Option<Res<TbaContent>>,
-    npcs: Query<(Entity, &TbaNpcBase, &TbaEquipment, &mut TbaCombatant), Without<Player>>,
+    npcs: Query<
+        (
+            Entity,
+            &TbaNpcBase,
+            Option<&TbaEquipment>,
+            Option<&TbaBuffs>,
+            &mut TbaCombatant,
+        ),
+        Without<Player>,
+    >,
     items: Query<&Item>,
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
-    for (_npc, base, equipment, mut combatant) in npcs {
+    for (_npc, base, equipment, buffs, mut combatant) in npcs {
         let worn: Vec<&TbaItemDef> = equipment
-            .slots
-            .values()
+            .into_iter()
+            .flat_map(|equipment| equipment.slots.values())
             .filter_map(|item_entity| {
                 let prototype = items.get(*item_entity).ok()?;
                 content.items.get(&prototype.def_id)
             })
             .collect();
-        let next = recompute_combatant_full(&combatant, base.0.clone(), worn, std::iter::empty());
+        let buff_affects: Vec<&AffectDef> = buffs
+            .map(|buffs| buffs.affects().collect())
+            .unwrap_or_default();
+        let next = recompute_combatant_full(&combatant, base.0.clone(), worn, buff_affects);
         if *combatant != next {
             *combatant = next;
         }

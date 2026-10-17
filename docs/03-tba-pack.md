@@ -24,7 +24,7 @@ packs/tba/
 │   ├── tba.npc_stats.yaml     # Diku mob stats & THAC0 (TBA-E27)
 │   ├── tba.items.yaml         # 24 item types & 15 wear slots (TBA-E28)
 │   ├── tba.classes.yaml       # 4 Diku classes (TBA-E18/E19)
-│   ├── tba.triggers.<zone>.yaml # Essential DG scripts (issue #15; one shard per zone)
+│   ├── tba.triggers.<zone>.yaml # Converted DG scripts (one shard per zone)
 │   └── tba.messages.yaml      # Combat messages (TBA-E30)
 └── code/                      # The `mib-tba` crate
     ├── Cargo.toml
@@ -33,7 +33,8 @@ packs/tba/
         ├── combat/            # Native Circle round-based combat & aggro
         ├── zones/             # Stateful zone reset interpreter
         ├── items/             # 15-slot wear positions & affect calculations
-        ├── triggers/          # DG script AST, context, interpreter, events
+        ├── triggers/          # `tba.triggers` schema and the quests bridge
+        ├── dg/                # DG runtime: dg-vm host, intake, script state
         └── content/           # `tba.*` serde section schemas
 ```
 
@@ -393,8 +394,49 @@ Define `tba.shops.yaml`:
 
 ## 10. TBA-E20 — Trigger VM (DG Scripts) (D-T2)
 
-### 10.1 Deferred Scope Strategy
-DG scripts represent 1,461 triggers and 27,801 script lines.
-- **Phase 1 Strategy**: Drop triggers during initial vertical slice. Most doors and mobs function without DG scripts via native zone resets.
-- **Phase 2 Strategy**: Re-author the essential $\sim 50$ interactive triggers (quest givers, gatekeepers) as stdlib `DialogueGraph` or native Rust systems.
-- **Phase 3 Strategy**: If full script fidelity is needed, build a clean Rust parser for DG script AST in `packs/tba/code/src/triggers/`.
+The DG runtime is built. `tools/tbaport` emits all **1,461** trigger records into
+`tba.triggers.<zone>.yaml` (one shard per zone), and `code/src/dg/` hosts the
+engine-agnostic `crates/dg-vm` interpreter on the ECS world.
+
+### 10.1 Content schema
+
+`tba.triggers` (`code/src/triggers/content.rs`) has two parts:
+
+- `triggers` — `TriggerDef`, keyed `tba_trig_<vnum>`, with `vnum`, `name`,
+  `attach_type` (`mob`/`obj`/`wld`), `flags` (the record's raw type token),
+  `types` (expanded lowercase names such as `speech`/`greet-all`), `narg`,
+  `arglist` and `script`. The legacy single `attach` field is gone.
+- `attachments` — each owner (`npc:<id>`, `item:<id>`, `room:<id>`) mapped to
+  its ordered trigger list in `proto_script` order: the record's `T` lines,
+  then any zone-reset `T` commands folded in. A trigger listed twice attaches
+  twice, as in the C.
+
+Zone-reset `V` commands have no schema home and are reported as drops.
+
+### 10.2 Runtime
+
+`crates/dg-vm` is a line-faithful port of tbaMUD's `dg_*.c` — triggers
+(`dg_triggers.c`), the driver and expression evaluator, the `%…%` substitution
+tables, the `m*`/`o*`/`w*` script commands and `dg_cast`. It is engine-agnostic:
+it reaches the game only through the `DgHost` traits, which `code/src/dg/host`
+implements over the ECS. `code/src/dg/` adds the game side: entity ids and list
+order, per-entity `DgScript`/`DgProtos` state, the pulse clock and `wait` queue,
+text delivery and the persisted `TbaTriggerVars`.
+
+Every event family has intake (`code/src/dg/intake/`): commands and speech;
+movement (`leave`, `door`, `entry`, `enter`, `greet`, `memory`, `login`); items
+(`get`, `drop`, `give`, `receive`, `bribe`, `wear`, `remove`, `consume`, `cast`);
+combat (`fight`, `hitprcnt`, `damage`, `death`); the zone reset and item timers;
+and the pulse heartbeat (`random`, `timer`, `time`). All trigger activity funnels
+through `dg::with_host`, which attaches prototype triggers in attachment order
+and fires `load`.
+
+### 10.3 Coverage
+
+The converter analyses every emitted script with `dg_vm::analyze` and writes the
+result into the drop report's `trigger_coverage`: lines by class, control and
+statement histograms, `wait` forms, script commands, structural errors and the
+mob-command words. The supported mob words come from the game's `cmd_info[]`
+table (`mib_tba::dg::mobcmd::supported_mob_words`, 42 supported / 94 unsupported
+in the tbaMUD corpus). `tbaport triage` still writes the standalone
+classification `reports/trigger-triage.json`.

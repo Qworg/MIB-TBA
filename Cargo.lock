@@ -1489,6 +1489,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "dg-vm"
+version = "0.1.0"
+
+[[package]]
 name = "digest"
 version = "0.10.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2936,6 +2940,8 @@ name = "mib-tba"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "dg-vm",
+ "mib-bridge",
  "mib-content",
  "mib-core",
  "mib-host",
@@ -4601,6 +4607,7 @@ dependencies = [
 name = "tbaport"
 version = "0.1.0"
 dependencies = [
+ "dg-vm",
  "mib-content",
  "mib-core",
  "mib-stdlib",

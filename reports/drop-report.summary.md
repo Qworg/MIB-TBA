@@ -7,11 +7,12 @@
 - npcs: 3705
 - items: 4765
 - zone commands: 18513
-- deferred: 3027
-- dangling: 42
-- unmapped: 17585
-- global permanent drops: 10
-- DG triggers emitted: 133
+- deferred: 0
+- dangling: 15
+- unmapped: 17593
+- global permanent drops: 11
+- DG triggers emitted: 1461
+- DG trigger owners: 1295 (1705 links)
 
 ## Unmapped drops by reason
 
@@ -36,6 +37,7 @@
 | `shop_buy_word` | 53 |
 | `shop_profit_buy` | 1 |
 | `shop_record` | 238 |
+| `trigger_attach_type_mismatch` | 8 |
 | `zone_flag` | 164 |
 
 ## Dangling references by reason
@@ -47,14 +49,12 @@
 | `dangling_shop_keeper` | 4 |
 | `dangling_shop_produce` | 2 |
 | `dangling_shop_room` | 3 |
-| `dangling_trigger_attach` | 27 |
 | `duplicate_shop_keeper` | 2 |
 
 ## Deferred records by section
 
 | section | count |
 |---|---:|
-| `triggers` | 3027 |
 
 ## DG trigger triage (#15)
 
@@ -114,154 +114,268 @@
 | `Wear` | 22 |
 | `Zone Reset` | 10 |
 
-## DG trigger parse coverage (#15)
+## DG trigger attachments (#27)
 
-- emitted records: 133
-- parsed: 133
-- parse failures: 0
-- records with unsupported constructs: 44
+- owners: 1295
+- links: 1705
+  - `item`: 224
+  - `npc`: 799
+  - `room`: 682
+- zone-reset `T` folded into prototypes: 1 (0 already listed); deviation: the C attaches per instance at each reset
+- unattached triggers: 432
+- attach_type mismatches (kept, named drops): 8
+- `V` reset commands (named drops): 0
 
-### Emitted constructs
+## DG trigger corpus (#15)
 
-| construct | count |
+Counts describe the emitted scripts (colour codes stripped), so they can differ from a count over the raw `.trg` bodies.
+
+- emitted records: 1461
+- script lines: 26305
+- lines over the substitution limit: 0
+
+### Records by attach type
+
+| attach type | count |
 |---|---:|
-| `at.load` | 1 |
-| `break` | 29 |
-| `case` | 33 |
-| `damage` | 5 |
-| `default` | 3 |
-| `detach` | 1 |
-| `dg_cast` | 12 |
-| `done` | 9 |
-| `door` | 4 |
-| `echo` | 72 |
-| `echoaround` | 34 |
-| `else` | 62 |
-| `elseif` | 33 |
-| `emote` | 62 |
-| `eval` | 40 |
-| `force` | 3 |
-| `global` | 2 |
-| `halt` | 42 |
-| `if` | 224 |
-| `load.mob` | 4 |
-| `load.obj` | 97 |
-| `mkill` | 1 |
-| `nop` | 11 |
-| `purge` | 17 |
-| `rdelete` | 5 |
-| `remote` | 6 |
-| `return` | 31 |
-| `say` | 205 |
-| `send` | 52 |
-| `set` | 45 |
-| `switch` | 3 |
-| `teleport` | 5 |
-| `unset` | 1 |
-| `unsupported:at_command` | 3 |
-| `unsupported:beam` | 1 |
-| `unsupported:bow` | 3 |
-| `unsupported:cackle` | 1 |
-| `unsupported:chuckle` | 1 |
-| `unsupported:clap` | 1 |
-| `unsupported:close` | 3 |
-| `unsupported:d` | 1 |
-| `unsupported:dance` | 2 |
-| `unsupported:door_purge` | 1 |
-| `unsupported:drink` | 1 |
-| `unsupported:drop` | 2 |
-| `unsupported:em` | 1 |
-| `unsupported:extract` | 4 |
-| `unsupported:frown` | 2 |
-| `unsupported:gaze` | 1 |
-| `unsupported:give` | 34 |
-| `unsupported:glare` | 2 |
-| `unsupported:grin` | 2 |
-| `unsupported:growl` | 1 |
-| `unsupported:junk` | 2 |
-| `unsupported:lock` | 3 |
-| `unsupported:look` | 1 |
-| `unsupported:mfollow` | 1 |
-| `unsupported:mremember` | 1 |
-| `unsupported:ogle` | 1 |
-| `unsupported:open` | 3 |
-| `unsupported:pout` | 1 |
-| `unsupported:random.dir` | 4 |
-| `unsupported:roll` | 2 |
-| `unsupported:set_array` | 122 |
-| `unsupported:shake` | 2 |
-| `unsupported:sigh` | 3 |
-| `unsupported:sit` | 2 |
-| `unsupported:slap` | 1 |
-| `unsupported:sleep` | 1 |
-| `unsupported:smile` | 5 |
-| `unsupported:snarl` | 1 |
-| `unsupported:stand` | 3 |
-| `unsupported:tell` | 5 |
-| `unsupported:transform` | 1 |
-| `unsupported:unlock` | 1 |
-| `unsupported:up` | 1 |
-| `unsupported:wake` | 1 |
-| `unsupported:whisper` | 1 |
-| `unsupported:wink` | 1 |
-| `unsupported:yawn` | 2 |
-| `wait.sec` | 194 |
-| `wait.tick` | 2 |
-| `wait.until` | 2 |
-| `while` | 6 |
-| `zoneecho` | 4 |
+| `mob` | 795 |
+| `obj` | 282 |
+| `wld` | 384 |
 
-### Unsupported constructs (named drops)
+### Lines by class
 
-| construct | count |
+| class | count |
 |---|---:|
-| `at_command` | 3 |
-| `beam` | 1 |
-| `bow` | 3 |
-| `cackle` | 1 |
-| `chuckle` | 1 |
-| `clap` | 1 |
-| `close` | 3 |
-| `d` | 1 |
-| `dance` | 2 |
-| `door_purge` | 1 |
-| `drink` | 1 |
-| `drop` | 2 |
-| `em` | 1 |
-| `extract` | 4 |
-| `frown` | 2 |
-| `gaze` | 1 |
-| `give` | 34 |
-| `glare` | 2 |
-| `grin` | 2 |
-| `growl` | 1 |
-| `junk` | 2 |
-| `lock` | 3 |
-| `look` | 1 |
-| `mfollow` | 1 |
-| `mremember` | 1 |
-| `ogle` | 1 |
-| `open` | 3 |
-| `pout` | 1 |
-| `random.dir` | 4 |
-| `roll` | 2 |
-| `set_array` | 122 |
-| `shake` | 2 |
-| `sigh` | 3 |
-| `sit` | 2 |
-| `slap` | 1 |
-| `sleep` | 1 |
-| `smile` | 5 |
-| `snarl` | 1 |
-| `stand` | 3 |
-| `tell` | 5 |
-| `transform` | 1 |
-| `unlock` | 1 |
-| `up` | 1 |
-| `wake` | 1 |
-| `whisper` | 1 |
-| `wink` | 1 |
-| `yawn` | 2 |
+| `comment` | 1809 |
+| `control` | 8085 |
+| `dynamic_command` | 71 |
+| `magic` | 395 |
+| `mud_command` | 2668 |
+| `script_command` | 4985 |
+| `statement` | 8247 |
+| `unknown_command` | 45 |
+
+### Control lines
+
+| keyword | count |
+|---|---:|
+| `break` | 1195 |
+| `case` | 1509 |
+| `default` | 137 |
+| `done` | 286 |
+| `else` | 723 |
+| `elseif` | 454 |
+| `end` | 1745 |
+| `if` | 1749 |
+| `switch` | 161 |
+| `while` | 126 |
+
+### Statements
+
+| statement | count |
+|---|---:|
+| `attach` | 14 |
+| `context` | 13 |
+| `detach` | 26 |
+| `dg_affect` | 59 |
+| `dg_cast` | 336 |
+| `eval` | 1073 |
+| `extract` | 18 |
+| `global` | 338 |
+| `halt` | 168 |
+| `makeuid` | 2 |
+| `nop` | 106 |
+| `rdelete` | 135 |
+| `remote` | 178 |
+| `return` | 360 |
+| `set` | 3845 |
+| `unset` | 38 |
+| `wait` | 1933 |
+
+### `wait` forms
+
+| form | count |
+|---|---:|
+| `dynamic` | 3 |
+| `pulses` | 179 |
+| `seconds` | 1706 |
+| `ticks` | 3 |
+| `until` | 42 |
+
+### Script commands (top 15 of 46)
+
+| command | count |
+|---|---:|
+| `osend` | 637 |
+| `wecho` | 621 |
+| `mecho` | 430 |
+| `wsend` | 382 |
+| `mload` | 379 |
+| `wdoor` | 290 |
+| `msend` | 279 |
+| `oechoaround` | 226 |
+| `oecho` | 203 |
+| `wechoaround` | 163 |
+| `mechoaround` | 142 |
+| `oforce` | 102 |
+| `wload` | 95 |
+| `mpurge` | 94 |
+| `opurge` | 94 |
+
+### Structural errors
+
+30 errors in 15 scripts.
+
+| trigger | errors |
+|---:|---|
+| 1106 | line 8: 'switch' without 'done'; line 9: 'else' without 'if'; line 10: 'switch' without 'done'; line 11: 'else' without 'if'; line 12: 'switch' without 'done'; line 13: 'else' without 'if'; line 14: 'switch' without 'done'; line 55: 'done' without 'while'; line 56: 'done' without 'while'; line 57: 'done' without 'while'; line 58: 'done' without 'while' |
+| 1133 | line 9: 'if' without 'end'; line 105: 'else' without 'if'; line 107: 'end' without 'if' |
+| 1292 | line 2: 'while' without 'done' |
+| 1324 | line 18: 'if' without 'end' |
+| 1338 | line 1: 'if' without 'end' |
+| 1385 | line 1: 'if' without 'end'; line 3: 'if' without 'end' |
+| 1939 | line 1: 'if' without 'end' |
+| 1959 | line 11: 'done' without 'while' |
+| 2737 | line 1: 'if' without 'end' |
+| 4601 | line 8: 'else' without 'if'; line 10: 'end' without 'if' |
+| 8315 | line 7: 'end' without 'if' |
+| 13005 | line 184: 'done' without 'while' |
+| 21101 | line 4: 'switch' without 'done'; line 29: 'end' without 'if' |
+| 34302 | line 3: 'switch' without 'done' |
+| 55513 | line 2: 'if' without 'end' |
+
+### Unknown object commands (top 14 of 14 words)
+
+| word | lines | triggers |
+|---|---:|---|
+| `load` | 3 | 11712 |
+| `"kamehameha!!!!"` | 1 | 10330 |
+| `adjust,` | 1 | 10308 |
+| `and` | 1 | 10330 |
+| `blinded` | 1 | 10308 |
+| `down.` | 1 | 11837 |
+| `great` | 1 | 313 |
+| `honorable` | 1 | 313 |
+| `ki` | 1 | 10330 |
+| `light` | 1 | 10308 |
+| `say` | 1 | 5794 |
+| `sending` | 1 | 10330 |
+| `those` | 1 | 313 |
+| `you,` | 1 | 10308 |
+
+### Unknown world commands (top 15 of 24 words)
+
+| word | lines | triggers |
+|---|---:|---|
+| `awakend` | 2 | 10362, 10364 |
+| `much` | 2 | 1425 |
+| `tobacco,` | 2 | 1425 |
+| `tobacco.` | 2 | 1425 |
+| `trigger` | 2 | 26 |
+| `%send%` | 1 | 332 |
+| `and` | 1 | 1425 |
+| `batch` | 1 | 1425 |
+| `but` | 1 | 1425 |
+| `commands:` | 1 | 26 |
+| `excellent` | 1 | 1425 |
+| `flavor.` | 1 | 1425 |
+| `for` | 1 | 1425 |
+| `funny` | 1 | 1425 |
+| `matches` | 1 | 1425 |
+
+### Dynamic commands (top 15 of 17 words)
+
+| word | lines | triggers |
+|---|---:|---|
+| `%snd%` | 26 | 1212 |
+| `%look%` | 10 | 23606 |
+| `%random.dir%` | 7 | 41, 174 |
+| `%answer_no%` | 4 | 1298 |
+| `%answer_yes%` | 4 | 1298 |
+| `%passdown%` | 4 | 23606 |
+| `%passup%` | 4 | 23606 |
+| `%echoround%` | 2 | 62, 65 |
+| `%kill%` | 2 | 23701, 23702 |
+| `%actor.class(cleric)%` | 1 | 1137 |
+| `%actor.hisher%` | 1 | 10308 |
+| `%answer_reward%` | 1 | 1298 |
+| `%context%` | 1 | 11852 |
+| `%echaround%` | 1 | 10410 |
+| `%speech%` | 1 | 11836 |
+
+### Mob commands for the game (2668 lines)
+
+Supported words: 42; unsupported words: 94 (top 15 below).
+
+| unsupported word | count |
+|---|---:|
+| `smile` | 38 |
+| `nod` | 11 |
+| `bow` | 8 |
+| `yawn` | 8 |
+| `dance` | 6 |
+| `hug` | 6 |
+| `sigh` | 6 |
+| `growl` | 5 |
+| `kiss` | 5 |
+| `s` | 5 |
+| `wink` | 5 |
+| `chuckle` | 4 |
+| `clap` | 4 |
+| `damage` | 4 |
+| `fol` | 4 |
+
+### Substitution fields (5545 references)
+
+A name that several tables know is counted in each of them.
+
+| table | distinct names | references |
+|---|---:|---:|
+| text function | 7 | 443 |
+| character | 57 | 4393 |
+| object | 24 | 3356 |
+| room | 14 | 2730 |
+| unknown or global | 34 | 83 |
+
+Unknown or global names (top 15 of 34):
+
+| name | count |
+|---|---:|
+| `tba_trial_vnum` | 20 |
+| `roomstocheck` | 13 |
+| `8^` | 6 |
+| `on_quest_zone_1` | 4 |
+| `zn118_knifestart` | 3 |
+| `age` | 2 |
+| `originset` | 2 |
+| `remotes` | 2 |
+| `set_life_counter` | 2 |
+| `teleporter_return_room` | 2 |
+| `zn118_a` | 2 |
+| `zn118_scarredquest` | 2 |
+| `zn118_tunnelquest` | 2 |
+| `6^` | 1 |
+| `catched` | 1 |
+
+### Variables read but never provided or assigned (top 15 of 166 names)
+
+| variable | count |
+|---|---:|
+| `cardpos` | 25 |
+| `llc` | 7 |
+| `lmc` | 7 |
+| `lrc` | 7 |
+| `mlc` | 7 |
+| `mmc` | 7 |
+| `mrc` | 7 |
+| `ulc` | 7 |
+| `umc` | 7 |
+| `urc` | 7 |
+| `reader1` | 6 |
+| `1999_age` | 5 |
+| `1999_recip` | 5 |
+| `reader2` | 4 |
+| `points` | 3 |
 
 ## Global permanent drops
 
@@ -273,5 +387,6 @@
 - `combat_skill` / `rescue`: Circle class ability `rescue`; implemented as tba pack gameplay (issue #25), not lost by conversion
 - `no_source_field` / `room coord`: tbaMUD `struct room_data` has no coordinates; `RoomDef::coord` is always `None`
 - `out_of_scope` / `lib/misc/socials`: legacy old-format social file; `CONFIG_NEW_SOCIALS` is YES, so the run-time reads `lib/misc/socials.new` (issue #17)
-- `out_of_scope` / `lib/text/help`: legacy `help.hlp` database; the generated command catalog plus the converted `lib/text` and `lib/misc/messages` topics supersede it (issue #18)
+- `out_of_scope` / `lib/text/credits`: the credit text is served by the engine's `credits` command from the pack's hand-authored `stdlib.credits` section (MIB #22), not as a help topic: a topic id equal to a command name is unreachable
+- `out_of_scope` / `lib/text/help`: legacy `help.hlp` database; the generated command catalog plus the converted `lib/text` and `lib/misc/messages` topics supersede it, except its `CIRCLEMUD` entry, which is preserved as the `circlemud` topic for the CircleMUD licence (issue #18)
 - `social_code` / `$i`: tbaMUD `perform_act` has no `$i` case; the code is preserved in `tba.socials` and expands to nothing at run time

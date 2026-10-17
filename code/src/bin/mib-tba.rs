@@ -49,6 +49,20 @@ fn default_packs() -> Vec<PathBuf> {
     vec![engine_stdlib, repo_root]
 }
 
+/// The login banner shown at session open.
+///
+/// The CircleMUD and DikuMUD licences require their creators to be named in the
+/// login sequence; the session MOTD (`game.motd`) is this pack's surface for
+/// that. The full credits and the `CIRCLEMUD` help entry are served by the
+/// converted `credits` and `circlemud` help topics (see `NOTICE`).
+fn login_banner() -> String {
+    "MIB — The Builder Academy (tbaMUD)\n\
+     Based on CircleMUD by Jeremy Elson and DikuMUD by Sebastian Hammer, \
+     Michael Seifert, Hans Henrik Staerfeldt, Tom Madsen and Katja Nyboe.\n\
+     Type 'help circlemud' or 'help credits' for the full credits."
+        .to_owned()
+}
+
 /// One offline operation. `Run` is the default when the operator gives no
 /// command (matching `mib-server`).
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -345,6 +359,19 @@ fn main() -> Result<(), Box<dyn Error>> {
         .map(|root| root.to_string_lossy().into_owned())
         .collect();
 
+    // The CircleMUD/DikuMUD licences require their creators to be named in the
+    // login sequence; an operator's own `game.motd` wins.
+    if cfg
+        .game
+        .motd
+        .as_deref()
+        .map(str::trim)
+        .unwrap_or("")
+        .is_empty()
+    {
+        cfg.game.motd = Some(login_banner());
+    }
+
     match args.command.unwrap_or(Command::Run) {
         Command::Run => Ok(ServerBuilder::new(cfg)
             .with_catalog(module_catalog())
@@ -384,6 +411,21 @@ mod tests {
 
     fn parse(argv: &[&str]) -> Result<Args, String> {
         parse_args_from(argv.iter().copied())
+    }
+
+    #[test]
+    fn the_login_banner_names_the_upstream_creators() {
+        let banner = login_banner();
+        for name in [
+            "Jeremy Elson",
+            "Sebastian Hammer",
+            "Michael Seifert",
+            "Hans Henrik Staerfeldt",
+            "Tom Madsen",
+            "Katja Nyboe",
+        ] {
+            assert!(banner.contains(name), "the banner names {name}");
+        }
     }
 
     #[test]

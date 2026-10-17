@@ -38,6 +38,7 @@ use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{Room, RoomState, RoomTag, Session, SessionState};
 
 use crate::combat::commands::text;
+use crate::dg::intake::commands::{DgClaimed, is_claimed};
 use crate::items::TbaObjectClock;
 
 /// Circle's `weekdays` (`tbamud/src/constants.c:827`), indexed by
@@ -110,6 +111,7 @@ pub fn time_report(clock: &TbaObjectClock) -> String {
 /// `Update` in `BridgeSet::Game`: answer a raw `time` line from the clock.
 pub fn handle_time_command(
     mut reader: MessageReader<CommandReceived>,
+    claimed: Option<Res<DgClaimed>>,
     sessions: Query<&Session>,
     clock: Option<Res<TbaObjectClock>>,
     mut output: MessageWriter<OutputEvent>,
@@ -123,6 +125,9 @@ pub fn handle_time_command(
             .map(|session| session.state == SessionState::Playing)
             .unwrap_or(false);
         if !playing {
+            continue;
+        }
+        if is_claimed(claimed.as_deref(), msg.id) {
             continue;
         }
         let PlayerInput::RawLine(line) = &msg.input else {

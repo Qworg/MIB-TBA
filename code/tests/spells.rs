@@ -253,10 +253,6 @@ fn test_app() -> App {
     app.insert_resource(content());
     app.insert_resource(TbaRng::from_seed(0xC0FFEE));
     app.init_resource::<VisibilityPolicy>();
-    // The cast path now carries a trigger runtime (a `cast` record can negate).
-    app.init_resource::<TriggerTimers>();
-    app.init_resource::<PendingTriggerOps>();
-    app.init_resource::<TriggerDropLog>();
     app.add_message::<OutputEvent>();
     app.add_message::<CommandReceived>();
     app.add_message::<PlayerDefeated>();
@@ -1047,55 +1043,4 @@ fn mag_savingthrow_honours_the_roll_and_the_modifier() {
         &saves,
         SaveType::Spell
     ));
-}
-
-/// A `cast` record attached to the victim runs before the effect and a
-/// `return 0` negates the spell (DG's `cast_mtrigger` shield hook).
-#[test]
-fn a_cast_trigger_can_negate_a_spell() {
-    use mib_tba::triggers::content::{TriggerDef, TriggerId};
-    use mib_tba::triggers::index::TbaTriggers;
-
-    let mut app = test_app();
-    let room = spawn_room(&mut app);
-    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
-    let mut shielded = fallback_combatant();
-    shielded.hp = 100;
-    shielded.max_hp = 100;
-    let target = app
-        .world_mut()
-        .spawn((
-            Npc {
-                name: "the shielded mage".to_owned(),
-                persona: String::new(),
-            },
-            NpcKey(NpcId::from("tba_npc_146")),
-            Location { room },
-            shielded,
-        ))
-        .id();
-
-    let mut defs = BTreeMap::new();
-    defs.insert(
-        TriggerId::from_vnum(76),
-        TriggerDef {
-            vnum: 76,
-            name: "shield".to_owned(),
-            attach: "npc:tba_npc_146".to_owned(),
-            types: vec!["cast".to_owned()],
-            narg: 100,
-            arglist: String::new(),
-            script: "if %spellname% == magic missile\nreturn 0\nend\n".to_owned(),
-        },
-    );
-    app.insert_resource(TbaTriggers::build(defs));
-
-    cast(&mut app, player, "cast 'magic missile' shielded");
-    run_game(&mut app);
-
-    assert_eq!(
-        combatant_of(&app, target).hp,
-        100,
-        "the shield record negated the spell"
-    );
 }

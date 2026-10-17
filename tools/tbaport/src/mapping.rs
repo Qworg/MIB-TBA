@@ -8,6 +8,8 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
+use dg_vm::analyze::{Corpus, analyze};
+use dg_vm::types::AttachType;
 use mib_content::prelude::SmolStr;
 use mib_stdlib::content::{
     AreaDef, ContainerDef, DoorDef, ExitDef, ExtraDescDef, ItemDef, ItemId, ItemTag,
@@ -20,19 +22,20 @@ use mib_tba::content::{
     ResetMode, ShopDef, ShopHours, ShopTrade, SocialDef, TbaItemDef, TbaItemKind, TbaNpcStats,
     WearSlot, ZoneCommand, ZoneCommandKind, ZoneDef,
 };
-use mib_tba::triggers::ast::parse_script;
 use mib_tba::triggers::content::{TriggerDef, TriggerId, TriggersFile};
-use mib_tba::triggers::context::unknown_tokens_excluding;
+
+mod attach;
 
 use crate::emit::OutputBundle;
 use crate::error::{ConvertError, Result};
 use crate::ids;
 use crate::report::{
-    CommandFlag, DanglingRef, DeferredEntry, DropReport, GlobalDrop, REPORT_SCHEMA, SourceFiles,
-    Totals, TriggerCoverage, TriggerTriage, TriggerTriageRecord, UnmappedFlag, ZoneReport,
+    CommandFlag, DanglingRef, DropReport, GlobalDrop, REPORT_SCHEMA, SourceFiles, Totals,
+    TriggerAttachments, TriggerCoverage, TriggerTriage, TriggerTriageRecord, UnmappedFlag,
+    ZoneReport,
 };
 use crate::source::{
-    deferred::{DeferredRecord, TriggerRecord, scan_triggers},
+    deferred::{TriggerRecord, scan_triggers},
     mob::RawMob,
     obj::RawObj,
     parse_mobs, parse_objs, parse_rooms,
@@ -40,7 +43,7 @@ use crate::source::{
     room::RawRoom,
     shop::{RawShop, parse_shops},
     social::{RawSocial, parse_socials},
-    text::{load_message_topics, load_text_topics},
+    text::{load_circle_help, load_message_topics, load_text_topics},
     tokens::Source,
     zone::{RawZone, parse_zone},
 };
@@ -273,13 +276,11 @@ struct TriggerOwner {
     label: String,
     /// The zone used for the demo/essential check (the triage's `owner_zones`).
     zone: u32,
-    /// The entity to attach to, when the source reference resolves to one.
-    attach: Option<AttachCandidate>,
 }
 
-/// Collect every trigger attachment. The `zone` field deliberately matches the
-/// triage (`build_triage`) so the curated essential set cannot drift; `attach`
-/// is the richer target the converter resolves for `tba.triggers`.
+/// Collect every trigger attachment for the triage. The `zone` field is the
+/// triage's `owner_zones`, so the curated essential set cannot drift. Which
+/// entity a trigger really lands on is [`attach`]'s job.
 fn collect_trigger_owners(sources: &[ZoneSource]) -> BTreeMap<i32, Vec<TriggerOwner>> {
     let mut owners: BTreeMap<i32, Vec<TriggerOwner>> = BTreeMap::new();
     for source in sources {
@@ -288,7 +289,6 @@ fn collect_trigger_owners(sources: &[ZoneSource]) -> BTreeMap<i32, Vec<TriggerOw
                 owners.entry(*trigger).or_default().push(TriggerOwner {
                     label: AttachCandidate::Npc(mob.vnum).label(),
                     zone: crate::triage::vnum_zone(mob.vnum),
-                    attach: Some(AttachCandidate::Npc(mob.vnum)),
                 });
             }
         }
@@ -297,7 +297,6 @@ fn collect_trigger_owners(sources: &[ZoneSource]) -> BTreeMap<i32, Vec<TriggerOw
                 owners.entry(*trigger).or_default().push(TriggerOwner {
                     label: AttachCandidate::Item(obj.vnum).label(),
                     zone: crate::triage::vnum_zone(obj.vnum),
-                    attach: Some(AttachCandidate::Item(obj.vnum)),
                 });
             }
         }
@@ -306,34 +305,16 @@ fn collect_trigger_owners(sources: &[ZoneSource]) -> BTreeMap<i32, Vec<TriggerOw
                 owners.entry(*trigger).or_default().push(TriggerOwner {
                     label: AttachCandidate::Room(room.vnum).label(),
                     zone: crate::triage::vnum_zone(room.vnum),
-                    attach: Some(AttachCandidate::Room(room.vnum)),
                 });
             }
         }
-        // Zone-reset `T` commands attach to the last-loaded mob (`arg1 == 0`),
-        // the last-loaded object (`1`), or the named room (`2`). The triage
-        // zone stays the reset zone; only the attach target is resolved.
-        let mut last_mob: Option<i32> = None;
-        let mut last_obj: Option<i32> = None;
-        for command in &source.zone.commands {
-            match command.code {
-                'M' => last_mob = Some(command.arg1),
-                'O' => last_obj = Some(command.arg1),
-                'T' => {
-                    let attach = match command.arg1 {
-                        0 => last_mob.map(AttachCandidate::Npc),
-                        1 => last_obj.map(AttachCandidate::Item),
-                        2 => Some(AttachCandidate::Room(command.arg3)),
-                        _ => None,
-                    };
-                    owners.entry(command.arg2).or_default().push(TriggerOwner {
-                        label: format!("zone tba_{} reset", source.number),
-                        zone: source.number,
-                        attach,
-                    });
-                }
-                _ => {}
-            }
+        // Zone-reset `T` commands count as owners under the reset zone,
+        // whether or not their target resolves.
+        for command in source.zone.commands.iter().filter(|c| c.code == 'T') {
+            owners.entry(command.arg2).or_default().push(TriggerOwner {
+                label: format!("zone tba_{} reset", source.number),
+                zone: source.number,
+            });
         }
     }
     for list in owners.values_mut() {
@@ -367,7 +348,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         .iter()
         .flat_map(|s| s.objs.iter().map(|o| ids::item_id(o.vnum)))
         .collect();
-    let owners = collect_trigger_owners(&sources);
+    let trigger_kinds = trigger_attach_types(&sources);
 
     // Phase 2: map.
     let mut bundle = OutputBundle::empty();
@@ -389,6 +370,8 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
             unmapped: Vec::new(),
             command_flags: Vec::new(),
             triggers: Vec::new(),
+            trigger_variables: Vec::new(),
+            zone_trigger_links: Vec::new(),
         };
 
         bundle.areas.areas.insert(
@@ -447,21 +430,9 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         zr.items = source.objs.len();
         zr.commands = zone_def_kept(&bundle, source.number);
 
-        let emitted = map_triggers(
-            source,
-            &owners,
-            &room_ids,
-            &npc_ids,
-            &item_ids,
-            &mut bundle,
-            &mut zr,
-        );
-        add_trigger_records(
-            &mut zr,
-            &source.triggers,
-            &emitted,
-            "non-essential DG trigger; Phase 1 emits only the essential interactivity set",
-        );
+        map_triggers(source, &mut bundle);
+        attach::attach_prototype_lines(source, &trigger_kinds, &mut bundle, &mut zr);
+        add_trigger_records(&mut zr, &source.triggers);
         for raw in &source.quests {
             if let Some((quest_id, quest)) = map_quest(raw, &room_ids, &npc_ids, &item_ids, &mut zr)
             {
@@ -470,6 +441,41 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         }
 
         zones.push(zr);
+    }
+
+    // Zone-reset `T` commands fold into the prototype lists only after every
+    // zone's own `T` lines are in, so a folded trigger always follows the
+    // target's own lines even when the target lives in another zone.
+    let entities = attach::Entities {
+        rooms: &room_ids,
+        npcs: &npc_ids,
+        items: &item_ids,
+        triggers: &trigger_kinds,
+        zones: sources
+            .iter()
+            .flat_map(|source| {
+                let owners = source
+                    .mobs
+                    .iter()
+                    .map(|mob| AttachCandidate::Npc(mob.vnum))
+                    .chain(
+                        source
+                            .objs
+                            .iter()
+                            .map(|obj| AttachCandidate::Item(obj.vnum)),
+                    )
+                    .chain(
+                        source
+                            .rooms
+                            .iter()
+                            .map(|room| AttachCandidate::Room(room.vnum)),
+                    );
+                owners.map(|owner| (owner, source.number))
+            })
+            .collect(),
+    };
+    for (source, zr) in sources.iter().zip(zones.iter_mut()) {
+        attach::fold_reset_scripts(source, &entities, &mut bundle, zr);
     }
 
     // The death penalty's gold prototype is a genre rule, not a world object:
@@ -492,6 +498,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         .filter(|vnum| bundle.rooms.rooms.contains_key(&ids::room_id(*vnum as i32)));
 
     let trigger_coverage = trigger_coverage(&bundle.triggers);
+    let trigger_attachments = summarise_attachments(&bundle.triggers);
 
     let mut report = DropReport {
         schema: REPORT_SCHEMA,
@@ -508,6 +515,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
         global_drops: drops,
         trigger_triage: TriggerTriage::default(),
         trigger_coverage,
+        trigger_attachments,
         totals: Totals::default(),
         zones,
     };
@@ -696,10 +704,19 @@ fn global_drops() -> Vec<GlobalDrop> {
     });
     drops.push(GlobalDrop {
         kind: "out_of_scope".to_owned(),
+        name: "lib/text/credits".to_owned(),
+        reason: "the credit text is served by the engine's `credits` command from the \
+                 pack's hand-authored `stdlib.credits` section (MIB #22), not as a help \
+                 topic: a topic id equal to a command name is unreachable"
+            .to_owned(),
+    });
+    drops.push(GlobalDrop {
+        kind: "out_of_scope".to_owned(),
         name: "lib/text/help".to_owned(),
         reason: "legacy `help.hlp` database; the generated command catalog plus the \
-                 converted `lib/text` and `lib/misc/messages` topics supersede it \
-                 (issue #18)"
+                 converted `lib/text` and `lib/misc/messages` topics supersede it, \
+                 except its `CIRCLEMUD` entry, which is preserved as the `circlemud` \
+                 topic for the CircleMUD licence (issue #18)"
             .to_owned(),
     });
     drops
@@ -961,8 +978,6 @@ fn map_room(
         })
         .collect();
 
-    add_trigger_attachments(zr, "world", &object, &raw.trigger_vnums);
-
     RoomDef {
         area: ids::area_id(zr.number),
         name: raw.name.clone(),
@@ -1168,8 +1183,6 @@ fn map_npc(raw: &RawMob, zr: &mut ZoneReport) -> (NpcDef, TbaNpcStats) {
         "permanent drop: stdlib.npcs has no keyword list",
     );
 
-    add_trigger_attachments(zr, "mob", &object, &raw.trigger_vnums);
-
     // MOB_AWARE (bit 4) is already mapped above.
 
     let persona = join_persona(&raw.long_descr, &raw.description);
@@ -1255,8 +1268,6 @@ fn map_item(raw: &RawObj, zr: &mut ZoneReport) -> (ItemDef, TbaItemDef) {
             "permanent drop: stdlib.items has no extra-description field",
         );
     }
-
-    add_trigger_attachments(zr, "object", &object, &raw.trigger_vnums);
 
     let cost = raw.cost.max(0) as u32;
     let item = ItemDef {
@@ -1722,36 +1733,9 @@ fn map_zone(
                     ZoneCommandKind::RemoveItem { room, item },
                 ));
             }
-            'T' => {
-                let attach = match command.arg1 {
-                    0 => "mob",
-                    1 => "object",
-                    2 => "world",
-                    _ => "unknown",
-                };
-                add_deferred(
-                    zr,
-                    "triggers",
-                    &[DeferredRecord {
-                        vnum: command.arg2,
-                        attach: attach.to_owned(),
-                        detail: format!("zone {} reset T", raw.number),
-                    }],
-                    "DG scripts are deferred (doc §10)",
-                );
-            }
-            'V' => {
-                add_deferred(
-                    zr,
-                    "trigger_variables",
-                    &[DeferredRecord {
-                        vnum: command.arg1,
-                        attach: "world".to_owned(),
-                        detail: format!("zone {} reset V", raw.number),
-                    }],
-                    "DG trigger variables are deferred (doc §10)",
-                );
-            }
+            // `T` and `V` attach scripts to a mob, object or room rather than
+            // reset the world; `attach::fold_reset_scripts` handles them.
+            'T' | 'V' => {}
             other => push_unmapped(
                 zr,
                 &from,
@@ -2201,9 +2185,17 @@ fn record_quest_conditions(raw: &RawQuest, label: &str, zr: &mut ZoneReport) {
 // Help topics + socials (world-global)
 // ---------------------------------------------------------------------------
 
-/// Load `lib/text/*` and `lib/misc/messages` into `stdlib.help` topics.
+/// Load `lib/text/*`, the `CIRCLEMUD` entry of `lib/text/help/help.hlp`, and
+/// `lib/misc/messages` into `stdlib.help` topics.
 fn load_help(source_root: &Path, bundle: &mut OutputBundle) -> Result<()> {
-    for (id, topic) in load_text_topics(&source_root.join("lib/text"))? {
+    let text_dir = source_root.join("lib/text");
+    for (id, topic) in load_text_topics(&text_dir)? {
+        bundle.help.topics.insert(SmolStr::new(id), topic);
+    }
+    // The CircleMUD licence requires the `CIRCLEMUD` entry to be maintained
+    // intact and shown for `help circlemud`, so it is kept even though the rest
+    // of the legacy `help.hlp` database is dropped.
+    if let Some((id, topic)) = load_circle_help(&text_dir)? {
         bundle.help.topics.insert(SmolStr::new(id), topic);
     }
     for (id, topic) in load_message_topics(&source_root.join("lib/misc/messages"))? {
@@ -2300,38 +2292,12 @@ fn map_social(raw: &RawSocial) -> SocialDef {
 // Helpers
 // ---------------------------------------------------------------------------
 
-fn add_deferred(zr: &mut ZoneReport, section: &str, records: &[DeferredRecord], reason: &str) {
+/// Record the structured triage record of every `.trg` record in the zone, so
+/// the per-zone `triggers[]` itemises the whole corpus. Every record is also
+/// emitted into `tba.triggers` ([`map_triggers`]); the triage is a priority
+/// ranking, not a filter.
+fn add_trigger_records(zr: &mut ZoneReport, records: &[TriggerRecord]) {
     for record in records {
-        zr.deferred.push(DeferredEntry {
-            section: section.to_owned(),
-            vnum: record.vnum,
-            attach: record.attach.clone(),
-            detail: record.detail.clone(),
-            reason: reason.to_owned(),
-        });
-    }
-}
-
-/// Record the classified `.trg` layer: a deferred entry per trigger that is
-/// **not** emitted into `tba.triggers` (so the drop report still itemises
-/// exactly what is not yet runnable) plus the structured triage record that
-/// makes the Phase-2 scope regenerable.
-fn add_trigger_records(
-    zr: &mut ZoneReport,
-    records: &[TriggerRecord],
-    emitted: &BTreeSet<i32>,
-    reason: &str,
-) {
-    for record in records {
-        if !emitted.contains(&record.vnum) {
-            zr.deferred.push(DeferredEntry {
-                section: "triggers".to_owned(),
-                vnum: record.vnum,
-                attach: record.attach.clone(),
-                detail: record.name.clone(),
-                reason: reason.to_owned(),
-            });
-        }
         zr.triggers.push(TriggerTriageRecord {
             vnum: record.vnum,
             name: record.name.clone(),
@@ -2346,64 +2312,37 @@ fn add_trigger_records(
     }
 }
 
-/// Emit the essential interactivity set into `tba.triggers` for one zone.
+/// Every loaded trigger vnum with its `attach_type` (0 mob, 1 object, 2
+/// world). `dg_read_trigger` skips a `T` line whose vnum is not in this set.
+fn trigger_attach_types(sources: &[ZoneSource]) -> BTreeMap<i32, i32> {
+    sources
+        .iter()
+        .flat_map(|source| &source.triggers)
+        .map(|trigger| (trigger.vnum, trigger.attach_type))
+        .collect()
+}
+
+/// The `attach_type` field spelling in `tba.triggers`.
+fn attach_type_name(attach_type: i32) -> &'static str {
+    match attach_type {
+        0 => "mob",
+        1 => "obj",
+        2 => "wld",
+        _ => "",
+    }
+}
+
+/// Emit every trigger record of one zone into `tba.triggers`.
 ///
-/// Essentiality is exactly the triage's rule (demo zone or demo-zone owner +
-/// [`crate::triage::is_essential`]); the attach is resolved from the `T`
-/// attachments, preferring an entity that actually exists in the converted
-/// world. A trigger with no resolvable attach is still emitted (so its script
-/// parses and its coverage is counted) with an empty `attach` and a named
-/// `dangling_trigger_attach` drop.
-fn map_triggers(
-    source: &ZoneSource,
-    owners: &BTreeMap<i32, Vec<TriggerOwner>>,
-    rooms: &BTreeSet<RoomId>,
-    npcs: &BTreeSet<NpcId>,
-    items: &BTreeSet<ItemId>,
-    bundle: &mut OutputBundle,
-    zr: &mut ZoneReport,
-) -> BTreeSet<i32> {
-    let mut emitted = BTreeSet::new();
+/// Which triggers an entity carries, and in what order, is the attachment
+/// lists ([`attach`]).
+fn map_triggers(source: &ZoneSource, bundle: &mut OutputBundle) {
     for trigger in &source.triggers {
-        let owner_entries = owners.get(&trigger.vnum).cloned().unwrap_or_default();
-        let owner_zones: BTreeSet<u32> = owner_entries.iter().map(|owner| owner.zone).collect();
-        let in_demo = crate::triage::is_demo_zone(source.number)
-            || owner_zones
-                .iter()
-                .any(|zone| crate::triage::is_demo_zone(*zone));
-        if !(in_demo
-            && crate::triage::is_essential(trigger.bucket, &trigger.attach, &trigger.types))
-        {
-            continue;
-        }
-        let resolved = owner_entries
-            .iter()
-            .filter_map(|owner| owner.attach)
-            .find(|candidate| match candidate {
-                AttachCandidate::Npc(vnum) => npcs.contains(&ids::npc_id(*vnum)),
-                AttachCandidate::Item(vnum) => items.contains(&ids::item_id(*vnum)),
-                AttachCandidate::Room(vnum) => rooms.contains(&ids::room_id(*vnum)),
-            });
-        let attach = match resolved {
-            Some(candidate) => candidate.attach(),
-            None => {
-                let labels: Vec<String> = owner_entries
-                    .iter()
-                    .map(|owner| owner.label.clone())
-                    .collect();
-                push_dangling(
-                    zr,
-                    "dangling_trigger_attach",
-                    &format!("trigger {} ({})", trigger.vnum, trigger.name),
-                    &labels.join(", "),
-                );
-                String::new()
-            }
-        };
         let def = TriggerDef {
             vnum: trigger.vnum,
             name: trigger.name.clone(),
-            attach,
+            attach_type: attach_type_name(trigger.attach_type).to_owned(),
+            flags: trigger.flags.clone(),
             types: trigger
                 .types
                 .iter()
@@ -2417,55 +2356,62 @@ fn map_triggers(
             .triggers
             .triggers
             .insert(TriggerId::from_vnum(trigger.vnum), def);
-        emitted.insert(trigger.vnum);
     }
-    emitted
 }
 
-/// Parse coverage for the emitted essential scripts (Phase 1 acceptance: per
-/// construct and per record).
+/// The corpus coverage of every emitted script, from `dg_vm::analyze`.
+///
+/// Each script is analysed as the owner type its record was authored for. The
+/// game's supported mob command words come from the NPC command interpreter's
+/// `cmd_info[]` table (`mib_tba::dg::mobcmd`), so a mob line is unsupported
+/// only when the interpreter does not model its first word (or does not
+/// recognize it at all).
 fn trigger_coverage(triggers: &TriggersFile) -> TriggerCoverage {
-    let mut coverage = TriggerCoverage::default();
+    let mut corpus = Corpus::default();
+    let mut by_attach_type: BTreeMap<String, usize> = BTreeMap::new();
     for def in triggers.triggers.values() {
-        coverage.records += 1;
-        let program = parse_script(&def.script);
-        if program.error.is_some() {
-            coverage.parse_failures += 1;
-        } else {
-            coverage.parsed += 1;
-        }
-        if !program.unsupported.is_empty() {
-            coverage.records_with_unsupported += 1;
-        }
-        for (kind, count) in &program.constructs {
-            *coverage.construct_counts.entry(kind.clone()).or_default() += count;
-        }
-        for (kind, count) in &program.unsupported {
-            *coverage.unsupported_counts.entry(kind.clone()).or_default() += count;
-        }
-        for (token, count) in unknown_tokens_excluding(&program.referenced_text(), &program.vars) {
-            *coverage.unknown_tokens.entry(token).or_default() += count;
-        }
+        *by_attach_type.entry(def.attach_type.clone()).or_default() += 1;
+        // A record of no known owner type is analysed as a room script so its
+        // lines are in the totals; its record count stays under the empty
+        // attach type.
+        let attach = match def.attach_type.as_str() {
+            "mob" => AttachType::Mob,
+            "obj" => AttachType::Obj,
+            _ => AttachType::Wld,
+        };
+        corpus.add(def.vnum, &analyze(&def.script, attach));
     }
+    let supported = mib_tba::dg::mobcmd::supported_mob_words();
+    let mut coverage = TriggerCoverage::from_corpus(&corpus, by_attach_type, &supported);
+    coverage.records = triggers.triggers.len();
     coverage
 }
 
-/// Record the `T <vnum>` trigger attachments that follow a `.wld`/`.mob`/`.obj`
-/// record. They are part of the deferred DG layer (#15) and would otherwise be
-/// a silent drop.
-fn add_trigger_attachments(zr: &mut ZoneReport, attach: &str, owner: &str, vnums: &[i32]) {
-    for vnum in vnums {
-        add_deferred(
-            zr,
-            "triggers",
-            &[DeferredRecord {
-                vnum: *vnum,
-                attach: attach.to_owned(),
-                detail: format!("{owner} attachment"),
-            }],
-            "DG scripts are deferred (doc §10)",
-        );
+/// The attachment roll-up of the emitted lists. The mismatch, variable and
+/// zone-reset counts come from the zone reports ([`DropReport::finalise`]).
+fn summarise_attachments(triggers: &TriggersFile) -> TriggerAttachments {
+    let mut summary = TriggerAttachments {
+        owners: triggers.attachments.len(),
+        ..TriggerAttachments::default()
+    };
+    let mut attached: BTreeSet<&TriggerId> = BTreeSet::new();
+    for (owner, list) in &triggers.attachments {
+        summary.links += list.len();
+        *summary
+            .links_by_owner_kind
+            .entry(attach::owner_kind(owner).to_owned())
+            .or_default() += list.len();
+        attached.extend(list);
     }
+    summary.unattached = triggers
+        .triggers
+        .iter()
+        .filter(|(id, _)| !attached.contains(id))
+        .map(|(_, def)| def.vnum)
+        .collect();
+    summary.unattached.sort_unstable();
+    summary.unattached_triggers = summary.unattached.len();
+    summary
 }
 
 fn push_dangling(zr: &mut ZoneReport, kind: &str, from: &str, target: &str) {
@@ -2535,6 +2481,28 @@ mod tests {
 
     use super::*;
 
+    #[test]
+    fn a_record_of_unknown_attach_type_is_still_counted_in_the_lines() {
+        let mut triggers = TriggersFile::default();
+        for (vnum, attach_type, script) in [(1, "mob", "say hi"), (2, "", "wecho x\nfoo")] {
+            triggers.triggers.insert(
+                TriggerId::from_vnum(vnum),
+                TriggerDef {
+                    vnum,
+                    attach_type: attach_type.to_owned(),
+                    script: script.to_owned(),
+                    ..TriggerDef::default()
+                },
+            );
+        }
+        let coverage = trigger_coverage(&triggers);
+        assert_eq!(coverage.records, 2);
+        assert_eq!(coverage.script_lines, 3);
+        assert_eq!(coverage.by_attach_type[""], 1);
+        assert_eq!(coverage.unknown_world_commands["foo"].vnums, [2]);
+        assert_eq!(coverage.script_commands["wecho"], 1);
+    }
+
     fn zone_report() -> ZoneReport {
         ZoneReport {
             number: 1,
@@ -2552,6 +2520,8 @@ mod tests {
             unmapped: Vec::new(),
             command_flags: Vec::new(),
             triggers: Vec::new(),
+            trigger_variables: Vec::new(),
+            zone_trigger_links: Vec::new(),
         }
     }
 

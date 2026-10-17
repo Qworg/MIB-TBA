@@ -38,11 +38,12 @@ struct TextFile {
     audience: HelpAudience,
 }
 
-/// The eleven `lib/text/` files converted by issue #18. `imotd`, `handbook`,
+/// The ten `lib/text/` files converted by issue #18. `imotd`, `handbook`,
 /// `wizlist` and `immlist` are immortal-facing in Circle, so they become
 /// [`HelpAudience::Staff`] topics (hidden from non-admins at list and detail
-/// time).
-const TEXT_FILES: [TextFile; 11] = [
+/// time). `lib/text/credits` is not a help topic: the engine's `credits`
+/// command serves the credit text, from the pack's `stdlib.credits` section.
+const TEXT_FILES: [TextFile; 10] = [
     TextFile {
         file: "motd",
         id: "motd",
@@ -61,13 +62,6 @@ const TEXT_FILES: [TextFile; 11] = [
         file: "news",
         id: "news",
         title: "News",
-        category: "information",
-        audience: HelpAudience::Public,
-    },
-    TextFile {
-        file: "credits",
-        id: "credits",
-        title: "Credits",
         category: "information",
         audience: HelpAudience::Public,
     },
@@ -155,6 +149,67 @@ pub fn load_text_topics(text_dir: &Path) -> Result<Vec<(String, HelpTopicDef)>> 
         ));
     }
     Ok(topics)
+}
+
+/// The `CIRCLEMUD` help entry from `lib/text/help/help.hlp`, or `None`.
+///
+/// The CircleMUD licence requires this entry to be maintained intact and
+/// displayed for `help circlemud`, so it must survive the legacy-`help.hlp`
+/// drop. `help.hlp` entries are blocks of text terminated by a `#<level>` line
+/// and keyed by their first line, which is a list of words; this returns the
+/// block whose keywords include `circlemud`.
+pub fn load_circle_help(text_dir: &Path) -> Result<Option<(String, HelpTopicDef)>> {
+    let path = text_dir.join("help/help.hlp");
+    if !path.is_file() {
+        return Ok(None);
+    }
+    let raw = read_text(&path)?;
+    let mut blocks: Vec<String> = Vec::new();
+    let mut current = String::new();
+    for line in raw.lines() {
+        let terminator = line
+            .strip_prefix('#')
+            .is_some_and(|level| !level.is_empty() && level.bytes().all(|b| b.is_ascii_digit()));
+        if terminator {
+            if !current.trim().is_empty() {
+                blocks.push(std::mem::take(&mut current));
+            }
+            continue;
+        }
+        current.push_str(line);
+        current.push('\n');
+    }
+    if !current.trim().is_empty() {
+        blocks.push(current);
+    }
+    for block in blocks {
+        let Some(first) = block.lines().map(str::trim).find(|line| !line.is_empty()) else {
+            continue;
+        };
+        let words: Vec<&str> = first.split_whitespace().collect();
+        if !words
+            .iter()
+            .any(|word| word.eq_ignore_ascii_case("circlemud"))
+        {
+            continue;
+        }
+        return Ok(Some((
+            "circlemud".to_owned(),
+            HelpTopicDef {
+                title: "CircleMUD Credits".to_owned(),
+                category: SmolStr::new("information"),
+                summary: first.chars().take(200).collect(),
+                body: block.trim().to_owned(),
+                keywords: words
+                    .iter()
+                    .map(|word| SmolStr::new(word.to_ascii_lowercase()))
+                    .collect(),
+                see_also: Vec::new(),
+                audience: HelpAudience::Public,
+            },
+        )));
+    }
+    Ok(None)
 }
 
 /// The twelve combat strings of one `M` entry, in source order.

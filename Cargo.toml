@@ -16,7 +16,7 @@
 
 [workspace]
 resolver = "2"
-members = ["code", "tools/tbaport"]
+members = ["code", "crates/dg-vm", "tools/tbaport"]
 
 [workspace.package]
 version = "0.1.0"
@@ -35,6 +35,9 @@ mib-host = { path = "../MIB/crates/mib-host" }
 # not with any one game, which is why this game depends on it rather than
 # carrying its own copy.
 mib-stdlib = { path = "../MIB/packs/stdlib/code" }
+# The headless bridge: the integration tests compose `BridgePlugin` exactly as
+# a game binary does, without sockets.
+mib-bridge = { path = "../MIB/crates/mib-bridge" }
 
 # --- external deps, pinned to the versions the engine pins ---
 bevy = { version = "=0.20.0-rc.2", default-features = false, features = ["std"] }

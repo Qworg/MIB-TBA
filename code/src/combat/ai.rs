@@ -285,6 +285,7 @@ pub fn pursuit_system(
     exits: Query<&Exits>,
     rooms: Query<&Room>,
     content: Option<Res<TbaContent>>,
+    refusals: Option<Res<crate::dg::intake::movement::DgRefusals>>,
     mut commands: Commands,
     mut output: MessageWriter<OutputEvent>,
 ) {
@@ -332,20 +333,28 @@ pub fn pursuit_system(
 
         if allowed {
             if let Some(destination) = destination {
-                let mob_name = npc
-                    .map(|npc| npc.name.clone())
-                    .unwrap_or_else(|| "Someone".to_owned());
-                commands
-                    .entity(entity)
-                    .insert(Location { room: destination });
-                // Tell the prey (and its room) that it is being followed.
-                output.write(OutputEvent {
-                    session: target,
-                    payload: OutboundPayload::text(
-                        TextChannel::Room,
-                        format!("{mob_name} follows you!"),
-                    ),
-                });
+                // A move a trigger refused recently is not offered again until
+                // the refusal cools (`DgRefusals`), rather than re-following
+                // and re-announcing every tick.
+                let refused = refusals
+                    .as_ref()
+                    .is_some_and(|refusals| refusals.refused(entity, location.room, destination));
+                if !refused {
+                    let mob_name = npc
+                        .map(|npc| npc.name.clone())
+                        .unwrap_or_else(|| "Someone".to_owned());
+                    commands
+                        .entity(entity)
+                        .insert(Location { room: destination });
+                    // Tell the prey (and its room) that it is being followed.
+                    output.write(OutputEvent {
+                        session: target,
+                        payload: OutboundPayload::text(
+                            TextChannel::Room,
+                            format!("{mob_name} follows you!"),
+                        ),
+                    });
+                }
             }
         } else {
             combatant.target = None;

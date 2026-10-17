@@ -1,0 +1,17 @@
+This crate is a Rust port of the DG Scripts interpreter in The Builder Academy
+(tbaMUD): `tbamud/src/dg_scripts.c`, `dg_triggers.c`, `dg_mobcmd.c`,
+`dg_objcmd.c`, `dg_variables.c`, `dg_comm.c` and the interpreter entry points
+they call.
+
+tbaMUD is derived from CircleMUD (created by Jeremy Elson) and DikuMUD (by
+Sebastian Hammer, Michael Seifert, Hans Henrik Staerfeldt, Tom Madsen and Katja
+Nyboe). This crate is a derivative work of that C source and is subject to the
+CircleMUD and DikuMUD licences, reproduced in full in
+[`LICENSE-TBAMUD`](LICENSE-TBAMUD) in this crate (and at the repository root).
+The crate's `license-file` points at the bundled copy so it travels with the
+package. The required attribution is in [`NOTICE`](../../NOTICE); the original
+Rust expression is MIT under the repository [`LICENSE`](../../LICENSE).
+
+The CircleMUD and DikuMUD licences forbid making money from the game, its code
+or its data in any way. Do not remove any copyright, licensing or authorship
+notice from tbaMUD-derived material.
