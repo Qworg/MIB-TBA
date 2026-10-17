@@ -144,6 +144,11 @@ E                          (only for the E form)
   `t[6]d t[7] + t[8]`.
 - `parse_enhanced_mob` (`db.c:1870`) adds `Keyword: value` e-specs;
   `interpret_espec` (`db.c:1718`) recognises `Str`/`Int`/… and save throws.
+  The six prime attributes and the five saving throws now map onto
+  `tba.npc_stats.attributes` / `.saves`; `BareHandAttack` (a display-only
+  message selector) and `StrAdd` (exceptional strength) are the named
+  `mob_espec` drops. Values are clamped exactly as `interpret_espec`'s `RANGE`
+  macro does.
 
 ### 2.4 `.obj` — `parse_object` (`db.c:2087`)
 
@@ -284,9 +289,12 @@ dangling destination and is recorded as `dangling_exit` instead.
 | default position | `default_position: Position` |
 | `—` | `thaco = 20` (monsters use a flat 20; see `fight.c:829`) |
 | `MOB_NOCHARM`/`NO_SUMMON`/`NOSLEEP`/`NOBASH`/`NOBLIND`/`NOKILL` | `TbaNpcStats::behaviour` (`NpcBehaviour::No*`) |
-| `MOB_SPEC` | **permanent drop** (`mob_flag`): special procedures are a non-goal (#31) |
+| `MOB_SPEC` | **permanent drop** (`mob_flag`): a legacy marker; the procedure is assigned in C, not the world file (#31) |
 | `AFF_*` on the mob | **permanent drop** (`mob_aff`): no affect-flag field |
-| e-specs | **permanent drop** (`mob_espec`): no target field |
+| e-spec `Str`/`Int`/`Wis`/`Dex`/`Con`/`Cha` | `attributes` (`TbaAttributes`); the mob baseline is 11, not the player-side 13 (`db.c:1682`) |
+| e-spec `SavingPara`/`SavingRod`/`SavingPetri`/`SavingBreath`/`SavingSpell` | `saves` (`TbaSaves`): `apply_saving_throw[]` modifiers on the warrior base table |
+| e-spec `BareHandAttack` | **permanent drop** (`mob_espec`): display-only attack message type; damage comes from the `damage` dice |
+| e-spec `StrAdd` | **permanent drop** (`mob_espec`): exceptional strength (`str_add`) is not modelled |
 | sex | **permanent drop** (`mob_sex`): `TbaNpcStats` has no sex field |
 | keyword list | **permanent drop** (`npc_keywords`): `stdlib.npcs` has no keyword list |
 | `T` lines | the NPC's entry in `tba.triggers.attachments` (source order) |
@@ -511,11 +519,11 @@ a zone-reset `T` that cannot resolve is a `dangling_zone_trigger` /
 ## 4. Drop-report schema
 
 `serde_json`, pretty-printed, terminated by a newline. Every vector is sorted
-before writing, so the report is deterministic. Schema `2`:
+before writing, so the report is deterministic. Schema `3`:
 
 ```jsonc
 {
-  "schema": 2,
+  "schema": 3,
   "tool": "tbaport 0.1.0",
   "source": "/home/qworg/Development/tbamud",
   "out": "target/tbaport/content",
@@ -530,7 +538,7 @@ before writing, so the report is deterministic. Schema `2`:
   "totals": {
     "zones": 189, "rooms": 12700, "npcs": 3705, "items": 4765,
     "zone_commands": 18513, "deferred": 0,
-    "dangling": 15, "unmapped": 17593, "global_drops": 10,
+    "dangling": 15, "unmapped": 15742, "global_drops": 11,
     "unmapped_by_kind": { "room_flag": 1726, "mob_sex": 3705, ... },
     "dangling_by_kind": { "dangling_door_key": 3, ... }
   },
@@ -557,7 +565,7 @@ before writing, so the report is deterministic. Schema `2`:
       ],
       "unmapped": [
         { "object": "npc tba_npc_3000", "kind": "mob_flag",
-          "name": "SPEC", "detail": "special procedures are a non-goal (see #31)" },
+          "name": "SPEC", "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)" },
         { "object": "item tba_item_3000", "kind": "affect_location",
           "name": "AGE", "detail": "modifier 5; permanent drop: AffectLocation has no such variant" }
       ],
@@ -748,9 +756,15 @@ and `reports/drop-report.summary.md` groups the surviving drops by reason.
   `ExitDef::to` and is dropped (`exit_description_only`) with its direction and
   description.
 - **NPC attack dice** are now modelled (`tba.npc_stats.damage` +
-  `TbaAttackDice`). **NPC affect-flags, e-specs, sex and keyword lists** have no
-  field and are named (`mob_aff`, `mob_espec`, `mob_sex`, `npc_keywords`).
+  `TbaAttackDice`). **NPC e-specs** are mapped: the six prime attributes and
+  five saving throws land in `tba.npc_stats.attributes`/`.saves`
+  (`interpret_espec`; #31). `BareHandAttack` and `StrAdd` have no field and are
+  named (`mob_espec`). **NPC affect-flags, sex and keyword lists** have no field
+  and are named (`mob_aff`, `mob_sex`, `npc_keywords`).
 - **`MOB_SPEC` special procedures** are a non-goal (`mob_flag`), tracked in #31.
+  The flag is only a legacy marker: the behaviour lives in the C
+  `spec_assign.c`/`castle.c` tables, not in the world file, and several flagged
+  mobs have no procedure assigned at all.
 - **Combat skills** `backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`
   are class rules with no world-content field, so they stay in the
   `global_drops` list (`combat_skill`) — but they are **implemented** as pack
