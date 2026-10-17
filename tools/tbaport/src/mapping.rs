@@ -27,6 +27,7 @@ use mib_tba::content::{
 use mib_tba::triggers::content::{TriggerDef, TriggerId, TriggersFile};
 
 mod attach;
+mod spec_assign;
 
 use crate::emit::OutputBundle;
 use crate::error::{ConvertError, Result};
@@ -83,30 +84,6 @@ const ROOM_FLAG_NAMES: [&str; 17] = [
     "OLC",
     "BFS_MARK",
     "WORLDMAP",
-];
-
-/// Mob flag names (`structs.h:207`).
-const MOB_FLAG_NAMES: [&str; 20] = [
-    "SPEC",
-    "SENTINEL",
-    "SCAVENGER",
-    "ISNPC",
-    "AWARE",
-    "AGGRESSIVE",
-    "STAY_ZONE",
-    "WIMPY",
-    "AGGR_EVIL",
-    "AGGR_GOOD",
-    "AGGR_NEUTRAL",
-    "MEMORY",
-    "HELPER",
-    "NOCHARM",
-    "NOSUMMON",
-    "NOSLEEP",
-    "NOBASH",
-    "NOBLIND",
-    "NOKILL",
-    "NOTDEADYET",
 ];
 
 /// Affected-bit names (`structs.h:272`).
@@ -1137,19 +1114,10 @@ fn map_npc(raw: &RawMob, zr: &mut ZoneReport) -> (NpcDef, TbaNpcStats) {
         behaviour.push(NpcBehaviour::NoKill);
     }
 
-    // Every meaningful `MOB_*` flag now has a home in `behaviour`. `MOB_SPEC`
-    // (0) is a special procedure, which is a documented non-goal (#31);
-    // `MOB_ISNPC` (3) and `MOB_NOTDEADYET` (19) are loader bookkeeping the
-    // loader sets itself and are not reported.
-    if bit(f0, 0) {
-        push_unmapped(
-            zr,
-            &object,
-            "mob_flag",
-            MOB_FLAG_NAMES[0],
-            "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)",
-        );
-    }
+    // Every meaningful `MOB_*` flag has a home in `behaviour` or, for
+    // `MOB_SPEC`, in the `spec_proc` assignment table. `MOB_SPEC` (0) is only a
+    // marker, so it is not a drop by itself; `MOB_ISNPC` (3) and
+    // `MOB_NOTDEADYET` (19) are loader bookkeeping the loader sets itself.
 
     for (index, name) in AFF_FLAG_NAMES.iter().enumerate() {
         if bit(raw.aff_flags[0], index as u32) {
@@ -1204,6 +1172,7 @@ fn map_npc(raw: &RawMob, zr: &mut ZoneReport) -> (NpcDef, TbaNpcStats) {
         damage: Some(raw.damage),
         attributes: especs.attributes,
         saves: especs.saves,
+        spec_proc: spec_assign::spec_proc_for(raw.vnum),
     };
 
     (npc, stats)

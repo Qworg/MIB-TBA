@@ -171,6 +171,7 @@ impl Plugin for TbaPlugin {
         app.init_resource::<TbaRoundClock>();
         app.init_resource::<TbaObjectClock>();
         app.init_resource::<TbaParties>();
+        app.init_resource::<crate::spec::TbaSpecRng>();
         app.init_schedule(TbaRound);
         crate::dg::register(app);
 
@@ -231,6 +232,14 @@ impl Plugin for TbaPlugin {
         app.add_systems(
             Update,
             crate::visibility::intercept_who.in_set(CommandSet::PreRoute),
+        );
+        // Castle guards that refuse a direction (`block_way`) run after the DG
+        // pre-commit refusals, so a trigger still wins.
+        app.add_systems(
+            Update,
+            crate::spec::intercept_block_way
+                .in_set(CommandSet::PreRoute)
+                .after(crate::dg::intake::DgIntake::PreCommit),
         );
         // Player progression and the genre command seam, after the stdlib
         // router that emits `CharacterCreated` and no-ops `attack`/`flee`.
@@ -344,10 +353,12 @@ impl Plugin for TbaPlugin {
                 crate::items::tick_item_timers,
                 crate::clock::apply_night_darkness,
                 crate::combat::npc_combatant_system,
+                crate::spec::attach_spec_procs,
                 crate::combat::auto_engage_system,
                 crate::combat::helper_system,
                 crate::combat::pursuit_system,
                 crate::party::follow_system,
+                crate::spec::spec_proc_system,
                 crate::party::cleanup_parties_on_logout,
             )
                 .chain()

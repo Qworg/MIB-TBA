@@ -38,6 +38,7 @@ pub mod party;
 pub mod shops;
 pub mod skills;
 pub mod socials;
+pub mod spec;
 pub mod spells;
 pub mod stealth;
 pub mod triggers;
@@ -64,7 +65,7 @@ pub mod prelude {
     };
     pub use crate::content::{
         AffectDef, AffectLocation, Attribute, DoorReset, ItemAffectFlag, ItemExtraFlag, LevelBonus,
-        NpcBehaviour, Position, ResetMode, SaveEffect, SpellDef, SpellKind, SpellTarget,
+        NpcBehaviour, Position, ResetMode, SaveEffect, SpecProc, SpellDef, SpellKind, SpellTarget,
         SpellsFile, SpellsSection, TbaClassDef, TbaClassesFile, TbaClassesSection, TbaItemDef,
         TbaItemKind, TbaItemsFile, TbaItemsSection, TbaNpcStats, TbaNpcStatsFile,
         TbaNpcStatsSection, WearSlot, ZoneCommand, ZoneCommandKind, ZoneDef, ZonesFile,
@@ -96,6 +97,7 @@ pub mod prelude {
         SocialCommand, SocialNames, gate_reason, handle_social_commands, parse_social_line,
         substitute,
     };
+    pub use crate::spec::{TbaSpecProc, TbaSpecState};
     pub use crate::spells::{
         ActiveBuff, DEFAULT_BUFF_ROUNDS, TbaBuffs, handle_cast_command, mana_cost, tick_buffs,
     };

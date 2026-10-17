@@ -69,6 +69,7 @@ fn stats(behaviour: Vec<NpcBehaviour>) -> TbaNpcStats {
         damage: None,
         attributes: TbaAttributes::mob_default(),
         saves: TbaSaves::default(),
+        spec_proc: None,
     }
 }
 

@@ -289,7 +289,7 @@ dangling destination and is recorded as `dangling_exit` instead.
 | default position | `default_position: Position` |
 | `—` | `thaco = 20` (monsters use a flat 20; see `fight.c:829`) |
 | `MOB_NOCHARM`/`NO_SUMMON`/`NOSLEEP`/`NOBASH`/`NOBLIND`/`NOKILL` | `TbaNpcStats::behaviour` (`NpcBehaviour::No*`) |
-| `MOB_SPEC` | **permanent drop** (`mob_flag`): a legacy marker; the procedure is assigned in C, not the world file (#31) |
+| `MOB_SPEC` | `spec_proc` — the procedure assigned in `spec_assign.c`/`castle.c` (78 mobs); the flag itself is only a marker and is not a drop |
 | `AFF_*` on the mob | **permanent drop** (`mob_aff`): no affect-flag field |
 | e-spec `Str`/`Int`/`Wis`/`Dex`/`Con`/`Cha` | `attributes` (`TbaAttributes`); the mob baseline is 11, not the player-side 13 (`db.c:1682`) |
 | e-spec `SavingPara`/`SavingRod`/`SavingPetri`/`SavingBreath`/`SavingSpell` | `saves` (`TbaSaves`): `apply_saving_throw[]` modifiers on the warrior base table |
@@ -538,7 +538,7 @@ before writing, so the report is deterministic. Schema `3`:
   "totals": {
     "zones": 189, "rooms": 12700, "npcs": 3705, "items": 4765,
     "zone_commands": 18513, "deferred": 0,
-    "dangling": 15, "unmapped": 15742, "global_drops": 11,
+    "dangling": 15, "unmapped": 15697, "global_drops": 11,
     "unmapped_by_kind": { "room_flag": 1726, "mob_sex": 3705, ... },
     "dangling_by_kind": { "dangling_door_key": 3, ... }
   },
@@ -564,8 +564,6 @@ before writing, so the report is deterministic. Schema `3`:
           "target": "tba_item_3112" }
       ],
       "unmapped": [
-        { "object": "npc tba_npc_3000", "kind": "mob_flag",
-          "name": "SPEC", "detail": "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)" },
         { "object": "item tba_item_3000", "kind": "affect_location",
           "name": "AGE", "detail": "modifier 5; permanent drop: AffectLocation has no such variant" }
       ],
@@ -761,10 +759,15 @@ and `reports/drop-report.summary.md` groups the surviving drops by reason.
   (`interpret_espec`; #31). `BareHandAttack` and `StrAdd` have no field and are
   named (`mob_espec`). **NPC affect-flags, sex and keyword lists** have no field
   and are named (`mob_aff`, `mob_sex`, `npc_keywords`).
-- **`MOB_SPEC` special procedures** are a non-goal (`mob_flag`), tracked in #31.
-  The flag is only a legacy marker: the behaviour lives in the C
-  `spec_assign.c`/`castle.c` tables, not in the world file, and several flagged
-  mobs have no procedure assigned at all.
+- **`MOB_SPEC` special procedures** are no longer inferred from the flag: the
+  converter transcribes `spec_assign.c`/`castle.c` into `spec_proc` (78 mobs)
+  and the ambient procedures (casting, cleaning, the mayor and King schedules,
+  the `block_way` guards) run in `mib_tba::spec`. The guild/postmaster/
+  receptionist procedures still need the practice, mail and rent subsystems;
+  they are the remaining #31 work. Eight flagged mobs have no procedure at all.
+  NPC e-specs (`mob_espec`) are mapped onto `tba.npc_stats.attributes` and
+  `.saves`; only `BareHandAttack` (display-only) and `StrAdd` (exceptional
+  strength) remain named `mob_espec` drops.
 - **Combat skills** `backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`
   are class rules with no world-content field, so they stay in the
   `global_drops` list (`combat_skill`) — but they are **implemented** as pack
