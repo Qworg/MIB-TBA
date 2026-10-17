@@ -760,10 +760,14 @@ and `reports/drop-report.summary.md` groups the surviving drops by reason.
   named (`mob_espec`). **NPC affect-flags, sex and keyword lists** have no field
   and are named (`mob_aff`, `mob_sex`, `npc_keywords`).
 - **`MOB_SPEC` special procedures** are no longer inferred from the flag: the
-  converter transcribes `spec_assign.c`/`castle.c` into `spec_proc` (78 mobs).
-  The flag itself is loader bookkeeping (8 of the 45 flagged mobs have no
-  procedure at all), so it produces no drop. The pack's runtime handler for
-  each procedure is tracked in #31.
+  converter transcribes `spec_assign.c`/`castle.c` into `spec_proc` (78 mobs)
+  and the ambient procedures (casting, cleaning, the mayor and King schedules,
+  the `block_way` guards) run in `mib_tba::spec`. The guild/postmaster/
+  receptionist procedures still need the practice, mail and rent subsystems;
+  they are the remaining #31 work. Eight flagged mobs have no procedure at all.
+  NPC e-specs (`mob_espec`) are mapped onto `tba.npc_stats.attributes` and
+  `.saves`; only `BareHandAttack` (display-only) and `StrAdd` (exceptional
+  strength) remain named `mob_espec` drops.
 - **Combat skills** `backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`
   are class rules with no world-content field, so they stay in the
   `global_drops` list (`combat_skill`) — but they are **implemented** as pack

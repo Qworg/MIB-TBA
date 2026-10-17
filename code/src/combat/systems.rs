@@ -146,7 +146,7 @@ fn stop_fighting(world: &mut World, attacker: Entity) {
 
 /// One attacker's blow (`hit`), from its `fight` trigger to the victim's
 /// `hitprcnt` trigger.
-fn blow(host: &mut EcsHost<'_>, attacker: Entity) {
+pub(crate) fn blow(host: &mut EcsHost<'_>, attacker: Entity) {
     let Some(first) = live_target(host.world, attacker) else {
         return;
     };

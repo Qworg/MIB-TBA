@@ -42,17 +42,18 @@ use super::script::DgScript;
 use crate::combat::TbaHidden;
 use crate::module::TbaContent;
 
-mod act;
+pub(crate) mod act;
 mod comm;
-mod door;
+pub(crate) mod door;
 mod fight;
 mod item;
-mod movement;
+pub(crate) mod movement;
 mod position;
 mod social;
 mod table;
-mod world;
+pub(crate) mod world;
 
+pub(crate) use table::DoorCmd;
 use table::{COMMANDS, Handler};
 
 pub use fight::{add_follower, circle_follow, stop_follower};
