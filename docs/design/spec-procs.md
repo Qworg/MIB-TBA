@@ -1,8 +1,9 @@
 # Issue #31 system ownership — stdlib vs game pack
 
-Status: **design pass**. Companion to PR #36 (e-specs), PR #37 (assignment +
-ambient/castle procedures) and the remaining #31 work (practice, mail, rent,
-bank, boards, pets).
+Status: **partially shipped**. MIB PR #25 shipped the stdlib services
+(mail, boards, escrow, followers); the TBA side has mail, boards and rent in
+`feat/31-spec-procs`. Followers (pet shop), bank and practice/guild remain.
+Companion to PR #36 (e-specs) and PR #37 (the spec-proc series).
 
 This note classifies each system behind the Circle special procedures by the
 layer that should own it. It is a boundary decision, not an implementation
@@ -167,6 +168,17 @@ paths into stdlib.
 
 Diku prime attributes, saving throws and the loader's 11/13 baselines are genre
 rules. They stay in `tba.npc_stats` and `mib_tba::combat`. No stdlib change.
+
+## Shipped / remaining
+
+- **Shipped in MIB:** `mail.rs` + `stdlib.mail`, `boards.rs` + `stdlib.boards`,
+  `ItemPlacement::Stored` + `storage.rs`, and `follower.rs` (the owned-NPC
+  primitive, deliberately named Followers rather than Pets).
+- **Shipped in TBA:** the postmaster (`check`/`receive`/`mail`), the board
+  commands (`look`/`read`/`write`/`remove` + `stdlib.boards.yaml`), and the
+  receptionist/cryogenicist (`offer`/`rent` over escrow).
+- **Remaining:** the pet-shop front end over Followers, the bank/ATM over
+  `TbaGold`, and practice/guild (Circle class/spell tables).
 
 ## Suggested cross-repo split
 
