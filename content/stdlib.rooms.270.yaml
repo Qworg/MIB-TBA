@@ -22,6 +22,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27001:
     area: tba_270
     name: The Foothills
@@ -43,6 +45,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27002:
     area: tba_270
     name: The Foothills
@@ -65,6 +69,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27003:
     area: tba_270
     name: The Foothills
@@ -87,6 +93,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27004:
     area: tba_270
     name: The Foothills
@@ -109,6 +117,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27005:
     area: tba_270
     name: The Icy-Mountain
@@ -126,6 +136,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27006:
     area: tba_270
     name: The Ice Cave
@@ -146,6 +158,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27007:
     area: tba_270
     name: The Foothills
@@ -168,6 +182,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27008:
     area: tba_270
     name: The Icy Mountain
@@ -185,6 +201,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27009:
     area: tba_270
     name: The Icy Mountain
@@ -202,6 +220,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27010:
     area: tba_270
     name: The Icy Mountain
@@ -227,6 +247,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27011:
     area: tba_270
     name: The Icy Mountain
@@ -252,6 +274,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27012:
     area: tba_270
     name: The Icy Mountain
@@ -274,6 +298,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27013:
     area: tba_270
     name: The Foothills
@@ -296,6 +322,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27014:
     area: tba_270
     name: The Icy Mountain
@@ -321,6 +349,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27015:
     area: tba_270
     name: The Icy Mountain
@@ -347,6 +377,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27016:
     area: tba_270
     name: The Icy Mountain
@@ -368,6 +400,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27017:
     area: tba_270
     name: The Foothills
@@ -395,6 +429,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27018:
     area: tba_270
     name: The Icy Mountain
@@ -420,6 +456,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27019:
     area: tba_270
     name: The Icy Mountain
@@ -446,6 +484,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27020:
     area: tba_270
     name: The Icy Mountain
@@ -471,6 +511,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27021:
     area: tba_270
     name: The Icy Mountain
@@ -492,6 +534,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27022:
     area: tba_270
     name: The Icy Mountain
@@ -513,6 +557,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27023:
     area: tba_270
     name: The Foothills
@@ -534,6 +580,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27024:
     area: tba_270
     name: The Foothills
@@ -556,6 +604,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27025:
     area: tba_270
     name: The Foothills
@@ -586,6 +636,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27026:
     area: tba_270
     name: The Foothills
@@ -612,6 +664,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27027:
     area: tba_270
     name: The Foothills
@@ -633,6 +687,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27028:
     area: tba_270
     name: The Foothills
@@ -658,6 +714,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27029:
     area: tba_270
     name: The Foothills
@@ -679,6 +737,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27030:
     area: tba_270
     name: The Icy Mountain
@@ -700,6 +760,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27031:
     area: tba_270
     name: The Wasteland Hills
@@ -730,6 +792,8 @@ rooms:
       - droppings
       description: |2
            Looks pretty messy.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27032:
     area: tba_270
     name: The Wasteland Hills
@@ -753,6 +817,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27033:
     area: tba_270
     name: The Wasteland Hills
@@ -779,6 +845,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27034:
     area: tba_270
     name: The Wasteland Hills
@@ -807,6 +875,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27035:
     area: tba_270
     name: The Foothills
@@ -832,6 +902,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27036:
     area: tba_270
     name: The Icy Mountain
@@ -858,6 +930,8 @@ rooms:
       - crabble
       description: |2
            Yes it is just lying there of absolutely no use at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27037:
     area: tba_270
     name: The Foothills
@@ -884,6 +958,8 @@ rooms:
       - claymore
       description: |2
            The more you look at it the more it vanishes, to your desperate grief.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27038:
     area: tba_270
     name: The Wasteland Hills
@@ -906,6 +982,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27039:
     area: tba_270
     name: The Wasteland hills
@@ -932,6 +1010,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27040:
     area: tba_270
     name: The Wasteland Fields
@@ -953,6 +1033,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27041:
     area: tba_270
     name: The Wasteland Fields
@@ -979,6 +1061,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27042:
     area: tba_270
     name: The Foothills
@@ -1000,6 +1084,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27043:
     area: tba_270
     name: The Foothills
@@ -1026,6 +1112,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27044:
     area: tba_270
     name: The Foothills
@@ -1047,6 +1135,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27045:
     area: tba_270
     name: The Wasteland Fields
@@ -1068,6 +1158,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27046:
     area: tba_270
     name: The Wasteland Fields
@@ -1093,6 +1185,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27047:
     area: tba_270
     name: The Wasteland Fields
@@ -1114,6 +1208,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27048:
     area: tba_270
     name: The Wasteland Fields
@@ -1135,6 +1231,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27049:
     area: tba_270
     name: The Wasteland Fields
@@ -1157,6 +1255,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27050:
     area: tba_270
     name: The Wasteland Fields
@@ -1188,6 +1288,8 @@ rooms:
       - stalk
       description: |2
            Looks lonely doesn't it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27051:
     area: tba_270
     name: The Wasteland fields
@@ -1213,6 +1315,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27052:
     area: tba_270
     name: The Wasteland Fields
@@ -1234,6 +1338,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27053:
     area: tba_270
     name: The Wasteland Fields
@@ -1255,6 +1361,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27054:
     area: tba_270
     name: The Wasteland Fields
@@ -1276,6 +1384,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27055:
     area: tba_270
     name: The Wasteland Fields
@@ -1294,6 +1404,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27056:
     area: tba_270
     name: The Wasteland Fields
@@ -1321,6 +1433,8 @@ rooms:
       - aufwuchs
       description: |2
            They look green and slimy.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27057:
     area: tba_270
     name: Close To The Wasteland Fields
@@ -1345,3 +1459,5 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

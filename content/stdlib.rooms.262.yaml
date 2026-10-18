@@ -23,6 +23,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26201:
     area: tba_262
     name: Woods
@@ -47,6 +49,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26202:
     area: tba_262
     name: Woods
@@ -71,6 +75,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26203:
     area: tba_262
     name: Woods
@@ -97,6 +103,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26204:
     area: tba_262
     name: Woods
@@ -121,6 +129,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26205:
     area: tba_262
     name: Woods
@@ -153,6 +163,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26206:
     area: tba_262
     name: Woods
@@ -185,6 +197,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26207:
     area: tba_262
     name: Woods
@@ -209,6 +223,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26208:
     area: tba_262
     name: Woods
@@ -237,6 +253,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26209:
     area: tba_262
     name: Woods
@@ -265,6 +283,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26210:
     area: tba_262
     name: Woods
@@ -297,6 +317,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26211:
     area: tba_262
     name: Woods
@@ -329,6 +351,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26212:
     area: tba_262
     name: Woods
@@ -361,6 +385,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26213:
     area: tba_262
     name: Woods
@@ -385,6 +411,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26214:
     area: tba_262
     name: Woods
@@ -413,6 +441,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26215:
     area: tba_262
     name: Woods
@@ -445,6 +475,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26216:
     area: tba_262
     name: Woods
@@ -477,6 +509,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26217:
     area: tba_262
     name: Woods
@@ -505,6 +539,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26218:
     area: tba_262
     name: Woods
@@ -529,6 +565,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26219:
     area: tba_262
     name: Woods
@@ -557,6 +595,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26220:
     area: tba_262
     name: Woods
@@ -585,6 +625,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26221:
     area: tba_262
     name: Woods
@@ -609,6 +651,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26222:
     area: tba_262
     name: Woods
@@ -637,6 +681,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26223:
     area: tba_262
     name: Woods
@@ -661,6 +707,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26224:
     area: tba_262
     name: Woods
@@ -693,6 +741,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26225:
     area: tba_262
     name: Woods
@@ -725,6 +775,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26226:
     area: tba_262
     name: Woods
@@ -753,6 +805,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26227:
     area: tba_262
     name: Woods
@@ -777,6 +831,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26228:
     area: tba_262
     name: Woods
@@ -809,6 +865,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26229:
     area: tba_262
     name: Woods
@@ -841,6 +899,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26230:
     area: tba_262
     name: Woods
@@ -873,6 +933,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26231:
     area: tba_262
     name: Woods
@@ -905,6 +967,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26232:
     area: tba_262
     name: Woods
@@ -929,6 +993,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26233:
     area: tba_262
     name: Woods
@@ -953,6 +1019,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26234:
     area: tba_262
     name: Woods
@@ -981,6 +1049,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26235:
     area: tba_262
     name: Woods
@@ -1013,6 +1083,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26236:
     area: tba_262
     name: Woods
@@ -1045,6 +1117,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26237:
     area: tba_262
     name: Woods
@@ -1077,6 +1151,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26238:
     area: tba_262
     name: Woods
@@ -1109,6 +1185,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26239:
     area: tba_262
     name: Woods
@@ -1133,6 +1211,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26240:
     area: tba_262
     name: Woods
@@ -1157,6 +1237,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26241:
     area: tba_262
     name: Woods
@@ -1185,6 +1267,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26242:
     area: tba_262
     name: Woods
@@ -1217,6 +1301,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26244:
     area: tba_262
     name: Woods
@@ -1245,6 +1331,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26245:
     area: tba_262
     name: Woods
@@ -1269,6 +1357,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26246:
     area: tba_262
     name: Woods
@@ -1301,6 +1391,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26247:
     area: tba_262
     name: Woods
@@ -1333,6 +1425,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26248:
     area: tba_262
     name: Woods
@@ -1357,6 +1451,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26249:
     area: tba_262
     name: Woods
@@ -1385,6 +1481,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26250:
     area: tba_262
     name: Woods
@@ -1409,6 +1507,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26251:
     area: tba_262
     name: Woods
@@ -1434,6 +1534,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26252:
     area: tba_262
     name: Woods
@@ -1466,6 +1568,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26253:
     area: tba_262
     name: Woods
@@ -1498,6 +1602,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26254:
     area: tba_262
     name: Woods
@@ -1530,6 +1636,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26255:
     area: tba_262
     name: Woods
@@ -1554,6 +1662,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26256:
     area: tba_262
     name: Woods
@@ -1574,6 +1684,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26257:
     area: tba_262
     name: Woods
@@ -1598,6 +1710,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26258:
     area: tba_262
     name: Woods
@@ -1622,6 +1736,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26259:
     area: tba_262
     name: Woods
@@ -1650,6 +1766,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26260:
     area: tba_262
     name: Woods
@@ -1678,6 +1796,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26261:
     area: tba_262
     name: Woods
@@ -1706,6 +1826,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26262:
     area: tba_262
     name: Woods
@@ -1726,3 +1848,5 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

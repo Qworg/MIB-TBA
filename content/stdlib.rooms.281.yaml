@@ -31,6 +31,8 @@ rooms:
         -Methem
         (mputkone@rieska.oulu.fi)
         Replace XXXX with a town name of your choosing.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28101:
     area: tba_281
     name: Before a small gate
@@ -64,6 +66,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28102:
     area: tba_281
     name: The yard of the tavern
@@ -104,6 +108,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28103:
     area: tba_281
     name: On the lawn
@@ -123,6 +129,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28104:
     area: tba_281
     name: By the side of the tavern
@@ -152,6 +160,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28105:
     area: tba_281
     name: The lavatory
@@ -180,6 +190,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28106:
     area: tba_281
     name: Inside the tavern
@@ -224,6 +236,8 @@ rooms:
         The doubledoors of it are covered in a big painted picture, presenting a march
         of an ancient fully equipped army.  There are also two large handles of pronze,
         formed in interesting spiral.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28107:
     area: tba_281
     name: A smoky drawing-room
@@ -245,6 +259,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28108:
     area: tba_281
     name: On the top floor
@@ -278,6 +294,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28109:
     area: tba_281
     name: A dusty room
@@ -306,6 +324,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28110:
     area: tba_281
     name: On the top floor
@@ -337,6 +357,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28111:
     area: tba_281
     name: A Guest Room
@@ -366,6 +388,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28112:
     area: tba_281
     name: On the top floor
@@ -396,6 +420,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28113:
     area: tba_281
     name: A tidy room
@@ -422,6 +448,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28114:
     area: tba_281
     name: At the forest edge
@@ -446,6 +474,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28115:
     area: tba_281
     name: A path
@@ -475,6 +505,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28116:
     area: tba_281
     name: A path
@@ -499,6 +531,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28117:
     area: tba_281
     name: A small dell
@@ -522,6 +556,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28118:
     area: tba_281
     name: An intersection of paths
@@ -549,6 +585,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28119:
     area: tba_281
     name: A grassy path
@@ -582,6 +620,8 @@ rooms:
                          %he ++n o- G%%d i l
 
                              20* m _ e
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28120:
     area: tba_281
     name: A low hillside
@@ -606,6 +646,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28121:
     area: tba_281
     name: The marshland
@@ -637,6 +679,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28122:
     area: tba_281
     name: Stepping on some hammocks
@@ -667,6 +711,8 @@ rooms:
       description: |2
            It appears old and grayish.  It looks as if there were something dark behind
         it...  Perhaps.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28123:
     area: tba_281
     name: A jet-black pond...
@@ -688,6 +734,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28124:
     area: tba_281
     name: The marshland
@@ -712,6 +760,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28125:
     area: tba_281
     name: A steep hillside
@@ -736,6 +786,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28126:
     area: tba_281
     name: Before a decayed building
@@ -765,6 +817,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28127:
     area: tba_281
     name: Inside an old pen
@@ -783,6 +837,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28128:
     area: tba_281
     name: An empty vestibule
@@ -819,6 +875,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28129:
     area: tba_281
     name: A chaotic room
@@ -845,6 +903,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28130:
     area: tba_281
     name: The top of the stairs
@@ -861,6 +921,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28131:
     area: tba_281
     name: A weak trail
@@ -885,6 +947,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28132:
     area: tba_281
     name: A weak trail
@@ -915,6 +979,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28133:
     area: tba_281
     name: A weak trail
@@ -942,6 +1008,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28134:
     area: tba_281
     name: A square of mushrooms
@@ -965,6 +1033,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28135:
     area: tba_281
     name: A weak trail
@@ -993,6 +1063,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28136:
     area: tba_281
     name: A weak trail
@@ -1012,6 +1084,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28137:
     area: tba_281
     name: A lighter forest
@@ -1035,6 +1109,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28138:
     area: tba_281
     name: A small brook
@@ -1060,6 +1136,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28139:
     area: tba_281
     name: Walking on stony soil
@@ -1083,6 +1161,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28140:
     area: tba_281
     name: Climbing on the mountainside
@@ -1115,6 +1195,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28141:
     area: tba_281
     name: Before a gigantic boulder
@@ -1138,6 +1220,8 @@ rooms:
       - remnants
       description: |2
            You see what mainly are small bones.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28142:
     area: tba_281
     name: At the midst of some edges
@@ -1162,6 +1246,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28143:
     area: tba_281
     name: The brink of a gorge
@@ -1181,6 +1267,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28144:
     area: tba_281
     name: Higher up
@@ -1206,6 +1294,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28145:
     area: tba_281
     name: On the mountainside
@@ -1225,6 +1315,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28146:
     area: tba_281
     name: An Underground Dwelling
@@ -1253,6 +1345,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28147:
     area: tba_281
     name: Under a brown dome
@@ -1285,6 +1379,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28148:
     area: tba_281
     name: Inside the hollow trunk
@@ -1309,6 +1405,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28149:
     area: tba_281
     name: Before an ancient poplar
@@ -1341,6 +1439,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28150:
     area: tba_281
     name: On the hill
@@ -1359,6 +1459,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28151:
     area: tba_281
     name: A small grove
@@ -1389,6 +1491,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28152:
     area: tba_281
     name: A grassy ditch
@@ -1413,6 +1517,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28153:
     area: tba_281
     name: Walking in the ditch
@@ -1440,6 +1546,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28154:
     area: tba_281
     name: A grassy ditch
@@ -1462,6 +1570,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28155:
     area: tba_281
     name: Through some bushes
@@ -1485,6 +1595,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28156:
     area: tba_281
     name: The brink of the grassy hillside
@@ -1509,6 +1621,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28157:
     area: tba_281
     name: Descending the hillside
@@ -1531,6 +1645,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28158:
     area: tba_281
     name: On a gray trunk
@@ -1554,6 +1670,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28159:
     area: tba_281
     name: Walking on the trunk
@@ -1579,6 +1697,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28160:
     area: tba_281
     name: A narrow path
@@ -1603,6 +1723,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28161:
     area: tba_281
     name: Under some massive roots
@@ -1626,6 +1748,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28162:
     area: tba_281
     name: A small meadow
@@ -1649,6 +1773,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28163:
     area: tba_281
     name: On a trail through high osiers
@@ -1672,6 +1798,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28164:
     area: tba_281
     name: An ancient crater
@@ -1699,6 +1827,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28165:
     area: tba_281
     name: At the crater
@@ -1729,6 +1859,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28166:
     area: tba_281
     name: Before the wooden steps
@@ -1751,6 +1883,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28167:
     area: tba_281
     name: Before the wooden steps
@@ -1773,6 +1907,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28168:
     area: tba_281
     name: The Ceremony Plateau
@@ -1810,6 +1946,8 @@ rooms:
         her head is a crown made of the most beautiful flowers, barely found in every
         forest.  Couple of small birds are sitting on her shoulders, seemingly listening
         earnestly.  This must be the Queen of the forest herself.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28169:
     area: tba_281
     name: Descending the steps
@@ -1831,6 +1969,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28170:
     area: tba_281
     name: Descending the steps
@@ -1852,3 +1992,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

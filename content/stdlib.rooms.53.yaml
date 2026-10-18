@@ -34,6 +34,8 @@ rooms:
       - pyramid
       description: |2
            The massive pyramid rises out of the sand, a monument to long-dead pharaohs.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5301:
     area: tba_53
     name: At The Base Of The Pyramid
@@ -62,6 +64,8 @@ rooms:
       - pyramid
       description: |2
            You wonder how anyone could have built such a massive thing out in this heat.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5302:
     area: tba_53
     name: Climbing The Great Pyramid
@@ -97,6 +101,8 @@ rooms:
       - pyramid
       description: |2
            You wonder how anyone could have built such a massive thing out in this heat.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5303:
     area: tba_53
     name: Climbing The Great Pyramid
@@ -132,6 +138,8 @@ rooms:
       - pyramid
       description: |2
            You wonder how anyone could have built such a massive thing out in this heat.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5304:
     area: tba_53
     name: Climbing The Great Pyramid
@@ -167,6 +175,8 @@ rooms:
       - pyramid
       description: |2
            You wonder how anyone could have built such a massive thing out in this heat.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5305:
     area: tba_53
     name: Climbing The Great Pyramid
@@ -203,6 +213,8 @@ rooms:
       - pyramid
       description: |2
            You wonder how anyone could have built such a massive thing out in this heat.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5306:
     area: tba_53
     name: The Apex Of The Great Pyramid
@@ -257,6 +269,8 @@ rooms:
            As you look closer you can make out a crack in the center of the stones
         beneath your feet.  With some effort you might be able to lift that section up
         and get inside!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5307:
     area: tba_53
     name: On The Dangerous Stones
@@ -275,6 +289,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5308:
     area: tba_53
     name: A Ladder
@@ -311,6 +327,8 @@ rooms:
            As you look closer you can make out a crack in the center of the stones above
         your head.  With some effort you might be able to lift that section up and get
         outside!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5309:
     area: tba_53
     name: A Musty Chamber
@@ -369,6 +387,8 @@ rooms:
       description: |2
            The stone door is covered in strange inscriptions and hieroglyphs that warn
         you not to proceed any further.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5310:
     area: tba_53
     name: The Fire Pool
@@ -399,6 +419,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5311:
     area: tba_53
     name: The Chamber Of The Efreet
@@ -417,6 +439,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5312:
     area: tba_53
     name: A Tiny Crawlway
@@ -444,6 +468,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5313:
     area: tba_53
     name: A Tiny Crawlway
@@ -467,6 +493,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5314:
     area: tba_53
     name: A Tiny Crawlway
@@ -490,6 +518,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5315:
     area: tba_53
     name: A Tightening In The Crawlway
@@ -518,6 +548,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5316:
     area: tba_53
     name: The Crawlway's End
@@ -538,6 +570,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5317:
     area: tba_53
     name: A Slippery Hole
@@ -567,6 +601,8 @@ rooms:
       description: |2
            The bones have whitened and cracked in the dry air, apparently the remains of
         adventurers, thieves, and creatures that did not survive the fall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5318:
     area: tba_53
     name: Under The Hole
@@ -591,6 +627,8 @@ rooms:
       description: |2
            The bones have whitened and cracked in the dry air, apparently the remains of
         adventurers, thieves, and creatures that did not survive the fall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5319:
     area: tba_53
     name: A Rough Crevasse
@@ -622,6 +660,8 @@ rooms:
       description: |2
            As you look through the rough terrain, your eyes catch a small glint of
         light!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5320:
     area: tba_53
     name: A Small Fire
@@ -648,6 +688,8 @@ rooms:
         begun to lose his mind.  He moves about slowly, cackling to himself.  He turns
         to you and shouts, 'nope measse!  Nope measse!  ', then turns back and stares
         into the fire.  'What a strange person,' you think to yourself.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5321:
     area: tba_53
     name: Down The Crevasse
@@ -671,6 +713,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5322:
     area: tba_53
     name: At The Crevasse's End
@@ -718,6 +762,8 @@ rooms:
            Wind howls about your ears like the roar of a tiger.  As your eyes adjust to
         the light the shape to the south almost seems to take the form of a massive
         animal head.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5323:
     area: tba_53
     name: The Vault Of The Lamp
@@ -754,6 +800,8 @@ rooms:
            You reach for some of the tasty goodies, when you hear a loud rumbling sound
         and see a bright flash of light...  Then the words: 'TAKE ONLY THE LAMP...
         TOUCH NOTHING ELSE.  ' ...  All is silent once again.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5324:
     area: tba_53
     name: A Crack In The Wall
@@ -777,6 +825,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5325:
     area: tba_53
     name: A Looted Tomb
@@ -803,6 +853,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5326:
     area: tba_53
     name: A Demolished Tomb
@@ -848,6 +900,8 @@ rooms:
         the ravages of time and the activities of looters.  Several markings on the side
         indicate spots where unsuccessful attempts were made to open the coffin.  You
         can't see any way to open it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5327:
     area: tba_53
     name: A Stairway
@@ -887,6 +941,8 @@ rooms:
       description: |2
            You blow dust away from the inscriptions to read: Beware the curse of the
         mummy.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5328:
     area: tba_53
     name: A Stairway
@@ -910,6 +966,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5329:
     area: tba_53
     name: A Stairway
@@ -946,6 +1004,8 @@ rooms:
       description: |2
            The hieroglyphics are covered with a thick layer of dust.  You clear the dust
         away with your hand, and find that you cannot comprehend them.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5330:
     area: tba_53
     name: The Ancient Hall
@@ -985,6 +1045,8 @@ rooms:
       - symbols
       description: |2
            You don't understand the meaning of these symbols.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5331:
     area: tba_53
     name: A Raised Dais
@@ -1022,6 +1084,8 @@ rooms:
         'I am Ramses the Damned, once counselor and aide to the mightiest of pharaohs
         and queens of this land.  Much time has passed since I last walked the earth.
         Disturb my rest at your peril.  '
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5332:
     area: tba_53
     name: The Tomb Of Ramses
@@ -1045,6 +1109,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5333:
     area: tba_53
     name: A Ransacked Tomb
@@ -1066,6 +1132,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5334:
     area: tba_53
     name: A Tunnel
@@ -1087,6 +1155,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5335:
     area: tba_53
     name: A Fork In The Tunnel
@@ -1117,6 +1187,8 @@ rooms:
       - hole
       description: |2
            The hole is low, at the floor of the southern wall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5336:
     area: tba_53
     name: A Tunnel
@@ -1139,6 +1211,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5337:
     area: tba_53
     name: A Dank Chamber
@@ -1161,6 +1235,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5338:
     area: tba_53
     name: A Spiral Stairway
@@ -1182,6 +1258,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5339:
     area: tba_53
     name: A Dust-Covered Hallway
@@ -1204,6 +1282,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5340:
     area: tba_53
     name: A Smelly Chamber
@@ -1226,6 +1306,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5341:
     area: tba_53
     name: A Dust-Covered Hallway
@@ -1252,6 +1334,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5342:
     area: tba_53
     name: A Turn In The Hallway
@@ -1279,6 +1363,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5343:
     area: tba_53
     name: A Dead End
@@ -1312,6 +1398,8 @@ rooms:
       description: |2
            The cracks look like you might be able to pull away some pieces of the floor,
         perhaps even fit your body through the space you make.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5344:
     area: tba_53
     name: The Tomb Entrance
@@ -1360,6 +1448,8 @@ rooms:
       description: |2
            The tomb looks like it has stood for many years, much like the pyramid which
         encloses it.  It is covered in small hieroglyphics.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5345:
     area: tba_53
     name: The Tomb Of The Pharaohs
@@ -1391,6 +1481,8 @@ rooms:
       description: |2
            The treasures are dusty and fragile, but still seem quite valuable.  You
         decide not to take them out of respect for the ancient dead.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5346:
     area: tba_53
     name: A Rubble-Strewn Hallway
@@ -1417,6 +1509,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5347:
     area: tba_53
     name: A Sandstone Crypt
@@ -1444,6 +1538,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5348:
     area: tba_53
     name: An Arched Hall
@@ -1468,6 +1564,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5349:
     area: tba_53
     name: An Arched Hall
@@ -1495,6 +1593,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5350:
     area: tba_53
     name: A Golden Crypt
@@ -1526,6 +1626,8 @@ rooms:
       description: |2
            The rugs and tapestries are very fine and worn with age, their colors now
         faded.  They depict scenes of life in an ancient desert city.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5351:
     area: tba_53
     name: An Arched Hall
@@ -1548,6 +1650,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5352:
     area: tba_53
     name: A Shining Vault
@@ -1573,6 +1677,8 @@ rooms:
       description: |2
            The glassy particles reflect and refract your light source in a myriad of
         dazzling colors that dance across your eyes and make you giggle.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5353:
     area: tba_53
     name: A Massive Sand Dune
@@ -1605,6 +1711,8 @@ rooms:
       - sandstorm
       description: |2
            The sand is very white, and very sandy.  There sure is a lot of it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5354:
     area: tba_53
     name: A Swirling Sandstorm
@@ -1641,6 +1749,8 @@ rooms:
       description: |2
            Sand is about all you CAN see right now.  Unfortunately, it isn't very
         interesting sand, only white, dry, and blowing all over the place.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5355:
     area: tba_53
     name: A Swirling Sandstorm
@@ -1677,6 +1787,8 @@ rooms:
       description: |2
            Sand is about all you CAN see right now.  Unfortunately, it isn't very
         interesting sand, only white, dry, and blowing all over the place.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5356:
     area: tba_53
     name: A Swirling Sandstorm
@@ -1713,6 +1825,8 @@ rooms:
       description: |2
            Sand is about all you CAN see right now.  Unfortunately, it isn't very
         interesting sand, only white, dry, and blowing all over the place.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5357:
     area: tba_53
     name: A Swirling Sandstorm
@@ -1749,6 +1863,8 @@ rooms:
       description: |2
            Sand is about all you CAN see right now.  Unfortunately, it isn't very
         interesting sand, only white, dry, and blowing all over the place.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5358:
     area: tba_53
     name: A Massive Sand Dune
@@ -1796,6 +1912,8 @@ rooms:
       - dune
       description: |2
            The sand is very white, and very sandy.  There sure is a lot of it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5359:
     area: tba_53
     name: Through The Hole In The Sand
@@ -1816,3 +1934,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

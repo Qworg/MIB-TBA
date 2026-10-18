@@ -32,6 +32,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7901:
     area: tba_79
     name: The Southern End Of The Hall
@@ -104,6 +106,8 @@ rooms:
         Under the runes you can just make out a sentence in Common.  It
         reads:
         Stay out, if you treasure your life.  That is if you are mortal.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7902:
     area: tba_79
     name: Redferne's Library
@@ -184,6 +188,8 @@ rooms:
         drawn in every spot available for such.  In the middle of the map you can spot a
         large town with the name 'MIDGAARD' written over it.  The rest is mountains,
         woods, plains and water.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7903:
     area: tba_79
     name: The Artifact Room Of Naris
@@ -211,6 +217,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7904:
     area: tba_79
     name: The Northern End Of The Hall
@@ -258,6 +266,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7905:
     area: tba_79
     name: The Sitting Room Of Naris
@@ -291,6 +301,8 @@ rooms:
       - armchair
       description: |2
            This is truly a wonderful relic of the past.  In it is a large cushion.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7906:
     area: tba_79
     name: The Kitchen Of Naris
@@ -332,6 +344,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7907:
     area: tba_79
     name: The Larder
@@ -357,6 +371,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7908:
     area: tba_79
     name: The Fridge
@@ -381,6 +397,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7909:
     area: tba_79
     name: On The Stairs
@@ -406,6 +424,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7910:
     area: tba_79
     name: The Treasure Room
@@ -441,6 +461,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7911:
     area: tba_79
     name: Redferne's Bedroom
@@ -474,6 +496,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7912:
     area: tba_79
     name: Redferne's Balcony
@@ -502,6 +526,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7913:
     area: tba_79
     name: The Monster Pen
@@ -528,6 +554,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7914:
     area: tba_79
     name: On The Huge Chain
@@ -553,6 +581,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7915:
     area: tba_79
     name: The Chain Where It Is Too Windy
@@ -579,6 +609,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7916:
     area: tba_79
     name: On The Great Chain Of Naris
@@ -605,6 +637,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7917:
     area: tba_79
     name: The Chain
@@ -628,6 +662,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7918:
     area: tba_79
     name: The Mighty Chain Of Naris
@@ -654,6 +690,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7920:
     area: tba_79
     name: The Free Fall From The Chain
@@ -681,3 +719,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

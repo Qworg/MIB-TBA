@@ -52,6 +52,8 @@ rooms:
         Mobs         : 18
         Objects      : 34
         Links        : 00n
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24701:
     area: tba_247
     name: A Gravel Road on the Graveyard
@@ -83,6 +85,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24702:
     area: tba_247
     name: A Gravel Road on the Graveyard
@@ -114,6 +118,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24703:
     area: tba_247
     name: A Gravel Road on the Graveyard
@@ -145,6 +151,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24704:
     area: tba_247
     name: In front of the Chapel
@@ -174,6 +182,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24705:
     area: tba_247
     name: Inside the Chapel
@@ -208,6 +218,8 @@ rooms:
       - windows
       description: |2
            The windows must be meant to be dark.  At least they are completely clean.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24706:
     area: tba_247
     name: A Grave
@@ -240,6 +252,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24707:
     area: tba_247
     name: A Grave
@@ -278,6 +292,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24708:
     area: tba_247
     name: The undertaker's cottage
@@ -302,6 +318,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24709:
     area: tba_247
     name: A Grave
@@ -338,6 +356,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24710:
     area: tba_247
     name: A Grave
@@ -370,6 +390,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24711:
     area: tba_247
     name: A Grave
@@ -406,6 +428,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24712:
     area: tba_247
     name: A Grave
@@ -438,6 +462,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24713:
     area: tba_247
     name: A Grave
@@ -470,6 +496,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24714:
     area: tba_247
     name: The desecrated plot
@@ -500,6 +528,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24715:
     area: tba_247
     name: A makeshift trail
@@ -525,6 +555,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24716:
     area: tba_247
     name: A small clearing
@@ -550,6 +582,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24717:
     area: tba_247
     name: The barrow
@@ -569,6 +603,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24718:
     area: tba_247
     name: A Grave
@@ -602,6 +638,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24719:
     area: tba_247
     name: A Grave
@@ -634,6 +672,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24720:
     area: tba_247
     name: A Grave
@@ -666,6 +706,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24721:
     area: tba_247
     name: A Grave
@@ -704,6 +746,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24722:
     area: tba_247
     name: A Grave
@@ -741,6 +785,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24723:
     area: tba_247
     name: A Grave
@@ -777,6 +823,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24724:
     area: tba_247
     name: A Grave
@@ -815,6 +863,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24725:
     area: tba_247
     name: A Grave
@@ -851,6 +901,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24726:
     area: tba_247
     name: A Grave
@@ -899,6 +951,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24727:
     area: tba_247
     name: A Grave
@@ -933,6 +987,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24728:
     area: tba_247
     name: A Grave
@@ -966,6 +1022,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24729:
     area: tba_247
     name: A Grave
@@ -998,6 +1056,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24730:
     area: tba_247
     name: The Great Tomb
@@ -1037,6 +1097,8 @@ rooms:
       description: |2
            It looks very solid.  You'd probably need something like a crowbar to open
         it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24731:
     area: tba_247
     name: Inside the Vault
@@ -1068,6 +1130,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24732:
     area: tba_247
     name: A very dark room
@@ -1096,6 +1160,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24733:
     area: tba_247
     name: Catacomb entrance
@@ -1131,6 +1197,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24735:
     area: tba_247
     name: The Catacombs
@@ -1154,6 +1222,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24736:
     area: tba_247
     name: A Split in the Corridor
@@ -1182,6 +1252,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24737:
     area: tba_247
     name: The Catacombs
@@ -1205,6 +1277,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24738:
     area: tba_247
     name: The Catacombs
@@ -1229,6 +1303,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24739:
     area: tba_247
     name: The Catacombs
@@ -1256,6 +1332,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24740:
     area: tba_247
     name: The Cobwebbed Catacomb
@@ -1287,6 +1365,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24741:
     area: tba_247
     name: The Ancient Tomb
@@ -1313,6 +1393,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24742:
     area: tba_247
     name: The Catacombs
@@ -1336,6 +1418,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24743:
     area: tba_247
     name: The Catacombs
@@ -1370,6 +1454,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24744:
     area: tba_247
     name: The Chamber of Sorrow
@@ -1398,6 +1484,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24745:
     area: tba_247
     name: The Catacombs
@@ -1421,6 +1509,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24746:
     area: tba_247
     name: The Catacombs
@@ -1445,6 +1535,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24747:
     area: tba_247
     name: The Catacombs
@@ -1472,6 +1564,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24748:
     area: tba_247
     name: The Catacombs
@@ -1501,6 +1595,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24749:
     area: tba_247
     name: The Coffers
@@ -1528,6 +1624,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24750:
     area: tba_247
     name: The Catacombs
@@ -1551,6 +1649,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24751:
     area: tba_247
     name: The Catacombs
@@ -1585,6 +1685,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24752:
     area: tba_247
     name: The Catacombs
@@ -1609,6 +1711,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24753:
     area: tba_247
     name: The Catacombs
@@ -1633,6 +1737,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24754:
     area: tba_247
     name: The Catacombs
@@ -1657,6 +1763,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24755:
     area: tba_247
     name: The Catacombs
@@ -1686,6 +1794,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24756:
     area: tba_247
     name: The Pit of Lost Souls
@@ -1711,6 +1821,8 @@ rooms:
       description: |2
            They look like they've been here a while.  You hope you don't have to stay
         here with them much longer!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24757:
     area: tba_247
     name: The Catacombs
@@ -1734,6 +1846,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24758:
     area: tba_247
     name: The Catacombs
@@ -1773,6 +1887,8 @@ rooms:
             Yet with strange aeons
             Even death may die."
                   -H. P. Lovecraft
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24759:
     area: tba_247
     name: The Ancient Tomb
@@ -1802,6 +1918,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24760:
     area: tba_247
     name: The Guardian Chamber
@@ -1832,6 +1950,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24761:
     area: tba_247
     name: The Death Master's Laboratory
@@ -1853,6 +1973,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24762:
     area: tba_247
     name: A Grave
@@ -1885,6 +2007,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24763:
     area: tba_247
     name: A Grave
@@ -1918,6 +2042,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24764:
     area: tba_247
     name: A Grave
@@ -1948,6 +2074,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24765:
     area: tba_247
     name: A Grave
@@ -1980,6 +2108,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24766:
     area: tba_247
     name: A Grave
@@ -2013,6 +2143,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24767:
     area: tba_247
     name: A Grave
@@ -2049,6 +2181,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24768:
     area: tba_247
     name: A Grave
@@ -2082,6 +2216,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24769:
     area: tba_247
     name: A cemetery plot
@@ -2111,6 +2247,8 @@ rooms:
       - stone
       description: |2
            A blank stone rests here......  Maybe it will have your name on it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24770:
     area: tba_247
     name: A Grave
@@ -2145,6 +2283,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24771:
     area: tba_247
     name: A Grave
@@ -2178,6 +2318,8 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24772:
     area: tba_247
     name: A Grave
@@ -2207,3 +2349,5 @@ rooms:
       - stone
       description: |2
            Here lies Someone.  R.  I.  P.
+    ambient_phases: {}
+    ambient_weather: {}

@@ -46,6 +46,8 @@ rooms:
         Smurfville is an anooying place with lots of do-gooder smurfs and (of course)
         Gargamel's castle.  ** added bonus- Barney's playland I made the entrance on
         wld ##00
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27401:
     area: tba_274
     name: Inside Southern Gate
@@ -67,6 +69,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27402:
     area: tba_274
     name: Inside Guard Gate
@@ -86,6 +90,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27403:
     area: tba_274
     name: Southern End of Saint Brigid
@@ -118,6 +124,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27404:
     area: tba_274
     name: Southern End of Saint Brigid
@@ -149,6 +157,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27405:
     area: tba_274
     name: Southern Road
@@ -181,6 +191,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27406:
     area: tba_274
     name: On Western Side of Saint Brigid
@@ -212,6 +224,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27407:
     area: tba_274
     name: On Western Side of Saint Brigid
@@ -243,6 +257,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27408:
     area: tba_274
     name: Across Bridge of the Rhillion River
@@ -267,6 +283,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27409:
     area: tba_274
     name: On Western Side of Saint Brigid.
@@ -299,6 +317,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27410:
     area: tba_274
     name: Inside Western Gate
@@ -335,6 +355,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27411:
     area: tba_274
     name: On Eastern Side of Saint Brigid
@@ -367,6 +389,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27412:
     area: tba_274
     name: On Eastern Side of Saint Brigid
@@ -398,6 +422,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27413:
     area: tba_274
     name: Inside Eastern Gate
@@ -434,6 +460,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27414:
     area: tba_274
     name: Outside Eastern Gate
@@ -465,6 +493,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27415:
     area: tba_274
     name: On Northern Side of Saint Brigid
@@ -496,6 +526,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27416:
     area: tba_274
     name: On Bridge Crossing Rhillion River
@@ -519,6 +551,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27417:
     area: tba_274
     name: On Northern Side of Saint Brigid
@@ -552,6 +586,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27418:
     area: tba_274
     name: On Northern Side of Saint Brigid
@@ -582,6 +618,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27419:
     area: tba_274
     name: Inside Northern Gate
@@ -619,6 +657,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27420:
     area: tba_274
     name: Outside Northern Gate
@@ -648,6 +688,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27421:
     area: tba_274
     name: Beginning/End of Malvern Road
@@ -668,6 +710,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27422:
     area: tba_274
     name: Outside Southern Gate
@@ -698,6 +742,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27423:
     area: tba_274
     name: 'Outside the Western Gate '
@@ -725,6 +771,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27424:
     area: tba_274
     name: Inside Guard Gate
@@ -744,6 +792,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27425:
     area: tba_274
     name: Insie Guard Gate
@@ -764,6 +814,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27426:
     area: tba_274
     name: Saint Brigid-Furze Road
@@ -793,6 +845,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27427:
     area: tba_274
     name: Saint Brigid-Furze Road
@@ -814,6 +868,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27428:
     area: tba_274
     name: Narrow Forest Path
@@ -837,6 +893,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27429:
     area: tba_274
     name: Narrow Forest Path
@@ -861,6 +919,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27430:
     area: tba_274
     name: Inside Leatherwoman's Hut
@@ -881,6 +941,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27431:
     area: tba_274
     name: Saint Brigid Jeweler
@@ -901,6 +963,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27432:
     area: tba_274
     name: A Residence
@@ -920,6 +984,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27433:
     area: tba_274
     name: A Residence
@@ -939,6 +1005,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27434:
     area: tba_274
     name: Saint Brigid Bread Market
@@ -961,6 +1029,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27435:
     area: tba_274
     name: Apothecary/Magic Shoppe
@@ -987,6 +1057,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27436:
     area: tba_274
     name: A Residence
@@ -1007,6 +1079,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27437:
     area: tba_274
     name: Saint Brigid Training
@@ -1028,6 +1102,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27438:
     area: tba_274
     name: Bottom of Belltower
@@ -1051,6 +1127,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27439:
     area: tba_274
     name: A Residence
@@ -1070,6 +1148,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27440:
     area: tba_274
     name: Saint Brigid General Store
@@ -1092,6 +1172,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27441:
     area: tba_274
     name: Top of Bell Tower
@@ -1115,6 +1197,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27442:
     area: tba_274
     name: Foyer to Brodericks Tavern
@@ -1146,6 +1230,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27443:
     area: tba_274
     name: A Residence
@@ -1165,6 +1251,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27444:
     area: tba_274
     name: Francis' Blacksmith Shoppe/Forge
@@ -1185,6 +1273,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27445:
     area: tba_274
     name: Saint Brigid Armory
@@ -1207,6 +1297,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27446:
     area: tba_274
     name: A Residence
@@ -1227,6 +1319,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27447:
     area: tba_274
     name: A Residence
@@ -1246,6 +1340,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27448:
     area: tba_274
     name: Saint Brigid Bank
@@ -1266,6 +1362,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27449:
     area: tba_274
     name: A Residence
@@ -1285,6 +1383,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27450:
     area: tba_274
     name: Foyer of Saint Brigid Church
@@ -1313,6 +1413,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27451:
     area: tba_274
     name: A Residence
@@ -1332,6 +1434,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27452:
     area: tba_274
     name: Outside Main Chapel
@@ -1364,6 +1468,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27453:
     area: tba_274
     name: Inside Main Chapel
@@ -1410,6 +1516,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27454:
     area: tba_274
     name: In Front of Altar
@@ -1429,6 +1537,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27455:
     area: tba_274
     name: Narrow Hallway
@@ -1452,6 +1562,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27456:
     area: tba_274
     name: Small Alcove
@@ -1481,6 +1593,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27457:
     area: tba_274
     name: Small Alcove
@@ -1510,6 +1624,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27458:
     area: tba_274
     name: Main Hall
@@ -1537,6 +1653,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27459:
     area: tba_274
     name: At the Bar
@@ -1556,6 +1674,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27460:
     area: tba_274
     name: Upper Floor
@@ -1599,6 +1719,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27461:
     area: tba_274
     name: Upper Floor
@@ -1633,6 +1755,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27462:
     area: tba_274
     name: Upper Floor
@@ -1676,6 +1800,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27463:
     area: tba_274
     name: Upper Floor
@@ -1715,6 +1841,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27464:
     area: tba_274
     name: Bedroom One
@@ -1740,6 +1868,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27465:
     area: tba_274
     name: Bedroom Two
@@ -1765,6 +1895,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27466:
     area: tba_274
     name: Bedroom Three
@@ -1790,6 +1922,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27467:
     area: tba_274
     name: Bedroom Four
@@ -1815,6 +1949,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27468:
     area: tba_274
     name: Bedroom Five
@@ -1840,6 +1976,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27469:
     area: tba_274
     name: Bedroom Six
@@ -1865,6 +2003,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27470:
     area: tba_274
     name: Madam Guineveer's Room
@@ -1894,6 +2034,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27471:
     area: tba_274
     name: Inside Guard Gate
@@ -1913,6 +2055,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27472:
     area: tba_274
     name: Bandstand
@@ -1932,6 +2076,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27473:
     area: tba_274
     name: Town Square
@@ -1963,6 +2109,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27474:
     area: tba_274
     name: Southern Road
@@ -1996,6 +2144,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27475:
     area: tba_274
     name: Southern Road
@@ -2028,6 +2178,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27476:
     area: tba_274
     name: Inside Cornfield
@@ -2055,6 +2207,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27477:
     area: tba_274
     name: Inside Cornfield
@@ -2082,6 +2236,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27478:
     area: tba_274
     name: Edge of Cornfield
@@ -2109,6 +2265,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27479:
     area: tba_274
     name: Edge of Cornfield
@@ -2128,6 +2286,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27480:
     area: tba_274
     name: Edge of Cotton Patch
@@ -2155,6 +2315,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27481:
     area: tba_274
     name: Middle of Cotton Patch
@@ -2182,6 +2344,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27482:
     area: tba_274
     name: Middle of Cotton Patch
@@ -2209,6 +2373,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27483:
     area: tba_274
     name: Edge of Cotton Patch
@@ -2231,6 +2397,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27484:
     area: tba_274
     name: Inside Cornfield
@@ -2262,6 +2430,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27485:
     area: tba_274
     name: Inside Cornfield
@@ -2288,6 +2458,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27486:
     area: tba_274
     name: Inide Cornfield
@@ -2318,6 +2490,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27487:
     area: tba_274
     name: Edge of Cornfield
@@ -2340,6 +2514,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27488:
     area: tba_274
     name: Edge of Cotton Patch
@@ -2371,6 +2547,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27489:
     area: tba_274
     name: Middle of Cotton Patch
@@ -2398,6 +2576,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27490:
     area: tba_274
     name: Middle of Cotton Patch
@@ -2429,6 +2609,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27491:
     area: tba_274
     name: Edge of Cotton Patch
@@ -2455,6 +2637,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27492:
     area: tba_274
     name: Inside Cornfield
@@ -2483,6 +2667,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27493:
     area: tba_274
     name: Inside Cornfield
@@ -2510,6 +2696,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27494:
     area: tba_274
     name: Inside Cornfield
@@ -2533,6 +2721,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27495:
     area: tba_274
     name: Edge of Forest
@@ -2553,6 +2743,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27496:
     area: tba_274
     name: Edge of Cotton Patch
@@ -2581,6 +2773,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27497:
     area: tba_274
     name: Edge of Cotton Patch
@@ -2607,6 +2801,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27498:
     area: tba_274
     name: Edge of Cotton Patch
@@ -2633,6 +2829,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27499:
     area: tba_274
     name: Edge of Cotton Patch
@@ -2655,3 +2853,5 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

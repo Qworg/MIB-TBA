@@ -40,6 +40,8 @@ rooms:
       description: |2
            The dark and dusty trail seems fragile compared to the massive trunks, and in
         some places, giant gray roots have broken up through its surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6101:
     area: tba_61
     name: A Narrow Trail Through The Deep, Dark Forest
@@ -86,6 +88,8 @@ rooms:
       description: |2
            The dark and dusty trail seems fragile compared to the massive trunks, and in
         some places, giant gray roots have broken up through its surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6102:
     area: tba_61
     name: A Narrow Trail Through The Deep, Dark Forest
@@ -127,6 +131,8 @@ rooms:
       description: |2
            The dark and dusty trail seems fragile compared to the massive trunks, and in
         some places, giant gray roots have broken up through its surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6103:
     area: tba_61
     name: A Narrow Trail Through The Deep, Dark Forest
@@ -166,6 +172,8 @@ rooms:
       description: |2
            The dark and dusty trail seems fragile compared to the massive trunks, and in
         some places, giant gray roots have broken up through its surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6104:
     area: tba_61
     name: A Small Path In The Deep, Dark Forest
@@ -201,6 +209,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6105:
     area: tba_61
     name: A Small Path In The Deep, Dark Forest
@@ -235,6 +245,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6106:
     area: tba_61
     name: A Junction In The Deep, Dark Forest
@@ -274,6 +286,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6107:
     area: tba_61
     name: A Small Path In The Deep, Dark Forest
@@ -308,6 +322,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6108:
     area: tba_61
     name: A Narrow Trail Through The Deep, Dark Forest
@@ -353,6 +369,8 @@ rooms:
       description: |2
            The dark and dusty trail seems fragile compared to the massive trunks, and in
         some places, giant gray roots have broken up through its surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6109:
     area: tba_61
     name: A Narrow Trail Through The Deep, Dark Forest
@@ -389,6 +407,8 @@ rooms:
       description: |2
            The dark and dusty trail seems fragile compared to the massive trunks, and in
         some places, giant gray roots have broken up through its surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6110:
     area: tba_61
     name: A Narrow Trail Through The Deep, Dark Forest
@@ -434,6 +454,8 @@ rooms:
       description: |2
            The dark and dusty trail seems fragile compared to the massive trunks, and in
         some places, giant gray roots have broken up through its surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6111:
     area: tba_61
     name: A Narrow Trail Through The Deep, Dark Forest
@@ -469,6 +491,8 @@ rooms:
       description: |2
            The dark and dusty trail seems fragile compared to the massive trunks, and in
         some places, giant gray roots have broken up through its surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6112:
     area: tba_61
     name: A Narrow Trail Through The Deep, Dark Forest
@@ -514,6 +538,8 @@ rooms:
       description: |2
            The dark and dusty trail seems fragile compared to the massive trunks, and in
         some places, giant gray roots have broken up through its surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6113:
     area: tba_61
     name: A Small Path In The Deep, Dark Forest
@@ -548,6 +574,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6114:
     area: tba_61
     name: A Junction In The Deep, Dark Forest
@@ -587,6 +615,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6115:
     area: tba_61
     name: A Small Path In The Deep, Dark Forest
@@ -622,6 +652,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6116:
     area: tba_61
     name: A Small Path In The Deep, Dark Forest
@@ -656,6 +688,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6117:
     area: tba_61
     name: A Junction In The Deep, Dark Forest
@@ -695,6 +729,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6118:
     area: tba_61
     name: A Small Path In The Deep, Dark Forest
@@ -729,6 +765,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6119:
     area: tba_61
     name: A Small Path In The Deep, Dark Forest
@@ -763,6 +801,8 @@ rooms:
       - trunks
       description: |2
            You feel as if they are watching you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6120:
     area: tba_61
     name: On The River Bank In The Deep, Dark Forest
@@ -809,6 +849,8 @@ rooms:
       - river
       description: |2
            The river flows fast and strong.  It is black or looks so in the gloom.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6121:
     area: tba_61
     name: A Dead End Path On The River Bank In The Deep, Dark Forest
@@ -848,6 +890,8 @@ rooms:
       - river
       description: |2
            The river flows fast and strong.  It is black or looks so in the gloom.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6122:
     area: tba_61
     name: A Small Path In The Deep, Dark Forest
@@ -882,6 +926,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6123:
     area: tba_61
     name: A Junction On The River Bank In The Deep, Dark Forest
@@ -929,6 +975,8 @@ rooms:
       - river
       description: |2
            The river flows fast and strong.  It is black or looks so in the gloom.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6124:
     area: tba_61
     name: A Dead End Path In The Deep, Dark Forest
@@ -968,6 +1016,8 @@ rooms:
       - river
       description: |2
            The river flows fast and strong.  It is black or looks so in the gloom.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6125:
     area: tba_61
     name: A Small Path On The River Bank In The Deep, Dark Forest
@@ -1010,6 +1060,8 @@ rooms:
       - river
       description: |2
            The river flows fast and strong.  It is black or looks so in the gloom.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6126:
     area: tba_61
     name: A Narrow Trail Through The Deep, Dark Forest
@@ -1055,6 +1107,8 @@ rooms:
       description: |2
            The dark and dusty trail seems fragile compared to the massive trunks, and in
         some places, giant gray roots have broken up through its surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6127:
     area: tba_61
     name: A Narrow Trail Through The Deep, Dark Forest
@@ -1090,6 +1144,8 @@ rooms:
       description: |2
            The dark and dusty trail seems fragile compared to the massive trunks, and in
         some places, giant gray roots have broken up through its surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6128:
     area: tba_61
     name: A Narrow Trail Through The Deep, Dark Forest
@@ -1126,6 +1182,8 @@ rooms:
       description: |2
            The dark and dusty trail seems fragile compared to the massive trunks, and in
         some places, giant gray roots have broken up through its surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6129:
     area: tba_61
     name: A Narrow Trail Through The Deep, Dark Forest
@@ -1162,6 +1220,8 @@ rooms:
       description: |2
            The dark and dusty trail seems fragile compared to the massive trunks, and in
         some places, giant gray roots have broken up through its surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6130:
     area: tba_61
     name: A Narrow Trail Through The Deep, Dark Forest
@@ -1212,6 +1272,8 @@ rooms:
       description: |2
            The substance reminds you of giant threads covered with glue.  If it hadn't
         been for the size you could have sworn it was part of a spider web.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6131:
     area: tba_61
     name: The Deadly Spider Web
@@ -1238,6 +1300,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6132:
     area: tba_61
     name: Up In The Tree
@@ -1272,6 +1336,8 @@ rooms:
       description: |2
            The spider web stretches out to the west.  It looks as if it is possible to
         walk on it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6133:
     area: tba_61
     name: On The spider web
@@ -1305,6 +1371,8 @@ rooms:
       - web
       description: |2
            The immense spider web moves softly.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6134:
     area: tba_61
     name: The Den Of The Queen Spider
@@ -1337,6 +1405,8 @@ rooms:
       - walls
       description: |2
            The sticky walls are covered with open cocoons.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6135:
     area: tba_61
     name: A Dusty Trail In The Deep, Dark Forest
@@ -1366,6 +1436,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6136:
     area: tba_61
     name: A Dusty Trail In The Deep, Dark Forest
@@ -1410,6 +1482,8 @@ rooms:
       description: |2
            To the east the ancient gray giants have many marks as if something with huge
         claws has been tearing at them in rage.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6137:
     area: tba_61
     name: At The End Of The Trail Through The Deep, Dark Forest
@@ -1440,6 +1514,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6138:
     area: tba_61
     name: On The Narrow Trail
@@ -1473,6 +1549,8 @@ rooms:
       - trunks
       description: |2
            The ancient gray giants seem to observe you silently.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6139:
     area: tba_61
     name: On The Narrow Trail
@@ -1498,6 +1576,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6142:
     area: tba_61
     name: Outside A Cave In The Deep, Dark Forest
@@ -1532,6 +1612,8 @@ rooms:
       description: |2
            The ancient gray giants have many marks as if something with huge claws has
         been tearing at them in rage.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6143:
     area: tba_61
     name: The Cave Of The Green Dragon
@@ -1557,6 +1639,8 @@ rooms:
       - floor
       description: |2
            Most of the bones on the floor appear to be of human origin.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6150:
     area: tba_61
     name: The Narrow Trail
@@ -1580,6 +1664,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6151:
     area: tba_61
     name: The Narrow Trail
@@ -1603,6 +1689,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6152:
     area: tba_61
     name: The Circle Of Trees
@@ -1633,6 +1721,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6153:
     area: tba_61
     name: Inside The Great Tree
@@ -1661,6 +1751,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6154:
     area: tba_61
     name: The Underground Hallway
@@ -1684,6 +1776,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6155:
     area: tba_61
     name: The Cultist Temple
@@ -1704,3 +1798,5 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

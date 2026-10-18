@@ -71,6 +71,8 @@ rooms:
         guild: 16, 19, 17, 18
         thief: 07
         bank: 12
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27101:
     area: tba_271
     name: The Temple of Mercy
@@ -117,6 +119,8 @@ rooms:
         Kings of Kings, Look on my Works, ye Mighty, and despair!  Nothing beside
         remains.  Round the decay Of that colossal wreck, boundless and bare, The lone
         and level sands stretch far away.  "
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27102:
     area: tba_271
     name: The alms room
@@ -139,6 +143,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27103:
     area: tba_271
     name: At the altar
@@ -168,6 +174,8 @@ rooms:
            The circular diagram shows symbols for what appear to be the days of the week
         and the month, and how they correspond to the slow treks of the stars, and
         perhaps, some inner meanings known only to the local priesthood.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27104:
     area: tba_271
     name: A narrow terrace north of the temple
@@ -192,6 +200,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27105:
     area: tba_271
     name: The town library
@@ -212,6 +222,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27106:
     area: tba_271
     name: The temple garden
@@ -230,6 +242,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27107:
     area: tba_271
     name: A stone arch
@@ -254,6 +268,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27108:
     area: tba_271
     name: Sundhaven square
@@ -287,6 +303,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27109:
     area: tba_271
     name: The gate at the cliffs
@@ -320,6 +338,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27110:
     area: tba_271
     name: A lane bordering the cliffs
@@ -351,6 +371,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27111:
     area: tba_271
     name: The alchemy shop
@@ -372,6 +394,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27112:
     area: tba_271
     name: The House of Sorcery
@@ -393,6 +417,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27113:
     area: tba_271
     name: A lane bordering the cliffs
@@ -425,6 +451,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27114:
     area: tba_271
     name: Wisteria park
@@ -451,6 +479,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27115:
     area: tba_271
     name: Wisteria park
@@ -481,6 +511,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27116:
     area: tba_271
     name: The Tower of Sorcery
@@ -506,6 +538,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27117:
     area: tba_271
     name: A dark spiral staircase
@@ -531,6 +565,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27118:
     area: tba_271
     name: The mages' laboratory
@@ -562,6 +598,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27119:
     area: tba_271
     name: At the gallows
@@ -597,6 +635,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27120:
     area: tba_271
     name: On a weathered stone terrace
@@ -625,6 +665,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27121:
     area: tba_271
     name: Nightbreak Cafe
@@ -666,6 +708,8 @@ rooms:
          3) No stealing the tips.
          4) No honor among thieves.
         The list is, of course, left anonymous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27122:
     area: tba_271
     name: The southern path
@@ -689,6 +733,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27123:
     area: tba_271
     name: The southern path
@@ -721,6 +767,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27124:
     area: tba_271
     name: A withered shanty
@@ -741,6 +789,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27125:
     area: tba_271
     name: The town dump
@@ -775,6 +825,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27126:
     area: tba_271
     name: The town dump
@@ -798,6 +850,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27127:
     area: tba_271
     name: The southern path
@@ -827,6 +881,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27128:
     area: tba_271
     name: A black sand road
@@ -862,6 +918,8 @@ rooms:
            Sand has been shuffled over most of it, but it is obviously from a recent
         kill.  The sign on the building reads 'The House of the Butcher and Friends'.
         It appears the fellow has a quirky sense of humor.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27130:
     area: tba_271
     name: A sandy bend before the east gate
@@ -889,6 +947,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27131:
     area: tba_271
     name: A gold sand road
@@ -917,6 +977,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27132:
     area: tba_271
     name: A gold sand road
@@ -949,6 +1011,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27133:
     area: tba_271
     name: A gold sand road
@@ -981,6 +1045,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27134:
     area: tba_271
     name: A bend in the road
@@ -1012,6 +1078,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27135:
     area: tba_271
     name: A lane bordering the cliffs
@@ -1043,6 +1111,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27136:
     area: tba_271
     name: A shaded lane
@@ -1071,6 +1141,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27138:
     area: tba_271
     name: A shaded lane
@@ -1100,6 +1172,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27139:
     area: tba_271
     name: A shaded lane
@@ -1128,6 +1202,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27140:
     area: tba_271
     name: A cluster of trees before the west gate
@@ -1157,6 +1233,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27141:
     area: tba_271
     name: A black sand road
@@ -1185,6 +1263,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27142:
     area: tba_271
     name: The butcher shop
@@ -1206,6 +1286,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27143:
     area: tba_271
     name: The stables
@@ -1226,6 +1308,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27144:
     area: tba_271
     name: The east gate of Sundhaven
@@ -1256,6 +1340,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27145:
     area: tba_271
     name: The west gate of Sundhaven
@@ -1286,6 +1372,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27146:
     area: tba_271
     name: The Dirk & Dagger
@@ -1310,6 +1398,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27147:
     area: tba_271
     name: The Silver Scale
@@ -1331,6 +1421,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27148:
     area: tba_271
     name: Dragon's Wrath Alehouse
@@ -1360,6 +1452,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27149:
     area: tba_271
     name: Along the bar counter
@@ -1382,6 +1476,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27150:
     area: tba_271
     name: Mekala's Thai Kitchen
@@ -1407,6 +1503,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27151:
     area: tba_271
     name: The rooftop at Mekala's
@@ -1426,6 +1524,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27152:
     area: tba_271
     name: The sparring hall
@@ -1451,6 +1551,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27153:
     area: tba_271
     name: The Bread Basket
@@ -1471,6 +1573,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27154:
     area: tba_271
     name: The blacksmiths
@@ -1489,6 +1593,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27155:
     area: tba_271
     name: The aviary
@@ -1510,6 +1616,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27156:
     area: tba_271
     name: PETSHOP STOREROOM
@@ -1532,6 +1640,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27157:
     area: tba_271
     name: The post office
@@ -1561,6 +1671,8 @@ rooms:
            A few instructions have been meticulously printed in small letters.  Send
         (item) (playername) will function to mail something to someone.  Receive will
         allow you to collect your mail.  Thank you and have a nice day.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27158:
     area: tba_271
     name: Standing at the brink
@@ -1588,6 +1700,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27160:
     area: tba_271
     name: A balcony of the tower
@@ -1609,6 +1723,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27161:
     area: tba_271
     name: A silvery-lit landing
@@ -1637,6 +1753,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27162:
     area: tba_271
     name: The room of doctrine
@@ -1668,6 +1786,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27163:
     area: tba_271
     name: The chamber of sacrifice
@@ -1689,6 +1809,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27164:
     area: tba_271
     name: At a swinging wooden gate
@@ -1724,6 +1846,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27165:
     area: tba_271
     name: A windy cliffside lane
@@ -1755,6 +1879,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27166:
     area: tba_271
     name: A windy cliffside lane
@@ -1775,3 +1901,5 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

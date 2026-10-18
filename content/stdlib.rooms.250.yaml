@@ -32,6 +32,8 @@ rooms:
            Mobs         : 10
            Objects      : 22
            Links        : 38u, 43d
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25001:
     area: tba_250
     name: An Ancient Path through the dense forest
@@ -57,6 +59,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25002:
     area: tba_250
     name: The End of the Ancient Path
@@ -81,6 +85,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25003:
     area: tba_250
     name: Path to the Mountain
@@ -105,6 +111,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25004:
     area: tba_250
     name: Path to the Mountain
@@ -130,6 +138,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25005:
     area: tba_250
     name: At the foot of the Mountain
@@ -154,6 +164,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25006:
     area: tba_250
     name: Climbing the Mountain
@@ -179,6 +191,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25007:
     area: tba_250
     name: Climbing the Mountain
@@ -204,6 +218,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25008:
     area: tba_250
     name: The ledge on the Mountain
@@ -228,6 +244,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25009:
     area: tba_250
     name: Entrance to the Cave
@@ -252,6 +270,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25010:
     area: tba_250
     name: Walking through DragonSpyre
@@ -275,6 +295,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25011:
     area: tba_250
     name: Walking through DragonSpyre
@@ -298,6 +320,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25012:
     area: tba_250
     name: Walking through DragonSpyre
@@ -321,6 +345,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25013:
     area: tba_250
     name: Walking through DragonSpyre
@@ -344,6 +370,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25014:
     area: tba_250
     name: Walking through DragonSpyre
@@ -367,6 +395,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25015:
     area: tba_250
     name: Walking through DragonSpyre
@@ -394,6 +424,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25016:
     area: tba_250
     name: Walking through DragonSpyre
@@ -417,6 +449,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25017:
     area: tba_250
     name: Walking through DragonSpyre
@@ -440,6 +474,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25018:
     area: tba_250
     name: Walking through DragonSpyre
@@ -463,6 +499,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25019:
     area: tba_250
     name: Walking through DragonSpyre
@@ -486,6 +524,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25020:
     area: tba_250
     name: Walking through DragonSpyre
@@ -509,6 +549,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25021:
     area: tba_250
     name: Walking through DragonSpyre
@@ -532,6 +574,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25022:
     area: tba_250
     name: Walking through DragonSpyre
@@ -556,6 +600,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25023:
     area: tba_250
     name: Walking through DragonSpyre
@@ -579,6 +625,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25024:
     area: tba_250
     name: Walking through DragonSpyre
@@ -602,6 +650,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25025:
     area: tba_250
     name: Walking through DragonSpyre
@@ -629,6 +679,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25026:
     area: tba_250
     name: Walking through DragonSpyre
@@ -652,6 +704,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25027:
     area: tba_250
     name: Walking through DragonSpyre
@@ -676,6 +730,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25028:
     area: tba_250
     name: Walking through DragonSpyre
@@ -699,6 +755,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25029:
     area: tba_250
     name: Walking through DragonSpyre
@@ -722,6 +780,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25030:
     area: tba_250
     name: Walking through DragonSpyre
@@ -750,6 +810,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25031:
     area: tba_250
     name: Walking through DragonSpyre
@@ -774,6 +836,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25032:
     area: tba_250
     name: The Lair of the White Dragon
@@ -804,6 +868,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25033:
     area: tba_250
     name: Walking through DragonSpyre
@@ -826,6 +892,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25034:
     area: tba_250
     name: Walking through DragonSpyre
@@ -849,6 +917,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25035:
     area: tba_250
     name: Walking through DragonSpyre
@@ -872,6 +942,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25036:
     area: tba_250
     name: Walking through DragonSpyre
@@ -895,6 +967,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25037:
     area: tba_250
     name: Walking through DragonSpyre
@@ -923,6 +997,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25038:
     area: tba_250
     name: Walking through DragonSpyre
@@ -948,6 +1024,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25039:
     area: tba_250
     name: Walking through DragonSpyre
@@ -973,6 +1051,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25040:
     area: tba_250
     name: Walking through DragonSpyre
@@ -998,6 +1078,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25041:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1034,6 +1116,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25042:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1051,6 +1135,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25043:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1077,6 +1163,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25044:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1108,6 +1196,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25045:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1133,6 +1223,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25046:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1158,6 +1250,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25047:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1193,6 +1287,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25048:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1224,6 +1320,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25049:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1255,6 +1353,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25050:
     area: tba_250
     name: Treasure Room
@@ -1282,6 +1382,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25051:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1307,6 +1409,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25052:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1332,6 +1436,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25053:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1357,6 +1463,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25054:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1382,6 +1490,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25055:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1407,6 +1517,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25056:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1438,6 +1550,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25057:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1469,6 +1583,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25058:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1500,6 +1616,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25059:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1525,6 +1643,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25060:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1550,6 +1670,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25061:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1575,6 +1697,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25062:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1606,6 +1730,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25063:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1637,6 +1763,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25064:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1662,6 +1790,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25065:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1693,6 +1823,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25066:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1724,6 +1856,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25067:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1749,6 +1883,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25068:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1774,6 +1910,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25069:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1799,6 +1937,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25070:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1834,6 +1974,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25071:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1859,6 +2001,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25072:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1884,6 +2028,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25073:
     area: tba_250
     name: Lair of the Copper Dragon
@@ -1905,6 +2051,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25074:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1936,6 +2084,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25075:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1961,6 +2111,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25076:
     area: tba_250
     name: Walking through DragonSpyre
@@ -1990,6 +2142,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25077:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2021,6 +2175,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25078:
     area: tba_250
     name: Treasure Room
@@ -2058,6 +2214,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25079:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2083,6 +2241,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25080:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2108,6 +2268,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25081:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2133,6 +2295,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25082:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2154,6 +2318,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25083:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2191,6 +2357,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25084:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2216,6 +2384,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25085:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2249,6 +2419,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25086:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2274,6 +2446,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25087:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2299,6 +2473,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25088:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2324,6 +2500,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25089:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2355,6 +2533,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25090:
     area: tba_250
     name: Pixie King's Bedroom
@@ -2380,6 +2560,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25091:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2405,6 +2587,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25092:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2430,6 +2614,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25093:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2461,6 +2647,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25094:
     area: tba_250
     name: Throne room of the Pixie King
@@ -2487,6 +2675,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25095:
     area: tba_250
     name: Walking through DragonSpyre
@@ -2512,6 +2702,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25096:
     area: tba_250
     name: Approaching the end of the Hallway
@@ -2537,6 +2729,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25097:
     area: tba_250
     name: Approaching the end of the Hallway
@@ -2562,6 +2756,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25098:
     area: tba_250
     name: Approaching the end of the Hallway
@@ -2587,6 +2783,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25099:
     area: tba_250
     name: The End of the Hallway
@@ -2611,3 +2809,5 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

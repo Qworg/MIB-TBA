@@ -54,6 +54,8 @@ rooms:
         Notes        : Plan on having a lot of mobs so the zone will be a slaughterhouse
                        for experience points.
         Links        : 00u, or better yet through teleport triggers 00, 01
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4601:
     area: tba_46
     name: Inside The Anthill
@@ -76,6 +78,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4602:
     area: tba_46
     name: A Small Room
@@ -99,6 +103,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4603:
     area: tba_46
     name: A Hole In The Wall
@@ -117,6 +123,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4604:
     area: tba_46
     name: Another Room In The Anthole
@@ -135,6 +143,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4605:
     area: tba_46
     name: Farther Into The Hole
@@ -174,6 +184,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4606:
     area: tba_46
     name: A Passage In The Hole
@@ -193,6 +205,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4607:
     area: tba_46
     name: A Tunnel
@@ -215,6 +229,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4608:
     area: tba_46
     name: A Sandy Dead End
@@ -233,6 +249,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4609:
     area: tba_46
     name: A Collapsed Tunnel
@@ -251,6 +269,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4610:
     area: tba_46
     name: Deeper In The Anthole
@@ -290,6 +310,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4611:
     area: tba_46
     name: A Small Passage
@@ -312,6 +334,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4612:
     area: tba_46
     name: A Caved in Tunnel
@@ -330,6 +354,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4613:
     area: tba_46
     name: A Storage Room
@@ -348,6 +374,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4614:
     area: tba_46
     name: A Caved-in Tunnel
@@ -367,6 +395,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4615:
     area: tba_46
     name: At The Bottom
@@ -394,6 +424,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4616:
     area: tba_46
     name: A Rocky Tunnel
@@ -416,6 +448,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4617:
     area: tba_46
     name: The Larvae Storage Room
@@ -434,6 +468,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4618:
     area: tba_46
     name: A Large Hallway
@@ -452,6 +488,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4619:
     area: tba_46
     name: A Large Tunnel
@@ -474,6 +512,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4620:
     area: tba_46
     name: A Dark Tunnel
@@ -500,6 +540,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4621:
     area: tba_46
     name: A Dark Intersection
@@ -530,6 +572,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4622:
     area: tba_46
     name: Another Branch
@@ -552,6 +596,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4623:
     area: tba_46
     name: Along The Passage
@@ -574,6 +620,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4624:
     area: tba_46
     name: An Underground Pond
@@ -592,6 +640,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4625:
     area: tba_46
     name: A Dark Passage
@@ -614,6 +664,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4626:
     area: tba_46
     name: A Collapsing Tunnel
@@ -637,6 +689,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4627:
     area: tba_46
     name: The End Of The Tunnel
@@ -657,6 +711,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4628:
     area: tba_46
     name: Buried Alive
@@ -673,6 +729,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4629:
     area: tba_46
     name: Into the Large Tunnel
@@ -695,6 +753,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4630:
     area: tba_46
     name: A Long Tunnel
@@ -718,6 +778,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4631:
     area: tba_46
     name: A Long Tunnel
@@ -741,6 +803,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4632:
     area: tba_46
     name: A Small Room
@@ -769,6 +833,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4633:
     area: tba_46
     name: The Queen's Chamber
@@ -794,6 +860,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4634:
     area: tba_46
     name: A Small Room
@@ -813,6 +881,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4635:
     area: tba_46
     name: An Earthen Tunnel
@@ -836,6 +906,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4636:
     area: tba_46
     name: A Small Passage
@@ -858,6 +930,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4637:
     area: tba_46
     name: A Bend In The Tunnel
@@ -880,6 +954,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4638:
     area: tba_46
     name: A Dead End Tunnel
@@ -898,6 +974,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4639:
     area: tba_46
     name: A Small Crevice
@@ -916,6 +994,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4698:
     area: tba_46
     name: Before A Giant Anthill
@@ -933,3 +1013,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

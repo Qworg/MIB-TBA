@@ -56,6 +56,8 @@ rooms:
         following people have aided C.A.W. and Amanda in numerous ways, and
         all receive our deepest gratitude: Derek Lang (for continued support)
         Freja (for the pink incarnation) the players of VieMud (for playtesting)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29601:
     area: tba_296
     name: A Littered Road
@@ -84,6 +86,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29602:
     area: tba_296
     name: The Parking Lot
@@ -112,6 +116,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29603:
     area: tba_296
     name: The Parking Lot
@@ -137,6 +143,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29604:
     area: tba_296
     name: The Parking Lot
@@ -166,6 +174,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29605:
     area: tba_296
     name: The Parking Lot
@@ -191,6 +201,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29606:
     area: tba_296
     name: Outside The Factory
@@ -217,6 +229,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29607:
     area: tba_296
     name: The Entrance Area
@@ -254,6 +268,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29608:
     area: tba_296
     name: The Lounge
@@ -285,6 +301,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29609:
     area: tba_296
     name: The Hall
@@ -310,6 +328,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29610:
     area: tba_296
     name: The Hall
@@ -339,6 +359,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29611:
     area: tba_296
     name: The Cubicles
@@ -365,6 +387,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29612:
     area: tba_296
     name: The Hall
@@ -395,6 +419,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29613:
     area: tba_296
     name: The Cubicles
@@ -420,6 +446,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29614:
     area: tba_296
     name: The Main Office
@@ -456,6 +484,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29615:
     area: tba_296
     name: A Closet
@@ -478,6 +508,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29616:
     area: tba_296
     name: The Lavatory
@@ -498,6 +530,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29617:
     area: tba_296
     name: A Big Office
@@ -520,6 +554,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29618:
     area: tba_296
     name: The Employees' Lounge
@@ -547,6 +583,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29619:
     area: tba_296
     name: The Work Floor
@@ -583,6 +621,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29620:
     area: tba_296
     name: The Work Floor
@@ -611,6 +651,8 @@ rooms:
       - vat
       description: |2
            It is big.  It is a vat.  It is filled.  What else do you want to know?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29621:
     area: tba_296
     name: The Work Floor
@@ -646,6 +688,8 @@ rooms:
            Hmm...  An introduction to a new magic!  You sit down with the book, and
         awake several hours later, well rested.  Blinking, you sit up to find the book
         is gone.  Oh well.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29622:
     area: tba_296
     name: The Work Floor
@@ -677,6 +721,8 @@ rooms:
       - pigeon
       description: |2
            No really, you don't want to know.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29623:
     area: tba_296
     name: The Work Floor
@@ -712,6 +758,8 @@ rooms:
       description: |2
            Wow!  The twin power-mages Black and Decker themselves couldn't get into this
         box if they tried!  This isn't a safe...  It is a safer!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29624:
     area: tba_296
     name: The Work Floor
@@ -754,6 +802,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29625:
     area: tba_296
     name: The Work Floor
@@ -795,6 +845,8 @@ rooms:
       description: |2
            On the side of the crate, barely legible from scratchmarks and age, is the
         legend: 'stbusters Inc.  One Type III enclosed.  DANGER.  This end up.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29626:
     area: tba_296
     name: The Work Floor
@@ -825,6 +877,8 @@ rooms:
            Looks like a lot of odd and ends.  Most appear harmless...  It would take
         quite an imagination to create something dangerous with these, like a...!!!
         Nah, it'll never work.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29627:
     area: tba_296
     name: The Machine Room
@@ -853,6 +907,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29628:
     area: tba_296
     name: The Machine Room
@@ -891,6 +947,8 @@ rooms:
       description: |2
            The writing on the door is in large yellow print and reads: DANGER!!!  DO NOT
         ENTER!!!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29629:
     area: tba_296
     name: The Machine Room
@@ -936,6 +994,8 @@ rooms:
       description: |2
            These magazines seem to be filled with pictures of woman in various clothing
         crises.  Hmm.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29630:
     area: tba_296
     name: Welcome To The Machine
@@ -974,6 +1034,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29631:
     area: tba_296
     name: The Catwalks
@@ -1002,6 +1064,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29632:
     area: tba_296
     name: The Catwalks
@@ -1027,6 +1091,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29633:
     area: tba_296
     name: The Catwalks
@@ -1052,6 +1118,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29634:
     area: tba_296
     name: The Catwalks
@@ -1075,6 +1143,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29635:
     area: tba_296
     name: The Access Road
@@ -1101,6 +1171,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29636:
     area: tba_296
     name: The Access Road
@@ -1127,6 +1199,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29637:
     area: tba_296
     name: The Dock Area
@@ -1153,6 +1227,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29638:
     area: tba_296
     name: The Warehouse Room
@@ -1179,3 +1255,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

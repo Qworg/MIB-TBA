@@ -33,6 +33,8 @@ rooms:
            Zone 316 is linked to the following zones:
         315 McGintey Business District     at 31600 (east ) ---> 31510
         315 McGintey Business District     at 31666 (east ) ---> 31565
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31601:
     area: tba_316
     name: Guild Area
@@ -57,6 +59,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31602:
     area: tba_316
     name: Guild Area
@@ -80,6 +84,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31603:
     area: tba_316
     name: Dead End to North Street
@@ -107,6 +113,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31604:
     area: tba_316
     name: Mage Area
@@ -140,6 +148,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31605:
     area: tba_316
     name: Potions
@@ -159,6 +169,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31606:
     area: tba_316
     name: Scrolls
@@ -177,6 +189,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31607:
     area: tba_316
     name: Mage Weapons
@@ -195,6 +209,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31608:
     area: tba_316
     name: End of the Alley
@@ -226,6 +242,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31609:
     area: tba_316
     name: Mage Board Room
@@ -248,6 +266,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31610:
     area: tba_316
     name: Robes and Armor
@@ -266,6 +286,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31611:
     area: tba_316
     name: Mage Guild
@@ -284,6 +306,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31612:
     area: tba_316
     name: West Alley
@@ -313,6 +337,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31613:
     area: tba_316
     name: West Alley
@@ -338,6 +364,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31614:
     area: tba_316
     name: West Alley
@@ -366,6 +394,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31615:
     area: tba_316
     name: Dirt Alley
@@ -389,6 +419,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31616:
     area: tba_316
     name: Dirt Path
@@ -413,6 +445,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31617:
     area: tba_316
     name: Ranger's Grove
@@ -439,6 +473,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31618:
     area: tba_316
     name: The Old Oak
@@ -465,6 +501,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31619:
     area: tba_316
     name: Ranger Guild Room
@@ -486,6 +524,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31620:
     area: tba_316
     name: Back Street
@@ -510,6 +550,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31621:
     area: tba_316
     name: Back Street
@@ -560,6 +602,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31622:
     area: tba_316
     name: Thieven Weaponsmith
@@ -587,6 +631,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31623:
     area: tba_316
     name: Board Room
@@ -618,6 +664,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31624:
     area: tba_316
     name: Thieve's Guild
@@ -640,6 +688,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31625:
     area: tba_316
     name: Darkened Room
@@ -667,6 +717,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31626:
     area: tba_316
     name: Warrior Way
@@ -704,6 +756,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31627:
     area: tba_316
     name: Lounge and Board Room
@@ -730,6 +784,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31628:
     area: tba_316
     name: Warrior's Guild - Arena
@@ -750,6 +806,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31629:
     area: tba_316
     name: The Broken Spleen
@@ -772,6 +830,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31630:
     area: tba_316
     name: The Warrior's Boutique
@@ -790,6 +850,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31631:
     area: tba_316
     name: The Sword Store
@@ -809,6 +871,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31632:
     area: tba_316
     name: Warrior Way
@@ -837,6 +901,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31633:
     area: tba_316
     name: Warrior Way
@@ -861,6 +927,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31634:
     area: tba_316
     name: Spectator Balcony
@@ -880,6 +948,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31635:
     area: tba_316
     name: Gladiator Pit - Center
@@ -900,6 +970,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31636:
     area: tba_316
     name: The Pit
@@ -927,6 +999,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31637:
     area: tba_316
     name: Warrior Way
@@ -961,6 +1035,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31638:
     area: tba_316
     name: Warrior Way
@@ -984,6 +1060,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31639:
     area: tba_316
     name: Warrior Way
@@ -1008,6 +1086,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31640:
     area: tba_316
     name: Shield 'n' Helms
@@ -1027,6 +1107,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31641:
     area: tba_316
     name: Warrior Way
@@ -1054,6 +1136,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31642:
     area: tba_316
     name: Body Armor
@@ -1072,6 +1156,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31643:
     area: tba_316
     name: West Alley
@@ -1100,6 +1186,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31644:
     area: tba_316
     name: West Alley
@@ -1123,6 +1211,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31645:
     area: tba_316
     name: West Alley
@@ -1154,6 +1244,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31646:
     area: tba_316
     name: The God's Path
@@ -1184,6 +1276,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31647:
     area: tba_316
     name: Sitting Room
@@ -1206,6 +1300,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31648:
     area: tba_316
     name: Meditation and Advancement
@@ -1225,6 +1321,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31649:
     area: tba_316
     name: The God's Path
@@ -1253,6 +1351,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31650:
     area: tba_316
     name: The God's Court
@@ -1284,6 +1384,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31651:
     area: tba_316
     name: Robes
@@ -1302,6 +1404,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31652:
     area: tba_316
     name: Holy Relics
@@ -1320,6 +1424,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31653:
     area: tba_316
     name: Books of the Gods
@@ -1338,6 +1444,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31654:
     area: tba_316
     name: Holy Weapons
@@ -1357,6 +1465,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31655:
     area: tba_316
     name: West Alley
@@ -1381,6 +1491,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31656:
     area: tba_316
     name: South Street
@@ -1410,6 +1522,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31657:
     area: tba_316
     name: West Alley
@@ -1441,6 +1555,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31658:
     area: tba_316
     name: Deathknight's Board Room
@@ -1465,6 +1581,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31659:
     area: tba_316
     name: Guild Room
@@ -1483,6 +1601,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31660:
     area: tba_316
     name: Dark Wearables
@@ -1500,6 +1620,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31661:
     area: tba_316
     name: South Dead End to West Alley
@@ -1526,6 +1648,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31662:
     area: tba_316
     name: Paladin Row
@@ -1550,6 +1674,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31663:
     area: tba_316
     name: Weapons of Choice
@@ -1568,6 +1694,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31664:
     area: tba_316
     name: South Street
@@ -1591,6 +1719,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31665:
     area: tba_316
     name: South Street
@@ -1619,6 +1749,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31666:
     area: tba_316
     name: South Street
@@ -1643,6 +1775,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31667:
     area: tba_316
     name: West Alley
@@ -1671,6 +1805,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31668:
     area: tba_316
     name: Paladin Row
@@ -1695,6 +1831,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31669:
     area: tba_316
     name: Paladin Court
@@ -1729,6 +1867,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31670:
     area: tba_316
     name: Paladin Board Room
@@ -1755,6 +1895,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31671:
     area: tba_316
     name: Paladin Guild Hall
@@ -1778,6 +1920,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31672:
     area: tba_316
     name: Paladin Outfitters
@@ -1798,6 +1942,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31673:
     area: tba_316
     name: Weapons of Honor
@@ -1819,6 +1965,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31674:
     area: tba_316
     name: A Quiet Back Street
@@ -1843,6 +1991,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31675:
     area: tba_316
     name: End of a Quiet Back Street
@@ -1873,6 +2023,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31676:
     area: tba_316
     name: Monk Board Room
@@ -1903,6 +2055,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31677:
     area: tba_316
     name: Monk Guild Room
@@ -1922,3 +2076,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

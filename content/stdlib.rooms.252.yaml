@@ -42,6 +42,8 @@ rooms:
         upper level holds a smattering of Gypsy caretakers and some rats and bats.
         Some decent eq available as well as some good exp for the high level player.
         Links: 00nw
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25201:
     area: tba_252
     name: A Winding Mountain Trail
@@ -66,6 +68,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25202:
     area: tba_252
     name: A Winding Mountain Trail
@@ -92,6 +96,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25203:
     area: tba_252
     name: A Winding Mountain Trail
@@ -116,6 +122,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25204:
     area: tba_252
     name: A Winding Mountain Trail
@@ -141,6 +149,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25205:
     area: tba_252
     name: A Winding Mountain Trail
@@ -164,6 +174,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25206:
     area: tba_252
     name: A Winding Mountain Trail
@@ -188,6 +200,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25207:
     area: tba_252
     name: A Winding Mountain Trail
@@ -213,6 +227,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25208:
     area: tba_252
     name: A Winding Mountain Trail
@@ -238,6 +254,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25209:
     area: tba_252
     name: The Castle Gates
@@ -267,6 +285,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25210:
     area: tba_252
     name: Echoing Hallway
@@ -299,6 +319,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25211:
     area: tba_252
     name: Echoing Hallway
@@ -335,6 +357,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25212:
     area: tba_252
     name: Echoing Hallway
@@ -373,6 +397,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25213:
     area: tba_252
     name: Echoing Hallway
@@ -402,6 +428,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25214:
     area: tba_252
     name: Base of Stairway
@@ -424,6 +452,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25215:
     area: tba_252
     name: A Side Hallway
@@ -448,6 +478,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25216:
     area: tba_252
     name: A Side Hallway
@@ -477,6 +509,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25217:
     area: tba_252
     name: Vaulted Chamber
@@ -498,6 +532,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25218:
     area: tba_252
     name: Feasting Chamber
@@ -526,6 +562,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25219:
     area: tba_252
     name: Balcony
@@ -547,6 +585,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25220:
     area: tba_252
     name: Empty Chamber
@@ -568,6 +608,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25221:
     area: tba_252
     name: Top of Stairway
@@ -601,6 +643,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25222:
     area: tba_252
     name: Wide Stone Stairway
@@ -624,6 +668,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25223:
     area: tba_252
     name: Wide Stone Stairway
@@ -647,6 +693,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25224:
     area: tba_252
     name: Dark Stairwell
@@ -677,6 +725,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25225:
     area: tba_252
     name: Vault
@@ -700,6 +750,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25226:
     area: tba_252
     name: Vault
@@ -725,6 +777,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25227:
     area: tba_252
     name: Vault
@@ -759,6 +813,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25228:
     area: tba_252
     name: Vault
@@ -787,6 +843,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25229:
     area: tba_252
     name: Vault
@@ -811,6 +869,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25230:
     area: tba_252
     name: Vault
@@ -842,6 +902,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25231:
     area: tba_252
     name: Candle Lit Chamber
@@ -864,6 +926,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25232:
     area: tba_252
     name: The Lord's Chamber
@@ -891,6 +955,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25233:
     area: tba_252
     name: The Lord's Coffin
@@ -909,6 +975,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25234:
     area: tba_252
     name: Narrow Stair Passage
@@ -933,6 +1001,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25235:
     area: tba_252
     name: Dark Dripping Hallway
@@ -956,6 +1026,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25236:
     area: tba_252
     name: Dark Dripping Hallway
@@ -986,6 +1058,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25237:
     area: tba_252
     name: Holding Cell
@@ -1014,6 +1088,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25238:
     area: tba_252
     name: Winding Stairs
@@ -1036,6 +1112,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25239:
     area: tba_252
     name: Winding Stairs
@@ -1058,6 +1136,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25240:
     area: tba_252
     name: Winding Stairs
@@ -1080,6 +1160,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25241:
     area: tba_252
     name: Turret
@@ -1104,3 +1186,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

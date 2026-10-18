@@ -25,6 +25,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3801:
     area: tba_38
     name: In the Northern Drainhole
@@ -71,6 +73,8 @@ rooms:
         drainhole.  They are dripping with ooze and sewage.  You feel reluctant to
         touch them, but you eventually build up the courage.  The bars are slick in
         some parts and sticky in others.  Gross!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3802:
     area: tba_38
     name: A Big Pipe
@@ -107,6 +111,8 @@ rooms:
       - grate
       description: |2
            It appears to be a red grate, but the color is very faded.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3803:
     area: tba_38
     name: A Big Pipe
@@ -139,6 +145,8 @@ rooms:
            There are small pipes to the east and west of you.  Sewage is flowing out of
         them and flows with the rest of the slime to the north.  The pipe is too small
         to climb in, not that you would want to.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3804:
     area: tba_38
     name: The Opening in the Big Pipe
@@ -183,6 +191,8 @@ rooms:
       - sign
       description: |2
            It is a big, silver sign that says "Poisonous Sewage: KEEP OUT!  "
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3805:
     area: tba_38
     name: A Secret Passage
@@ -214,6 +224,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3806:
     area: tba_38
     name: The Lair of Slaive
@@ -252,6 +264,8 @@ rooms:
         rusted helmets, bones, rotting backpacks, and other unusable items.  It seems
         to reflect the last fight of some unfortunate people.  You see what appears to
         be a metal box in the ins
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3807:
     area: tba_38
     name: The Sewer Main
@@ -274,6 +288,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3808:
     area: tba_38
     name: Sewer Main
@@ -291,6 +307,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3809:
     area: tba_38
     name: Sewer Main
@@ -304,6 +322,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3899:
     area: tba_38
     name: An Eternal Airplane to Nowhere
@@ -325,3 +345,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

@@ -46,6 +46,8 @@ rooms:
 
         Zone: 125 was linked to the following zones:
          90 Oasis                        at 14000 (west ) ---> 9031
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14001:
     area: tba_140
     name: The edge of the desert.
@@ -73,6 +75,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14002:
     area: tba_140
     name: The edge of the desert.
@@ -100,6 +104,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14003:
     area: tba_140
     name: The edge of the desert.
@@ -124,6 +130,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14004:
     area: tba_140
     name: The blasted sands.
@@ -154,6 +162,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14005:
     area: tba_140
     name: The blasted sands.
@@ -187,6 +197,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14006:
     area: tba_140
     name: The blasted sands.
@@ -220,6 +232,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14007:
     area: tba_140
     name: The blasted sands.
@@ -250,6 +264,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14008:
     area: tba_140
     name: The blasted sands.
@@ -279,6 +295,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14009:
     area: tba_140
     name: The blasted sands.
@@ -310,6 +328,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14010:
     area: tba_140
     name: The blasted sands.
@@ -341,6 +361,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14011:
     area: tba_140
     name: The blasted sands.
@@ -370,6 +392,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14012:
     area: tba_140
     name: The Blasted sands.
@@ -398,6 +422,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14013:
     area: tba_140
     name: The Blasted sands.
@@ -430,6 +456,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14014:
     area: tba_140
     name: The Blasted sands.
@@ -462,6 +490,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14015:
     area: tba_140
     name: The blasted Sands.
@@ -490,6 +520,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14016:
     area: tba_140
     name: The bad lands.
@@ -514,6 +546,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14017:
     area: tba_140
     name: The bad lands.
@@ -545,6 +579,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14018:
     area: tba_140
     name: The bad lands.
@@ -576,6 +612,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14019:
     area: tba_140
     name: The bad lands.
@@ -600,6 +638,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14020:
     area: tba_140
     name: The bad lands.
@@ -630,6 +670,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14021:
     area: tba_140
     name: The bad lands
@@ -660,6 +702,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14022:
     area: tba_140
     name: Edge of the storm.
@@ -685,6 +729,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14023:
     area: tba_140
     name: Edge of the storm.
@@ -718,6 +764,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14024:
     area: tba_140
     name: Edge of the storm.
@@ -751,6 +799,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14025:
     area: tba_140
     name: Edge of the storm.
@@ -776,6 +826,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14026:
     area: tba_140
     name: In the storm.
@@ -804,6 +856,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14027:
     area: tba_140
     name: In the storm.
@@ -837,6 +891,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14028:
     area: tba_140
     name: In the storm.
@@ -870,6 +926,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14029:
     area: tba_140
     name: In the storm.
@@ -897,6 +955,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14030:
     area: tba_140
     name: In the storm.
@@ -925,6 +985,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14031:
     area: tba_140
     name: The eye of the storm.
@@ -958,6 +1020,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14032:
     area: tba_140
     name: The eye of the storm.
@@ -991,6 +1055,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14033:
     area: tba_140
     name: In the storm.
@@ -1019,6 +1085,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14034:
     area: tba_140
     name: In the storm.
@@ -1042,6 +1110,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14035:
     area: tba_140
     name: In the storm.
@@ -1074,6 +1144,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14036:
     area: tba_140
     name: In the storm.
@@ -1102,6 +1174,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14037:
     area: tba_140
     name: In the storm.
@@ -1126,6 +1200,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14038:
     area: tba_140
     name: A huge cave.
@@ -1153,6 +1229,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14039:
     area: tba_140
     name: A large tunnel
@@ -1179,6 +1257,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14040:
     area: tba_140
     name: The city opening.
@@ -1202,6 +1282,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14041:
     area: tba_140
     name: Intersection of Claw and Scale.
@@ -1236,6 +1318,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14042:
     area: tba_140
     name: Scale way.
@@ -1262,6 +1346,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14043:
     area: tba_140
     name: Intersection of Scale and Fang.
@@ -1297,6 +1383,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14044:
     area: tba_140
     name: Scale way.
@@ -1323,6 +1411,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14045:
     area: tba_140
     name: Intersection of Scale and Spike.
@@ -1352,6 +1442,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14046:
     area: tba_140
     name: Spike road.
@@ -1387,6 +1479,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14047:
     area: tba_140
     name: Intersection of Storm and Spike.
@@ -1420,6 +1514,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14048:
     area: tba_140
     name: Storm street.
@@ -1444,6 +1540,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14049:
     area: tba_140
     name: Intersection of Storm and Claw.
@@ -1477,6 +1575,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14050:
     area: tba_140
     name: Claw road.
@@ -1501,6 +1601,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14051:
     area: tba_140
     name: Storm street.
@@ -1525,6 +1627,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14052:
     area: tba_140
     name: Intersection of Storm and Fang.
@@ -1558,6 +1662,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14053:
     area: tba_140
     name: Fang street.
@@ -1594,6 +1700,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14054:
     area: tba_140
     name: Fang street.
@@ -1618,6 +1726,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14055:
     area: tba_140
     name: Intersection of Wing and Fang.
@@ -1651,6 +1761,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14056:
     area: tba_140
     name: Wing way.
@@ -1677,6 +1789,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14057:
     area: tba_140
     name: Intersection of Wing and Claw.
@@ -1710,6 +1824,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14058:
     area: tba_140
     name: Claw road.
@@ -1757,6 +1873,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14059:
     area: tba_140
     name: Wing way.
@@ -1781,6 +1899,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14060:
     area: tba_140
     name: Intersection of Wing and Spike.
@@ -1814,6 +1934,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14061:
     area: tba_140
     name: Spike road.
@@ -1837,6 +1959,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14062:
     area: tba_140
     name: Spike road.
@@ -1863,6 +1987,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14063:
     area: tba_140
     name: Intersection of Dragon and Spike.
@@ -1893,6 +2019,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14064:
     area: tba_140
     name: Dragon drive.
@@ -1930,6 +2058,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14065:
     area: tba_140
     name: Intersection of Dragon and Claw.
@@ -1966,6 +2096,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14066:
     area: tba_140
     name: Claw road.
@@ -1991,6 +2123,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14067:
     area: tba_140
     name: Dragon drive.
@@ -2029,6 +2163,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14068:
     area: tba_140
     name: Intersection of Dragon and Fang.
@@ -2057,6 +2193,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14069:
     area: tba_140
     name: Fang street.
@@ -2081,6 +2219,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14070:
     area: tba_140
     name: Wyvern way.
@@ -2118,6 +2258,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14071:
     area: tba_140
     name: The hall of Wyverns.
@@ -2169,6 +2311,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14072:
     area: tba_140
     name: Battle.
@@ -2192,6 +2336,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14073:
     area: tba_140
     name: Sorcery.
@@ -2217,6 +2363,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14074:
     area: tba_140
     name: Shadows.
@@ -2245,6 +2393,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14075:
     area: tba_140
     name: Honor.
@@ -2269,6 +2419,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14076:
     area: tba_140
     name: The Temple of Wyverns.
@@ -2302,6 +2454,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14077:
     area: tba_140
     name: The Viewing.
@@ -2321,6 +2475,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14078:
     area: tba_140
     name: The Gathering.
@@ -2341,6 +2497,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14079:
     area: tba_140
     name: Wyvern weapons of Chaos.
@@ -2371,6 +2529,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14080:
     area: tba_140
     name: The Dragon's Feast.
@@ -2400,6 +2560,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14081:
     area: tba_140
     name: Wyvern Armors of Chaos.
@@ -2428,6 +2590,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14082:
     area: tba_140
     name: The Treasure Trove Store.
@@ -2456,6 +2620,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14083:
     area: tba_140
     name: The Dragon's Breath.
@@ -2485,6 +2651,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14084:
     area: tba_140
     name: Wyvern Wards and all things magical.
@@ -2512,6 +2680,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14085:
     area: tba_140
     name: Wyvern Water Works.
@@ -2539,6 +2709,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14086:
     area: tba_140
     name: The great cave.
@@ -2575,6 +2747,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14087:
     area: tba_140
     name: The Great Cave.
@@ -2599,6 +2773,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14088:
     area: tba_140
     name: The Great Cave.
@@ -2623,6 +2799,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14089:
     area: tba_140
     name: The Great Cave.
@@ -2653,6 +2831,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14090:
     area: tba_140
     name: The High Cavern of Wyverns.
@@ -2674,6 +2854,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14091:
     area: tba_140
     name: Guards' Cave.
@@ -2699,6 +2881,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14092:
     area: tba_140
     name: Wyvern Watch Central.
@@ -2720,6 +2904,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14093:
     area: tba_140
     name: A wyvern cave.
@@ -2743,6 +2929,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14094:
     area: tba_140
     name: A wyvern cave.
@@ -2766,6 +2954,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14095:
     area: tba_140
     name: A wyvern cave.
@@ -2789,6 +2979,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14096:
     area: tba_140
     name: A wyvern cave.
@@ -2812,6 +3004,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14097:
     area: tba_140
     name: A wyvern cave.
@@ -2835,6 +3029,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14098:
     area: tba_140
     name: A wyvern cave.
@@ -2858,6 +3054,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.14099:
     area: tba_140
     name: Wyvern Donations.
@@ -2878,3 +3076,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

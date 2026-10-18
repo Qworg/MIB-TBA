@@ -57,6 +57,8 @@ rooms:
                  from a script on two of the mobs that only runs 10% of the time
                  they don't aggro.
                  This was made with the express intention of using it as an exp zone.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25301:
     area: tba_253
     name: Upstairs - Windmill
@@ -75,6 +77,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25302:
     area: tba_253
     name: Guard Room
@@ -106,6 +110,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25303:
     area: tba_253
     name: Steel Clad Flight of Stairs
@@ -132,6 +138,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25304:
     area: tba_253
     name: Steel Clad Flight of Stairs
@@ -155,6 +163,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25305:
     area: tba_253
     name: Steel Clad Flight of Stairs
@@ -185,6 +195,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25306:
     area: tba_253
     name: Checkpoint
@@ -223,6 +235,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25307:
     area: tba_253
     name: Steel Clad Passage
@@ -251,6 +265,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25308:
     area: tba_253
     name: Steel Clad Passage
@@ -283,6 +299,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25309:
     area: tba_253
     name: Steel Clad Passage
@@ -315,6 +333,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25310:
     area: tba_253
     name: Steel Clad Passage
@@ -346,6 +366,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25311:
     area: tba_253
     name: Steel Clad Passage
@@ -382,6 +404,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25312:
     area: tba_253
     name: Steel Clad Passage
@@ -407,6 +431,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25313:
     area: tba_253
     name: Steel Clad Passage
@@ -433,6 +459,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25314:
     area: tba_253
     name: Steel Clad Passage
@@ -455,6 +483,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25315:
     area: tba_253
     name: Steel Clad Passage
@@ -485,6 +515,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25316:
     area: tba_253
     name: Steel Clad Passage
@@ -507,6 +539,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25317:
     area: tba_253
     name: Northern End of a Steel Clad Passage
@@ -529,6 +563,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25318:
     area: tba_253
     name: Steel Clad Passage
@@ -552,6 +588,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25319:
     area: tba_253
     name: Steel Clad Passage
@@ -573,6 +611,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25320:
     area: tba_253
     name: Steel Clad Passage
@@ -621,6 +661,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25321:
     area: tba_253
     name: Eastern End of a Steel Clad Passage
@@ -670,6 +712,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25322:
     area: tba_253
     name: Weapons Cache
@@ -696,6 +740,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25323:
     area: tba_253
     name: Food Stores
@@ -730,6 +776,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25324:
     area: tba_253
     name: Kitchen
@@ -769,6 +817,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25325:
     area: tba_253
     name: Mess Hall
@@ -798,6 +848,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25326:
     area: tba_253
     name: The Head
@@ -816,6 +868,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25327:
     area: tba_253
     name: Training Room
@@ -836,6 +890,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25328:
     area: tba_253
     name: Bunk Room
@@ -855,6 +911,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25329:
     area: tba_253
     name: Bunk Room
@@ -874,6 +932,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25330:
     area: tba_253
     name: Captain's Room
@@ -899,6 +959,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25331:
     area: tba_253
     name: Lieutenant's Room
@@ -923,6 +985,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25332:
     area: tba_253
     name: Sergeant's Room
@@ -949,6 +1013,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25333:
     area: tba_253
     name: General's Room
@@ -976,6 +1042,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25334:
     area: tba_253
     name: The Grand Knight's Room
@@ -1002,3 +1070,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

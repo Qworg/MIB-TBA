@@ -36,6 +36,8 @@ rooms:
         Plot         :
         Links        : 00, 99
         Map          : 01
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23501:
     area: tba_235
     name: Dwarven Mines
@@ -59,6 +61,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23502:
     area: tba_235
     name: Dwarven Mines
@@ -85,6 +89,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23503:
     area: tba_235
     name: Cove
@@ -104,6 +110,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23504:
     area: tba_235
     name: Dwarven Mines
@@ -127,6 +135,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23505:
     area: tba_235
     name: Dwarven Mines
@@ -150,6 +160,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23506:
     area: tba_235
     name: Dwarven Mines
@@ -173,6 +185,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23507:
     area: tba_235
     name: Dwarven Mines
@@ -196,6 +210,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23508:
     area: tba_235
     name: Dwarven Mines
@@ -220,6 +236,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23509:
     area: tba_235
     name: Dwarven Mines
@@ -243,6 +261,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23510:
     area: tba_235
     name: Dwarven Mines
@@ -266,6 +286,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23511:
     area: tba_235
     name: Stream
@@ -289,6 +311,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23512:
     area: tba_235
     name: Stream
@@ -312,6 +336,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23513:
     area: tba_235
     name: Dwarven Mines
@@ -335,6 +361,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23514:
     area: tba_235
     name: Dwarven Mines
@@ -358,6 +386,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23515:
     area: tba_235
     name: Dwarven Mines
@@ -380,6 +410,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23516:
     area: tba_235
     name: Dwarven Mines
@@ -407,6 +439,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23517:
     area: tba_235
     name: Dwarven Mines
@@ -430,6 +464,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23518:
     area: tba_235
     name: Dark Tunnel
@@ -454,6 +490,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23519:
     area: tba_235
     name: Dark Tunnel
@@ -478,6 +516,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23520:
     area: tba_235
     name: Dark Tunnel
@@ -502,6 +542,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23521:
     area: tba_235
     name: Dark Tunnel
@@ -526,6 +568,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23522:
     area: tba_235
     name: Dark Tunnel
@@ -550,6 +594,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23523:
     area: tba_235
     name: Dwarven Mines
@@ -578,6 +624,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23524:
     area: tba_235
     name: Dead End
@@ -597,6 +645,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23525:
     area: tba_235
     name: Dwarven Mines
@@ -620,6 +670,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23526:
     area: tba_235
     name: Dwarven Mines
@@ -643,6 +695,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23527:
     area: tba_235
     name: Dwarven Mines
@@ -666,6 +720,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23528:
     area: tba_235
     name: Dwarven Mines
@@ -694,6 +750,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23529:
     area: tba_235
     name: Dwarven Mines
@@ -717,6 +775,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23530:
     area: tba_235
     name: Dwarven Mines
@@ -741,6 +801,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23531:
     area: tba_235
     name: Dwarven Mines
@@ -764,6 +826,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23532:
     area: tba_235
     name: Dwarven Mines
@@ -787,6 +851,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23533:
     area: tba_235
     name: Dwarven Mines
@@ -810,6 +876,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23534:
     area: tba_235
     name: Narrow Path
@@ -834,6 +902,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23535:
     area: tba_235
     name: Narrow Path
@@ -857,6 +927,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23536:
     area: tba_235
     name: Narrow Path
@@ -884,6 +956,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23537:
     area: tba_235
     name: Dusty Room
@@ -903,6 +977,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23538:
     area: tba_235
     name: Narrow Path
@@ -926,6 +1002,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23539:
     area: tba_235
     name: Narrow Path
@@ -949,6 +1027,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23540:
     area: tba_235
     name: Boulder Heap
@@ -972,6 +1052,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23541:
     area: tba_235
     name: Boulder Heap
@@ -995,6 +1077,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23542:
     area: tba_235
     name: Boulder Heap
@@ -1021,6 +1105,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23543:
     area: tba_235
     name: Boulder Heap
@@ -1045,6 +1131,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23544:
     area: tba_235
     name: Narrow Passageway
@@ -1068,6 +1156,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23545:
     area: tba_235
     name: Narrow Passageway
@@ -1091,6 +1181,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23546:
     area: tba_235
     name: Dwarven Mines
@@ -1115,6 +1207,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23547:
     area: tba_235
     name: Dwarven Mines
@@ -1142,6 +1236,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23548:
     area: tba_235
     name: Top of the Waterfall
@@ -1166,6 +1262,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23549:
     area: tba_235
     name: Waterfall Slide
@@ -1189,6 +1287,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23550:
     area: tba_235
     name: Waterfall Slide
@@ -1212,6 +1312,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23551:
     area: tba_235
     name: Waterfall Slide
@@ -1235,6 +1337,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23552:
     area: tba_235
     name: Drop Off
@@ -1258,6 +1362,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23553:
     area: tba_235
     name: Pile of Illusions
@@ -1281,6 +1387,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23554:
     area: tba_235
     name: Watefall Slide
@@ -1304,6 +1412,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23555:
     area: tba_235
     name: Exit from the Waterfall
@@ -1327,6 +1437,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23556:
     area: tba_235
     name: Dwarven Mines
@@ -1350,6 +1462,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23557:
     area: tba_235
     name: Dwarven Mines
@@ -1373,6 +1487,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23558:
     area: tba_235
     name: Intersection
@@ -1401,6 +1517,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23559:
     area: tba_235
     name: Dwarven Mines
@@ -1424,6 +1542,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23560:
     area: tba_235
     name: Hole in the Floor
@@ -1451,6 +1571,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23561:
     area: tba_235
     name: Dwarven Mines
@@ -1474,6 +1596,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23562:
     area: tba_235
     name: Cove
@@ -1493,6 +1617,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23563:
     area: tba_235
     name: Hole in the Floor
@@ -1516,6 +1642,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23564:
     area: tba_235
     name: Hole in the Floor
@@ -1548,6 +1676,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23565:
     area: tba_235
     name: Tunnel
@@ -1571,6 +1701,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23566:
     area: tba_235
     name: Tunnel
@@ -1598,6 +1730,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23567:
     area: tba_235
     name: Dwarven Mines
@@ -1617,6 +1751,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23568:
     area: tba_235
     name: Dwarven Battlefield
@@ -1642,6 +1778,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23569:
     area: tba_235
     name: Battlefield Gates
@@ -1671,6 +1809,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23570:
     area: tba_235
     name: Aide Room
@@ -1691,6 +1831,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23571:
     area: tba_235
     name: Tunnel
@@ -1715,6 +1857,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23572:
     area: tba_235
     name: Stone House
@@ -1739,6 +1883,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23573:
     area: tba_235
     name: Stairwell
@@ -1759,6 +1905,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23583:
     area: tba_235
     name: Enormous Hole
@@ -1782,6 +1930,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23584:
     area: tba_235
     name: Dwarven Mines
@@ -1804,6 +1954,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23585:
     area: tba_235
     name: Barracks
@@ -1827,6 +1979,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23586:
     area: tba_235
     name: Soilders Training Room
@@ -1854,6 +2008,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23587:
     area: tba_235
     name: Battlefield Entrance
@@ -1877,6 +2033,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23588:
     area: tba_235
     name: Battlefield
@@ -1900,6 +2058,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23589:
     area: tba_235
     name: Battlefield
@@ -1923,6 +2083,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23590:
     area: tba_235
     name: Battlefield
@@ -1946,6 +2108,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23591:
     area: tba_235
     name: Marble Path
@@ -1969,6 +2133,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23592:
     area: tba_235
     name: Marble Path
@@ -1993,6 +2159,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23594:
     area: tba_235
     name: Marble Path
@@ -2016,6 +2184,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23595:
     area: tba_235
     name: Marble Path
@@ -2043,6 +2213,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23596:
     area: tba_235
     name: Passageway
@@ -2071,6 +2243,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23597:
     area: tba_235
     name: Dwarven Mines
@@ -2094,6 +2268,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23598:
     area: tba_235
     name: Stairwell
@@ -2118,6 +2294,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23599:
     area: tba_235
     name: Exit out of the Mines
@@ -2138,3 +2316,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

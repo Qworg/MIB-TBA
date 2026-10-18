@@ -58,6 +58,8 @@ rooms:
            coast line and if someone makes an underwater ocean area it would fit in
            perfect to my coast.  The numbers of my coast are 74-85, but in order it
            goes from the north to south 80 79 78 77 76 75 74 81 82 83 84 85.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7501:
     area: tba_75
     name: An Open Field
@@ -88,6 +90,8 @@ rooms:
       description: |2
            A gentle breeze sweeps across the fields.  The smell of wild flowers
         sweetens the air around you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7502:
     area: tba_75
     name: An Open Field
@@ -119,6 +123,8 @@ rooms:
       description: |2
            A gentle breeze sweeps across the fields.  The smell of wild flowers
         sweetens the air around you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7503:
     area: tba_75
     name: An Open Field
@@ -150,6 +156,8 @@ rooms:
       description: |2
            A gentle breeze sweeps across the fields.  The smell of wild flowers
         sweetens the air around you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7504:
     area: tba_75
     name: An Open Field
@@ -192,6 +200,8 @@ rooms:
       description: |2
            You see several large leaves gathered together, they seem to be a door or
         hatch.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7505:
     area: tba_75
     name: A Trap
@@ -225,6 +235,8 @@ rooms:
       description: |2
            Straining your eyes to see clearly for a brief second two red orbs of some
         sort shined.  Were those eyes?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7506:
     area: tba_75
     name: A Narrow Path
@@ -249,6 +261,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7507:
     area: tba_75
     name: A Narrow Path
@@ -272,6 +286,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7508:
     area: tba_75
     name: The Trail to Zamba
@@ -304,6 +320,8 @@ rooms:
            Glancing around you find the sourse of the noise, at least some of it.
         From what you can tell a very large bird of many colors, mostly red, is perched
         and screeching from high up in the trees.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7509:
     area: tba_75
     name: The Trail to Zamba
@@ -328,6 +346,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7510:
     area: tba_75
     name: The Gates of Zamba
@@ -362,6 +382,8 @@ rooms:
            The gate of trees stands over 50 feet tall.  Look at each tree you notice
         each one looks the same size and condition of the other ones.  The trunk of
         each tree is extremely hard and looks more like rock than wood.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7511:
     area: tba_75
     name: Inside the Gates of Zamba
@@ -394,6 +416,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7512:
     area: tba_75
     name: A Straw Hut
@@ -412,6 +436,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7513:
     area: tba_75
     name: A Straw Hut
@@ -441,6 +467,8 @@ rooms:
            A tall shelf sets against the wall.  One row seems to be clothing, another
         seems to be dishes while the next has clay figures and little things shaped out
         of what appears to be bone.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7514:
     area: tba_75
     name: A Straw Hut
@@ -465,6 +493,8 @@ rooms:
       description: |2
            Scattered about the room as if just thrown anywhere when finished is several
         different types of half devoured foods.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7515:
     area: tba_75
     name: A Straw Hut
@@ -484,6 +514,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7516:
     area: tba_75
     name: A Straw Hut
@@ -507,6 +539,8 @@ rooms:
       description: |2
            The walls are a rich clay being used to make the straw hut more durable.
         It appears to be under repairs or has been rebuilt.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7517:
     area: tba_75
     name: A Straw Hut
@@ -534,6 +568,8 @@ rooms:
            A tall shelf sets against the wall.  One row seems to be clothing, another
         seems to be dishes while the next has clay figures and little things shaped out
         of what appears to be bone.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7518:
     area: tba_75
     name: A Walkway in Zamba
@@ -567,6 +603,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7519:
     area: tba_75
     name: A Walkway in Zamba
@@ -606,6 +644,8 @@ rooms:
       description: |2
            The small boys are looking around trying to find something to practice their
         skills with the bow on.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7520:
     area: tba_75
     name: A Straw Hut
@@ -643,6 +683,8 @@ rooms:
       description: |2
            Looking closer to the floor and the broken pieces of pottery you notice what
         appears to be dried blood caked all over. The straw mat looks to be covering something.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7521:
     area: tba_75
     name: A Walkway in Zamba
@@ -684,6 +726,8 @@ rooms:
            To the south you hear music coming from inside the Tiki Lounge.  Although
         you have never heard this type of music before it is very pleasent and
         uplifting.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7522:
     area: tba_75
     name: The Tiki Lounge
@@ -714,6 +758,8 @@ rooms:
         instruments, the only instrument that looks slightly familar is what appears to
         be a drum.  Young native women are dancing to the music.  To the west older
         people sit enjoying drinks.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7523:
     area: tba_75
     name: A Walkway in Zamba
@@ -747,6 +793,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7524:
     area: tba_75
     name: Southern Clearing
@@ -782,6 +830,8 @@ rooms:
       description: |2
            It seems that the women come together in this area working together to
         accommodate most of the needs of the village.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7525:
     area: tba_75
     name: Northern Clearing
@@ -811,6 +861,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7526:
     area: tba_75
     name: Monkey Madness
@@ -843,6 +895,8 @@ rooms:
       description: |2
            Watching the creatures on the ground you see some are still hidding and
         appear to be working their way behind you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7527:
     area: tba_75
     name: The Jungle
@@ -873,6 +927,8 @@ rooms:
       description: |2
            This area is rich with wild flowers and oddly shaped trees.  Almost all the
         trees here seem to grow fruit.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7528:
     area: tba_75
     name: The Jungle
@@ -903,6 +959,8 @@ rooms:
       description: |2
            Although many trees grow here the amount of vines well exceeds the tree
         population.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7529:
     area: tba_75
     name: The Jungle
@@ -934,6 +992,8 @@ rooms:
       description: |2
            The vines here are smothering out the life of the surrounding trees.  It
         seems that nothing but vines will inhabit this area before to much longer.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7530:
     area: tba_75
     name: The Black Alter
@@ -970,6 +1030,8 @@ rooms:
         mouth of the statue is covered with dry blood.  The daggers twisted blade also
         is bloody, except it is not dry blood, the blood is fresh and slowly drips from
         the blade.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7531:
     area: tba_75
     name: The Silhouette
@@ -992,6 +1054,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7532:
     area: tba_75
     name: The Taboo Way
@@ -1028,6 +1092,8 @@ rooms:
       description: |2
            As you look closer to the tunnel you can see worms wiggling in the moist
         dirt.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7533:
     area: tba_75
     name: The Taboo Way
@@ -1058,6 +1124,8 @@ rooms:
       description: |2
            As you look closer to the tunnel you can see worms wiggling in the moist
         dirt.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7534:
     area: tba_75
     name: The Taboo Way
@@ -1091,6 +1159,8 @@ rooms:
            Looking closer you see the muddy floor is covered in worms.  Scattered
         throughout the mud and worms are hordes of small rat skeletons, clean
         completely to the bone.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7535:
     area: tba_75
     name: The Taboo Way
@@ -1122,6 +1192,8 @@ rooms:
       - earth
       description: |2
            The moist dirt is crawling with worms.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7536:
     area: tba_75
     name: The Taboo Way
@@ -1151,6 +1223,8 @@ rooms:
       - earth
       description: |2
            The moist dirt is crawling with worms.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7537:
     area: tba_75
     name: The Taboo Way
@@ -1181,6 +1255,8 @@ rooms:
       description: |2
            The ground is only slightly moist and appears to not have any worms wiggling
         about.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7538:
     area: tba_75
     name: The Taboo Way
@@ -1210,6 +1286,8 @@ rooms:
       - wall
       description: |2
            A burning torch is mounted to the wall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7539:
     area: tba_75
     name: The Taboo Way
@@ -1239,6 +1317,8 @@ rooms:
       description: |2+
            This room appears to be old but used quite often by some sort of magic user.
 
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7540:
     area: tba_75
     name: A Stone Stairway
@@ -1271,6 +1351,8 @@ rooms:
            Each step seems to lead off to another step that looks exactly as the one
         before it.  Even the side of the mountain with its unusual symbols seems to
         repeat in order the unusual markings over and over.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7541:
     area: tba_75
     name: A Stone Stairway
@@ -1305,6 +1387,8 @@ rooms:
            Each step leads off to another step that looks exactly as the one before it.
         Even the side of the mountain with its unusual carvings of symbols and beast
         seem to repeat in an order the same markings over and over.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7542:
     area: tba_75
     name: A Stone Stairway
@@ -1338,6 +1422,8 @@ rooms:
            Each step leads off to another step that looks exactly as the one before it.
         Even the side of the mountain with its unusual carvings of symbols and beast
         seem to repeat in an order the same markings over and over.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7543:
     area: tba_75
     name: A Stone Stairway
@@ -1372,6 +1458,8 @@ rooms:
            Each step leads off to another step that looks exactly as the one before it.
         Even the side of the mountain with its unusual carvings of symbols and beast
         seem to repeat in an order the same markings over and over.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7544:
     area: tba_75
     name: A Stone Stairway
@@ -1406,6 +1494,8 @@ rooms:
            Each step leads off to another step that looks exactly as the one before it.
         Even the side of the mountain with its unusual carvings of symbols and beast
         seem to repeat in an order the same markings over and over.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7545:
     area: tba_75
     name: A Stone Stairway
@@ -1440,6 +1530,8 @@ rooms:
            Each step leads off to another step that looks exactly as the one before it.
         Even the side of the mountain with its unusual carvings of symbols and beast
         seem to repeat in an order the same markings over and over.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7546:
     area: tba_75
     name: A Stone Stairway
@@ -1474,6 +1566,8 @@ rooms:
            Each step leads off to another step that looks exactly as the one before it.
         Even the side of the mountain with its unusual carvings of symbols and beast
         seem to repeat in an order the same markings over and over.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7547:
     area: tba_75
     name: A Stone Stairway
@@ -1508,6 +1602,8 @@ rooms:
            Each step leads off to another step that looks exactly as the one before it.
         Even the side of the mountain with its unusual carvings of symbols and beast
         seem to repeat in an order the same markings over and over.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7548:
     area: tba_75
     name: A Stone Stairway
@@ -1542,6 +1638,8 @@ rooms:
            Each step leads off to another step that looks exactly as the one before it.
         Even the side of the mountain with its unusual carvings of symbols and beast
         seem to repeat in an order the same markings over and over.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7549:
     area: tba_75
     name: A Stone Stairway
@@ -1576,6 +1674,8 @@ rooms:
            Each step leads off to another step that looks exactly as the one before it.
         Even the side of the mountain with its unusual carvings of symbols and beast
         seem to repeat in an order the same markings over and over.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7550:
     area: tba_75
     name: The Top of Mount Zamba
@@ -1612,6 +1712,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7551:
     area: tba_75
     name: The Fortress Foyer
@@ -1646,6 +1748,8 @@ rooms:
       description: |2
            The statues are quite unique and look to of been crafted by the hands of a
         maste sculptor.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7552:
     area: tba_75
     name: A Small Parlor
@@ -1681,6 +1785,8 @@ rooms:
       description: |2
            The chairs and sofa are thick with padding and made of a brown leather that
         has been treated to make it soft and smooth.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7553:
     area: tba_75
     name: A Long Corridor
@@ -1707,6 +1813,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7554:
     area: tba_75
     name: A Long Corridor
@@ -1729,6 +1837,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7555:
     area: tba_75
     name: A Long Corridor
@@ -1762,6 +1872,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7556:
     area: tba_75
     name: A Long Corridor
@@ -1800,6 +1912,8 @@ rooms:
         under her black hair and tan skin.  She has striking blue eyes unlike the other
         natives with their dark brown eyes.  A gold plaque is mounted to the wall under
         the painting.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7557:
     area: tba_75
     name: A Long Corridor
@@ -1823,6 +1937,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7558:
     area: tba_75
     name: A Split in the Corridor
@@ -1865,6 +1981,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7559:
     area: tba_75
     name: The Gathering Room
@@ -1904,6 +2022,8 @@ rooms:
       description: |2
            The room is bright and airy.  Everything around the room and the room itself
         is a snow white giving the room an aura of purity.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7560:
     area: tba_75
     name: The Balcony
@@ -1930,6 +2050,8 @@ rooms:
       description: |2
            The balcony is made of solid stone with a waist high stone rail.  A large
         canopy hangs over the balcony for protection.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7561:
     area: tba_75
     name: The Kitchen
@@ -1953,6 +2075,8 @@ rooms:
       description: |2
            Bowls filled with fruit, cooked meats, and many other delicious foods are
         neatly placed here being arranged on silver platters and in exquisite bowls.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7562:
     area: tba_75
     name: The Pantry
@@ -1973,6 +2097,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7563:
     area: tba_75
     name: A Tiny Hall
@@ -2001,6 +2127,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7564:
     area: tba_75
     name: A Tiny Hall
@@ -2044,6 +2172,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7565:
     area: tba_75
     name: A Tiny Hall
@@ -2083,6 +2213,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7566:
     area: tba_75
     name: A Black Room
@@ -2107,6 +2239,8 @@ rooms:
       - alter
       description: |2
            The alter is made of a black stone.  The alter is empty.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7567:
     area: tba_75
     name: A Small Bedroom
@@ -2142,6 +2276,8 @@ rooms:
       - trunk
       description: |2
            The wooden trunk is plain except for having a large lock holding it shut.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7568:
     area: tba_75
     name: An Office
@@ -2179,6 +2315,8 @@ rooms:
       description: |2
            The shelf is a display case of many unique weapons.  It is made of a strong
         oak wood.  The front of the shelf is a glass door.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7569:
     area: tba_75
     name: A Small Bedroom
@@ -2206,6 +2344,8 @@ rooms:
       description: |2
            The table has lying on it neatly a hairbrush, comb, and a hand held mirror.
         The items are carved from a dark wood and skillfully crafted.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7570:
     area: tba_75
     name: A Dark Corridor
@@ -2244,6 +2384,8 @@ rooms:
       - door
       description: |2
            The double doors are encraved with the image of a royal seal.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7571:
     area: tba_75
     name: The Throne Room
@@ -2286,6 +2428,8 @@ rooms:
            The beautiful golden pots hardly compare to the wonderful flowers each one
         contains.  A mixture of colors blended together well in each floral
         arrangement.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7572:
     area: tba_75
     name: A Grand Bedchamber
@@ -2319,6 +2463,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7573:
     area: tba_75
     name: A Huge Bath
@@ -2339,6 +2485,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7574:
     area: tba_75
     name: A Sandy Beach
@@ -2367,6 +2515,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7575:
     area: tba_75
     name: A Sandy Beach
@@ -2391,6 +2541,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7576:
     area: tba_75
     name: A Sandy Beach
@@ -2415,6 +2567,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7577:
     area: tba_75
     name: A Sandy Beach
@@ -2444,6 +2598,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7578:
     area: tba_75
     name: A Sandy Beach
@@ -2467,6 +2623,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7579:
     area: tba_75
     name: A Sandy Beach
@@ -2487,6 +2645,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7580:
     area: tba_75
     name: A Sandy Beach
@@ -2514,6 +2674,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7581:
     area: tba_75
     name: A Sandy Beach
@@ -2538,6 +2700,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7582:
     area: tba_75
     name: A Sandy Beach
@@ -2562,6 +2726,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7583:
     area: tba_75
     name: A Sandy Beach
@@ -2587,6 +2753,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7584:
     area: tba_75
     name: A Sandy Beach
@@ -2611,6 +2779,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7585:
     area: tba_75
     name: A Sandy Haven
@@ -2639,6 +2809,8 @@ rooms:
            This area of the beach appears to be private because of the ocean to the
         west, jagged rocks to the south, trees to the east and the only way out a sandy
         hill north.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7586:
     area: tba_75
     name: Market Row
@@ -2667,6 +2839,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7587:
     area: tba_75
     name: Market Row
@@ -2694,6 +2868,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7588:
     area: tba_75
     name: A Small Shop
@@ -2721,6 +2897,8 @@ rooms:
       - wall
       description: |2
            It doesn't look like this shop has been cleaned in a very long time.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7589:
     area: tba_75
     name: A Fruit Stand
@@ -2747,6 +2925,8 @@ rooms:
       description: |2
            Small baskets line the stand containing different types of fruit.  The
         different fruits all look very tasty and juicy.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7590:
     area: tba_75
     name: A Magic Shop
@@ -2774,6 +2954,8 @@ rooms:
       description: |2+
            The jars contain eyeballs, animal organs, herbs, and what resembles blood.
 
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7591:
     area: tba_75
     name: Deep in the Forest
@@ -2805,6 +2987,8 @@ rooms:
       description: |2
            To the west side of the forest the trees are full of song birds singing and
         chirping, to the east the trees are empty and quite.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7592:
     area: tba_75
     name: Deep in the Forest
@@ -2837,6 +3021,8 @@ rooms:
            A thick layer of fog seems trapped in this part of the forest.  Although the
         wind is blowing the fog doesn't appear to be moving only the dry leaves and
         small limbs of the trees seem to feel the wind.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7593:
     area: tba_75
     name: Deep in the Forest
@@ -2869,6 +3055,8 @@ rooms:
       description: |2
            Everything seems frozen in place, nothing is moving or making a sound except
         for the distant howling.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7594:
     area: tba_75
     name: Deep in the Forest
@@ -2900,6 +3088,8 @@ rooms:
       description: |2
            The cold and quiteness the forest has taken on is very odd.  It is as if
         nothing living is here.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7595:
     area: tba_75
     name: Deep in the Forest
@@ -2930,6 +3120,8 @@ rooms:
       description: |2
            An owl sits high in one of the trees.  Its large yellow eyes seems to see
         everything.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7596:
     area: tba_75
     name: A Forest Trail
@@ -2959,6 +3151,8 @@ rooms:
       description: |2
            Several different types of bird are scattered about the many trees singing,
         chirping and some resting.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7597:
     area: tba_75
     name: The Forest Trail
@@ -2987,6 +3181,8 @@ rooms:
       - trail
       description: |2
            A squirrel quickly scurries up the nearest tree.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7598:
     area: tba_75
     name: The Forest
@@ -3018,3 +3214,5 @@ rooms:
            The trail is a hard, dry, firmly, packed dirt that looks easy to haul a
         large wagon on.  Perhaps at one time it had been a main road but now it is void
         of any type of tracks other than a few animal tracks.
+    ambient_phases: {}
+    ambient_weather: {}

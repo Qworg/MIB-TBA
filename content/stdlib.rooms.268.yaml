@@ -48,6 +48,8 @@ rooms:
         267 Vice Island                    at 26800 (west ) ---> 26798
         267 Vice Island                    at 26804 (east ) ---> 26797
         267 Vice Island                    at 26804 (south) ---> 26792
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26801:
     area: tba_268
     name: Deadly Iron Maiden
@@ -67,6 +69,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26802:
     area: tba_268
     name: Blindingly lit hallway
@@ -99,6 +103,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26803:
     area: tba_268
     name: The HellFire Room
@@ -120,6 +126,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26804:
     area: tba_268
     name: Grand Temple of Terror
@@ -154,3 +162,5 @@ rooms:
       - drawings
       description: |2
            Don't look at them any more closely than you have to!
+    ambient_phases: {}
+    ambient_weather: {}

@@ -60,6 +60,8 @@ rooms:
           7 Camelot                        at  1644 (south) --->   795
           7 Camelot                        at  1648 (south) --->   785
          17 Camelot III                    at  1671 (west ) --->  1796
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1601:
     area: tba_16
     name: East Lane
@@ -84,6 +86,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1602:
     area: tba_16
     name: Courtyard
@@ -115,6 +119,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1603:
     area: tba_16
     name: Courtyard
@@ -142,6 +148,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1604:
     area: tba_16
     name: Courtyard
@@ -174,6 +182,8 @@ rooms:
         defenseless.  The threat comes from a time portal to the northwest where the
         dead have returned and seek to gain possession of Camelot.  Very few know the
         truth.....  The note suddenly dissolves in your hands.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1605:
     area: tba_16
     name: Main Hall
@@ -200,6 +210,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1606:
     area: tba_16
     name: Meeting Room
@@ -218,6 +230,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1607:
     area: tba_16
     name: Scullery
@@ -240,6 +254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1608:
     area: tba_16
     name: Kitchen
@@ -273,6 +289,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1609:
     area: tba_16
     name: Center Lane
@@ -296,6 +314,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1610:
     area: tba_16
     name: Noble's Bedroom
@@ -314,6 +334,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1611:
     area: tba_16
     name: Nobles' Quarters
@@ -340,6 +362,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1612:
     area: tba_16
     name: Knights' Quarters
@@ -367,6 +391,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1613:
     area: tba_16
     name: Meeting Room
@@ -387,6 +413,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1614:
     area: tba_16
     name: Squires' Quarters
@@ -411,6 +439,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1615:
     area: tba_16
     name: Knights Way
@@ -439,6 +469,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1616:
     area: tba_16
     name: Dark Alley
@@ -463,6 +495,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1617:
     area: tba_16
     name: Merlin's Tower
@@ -486,6 +520,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1618:
     area: tba_16
     name: Merlin's Tower
@@ -508,6 +544,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1619:
     area: tba_16
     name: Merlin's Tower
@@ -530,6 +568,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1620:
     area: tba_16
     name: Merlin's Tower
@@ -552,6 +592,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1621:
     area: tba_16
     name: Hidden Passage
@@ -581,6 +623,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1622:
     area: tba_16
     name: Hidden Passage
@@ -604,6 +648,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1623:
     area: tba_16
     name: Hidden Passage
@@ -632,6 +678,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1624:
     area: tba_16
     name: Open Field
@@ -656,6 +704,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1625:
     area: tba_16
     name: A Wide Dirt Path
@@ -680,6 +730,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1626:
     area: tba_16
     name: East Lane
@@ -704,6 +756,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1627:
     area: tba_16
     name: Blacksmith
@@ -726,6 +780,8 @@ rooms:
       - sign
       description: |2
            Blacksmith closed, by order of the King.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1628:
     area: tba_16
     name: Armory
@@ -747,6 +803,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1629:
     area: tba_16
     name: Waiting Room
@@ -767,6 +825,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1630:
     area: tba_16
     name: Main Hall
@@ -798,6 +858,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1631:
     area: tba_16
     name: The Temple of Camelot
@@ -817,6 +879,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1632:
     area: tba_16
     name: Kitchen
@@ -839,6 +903,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1633:
     area: tba_16
     name: Kitchen
@@ -867,6 +933,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1634:
     area: tba_16
     name: Center Lane
@@ -894,6 +962,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1635:
     area: tba_16
     name: Noble's Quarters
@@ -913,6 +983,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1636:
     area: tba_16
     name: Common Room
@@ -939,6 +1011,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1637:
     area: tba_16
     name: Knights' Quarters
@@ -965,6 +1039,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1638:
     area: tba_16
     name: Barracks
@@ -983,6 +1059,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1639:
     area: tba_16
     name: Squires' Barracks
@@ -1005,6 +1083,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1640:
     area: tba_16
     name: Knights Way
@@ -1032,6 +1112,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1641:
     area: tba_16
     name: Feast Hall
@@ -1055,6 +1137,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1642:
     area: tba_16
     name: Feast Hall
@@ -1077,6 +1161,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1643:
     area: tba_16
     name: Feast Hall
@@ -1096,6 +1182,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1644:
     area: tba_16
     name: West Lane
@@ -1118,6 +1206,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1645:
     area: tba_16
     name: Merlin's Tower
@@ -1150,6 +1240,8 @@ rooms:
         language you understand.  It says: BEWARE OF DEMON!  I have imprisoned a FOUL,
         NASTY, EXTREMELY POWERFUL demon in this pentagram.  THERE IS NOTHING OF WORTH IN
         THE PENTAGRAM.  - Merlin
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1646:
     area: tba_16
     name: Northeast Tower
@@ -1171,6 +1263,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1647:
     area: tba_16
     name: North Tower
@@ -1191,6 +1285,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1648:
     area: tba_16
     name: Hidden Room
@@ -1224,6 +1320,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1649:
     area: tba_16
     name: Open Field
@@ -1248,6 +1346,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1650:
     area: tba_16
     name: A Wide Dirt Path
@@ -1272,6 +1372,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1651:
     area: tba_16
     name: North Lane
@@ -1300,6 +1402,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1652:
     area: tba_16
     name: North Lane
@@ -1323,6 +1427,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1653:
     area: tba_16
     name: North Lane
@@ -1346,6 +1452,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1654:
     area: tba_16
     name: North Lane
@@ -1369,6 +1477,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1655:
     area: tba_16
     name: North Lane
@@ -1396,6 +1506,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1656:
     area: tba_16
     name: North Lane
@@ -1419,6 +1531,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1657:
     area: tba_16
     name: North Lane
@@ -1442,6 +1556,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1658:
     area: tba_16
     name: North Lane
@@ -1465,6 +1581,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1659:
     area: tba_16
     name: North Lane
@@ -1493,6 +1611,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1660:
     area: tba_16
     name: Noble's Quarters
@@ -1512,6 +1632,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1661:
     area: tba_16
     name: Garden
@@ -1540,6 +1662,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1662:
     area: tba_16
     name: Knights' Quarters
@@ -1566,6 +1690,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1663:
     area: tba_16
     name: Barracks
@@ -1585,6 +1711,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1664:
     area: tba_16
     name: Squires' Barracks
@@ -1608,6 +1736,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1665:
     area: tba_16
     name: Knights Way
@@ -1635,6 +1765,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1666:
     area: tba_16
     name: Tower of Valor
@@ -1657,6 +1789,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1667:
     area: tba_16
     name: Tower of Valor
@@ -1689,6 +1823,8 @@ rooms:
         the dragon and charges across the verdant green.  The dragon raises its
         serpentine head and inhales a mighty breath.  George and mount thunder
         though the tall grass.  The dragon- You snap out of your vision
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1668:
     area: tba_16
     name: Tower of Valor
@@ -1715,6 +1851,8 @@ rooms:
         charger, racing back along the road.  Lancelot turns to mount his charger, but a
         feminine hand restrains him, beckoning to the cool shade under the oaks.
         Lancelot turns to face Guinevere- You snap out of your vision.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1669:
     area: tba_16
     name: West Lane
@@ -1738,6 +1876,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1670:
     area: tba_16
     name: Inside the Pentagram
@@ -1756,6 +1896,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1671:
     area: tba_16
     name: Beautiful Hall
@@ -1779,6 +1921,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1672:
     area: tba_16
     name: Neglected Hallway
@@ -1801,6 +1945,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1673:
     area: tba_16
     name: Bedroom
@@ -1820,6 +1966,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1674:
     area: tba_16
     name: Open Field
@@ -1844,6 +1992,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1675:
     area: tba_16
     name: A Wide Dirt Path
@@ -1868,6 +2018,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1676:
     area: tba_16
     name: A Wide Dirt Path
@@ -1892,6 +2044,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1677:
     area: tba_16
     name: A Wide Dirt Path
@@ -1916,6 +2070,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1678:
     area: tba_16
     name: A Wide Dirt Path
@@ -1940,6 +2096,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1679:
     area: tba_16
     name: Battle Field
@@ -1965,6 +2123,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1680:
     area: tba_16
     name: Battle Field
@@ -1989,6 +2149,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1681:
     area: tba_16
     name: Battle Field
@@ -2013,6 +2175,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1682:
     area: tba_16
     name: Battle Field
@@ -2037,6 +2201,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1683:
     area: tba_16
     name: Battle Field
@@ -2060,6 +2226,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1684:
     area: tba_16
     name: Battle Field
@@ -2084,6 +2252,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1685:
     area: tba_16
     name: Foothills
@@ -2108,6 +2278,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1686:
     area: tba_16
     name: Sitting Room
@@ -2127,6 +2299,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1687:
     area: tba_16
     name: Knights' Quarters
@@ -2149,6 +2323,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1688:
     area: tba_16
     name: Barracks
@@ -2167,6 +2343,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1689:
     area: tba_16
     name: Squires' Study
@@ -2186,6 +2364,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1690:
     area: tba_16
     name: The Round Table
@@ -2207,6 +2387,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1691:
     area: tba_16
     name: Study
@@ -2235,6 +2417,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1692:
     area: tba_16
     name: Study
@@ -2263,6 +2447,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1693:
     area: tba_16
     name: Torture Room
@@ -2287,6 +2473,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1694:
     area: tba_16
     name: Northwest Tower
@@ -2306,6 +2494,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1695:
     area: tba_16
     name: West Lane
@@ -2329,6 +2519,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1696:
     area: tba_16
     name: Neglected Hallway
@@ -2351,6 +2543,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1697:
     area: tba_16
     name: Neglected Hallway
@@ -2377,6 +2571,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1698:
     area: tba_16
     name: Bedroom
@@ -2396,6 +2592,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1699:
     area: tba_16
     name: Battle Field
@@ -2423,3 +2621,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

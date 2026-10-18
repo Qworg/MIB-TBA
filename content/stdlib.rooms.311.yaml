@@ -21,6 +21,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31101:
     area: tba_311
     name: Through the Mountain
@@ -49,6 +51,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31102:
     area: tba_311
     name: Halfway Through the Mountain
@@ -76,6 +80,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31103:
     area: tba_311
     name: Just East of the Western Exit
@@ -103,6 +109,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31104:
     area: tba_311
     name: The Northern Exit
@@ -133,6 +141,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31105:
     area: tba_311
     name: High Along the Dragon's Teeth - In Midair
@@ -157,6 +167,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31106:
     area: tba_311
     name: High Along the Dragon's Teeth - In Midair
@@ -185,6 +197,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31107:
     area: tba_311
     name: The Upper Reaches of the Dragon's Teeth
@@ -210,6 +224,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31108:
     area: tba_311
     name: The Upper Reaches of the Dragon's Teeth
@@ -243,6 +259,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31109:
     area: tba_311
     name: The Upper Reaches of the Dragon's Teeth
@@ -276,6 +294,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31110:
     area: tba_311
     name: The Upper Reaches of the Dragon's Teeth
@@ -305,6 +325,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31111:
     area: tba_311
     name: The Upper Reaches of the Dragon's Teeth at a Cave Entrance
@@ -337,6 +359,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31112:
     area: tba_311
     name: The Upper Reaches of the Dragon's Teeth
@@ -366,6 +390,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31113:
     area: tba_311
     name: The Upper Reaches of the Dragon's Teeth
@@ -395,6 +421,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31114:
     area: tba_311
     name: An Outcrop of Rock
@@ -419,6 +447,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31115:
     area: tba_311
     name: An Entrance Into an Enormous Cavern
@@ -445,6 +475,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31116:
     area: tba_311
     name: An Opening in the Cliff Face
@@ -473,6 +505,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31117:
     area: tba_311
     name: Along the Dragon's Teeth, Flying in Midair
@@ -505,6 +539,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31118:
     area: tba_311
     name: Along the Dragon's Teeth, Flying in Midair
@@ -538,6 +574,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31119:
     area: tba_311
     name: Along the Dragon's Teeth, Flying in Midair
@@ -571,6 +609,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31120:
     area: tba_311
     name: Along the Dragon's Teeth, Flying in Midair
@@ -606,6 +646,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31121:
     area: tba_311
     name: Along the Dragon's Teeth, Flying in Midair
@@ -639,6 +681,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31122:
     area: tba_311
     name: Along the Dragon's Teeth, Flying in Midair
@@ -672,6 +716,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31123:
     area: tba_311
     name: Along the Dragon's Teeth, Flying in Midair
@@ -705,6 +751,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31124:
     area: tba_311
     name: Along the Dragon's Teeth, Flying in Midair
@@ -731,6 +779,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31125:
     area: tba_311
     name: In Midair, Skirting the Dragon's Teeth
@@ -756,6 +806,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31126:
     area: tba_311
     name: In Midair, Skirting the Dragon's Teeth
@@ -789,6 +841,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31127:
     area: tba_311
     name: In Midair, Skirting the Dragon's Teeth
@@ -822,6 +876,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31128:
     area: tba_311
     name: In Midair, Skirting the Dragon's Teeth
@@ -855,6 +911,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31129:
     area: tba_311
     name: In Midair, Skirting the Dragon's Teeth
@@ -890,6 +948,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31130:
     area: tba_311
     name: In Midair, Skirting the Dragon's Teeth
@@ -924,6 +984,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31131:
     area: tba_311
     name: In Midair, Skirting the Dragon's Teeth
@@ -957,6 +1019,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31132:
     area: tba_311
     name: In Midair, Skirting the Dragon's Teeth
@@ -990,6 +1054,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31133:
     area: tba_311
     name: At a Polished Cave Entrance
@@ -1018,6 +1084,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31134:
     area: tba_311
     name: Flying Along the Face of the Dragon's Teeth
@@ -1046,6 +1114,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31135:
     area: tba_311
     name: Entryway Into a Dark Cave
@@ -1081,6 +1151,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31136:
     area: tba_311
     name: Flying Along the Face of the Dragon's Teeth
@@ -1113,6 +1185,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31137:
     area: tba_311
     name: Flying Along the Face of the Dragon's Teeth
@@ -1145,6 +1219,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31138:
     area: tba_311
     name: Flying Along the Face of the Dragon's Teeth
@@ -1177,6 +1253,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31139:
     area: tba_311
     name: Flying Along the Face of the Dragon's Teeth
@@ -1213,6 +1291,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31140:
     area: tba_311
     name: Flying Along the Face of the Dragon's Teeth
@@ -1241,6 +1321,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31141:
     area: tba_311
     name: The Entry Into a Smaller Cave
@@ -1271,6 +1353,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31142:
     area: tba_311
     name: Flying the Teeth
@@ -1304,6 +1388,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31143:
     area: tba_311
     name: Flying the Teeth
@@ -1336,6 +1422,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31144:
     area: tba_311
     name: Flying the Teeth
@@ -1368,6 +1456,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31145:
     area: tba_311
     name: Flying the Teeth
@@ -1400,6 +1490,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31146:
     area: tba_311
     name: Flying the Teeth
@@ -1432,6 +1524,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31147:
     area: tba_311
     name: Flying the Teeth
@@ -1464,6 +1558,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31148:
     area: tba_311
     name: Flying the Teeth
@@ -1492,6 +1588,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31149:
     area: tba_311
     name: In Midair Along the Cliff Face
@@ -1516,6 +1614,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31150:
     area: tba_311
     name: In Midair Along the Cliff Face
@@ -1544,6 +1644,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31151:
     area: tba_311
     name: In Midair Along the Cliff Face
@@ -1576,6 +1678,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31152:
     area: tba_311
     name: In Midair Along the Cliff Face
@@ -1608,6 +1712,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31153:
     area: tba_311
     name: In Midair Along the Cliff Face
@@ -1640,6 +1746,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31154:
     area: tba_311
     name: In Midair Along the Cliff Face
@@ -1672,6 +1780,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31155:
     area: tba_311
     name: In Midair Along the Cliff Face
@@ -1704,6 +1814,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31156:
     area: tba_311
     name: In Midair Along the Cliff Face
@@ -1732,6 +1844,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31157:
     area: tba_311
     name: Near Ground Level - in Midair
@@ -1761,6 +1875,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31158:
     area: tba_311
     name: Near Ground Level - in Midair
@@ -1794,6 +1910,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31159:
     area: tba_311
     name: Near Ground Level - in Midair
@@ -1827,6 +1945,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31160:
     area: tba_311
     name: Near Ground Level - in Midair
@@ -1860,6 +1980,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31161:
     area: tba_311
     name: Near Ground Level - in Midair
@@ -1893,6 +2015,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31162:
     area: tba_311
     name: Near Ground Level - in Midair
@@ -1918,6 +2042,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31163:
     area: tba_311
     name: Flying Just Above the Ground on the Cliff Face
@@ -1944,6 +2070,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31164:
     area: tba_311
     name: Flying Just Above the Ground on the Cliff Face
@@ -1974,6 +2102,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31165:
     area: tba_311
     name: In Midair Above a Guard Post
@@ -2002,6 +2132,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31166:
     area: tba_311
     name: Flying Just Above the Ground on the Cliff Face
@@ -2032,6 +2164,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31167:
     area: tba_311
     name: Flying Just Above the Ground on the Cliff Face
@@ -2058,6 +2192,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31168:
     area: tba_311
     name: Entrance into a Black Cave
@@ -2083,6 +2219,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31169:
     area: tba_311
     name: In a Darkened Cave
@@ -2108,6 +2246,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31170:
     area: tba_311
     name: A Feeling of Immensity
@@ -2132,6 +2272,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31171:
     area: tba_311
     name: A Feeling of Immensity
@@ -2152,6 +2294,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31172:
     area: tba_311
     name: Entrance to a Dragon's Cave
@@ -2176,6 +2320,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31173:
     area: tba_311
     name: A Hot, Humid Cave
@@ -2201,6 +2347,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31174:
     area: tba_311
     name: Lair of the Red Dragon
@@ -2224,6 +2372,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31175:
     area: tba_311
     name: Lair of the Red Dragon
@@ -2245,6 +2395,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31176:
     area: tba_311
     name: A Humid Cave Entrance
@@ -2269,6 +2421,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31177:
     area: tba_311
     name: A Humid Cave
@@ -2293,6 +2447,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31178:
     area: tba_311
     name: Lair of the Blue Dragon
@@ -2317,6 +2473,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31179:
     area: tba_311
     name: Lair of the Blue Dragon
@@ -2337,6 +2495,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31180:
     area: tba_311
     name: Cave Entrance
@@ -2361,6 +2521,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31181:
     area: tba_311
     name: Slimy Cave
@@ -2385,6 +2547,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31182:
     area: tba_311
     name: A Slimy Bend
@@ -2408,6 +2572,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31183:
     area: tba_311
     name: Lair of the Green Dragon
@@ -2428,6 +2594,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31184:
     area: tba_311
     name: Cold, Wet Cave Entrance
@@ -2452,6 +2620,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31185:
     area: tba_311
     name: A Cold Cave
@@ -2475,6 +2645,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31186:
     area: tba_311
     name: The Frost Cavern
@@ -2498,6 +2670,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31187:
     area: tba_311
     name: The Frost Cavern
@@ -2517,6 +2691,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31188:
     area: tba_311
     name: Entrance to a Glowing Cave
@@ -2541,6 +2717,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31189:
     area: tba_311
     name: A Glowing Cave
@@ -2563,6 +2741,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31190:
     area: tba_311
     name: Lair of the Crystal Dragon
@@ -2587,6 +2767,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31191:
     area: tba_311
     name: Lair of the Crystal Dragon
@@ -2607,6 +2789,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31192:
     area: tba_311
     name: Entrance to the Emerald Cave
@@ -2630,6 +2814,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31193:
     area: tba_311
     name: In an Emerald Cave
@@ -2654,6 +2840,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31194:
     area: tba_311
     name: The Emerald Lair
@@ -2677,6 +2865,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31195:
     area: tba_311
     name: The Emerald Lair
@@ -2696,6 +2886,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31196:
     area: tba_311
     name: A Smaller Cave Entrance
@@ -2720,6 +2912,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31197:
     area: tba_311
     name: A Scorched Cave
@@ -2744,6 +2938,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31198:
     area: tba_311
     name: Fire-Blasted Cavern
@@ -2766,6 +2962,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31199:
     area: tba_311
     name: Fire-Blasted Cavern
@@ -2784,3 +2982,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

@@ -172,6 +172,7 @@ impl Plugin for TbaPlugin {
         app.init_resource::<TbaObjectClock>();
         app.init_resource::<TbaParties>();
         app.init_resource::<crate::spec::TbaSpecRng>();
+        app.init_resource::<crate::mail::MailCompose>();
         app.init_schedule(TbaRound);
         crate::dg::register(app);
 
@@ -240,6 +241,25 @@ impl Plugin for TbaPlugin {
             crate::spec::intercept_block_way
                 .in_set(CommandSet::PreRoute)
                 .after(crate::dg::intake::DgIntake::PreCommit),
+        );
+        // A mail compose body is consumed before the DG command gate so a
+        // body line is never offered to a trigger or the router.
+        app.add_systems(
+            Update,
+            crate::mail::compose_mail_input
+                .in_set(CommandSet::PreRoute)
+                .before(crate::dg::intake::DgIntake::CommandGate),
+        );
+        app.add_systems(
+            Update,
+            (
+                crate::mail::ensure_mailboxes,
+                crate::mail::seed_player_mail,
+                crate::mail::handle_mail_commands,
+            )
+                .chain()
+                .in_set(BridgeSet::Game)
+                .after(route_commands),
         );
         // Player progression and the genre command seam, after the stdlib
         // router that emits `CharacterCreated` and no-ops `attack`/`flee`.

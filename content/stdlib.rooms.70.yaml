@@ -24,6 +24,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7001:
     area: tba_70
     name: The Muddy Sewer
@@ -47,6 +49,8 @@ rooms:
       description: |2
            It is as dark as tar and looks like something out of a toilet, on top of
         that, the smell is absolutely overwhelming.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7002:
     area: tba_70
     name: The Muddy Sewer Junction
@@ -79,6 +83,8 @@ rooms:
       description: |2
            It is as dark as tar and looks like something out of a toilet, on top of
         that, the smell is absolutely overwhelming.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7003:
     area: tba_70
     name: The Mudhole
@@ -109,6 +115,8 @@ rooms:
       description: |2
            It is as dark as tar and looks like something out of a toilet, on top of
         that, the smell is absolutely overwhelming.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7004:
     area: tba_70
     name: The Dark Pit
@@ -132,6 +140,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7005:
     area: tba_70
     name: The Muddy Sewer
@@ -160,6 +170,8 @@ rooms:
       description: |2
            It is as dark as tar and looks like something out of a toilet, on top of
         that, the smell is absolutely overwhelming.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7006:
     area: tba_70
     name: The Muddy Sewer
@@ -188,6 +200,8 @@ rooms:
       description: |2
            It is as dark as tar and looks like something out of a toilet, on top of
         that, the smell is absolutely overwhelming.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7007:
     area: tba_70
     name: The Muddy Sewer Bend
@@ -216,6 +230,8 @@ rooms:
       description: |2
            It is as dark as tar and looks like something out of a toilet, on top of
         that, the smell is absolutely overwhelming.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7008:
     area: tba_70
     name: A Muddy Intersection
@@ -249,6 +265,8 @@ rooms:
       description: |2
            It is as dark as tar and looks like something out of a toilet, on top of
         that, the smell is absolutely overwhelming.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7009:
     area: tba_70
     name: The Sewer Junction
@@ -285,6 +303,8 @@ rooms:
       description: |2
            It is as dark as tar and looks like something out of a toilet, on top of
         that, the smell is absolutely overwhelming.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7010:
     area: tba_70
     name: A Bend In The Sewer Pipe
@@ -307,6 +327,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7011:
     area: tba_70
     name: The Muddy Sewer Pipe
@@ -338,6 +360,8 @@ rooms:
       description: |2
            It is as dark as tar and looks like something out of a toilet, on top of
         that, the smell is absolutely overwhelming.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7012:
     area: tba_70
     name: The Bend In The Muddy Sewer
@@ -366,6 +390,8 @@ rooms:
       description: |2
            It is as dark as tar and looks like something out of a toilet, on top of
         that, the smell is absolutely overwhelming.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7013:
     area: tba_70
     name: A Muddy Intersection
@@ -405,6 +431,8 @@ rooms:
            It is NOT the kind of matter that would concern you too much, normally, but
         as you are in the middle of it, it just might become your main concern.  REAL
         YUCKY!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7014:
     area: tba_70
     name: The Muddy Sewer
@@ -435,6 +463,8 @@ rooms:
       description: |2
            It is as dark as tar and looks like something out of a toilet, on top of
         that, the smell is absolutely overwhelming.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7015:
     area: tba_70
     name: The Old Well
@@ -463,6 +493,8 @@ rooms:
       description: |2
            These look like they're pretty slippery, and not very safe, but perhaps safe
         enough for you to climb down, WITH both hands on them.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7016:
     area: tba_70
     name: The Ordinary Bend
@@ -485,6 +517,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7017:
     area: tba_70
     name: The Sewer Junction
@@ -510,6 +544,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7018:
     area: tba_70
     name: The Ordinary Junction
@@ -537,6 +573,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7021:
     area: tba_70
     name: A Quiet Pipe Junction
@@ -564,6 +602,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7022:
     area: tba_70
     name: The Odd Room With Smooth Walls
@@ -588,6 +628,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7024:
     area: tba_70
     name: The Sewer
@@ -615,6 +657,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7025:
     area: tba_70
     name: Another Intersection
@@ -641,6 +685,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7026:
     area: tba_70
     name: A Junction
@@ -675,6 +721,8 @@ rooms:
       description: |2
            It is as dark as tar and looks like something out of a toilet, on top of
         that, the smell is absolutely overwhelming.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7028:
     area: tba_70
     name: The Sewer Junction
@@ -700,6 +748,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7029:
     area: tba_70
     name: The Triple Junction
@@ -726,6 +776,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7030:
     area: tba_70
     name: The Quadruple Junction Under The Dump
@@ -775,6 +827,8 @@ rooms:
            It looks as if it is made of stainless steel, and it would function as a club
         of considerable power, but alas...  You can't take at all since it is firmly set
         into the concrete wall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7031:
     area: tba_70
     name: A Triple Junction
@@ -800,6 +854,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7034:
     area: tba_70
     name: A Bend In The Sewer Pipe
@@ -821,6 +877,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7035:
     area: tba_70
     name: The Sewer Pipe Bend
@@ -843,6 +901,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7036:
     area: tba_70
     name: The Pit
@@ -866,6 +926,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7037:
     area: tba_70
     name: The Round Room
@@ -887,6 +949,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7038:
     area: tba_70
     name: The Three Way Junction
@@ -912,6 +976,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7039:
     area: tba_70
     name: The Sewer Store Room
@@ -929,6 +995,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7041:
     area: tba_70
     name: The Shaft
@@ -957,6 +1025,8 @@ rooms:
       description: |2
            Firmly set into the wall of the shaft it is impossible to even move, in your
         estimate.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7043:
     area: tba_70
     name: The Sewer Entrance
@@ -980,6 +1050,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7044:
     area: tba_70
     name: The Junction Going Three Ways
@@ -1006,6 +1078,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7045:
     area: tba_70
     name: The Sewer Room
@@ -1035,6 +1109,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7046:
     area: tba_70
     name: The Sewer Room
@@ -1058,6 +1134,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7047:
     area: tba_70
     name: The Pool In The Sewer
@@ -1085,6 +1163,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7048:
     area: tba_70
     name: The Sewers
@@ -1104,6 +1184,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7049:
     area: tba_70
     name: The Junction
@@ -1129,6 +1211,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7050:
     area: tba_70
     name: The Small Room
@@ -1152,6 +1236,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7051:
     area: tba_70
     name: The Sewer Pipe
@@ -1173,6 +1259,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7052:
     area: tba_70
     name: The Grand Sewer
@@ -1198,6 +1286,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7053:
     area: tba_70
     name: The South End Of The Grand Pipe
@@ -1225,6 +1315,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7055:
     area: tba_70
     name: The Edge Of The Water Sewer
@@ -1251,6 +1343,8 @@ rooms:
       - water
       description: |2
            It looks dark and murky, and emanates a foul stench.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7056:
     area: tba_70
     name: The Dark Hallway
@@ -1273,6 +1367,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7057:
     area: tba_70
     name: The Dark Passageway
@@ -1295,6 +1391,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7058:
     area: tba_70
     name: The Dark Passageway
@@ -1317,6 +1415,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7059:
     area: tba_70
     name: The Dark Passageway
@@ -1339,6 +1439,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7060:
     area: tba_70
     name: The Dark Passageway
@@ -1371,6 +1473,8 @@ rooms:
       - water
       description: |2
            It looks dark and murky, and emanates a foul stench.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7061:
     area: tba_70
     name: The Watery Sewer Bend
@@ -1397,6 +1501,8 @@ rooms:
       - water
       description: |2
            It looks dark and murky, and emanates a foul stench.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7062:
     area: tba_70
     name: The Watery Sewer
@@ -1423,6 +1529,8 @@ rooms:
       - water
       description: |2
            It looks dark and murky, and emanates a foul stench.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7063:
     area: tba_70
     name: The Watery Sewer
@@ -1449,6 +1557,8 @@ rooms:
       - water
       description: |2
            It looks dark and murky, and emanates a foul stench.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7064:
     area: tba_70
     name: The Watery Sewer Junction
@@ -1479,6 +1589,8 @@ rooms:
       - water
       description: |2
            It looks dark and murky, and emanates a foul stench.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7065:
     area: tba_70
     name: The Watery Sewer
@@ -1505,6 +1617,8 @@ rooms:
       - water
       description: |2
            It looks dark and murky, and emanates a foul stench.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7066:
     area: tba_70
     name: The Watery Sewer Junction
@@ -1535,6 +1649,8 @@ rooms:
       - water
       description: |2
            It looks dark and murky, and emanates a foul stench.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7067:
     area: tba_70
     name: The Watery Sewer
@@ -1561,6 +1677,8 @@ rooms:
       - water
       description: |2
            It looks dark and murky, and emanates a foul stench.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7068:
     area: tba_70
     name: The Watery Sewer Bend
@@ -1587,6 +1705,8 @@ rooms:
       - water
       description: |2
            It looks dark and murky, and emanates a foul stench.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7069:
     area: tba_70
     name: A Ledge By A Dark Pool
@@ -1616,6 +1736,8 @@ rooms:
       - water
       description: |2
            It looks dark and murky, and emanates a foul stench.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7070:
     area: tba_70
     name: A Ledge By A Dark Pool
@@ -1650,3 +1772,5 @@ rooms:
       - water
       description: |2
            It looks dark and murky, and emanates a foul stench.
+    ambient_phases: {}
+    ambient_weather: {}

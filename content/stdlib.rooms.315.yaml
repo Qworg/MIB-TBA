@@ -38,6 +38,8 @@ rooms:
         318 Dock Area                      at 31571 (south) ---> 31801
         318 Dock Area                      at 31573 (south) ---> 31804
         Links: 02n to McGintey Road
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31501:
     area: tba_315
     name: Western Bridge
@@ -63,6 +65,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31502:
     area: tba_315
     name: Eastern Bridge
@@ -85,6 +89,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31503:
     area: tba_315
     name: Eastern Bridge
@@ -106,6 +112,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31504:
     area: tba_315
     name: Cliffside Inn
@@ -129,6 +137,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31505:
     area: tba_315
     name: West Main
@@ -161,6 +171,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31506:
     area: tba_315
     name: Information
@@ -181,6 +193,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31507:
     area: tba_315
     name: Samuel Faarza's
@@ -203,6 +217,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31508:
     area: tba_315
     name: East Main
@@ -235,6 +251,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31509:
     area: tba_315
     name: Post Office
@@ -253,6 +271,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31510:
     area: tba_315
     name: North St.
@@ -276,6 +296,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31511:
     area: tba_315
     name: West Main and North St
@@ -308,6 +330,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31512:
     area: tba_315
     name: North St.
@@ -337,6 +361,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31513:
     area: tba_315
     name: North St.
@@ -364,6 +390,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31514:
     area: tba_315
     name: Intersection
@@ -396,6 +424,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31515:
     area: tba_315
     name: North St.
@@ -419,6 +449,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31516:
     area: tba_315
     name: Libation Station
@@ -438,6 +470,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31517:
     area: tba_315
     name: West Main
@@ -469,6 +503,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31518:
     area: tba_315
     name: Jewelry Store
@@ -487,6 +523,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31519:
     area: tba_315
     name: McGintey Bank and Depository
@@ -507,6 +545,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31520:
     area: tba_315
     name: East Main
@@ -537,6 +577,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31521:
     area: tba_315
     name: McGintey City Armory
@@ -555,6 +597,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31522:
     area: tba_315
     name: Top of the Stairs
@@ -572,6 +616,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31523:
     area: tba_315
     name: The Pet Shop
@@ -591,6 +637,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31524:
     area: tba_315
     name: PETSHOP STOREROOM
@@ -612,6 +660,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31525:
     area: tba_315
     name: West Main
@@ -644,6 +694,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31526:
     area: tba_315
     name: The Weapon Shop
@@ -665,6 +717,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31527:
     area: tba_315
     name: Traveller's Pitstop
@@ -683,6 +737,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31528:
     area: tba_315
     name: East Main
@@ -714,6 +770,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31529:
     area: tba_315
     name: Marshal Station
@@ -733,6 +791,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31530:
     area: tba_315
     name: Bazaar
@@ -756,6 +816,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31531:
     area: tba_315
     name: The Bazaar
@@ -788,6 +850,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31532:
     area: tba_315
     name: The Bazaar
@@ -815,6 +879,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31533:
     area: tba_315
     name: The Bazaar
@@ -841,6 +907,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31534:
     area: tba_315
     name: The Bazaar
@@ -874,6 +942,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31535:
     area: tba_315
     name: The Bazaar
@@ -896,6 +966,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31536:
     area: tba_315
     name: The Bazaar
@@ -922,6 +994,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31537:
     area: tba_315
     name: The Bazaar
@@ -953,6 +1027,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31538:
     area: tba_315
     name: The Bazaar
@@ -983,6 +1059,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31539:
     area: tba_315
     name: The Bazaar
@@ -1013,6 +1091,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31540:
     area: tba_315
     name: The Bazaar
@@ -1043,6 +1123,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31541:
     area: tba_315
     name: The Bazaar
@@ -1069,6 +1151,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31542:
     area: tba_315
     name: The Bazaar
@@ -1095,6 +1179,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31543:
     area: tba_315
     name: The Bazaar
@@ -1125,6 +1211,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31544:
     area: tba_315
     name: The Bazaar
@@ -1156,6 +1244,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31545:
     area: tba_315
     name: The Bazaar
@@ -1186,6 +1276,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31546:
     area: tba_315
     name: The Bazaar
@@ -1222,6 +1314,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31547:
     area: tba_315
     name: The Bazaar
@@ -1247,6 +1341,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31548:
     area: tba_315
     name: The Bazaar
@@ -1270,6 +1366,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31549:
     area: tba_315
     name: The Bazaar
@@ -1301,6 +1399,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31550:
     area: tba_315
     name: The Bazaar
@@ -1327,6 +1427,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31551:
     area: tba_315
     name: The Bazaar
@@ -1353,6 +1455,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31552:
     area: tba_315
     name: The Bazaar
@@ -1386,6 +1490,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31553:
     area: tba_315
     name: The Bazaar
@@ -1408,6 +1514,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31554:
     area: tba_315
     name: Harbor Cove Apartments
@@ -1428,6 +1536,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31555:
     area: tba_315
     name: West Main
@@ -1456,6 +1566,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31556:
     area: tba_315
     name: The Green Leaf
@@ -1475,6 +1587,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31557:
     area: tba_315
     name: The Parchment Place
@@ -1494,6 +1608,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31558:
     area: tba_315
     name: East Main
@@ -1522,6 +1638,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31559:
     area: tba_315
     name: Fatima's Footwear
@@ -1540,6 +1658,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31560:
     area: tba_315
     name: West Main
@@ -1570,6 +1690,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31561:
     area: tba_315
     name: The Jeweler
@@ -1588,6 +1710,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31562:
     area: tba_315
     name: Hospital
@@ -1605,6 +1729,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31563:
     area: tba_315
     name: East Main
@@ -1631,6 +1757,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31564:
     area: tba_315
     name: The Watering Hole
@@ -1650,6 +1778,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31565:
     area: tba_315
     name: South Street
@@ -1671,6 +1801,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31566:
     area: tba_315
     name: West Main and South St
@@ -1703,6 +1835,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31567:
     area: tba_315
     name: South Street
@@ -1729,6 +1863,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31568:
     area: tba_315
     name: South St
@@ -1755,6 +1891,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31569:
     area: tba_315
     name: East Main and South St
@@ -1786,6 +1924,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31570:
     area: tba_315
     name: South St
@@ -1810,6 +1950,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31571:
     area: tba_315
     name: West Main
@@ -1833,6 +1975,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31572:
     area: tba_315
     name: Gloveworks
@@ -1854,6 +1998,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31573:
     area: tba_315
     name: East Main
@@ -1879,6 +2025,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31574:
     area: tba_315
     name: McGintey Teleporters
@@ -1899,6 +2047,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31575:
     area: tba_315
     name: McGintey Center Square
@@ -1929,6 +2079,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31576:
     area: tba_315
     name: McGintey Center Square
@@ -1959,6 +2111,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31577:
     area: tba_315
     name: McGintey Center Square
@@ -1989,6 +2143,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31578:
     area: tba_315
     name: McGintey Center Square
@@ -2019,6 +2175,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31579:
     area: tba_315
     name: Town Meeting Hall
@@ -2044,6 +2202,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31580:
     area: tba_315
     name: Reading Room
@@ -2073,6 +2233,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31581:
     area: tba_315
     name: Quest Room
@@ -2094,6 +2256,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31582:
     area: tba_315
     name: Suggestion Room
@@ -2115,3 +2279,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

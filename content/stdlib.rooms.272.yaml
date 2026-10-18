@@ -74,6 +74,8 @@ rooms:
         271 Sundhaven                      at 27281 (south) ---> 27135
         271 Sundhaven                      at 27282 (west ) ---> 27134
         271 Sundhaven                      at 27284 (up   ) ---> 27100
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27201:
     area: tba_272
     name: A home embedded in the cliff
@@ -91,6 +93,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27202:
     area: tba_272
     name: A home embedded in the cliff
@@ -108,6 +112,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27203:
     area: tba_272
     name: A path of black grass
@@ -135,6 +141,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27204:
     area: tba_272
     name: A small haunted grove
@@ -172,6 +180,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27205:
     area: tba_272
     name: A home embedded in the cliff
@@ -189,6 +199,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27206:
     area: tba_272
     name: A home embedded in the cliff
@@ -206,6 +218,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27207:
     area: tba_272
     name: A home embedded in the cliff
@@ -223,6 +237,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27208:
     area: tba_272
     name: A dwelling perched precariously on the edge
@@ -241,6 +257,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27209:
     area: tba_272
     name: A black stone dwelling
@@ -260,6 +278,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27210:
     area: tba_272
     name: A garden of wild rosethorn
@@ -288,6 +308,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27211:
     area: tba_272
     name: A black stone dwelling
@@ -307,6 +329,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27212:
     area: tba_272
     name: A black stone dwelling
@@ -326,6 +350,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27213:
     area: tba_272
     name: A black stone dwelling
@@ -345,6 +371,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27214:
     area: tba_272
     name: A red stone dwelling
@@ -364,6 +392,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27215:
     area: tba_272
     name: Passing through a vine-wreathed gate
@@ -391,6 +421,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27216:
     area: tba_272
     name: A black stone dwelling
@@ -410,6 +442,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27217:
     area: tba_272
     name: A path hung with golden lanterns
@@ -434,6 +468,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27218:
     area: tba_272
     name: A circle of golden lanterns
@@ -462,6 +498,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27219:
     area: tba_272
     name: A white stone dwelling
@@ -480,6 +518,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27220:
     area: tba_272
     name: A white stone dwelling
@@ -498,6 +538,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27221:
     area: tba_272
     name: A wide cart path
@@ -527,6 +569,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27222:
     area: tba_272
     name: An untravelled path
@@ -554,6 +598,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27223:
     area: tba_272
     name: An untravelled path
@@ -577,6 +623,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27224:
     area: tba_272
     name: An untravelled path
@@ -600,6 +648,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27225:
     area: tba_272
     name: Climbing a small bluff
@@ -625,6 +675,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27226:
     area: tba_272
     name: Blind Man's Bluff
@@ -645,6 +697,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27227:
     area: tba_272
     name: A clearing circled by oaks and maples
@@ -673,6 +727,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27228:
     area: tba_272
     name: The black orchard gate
@@ -702,6 +758,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27229:
     area: tba_272
     name: The blackberry orchard
@@ -736,6 +794,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27230:
     area: tba_272
     name: Under an oak dark and wet with rain
@@ -776,6 +836,8 @@ rooms:
         lips.  The image is frozen upon the bark, immobile, yet it is apparent she is
         winning the battle.  Beneath the picture are engraved the words "Know thy
         limits".
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27231:
     area: tba_272
     name: The blackberry orchard
@@ -804,6 +866,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27232:
     area: tba_272
     name: The blackberry orchard
@@ -828,6 +892,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27233:
     area: tba_272
     name: The southern path
@@ -864,6 +930,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27234:
     area: tba_272
     name: The House of Witches
@@ -894,6 +962,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27235:
     area: tba_272
     name: The southern gate
@@ -924,6 +994,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27236:
     area: tba_272
     name: A foul staircase
@@ -955,6 +1027,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27237:
     area: tba_272
     name: A dark passageway
@@ -980,6 +1054,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27238:
     area: tba_272
     name: A dark passageway
@@ -1003,6 +1079,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27239:
     area: tba_272
     name: Trudging through a pool of slime
@@ -1031,6 +1109,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27240:
     area: tba_272
     name: A doorway hung with daggers
@@ -1069,6 +1149,8 @@ rooms:
         ...  Round the gallows, one-armed and bland We dance and dance, the devil's own
         band Of wary highwaymen.  Let no rogue fail to keep his head.  This is no
         monastery here, I say, you dead.  ...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27241:
     area: tba_272
     name: A hall in the Assassins Guild
@@ -1114,6 +1196,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27242:
     area: tba_272
     name: The Assassin Hideout
@@ -1140,6 +1224,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27243:
     area: tba_272
     name: A secret hideaway
@@ -1167,6 +1253,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27244:
     area: tba_272
     name: Beside a row of hanging spines
@@ -1189,6 +1277,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27245:
     area: tba_272
     name: Slippery stone steps
@@ -1221,6 +1311,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27246:
     area: tba_272
     name: The blackberry orchard
@@ -1241,6 +1333,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27247:
     area: tba_272
     name: The blackberry orchard
@@ -1261,6 +1355,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27248:
     area: tba_272
     name: A wide cart path
@@ -1280,6 +1376,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27249:
     area: tba_272
     name: A dark corner of the tavern
@@ -1300,6 +1398,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27250:
     area: tba_272
     name: The Lodge of Wrath
@@ -1325,6 +1425,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27251:
     area: tba_272
     name: A red portal
@@ -1348,6 +1450,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27252:
     area: tba_272
     name: A black portal
@@ -1372,6 +1476,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27253:
     area: tba_272
     name: The Sanctuary
@@ -1399,6 +1505,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27254:
     area: tba_272
     name: A white portal
@@ -1422,6 +1530,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27255:
     area: tba_272
     name: The Den of Sorcery
@@ -1448,6 +1558,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27256:
     area: tba_272
     name: A blue portal
@@ -1472,6 +1584,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27257:
     area: tba_272
     name: Some battered stone steps
@@ -1494,6 +1608,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27258:
     area: tba_272
     name: The town treasury
@@ -1532,6 +1648,8 @@ rooms:
         to know your balance, typing balance will do the job.  If you'd care to see it
         again, type withdraw (amount).  Then please put it back again.  Your support is
         appreciated, we know the town's security rests with you.  Have a nice day.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27259:
     area: tba_272
     name: The Tiger's Eye
@@ -1552,6 +1670,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27260:
     area: tba_272
     name: A stone path
@@ -1585,6 +1705,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27261:
     area: tba_272
     name: Along the town wall
@@ -1609,6 +1731,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27262:
     area: tba_272
     name: Along the town wall
@@ -1633,6 +1757,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27263:
     area: tba_272
     name: Along the town wall
@@ -1657,6 +1783,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27264:
     area: tba_272
     name: A path hung with moss
@@ -1682,6 +1810,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27265:
     area: tba_272
     name: A short mossy cliff
@@ -1708,6 +1838,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27266:
     area: tba_272
     name: A path hung with moss
@@ -1733,6 +1865,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27267:
     area: tba_272
     name: A stream
@@ -1758,6 +1892,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27268:
     area: tba_272
     name: A stream
@@ -1783,6 +1919,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27269:
     area: tba_272
     name: A whirlpool
@@ -1805,6 +1943,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27270:
     area: tba_272
     name: A stairwell
@@ -1831,6 +1971,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27271:
     area: tba_272
     name: A stairwell
@@ -1854,6 +1996,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27272:
     area: tba_272
     name: A dark landing
@@ -1878,6 +2022,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27273:
     area: tba_272
     name: A dark corridor
@@ -1904,6 +2050,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27274:
     area: tba_272
     name: A dark corridor
@@ -1938,6 +2086,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27275:
     area: tba_272
     name: A dark corridor
@@ -1963,6 +2113,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27276:
     area: tba_272
     name: Edge of a black-bottom pool
@@ -1988,6 +2140,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27277:
     area: tba_272
     name: A black-bottom pool
@@ -2013,6 +2167,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27278:
     area: tba_272
     name: A black-bottom pool
@@ -2042,6 +2198,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27279:
     area: tba_272
     name: A black-bottom pool
@@ -2067,6 +2225,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27280:
     area: tba_272
     name: A black-bottom pool
@@ -2092,6 +2252,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27281:
     area: tba_272
     name: The cartographers
@@ -2113,6 +2275,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27282:
     area: tba_272
     name: The corner store
@@ -2132,6 +2296,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27283:
     area: tba_272
     name: A cobblestone road
@@ -2159,6 +2325,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27284:
     area: tba_272
     name: A crawlspace
@@ -2190,3 +2358,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

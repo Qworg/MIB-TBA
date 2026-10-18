@@ -36,6 +36,8 @@ rooms:
         Plot         :
         Links        : 00, 72u
         Map          : 30
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23401:
     area: tba_234
     name: Newbie School
@@ -59,6 +61,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23402:
     area: tba_234
     name: Newbie School
@@ -91,6 +95,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23403:
     area: tba_234
     name: Newbie School
@@ -126,6 +132,8 @@ rooms:
       - curtain
       description: |2
            A beautiful set of curtains is blocking your view to the north.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23404:
     area: tba_234
     name: Newbie School
@@ -147,6 +155,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23405:
     area: tba_234
     name: Newbie School
@@ -172,6 +182,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23406:
     area: tba_234
     name: Newbie School
@@ -203,6 +215,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23407:
     area: tba_234
     name: Newbie School
@@ -227,6 +241,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23408:
     area: tba_234
     name: Newbie School
@@ -249,6 +265,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23409:
     area: tba_234
     name: Newbie School
@@ -278,6 +296,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23410:
     area: tba_234
     name: Newbie School
@@ -303,6 +323,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23411:
     area: tba_234
     name: Newbie School
@@ -333,6 +355,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23412:
     area: tba_234
     name: Newbie School
@@ -354,6 +378,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23413:
     area: tba_234
     name: Newbie School
@@ -372,6 +398,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23414:
     area: tba_234
     name: Newbie School
@@ -397,6 +425,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23415:
     area: tba_234
     name: Newbie School
@@ -429,6 +459,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23416:
     area: tba_234
     name: Newbie School
@@ -449,6 +481,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23417:
     area: tba_234
     name: Newbie School
@@ -469,6 +503,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23418:
     area: tba_234
     name: Newbie School
@@ -496,6 +532,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23419:
     area: tba_234
     name: Newbie School
@@ -522,6 +560,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23420:
     area: tba_234
     name: Newbie School
@@ -549,6 +589,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23421:
     area: tba_234
     name: Newbie School
@@ -582,6 +624,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23422:
     area: tba_234
     name: Newbie School
@@ -606,6 +650,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23423:
     area: tba_234
     name: Newbie Shop
@@ -627,6 +673,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23424:
     area: tba_234
     name: Newbie School
@@ -656,6 +704,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23425:
     area: tba_234
     name: Newbie School
@@ -690,6 +740,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23426:
     area: tba_234
     name: The Fight
@@ -708,6 +760,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23427:
     area: tba_234
     name: The Fight
@@ -726,6 +780,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23428:
     area: tba_234
     name: Arena
@@ -758,6 +814,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23429:
     area: tba_234
     name: Arena
@@ -780,6 +838,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23430:
     area: tba_234
     name: Arena
@@ -811,6 +871,8 @@ rooms:
       description: |2
            When you lean over to try to see the eyes, you hear something scurry off, and
         tiny squeek of laughter.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23431:
     area: tba_234
     name: Arena
@@ -837,6 +899,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23432:
     area: tba_234
     name: Arena
@@ -863,6 +927,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23433:
     area: tba_234
     name: Arena
@@ -888,6 +954,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23434:
     area: tba_234
     name: Arena
@@ -911,6 +979,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23435:
     area: tba_234
     name: Arena
@@ -943,6 +1013,8 @@ rooms:
            Be courteous to other players.  If there is a player in a room and there are
         mobs.  Do not attack the mobs, unless you ask the player, or the player is
         asleep.  Offenders will be punished.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23436:
     area: tba_234
     name: Arena
@@ -974,6 +1046,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23437:
     area: tba_234
     name: Arena
@@ -1004,6 +1078,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23438:
     area: tba_234
     name: Arena
@@ -1034,6 +1110,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23439:
     area: tba_234
     name: Arena
@@ -1068,6 +1146,8 @@ rooms:
       description: |2
            This Tree is magical.  The fallen leaves off of this tree provides some
         nourishment.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23440:
     area: tba_234
     name: Arena
@@ -1098,6 +1178,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23441:
     area: tba_234
     name: Arena
@@ -1136,6 +1218,8 @@ rooms:
       - stone
       description: |2
            The little stone screams, Push the button.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23442:
     area: tba_234
     name: Arena
@@ -1162,6 +1246,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23443:
     area: tba_234
     name: Arena
@@ -1192,6 +1278,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23444:
     area: tba_234
     name: Arena
@@ -1222,6 +1310,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23445:
     area: tba_234
     name: Arena
@@ -1252,6 +1342,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23446:
     area: tba_234
     name: Arena
@@ -1282,6 +1374,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23447:
     area: tba_234
     name: Arena
@@ -1312,6 +1406,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23448:
     area: tba_234
     name: Arena
@@ -1338,6 +1434,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23449:
     area: tba_234
     name: Inside Lake
@@ -1364,6 +1462,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23450:
     area: tba_234
     name: Inside Lake
@@ -1394,6 +1494,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23451:
     area: tba_234
     name: Inside Lake
@@ -1424,6 +1526,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23452:
     area: tba_234
     name: Indoor Lake
@@ -1454,6 +1558,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23453:
     area: tba_234
     name: Arena
@@ -1489,6 +1595,8 @@ rooms:
       description: |2
            These nests are snug in the dirt.  Trying to remove them seems impossible.
         This looks like a breeding ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23454:
     area: tba_234
     name: Arena
@@ -1519,6 +1627,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23455:
     area: tba_234
     name: Arena
@@ -1545,6 +1655,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23456:
     area: tba_234
     name: Arena
@@ -1572,6 +1684,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23457:
     area: tba_234
     name: Arena
@@ -1603,6 +1717,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23458:
     area: tba_234
     name: Arena
@@ -1633,6 +1749,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23459:
     area: tba_234
     name: Indoor Lake
@@ -1663,6 +1781,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23460:
     area: tba_234
     name: Inside Lake
@@ -1693,6 +1813,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23461:
     area: tba_234
     name: The Source
@@ -1723,6 +1845,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23462:
     area: tba_234
     name: In the Lake
@@ -1749,6 +1873,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23463:
     area: tba_234
     name: Arena
@@ -1771,6 +1897,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23464:
     area: tba_234
     name: Arena
@@ -1797,6 +1925,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23465:
     area: tba_234
     name: Arena
@@ -1829,6 +1959,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23466:
     area: tba_234
     name: Arena
@@ -1855,6 +1987,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23467:
     area: tba_234
     name: Arena
@@ -1882,6 +2016,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23468:
     area: tba_234
     name: Arena
@@ -1908,6 +2044,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23469:
     area: tba_234
     name: Arena
@@ -1930,6 +2068,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23470:
     area: tba_234
     name: A Hidden Room
@@ -1955,6 +2095,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23471:
     area: tba_234
     name: A Hidden Store
@@ -1973,6 +2115,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23472:
     area: tba_234
     name: A Small Room
@@ -1992,3 +2136,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

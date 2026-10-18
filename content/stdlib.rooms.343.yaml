@@ -24,6 +24,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34301:
     area: tba_343
     name: Garden Path
@@ -60,6 +62,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34302:
     area: tba_343
     name: Garden Path
@@ -96,6 +100,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34303:
     area: tba_343
     name: Empty Office HIH Ext.
@@ -120,6 +126,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34304:
     area: tba_343
     name: Empty Pagoda Office
@@ -144,6 +152,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34305:
     area: tba_343
     name: Narrow Gravel Path
@@ -176,6 +186,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34306:
     area: tba_343
     name: The Social Gathering Room
@@ -214,6 +226,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34307:
     area: tba_343
     name: Northern Foyer
@@ -246,6 +260,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34308:
     area: tba_343
     name: Eastern Foyer
@@ -278,6 +294,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34309:
     area: tba_343
     name: Southern Foyer
@@ -310,6 +328,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34310:
     area: tba_343
     name: Western Foyer
@@ -354,6 +374,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34311:
     area: tba_343
     name: God Hall, North
@@ -390,6 +412,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34312:
     area: tba_343
     name: God Hall, South
@@ -424,6 +448,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34313:
     area: tba_343
     name: God Hall, West
@@ -462,6 +488,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34314:
     area: tba_343
     name: God Hall, East
@@ -500,6 +528,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34315:
     area: tba_343
     name: God Hall, North
@@ -544,6 +574,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34316:
     area: tba_343
     name: God Hall, North
@@ -588,6 +620,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34317:
     area: tba_343
     name: God Hall, Northeast
@@ -631,6 +665,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34318:
     area: tba_343
     name: God Hall, West
@@ -674,6 +710,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34319:
     area: tba_343
     name: God Hall, West
@@ -718,6 +756,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34320:
     area: tba_343
     name: God Hall, South
@@ -762,6 +802,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34321:
     area: tba_343
     name: God Hall, South
@@ -806,6 +848,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34322:
     area: tba_343
     name: God Hall, East
@@ -849,6 +893,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34323:
     area: tba_343
     name: God Hall, East
@@ -893,6 +939,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34324:
     area: tba_343
     name: God Hall, Southeast
@@ -936,6 +984,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34325:
     area: tba_343
     name: God Hall, Southwest
@@ -979,6 +1029,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34326:
     area: tba_343
     name: God Hall, Northwest
@@ -1023,6 +1075,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34327:
     area: tba_343
     name: Upper Immortal Hall, West
@@ -1079,6 +1133,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34328:
     area: tba_343
     name: Upper Immortal Hall, West
@@ -1123,6 +1179,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34329:
     area: tba_343
     name: Higher Imm Hall, Observation Port
@@ -1158,6 +1216,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34330:
     area: tba_343
     name: Upper Immortal Hall, East
@@ -1192,6 +1252,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34331:
     area: tba_343
     name: Upper Immortal Hall, East
@@ -1248,6 +1310,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34332:
     area: tba_343
     name: Empty Office
@@ -1272,6 +1336,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34333:
     area: tba_343
     name: Detta's Office
@@ -1296,6 +1362,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34334:
     area: tba_343
     name: Aich's Office
@@ -1320,6 +1388,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34335:
     area: tba_343
     name: Empty Office
@@ -1344,6 +1414,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34336:
     area: tba_343
     name: Empty Office
@@ -1368,6 +1440,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34337:
     area: tba_343
     name: Fade's Office
@@ -1392,6 +1466,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34338:
     area: tba_343
     name: Proca's Office
@@ -1416,6 +1492,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34339:
     area: tba_343
     name: Vatiken's Office
@@ -1440,6 +1518,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34340:
     area: tba_343
     name: Jamdog's Office
@@ -1464,6 +1544,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34341:
     area: tba_343
     name: Empty Office
@@ -1488,6 +1570,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34342:
     area: tba_343
     name: Axanon's Office
@@ -1512,6 +1596,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34343:
     area: tba_343
     name: Empty Office
@@ -1536,6 +1622,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34344:
     area: tba_343
     name: Empty Office
@@ -1560,6 +1648,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34345:
     area: tba_343
     name: Elaseth's Office
@@ -1583,6 +1673,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34346:
     area: tba_343
     name: Empty Office
@@ -1607,6 +1699,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34347:
     area: tba_343
     name: Empty Office
@@ -1631,6 +1725,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34348:
     area: tba_343
     name: Kyle's Office
@@ -1655,6 +1751,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34349:
     area: tba_343
     name: Empty Office
@@ -1679,6 +1777,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34350:
     area: tba_343
     name: Empty Office
@@ -1703,6 +1803,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34351:
     area: tba_343
     name: Niamh's Office
@@ -1727,6 +1829,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34352:
     area: tba_343
     name: Empty Office
@@ -1755,6 +1859,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34353:
     area: tba_343
     name: Parna's Office
@@ -1779,6 +1885,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34354:
     area: tba_343
     name: Vatiken's Office
@@ -1803,6 +1911,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34355:
     area: tba_343
     name: Tink's Office
@@ -1827,6 +1937,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34356:
     area: tba_343
     name: Empty Office
@@ -1851,6 +1963,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34357:
     area: tba_343
     name: Whiteknight's Office
@@ -1880,6 +1994,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34358:
     area: tba_343
     name: Empty Office
@@ -1904,6 +2020,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34359:
     area: tba_343
     name: Elona's Office
@@ -1927,6 +2045,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34360:
     area: tba_343
     name: Empty Office
@@ -1951,6 +2071,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34361:
     area: tba_343
     name: Rumbles Office
@@ -1980,6 +2102,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34362:
     area: tba_343
     name: Opie's Office
@@ -2013,6 +2137,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34363:
     area: tba_343
     name: Empty Office
@@ -2037,6 +2163,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34364:
     area: tba_343
     name: Wyld's Office
@@ -2055,6 +2183,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34365:
     area: tba_343
     name: Fizbin's Office
@@ -2079,6 +2209,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34366:
     area: tba_343
     name: Shama's Office
@@ -2103,6 +2235,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34367:
     area: tba_343
     name: Rhade's Office
@@ -2132,6 +2266,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34368:
     area: tba_343
     name: Higher Imm Hall, Extension Sct. A
@@ -2175,6 +2311,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34369:
     area: tba_343
     name: Higher Imm Hall, Extension Sct. A
@@ -2218,6 +2356,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34370:
     area: tba_343
     name: Higher Imm Hall, Extension Sct. A
@@ -2261,6 +2401,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34371:
     area: tba_343
     name: Empty Offfice New Ext
@@ -2285,6 +2427,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34372:
     area: tba_343
     name: Empty Office New Ext
@@ -2309,6 +2453,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34373:
     area: tba_343
     name: Empty Office New Ext.
@@ -2333,6 +2479,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34374:
     area: tba_343
     name: Empty Office New Ext.
@@ -2357,6 +2505,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34375:
     area: tba_343
     name: Empty Office New Ext
@@ -2381,6 +2531,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34376:
     area: tba_343
     name: Empty Office New Ext.
@@ -2405,6 +2557,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34377:
     area: tba_343
     name: Empty Office New Ext.
@@ -2429,6 +2583,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34378:
     area: tba_343
     name: Empty Office New Ext.
@@ -2453,6 +2609,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34379:
     area: tba_343
     name: Public Restroom
@@ -2481,6 +2639,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34380:
     area: tba_343
     name: Higher Immortal Hall, North Extension
@@ -2506,6 +2666,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34381:
     area: tba_343
     name: A Garden Alcove
@@ -2528,6 +2690,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34382:
     area: tba_343
     name: A Garden Alcove
@@ -2550,6 +2714,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34383:
     area: tba_343
     name: Inside a Garden
@@ -2597,6 +2763,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34384:
     area: tba_343
     name: In a Garden
@@ -2632,6 +2800,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34385:
     area: tba_343
     name: In a Garden
@@ -2667,6 +2837,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34386:
     area: tba_343
     name: Inside a Garden
@@ -2713,6 +2885,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34387:
     area: tba_343
     name: Welcor's Office
@@ -2742,6 +2916,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34388:
     area: tba_343
     name: Empty Office New Ext
@@ -2766,6 +2942,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34389:
     area: tba_343
     name: New Office
@@ -2790,6 +2968,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34390:
     area: tba_343
     name: On Bridge in Garden
@@ -2823,6 +3003,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34391:
     area: tba_343
     name: Builder Board Room
@@ -2844,6 +3026,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34392:
     area: tba_343
     name: God Hall, West Extension Jct
@@ -2871,6 +3055,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34393:
     area: tba_343
     name: Empty Pagoda Office
@@ -2895,6 +3081,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34394:
     area: tba_343
     name: Inside Pagoda Shrine
@@ -2928,6 +3116,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34395:
     area: tba_343
     name: Higher Immortal Hall, North Extension
@@ -2962,6 +3152,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34396:
     area: tba_343
     name: Higher Immortal Hall, Extension Sct. A
@@ -3005,6 +3197,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34397:
     area: tba_343
     name: Exective Meeting Pagoda.
@@ -3036,6 +3230,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34398:
     area: tba_343
     name: Coffee Alcove
@@ -3069,6 +3265,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34399:
     area: tba_343
     name: Hall of Justice Podium/Altar
@@ -3090,3 +3288,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

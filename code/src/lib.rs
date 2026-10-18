@@ -33,6 +33,7 @@ pub mod content;
 pub mod dg;
 pub mod equipment;
 pub mod items;
+pub mod mail;
 pub mod module;
 pub mod party;
 pub mod shops;

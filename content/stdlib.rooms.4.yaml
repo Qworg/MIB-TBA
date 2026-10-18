@@ -32,6 +32,8 @@ rooms:
         Theme        :
         Plot         :
         Links        : none, Start room 99
+    ambient_phases: {}
+    ambient_weather: {}
   tba.401:
     area: tba_4
     name: The Jade Forest
@@ -60,6 +62,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.402:
     area: tba_4
     name: The Jade Forest
@@ -85,6 +89,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.403:
     area: tba_4
     name: The Jade Forest
@@ -112,6 +118,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.404:
     area: tba_4
     name: The Jade Forest
@@ -139,6 +147,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.405:
     area: tba_4
     name: The Jade Forest
@@ -163,6 +173,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.406:
     area: tba_4
     name: The Jade Forest
@@ -186,6 +198,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.407:
     area: tba_4
     name: Rocky Path
@@ -209,6 +223,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.408:
     area: tba_4
     name: Rocky Path
@@ -233,6 +249,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.409:
     area: tba_4
     name: Rocky Path
@@ -265,6 +283,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.410:
     area: tba_4
     name: Rocky Path
@@ -289,6 +309,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.411:
     area: tba_4
     name: Rocky Path
@@ -312,6 +334,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.412:
     area: tba_4
     name: The Jade Forest
@@ -340,6 +364,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.413:
     area: tba_4
     name: Garden
@@ -368,6 +394,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.414:
     area: tba_4
     name: Garden
@@ -388,6 +416,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.415:
     area: tba_4
     name: Dead End
@@ -407,6 +437,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.416:
     area: tba_4
     name: The Jade Forest
@@ -430,6 +462,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.417:
     area: tba_4
     name: The Jade Forest
@@ -457,6 +491,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.418:
     area: tba_4
     name: Toppled Tree House
@@ -475,6 +511,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.419:
     area: tba_4
     name: The Jade Forest
@@ -499,6 +537,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.420:
     area: tba_4
     name: Intersection
@@ -526,6 +566,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.421:
     area: tba_4
     name: Tunnel of the Dead
@@ -550,6 +592,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.422:
     area: tba_4
     name: Tunnel of the Dead
@@ -578,6 +622,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.423:
     area: tba_4
     name: Tunnel of the Dead
@@ -602,6 +648,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.424:
     area: tba_4
     name: The Jade Forest
@@ -626,6 +674,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.425:
     area: tba_4
     name: A Hole
@@ -650,6 +700,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.426:
     area: tba_4
     name: A Hole
@@ -674,6 +726,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.427:
     area: tba_4
     name: The Jade Forest
@@ -698,6 +752,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.428:
     area: tba_4
     name: A Log Bridge
@@ -723,6 +779,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.429:
     area: tba_4
     name: A Log Bridge
@@ -751,6 +809,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.430:
     area: tba_4
     name: Tunnel of the Dead
@@ -775,6 +835,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.431:
     area: tba_4
     name: Marsh
@@ -799,6 +861,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.432:
     area: tba_4
     name: The Jade Forest
@@ -822,6 +886,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.433:
     area: tba_4
     name: A Log Bridge
@@ -846,6 +912,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.434:
     area: tba_4
     name: The Jade Forest
@@ -865,6 +933,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.435:
     area: tba_4
     name: Marsh
@@ -892,6 +962,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.436:
     area: tba_4
     name: Marsh
@@ -915,6 +987,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.437:
     area: tba_4
     name: Marsh
@@ -938,6 +1012,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.438:
     area: tba_4
     name: A Log Bridge
@@ -961,6 +1037,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.439:
     area: tba_4
     name: Marsh
@@ -988,6 +1066,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.440:
     area: tba_4
     name: Marsh
@@ -1011,6 +1091,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.441:
     area: tba_4
     name: The Jade Forest
@@ -1035,6 +1117,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.442:
     area: tba_4
     name: The Jade Forest
@@ -1059,6 +1143,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.443:
     area: tba_4
     name: The Jade Forest
@@ -1079,6 +1165,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.444:
     area: tba_4
     name: The Jade Forest
@@ -1102,6 +1190,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.445:
     area: tba_4
     name: Cobblestone Road
@@ -1125,6 +1215,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.446:
     area: tba_4
     name: Cobblestone Road
@@ -1149,6 +1241,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.447:
     area: tba_4
     name: Hidden Village
@@ -1173,6 +1267,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.448:
     area: tba_4
     name: Hidden Village
@@ -1200,6 +1296,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.449:
     area: tba_4
     name: Jedidiah's Armor Shop
@@ -1228,6 +1326,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.450:
     area: tba_4
     name: Cobblestone Road
@@ -1252,6 +1352,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.451:
     area: tba_4
     name: Cobblestone Road
@@ -1276,6 +1378,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.452:
     area: tba_4
     name: Cobblestone Road
@@ -1299,6 +1403,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.453:
     area: tba_4
     name: Village Pawn Shop
@@ -1318,6 +1424,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.454:
     area: tba_4
     name: Hidden Village
@@ -1342,6 +1450,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.455:
     area: tba_4
     name: Hidden Village
@@ -1366,6 +1476,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.456:
     area: tba_4
     name: A Dirt Path
@@ -1390,6 +1502,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.457:
     area: tba_4
     name: A Dirt Path
@@ -1413,6 +1527,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.458:
     area: tba_4
     name: A Dirt Path
@@ -1441,6 +1557,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.459:
     area: tba_4
     name: Cobblestone Road
@@ -1464,6 +1582,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.460:
     area: tba_4
     name: Hidden Village
@@ -1487,6 +1607,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.461:
     area: tba_4
     name: A Stream
@@ -1511,6 +1633,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.462:
     area: tba_4
     name: A Stream
@@ -1538,6 +1662,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.463:
     area: tba_4
     name: A Stream
@@ -1557,6 +1683,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.464:
     area: tba_4
     name: A Stream
@@ -1580,6 +1708,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.465:
     area: tba_4
     name: A Stream
@@ -1603,6 +1733,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.466:
     area: tba_4
     name: A Stream
@@ -1627,6 +1759,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.467:
     area: tba_4
     name: Sanctus Trail
@@ -1650,6 +1784,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.468:
     area: tba_4
     name: Sanctus Trail
@@ -1678,6 +1814,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.469:
     area: tba_4
     name: Cobblestone Road
@@ -1701,6 +1839,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.470:
     area: tba_4
     name: Cobblestone Road
@@ -1729,6 +1869,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.471:
     area: tba_4
     name: Cobblestone Road
@@ -1752,6 +1894,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.472:
     area: tba_4
     name: Cobblestone Road
@@ -1776,6 +1920,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.473:
     area: tba_4
     name: Cobblestone Road
@@ -1799,6 +1945,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.474:
     area: tba_4
     name: Center of the Village
@@ -1827,6 +1975,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.475:
     area: tba_4
     name: Sanctus Trail
@@ -1850,6 +2000,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.476:
     area: tba_4
     name: Sanctus Trail
@@ -1874,6 +2026,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.477:
     area: tba_4
     name: Sanctus Trail
@@ -1897,6 +2051,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.478:
     area: tba_4
     name: Sanctus Trail
@@ -1916,6 +2072,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.479:
     area: tba_4
     name: Abandoned Shop
@@ -1943,6 +2101,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.480:
     area: tba_4
     name: Hidden Village
@@ -1971,6 +2131,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.481:
     area: tba_4
     name: Zachary the Weaponsmith
@@ -1991,6 +2153,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.482:
     area: tba_4
     name: Inn Entrance
@@ -2018,6 +2182,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.483:
     area: tba_4
     name: Front Desk
@@ -2037,6 +2203,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.484:
     area: tba_4
     name: Room 1
@@ -2064,6 +2232,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.485:
     area: tba_4
     name: Room 2
@@ -2083,6 +2253,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.486:
     area: tba_4
     name: Sanctus Trail
@@ -2107,6 +2279,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.487:
     area: tba_4
     name: Sanctus Trail
@@ -2131,6 +2305,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.488:
     area: tba_4
     name: Sanctus Trail
@@ -2154,6 +2330,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.489:
     area: tba_4
     name: Room 4
@@ -2177,6 +2355,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.490:
     area: tba_4
     name: Room 3
@@ -2200,6 +2380,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.491:
     area: tba_4
     name: Sanctus Trail
@@ -2223,6 +2405,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.492:
     area: tba_4
     name: Sanctus Trail
@@ -2247,6 +2431,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.493:
     area: tba_4
     name: Sanctus Trail
@@ -2275,6 +2461,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.494:
     area: tba_4
     name: Sanctus Trail
@@ -2299,6 +2487,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.495:
     area: tba_4
     name: Sanctus Trail
@@ -2322,6 +2512,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.496:
     area: tba_4
     name: Sanctus Trail
@@ -2346,6 +2538,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.497:
     area: tba_4
     name: Room 6
@@ -2366,6 +2560,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.498:
     area: tba_4
     name: Room 5
@@ -2389,6 +2585,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.499:
     area: tba_4
     name: The Jade Forest
@@ -2408,3 +2606,5 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

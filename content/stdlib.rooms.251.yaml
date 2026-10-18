@@ -47,6 +47,8 @@ rooms:
            Objects      : 9
            Shops        : 1
            Links        : 01s, 41d, 80n
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25101:
     area: tba_251
     name: Dirt Path
@@ -74,6 +76,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25102:
     area: tba_251
     name: Grassy Field
@@ -102,6 +106,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25103:
     area: tba_251
     name: Grassy Field
@@ -129,6 +135,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25104:
     area: tba_251
     name: Grassy Field
@@ -152,6 +160,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25105:
     area: tba_251
     name: Grassy Field
@@ -180,6 +190,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25106:
     area: tba_251
     name: Dirt Path
@@ -211,6 +223,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25107:
     area: tba_251
     name: Grassy Field
@@ -242,6 +256,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25108:
     area: tba_251
     name: Grassy Field
@@ -273,6 +289,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25109:
     area: tba_251
     name: Grassy Field
@@ -300,6 +318,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25110:
     area: tba_251
     name: Grassy Field
@@ -328,6 +348,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25111:
     area: tba_251
     name: Dirt Path
@@ -360,6 +382,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25112:
     area: tba_251
     name: Grassy Field
@@ -391,6 +415,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25113:
     area: tba_251
     name: Grassy Field
@@ -422,6 +448,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25114:
     area: tba_251
     name: Grassy Field
@@ -451,6 +479,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25115:
     area: tba_251
     name: Grassy Field
@@ -474,6 +504,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25116:
     area: tba_251
     name: Ape Village Entrance
@@ -507,6 +539,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25117:
     area: tba_251
     name: Grassy Field
@@ -534,6 +568,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25118:
     area: tba_251
     name: Grassy Field
@@ -558,6 +594,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25119:
     area: tba_251
     name: Ape Office
@@ -580,6 +618,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25120:
     area: tba_251
     name: Wax Museum, Level Two
@@ -599,6 +639,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25121:
     area: tba_251
     name: Wax Museum
@@ -625,6 +667,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25122:
     area: tba_251
     name: Ape Road South
@@ -657,6 +701,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25123:
     area: tba_251
     name: Ape Weapons Shop
@@ -682,6 +728,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25124:
     area: tba_251
     name: Ape Zoo
@@ -702,6 +750,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25125:
     area: tba_251
     name: Operating Room
@@ -729,6 +779,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25126:
     area: tba_251
     name: Human Cage
@@ -747,6 +799,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25127:
     area: tba_251
     name: Gorilla Bunkhouse
@@ -765,6 +819,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25128:
     area: tba_251
     name: Gorilla Training Center
@@ -788,6 +844,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25129:
     area: tba_251
     name: Western End of Ape Lane
@@ -819,6 +877,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25130:
     area: tba_251
     name: Ape Village Square
@@ -851,6 +911,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25131:
     area: tba_251
     name: Ape Lane East
@@ -882,6 +944,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25132:
     area: tba_251
     name: Eastern End of Ape Lane
@@ -913,6 +977,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25133:
     area: tba_251
     name: Ape Hospital
@@ -940,6 +1006,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25134:
     area: tba_251
     name: Human Cage
@@ -957,6 +1025,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25135:
     area: tba_251
     name: Ape Pond
@@ -981,6 +1051,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25136:
     area: tba_251
     name: Ape Pond
@@ -1009,6 +1081,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25137:
     area: tba_251
     name: Ape Park
@@ -1036,6 +1110,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25138:
     area: tba_251
     name: Ape Road North
@@ -1067,6 +1143,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25139:
     area: tba_251
     name: Simian Public School
@@ -1089,6 +1167,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25140:
     area: tba_251
     name: Cornelius and Zira's House
@@ -1107,6 +1187,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25141:
     area: tba_251
     name: Whirlpool
@@ -1136,6 +1218,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25142:
     area: tba_251
     name: Ape Pond
@@ -1168,6 +1252,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25143:
     area: tba_251
     name: Ape Pond West Shore
@@ -1196,6 +1282,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25144:
     area: tba_251
     name: Ape Road North
@@ -1227,6 +1315,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25145:
     area: tba_251
     name: Ape Amphitheater
@@ -1250,6 +1340,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25146:
     area: tba_251
     name: Ape Pond
@@ -1274,6 +1366,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25147:
     area: tba_251
     name: Ape Pond
@@ -1298,6 +1392,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25148:
     area: tba_251
     name: Dr. Zaius's House
@@ -1316,6 +1412,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25149:
     area: tba_251
     name: Ape Road North
@@ -1347,6 +1445,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25150:
     area: tba_251
     name: Dr. Zaius's Lab
@@ -1367,6 +1467,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25151:
     area: tba_251
     name: Amphitheater Stage
@@ -1396,6 +1498,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25152:
     area: tba_251
     name: Underground Cavern
@@ -1426,6 +1530,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25153:
     area: tba_251
     name: Underground Cavern
@@ -1450,6 +1556,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25154:
     area: tba_251
     name: Underground Cavern
@@ -1474,6 +1582,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25155:
     area: tba_251
     name: Cavern Entrance
@@ -1498,6 +1608,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25156:
     area: tba_251
     name: Forbidden Zone
@@ -1522,6 +1634,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25157:
     area: tba_251
     name: Forbidden Zone
@@ -1550,6 +1664,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25158:
     area: tba_251
     name: Forbidden Zone Entrance
@@ -1581,6 +1697,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25159:
     area: tba_251
     name: Forbidden Zone
@@ -1609,6 +1727,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25160:
     area: tba_251
     name: Forbidden Zone
@@ -1640,6 +1760,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25161:
     area: tba_251
     name: Forbidden Zone
@@ -1668,6 +1790,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25162:
     area: tba_251
     name: Forbidden Zone
@@ -1696,6 +1820,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25163:
     area: tba_251
     name: Forbidden Zone
@@ -1727,6 +1853,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25164:
     area: tba_251
     name: Forbidden Zone
@@ -1755,6 +1883,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25165:
     area: tba_251
     name: Forbidden Zone
@@ -1783,6 +1913,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25166:
     area: tba_251
     name: Forbidden Zone
@@ -1814,6 +1946,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25167:
     area: tba_251
     name: Forbidden Zone
@@ -1842,6 +1976,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25168:
     area: tba_251
     name: Forbidden Zone
@@ -1863,6 +1999,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25169:
     area: tba_251
     name: Forbidden Zone
@@ -1887,6 +2025,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25170:
     area: tba_251
     name: Forbidden Zone
@@ -1915,6 +2055,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25171:
     area: tba_251
     name: Forbidden Zone
@@ -1946,6 +2088,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25172:
     area: tba_251
     name: Forbidden Zone
@@ -1977,6 +2121,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25173:
     area: tba_251
     name: Forbidden Zone
@@ -2005,6 +2151,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25174:
     area: tba_251
     name: Forbidden Zone
@@ -2033,6 +2181,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25175:
     area: tba_251
     name: Forbidden Zone
@@ -2061,6 +2211,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25176:
     area: tba_251
     name: Forbidden Zone
@@ -2092,6 +2244,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25177:
     area: tba_251
     name: Forbidden Zone
@@ -2123,6 +2277,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25178:
     area: tba_251
     name: Forbidden Zone
@@ -2154,6 +2310,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25179:
     area: tba_251
     name: Forbidden Zone
@@ -2182,6 +2340,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25180:
     area: tba_251
     name: Forbidden Zone
@@ -2206,6 +2366,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25181:
     area: tba_251
     name: Forbidden Zone
@@ -2234,6 +2396,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25182:
     area: tba_251
     name: Forbidden Zone
@@ -2262,6 +2426,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25183:
     area: tba_251
     name: Forbidden Zone
@@ -2290,6 +2456,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25184:
     area: tba_251
     name: Forbidden Zone
@@ -2318,6 +2486,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25185:
     area: tba_251
     name: Forbidden Zone
@@ -2343,6 +2513,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25186:
     area: tba_251
     name: Sandy Beach
@@ -2372,6 +2544,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25187:
     area: tba_251
     name: Sandy Beach
@@ -2398,6 +2572,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25188:
     area: tba_251
     name: Sandy Beach
@@ -2426,6 +2602,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25189:
     area: tba_251
     name: Sandy Beach
@@ -2447,6 +2625,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25190:
     area: tba_251
     name: Sandy Beach
@@ -2472,6 +2652,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25191:
     area: tba_251
     name: Sandy Beach
@@ -2501,6 +2683,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25192:
     area: tba_251
     name: Sandy Beach
@@ -2526,6 +2710,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25193:
     area: tba_251
     name: Sandy Beach
@@ -2551,6 +2737,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25194:
     area: tba_251
     name: Sandy Beach
@@ -2576,6 +2764,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25195:
     area: tba_251
     name: Sandy Beach
@@ -2601,6 +2791,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25196:
     area: tba_251
     name: Statue of Liberty Stairs
@@ -2625,6 +2817,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25197:
     area: tba_251
     name: Statue of Liberty Stairs
@@ -2650,6 +2844,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25198:
     area: tba_251
     name: Statue of Liberty - Main Observatory
@@ -2672,3 +2868,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

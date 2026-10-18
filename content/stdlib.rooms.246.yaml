@@ -32,6 +32,8 @@ rooms:
       - credits
       description: |2
            See Nether credits.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24601:
     area: tba_246
     name: The Nether Docks
@@ -64,6 +66,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24602:
     area: tba_246
     name: The Nether Docks
@@ -93,6 +97,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24603:
     area: tba_246
     name: The Nether Docks
@@ -125,6 +131,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24604:
     area: tba_246
     name: The Nether Docks
@@ -161,6 +169,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24605:
     area: tba_246
     name: The Nether Docks
@@ -194,6 +204,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24606:
     area: tba_246
     name: The Nether Docks
@@ -226,6 +238,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24607:
     area: tba_246
     name: The Nether Docks
@@ -262,6 +276,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24608:
     area: tba_246
     name: The Nether Docks
@@ -295,6 +311,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24609:
     area: tba_246
     name: The Nether Docks
@@ -327,6 +345,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24610:
     area: tba_246
     name: The Nether Docks
@@ -363,6 +383,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24611:
     area: tba_246
     name: The Nether Docks
@@ -397,6 +419,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24612:
     area: tba_246
     name: The Nether Docks
@@ -430,6 +454,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24613:
     area: tba_246
     name: The Nether Docks
@@ -466,6 +492,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24614:
     area: tba_246
     name: The Nether Docks
@@ -503,6 +531,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24615:
     area: tba_246
     name: The Nether Docks
@@ -531,6 +561,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24616:
     area: tba_246
     name: The Nether Docks
@@ -563,6 +595,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24617:
     area: tba_246
     name: The Nether Docks
@@ -592,6 +626,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24618:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -620,6 +656,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24619:
     area: tba_246
     name: On a Sponge Pad
@@ -652,6 +690,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24620:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -680,6 +720,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24621:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -706,6 +748,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24622:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -732,6 +776,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24623:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -758,6 +804,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24624:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -781,6 +829,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24625:
     area: tba_246
     name: On a Sponge Pad
@@ -813,6 +863,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24626:
     area: tba_246
     name: On a Sponge Pad
@@ -845,6 +897,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24627:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -868,6 +922,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24628:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -891,6 +947,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24629:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -914,6 +972,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24630:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -937,6 +997,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24631:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -960,6 +1022,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24632:
     area: tba_246
     name: On a Sponge Pad
@@ -992,6 +1056,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24633:
     area: tba_246
     name: On a Sponge Pad
@@ -1024,6 +1090,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24634:
     area: tba_246
     name: On a Sponge Pad
@@ -1056,6 +1124,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24635:
     area: tba_246
     name: On a Sponge Pad
@@ -1084,6 +1154,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24636:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -1107,6 +1179,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24637:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -1130,6 +1204,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24638:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -1153,6 +1229,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24639:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -1176,6 +1254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24640:
     area: tba_246
     name: On a Sponge Pad
@@ -1204,6 +1284,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24641:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -1227,6 +1309,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24642:
     area: tba_246
     name: On a Sponge Pad
@@ -1259,6 +1343,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24643:
     area: tba_246
     name: On a Sponge Pad
@@ -1291,6 +1377,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24644:
     area: tba_246
     name: Treading the Pool of the Innocents
@@ -1314,6 +1402,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24645:
     area: tba_246
     name: Supplication
@@ -1345,6 +1435,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24646:
     area: tba_246
     name: Supplication
@@ -1380,6 +1472,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24647:
     area: tba_246
     name: Supplication
@@ -1407,6 +1501,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24648:
     area: tba_246
     name: Supplication
@@ -1438,6 +1534,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24649:
     area: tba_246
     name: Supplication
@@ -1473,6 +1571,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24650:
     area: tba_246
     name: Supplication
@@ -1504,6 +1604,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24651:
     area: tba_246
     name: The Dias of the Matrons
@@ -1536,6 +1638,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24652:
     area: tba_246
     name: The Dias of the Matrons
@@ -1564,6 +1668,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24653:
     area: tba_246
     name: The Dias of the Matrons
@@ -1600,6 +1706,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24654:
     area: tba_246
     name: The Dias of the Matrons
@@ -1636,6 +1744,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24655:
     area: tba_246
     name: The Dias of the Matrons
@@ -1668,6 +1778,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24656:
     area: tba_246
     name: The Dias of the Matrons
@@ -1696,6 +1808,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24657:
     area: tba_246
     name: The Throne of the Nether Lord
@@ -1724,6 +1838,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24658:
     area: tba_246
     name: The Way
@@ -1742,6 +1858,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24659:
     area: tba_246
     name: The Pool of the Innocents
@@ -1770,6 +1888,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24660:
     area: tba_246
     name: The Pool of the Innocents
@@ -1802,6 +1922,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24661:
     area: tba_246
     name: The Pool of the Innocents
@@ -1830,6 +1952,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24662:
     area: tba_246
     name: The Pool of the Innocents
@@ -1858,6 +1982,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24663:
     area: tba_246
     name: The Pool of the Innocents
@@ -1890,6 +2016,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24664:
     area: tba_246
     name: The Pool of the Innocents
@@ -1926,6 +2054,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24665:
     area: tba_246
     name: The Pool of the Innocents
@@ -1954,6 +2084,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24666:
     area: tba_246
     name: The Pool of the Innocents
@@ -1986,6 +2118,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24667:
     area: tba_246
     name: The Pool of the Innocents
@@ -2022,6 +2156,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24668:
     area: tba_246
     name: The Pool of the Innocents
@@ -2058,6 +2194,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24669:
     area: tba_246
     name: The Pool of the Innocents
@@ -2094,6 +2232,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24670:
     area: tba_246
     name: The Pool of the Innocents
@@ -2126,6 +2266,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24671:
     area: tba_246
     name: The Pool of the Innocents
@@ -2166,6 +2308,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24672:
     area: tba_246
     name: The Pool of the Innocents
@@ -2202,6 +2346,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24673:
     area: tba_246
     name: The Pool of the Innocents
@@ -2242,6 +2388,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24674:
     area: tba_246
     name: The Pool of the Innocents
@@ -2274,6 +2422,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24675:
     area: tba_246
     name: The Pool of the Innocents
@@ -2306,6 +2456,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24676:
     area: tba_246
     name: The Pool of the Innocents
@@ -2346,6 +2498,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24677:
     area: tba_246
     name: The Pool of the Innocents
@@ -2382,6 +2536,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24678:
     area: tba_246
     name: The Pool of the Innocents
@@ -2422,6 +2578,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24679:
     area: tba_246
     name: The Pool of the Innocents
@@ -2454,6 +2612,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24680:
     area: tba_246
     name: The Pool of the Innocents
@@ -2482,6 +2642,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24681:
     area: tba_246
     name: The Pool of the Innocents
@@ -2514,6 +2676,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24682:
     area: tba_246
     name: The Pool of the Innocents
@@ -2542,6 +2706,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24683:
     area: tba_246
     name: The Pool of the Innocents
@@ -2570,6 +2736,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24684:
     area: tba_246
     name: The Pool of the Innocents
@@ -2598,6 +2766,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24685:
     area: tba_246
     name: The Pool of the Innocents
@@ -2626,6 +2796,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24686:
     area: tba_246
     name: Narrow Crevasse in the Pool of the Innocents
@@ -2651,6 +2823,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24687:
     area: tba_246
     name: Narrow Crevasse in the Pool of the Innocents
@@ -2675,6 +2849,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24688:
     area: tba_246
     name: Narrow Crevasse in the Pool of the Innocents
@@ -2695,6 +2871,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24689:
     area: tba_246
     name: The Pool of the Innocents
@@ -2723,6 +2901,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24690:
     area: tba_246
     name: The Pool of the Innocents
@@ -2755,6 +2935,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24691:
     area: tba_246
     name: The Pool of the Innocents
@@ -2783,6 +2965,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24692:
     area: tba_246
     name: The Pool of the Innocents
@@ -2815,6 +2999,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24693:
     area: tba_246
     name: The Pool of the Innocents
@@ -2851,6 +3037,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24694:
     area: tba_246
     name: The Pool of the Innocents
@@ -2887,6 +3075,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24695:
     area: tba_246
     name: The Pool of the Innocents
@@ -2915,6 +3105,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24696:
     area: tba_246
     name: The Pool of the Innocents
@@ -2947,6 +3139,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24697:
     area: tba_246
     name: The Pool of the Innocents
@@ -2979,6 +3173,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24698:
     area: tba_246
     name: The Pool of the Innocents
@@ -3007,6 +3203,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24699:
     area: tba_246
     name: The Pool of the Innocents
@@ -3035,3 +3233,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

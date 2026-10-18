@@ -8,6 +8,8 @@
 #   commands; the fixed parser stops at the movement/combat grammar.
 # - `social <name> [target] [body part]` and `socials` — CircleMUD social
 #   emotes; the open-ended social name cannot be a fixed `Command` variant.
+# - `mail <name>`, `check`, `receive` — Circle's postmaster commands
+#   (`mib_tba::mail`, issue #31).
 # - `time` — the in-world clock report (`mib_tba::clock`).
 # - `group`, `gtell` (and `;`), `follow`, `unfollow` — the party system
 #   (`mib_tba::party`).
@@ -44,6 +46,15 @@ verbs:
     effects: []
   socials:
     description: List the social emotes available to you.
+    effects: []
+  mail:
+    description: Send mail at a postmaster.
+    effects: []
+  check:
+    description: Ask a postmaster whether mail is waiting.
+    effects: []
+  receive:
+    description: Receive mail from a postmaster.
     effects: []
   time:
     description: Report the in-world time.

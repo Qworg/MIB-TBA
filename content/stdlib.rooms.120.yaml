@@ -24,6 +24,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12001:
     area: tba_120
     name: The Judging Booth
@@ -60,6 +62,8 @@ rooms:
       description: |2
            The cards all have been filled in with the judges evaluations of today's
         combatants.  It seems that Sparticus is having a good day.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12002:
     area: tba_120
     name: Caesar's Private Box
@@ -90,6 +94,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12003:
     area: tba_120
     name: The West Side Of The Commoner's Seating Area
@@ -126,6 +132,8 @@ rooms:
            The benches are made of rough cut lumber that has dried and split over time.
         You would probably get splinters if sat on them.  The words 'BURT WAS HERE' have
         been carved into one of the benches with exquisite care.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12004:
     area: tba_120
     name: The Southern Commoner's Seats
@@ -156,6 +164,8 @@ rooms:
       description: |2
            They look like they form the words "Onivel Cinemod Semaj" But you could be
         mistaken.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12005:
     area: tba_120
     name: The Abandoned Gate
@@ -186,6 +196,8 @@ rooms:
       description: |2
            The gate has been permanently rusted shut and is further secured by a large
         chain and padlock.  Don't even bother THINKING about trying to open it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12006:
     area: tba_120
     name: Swords 'R  Us
@@ -226,6 +238,8 @@ rooms:
            Titus has enough hardware in here to outfit a large army.  Maybe that's why
         he has a lucrative contract to sell weapons to the Emperor's armies for
         outrageous prices.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12007:
     area: tba_120
     name: The Back Room
@@ -262,6 +276,8 @@ rooms:
       - crate
       description: |2
            There are literally thousands of each.  Take your pick.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12008:
     area: tba_120
     name: Peanut Heaven
@@ -291,6 +307,8 @@ rooms:
         Roman government are to the east.  To the south east, off in the distance, is
         the massive aqueduct and further in that direction lies the Mountain of the
         Gods.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12009:
     area: tba_120
     name: The Practice And Warm-up Area
@@ -336,6 +354,8 @@ rooms:
       description: |2
            He is a big muscular man with lots of armor.  He sizes you up and decides
         that you aren't worth his time or trouble.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12010:
     area: tba_120
     name: The Jousting Arena
@@ -367,6 +387,8 @@ rooms:
         CRASH!!!!...  Judging from the blood and the amount of distance that now
         separates the gladiators head from the rest of his body, you can safely assume
         that this was the final combat of his life.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12011:
     area: tba_120
     name: The First-Aid Station
@@ -397,6 +419,8 @@ rooms:
       description: |2
            DISGUSTING!  Each is about the size of matchbox and very slimy.  You are VERY
         glad that you have access to a cleric!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12012:
     area: tba_120
     name: A Dirt Road
@@ -423,6 +447,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12013:
     area: tba_120
     name: The Commoner's House
@@ -455,6 +481,8 @@ rooms:
       description: |2
            The furniture that you see is very simple and plain.  It is made of rough
         hewn wood and fastened together with nails.  It looks very uncomfortable.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12014:
     area: tba_120
     name: The Bedchamber
@@ -481,6 +509,8 @@ rooms:
       - clothing
       description: |2
            It smells of sweat and is covered with mud.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12015:
     area: tba_120
     name: The Noblemans' Box
@@ -504,6 +534,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12016:
     area: tba_120
     name: The Race Track
@@ -532,6 +564,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12017:
     area: tba_120
     name: The Lion Pit
@@ -553,6 +587,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12018:
     area: tba_120
     name: The South Entrance To The Coliseum
@@ -590,6 +626,8 @@ rooms:
            A larger than life stone statue of Caligula, the Mad Emperor, looks at you.
         It looks like it is holding a phallus.  He has got a grin on his face that seems
         to say 'My horse would like you, I bet...  '
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12019:
     area: tba_120
     name: The Main Highway
@@ -616,6 +654,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12020:
     area: tba_120
     name: The Outhouse
@@ -652,6 +692,8 @@ rooms:
         closer to get a better look, your nose catches a concentrated dose of the
         fragrant aroma wafting upwards.  Your stomach decides that it has had enough of
         this shoddy treatment and you puke until it is empty.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12021:
     area: tba_120
     name: The Slave Quarters
@@ -669,6 +711,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12022:
     area: tba_120
     name: The Common Seating
@@ -695,6 +739,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12023:
     area: tba_120
     name: The Common Seating
@@ -719,6 +765,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12024:
     area: tba_120
     name: The East Entrance To The Coliseum
@@ -754,6 +802,8 @@ rooms:
       - tiberius
       description: |2
            The statue of Tiberius, made of iron, stands here.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12025:
     area: tba_120
     name: The Ticket Booth
@@ -784,6 +834,8 @@ rooms:
         to a fortune in Rome isn't even worth one gold coin.  The contents of the box
         add up to about...  Well forget it.  It isn't worth your time or trouble to
         carry it around.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12026:
     area: tba_120
     name: A Paved Road
@@ -816,6 +868,8 @@ rooms:
       description: |2
            That would probably be the Coliseum.  There are a few good matches scheduled
         for today.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12027:
     area: tba_120
     name: A Noble Estate
@@ -878,6 +932,8 @@ rooms:
       description: |2
            Venus, the Roman goddess of beauty and knowledge is displayed in a all of her
         splendor.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12028:
     area: tba_120
     name: An Opulent House
@@ -916,6 +972,8 @@ rooms:
       description: |2
            Very expensive!  A lot of master craftsmen labored long and hard to produce
         such a work of art.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12029:
     area: tba_120
     name: The Great North Gate
@@ -943,6 +1001,8 @@ rooms:
       - gate
       description: |2
            The gate is made of solid iron and is well maintained.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12030:
     area: tba_120
     name: Nero Drive
@@ -970,6 +1030,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12031:
     area: tba_120
     name: Nero Drive
@@ -999,6 +1061,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12032:
     area: tba_120
     name: The Town Square
@@ -1043,6 +1107,8 @@ rooms:
            There are several sidewalk vendors here, selling fresh fruits and vegetables,
         home baked goods, fine jewelry and other items.  Most of the items for sale are
         of very high quality.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12033:
     area: tba_120
     name: Nero Drive
@@ -1076,6 +1142,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12034:
     area: tba_120
     name: Nero Drive
@@ -1105,6 +1173,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12035:
     area: tba_120
     name: The South Gate
@@ -1133,6 +1203,8 @@ rooms:
       - gate
       description: |2
            The gate appears to be closed and locked against intruders.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12036:
     area: tba_120
     name: The Emperor's Private Office
@@ -1203,6 +1275,8 @@ rooms:
            The desk is made of solid walnut and gold inlay.  It is exquisitely carved
         with superior craftsmanship, the likes of which has rarely been seen.  It was
         probably brought to Rome from Gaul.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12037:
     area: tba_120
     name: The Senate Chambers
@@ -1248,6 +1322,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12038:
     area: tba_120
     name: The House Of Commons
@@ -1273,6 +1349,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12039:
     area: tba_120
     name: Clay Avenue
@@ -1306,6 +1384,8 @@ rooms:
       description: |2
            It looks like some kind of bizarre or festival is occurring to the west.
         There are hundreds of people of all classes shopping, talking or eating.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12040:
     area: tba_120
     name: The Observation Lookout
@@ -1350,6 +1430,8 @@ rooms:
       description: |2
            If it were operational, it would offer a spectacular view of the Mountain of
         the Gods.  Unfortunately, it appears to have been vandalized.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12041:
     area: tba_120
     name: The Aqueduct
@@ -1390,6 +1472,8 @@ rooms:
            Due to the availability of moisture and nutrients, a green, viscous slime has
         grown and covered everything with a slippery coating.  It seems to go out of its
         way to drip on you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12042:
     area: tba_120
     name: The Mage's Shop
@@ -1434,6 +1518,8 @@ rooms:
       description: |2
            This is some really strange stuff!  You have never seen anything this color
         before.  Your legs are totally obscured from the knee down.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12043:
     area: tba_120
     name: The Waiting Room
@@ -1468,6 +1554,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12044:
     area: tba_120
     name: The Entrance Foyer
@@ -1502,6 +1590,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12045:
     area: tba_120
     name: Outside The Capitol Building
@@ -1537,6 +1627,8 @@ rooms:
       - steps
       description: |2
            The stairs are immaculately polished and made of white marble.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12046:
     area: tba_120
     name: Clay Avenue
@@ -1581,6 +1673,8 @@ rooms:
       description: |2
            You see a massive stone structure, built several centuries ago, that is used
         to channel water into the city.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12047:
     area: tba_120
     name: The Summit Of The Mountain Of The Gods
@@ -1601,6 +1695,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12048:
     area: tba_120
     name: The Aqueduct
@@ -1640,6 +1736,8 @@ rooms:
            Due to the availability of moisture and nutrients, a green viscous slime has
         grown and covered everything with a slippery coating.  It seems to go out of its
         way to drip on you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12049:
     area: tba_120
     name: Froboz's Workshop
@@ -1696,6 +1794,8 @@ rooms:
       description: |2
            These are all tools of great power.  You cannot even begin to understand what
         any of this stuff does.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12050:
     area: tba_120
     name: The Courtroom
@@ -1745,6 +1845,8 @@ rooms:
            You see large wooden structures that are designed to separate the judge, jury
         and witnesses from the rest of the courtroom.  They are made of polished oak and
         are strictly functional.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12051:
     area: tba_120
     name: The East Gate Of Rome
@@ -1787,6 +1889,8 @@ rooms:
       description: |2
            There are two tall spires on either side of the gate and are constantly
         manned by the city guards.  They are made of stone and stand about 40 feet tall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12052:
     area: tba_120
     name: A Mountain Path
@@ -1814,6 +1918,8 @@ rooms:
       - trail
       description: |2
            The mountain trail is a little muddy, due to the recent rains.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12054:
     area: tba_120
     name: The Aqueduct
@@ -1853,6 +1959,8 @@ rooms:
            Due to the availability of moisture and nutrients, a green, viscous slime has
         grown and covered the everything with a slippery coating.  It seems to go out of
         its way to drip on you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12055:
     area: tba_120
     name: The Judge's Chambers
@@ -1889,6 +1997,8 @@ rooms:
       - books
       description: |2
            The books are very large and filled with Roman legal precedent.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12056:
     area: tba_120
     name: A Mountain Path
@@ -1925,6 +2035,8 @@ rooms:
       description: |2
            All of the vegetation is lush, green and in full bloom.  You wish that you
         could take the time to stop and enjoy it properly.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12057:
     area: tba_120
     name: The Aqueduct
@@ -1965,6 +2077,8 @@ rooms:
            Due to the availability of moisture and nutrients, a green, viscous slime has
         grown and covered everything with a slippery coating.  It seems to go out of its
         way to drip on you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12058:
     area: tba_120
     name: The Valley Of The Gods
@@ -2007,6 +2121,8 @@ rooms:
       description: |2
            A stream of the clearest, cleanest water that you have ever seen winds its
         way through the valley.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12059:
     area: tba_120
     name: A Mountain Path
@@ -2035,6 +2151,8 @@ rooms:
       description: |2
            The trees are old and tower hundreds of feet above the ground.  If you stand
         still and listen carefully, you can hear the birds singing.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12060:
     area: tba_120
     name: The Holding Cells
@@ -2063,6 +2181,8 @@ rooms:
       description: |2
            You can see small and very cramped cells which are filthy.  You shiver and
         vow to never do anything that would cause you to become a resident.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12061:
     area: tba_120
     name: The Torture Chamber
@@ -2083,6 +2203,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12062:
     area: tba_120
     name: The Roman Bakery
@@ -2100,6 +2222,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12063:
     area: tba_120
     name: The General Store
@@ -2118,6 +2242,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12064:
     area: tba_120
     name: Before Rome
@@ -2147,6 +2273,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12065:
     area: tba_120
     name: Clay Road
@@ -2169,6 +2297,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12066:
     area: tba_120
     name: Clay Road
@@ -2190,6 +2320,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12067:
     area: tba_120
     name: The End Of The Clay Road
@@ -2212,6 +2344,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.12068:
     area: tba_120
     name: A Small Dirt Trail
@@ -2240,3 +2374,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

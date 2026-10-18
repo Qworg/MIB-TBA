@@ -38,6 +38,8 @@ rooms:
         275 New Sparta                     at 27612 (south) ---> 27580
         275 New Sparta                     at 27614 (east ) ---> 27516
         275 New Sparta                     at 27616 (west ) ---> 27569
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27601:
     area: tba_276
     name: Fire Station
@@ -66,6 +68,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27602:
     area: tba_276
     name: Fire Marshall Bob's Office
@@ -84,6 +88,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27603:
     area: tba_276
     name: Firemen's Quarters
@@ -108,6 +114,8 @@ rooms:
       - objects
       description: |2
            They seem to be some kind of used contraceptive device.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27604:
     area: tba_276
     name: Second Avenue
@@ -132,6 +140,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27605:
     area: tba_276
     name: Second Avenue
@@ -163,6 +173,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27606:
     area: tba_276
     name: The Pound
@@ -181,6 +193,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27607:
     area: tba_276
     name: The Police Station
@@ -215,6 +229,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27608:
     area: tba_276
     name: The Jersey Dump
@@ -235,6 +251,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27609:
     area: tba_276
     name: The Chief's Office
@@ -255,6 +273,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27610:
     area: tba_276
     name: The Jail
@@ -285,6 +305,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27611:
     area: tba_276
     name: The Jail Cell
@@ -310,6 +332,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27612:
     area: tba_276
     name: The Entrance To Goethe's Garden
@@ -336,6 +360,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27613:
     area: tba_276
     name: The Statue Of Goethe
@@ -369,6 +395,8 @@ rooms:
         poetry is dripping off his tongue.  His all-knowing eyes seem to pierce through
         you.  You can't help but fell embarrassed about all your shortcomings as you
         stand beside this solemn stud (not the horse silly, the man-stud Goethe!  ).
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27614:
     area: tba_276
     name: First Avenue
@@ -395,6 +423,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27615:
     area: tba_276
     name: The Entrance To Hell's Kitchen
@@ -421,6 +451,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27616:
     area: tba_276
     name: Petland Discount Store
@@ -459,6 +491,8 @@ rooms:
          Regards,
 
          The Shopkeeper
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27617:
     area: tba_276
     name: PETSHOP STOREROOM
@@ -481,3 +515,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

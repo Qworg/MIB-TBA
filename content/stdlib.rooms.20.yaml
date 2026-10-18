@@ -42,6 +42,8 @@ rooms:
         Plot         : Modeled after a Roman amphitheater.
         Links        : 00es
 
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2001:
     area: tba_20
     name: Spectators Entrance
@@ -84,6 +86,8 @@ rooms:
           |   Down - Gladiators Cells   |
           |North - Entrance to the Arena|
           |_____________________________|
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2002:
     area: tba_20
     name: Gladiators Entrance
@@ -134,6 +138,8 @@ rooms:
           | Down - Warriors Arena |
           | Up - Main Arena       |
           |_______________________|
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2003:
     area: tba_20
     name: Gladiators Cells
@@ -166,6 +172,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2004:
     area: tba_20
     name: Training Room
@@ -185,6 +193,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2005:
     area: tba_20
     name: Training Room
@@ -204,6 +214,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2006:
     area: tba_20
     name: Gladiators Cells
@@ -248,6 +260,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2007:
     area: tba_20
     name: Training Room
@@ -273,6 +287,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2008:
     area: tba_20
     name: Training Room
@@ -298,6 +314,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2009:
     area: tba_20
     name: Gladiators Cell
@@ -331,6 +349,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2010:
     area: tba_20
     name: Training Room
@@ -350,6 +370,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2011:
     area: tba_20
     name: Gladiators Room
@@ -369,6 +391,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2012:
     area: tba_20
     name: Gladiators Cells
@@ -413,6 +437,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2013:
     area: tba_20
     name: Gladiators Room
@@ -438,6 +464,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2014:
     area: tba_20
     name: Retiarii Cell
@@ -463,6 +491,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2015:
     area: tba_20
     name: Gladiators Cells
@@ -506,6 +536,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2016:
     area: tba_20
     name: Murmillones Cell
@@ -532,6 +564,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2017:
     area: tba_20
     name: Retiarii Cell
@@ -557,6 +591,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2018:
     area: tba_20
     name: Gladiators Cells
@@ -601,6 +637,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2019:
     area: tba_20
     name: Murmillones Cell
@@ -626,6 +664,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2020:
     area: tba_20
     name: Samnites Cell
@@ -651,6 +691,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2021:
     area: tba_20
     name: Prisons
@@ -693,6 +735,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2022:
     area: tba_20
     name: Thracian Cell
@@ -718,6 +762,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2023:
     area: tba_20
     name: Ostrich Cell
@@ -744,6 +790,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2024:
     area: tba_20
     name: Prisons
@@ -787,6 +835,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2025:
     area: tba_20
     name: Animal Cell
@@ -813,6 +863,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2026:
     area: tba_20
     name: Elephant Cell
@@ -839,6 +891,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2027:
     area: tba_20
     name: Prisons
@@ -882,6 +936,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2028:
     area: tba_20
     name: Giraffe Cell
@@ -908,6 +964,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2029:
     area: tba_20
     name: Lion Cell
@@ -934,6 +992,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2030:
     area: tba_20
     name: Prisons
@@ -977,6 +1037,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2031:
     area: tba_20
     name: Animal Cell
@@ -1003,6 +1065,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2032:
     area: tba_20
     name: Prisons
@@ -1026,6 +1090,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2033:
     area: tba_20
     name: Prisons
@@ -1053,6 +1119,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2034:
     area: tba_20
     name: Training Room
@@ -1078,6 +1146,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2035:
     area: tba_20
     name: Mages Arena
@@ -1103,6 +1173,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2036:
     area: tba_20
     name: Mages Arena
@@ -1132,6 +1204,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2037:
     area: tba_20
     name: Mages Arena
@@ -1157,6 +1231,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2038:
     area: tba_20
     name: Mages Arena
@@ -1186,6 +1262,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2039:
     area: tba_20
     name: Mages Arena
@@ -1219,6 +1297,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2040:
     area: tba_20
     name: Mages Arena
@@ -1248,6 +1328,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2041:
     area: tba_20
     name: Mages Arena
@@ -1273,6 +1355,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2042:
     area: tba_20
     name: Mages Arena
@@ -1306,6 +1390,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2043:
     area: tba_20
     name: Mages Arena
@@ -1331,6 +1417,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2044:
     area: tba_20
     name: Thieves Arena
@@ -1356,6 +1444,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2045:
     area: tba_20
     name: Thieves Arena
@@ -1385,6 +1475,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2046:
     area: tba_20
     name: Thieves Arena
@@ -1410,6 +1502,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2047:
     area: tba_20
     name: Thieves Arena
@@ -1443,6 +1537,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2048:
     area: tba_20
     name: Thieves Arena
@@ -1476,6 +1572,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2049:
     area: tba_20
     name: Thieves Arena
@@ -1505,6 +1603,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2050:
     area: tba_20
     name: Thieves Arena
@@ -1530,6 +1630,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2051:
     area: tba_20
     name: Thieves Arena
@@ -1559,6 +1661,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2052:
     area: tba_20
     name: Thieves Arena
@@ -1584,6 +1688,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2053:
     area: tba_20
     name: Clerics Arena
@@ -1608,6 +1714,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2054:
     area: tba_20
     name: Clerics Arena
@@ -1636,6 +1744,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2055:
     area: tba_20
     name: Clerics Arena
@@ -1660,6 +1770,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2056:
     area: tba_20
     name: Clerics Arena
@@ -1688,6 +1800,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2057:
     area: tba_20
     name: Clerics Arena
@@ -1720,6 +1834,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2058:
     area: tba_20
     name: Clerics Arena
@@ -1752,6 +1868,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2059:
     area: tba_20
     name: Clerics Arena
@@ -1776,6 +1894,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2060:
     area: tba_20
     name: Clerics Arena
@@ -1804,6 +1924,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2061:
     area: tba_20
     name: Clerics Arena
@@ -1828,6 +1950,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2062:
     area: tba_20
     name: Warriors Arena
@@ -1853,6 +1977,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2063:
     area: tba_20
     name: Warriors Arena
@@ -1882,6 +2008,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2064:
     area: tba_20
     name: Warriors Arena
@@ -1907,6 +2035,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2065:
     area: tba_20
     name: Warriors Arena
@@ -1936,6 +2066,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2066:
     area: tba_20
     name: Warriors Arena
@@ -1969,6 +2101,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2067:
     area: tba_20
     name: Warriors Arena
@@ -2002,6 +2136,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2068:
     area: tba_20
     name: Warriors Arena
@@ -2027,6 +2163,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2069:
     area: tba_20
     name: Warriors Arena
@@ -2056,6 +2194,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2070:
     area: tba_20
     name: Warriors Arena
@@ -2081,6 +2221,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2071:
     area: tba_20
     name: Main Arena
@@ -2104,6 +2246,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2072:
     area: tba_20
     name: Main Arena
@@ -2135,6 +2279,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2073:
     area: tba_20
     name: Main Arena
@@ -2158,6 +2304,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2074:
     area: tba_20
     name: Main Arena
@@ -2185,6 +2333,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2075:
     area: tba_20
     name: Main Arena
@@ -2216,6 +2366,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2076:
     area: tba_20
     name: Main Arena
@@ -2243,6 +2395,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2077:
     area: tba_20
     name: Main Arena
@@ -2266,6 +2420,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2078:
     area: tba_20
     name: Main Arena
@@ -2293,6 +2449,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2079:
     area: tba_20
     name: Main Arena
@@ -2316,6 +2474,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2080:
     area: tba_20
     name: Roman Ampitheater
@@ -2339,6 +2499,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2081:
     area: tba_20
     name: Roman Ampitheater
@@ -2366,6 +2528,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2082:
     area: tba_20
     name: Imperial Box
@@ -2390,6 +2554,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2083:
     area: tba_20
     name: Roman Amphitheater
@@ -2416,6 +2582,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2084:
     area: tba_20
     name: Roman Amphitheater
@@ -2439,6 +2607,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2085:
     area: tba_20
     name: Roman Amphitheater
@@ -2463,6 +2633,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2086:
     area: tba_20
     name: Roman Amphitheater
@@ -2491,6 +2663,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2087:
     area: tba_20
     name: Roman Amphitheater
@@ -2519,6 +2693,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2088:
     area: tba_20
     name: Roman Amphitheater
@@ -2547,6 +2723,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2089:
     area: tba_20
     name: Roman Amphitheater
@@ -2572,6 +2750,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2090:
     area: tba_20
     name: Roman Amphitheater
@@ -2599,6 +2779,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2091:
     area: tba_20
     name: Roman Amphitheater
@@ -2624,6 +2806,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2092:
     area: tba_20
     name: Roman Amphitheater
@@ -2649,6 +2833,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2093:
     area: tba_20
     name: Roman Amphitheater
@@ -2673,6 +2859,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2094:
     area: tba_20
     name: Roman Amphitheater
@@ -2701,6 +2889,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2095:
     area: tba_20
     name: Roman Amphitheater
@@ -2726,6 +2916,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2096:
     area: tba_20
     name: Mortuary Cell
@@ -2745,6 +2937,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2097:
     area: tba_20
     name: Outside the Amphitheater
@@ -2768,6 +2962,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2098:
     area: tba_20
     name: Common Grave
@@ -2787,6 +2983,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2099:
     area: tba_20
     name: Trophy Room
@@ -2831,3 +3029,5 @@ rooms:
         After that we expect the players to handle it.
         Again, don't make the gods interfere!
         Rumble
+    ambient_phases: {}
+    ambient_weather: {}

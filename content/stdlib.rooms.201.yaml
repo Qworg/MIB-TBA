@@ -26,6 +26,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20101:
     area: tba_201
     name: At the Entrance of a Gloomy Forest
@@ -46,6 +48,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20102:
     area: tba_201
     name: On a Cliff by a Lighthouse
@@ -80,6 +84,8 @@ rooms:
       - grass
       description: |2
            Tiny patches of green grass can be found growing randomly in this area.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20103:
     area: tba_201
     name: At a T-Junction by a Slope
@@ -109,6 +115,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20104:
     area: tba_201
     name: In a Lighthouse
@@ -148,6 +156,8 @@ rooms:
       - dust
       description: |2
            It is powdery-looking and gray in color.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20105:
     area: tba_201
     name: On the Coast of Konolua Beach [DIG]
@@ -186,6 +196,8 @@ rooms:
       description: |2
            Coarse grains of sand fills this beach.  They are a rich yellow color and
         are rough in texture.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20106:
     area: tba_201
     name: On a Sandy Shore [DIG]
@@ -214,6 +226,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20107:
     area: tba_201
     name: In Shallow Waters [DIVE]
@@ -245,6 +259,8 @@ rooms:
       description: |2
            Broken pieces of wood, dark-brown in texture from having soaked in the water
         for too long, floats around here.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20108:
     area: tba_201
     name: Konolua Seacoast [DIG]
@@ -295,6 +311,8 @@ rooms:
            The cliff stands tall at a good 45 feet skywards.  Covered with plenty of
         vegetation, it looks like a guards standing the coast protecting the shores from
         danger.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20109:
     area: tba_201
     name: Konolua Seacoast [DIG] [CLIMB]
@@ -329,6 +347,8 @@ rooms:
            The cliff stands tall at a good 45 feet skywards.  Covered with plenty of
         vegetation, it looks like a guards standing the coast protecting the shores from
         danger.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20110:
     area: tba_201
     name: On a Rocky Part of Konolua Seacoast [DIG]
@@ -354,6 +374,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20111:
     area: tba_201
     name: In Shallow Waters
@@ -392,6 +414,8 @@ rooms:
       description: |2
            Tiny bubbles are trapped in the foam created when the waves hit the shore and
         retreat.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20112:
     area: tba_201
     name: By the Seashore [DIG]
@@ -423,6 +447,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20113:
     area: tba_201
     name: By the Seashore [DIG]
@@ -454,6 +480,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20114:
     area: tba_201
     name: By the Seashore [DIG]
@@ -485,6 +513,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20115:
     area: tba_201
     name: By a Seashore [DIG]
@@ -522,6 +552,8 @@ rooms:
            The arch is connected to the cliff north of here.  Standing outstretched like
         a large gate it leads to a narrow sandy path that seems to lead to an nearby
         island not far from Konolua beach.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20116:
     area: tba_201
     name: In Shallow Waters
@@ -555,6 +587,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20117:
     area: tba_201
     name: In Shallow Waters
@@ -587,6 +621,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20118:
     area: tba_201
     name: In Shallow Waters
@@ -619,6 +655,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20119:
     area: tba_201
     name: In Shallow Waters
@@ -651,6 +689,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20120:
     area: tba_201
     name: In Shallow Waters
@@ -683,6 +723,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20121:
     area: tba_201
     name: In Deep Waters
@@ -715,6 +757,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20122:
     area: tba_201
     name: On a Sandy Path
@@ -743,6 +787,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20123:
     area: tba_201
     name: On a Sandy Path
@@ -775,6 +821,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20124:
     area: tba_201
     name: A Narrow Sandy Path
@@ -807,6 +855,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20125:
     area: tba_201
     name: On a Sandy Pathway
@@ -839,6 +889,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20126:
     area: tba_201
     name: A Small Island in the Sea
@@ -871,6 +923,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20127:
     area: tba_201
     name: At the Base of a Small Cliff
@@ -903,6 +957,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20128:
     area: tba_201
     name: At the Peak of the Cliff
@@ -923,6 +979,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20129:
     area: tba_201
     name: An Isolated Part of the Island
@@ -955,6 +1013,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20130:
     area: tba_201
     name: Underwater
@@ -969,6 +1029,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20131:
     area: tba_201
     name: In the Deep Ocean
@@ -1000,6 +1062,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20132:
     area: tba_201
     name: In the Middle of the Ocean
@@ -1036,6 +1100,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20133:
     area: tba_201
     name: In the Deep Ocean
@@ -1067,6 +1133,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20135:
     area: tba_201
     name: In the Deep Waters
@@ -1099,6 +1167,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20136:
     area: tba_201
     name: In the Ocean
@@ -1130,6 +1200,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20137:
     area: tba_201
     name: In the Ocean
@@ -1161,6 +1233,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20138:
     area: tba_201
     name: In the Ocean
@@ -1192,6 +1266,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20139:
     area: tba_201
     name: Underwater
@@ -1228,6 +1304,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20140:
     area: tba_201
     name: In the Middle of the Ocean
@@ -1264,6 +1342,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20141:
     area: tba_201
     name: In the Middle of the Ocean
@@ -1300,6 +1380,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20142:
     area: tba_201
     name: In the Middle of the Ocean
@@ -1336,6 +1418,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20143:
     area: tba_201
     name: Underwater
@@ -1372,6 +1456,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20144:
     area: tba_201
     name: Underwater
@@ -1408,6 +1494,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20145:
     area: tba_201
     name: Underwater
@@ -1444,6 +1532,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20146:
     area: tba_201
     name: In Oblivion
@@ -1460,6 +1550,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20147:
     area: tba_201
     name: On a Sandy Bay
@@ -1489,6 +1581,8 @@ rooms:
       description: |2
            The litter the beach, making it unsightly.  Several organic items are
         decaying already.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20148:
     area: tba_201
     name: On a Sandy bay
@@ -1521,6 +1615,8 @@ rooms:
       description: |2
            Marks leading to the north cliff suggests that something has been dragged
         there.  Perhaps searching for something will uncover a treasure box?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20149:
     area: tba_201
     name: At the Scene of a Shipwreck
@@ -1547,6 +1643,8 @@ rooms:
            This ship did not survived the cruel test of the stormy seas and hiding
         reefs.  Wrecked apart, the massive wooden structure is decaying, along with the
         stuff inside.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20150:
     area: tba_201
     name: In a Small Cozy House
@@ -1572,6 +1670,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20151:
     area: tba_201
     name: In a Small Underwater Tunnel [SURFACE]
@@ -1592,6 +1692,8 @@ rooms:
     coord: null
     sector: underwater
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20152:
     area: tba_201
     name: In a Underwater Tunnel [SURFACE]
@@ -1612,6 +1714,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20153:
     area: tba_201
     name: In a Secret Cove [DIVE]
@@ -1634,6 +1738,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20154:
     area: tba_201
     name: In a Tunnel of A Cove
@@ -1664,6 +1770,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20155:
     area: tba_201
     name: A Room in the Cliff
@@ -1685,6 +1793,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20156:
     area: tba_201
     name: A Room in the Cliff
@@ -1706,6 +1816,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20157:
     area: tba_201
     name: On top of a Cliff [CLIMB]
@@ -1725,6 +1837,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20158:
     area: tba_201
     name: In a Small Wooden hut
@@ -1745,3 +1859,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

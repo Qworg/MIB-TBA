@@ -46,6 +46,8 @@ rooms:
         If you have any questions, comments, typos, or anything else I will be glad to
         hear from you. You can reach me at: Maddog@prolog.net
         Thank you and enjoy my zone:)           Matt
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28301:
     area: tba_283
     name: Farther Up the Mountain
@@ -70,6 +72,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28302:
     area: tba_283
     name: At the Top of the Mountain
@@ -97,6 +101,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28303:
     area: tba_283
     name: At the Front Door
@@ -128,6 +134,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28304:
     area: tba_283
     name: Inside The Dark and Creepy House
@@ -166,6 +174,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28305:
     area: tba_283
     name: The Beginning of a Hallway
@@ -191,6 +201,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28306:
     area: tba_283
     name: In the Eastern Hallway
@@ -215,6 +227,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28307:
     area: tba_283
     name: The Top of the Basement Stairs
@@ -240,6 +254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28308:
     area: tba_283
     name: The Basement of the House
@@ -265,6 +281,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28309:
     area: tba_283
     name: A Small Tunnel
@@ -289,6 +307,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28310:
     area: tba_283
     name: At the End of the Tunnel
@@ -311,6 +331,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28311:
     area: tba_283
     name: Into the Dungeon
@@ -355,6 +377,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28312:
     area: tba_283
     name: A Cell
@@ -381,6 +405,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28313:
     area: tba_283
     name: A Cell
@@ -408,6 +434,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28314:
     area: tba_283
     name: The Dungeon
@@ -451,6 +479,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28315:
     area: tba_283
     name: Another Cell
@@ -477,6 +507,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28316:
     area: tba_283
     name: A Bloody Cell
@@ -503,6 +535,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28317:
     area: tba_283
     name: The Entrance to the Death Chambers
@@ -541,6 +575,8 @@ rooms:
         ********************South = Quick-Death*******************
         ********************West = The Dungeon Ruler's Lair**********
         *******BE WARNED: UNPREPARED INTRUDERS WILL DIE*******
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28318:
     area: tba_283
     name: The Slow-Death Room
@@ -570,6 +606,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28319:
     area: tba_283
     name: Stepping into the Pit
@@ -586,6 +624,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28320:
     area: tba_283
     name: The Lair of the Dungeon Ruler
@@ -618,6 +658,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28321:
     area: tba_283
     name: Near the Deck
@@ -656,6 +698,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28322:
     area: tba_283
     name: The Southwestern Corner
@@ -681,6 +725,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28323:
     area: tba_283
     name: A Room in the House
@@ -709,6 +755,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28324:
     area: tba_283
     name: The Second Floor Stairs
@@ -733,6 +781,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28325:
     area: tba_283
     name: The Back Deck
@@ -765,6 +815,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28326:
     area: tba_283
     name: Back on the Ground
@@ -795,6 +847,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28327:
     area: tba_283
     name: The Path to the Outhouse
@@ -835,6 +889,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28328:
     area: tba_283
     name: The Outhouse
@@ -863,6 +919,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28329:
     area: tba_283
     name: Outside the Secret
@@ -906,6 +964,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28330:
     area: tba_283
     name: The Path East
@@ -932,6 +992,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28331:
     area: tba_283
     name: A Path Through the Forest
@@ -953,6 +1015,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28332:
     area: tba_283
     name: At the Bookshelf
@@ -992,6 +1056,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28333:
     area: tba_283
     name: A Closet
@@ -1019,6 +1085,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28334:
     area: tba_283
     name: A Secret Room
@@ -1049,6 +1117,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28335:
     area: tba_283
     name: The Second Floor
@@ -1073,6 +1143,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28336:
     area: tba_283
     name: The Hallway
@@ -1097,6 +1169,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28337:
     area: tba_283
     name: Before the Porch
@@ -1140,6 +1214,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28338:
     area: tba_283
     name: The Closet
@@ -1177,6 +1253,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28339:
     area: tba_283
     name: The Southern Hallway
@@ -1220,6 +1298,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28340:
     area: tba_283
     name: A Plain Old Room
@@ -1247,6 +1327,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28341:
     area: tba_283
     name: A Room in the House
@@ -1274,6 +1356,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28342:
     area: tba_283
     name: More of the Hallway
@@ -1317,6 +1401,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28343:
     area: tba_283
     name: A Room in the House
@@ -1345,6 +1431,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28344:
     area: tba_283
     name: A Room
@@ -1373,6 +1461,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28345:
     area: tba_283
     name: The Room of the Golden Lance
@@ -1401,6 +1491,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28346:
     area: tba_283
     name: Nearing the End of the Hall
@@ -1425,6 +1517,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28347:
     area: tba_283
     name: The End of the Hallway
@@ -1459,6 +1553,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28348:
     area: tba_283
     name: Stairs to the Attic
@@ -1492,6 +1588,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28349:
     area: tba_283
     name: Inside the Attic
@@ -1524,6 +1622,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28350:
     area: tba_283
     name: On the Roof
@@ -1555,6 +1655,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28351:
     area: tba_283
     name: Walking the Roof
@@ -1579,6 +1681,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28352:
     area: tba_283
     name: The Roof
@@ -1609,6 +1713,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28353:
     area: tba_283
     name: The End of the Roof
@@ -1634,6 +1740,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28354:
     area: tba_283
     name: At the Top of the Chimney
@@ -1660,6 +1768,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28355:
     area: tba_283
     name: The Second Floor Balcony
@@ -1689,6 +1799,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28356:
     area: tba_283
     name: The Closet
@@ -1716,6 +1828,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28357:
     area: tba_283
     name: The Secret Den of the Owner
@@ -1745,6 +1859,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28358:
     area: tba_283
     name: Behind the Stairs
@@ -1771,6 +1887,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28359:
     area: tba_283
     name: Oops!
@@ -1794,6 +1912,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28360:
     area: tba_283
     name: At the Well
@@ -1814,6 +1934,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28361:
     area: tba_283
     name: The Storm Cellar
@@ -1842,6 +1964,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28362:
     area: tba_283
     name: In a Very Dark Room
@@ -1880,3 +2004,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

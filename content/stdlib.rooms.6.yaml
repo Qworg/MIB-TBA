@@ -35,6 +35,8 @@ rooms:
         Theme        :
         Plot         :
         Links        : 00
+    ambient_phases: {}
+    ambient_weather: {}
   tba.601:
     area: tba_6
     name: Shore
@@ -59,6 +61,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.602:
     area: tba_6
     name: Shore
@@ -86,6 +90,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.603:
     area: tba_6
     name: Sea of Souls
@@ -113,6 +119,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.604:
     area: tba_6
     name: Sea of Souls
@@ -144,6 +152,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.605:
     area: tba_6
     name: Sea of Souls
@@ -175,6 +185,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.606:
     area: tba_6
     name: Shore
@@ -198,6 +210,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.607:
     area: tba_6
     name: Shore
@@ -225,6 +239,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.608:
     area: tba_6
     name: Sea of Souls
@@ -256,6 +272,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.609:
     area: tba_6
     name: Sea of Souls
@@ -287,6 +305,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.610:
     area: tba_6
     name: Sea of Souls
@@ -317,6 +337,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.611:
     area: tba_6
     name: Island
@@ -348,6 +370,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.612:
     area: tba_6
     name: Island
@@ -375,6 +399,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.613:
     area: tba_6
     name: Island
@@ -401,6 +427,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.614:
     area: tba_6
     name: Sea of Souls
@@ -427,6 +455,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.615:
     area: tba_6
     name: Sea of Souls
@@ -453,6 +483,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.616:
     area: tba_6
     name: Sea of Souls
@@ -475,6 +507,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.617:
     area: tba_6
     name: A Small Cove
@@ -494,6 +528,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.618:
     area: tba_6
     name: Sea of Souls
@@ -525,6 +561,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.619:
     area: tba_6
     name: Tunnel
@@ -548,6 +586,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.620:
     area: tba_6
     name: Tunnel
@@ -574,6 +614,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.621:
     area: tba_6
     name: Tunnel
@@ -597,6 +639,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.622:
     area: tba_6
     name: Tropical Island
@@ -620,6 +664,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.623:
     area: tba_6
     name: Sea of Souls
@@ -646,6 +692,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.624:
     area: tba_6
     name: Sea of Souls
@@ -672,6 +720,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.625:
     area: tba_6
     name: Sea of Souls
@@ -695,6 +745,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.626:
     area: tba_6
     name: Tropical Island
@@ -726,6 +778,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.627:
     area: tba_6
     name: Tropical Island
@@ -749,6 +803,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.628:
     area: tba_6
     name: Sea of Souls
@@ -771,6 +827,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.629:
     area: tba_6
     name: Sea of Souls
@@ -795,6 +853,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.630:
     area: tba_6
     name: Sea of Souls
@@ -822,6 +882,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.631:
     area: tba_6
     name: Sea of Souls
@@ -845,6 +907,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.632:
     area: tba_6
     name: Floating Village
@@ -872,6 +936,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.633:
     area: tba_6
     name: Small House
@@ -895,6 +961,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.634:
     area: tba_6
     name: Village Restaurant
@@ -922,6 +990,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.635:
     area: tba_6
     name: Village Pawn Shop
@@ -949,6 +1019,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.636:
     area: tba_6
     name: Sea of Souls
@@ -972,6 +1044,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.637:
     area: tba_6
     name: Narrow Tunnel
@@ -994,6 +1068,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.638:
     area: tba_6
     name: Narrow Tunnel
@@ -1021,6 +1097,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.639:
     area: tba_6
     name: Small Cove
@@ -1039,6 +1117,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.640:
     area: tba_6
     name: Sea of Souls
@@ -1062,6 +1142,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.641:
     area: tba_6
     name: Hidden Island
@@ -1084,6 +1166,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.642:
     area: tba_6
     name: Hidden Island
@@ -1107,6 +1191,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.643:
     area: tba_6
     name: Dark Isle
@@ -1130,6 +1216,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.644:
     area: tba_6
     name: Dark Isle
@@ -1154,6 +1242,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.645:
     area: tba_6
     name: Dark Isle
@@ -1177,6 +1267,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.646:
     area: tba_6
     name: Sea of Souls
@@ -1203,6 +1295,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.647:
     area: tba_6
     name: Sea of Souls
@@ -1229,6 +1323,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.648:
     area: tba_6
     name: Scorpion Island
@@ -1252,6 +1348,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.649:
     area: tba_6
     name: Scorpion Island
@@ -1275,6 +1373,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.650:
     area: tba_6
     name: Scorpion Island
@@ -1301,6 +1401,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.651:
     area: tba_6
     name: Sea of Souls
@@ -1325,6 +1427,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.652:
     area: tba_6
     name: Sea of Souls
@@ -1355,6 +1459,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.653:
     area: tba_6
     name: Sea of Souls
@@ -1381,6 +1487,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.654:
     area: tba_6
     name: Sea of Souls
@@ -1403,6 +1511,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.655:
     area: tba_6
     name: Sea of Souls
@@ -1430,6 +1540,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.656:
     area: tba_6
     name: Sea of Souls
@@ -1452,6 +1564,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.657:
     area: tba_6
     name: Forgotten Island
@@ -1475,6 +1589,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.658:
     area: tba_6
     name: Forgotten Island
@@ -1507,6 +1623,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.659:
     area: tba_6
     name: Forgotten Island
@@ -1530,6 +1648,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.660:
     area: tba_6
     name: Sea of Souls
@@ -1560,6 +1680,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.661:
     area: tba_6
     name: Sea of Souls
@@ -1587,6 +1709,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.662:
     area: tba_6
     name: Sea of Souls
@@ -1611,6 +1735,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.663:
     area: tba_6
     name: Sea of Souls
@@ -1638,6 +1764,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.664:
     area: tba_6
     name: Dragon Isle
@@ -1665,6 +1793,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.665:
     area: tba_6
     name: Dragon Isle
@@ -1688,6 +1818,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.666:
     area: tba_6
     name: Sea of Souls
@@ -1711,6 +1843,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.667:
     area: tba_6
     name: Sea of Souls
@@ -1738,6 +1872,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.668:
     area: tba_6
     name: Sea of Souls
@@ -1761,6 +1897,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.669:
     area: tba_6
     name: Sea of Souls
@@ -1789,6 +1927,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.670:
     area: tba_6
     name: Dragon Isle
@@ -1811,6 +1951,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.671:
     area: tba_6
     name: Dragon Isle
@@ -1838,6 +1980,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.672:
     area: tba_6
     name: Sea of Souls
@@ -1860,6 +2004,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.673:
     area: tba_6
     name: Sea of Souls
@@ -1883,6 +2029,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.674:
     area: tba_6
     name: Sea of Souls
@@ -1907,6 +2055,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.675:
     area: tba_6
     name: Sea of Souls
@@ -1931,6 +2081,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.676:
     area: tba_6
     name: Sea of Souls
@@ -1953,6 +2105,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.677:
     area: tba_6
     name: Sea of Souls
@@ -1976,6 +2130,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.678:
     area: tba_6
     name: Ice Isle
@@ -2004,6 +2160,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.679:
     area: tba_6
     name: Ice Isle
@@ -2023,6 +2181,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.680:
     area: tba_6
     name: Sea of Souls
@@ -2045,6 +2205,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.681:
     area: tba_6
     name: Sea of Souls
@@ -2071,6 +2233,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.682:
     area: tba_6
     name: Sea of Souls
@@ -2098,6 +2262,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.683:
     area: tba_6
     name: Forest Island
@@ -2121,6 +2287,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.684:
     area: tba_6
     name: Forest Island
@@ -2144,6 +2312,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.685:
     area: tba_6
     name: Sea of Souls
@@ -2171,6 +2341,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.686:
     area: tba_6
     name: Sea of Souls
@@ -2197,6 +2369,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.687:
     area: tba_6
     name: Sea of Souls
@@ -2223,6 +2397,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.688:
     area: tba_6
     name: Sea of Souls
@@ -2246,6 +2422,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.689:
     area: tba_6
     name: Forest Island
@@ -2269,6 +2447,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.690:
     area: tba_6
     name: Sea of Souls
@@ -2291,6 +2471,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.691:
     area: tba_6
     name: Private Island
@@ -2314,6 +2496,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.692:
     area: tba_6
     name: Private Island
@@ -2337,6 +2521,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.693:
     area: tba_6
     name: Private Island
@@ -2360,6 +2546,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.694:
     area: tba_6
     name: Sea of Souls
@@ -2383,6 +2571,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.695:
     area: tba_6
     name: Sea of Souls
@@ -2405,6 +2595,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.696:
     area: tba_6
     name: Sea of Souls
@@ -2428,6 +2620,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.697:
     area: tba_6
     name: Sea of Souls
@@ -2455,6 +2649,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.698:
     area: tba_6
     name: Sea of Souls
@@ -2478,6 +2674,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.699:
     area: tba_6
     name: Shore
@@ -2497,3 +2695,5 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

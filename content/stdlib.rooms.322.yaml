@@ -46,6 +46,8 @@ rooms:
         318 Dock Area                      at 32273 (north) ---> 31842
         318 Dock Area                      at 32275 (north) ---> 31843
         318 Dock Area                      at 32277 (north) ---> 31844
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32201:
     area: tba_322
     name: Breakwaters of McGintey Bay
@@ -78,6 +80,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32202:
     area: tba_322
     name: Breakwaters of McGintey Bay
@@ -110,6 +114,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32203:
     area: tba_322
     name: Breakwaters of McGintey Bay
@@ -142,6 +148,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32204:
     area: tba_322
     name: Breakwaters of McGintey Bay
@@ -170,6 +178,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32205:
     area: tba_322
     name: Near the Breakwaters
@@ -194,6 +204,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32206:
     area: tba_322
     name: Near the Breakwaters
@@ -222,6 +234,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32207:
     area: tba_322
     name: Near the Breakwaters
@@ -254,6 +268,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32208:
     area: tba_322
     name: Near the Breakwaters
@@ -286,6 +302,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32209:
     area: tba_322
     name: Near the Breakwaters
@@ -318,6 +336,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32210:
     area: tba_322
     name: Near the Breakwaters
@@ -350,6 +370,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32211:
     area: tba_322
     name: Near the Breakwaters
@@ -382,6 +404,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32212:
     area: tba_322
     name: Near the Breakwaters
@@ -409,6 +433,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32213:
     area: tba_322
     name: Near the Breakwaters
@@ -432,6 +458,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32214:
     area: tba_322
     name: McGintey Bay
@@ -456,6 +484,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32215:
     area: tba_322
     name: McGintey Bay
@@ -483,6 +513,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32216:
     area: tba_322
     name: McGintey Bay
@@ -510,6 +542,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32217:
     area: tba_322
     name: McGintey Bay
@@ -541,6 +575,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32218:
     area: tba_322
     name: McGintey Bay
@@ -572,6 +608,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32219:
     area: tba_322
     name: McGintey Bay
@@ -603,6 +641,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32220:
     area: tba_322
     name: McGintey Bay
@@ -634,6 +674,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32221:
     area: tba_322
     name: McGintey Bay
@@ -665,6 +707,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32222:
     area: tba_322
     name: McGintey Bay
@@ -696,6 +740,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32223:
     area: tba_322
     name: McGintey Bay
@@ -727,6 +773,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32224:
     area: tba_322
     name: McGintey Bay
@@ -758,6 +806,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32225:
     area: tba_322
     name: McGintey Bay
@@ -790,6 +840,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32226:
     area: tba_322
     name: McGintey Bay
@@ -818,6 +870,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32227:
     area: tba_322
     name: McGintey Bay
@@ -845,6 +899,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32228:
     area: tba_322
     name: McGintey Bay
@@ -872,6 +928,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32229:
     area: tba_322
     name: McGintey Bay
@@ -895,6 +953,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32230:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -919,6 +979,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32231:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -950,6 +1012,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32232:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -983,6 +1047,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32233:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1015,6 +1081,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32234:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1048,6 +1116,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32235:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1082,6 +1152,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32236:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1115,6 +1187,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32237:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1146,6 +1220,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32238:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1179,6 +1255,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32239:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1210,6 +1288,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32240:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1243,6 +1323,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32241:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1276,6 +1358,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32242:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1310,6 +1394,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32243:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1343,6 +1429,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32244:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1376,6 +1464,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32245:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1408,6 +1498,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32246:
     area: tba_322
     name: Nearing the Docks of McGintey
@@ -1435,6 +1527,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32247:
     area: tba_322
     name: Dock Area
@@ -1458,6 +1552,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32248:
     area: tba_322
     name: Dock Area
@@ -1490,6 +1586,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32249:
     area: tba_322
     name: The End of Dock 1
@@ -1521,6 +1619,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32250:
     area: tba_322
     name: Dock Area
@@ -1554,6 +1654,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32251:
     area: tba_322
     name: The End of Dock 2
@@ -1586,6 +1688,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32252:
     area: tba_322
     name: Dock Area
@@ -1619,6 +1723,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32253:
     area: tba_322
     name: The End of Dock 3
@@ -1651,6 +1757,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32254:
     area: tba_322
     name: Dock Area
@@ -1684,6 +1792,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32255:
     area: tba_322
     name: The End of Dock 4
@@ -1716,6 +1826,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32256:
     area: tba_322
     name: Dock Area
@@ -1749,6 +1861,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32257:
     area: tba_322
     name: The End of Dock 5
@@ -1781,6 +1895,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32258:
     area: tba_322
     name: Dock Area
@@ -1814,6 +1930,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32259:
     area: tba_322
     name: The End of Dock 6
@@ -1848,6 +1966,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32260:
     area: tba_322
     name: Dock Area
@@ -1880,6 +2000,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32261:
     area: tba_322
     name: The End of Dock 7
@@ -1914,6 +2036,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32262:
     area: tba_322
     name: Dock Area
@@ -1946,6 +2070,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32263:
     area: tba_322
     name: Dock Area
@@ -1969,6 +2095,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32264:
     area: tba_322
     name: Dock Area
@@ -1994,6 +2122,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32265:
     area: tba_322
     name: Dock 1
@@ -2025,6 +2155,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32266:
     area: tba_322
     name: Dock Area
@@ -2055,6 +2187,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32267:
     area: tba_322
     name: Dock 2
@@ -2089,6 +2223,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32268:
     area: tba_322
     name: Dock Area
@@ -2117,6 +2253,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32269:
     area: tba_322
     name: Dock 3
@@ -2150,6 +2288,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32270:
     area: tba_322
     name: Dock Area
@@ -2178,6 +2318,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32271:
     area: tba_322
     name: Dock 4
@@ -2209,6 +2351,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32272:
     area: tba_322
     name: Dock Area
@@ -2237,6 +2381,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32273:
     area: tba_322
     name: Dock 5
@@ -2270,6 +2416,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32274:
     area: tba_322
     name: Dock Area
@@ -2298,6 +2446,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32275:
     area: tba_322
     name: Dock 6
@@ -2330,6 +2480,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32276:
     area: tba_322
     name: Dock Area
@@ -2358,6 +2510,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32277:
     area: tba_322
     name: Dock 7
@@ -2390,6 +2544,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32278:
     area: tba_322
     name: Dock Area
@@ -2414,3 +2570,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

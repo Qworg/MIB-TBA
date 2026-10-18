@@ -46,6 +46,8 @@ rooms:
         that The large gates are made of wood, but are so heavily reinforced with steel
         that you can hardly tell.  It would take someone of inhuman strength to close
         them.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24001:
     area: tba_240
     name: Zyanya Way
@@ -70,6 +72,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24002:
     area: tba_240
     name: Zyanya Way
@@ -97,6 +101,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24003:
     area: tba_240
     name: Zyanya Way
@@ -121,6 +127,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24004:
     area: tba_240
     name: Zyanya Way
@@ -148,6 +156,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24005:
     area: tba_240
     name: Vassar Road
@@ -180,6 +190,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24006:
     area: tba_240
     name: Zyanya Way
@@ -204,6 +216,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24007:
     area: tba_240
     name: Zyanya Way
@@ -227,6 +241,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24008:
     area: tba_240
     name: Zyanya Way
@@ -250,6 +266,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24009:
     area: tba_240
     name: Zyanaya Way
@@ -273,6 +291,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24010:
     area: tba_240
     name: Whits Lane
@@ -297,6 +317,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24011:
     area: tba_240
     name: Minotaur Home
@@ -325,6 +347,8 @@ rooms:
       description: |2
            The table is bare and in pretty rough shape.  Scratches mar the once smooth
         top.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24012:
     area: tba_240
     name: The Armory
@@ -345,6 +369,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24013:
     area: tba_240
     name: Minotaur Home
@@ -374,6 +400,8 @@ rooms:
       description: |2
            The table spans about three quarters of the room.  Enough to seat at least
         30 minotaurs.  Too bad there are no chairs.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24014:
     area: tba_240
     name: Vassar Road
@@ -398,6 +426,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24015:
     area: tba_240
     name: Training Grounds
@@ -421,6 +451,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24016:
     area: tba_240
     name: Training Grounds
@@ -448,6 +480,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24017:
     area: tba_240
     name: Training Grounds
@@ -472,6 +506,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24018:
     area: tba_240
     name: Wasatch Lane
@@ -495,6 +531,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24019:
     area: tba_240
     name: Whits Lane
@@ -518,6 +556,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24020:
     area: tba_240
     name: Market Street
@@ -542,6 +582,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24021:
     area: tba_240
     name: Market Street
@@ -569,6 +611,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24022:
     area: tba_240
     name: Market Street
@@ -597,6 +641,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24023:
     area: tba_240
     name: Vassar Road
@@ -629,6 +675,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24024:
     area: tba_240
     name: Training Grounds
@@ -661,6 +709,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24025:
     area: tba_240
     name: Training Grounds
@@ -694,6 +744,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24026:
     area: tba_240
     name: Training Grounds
@@ -721,6 +773,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24027:
     area: tba_240
     name: Wasatch Lane
@@ -745,6 +799,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24028:
     area: tba_240
     name: Whits Lane
@@ -769,6 +825,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24029:
     area: tba_240
     name: Specialty Shop
@@ -788,6 +846,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24030:
     area: tba_240
     name: Minotaur House
@@ -831,6 +891,8 @@ rooms:
       - grate
       description: |2
            A small grate is partially hidden under some dirt and blankets.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24031:
     area: tba_240
     name: Supplies store
@@ -851,6 +913,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24032:
     area: tba_240
     name: Vassar Road
@@ -875,6 +939,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24033:
     area: tba_240
     name: Training Grounds
@@ -900,6 +966,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24034:
     area: tba_240
     name: Training Grounds
@@ -928,6 +996,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24035:
     area: tba_240
     name: Training Grounds
@@ -952,6 +1022,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24036:
     area: tba_240
     name: Wasatch Lane
@@ -976,6 +1048,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24037:
     area: tba_240
     name: The Western Gate of Dun Maura
@@ -995,6 +1069,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24038:
     area: tba_240
     name: Whits Lane
@@ -1027,6 +1103,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24039:
     area: tba_240
     name: VaQuero Road
@@ -1051,6 +1129,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24040:
     area: tba_240
     name: VaQuero Road
@@ -1082,6 +1162,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24041:
     area: tba_240
     name: VaQuero Road
@@ -1105,6 +1187,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24042:
     area: tba_240
     name: The Center of Dun Maura
@@ -1137,6 +1221,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24043:
     area: tba_240
     name: VaQuero Road
@@ -1162,6 +1248,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24044:
     area: tba_240
     name: VaQuero Road
@@ -1186,6 +1274,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24045:
     area: tba_240
     name: VaQuero Way
@@ -1210,6 +1300,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24046:
     area: tba_240
     name: Wasatch Lane
@@ -1242,6 +1334,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24047:
     area: tba_240
     name: The Eastern Gate of Dun Maura
@@ -1262,6 +1356,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24048:
     area: tba_240
     name: Whits Lane
@@ -1286,6 +1382,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24049:
     area: tba_240
     name: Hall of Vardis
@@ -1309,6 +1407,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24050:
     area: tba_240
     name: Hall of Vardis
@@ -1340,6 +1440,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24051:
     area: tba_240
     name: Hall of Vardis
@@ -1363,6 +1465,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24052:
     area: tba_240
     name: Vassar Road
@@ -1386,6 +1490,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24053:
     area: tba_240
     name: Vorn Estate
@@ -1413,6 +1519,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24054:
     area: tba_240
     name: Main Chamber
@@ -1440,6 +1548,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24055:
     area: tba_240
     name: Waiting Room
@@ -1459,6 +1569,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24056:
     area: tba_240
     name: Wasatch Lane
@@ -1483,6 +1595,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24057:
     area: tba_240
     name: Whits Lane
@@ -1506,6 +1620,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24058:
     area: tba_240
     name: Hall of Vardis
@@ -1529,6 +1645,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24059:
     area: tba_240
     name: Hall of Vardis
@@ -1568,6 +1686,8 @@ rooms:
            The statue depicts a giant centaur with horns covered with golden rings to
         portray an undefeated rein in the arena.  He holds a massive war axe and seems
         to be standing over the remains of a centaur.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24060:
     area: tba_240
     name: Hall of Vardis
@@ -1591,6 +1711,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24061:
     area: tba_240
     name: Vassar Road
@@ -1619,6 +1741,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24062:
     area: tba_240
     name: Vorn Estate
@@ -1651,6 +1775,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24063:
     area: tba_240
     name: The Main Chamber
@@ -1682,6 +1808,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24064:
     area: tba_240
     name: Audience Chamber
@@ -1706,6 +1834,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24065:
     area: tba_240
     name: Wasatch Lane
@@ -1730,6 +1860,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24066:
     area: tba_240
     name: Whits Lane
@@ -1754,6 +1886,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24067:
     area: tba_240
     name: Zarn's Estate
@@ -1777,6 +1911,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24068:
     area: tba_240
     name: Zarn's Estate
@@ -1805,6 +1941,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24069:
     area: tba_240
     name: Zarn's Estate
@@ -1828,6 +1966,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24070:
     area: tba_240
     name: Vassar Road
@@ -1852,6 +1992,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24071:
     area: tba_240
     name: Vorn Estate
@@ -1879,6 +2021,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24072:
     area: tba_240
     name: Vorn Estate
@@ -1906,6 +2050,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24073:
     area: tba_240
     name: Vorn Estate
@@ -1925,6 +2071,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24074:
     area: tba_240
     name: Wasatch Lane
@@ -1963,6 +2111,8 @@ rooms:
       - cover
       description: |2
            A large metal sewer cover is partially open.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24075:
     area: tba_240
     name: Zoa Way
@@ -1986,6 +2136,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24076:
     area: tba_240
     name: Zoa Way
@@ -2009,6 +2161,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24077:
     area: tba_240
     name: Zoa Way
@@ -2033,6 +2187,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24078:
     area: tba_240
     name: Zoa Way
@@ -2057,6 +2213,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24079:
     area: tba_240
     name: Vassar Road
@@ -2089,6 +2247,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24080:
     area: tba_240
     name: Zoa Way
@@ -2113,6 +2273,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24081:
     area: tba_240
     name: Zoa Way
@@ -2136,6 +2298,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24082:
     area: tba_240
     name: Zoa Way
@@ -2159,6 +2323,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24083:
     area: tba_240
     name: Zoa Way
@@ -2186,6 +2352,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24084:
     area: tba_240
     name: The Northern Gate of Dun Maura
@@ -2205,6 +2373,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24085:
     area: tba_240
     name: Bunk Room
@@ -2224,6 +2394,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24086:
     area: tba_240
     name: Bunk Room
@@ -2243,6 +2415,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24087:
     area: tba_240
     name: Bunk Room
@@ -2262,6 +2436,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24088:
     area: tba_240
     name: Hidden Room
@@ -2288,6 +2464,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24089:
     area: tba_240
     name: Zarn's Hall
@@ -2311,6 +2489,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24090:
     area: tba_240
     name: Zarn's Hall
@@ -2334,6 +2514,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24091:
     area: tba_240
     name: Zarn's Hall
@@ -2362,6 +2544,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24092:
     area: tba_240
     name: Advisors Room
@@ -2381,6 +2565,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24093:
     area: tba_240
     name: Meeting Room of the Grand Master
@@ -2413,6 +2599,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24094:
     area: tba_240
     name: War Masters Chambers
@@ -2433,6 +2621,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24095:
     area: tba_240
     name: Grand Masters Chamber
@@ -2452,6 +2642,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24096:
     area: tba_240
     name: A Bedroom
@@ -2471,6 +2663,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24097:
     area: tba_240
     name: Vorn's Chamber
@@ -2490,6 +2684,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24098:
     area: tba_240
     name: Guest Room
@@ -2509,6 +2705,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24099:
     area: tba_240
     name: The Sewers
@@ -2534,3 +2732,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

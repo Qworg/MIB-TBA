@@ -70,6 +70,8 @@ rooms:
         286 Descent to Hell II             at 28541 (east ) ---> 28673
         286 Descent to Hell II             at 28541 (south) ---> 28682
         286 Descent to Hell II             at 28541 (west ) ---> 28672
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28501:
     area: tba_285
     name: Halls of Judgement
@@ -95,6 +97,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28502:
     area: tba_285
     name: Halls of Judgement
@@ -123,6 +127,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28503:
     area: tba_285
     name: Halls of Judgement
@@ -151,6 +157,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28504:
     area: tba_285
     name: Halls of Judgement
@@ -174,6 +182,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28505:
     area: tba_285
     name: Halls of Judgement
@@ -197,6 +207,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28506:
     area: tba_285
     name: Blackened Hall
@@ -229,6 +241,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28507:
     area: tba_285
     name: Blackened Hall
@@ -253,6 +267,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28508:
     area: tba_285
     name: Blackened Hall
@@ -277,6 +293,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28509:
     area: tba_285
     name: Stairs to the Abyss
@@ -296,6 +314,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28510:
     area: tba_285
     name: Maintenance Walkway
@@ -325,6 +345,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28511:
     area: tba_285
     name: Court Room
@@ -351,6 +373,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28512:
     area: tba_285
     name: Lawyer's Office
@@ -377,6 +401,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28513:
     area: tba_285
     name: Office of Complaints
@@ -402,6 +428,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28514:
     area: tba_285
     name: Pawn Shop
@@ -424,6 +452,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28515:
     area: tba_285
     name: Hallway of The Mall from Hell
@@ -452,6 +482,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28516:
     area: tba_285
     name: Hallway of The Mall from Hell
@@ -480,6 +512,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28517:
     area: tba_285
     name: The Office of Big Mouth
@@ -510,6 +544,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28518:
     area: tba_285
     name: Stairs to the Abyss
@@ -529,6 +565,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28519:
     area: tba_285
     name: Maintenance Walkway
@@ -552,6 +590,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28520:
     area: tba_285
     name: Maintenance Walkway
@@ -575,6 +615,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28521:
     area: tba_285
     name: Judge's Chambers
@@ -594,6 +636,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28522:
     area: tba_285
     name: Courtyard
@@ -621,6 +665,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28523:
     area: tba_285
     name: Courtyard
@@ -649,6 +695,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28524:
     area: tba_285
     name: Stanley's Magical Steeds
@@ -675,6 +723,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28525:
     area: tba_285
     name: Hallway of The Mall from Hell
@@ -698,6 +748,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28526:
     area: tba_285
     name: Inside Big Mouth's Stomach
@@ -723,6 +775,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28527:
     area: tba_285
     name: Stairs to the Abyss
@@ -742,6 +796,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28528:
     area: tba_285
     name: Reactor Control Room
@@ -767,6 +823,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28529:
     area: tba_285
     name: Maintenance Room
@@ -800,6 +858,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28530:
     area: tba_285
     name: Break Room
@@ -824,6 +884,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28531:
     area: tba_285
     name: Hell's Kitchen
@@ -844,6 +906,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28532:
     area: tba_285
     name: Courtyard
@@ -871,6 +935,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28533:
     area: tba_285
     name: Courtyard
@@ -894,6 +960,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28534:
     area: tba_285
     name: Hallway of The Mall from Hell
@@ -917,6 +985,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28535:
     area: tba_285
     name: Hallway of The Mall from Hell
@@ -940,6 +1010,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28536:
     area: tba_285
     name: Stairs to the Abyss
@@ -957,6 +1029,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28537:
     area: tba_285
     name: Inside the Reactor Core
@@ -984,6 +1058,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28538:
     area: tba_285
     name: Reactor Room Floor
@@ -1016,6 +1092,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28539:
     area: tba_285
     name: Secondary Control Room
@@ -1036,6 +1114,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28540:
     area: tba_285
     name: Office of the Chief Engineer
@@ -1057,6 +1137,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28541:
     area: tba_285
     name: Ice Room
@@ -1084,3 +1166,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

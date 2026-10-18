@@ -13,6 +13,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5001:
     area: tba_50
     name: A Long Tunnel
@@ -35,6 +37,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5002:
     area: tba_50
     name: A Long Tunnel
@@ -60,6 +64,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5003:
     area: tba_50
     name: A Long Tunnel
@@ -85,6 +91,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5004:
     area: tba_50
     name: A Tunnel Intersection
@@ -114,6 +122,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5005:
     area: tba_50
     name: An Underground Lake
@@ -146,6 +156,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5006:
     area: tba_50
     name: A Long Narrow Tunnel
@@ -173,6 +185,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5007:
     area: tba_50
     name: A Wide Tunnel
@@ -195,6 +209,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5008:
     area: tba_50
     name: The Cave-In
@@ -217,6 +233,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5009:
     area: tba_50
     name: At The Foot Of The Rubble
@@ -243,6 +261,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5010:
     area: tba_50
     name: A Cave Entrance
@@ -265,6 +285,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5011:
     area: tba_50
     name: A Giant Cave
@@ -288,6 +310,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5012:
     area: tba_50
     name: A Narrow Bend
@@ -309,6 +333,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5013:
     area: tba_50
     name: A Large Cave
@@ -330,6 +356,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5014:
     area: tba_50
     name: A Damp Hallway
@@ -351,6 +379,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5015:
     area: tba_50
     name: An Underground Pool
@@ -372,6 +402,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5016:
     area: tba_50
     name: A Damp Hallway
@@ -394,6 +426,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5017:
     area: tba_50
     name: A Narrow Crawlway
@@ -420,6 +454,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5018:
     area: tba_50
     name: A Large Cavern
@@ -442,6 +478,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5019:
     area: tba_50
     name: A Fungus Patch
@@ -464,6 +502,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5020:
     area: tba_50
     name: The Fungus Path
@@ -486,6 +526,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5021:
     area: tba_50
     name: The Fungus Temple
@@ -508,6 +550,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5022:
     area: tba_50
     name: A Sloping Passage
@@ -529,6 +573,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5023:
     area: tba_50
     name: A Sloping Passage
@@ -550,6 +596,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5024:
     area: tba_50
     name: The Great Eastern Desert
@@ -577,6 +625,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5025:
     area: tba_50
     name: The Great Eastern Desert
@@ -604,6 +654,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5026:
     area: tba_50
     name: The Great Eastern Desert
@@ -631,6 +683,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5027:
     area: tba_50
     name: The Great Eastern Desert
@@ -658,6 +712,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5028:
     area: tba_50
     name: The Great Eastern Desert
@@ -690,6 +746,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5029:
     area: tba_50
     name: The Great Eastern Desert
@@ -717,6 +775,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5030:
     area: tba_50
     name: A Small Oasis
@@ -748,6 +808,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5031:
     area: tba_50
     name: The Great Eastern Desert
@@ -778,6 +840,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5032:
     area: tba_50
     name: The Great Eastern Desert
@@ -808,6 +872,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5033:
     area: tba_50
     name: The Great Eastern Desert
@@ -838,6 +904,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5034:
     area: tba_50
     name: The Great Eastern Desert
@@ -868,6 +936,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5035:
     area: tba_50
     name: The Great Eastern Desert
@@ -898,6 +968,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5036:
     area: tba_50
     name: The Great Eastern Desert
@@ -928,6 +1000,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5037:
     area: tba_50
     name: The Great Eastern Desert
@@ -958,6 +1032,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5038:
     area: tba_50
     name: The Great Eastern Desert
@@ -988,6 +1064,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5039:
     area: tba_50
     name: The Great Eastern Desert
@@ -1019,6 +1097,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5040:
     area: tba_50
     name: The Great Eastern Desert
@@ -1051,6 +1131,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5041:
     area: tba_50
     name: The Great Eastern Desert
@@ -1081,6 +1163,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5042:
     area: tba_50
     name: The Great Eastern Desert
@@ -1111,6 +1195,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5043:
     area: tba_50
     name: The Great Eastern Desert
@@ -1141,6 +1227,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5044:
     area: tba_50
     name: The Great Eastern Desert
@@ -1171,6 +1259,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5045:
     area: tba_50
     name: The Great Eastern Desert
@@ -1201,6 +1291,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5046:
     area: tba_50
     name: The Great Eastern Desert
@@ -1231,6 +1323,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5047:
     area: tba_50
     name: The Great Eastern Desert
@@ -1261,6 +1355,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5048:
     area: tba_50
     name: The Great Eastern Desert
@@ -1291,6 +1387,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5049:
     area: tba_50
     name: The Great Eastern Desert
@@ -1321,6 +1419,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5050:
     area: tba_50
     name: The Great Eastern Desert
@@ -1351,6 +1451,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5051:
     area: tba_50
     name: The Great Eastern Desert
@@ -1377,6 +1479,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5052:
     area: tba_50
     name: The Great Eastern Desert
@@ -1408,6 +1512,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5053:
     area: tba_50
     name: The Great Eastern Desert
@@ -1438,6 +1544,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5054:
     area: tba_50
     name: The Great Eastern Desert
@@ -1464,6 +1572,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5055:
     area: tba_50
     name: The Great Eastern Desert
@@ -1490,6 +1600,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5056:
     area: tba_50
     name: A Nomad Camp
@@ -1522,6 +1634,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5057:
     area: tba_50
     name: Inside A Small Tent
@@ -1540,6 +1654,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5058:
     area: tba_50
     name: Beside The Camels
@@ -1571,6 +1687,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5059:
     area: tba_50
     name: The Warriors' Tent
@@ -1588,6 +1706,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5060:
     area: tba_50
     name: The Main Tent
@@ -1610,6 +1730,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5061:
     area: tba_50
     name: The Main Tent
@@ -1628,6 +1750,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5062:
     area: tba_50
     name: The Rickety Rope Bridge
@@ -1650,6 +1774,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5063:
     area: tba_50
     name: The Wind-Swept Ledge
@@ -1674,6 +1800,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5064:
     area: tba_50
     name: The Cave Mouth
@@ -1697,6 +1825,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5065:
     area: tba_50
     name: The Mysterious Lair
@@ -1721,6 +1851,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5066:
     area: tba_50
     name: A Wide Tunnel
@@ -1743,6 +1875,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5067:
     area: tba_50
     name: A Narrower Tunnel
@@ -1765,6 +1899,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5068:
     area: tba_50
     name: A Narrow Crack
@@ -1788,6 +1924,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5069:
     area: tba_50
     name: A Small Cavern
@@ -1810,6 +1948,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5070:
     area: tba_50
     name: A Small Shaft
@@ -1832,3 +1972,5 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

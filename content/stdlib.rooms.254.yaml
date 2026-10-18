@@ -52,6 +52,8 @@ rooms:
         Midlevel mobs and eq, with a bit of fun in the descrips.  Enjoy.
          * note: Some of the decsrips in this zone may not be to your taste.
                 You might find them vulgar. That said, fair warning.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25401:
     area: tba_254
     name: A Dirt Path
@@ -89,6 +91,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25402:
     area: tba_254
     name: A Dirt Path
@@ -123,6 +127,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25403:
     area: tba_254
     name: A Dirt Path
@@ -156,6 +162,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25404:
     area: tba_254
     name: A Holding Cell
@@ -185,6 +193,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25405:
     area: tba_254
     name: A Holding Cell
@@ -210,6 +220,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25406:
     area: tba_254
     name: An Outhouse
@@ -232,6 +244,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25407:
     area: tba_254
     name: An Outhouse
@@ -253,6 +267,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25408:
     area: tba_254
     name: A Dirt Path
@@ -275,6 +291,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25409:
     area: tba_254
     name: A Dirt Path
@@ -297,6 +315,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25410:
     area: tba_254
     name: A Dirt Path
@@ -328,6 +348,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25411:
     area: tba_254
     name: A Dirt Path
@@ -350,6 +372,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25412:
     area: tba_254
     name: Barracks
@@ -369,6 +393,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25413:
     area: tba_254
     name: Barracks
@@ -388,6 +414,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25414:
     area: tba_254
     name: A Dirt Path
@@ -410,6 +438,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25415:
     area: tba_254
     name: A Muddy Crossing
@@ -443,6 +473,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25416:
     area: tba_254
     name: A Muddy Trail
@@ -466,6 +498,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25417:
     area: tba_254
     name: A Muddier Trail
@@ -497,6 +531,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25418:
     area: tba_254
     name: Chicken Coop
@@ -516,6 +552,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25419:
     area: tba_254
     name: Chicken Coop
@@ -535,6 +573,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25420:
     area: tba_254
     name: Hay Barn
@@ -558,6 +598,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25421:
     area: tba_254
     name: Cow Barn
@@ -582,6 +624,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25422:
     area: tba_254
     name: Pasture
@@ -601,6 +645,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25423:
     area: tba_254
     name: A Dirt Trail
@@ -624,6 +670,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25424:
     area: tba_254
     name: A Dirt Trail
@@ -656,6 +704,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25425:
     area: tba_254
     name: Food Tent
@@ -675,6 +725,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25426:
     area: tba_254
     name: Food Storage and Preparation
@@ -696,6 +748,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25427:
     area: tba_254
     name: A Twisty Turning Trail
@@ -718,6 +772,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25428:
     area: tba_254
     name: A Twisty Turning Trail
@@ -748,6 +804,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25429:
     area: tba_254
     name: Weapon Cache
@@ -772,6 +830,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25430:
     area: tba_254
     name: A Dirt Path
@@ -795,6 +855,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25431:
     area: tba_254
     name: A Dirt Trail
@@ -817,6 +879,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25432:
     area: tba_254
     name: A Meeting of Two Trails
@@ -843,6 +907,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25433:
     area: tba_254
     name: Tent Dwelling
@@ -863,6 +929,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25434:
     area: tba_254
     name: Tent Dwelling
@@ -883,6 +951,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25435:
     area: tba_254
     name: Tent Dwelling
@@ -903,6 +973,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25436:
     area: tba_254
     name: Tent Dwelling
@@ -923,6 +995,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25437:
     area: tba_254
     name: Hut
@@ -942,6 +1016,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25438:
     area: tba_254
     name: Hut
@@ -961,6 +1037,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25439:
     area: tba_254
     name: Hut
@@ -980,6 +1058,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25440:
     area: tba_254
     name: Hut
@@ -999,6 +1079,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25441:
     area: tba_254
     name: The Trail Out of Town
@@ -1029,6 +1111,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25442:
     area: tba_254
     name: The Trail Out of Town
@@ -1055,6 +1139,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25443:
     area: tba_254
     name: The Trail Out of Town
@@ -1073,6 +1159,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25444:
     area: tba_254
     name: A Dusty Trail
@@ -1104,6 +1192,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25445:
     area: tba_254
     name: A Dusty Trail
@@ -1129,6 +1219,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25446:
     area: tba_254
     name: A Dusty Trail
@@ -1161,6 +1253,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25447:
     area: tba_254
     name: A Dusty Trail
@@ -1189,6 +1283,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25448:
     area: tba_254
     name: The End of the Road
@@ -1221,6 +1317,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25449:
     area: tba_254
     name: Outdoor Temple
@@ -1241,6 +1339,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25450:
     area: tba_254
     name: Lieutenant Caspan's Home
@@ -1260,6 +1360,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25451:
     area: tba_254
     name: The Wives
@@ -1280,6 +1382,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25452:
     area: tba_254
     name: Mordecai's Home
@@ -1310,6 +1414,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25453:
     area: tba_254
     name: Penelope's Cell
@@ -1329,6 +1435,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25454:
     area: tba_254
     name: Mordecai's Stash
@@ -1354,6 +1462,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25455:
     area: tba_254
     name: Dark and Gloomy Tunnel
@@ -1376,6 +1486,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25456:
     area: tba_254
     name: A Dark and Gloomy Tunnel
@@ -1398,6 +1510,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25457:
     area: tba_254
     name: A Dark and Gloomy Tunnel
@@ -1415,3 +1529,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

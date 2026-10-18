@@ -64,6 +64,8 @@ rooms:
          17 Camelot III                    at   795 (south) --->  1720
          16 Camelot II                     at   799 (north) --->  1624
          17 Camelot III                    at   799 (south) --->  1724
+    ambient_phases: {}
+    ambient_weather: {}
   tba.701:
     area: tba_7
     name: Along the Stream
@@ -87,6 +89,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.702:
     area: tba_7
     name: In the River
@@ -110,6 +114,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.703:
     area: tba_7
     name: 'An Old Shack '
@@ -129,6 +135,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.775:
     area: tba_7
     name: The Forest Arden
@@ -163,6 +171,8 @@ rooms:
            Let it be known that Arthur, King of the Britons, seeks to form the company
         of the Round Table.  All knights of valor and virtue are summoned to this august
         company in Camelot.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.776:
     area: tba_7
     name: Entrance
@@ -185,6 +195,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.777:
     area: tba_7
     name: Courtyard
@@ -217,6 +229,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.778:
     area: tba_7
     name: Courtyard
@@ -250,6 +264,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.779:
     area: tba_7
     name: Courtyard
@@ -283,6 +299,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.780:
     area: tba_7
     name: Main Hall
@@ -313,6 +331,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.781:
     area: tba_7
     name: Audience Chamber
@@ -339,6 +359,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.782:
     area: tba_7
     name: Audience Chamber
@@ -366,6 +388,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.783:
     area: tba_7
     name: Audience Chamber
@@ -394,6 +418,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.784:
     area: tba_7
     name: Cobblestone Road
@@ -426,6 +452,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.785:
     area: tba_7
     name: Cobblestone Road
@@ -460,6 +488,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.786:
     area: tba_7
     name: Cobblestone Road
@@ -491,6 +521,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.787:
     area: tba_7
     name: Cobblestone Road
@@ -518,6 +550,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.788:
     area: tba_7
     name: Cobblestone Road
@@ -545,6 +579,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.789:
     area: tba_7
     name: Cobblestone Road
@@ -573,6 +609,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.790:
     area: tba_7
     name: Knights Way
@@ -605,6 +643,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.791:
     area: tba_7
     name: Cobblestone Road
@@ -628,6 +668,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.792:
     area: tba_7
     name: Cobblestone Road
@@ -655,6 +697,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.793:
     area: tba_7
     name: Cobblestone Road
@@ -682,6 +726,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.794:
     area: tba_7
     name: Cobblestone Road
@@ -709,6 +755,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.795:
     area: tba_7
     name: West Lane
@@ -736,6 +784,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.796:
     area: tba_7
     name: Boat Launch
@@ -760,6 +810,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.797:
     area: tba_7
     name: The Lake
@@ -784,6 +836,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.798:
     area: tba_7
     name: The Lake
@@ -808,6 +862,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.799:
     area: tba_7
     name: Open Field
@@ -836,3 +892,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

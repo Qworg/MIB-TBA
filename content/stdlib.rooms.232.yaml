@@ -55,6 +55,8 @@ rooms:
         Theme        :
         Plot         :
         Links        : 18n, 31w, 43s
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23201:
     area: tba_232
     name: Terringham road
@@ -83,6 +85,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23202:
     area: tba_232
     name: Terringham road
@@ -115,6 +119,8 @@ rooms:
         Warriors and Thieves killing monsters that attacked some town.  The Wizards and
         Clerics are behind the warriors, casting their spells.  They glow as they
         attempt to cast.  You see in small writing, the words Bellau wood.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23203:
     area: tba_232
     name: Terringham road
@@ -141,6 +147,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23204:
     area: tba_232
     name: Terringham road
@@ -171,6 +179,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23205:
     area: tba_232
     name: East gate
@@ -190,6 +200,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23206:
     area: tba_232
     name: Star trail
@@ -213,6 +225,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23207:
     area: tba_232
     name: Star trail
@@ -240,6 +254,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23208:
     area: tba_232
     name: A clean alley
@@ -265,6 +281,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23209:
     area: tba_232
     name: A clean alley
@@ -288,6 +306,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23210:
     area: tba_232
     name: A ladder well going UP
@@ -306,6 +326,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23211:
     area: tba_232
     name: Star trail
@@ -329,6 +351,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23212:
     area: tba_232
     name: Star trail
@@ -353,6 +377,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23213:
     area: tba_232
     name: Star trail
@@ -375,6 +401,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23214:
     area: tba_232
     name: Rumble road
@@ -398,6 +426,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23215:
     area: tba_232
     name: Rumble road
@@ -422,6 +452,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23216:
     area: tba_232
     name: Rumble road
@@ -445,6 +477,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23217:
     area: tba_232
     name: Terringham avenue
@@ -476,6 +510,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23218:
     area: tba_232
     name: North gate
@@ -495,6 +531,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23219:
     area: tba_232
     name: Rumble road
@@ -518,6 +556,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23220:
     area: tba_232
     name: Rumble road
@@ -541,6 +581,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23221:
     area: tba_232
     name: Rumble road
@@ -567,6 +609,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23222:
     area: tba_232
     name: An Alley way
@@ -591,6 +635,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23223:
     area: tba_232
     name: An Alley way
@@ -610,6 +656,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23224:
     area: tba_232
     name: Rumble road
@@ -633,6 +681,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23225:
     area: tba_232
     name: West drive
@@ -655,6 +705,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23226:
     area: tba_232
     name: West drive
@@ -678,6 +730,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23227:
     area: tba_232
     name: West drive
@@ -701,6 +755,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23228:
     area: tba_232
     name: West drive
@@ -729,6 +785,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23229:
     area: tba_232
     name: Magic shop
@@ -747,6 +805,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23230:
     area: tba_232
     name: Terringham street
@@ -777,6 +837,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23231:
     area: tba_232
     name: West gate
@@ -795,6 +857,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23232:
     area: tba_232
     name: West drive
@@ -818,6 +882,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23233:
     area: tba_232
     name: West drive
@@ -840,6 +906,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23234:
     area: tba_232
     name: West drive
@@ -863,6 +931,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23235:
     area: tba_232
     name: West drive
@@ -887,6 +957,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23236:
     area: tba_232
     name: West drive
@@ -910,6 +982,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23237:
     area: tba_232
     name: South park
@@ -932,6 +1006,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23238:
     area: tba_232
     name: South park
@@ -959,6 +1035,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23239:
     area: tba_232
     name: A side road
@@ -982,6 +1060,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23240:
     area: tba_232
     name: Weapons Shop
@@ -999,6 +1079,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23241:
     area: tba_232
     name: South park
@@ -1022,6 +1104,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23242:
     area: tba_232
     name: Terringham way
@@ -1053,6 +1137,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23243:
     area: tba_232
     name: South gate
@@ -1072,6 +1158,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23244:
     area: tba_232
     name: South park
@@ -1094,6 +1182,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23245:
     area: tba_232
     name: South park
@@ -1117,6 +1207,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23246:
     area: tba_232
     name: South park
@@ -1140,6 +1232,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23247:
     area: tba_232
     name: South park
@@ -1162,6 +1256,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23248:
     area: tba_232
     name: Star trail
@@ -1194,6 +1290,8 @@ rooms:
         battle was taken place in Midgaard.  Drakkar the evil immortal seems to be
         standing on the alter and destroying everything in sight, with his minions
         standing at his side.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23249:
     area: tba_232
     name: Star trail
@@ -1217,6 +1315,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23250:
     area: tba_232
     name: An alley
@@ -1245,6 +1345,8 @@ rooms:
       - sign
       description: |2
            The Don room is to the Southwest.  Please do not fight in this sacred area.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23251:
     area: tba_232
     name: An alley
@@ -1269,6 +1371,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23252:
     area: tba_232
     name: Don room
@@ -1291,6 +1395,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23253:
     area: tba_232
     name: The board room
@@ -1309,6 +1415,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23254:
     area: tba_232
     name: Terringham way
@@ -1333,6 +1441,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23255:
     area: tba_232
     name: Terringham way
@@ -1359,6 +1469,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23256:
     area: tba_232
     name: A side street
@@ -1382,6 +1494,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23257:
     area: tba_232
     name: The armory
@@ -1401,6 +1515,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23258:
     area: tba_232
     name: Terringham street
@@ -1428,6 +1544,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23259:
     area: tba_232
     name: Terringham street
@@ -1461,6 +1579,8 @@ rooms:
            You see fabulous pictures of dragons in flight and a group of people in full
         armor gear.  You notice some of these people..  You spot out Springfire,
         Gunthar, Buffy, Lilly, Angel, and Blaze.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23260:
     area: tba_232
     name: Terringham street
@@ -1484,6 +1604,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23261:
     area: tba_232
     name: Terringham avenue
@@ -1519,6 +1641,8 @@ rooms:
            The pictures here are of great warriors trying to guard a city from a band of
         orcs.  The orcs out number the warriors, but the warriors are putting up a good
         fight.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23262:
     area: tba_232
     name: Terringham Bank
@@ -1538,6 +1662,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23263:
     area: tba_232
     name: Terringham avenue
@@ -1565,6 +1691,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23264:
     area: tba_232
     name: Terringham avenue
@@ -1595,6 +1723,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23265:
     area: tba_232
     name: Terringham avenue
@@ -1618,6 +1748,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23266:
     area: tba_232
     name: An Alley
@@ -1640,6 +1772,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23267:
     area: tba_232
     name: Guild row
@@ -1667,6 +1801,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23268:
     area: tba_232
     name: Entrance to the Cleric Guild
@@ -1690,6 +1826,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23269:
     area: tba_232
     name: Entrance to the Thieves Guild.
@@ -1713,6 +1851,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23270:
     area: tba_232
     name: Guild row
@@ -1739,6 +1879,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23271:
     area: tba_232
     name: Entrance to the Warriors Guild
@@ -1762,6 +1904,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23272:
     area: tba_232
     name: Entrance to the Mage Guild
@@ -1785,6 +1929,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23273:
     area: tba_232
     name: Bread crumb road
@@ -1808,6 +1954,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23274:
     area: tba_232
     name: The Bakery
@@ -1826,6 +1974,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23275:
     area: tba_232
     name: An Alley
@@ -1848,6 +1998,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23276:
     area: tba_232
     name: Clerics Guild
@@ -1867,6 +2019,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23277:
     area: tba_232
     name: Thieves Guild
@@ -1887,6 +2041,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23278:
     area: tba_232
     name: Warriors guild
@@ -1908,6 +2064,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23279:
     area: tba_232
     name: Mages Guild
@@ -1928,6 +2086,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23280:
     area: tba_232
     name: General Store
@@ -1946,6 +2106,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23281:
     area: tba_232
     name: The Pet shop
@@ -1966,6 +2128,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23282:
     area: tba_232
     name: PETSHOP STOREROOM
@@ -1988,3 +2152,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

@@ -29,6 +29,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10101:
     area: tba_101
     name: The South Road
@@ -54,6 +56,8 @@ rooms:
       description: |2
            You are looking at the great gates of XXXX.  The citywall towers before you,
         there is no way you could get in, save through these huge gates.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10102:
     area: tba_101
     name: The South Road
@@ -78,6 +82,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10103:
     area: tba_101
     name: The South Road
@@ -102,6 +108,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10104:
     area: tba_101
     name: The South Road
@@ -126,6 +134,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10105:
     area: tba_101
     name: The South Road
@@ -150,6 +160,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10106:
     area: tba_101
     name: The South Road
@@ -175,6 +187,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10107:
     area: tba_101
     name: The South Road
@@ -199,6 +213,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10108:
     area: tba_101
     name: The South Road
@@ -223,6 +239,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10109:
     area: tba_101
     name: The South Road
@@ -246,6 +264,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10110:
     area: tba_101
     name: The South Road
@@ -271,6 +291,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10111:
     area: tba_101
     name: The South Road
@@ -295,6 +317,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10112:
     area: tba_101
     name: The Bridge
@@ -319,6 +343,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10113:
     area: tba_101
     name: The South Road
@@ -344,6 +370,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10114:
     area: tba_101
     name: The South Road
@@ -368,6 +396,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10115:
     area: tba_101
     name: The South Road
@@ -392,6 +422,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10116:
     area: tba_101
     name: The South Road
@@ -416,6 +448,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10117:
     area: tba_101
     name: The South Road
@@ -439,6 +473,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10118:
     area: tba_101
     name: The South Road
@@ -464,6 +500,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10119:
     area: tba_101
     name: The South Road
@@ -488,6 +526,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10120:
     area: tba_101
     name: The South Road
@@ -512,6 +552,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10121:
     area: tba_101
     name: The South Road
@@ -537,6 +579,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10122:
     area: tba_101
     name: The South Road
@@ -562,6 +606,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10123:
     area: tba_101
     name: The South Road
@@ -589,6 +635,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10124:
     area: tba_101
     name: The South Road
@@ -618,6 +666,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10125:
     area: tba_101
     name: A Small Trail
@@ -641,6 +691,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10126:
     area: tba_101
     name: A Small Trali
@@ -665,6 +717,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10127:
     area: tba_101
     name: A Small Trail
@@ -689,6 +743,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10128:
     area: tba_101
     name: A Small Trail
@@ -714,6 +770,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10129:
     area: tba_101
     name: A Small Trail
@@ -739,6 +797,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10130:
     area: tba_101
     name: A Small Trail
@@ -762,6 +822,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10131:
     area: tba_101
     name: The Top of The Hill
@@ -786,6 +848,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10132:
     area: tba_101
     name: The South Road
@@ -812,6 +876,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10133:
     area: tba_101
     name: The South Road
@@ -838,6 +904,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10134:
     area: tba_101
     name: The South Road
@@ -865,6 +933,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10135:
     area: tba_101
     name: The South Road
@@ -892,6 +962,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10136:
     area: tba_101
     name: The South Road
@@ -916,6 +988,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10137:
     area: tba_101
     name: The South Road
@@ -941,3 +1015,5 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

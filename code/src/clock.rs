@@ -208,6 +208,14 @@ mod tests {
             media: Vec::new(),
             sector: Sector::Field,
             extra_descriptions: Vec::new(),
+            outdoor: false,
+            weather_zone: None,
+            ambient: None,
+            ambient_stamp: None,
+            ambient_phases: Default::default(),
+            ambient_weather: Default::default(),
+            time: None,
+            weather_state: None,
         }
     }
 

@@ -90,6 +90,8 @@ rooms:
         Shops        : 1
         Triggers     : 0(35)
         Links        : 0(1) <24109 - 35923>
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24101:
     area: tba_241
     name: Geordi's Quarters
@@ -111,6 +113,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24102:
     area: tba_241
     name: A Corridor
@@ -141,6 +145,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24103:
     area: tba_241
     name: Data's Quarters
@@ -164,6 +170,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24104:
     area: tba_241
     name: The Brig
@@ -184,6 +192,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24105:
     area: tba_241
     name: A Corridor
@@ -238,6 +248,8 @@ rooms:
             *          You are currently on deck 1            *
             *                                                 *
             ***************************************************
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24106:
     area: tba_241
     name: Transporter Room
@@ -270,6 +282,8 @@ rooms:
       description: |2
            The teleportation console and controls look very complicated, but you can
         work out that you have to INPUT a locations co-ordinates and then ENERGIZE.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24107:
     area: tba_241
     name: School
@@ -290,6 +304,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24108:
     area: tba_241
     name: A Corridor
@@ -387,6 +403,8 @@ rooms:
             *          CAN be injured, or even killed.        *
             *                                                 *
             ***************************************************
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24109:
     area: tba_241
     name: Holodeck 2
@@ -419,6 +437,8 @@ rooms:
         Exit (Will make a door appear)
         (Note for some programs, there will be a limit of three credits which will
         restock every half hour or so)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24110:
     area: tba_241
     name: Turbolift
@@ -448,6 +468,8 @@ rooms:
         'deck 2' (Ten forward, sick bay and the security center)
         'deck 3' (the science labs, the gym and the main shuttle bay)
         'deck 4' (The Bridge)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24111:
     area: tba_241
     name: Turbolift
@@ -477,6 +499,8 @@ rooms:
         'deck 2' (Ten forward, sick bay and the security center)
         'deck 3' (the science labs, the gym and the main shuttle bay)
         'deck 4' (The Bridge)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24112:
     area: tba_241
     name: Cargo Bay 1
@@ -496,6 +520,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24113:
     area: tba_241
     name: A Corridor
@@ -590,6 +616,8 @@ rooms:
             *          You are currently on deck 2            *
             *                                                 *
             ***************************************************
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24114:
     area: tba_241
     name: Riker's Quarters
@@ -610,6 +638,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24115:
     area: tba_241
     name: Sick Bay
@@ -632,6 +662,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24116:
     area: tba_241
     name: A Corridor
@@ -695,6 +727,8 @@ rooms:
             *             ---ENTER WHEN READY---              *
             *                                                 *
             ***************************************************
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24117:
     area: tba_241
     name: Holodeck 4 Entrance - A Narrow Alley
@@ -716,6 +750,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24118:
     area: tba_241
     name: Crusher's Quarters
@@ -735,6 +771,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24119:
     area: tba_241
     name: A Corridor
@@ -767,6 +805,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24120:
     area: tba_241
     name: Enterprise Security
@@ -790,6 +830,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24121:
     area: tba_241
     name: Ten Forward
@@ -812,6 +854,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24122:
     area: tba_241
     name: Shuttle Bay
@@ -848,6 +892,8 @@ rooms:
       description: |2
            The large gray shuttle bay door that leads into deep space.  Make sure you
         have a spacesuit in your inventory!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24123:
     area: tba_241
     name: Troi's Quarters
@@ -868,6 +914,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24124:
     area: tba_241
     name: A corridor
@@ -922,6 +970,8 @@ rooms:
             *          You are currently on deck 3            *
             *                                                 *
             ***************************************************
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24125:
     area: tba_241
     name: Worf's Quarters
@@ -942,6 +992,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24126:
     area: tba_241
     name: Enterprise Gym
@@ -962,6 +1014,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24127:
     area: tba_241
     name: A Corridor
@@ -992,6 +1046,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24128:
     area: tba_241
     name: Picard's Quarters
@@ -1015,6 +1071,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24129:
     area: tba_241
     name: Science Lab
@@ -1036,6 +1094,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24130:
     area: tba_241
     name: A Corridor
@@ -1107,6 +1167,8 @@ rooms:
                                              |
                                              |
                       DECK 3                 |                DECK 4
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24131:
     area: tba_241
     name: Cargo Bay 2
@@ -1125,6 +1187,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24132:
     area: tba_241
     name: Turbolift
@@ -1153,6 +1217,8 @@ rooms:
         'deck 2' (Ten forward, sick bay and the security center)
         'deck 3' (the science labs, the gym and the main shuttle bay)
         'deck 4' (The Bridge)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24133:
     area: tba_241
     name: Turbolift
@@ -1181,6 +1247,8 @@ rooms:
         'deck 2' (Ten forward, sick bay and the security center)
         'deck 3' (the science labs, the gym and the main shuttle bay)
         'deck 4' (The Bridge)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24134:
     area: tba_241
     name: Turbolift
@@ -1195,6 +1263,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24135:
     area: tba_241
     name: Picard's Ready Room
@@ -1216,6 +1286,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24136:
     area: tba_241
     name: Main Bridge - Upper Half
@@ -1246,6 +1318,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24137:
     area: tba_241
     name: Conference Room
@@ -1267,6 +1341,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24138:
     area: tba_241
     name: Main Bridge - Lower Half
@@ -1294,6 +1370,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24139:
     area: tba_241
     name: Outer Space by the Enterprise
@@ -1324,6 +1402,8 @@ rooms:
     coord: null
     sector: underwater
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24140:
     area: tba_241
     name: Outer Space
@@ -1347,6 +1427,8 @@ rooms:
     coord: null
     sector: underwater
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24141:
     area: tba_241
     name: Outer Space
@@ -1366,6 +1448,8 @@ rooms:
     coord: null
     sector: underwater
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24142:
     area: tba_241
     name: Transporter Beam
@@ -1388,6 +1472,8 @@ rooms:
     coord: null
     sector: underwater
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24143:
     area: tba_241
     name: Alien World
@@ -1405,6 +1491,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24144:
     area: tba_241
     name: A Private Detective's Office
@@ -1429,6 +1517,8 @@ rooms:
       description: |2
            The desk is pretty cluttered.  Among the many items on the desk is a
         name-plaque, a circular-dial telephone and a black ink-pen.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24145:
     area: tba_241
     name: A Genetic Scientific Laboratory
@@ -1449,3 +1539,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

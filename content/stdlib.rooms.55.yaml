@@ -21,6 +21,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5501:
     area: tba_55
     name: Underground
@@ -42,6 +44,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5502:
     area: tba_55
     name: Underground
@@ -63,6 +67,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5503:
     area: tba_55
     name: Clerics' Sanctum
@@ -93,6 +99,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5504:
     area: tba_55
     name: The Chamber Of The High Priest
@@ -113,6 +121,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5505:
     area: tba_55
     name: By The Altar
@@ -138,6 +148,8 @@ rooms:
       description: |2
            Looking up the huge statue you see Akbal calmly gazing out across his lands,
         he seems pleased.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5506:
     area: tba_55
     name: The Weavers' Guild
@@ -157,6 +169,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5507:
     area: tba_55
     name: The Craftsmans' Guild
@@ -175,6 +189,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5508:
     area: tba_55
     name: Inside The Temple
@@ -202,6 +218,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5509:
     area: tba_55
     name: Inside The Temple
@@ -236,6 +254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5510:
     area: tba_55
     name: The Donation Room
@@ -257,6 +277,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5511:
     area: tba_55
     name: The Museum Of The Greater Gods
@@ -281,6 +303,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5512:
     area: tba_55
     name: The Entrance To The Guild of Clerics
@@ -306,6 +330,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5513:
     area: tba_55
     name: The Temple Gates
@@ -334,6 +360,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5514:
     area: tba_55
     name: Ahkeem's Stuff
@@ -351,6 +379,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5515:
     area: tba_55
     name: Vera's Veggies
@@ -371,6 +401,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5516:
     area: tba_55
     name: The Museum Of The Greater Gods
@@ -395,6 +427,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5517:
     area: tba_55
     name: The Base Of The Tower
@@ -429,6 +463,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5518:
     area: tba_55
     name: The Mages' Courtyard
@@ -454,6 +490,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5519:
     area: tba_55
     name: Nectar Of The Gods
@@ -480,6 +518,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5520:
     area: tba_55
     name: Temple Square
@@ -510,6 +550,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5521:
     area: tba_55
     name: The Bank
@@ -531,6 +573,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5522:
     area: tba_55
     name: The Butchery
@@ -554,6 +598,8 @@ rooms:
       - vat
       description: |2
            You think you hear noises from the vat...  Naaah.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5523:
     area: tba_55
     name: The Witch's Brew
@@ -574,6 +620,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5524:
     area: tba_55
     name: Braheem's Magic Shop
@@ -603,6 +651,8 @@ rooms:
         VALUE  - Shows what an item might be worth to me.
         SELL   - Allows you to rid yourself of excessive magic items.
         BUY    - Allows you to rid youself of excessive cash.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5525:
     area: tba_55
     name: The Entrance To The Mages' Tower
@@ -626,6 +676,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5526:
     area: tba_55
     name: The Entrance To The Guild of Warriors
@@ -647,6 +699,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5527:
     area: tba_55
     name: The Repair Shop
@@ -673,6 +727,8 @@ rooms:
       description: |2
            The sign reads:
         Closed for renovations
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5528:
     area: tba_55
     name: The General Store
@@ -690,6 +746,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5529:
     area: tba_55
     name: Abdul's Armor
@@ -721,6 +779,8 @@ rooms:
         SELL  : sells an item to Abdul for a generous sum
         BUY   : Abdul's FAVORITE command lets you have an item for his low,
                         low price.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5530:
     area: tba_55
     name: The Mercenaries' Guild
@@ -750,6 +810,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5531:
     area: tba_55
     name: The Mercenaries Guild
@@ -763,6 +825,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5532:
     area: tba_55
     name: Entrance To The Thieves' Guild
@@ -794,6 +858,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5533:
     area: tba_55
     name: The Whet Stone
@@ -820,6 +886,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5534:
     area: tba_55
     name: The Tournament And Practice Yard
@@ -849,6 +917,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5535:
     area: tba_55
     name: The Bread Stand
@@ -866,6 +936,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5536:
     area: tba_55
     name: Igor's Implements Of Destruction
@@ -893,6 +965,8 @@ rooms:
            The note simply reads:
         READ THE NOTE IN THE ARMORY
                                   Igor.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5537:
     area: tba_55
     name: Ye Old Leather Shoppe
@@ -911,6 +985,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5538:
     area: tba_55
     name: Smuggler's Inn
@@ -931,6 +1007,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5539:
     area: tba_55
     name: The Filthy Unicorn
@@ -956,6 +1034,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5540:
     area: tba_55
     name: The Warehouse
@@ -978,6 +1058,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5541:
     area: tba_55
     name: The Warehouse
@@ -1001,6 +1083,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5542:
     area: tba_55
     name: The Shipwright
@@ -1024,6 +1108,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5543:
     area: tba_55
     name: The Drafting Room
@@ -1042,6 +1128,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5544:
     area: tba_55
     name: The Forge
@@ -1061,6 +1149,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5545:
     area: tba_55
     name: The Royal Stables
@@ -1084,6 +1174,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5546:
     area: tba_55
     name: The Secret Yard
@@ -1114,6 +1206,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5547:
     area: tba_55
     name: The Dump
@@ -1133,6 +1227,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5548:
     area: tba_55
     name: The Mage's Laboratory
@@ -1153,6 +1249,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5549:
     area: tba_55
     name: The Hay Loft
@@ -1172,6 +1270,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5550:
     area: tba_55
     name: The Grand Entrance
@@ -1211,6 +1311,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5551:
     area: tba_55
     name: The Library
@@ -1232,6 +1334,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5552:
     area: tba_55
     name: The Dance Hall
@@ -1257,6 +1361,8 @@ rooms:
            =====================================================================
                         H A P P Y   B I R T H D A Y   T O   U S
            =====================================================================
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5553:
     area: tba_55
     name: The Jail
@@ -1283,6 +1389,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5554:
     area: tba_55
     name: City Hall
@@ -1302,6 +1410,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5555:
     area: tba_55
     name: The Boyer/Fletchers' Guild
@@ -1323,6 +1433,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5556:
     area: tba_55
     name: The Masons' Guild
@@ -1343,6 +1455,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5557:
     area: tba_55
     name: The Guard House
@@ -1361,6 +1475,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5558:
     area: tba_55
     name: The Palace Gate
@@ -1392,6 +1508,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5559:
     area: tba_55
     name: The Northwest Tower
@@ -1412,6 +1530,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5560:
     area: tba_55
     name: The Guard House
@@ -1431,6 +1551,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5561:
     area: tba_55
     name: The Kitchen
@@ -1463,6 +1585,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5562:
     area: tba_55
     name: The Northeast Tower
@@ -1481,6 +1605,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5563:
     area: tba_55
     name: A Hall
@@ -1508,6 +1634,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5564:
     area: tba_55
     name: The Tanners' Guild
@@ -1534,6 +1662,8 @@ rooms:
       description: |2
            The message appears to read:
                               I hate being a Tanner
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5565:
     area: tba_55
     name: A Hall
@@ -1567,6 +1697,8 @@ rooms:
       description: |2
            Engraved on the plaque are the following words:
                              The Holy Shrine of Allah
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5566:
     area: tba_55
     name: The Shrine Of Allah
@@ -1592,6 +1724,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5567:
     area: tba_55
     name: Outside The Northern Gate Of New Thalos
@@ -1621,6 +1755,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5568:
     area: tba_55
     name: Outside The Eastern Gate Of New Thalos
@@ -1653,6 +1789,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5569:
     area: tba_55
     name: Outside The West Gate Of New Thalos
@@ -1681,6 +1819,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5570:
     area: tba_55
     name: Outside The Wall
@@ -1700,6 +1840,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5571:
     area: tba_55
     name: The Grand Dining Hall
@@ -1730,6 +1872,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5572:
     area: tba_55
     name: A Hall
@@ -1765,6 +1909,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5573:
     area: tba_55
     name: A Hall
@@ -1795,6 +1941,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5574:
     area: tba_55
     name: A Hall
@@ -1830,6 +1978,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5575:
     area: tba_55
     name: The Entrance To The Dungeon
@@ -1866,6 +2016,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5576:
     area: tba_55
     name: A Guest Room
@@ -1901,6 +2053,8 @@ rooms:
       description: |2
            Looking out this window you can see the grounds of the palace that separate
         the walls of the palace from the building itself.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5577:
     area: tba_55
     name: A Hall
@@ -1933,6 +2087,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5578:
     area: tba_55
     name: The Sultan's Garden
@@ -1974,6 +2130,8 @@ rooms:
            ||                                                                  ||
            ======================================================================
            ======================================================================
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5579:
     area: tba_55
     name: A Hall
@@ -2016,6 +2174,8 @@ rooms:
                                  of
                              NEW THALOS
                                   - the management is not responsible for lost items.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5580:
     area: tba_55
     name: The Art Exhibit
@@ -2049,6 +2209,8 @@ rooms:
       description: |2
            The large painting on the west wall appears to be of the temple of New
         Thalos, and occupies the entire western wall of this room.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5581:
     area: tba_55
     name: A Guest Room
@@ -2073,6 +2235,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5582:
     area: tba_55
     name: A Hall
@@ -2110,6 +2274,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5583:
     area: tba_55
     name: The Garden Gazebo
@@ -2128,6 +2294,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5584:
     area: tba_55
     name: A Hall
@@ -2165,6 +2333,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5585:
     area: tba_55
     name: The Guard Room
@@ -2190,6 +2360,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5586:
     area: tba_55
     name: The Guard Room
@@ -2209,6 +2381,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5587:
     area: tba_55
     name: The Harem
@@ -2249,6 +2423,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5588:
     area: tba_55
     name: A Small room
@@ -2282,6 +2458,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5589:
     area: tba_55
     name: The Throne Room
@@ -2327,6 +2505,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5590:
     area: tba_55
     name: The Treasure Room
@@ -2352,6 +2532,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5591:
     area: tba_55
     name: The Jailer's Room
@@ -2388,6 +2570,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5592:
     area: tba_55
     name: A Tunnel In The Dungeon
@@ -2436,6 +2620,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5593:
     area: tba_55
     name: A Tunnel In The Dungeon
@@ -2478,6 +2664,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5594:
     area: tba_55
     name: A Tunnel In The Dungeon
@@ -2520,6 +2708,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5595:
     area: tba_55
     name: A Tunnel In The Dungeon
@@ -2569,6 +2759,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5596:
     area: tba_55
     name: The Secret Cell
@@ -2597,6 +2789,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5597:
     area: tba_55
     name: The Cell
@@ -2622,6 +2816,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5598:
     area: tba_55
     name: The Cell
@@ -2647,6 +2843,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5599:
     area: tba_55
     name: The Cell
@@ -2672,3 +2870,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
