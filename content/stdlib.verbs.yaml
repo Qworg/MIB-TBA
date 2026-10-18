@@ -12,6 +12,7 @@
 #   (`mib_tba::mail`, issue #31).
 # - `read <n> <board>`, `write <header>` — Circle's bulletin-board commands
 #   (`mib_tba::boards`, issue #31); `look <board>` is intercepted in PreRoute.
+# - `offer`, `rent` — the receptionist/cryogenicist (`mib_tba::rent`, issue #31).
 # - `time` — the in-world clock report (`mib_tba::clock`).
 # - `group`, `gtell` (and `;`), `follow`, `unfollow` — the party system
 #   (`mib_tba::party`).
@@ -60,6 +61,12 @@ verbs:
     effects: []
   write:
     description: Write a message on a bulletin board.
+    effects: []
+  offer:
+    description: Ask a receptionist what storage would cost.
+    effects: []
+  rent:
+    description: Store your belongings with a receptionist.
     effects: []
   receive:
     description: Receive mail from a postmaster.

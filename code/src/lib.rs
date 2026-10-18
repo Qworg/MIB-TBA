@@ -37,6 +37,7 @@ pub mod items;
 pub mod mail;
 pub mod module;
 pub mod party;
+pub mod rent;
 pub mod shops;
 pub mod skills;
 pub mod socials;

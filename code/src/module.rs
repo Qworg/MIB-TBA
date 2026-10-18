@@ -283,6 +283,7 @@ impl Plugin for TbaPlugin {
                 crate::spells::handle_cast_command,
                 crate::shops::handle_shop_commands,
                 crate::boards::handle_board_commands,
+                crate::rent::handle_rent_commands,
                 crate::socials::handle_social_commands,
                 crate::clock::handle_time_command,
                 crate::party::handle_party_commands,
@@ -337,6 +338,14 @@ impl Plugin for TbaPlugin {
             crate::equipment::restore_equipment_from_save
                 .in_set(BridgeSet::Game)
                 .after(attach_pending_holders),
+        );
+        // Return a character's rented/cryo items once the login has made the
+        // player live. `Added<Player>` makes this one-shot per session.
+        app.add_systems(
+            Update,
+            crate::rent::restore_rented_items
+                .in_set(BridgeSet::Game)
+                .after(crate::equipment::restore_equipment_from_save),
         );
 
         // Combat rounds on their own clock, after this frame's commands have
