@@ -26,6 +26,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4101:
     area: tba_41
     name: The Long Tunnel
@@ -51,6 +53,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4102:
     area: tba_41
     name: The Long Tunnel
@@ -76,6 +80,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4103:
     area: tba_41
     name: The Long Tunnel
@@ -106,6 +112,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4104:
     area: tba_41
     name: The Long Tunnel
@@ -127,6 +135,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4105:
     area: tba_41
     name: The Golden Cave
@@ -156,6 +166,8 @@ rooms:
       - golden
       description: |2
            It looks good, but as you look closely you notice that it has no value.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4106:
     area: tba_41
     name: The Golden Cave
@@ -191,6 +203,8 @@ rooms:
       - golden
       description: |2
            It looks good, but as you look closely you notice that it has no value.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4107:
     area: tba_41
     name: The Passage
@@ -215,6 +229,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4108:
     area: tba_41
     name: The Golden Cave
@@ -250,6 +266,8 @@ rooms:
       - golden
       description: |2
            It looks good, but as you look closely you notice that it has no value.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4109:
     area: tba_41
     name: The Golden Cave
@@ -284,6 +302,8 @@ rooms:
       - golden
       description: |2
            It looks good, but as you look closely you notice that it has no value.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4110:
     area: tba_41
     name: The Hole
@@ -316,6 +336,8 @@ rooms:
            Before you head down, you drop a rock to see how deep the hole is...  After
         about five minutes, it still hasn't hit bottom.  Thus, for reasons of sanity,
         you decide not to go this way.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4111:
     area: tba_41
     name: The Tunnel
@@ -353,6 +375,8 @@ rooms:
       description: |2
            The moss on the walls is orange.  When you touch it, it feels very scrubby
         and flakes off to the touch leaving a slight orange tinge on your fingertips.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4112:
     area: tba_41
     name: The Tunnel
@@ -388,6 +412,8 @@ rooms:
            The coating of moisture on the walls has strange little patterns of color
         weaving through it, almost as if someone had spilled oil on a horizontal water
         surface.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4113:
     area: tba_41
     name: The Passage
@@ -418,6 +444,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4114:
     area: tba_41
     name: The Golden Cave
@@ -449,6 +477,8 @@ rooms:
       - golden
       description: |2
            It looks good, but as you look closely you notice that it has no value.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4115:
     area: tba_41
     name: The Dark Passage
@@ -476,6 +506,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4116:
     area: tba_41
     name: The Passage
@@ -504,6 +536,8 @@ rooms:
       - light
       description: |2
            Well, you can't see where it comes from...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4117:
     area: tba_41
     name: The Secret Tunnel
@@ -527,6 +561,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4118:
     area: tba_41
     name: The Cave
@@ -558,6 +594,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4119:
     area: tba_41
     name: The Cave
@@ -594,6 +632,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4120:
     area: tba_41
     name: The Passage
@@ -624,6 +664,8 @@ rooms:
       - light
       description: |2
            It nearly is enough to light the passage.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4121:
     area: tba_41
     name: The Secret Tunnel
@@ -660,6 +702,8 @@ rooms:
       - rock
       description: |2
            The rock wall to the east looks like it might be able to be moved.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4122:
     area: tba_41
     name: The Secret Chamber
@@ -685,6 +729,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4123:
     area: tba_41
     name: The Cave
@@ -711,6 +757,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4124:
     area: tba_41
     name: The Cave
@@ -742,6 +790,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4125:
     area: tba_41
     name: The Passage
@@ -765,6 +815,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4126:
     area: tba_41
     name: The Crawlway
@@ -795,3 +847,5 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

@@ -64,6 +64,8 @@ rooms:
            *                                *
            *         Raf & Blizzard         *
            **********************************
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28201:
     area: tba_282
     name: In the pit
@@ -86,6 +88,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28202:
     area: tba_282
     name: In the pit
@@ -108,6 +112,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28203:
     area: tba_282
     name: In the pit
@@ -126,6 +132,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28204:
     area: tba_282
     name: Nearing the bottom
@@ -148,6 +156,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28205:
     area: tba_282
     name: Nearing the bottom
@@ -170,6 +180,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28206:
     area: tba_282
     name: Nearing the bottom
@@ -194,6 +206,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28207:
     area: tba_282
     name: At the base of the pit
@@ -230,6 +244,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28208:
     area: tba_282
     name: A cavern
@@ -266,6 +282,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28209:
     area: tba_282
     name: Nearing the statue
@@ -289,6 +307,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28210:
     area: tba_282
     name: Upon the heathe
@@ -312,6 +332,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28211:
     area: tba_282
     name: A fathomless room
@@ -343,6 +365,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28212:
     area: tba_282
     name: A fathomless room
@@ -365,6 +389,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28213:
     area: tba_282
     name: A fathomless room
@@ -387,6 +413,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28214:
     area: tba_282
     name: A fathomless room
@@ -406,6 +434,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28215:
     area: tba_282
     name: A fathomless room
@@ -424,6 +454,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28216:
     area: tba_282
     name: A fathomless room
@@ -438,6 +470,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28217:
     area: tba_282
     name: A tight cavern
@@ -460,6 +494,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28218:
     area: tba_282
     name: A tight cavern
@@ -482,6 +518,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28219:
     area: tba_282
     name: A tight cavern
@@ -504,6 +542,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28220:
     area: tba_282
     name: A small temple
@@ -524,6 +564,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28221:
     area: tba_282
     name: A trail of blood
@@ -546,6 +588,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28222:
     area: tba_282
     name: A bend in the trail
@@ -568,6 +612,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28223:
     area: tba_282
     name: Another bend in the trail
@@ -590,6 +636,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28224:
     area: tba_282
     name: A straight path
@@ -613,6 +661,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28225:
     area: tba_282
     name: A straight path
@@ -635,6 +685,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28226:
     area: tba_282
     name: The end of the path
@@ -664,6 +716,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28227:
     area: tba_282
     name: A cavern
@@ -686,6 +740,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28228:
     area: tba_282
     name: Beside the burial pit
@@ -714,6 +770,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28229:
     area: tba_282
     name: In the burial pit
@@ -732,6 +790,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28230:
     area: tba_282
     name: A secret chamber
@@ -756,6 +816,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28231:
     area: tba_282
     name: In the heathe
@@ -779,6 +841,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28232:
     area: tba_282
     name: In the heathe
@@ -801,6 +865,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28233:
     area: tba_282
     name: The end of the heathe
@@ -820,6 +886,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28235:
     area: tba_282
     name: The maze of Kerjim
@@ -848,6 +916,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28236:
     area: tba_282
     name: In the maze
@@ -870,6 +940,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28237:
     area: tba_282
     name: Dead end of the maze
@@ -888,6 +960,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28238:
     area: tba_282
     name: In the maze
@@ -910,6 +984,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28239:
     area: tba_282
     name: In the maze
@@ -933,6 +1009,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28240:
     area: tba_282
     name: In the maze
@@ -959,6 +1037,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28241:
     area: tba_282
     name: Dead end in the maze
@@ -977,6 +1057,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28242:
     area: tba_282
     name: In the maze
@@ -1000,6 +1082,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28243:
     area: tba_282
     name: Turn in the maze
@@ -1023,6 +1107,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28244:
     area: tba_282
     name: In the maze
@@ -1045,6 +1131,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28245:
     area: tba_282
     name: In the maze
@@ -1071,6 +1159,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28246:
     area: tba_282
     name: In the maze
@@ -1094,6 +1184,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28247:
     area: tba_282
     name: A three exit junction
@@ -1120,6 +1212,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28248:
     area: tba_282
     name: In the maze
@@ -1146,6 +1240,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28249:
     area: tba_282
     name: Another dead end in the maze
@@ -1164,6 +1260,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28250:
     area: tba_282
     name: Another dead end in the maze
@@ -1182,6 +1280,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28251:
     area: tba_282
     name: Another turn in the maze
@@ -1208,6 +1308,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28252:
     area: tba_282
     name: Nearing a dead end in the maze
@@ -1229,6 +1331,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28253:
     area: tba_282
     name: A dead end in the maze
@@ -1247,6 +1351,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28254:
     area: tba_282
     name: In the maze
@@ -1271,6 +1377,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28255:
     area: tba_282
     name: Another junction in the maze
@@ -1297,6 +1405,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28256:
     area: tba_282
     name: A dead end in the maze
@@ -1315,6 +1425,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28257:
     area: tba_282
     name: Nearing a large door
@@ -1337,6 +1449,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28258:
     area: tba_282
     name: At the door
@@ -1366,6 +1480,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28259:
     area: tba_282
     name: The temple of Lilith
@@ -1397,6 +1513,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28260:
     area: tba_282
     name: The bedroom of Lilith
@@ -1418,3 +1536,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

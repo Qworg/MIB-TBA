@@ -34,6 +34,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10401:
     area: tba_104
     name: A Small Woodland Path
@@ -71,6 +73,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10402:
     area: tba_104
     name: Further in to the Woods
@@ -95,6 +99,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10403:
     area: tba_104
     name: A Barricade of Trees
@@ -121,6 +127,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10404:
     area: tba_104
     name: A Lightly Lit Path
@@ -150,6 +158,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10405:
     area: tba_104
     name: Nearing a Small Tree Fort
@@ -176,6 +186,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10406:
     area: tba_104
     name: The Mazes Entrance
@@ -202,6 +214,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10407:
     area: tba_104
     name: Entrance to The Forest
@@ -219,6 +233,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10408:
     area: tba_104
     name: The Foot of the Tree Fort
@@ -245,6 +261,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10409:
     area: tba_104
     name: Jaks Shack
@@ -265,6 +283,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10410:
     area: tba_104
     name: Orchans Lake
@@ -293,6 +313,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10411:
     area: tba_104
     name: Entrance to the Forest
@@ -323,6 +345,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10412:
     area: tba_104
     name: Broken Down Old House
@@ -346,6 +370,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10413:
     area: tba_104
     name: Gate to Orchan
@@ -372,6 +398,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10414:
     area: tba_104
     name: A Rock Road
@@ -401,6 +429,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10415:
     area: tba_104
     name: A Rock Road
@@ -421,6 +451,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10416:
     area: tba_104
     name: Ligerns' House
@@ -440,6 +472,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10417:
     area: tba_104
     name: Main Street
@@ -466,6 +500,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10418:
     area: tba_104
     name: Main Street
@@ -491,6 +527,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10419:
     area: tba_104
     name: Orchan Map Shop
@@ -508,6 +546,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10420:
     area: tba_104
     name: A Rock Road
@@ -528,6 +568,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10421:
     area: tba_104
     name: Chwins' Weapon Shop
@@ -547,6 +589,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10422:
     area: tba_104
     name: Mic`zell's Armor Shop
@@ -566,6 +610,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10423:
     area: tba_104
     name: A Rock Road
@@ -590,6 +636,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10424:
     area: tba_104
     name: Elder Lucious' House
@@ -611,6 +659,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10425:
     area: tba_104
     name: Orchan Post Office
@@ -631,6 +681,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10426:
     area: tba_104
     name: A Maze Room
@@ -657,6 +709,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10427:
     area: tba_104
     name: A Maze Room
@@ -683,6 +737,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10428:
     area: tba_104
     name: A Maze Room
@@ -709,6 +765,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10429:
     area: tba_104
     name: A Maze Room
@@ -735,6 +793,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10430:
     area: tba_104
     name: A Maze Room
@@ -765,6 +825,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10431:
     area: tba_104
     name: A Dead End
@@ -784,6 +846,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10432:
     area: tba_104
     name: A Maze Room
@@ -810,6 +874,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10433:
     area: tba_104
     name: A Maze Room
@@ -840,6 +906,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10434:
     area: tba_104
     name: A Dead End
@@ -859,6 +927,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10435:
     area: tba_104
     name: A Maze Room
@@ -889,6 +959,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10436:
     area: tba_104
     name: A Dead End
@@ -908,6 +980,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10437:
     area: tba_104
     name: The Monsters Den
@@ -939,6 +1013,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10438:
     area: tba_104
     name: A Maze Room
@@ -965,6 +1041,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10439:
     area: tba_104
     name: A Dead End
@@ -984,6 +1062,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10440:
     area: tba_104
     name: A Maze Room
@@ -1010,6 +1090,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10441:
     area: tba_104
     name: A Dead End
@@ -1029,6 +1111,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10442:
     area: tba_104
     name: A Maze Room
@@ -1055,6 +1139,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10443:
     area: tba_104
     name: A Maze Room
@@ -1089,6 +1175,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10444:
     area: tba_104
     name: The Monsters Den
@@ -1108,6 +1196,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10445:
     area: tba_104
     name: A Maze Room
@@ -1138,6 +1228,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10446:
     area: tba_104
     name: The Center of the Maze
@@ -1160,6 +1252,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10447:
     area: tba_104
     name: The Monsters Den
@@ -1191,6 +1285,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10448:
     area: tba_104
     name: A Dead End
@@ -1210,6 +1306,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10449:
     area: tba_104
     name: A Dead End
@@ -1229,6 +1327,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10450:
     area: tba_104
     name: A Dead End
@@ -1248,6 +1348,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10451:
     area: tba_104
     name: A Maze Room
@@ -1274,6 +1376,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10452:
     area: tba_104
     name: A Maze Room
@@ -1300,6 +1404,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10453:
     area: tba_104
     name: A Maze Room
@@ -1330,6 +1436,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10454:
     area: tba_104
     name: A Maze Room
@@ -1356,6 +1464,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10455:
     area: tba_104
     name: The Monsters Den
@@ -1385,6 +1495,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10456:
     area: tba_104
     name: The Monsters Den
@@ -1412,6 +1524,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10457:
     area: tba_104
     name: A Dead End
@@ -1431,6 +1545,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10458:
     area: tba_104
     name: Taylors Immortal Resting Chamber
@@ -1473,6 +1589,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10459:
     area: tba_104
     name: A New Zone Description Room
@@ -1519,6 +1637,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10460:
     area: tba_104
     name: Path Through the Forest
@@ -1539,6 +1659,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10461:
     area: tba_104
     name: A Bend in the Path
@@ -1563,6 +1685,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10462:
     area: tba_104
     name: A Bend in the Path
@@ -1583,6 +1707,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10463:
     area: tba_104
     name: A Path Through the Forest
@@ -1605,6 +1731,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10464:
     area: tba_104
     name: An Observation Room
@@ -1627,6 +1755,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10499:
     area: tba_104
     name: Taylor's Lounge
@@ -1646,3 +1776,5 @@ rooms:
       - taylors
       - tays
       description: "   A small lamp sits in the center of the room letting off a small amount of\nlight.  A beautiful white shag carpet is covering the whole floor besides in a\nsmall spot where there is white marble with small flecks of black in them.\nDirectly on the wall behind the marble is a large fireplace the sinks deep into\nthe wall.  A small fire crackles in the center on the fireplace, casting a soft\nglow upon the walls.  Pictures line the pure white walls, all are in finely made\nwooden frames.  A freshly stained trim lies at the top of every wall.  The\nfireplaces frame is made of small marble bricks, all are black, making the\nfireplace standout from the rest of the room.  A window lies on the wall\nopposite the fireplace, letting in a little light through the linen curtains.\nA large squishy looking armchair sits in the middle of the room only a few feet\nfrom the firplace.  \n"
+    ambient_phases: {}
+    ambient_weather: {}

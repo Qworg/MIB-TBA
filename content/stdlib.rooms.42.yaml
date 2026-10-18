@@ -26,6 +26,8 @@ rooms:
       - credits
       description: |2
            Guldane
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4201:
     area: tba_42
     name: Deeper into the Chasm
@@ -51,6 +53,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4202:
     area: tba_42
     name: Deeper into the Chasm
@@ -76,6 +80,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4203:
     area: tba_42
     name: The Bottom of the Chasm
@@ -105,6 +111,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4204:
     area: tba_42
     name: East side of the Chasm
@@ -130,6 +138,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4205:
     area: tba_42
     name: Entrance to a Cave
@@ -153,6 +163,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4206:
     area: tba_42
     name: A Cave
@@ -179,6 +191,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4207:
     area: tba_42
     name: Entrance to a Cave
@@ -204,6 +218,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4208:
     area: tba_42
     name: Further Into the Cave
@@ -229,6 +245,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4209:
     area: tba_42
     name: A Choice of Ways
@@ -265,6 +283,8 @@ rooms:
       - claw
       description: |2
            It is a long, deep gash, at least six inches deep.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4210:
     area: tba_42
     name: Top of A Stairwell
@@ -289,6 +309,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4211:
     area: tba_42
     name: A Stairwell
@@ -314,6 +336,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4212:
     area: tba_42
     name: Bottom of a Stairwell
@@ -339,6 +363,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4213:
     area: tba_42
     name: A Dank Corridor
@@ -363,6 +389,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4214:
     area: tba_42
     name: A Dank Corridor
@@ -396,6 +424,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4215:
     area: tba_42
     name: A Prison Cell
@@ -421,6 +451,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4216:
     area: tba_42
     name: A Stairwell
@@ -445,6 +477,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4217:
     area: tba_42
     name: A Small Room
@@ -465,6 +499,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4218:
     area: tba_42
     name: A Hallway
@@ -489,6 +525,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4219:
     area: tba_42
     name: A Hallway
@@ -512,6 +550,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4220:
     area: tba_42
     name: A Hallway
@@ -539,6 +579,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4221:
     area: tba_42
     name: A Hatchery
@@ -561,6 +603,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4222:
     area: tba_42
     name: The End of the Hallway
@@ -580,6 +624,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4223:
     area: tba_42
     name: A Hallway
@@ -604,6 +650,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4224:
     area: tba_42
     name: A Hallway
@@ -628,6 +676,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4225:
     area: tba_42
     name: A Guard Chamber
@@ -654,6 +704,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4226:
     area: tba_42
     name: A Ramp
@@ -680,6 +732,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4227:
     area: tba_42
     name: The Royal Treasury
@@ -707,6 +761,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4228:
     area: tba_42
     name: The Royal Antechamber
@@ -752,6 +808,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4229:
     area: tba_42
     name: The Royal Nest
@@ -774,6 +832,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4230:
     area: tba_42
     name: The Royal Balcony
@@ -795,6 +855,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4231:
     area: tba_42
     name: The Royal Throne Room
@@ -818,6 +880,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4294:
     area: tba_42
     name: NOTE
@@ -831,6 +895,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4295:
     area: tba_42
     name: A Stairwell
@@ -856,6 +922,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4296:
     area: tba_42
     name: Top of A Stairwell
@@ -880,6 +948,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4297:
     area: tba_42
     name: The Back of the Cave
@@ -902,3 +972,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

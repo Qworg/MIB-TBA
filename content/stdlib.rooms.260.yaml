@@ -49,6 +49,8 @@ rooms:
         Replace XXXX with a town name of your choosing.
 
         Links: 91w
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26001:
     area: tba_260
     name: Grasslands
@@ -75,6 +77,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26002:
     area: tba_260
     name: Grasslands
@@ -106,6 +110,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26003:
     area: tba_260
     name: Grasslands
@@ -136,6 +142,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26004:
     area: tba_260
     name: Grasslands
@@ -163,6 +171,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26005:
     area: tba_260
     name: Grasslands
@@ -191,6 +201,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26006:
     area: tba_260
     name: Grasslands
@@ -221,6 +233,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26007:
     area: tba_260
     name: Grasslands
@@ -245,6 +259,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26008:
     area: tba_260
     name: Grasslands
@@ -271,6 +287,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26009:
     area: tba_260
     name: Grasslands
@@ -297,6 +315,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26010:
     area: tba_260
     name: Grasslands
@@ -328,6 +348,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26011:
     area: tba_260
     name: Grasslands
@@ -354,6 +376,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26012:
     area: tba_260
     name: Grasslands
@@ -384,6 +408,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26013:
     area: tba_260
     name: Grasslands
@@ -414,6 +440,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26014:
     area: tba_260
     name: Grasslands
@@ -442,6 +470,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26015:
     area: tba_260
     name: Grasslands
@@ -470,6 +500,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26016:
     area: tba_260
     name: Grasslands
@@ -500,6 +532,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26017:
     area: tba_260
     name: Grasslands
@@ -528,6 +562,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26018:
     area: tba_260
     name: Grasslands
@@ -558,6 +594,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26019:
     area: tba_260
     name: Grasslands
@@ -588,6 +626,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26020:
     area: tba_260
     name: Grasslands
@@ -614,6 +654,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26021:
     area: tba_260
     name: Grasslands
@@ -641,6 +683,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26022:
     area: tba_260
     name: Grasslands
@@ -672,6 +716,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26023:
     area: tba_260
     name: Grasslands
@@ -698,6 +744,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26024:
     area: tba_260
     name: Grasslands
@@ -718,6 +766,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26025:
     area: tba_260
     name: Grasslands
@@ -746,6 +796,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26026:
     area: tba_260
     name: Grasslands
@@ -776,6 +828,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26027:
     area: tba_260
     name: Grasslands
@@ -803,6 +857,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26028:
     area: tba_260
     name: Grasslands
@@ -833,6 +889,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26029:
     area: tba_260
     name: Grasslands
@@ -863,6 +921,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26030:
     area: tba_260
     name: Grasslands
@@ -894,6 +954,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26031:
     area: tba_260
     name: Grasslands
@@ -925,6 +987,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26032:
     area: tba_260
     name: Grasslands
@@ -956,6 +1020,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26033:
     area: tba_260
     name: Grasslands
@@ -987,6 +1053,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26034:
     area: tba_260
     name: Grasslands
@@ -1019,6 +1087,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26035:
     area: tba_260
     name: Grasslands
@@ -1051,6 +1121,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26036:
     area: tba_260
     name: Grasslands
@@ -1082,6 +1154,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26037:
     area: tba_260
     name: Grasslands
@@ -1109,6 +1183,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26038:
     area: tba_260
     name: Grasslands
@@ -1140,6 +1216,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26039:
     area: tba_260
     name: Grasslands
@@ -1171,6 +1249,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26040:
     area: tba_260
     name: Grasslands
@@ -1201,6 +1281,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26041:
     area: tba_260
     name: Grasslands
@@ -1231,6 +1313,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26042:
     area: tba_260
     name: Grasslands
@@ -1261,6 +1345,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26043:
     area: tba_260
     name: Grasslands
@@ -1291,6 +1377,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26044:
     area: tba_260
     name: Grasslands
@@ -1318,6 +1406,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26045:
     area: tba_260
     name: Grasslands
@@ -1349,6 +1439,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26046:
     area: tba_260
     name: Grasslands
@@ -1379,6 +1471,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26047:
     area: tba_260
     name: Grasslands
@@ -1409,6 +1503,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26048:
     area: tba_260
     name: Grasslands
@@ -1435,6 +1531,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26049:
     area: tba_260
     name: Grasslands
@@ -1461,6 +1559,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26050:
     area: tba_260
     name: Grasslands
@@ -1491,6 +1591,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26051:
     area: tba_260
     name: Grasslands
@@ -1517,6 +1619,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26052:
     area: tba_260
     name: Grasslands
@@ -1547,6 +1651,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26053:
     area: tba_260
     name: Grasslands
@@ -1573,6 +1679,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26054:
     area: tba_260
     name: Grasslands
@@ -1595,6 +1703,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26055:
     area: tba_260
     name: Grasslands
@@ -1621,6 +1731,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26056:
     area: tba_260
     name: Grasslands
@@ -1651,6 +1763,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26057:
     area: tba_260
     name: Grasslands
@@ -1681,6 +1795,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26058:
     area: tba_260
     name: Grasslands
@@ -1711,6 +1827,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26059:
     area: tba_260
     name: Grasslands
@@ -1737,6 +1855,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26060:
     area: tba_260
     name: Grasslands
@@ -1767,6 +1887,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26061:
     area: tba_260
     name: Grasslands
@@ -1793,6 +1915,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26062:
     area: tba_260
     name: Grasslands
@@ -1823,6 +1947,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26063:
     area: tba_260
     name: Grasslands
@@ -1849,6 +1975,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26064:
     area: tba_260
     name: Grasslands
@@ -1880,6 +2008,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26065:
     area: tba_260
     name: Grasslands
@@ -1911,6 +2041,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26066:
     area: tba_260
     name: Grasslands
@@ -1937,6 +2069,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26067:
     area: tba_260
     name: Grasslands
@@ -1968,6 +2102,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26068:
     area: tba_260
     name: Grasslands
@@ -1994,6 +2130,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26069:
     area: tba_260
     name: Grasslands
@@ -2024,6 +2162,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26070:
     area: tba_260
     name: Grasslands
@@ -2055,6 +2195,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26071:
     area: tba_260
     name: Grasslands
@@ -2082,6 +2224,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26072:
     area: tba_260
     name: Grasslands
@@ -2113,6 +2257,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26073:
     area: tba_260
     name: Grasslands
@@ -2140,6 +2286,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26074:
     area: tba_260
     name: Grasslands
@@ -2171,6 +2319,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26075:
     area: tba_260
     name: Grasslands
@@ -2202,6 +2352,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26076:
     area: tba_260
     name: Grasslands
@@ -2229,6 +2381,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26077:
     area: tba_260
     name: Grasslands
@@ -2260,6 +2414,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26078:
     area: tba_260
     name: Grasslands
@@ -2291,6 +2447,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26079:
     area: tba_260
     name: Grasslands
@@ -2318,6 +2476,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26080:
     area: tba_260
     name: Grasslands
@@ -2348,6 +2508,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26081:
     area: tba_260
     name: Grasslands
@@ -2370,6 +2532,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26082:
     area: tba_260
     name: Grasslands
@@ -2400,6 +2564,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26083:
     area: tba_260
     name: Grasslands
@@ -2422,6 +2588,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26084:
     area: tba_260
     name: Grasslands
@@ -2444,6 +2612,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26085:
     area: tba_260
     name: Grasslands
@@ -2474,6 +2644,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26086:
     area: tba_260
     name: Grasslands
@@ -2500,6 +2672,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26087:
     area: tba_260
     name: Grasslands
@@ -2530,6 +2704,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26088:
     area: tba_260
     name: Grasslands
@@ -2560,6 +2736,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26089:
     area: tba_260
     name: Grasslands
@@ -2582,6 +2760,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26090:
     area: tba_260
     name: Obscure Path
@@ -2607,6 +2787,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26091:
     area: tba_260
     name: Obscure Path
@@ -2626,3 +2808,5 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

@@ -34,6 +34,8 @@ rooms:
       - writing
       description: |2
            You read the number '666'.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7201:
     area: tba_72
     name: The Inner Lair
@@ -68,6 +70,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7202:
     area: tba_72
     name: The Lair
@@ -117,6 +121,8 @@ rooms:
       - sconce
       description: |2
            The torch is bolted to the sconce and the sconce to the wall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7203:
     area: tba_72
     name: The Lair
@@ -159,6 +165,8 @@ rooms:
       - sconce
       description: |2
            The torch is bolted to the sconce and the sconce to the wall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7204:
     area: tba_72
     name: The Lair
@@ -207,6 +215,8 @@ rooms:
       - sconce
       description: |2
            The torch is bolted to the sconce and the sconce to the wall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7205:
     area: tba_72
     name: The Lair
@@ -245,6 +255,8 @@ rooms:
       - sconce
       description: |2
            The torch is bolted to the sconce and the sconce to the wall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7206:
     area: tba_72
     name: The Lair
@@ -285,6 +297,8 @@ rooms:
       - sconce
       description: |2
            The torch is bolted to the sconce and the sconce to the wall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7207:
     area: tba_72
     name: The Lair
@@ -329,6 +343,8 @@ rooms:
       - sconce
       description: |2
            The torch is bolted to the sconce and the sconce to the wall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7208:
     area: tba_72
     name: The Lair Entrance
@@ -363,6 +379,8 @@ rooms:
       - slime
       description: |2
            The slime is slimy and uninteresting.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7209:
     area: tba_72
     name: The Crawlway
@@ -384,6 +402,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7210:
     area: tba_72
     name: The Four-Way Junction
@@ -414,6 +434,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7211:
     area: tba_72
     name: The Small Cave
@@ -431,6 +453,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7212:
     area: tba_72
     name: The Sewer Drain
@@ -452,6 +476,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7213:
     area: tba_72
     name: The Sewer Drain
@@ -473,6 +499,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7214:
     area: tba_72
     name: The End Of The Drain
@@ -491,6 +519,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7215:
     area: tba_72
     name: The Half-Wet Drain
@@ -518,6 +548,8 @@ rooms:
       - water
       description: |2
            The water is dirty but it looks like you would be able to swim in it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7216:
     area: tba_72
     name: Under Water In The Sewer
@@ -541,6 +573,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7217:
     area: tba_72
     name: The Half-Dry Drain
@@ -576,6 +610,8 @@ rooms:
       - hole
       description: |2
            Through the hole you can just make out a very small room.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7218:
     area: tba_72
     name: The Very Small Room
@@ -593,6 +629,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7219:
     area: tba_72
     name: A Dry Sewer Drain
@@ -615,6 +653,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7220:
     area: tba_72
     name: A Boring Drain
@@ -636,6 +676,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7221:
     area: tba_72
     name: The Sewer Drain
@@ -662,6 +704,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7222:
     area: tba_72
     name: The Sewer Drain
@@ -688,6 +732,8 @@ rooms:
       - water
       description: |2
            The water floats to the east from here.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7223:
     area: tba_72
     name: The Sewer Bend
@@ -710,6 +756,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7224:
     area: tba_72
     name: The Sewer Junction
@@ -738,6 +786,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7225:
     area: tba_72
     name: The Sewer
@@ -757,6 +807,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7229:
     area: tba_72
     name: The Strange Sewer
@@ -781,6 +833,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7230:
     area: tba_72
     name: The Damp Sewer
@@ -806,6 +860,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7231:
     area: tba_72
     name: The Strange Sewer
@@ -832,6 +888,8 @@ rooms:
       - debris
       description: |2
            You see a lot of organic decay on the floor.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7232:
     area: tba_72
     name: The Sewer
@@ -854,6 +912,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7233:
     area: tba_72
     name: The Sewer Drain
@@ -877,6 +937,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7234:
     area: tba_72
     name: The Rat's Lair
@@ -895,6 +957,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7279:
     area: tba_72
     name: The Wall Of The Abyss
@@ -924,6 +988,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7280:
     area: tba_72
     name: The Entrance
@@ -969,6 +1035,8 @@ rooms:
       description: |2
            The triangle is filled with small symbols.  They seem to be a language you
         have never seen before.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7281:
     area: tba_72
     name: The Corridor
@@ -1011,6 +1079,8 @@ rooms:
       - walls
       description: |2
            The walls look alive.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7282:
     area: tba_72
     name: The Realm Of Lost Souls
@@ -1038,6 +1108,8 @@ rooms:
       - shadow
       description: |2
            The shadow looks like a man in great pain.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7283:
     area: tba_72
     name: The T-Crossing
@@ -1071,6 +1143,8 @@ rooms:
       description: |2
            The writing says 'The one to the east, belongs to the beast.  To the west you
         will surely END your quest!  '.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7284:
     area: tba_72
     name: The Firedeath
@@ -1091,6 +1165,8 @@ rooms:
       description: |2
            The writing says 'A prayer to the GODS will not be heard, though the only
         exit is death...  Mother, I love you'.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7285:
     area: tba_72
     name: The Torture Room
@@ -1128,6 +1204,8 @@ rooms:
       description: |2
            The metal box is covered with dust.  You notice that it was once filled with
         coal, as you see some small pieces of it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7286:
     area: tba_72
     name: The Hell Yard
@@ -1158,6 +1236,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7299:
     area: tba_72
     name: On The Walls Of The Abyss
@@ -1177,3 +1257,5 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

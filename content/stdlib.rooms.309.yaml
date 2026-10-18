@@ -34,6 +34,8 @@ rooms:
         Baron's land are beer and horses. He is a warrior baron to the core,
         his soldiers finely tuned and he himself a fine warrior who could
         drink any man under the table.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30901:
     area: tba_309
     name: Road Through Westlawn's Fields
@@ -58,6 +60,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30902:
     area: tba_309
     name: Road Through Westlawn's Fields
@@ -84,6 +88,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30903:
     area: tba_309
     name: Road Through Westlawn's Fields
@@ -109,6 +115,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30904:
     area: tba_309
     name: A Muddy, Rutted Section of the Road
@@ -138,6 +146,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30905:
     area: tba_309
     name: Rutted Roadway
@@ -166,6 +176,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30906:
     area: tba_309
     name: Muddy Roadway
@@ -194,6 +206,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30907:
     area: tba_309
     name: Worn Roadway
@@ -222,6 +236,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30908:
     area: tba_309
     name: Worn Roadway
@@ -262,6 +278,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30909:
     area: tba_309
     name: Muddy Bend
@@ -290,6 +308,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30910:
     area: tba_309
     name: Twisting Road
@@ -324,6 +344,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30911:
     area: tba_309
     name: Twisting Road
@@ -347,6 +369,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30912:
     area: tba_309
     name: Rickety Bridge
@@ -372,6 +396,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30913:
     area: tba_309
     name: Muddy Road Before the Keep
@@ -396,6 +422,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30914:
     area: tba_309
     name: Before the Keep
@@ -420,6 +448,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30915:
     area: tba_309
     name: Inner Yard
@@ -454,6 +484,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30916:
     area: tba_309
     name: The Fireside Inn
@@ -489,6 +521,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30917:
     area: tba_309
     name: Mud Yard
@@ -524,6 +558,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30918:
     area: tba_309
     name: Mud Yard
@@ -557,6 +593,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30919:
     area: tba_309
     name: Mud Yard
@@ -596,6 +634,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30920:
     area: tba_309
     name: Mud Yard
@@ -629,6 +669,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30921:
     area: tba_309
     name: Mud Yard
@@ -660,6 +702,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30922:
     area: tba_309
     name: Hovel
@@ -686,6 +730,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30923:
     area: tba_309
     name: Hut
@@ -707,6 +753,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30924:
     area: tba_309
     name: Shack
@@ -732,6 +780,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30925:
     area: tba_309
     name: Canvas and Straw Hut
@@ -750,6 +800,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30926:
     area: tba_309
     name: Hovel
@@ -768,6 +820,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30927:
     area: tba_309
     name: Barn
@@ -791,6 +845,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30928:
     area: tba_309
     name: Hay Barn
@@ -814,6 +870,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30929:
     area: tba_309
     name: Cow Pasture
@@ -839,6 +897,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30930:
     area: tba_309
     name: Cow Pasture
@@ -860,6 +920,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30931:
     area: tba_309
     name: Inner Yard
@@ -884,6 +946,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30932:
     area: tba_309
     name: Inner Yard
@@ -912,6 +976,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30933:
     area: tba_309
     name: Inner Yard
@@ -943,6 +1009,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30934:
     area: tba_309
     name: Inner Yard
@@ -967,6 +1035,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30935:
     area: tba_309
     name: Inner Yard
@@ -996,6 +1066,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30936:
     area: tba_309
     name: Inner Yard
@@ -1021,6 +1093,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30937:
     area: tba_309
     name: Inner Yard
@@ -1059,6 +1133,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30938:
     area: tba_309
     name: Inner Yard
@@ -1083,6 +1159,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30939:
     area: tba_309
     name: Wide Hallway
@@ -1114,6 +1192,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30940:
     area: tba_309
     name: The Main Hall
@@ -1150,6 +1230,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30941:
     area: tba_309
     name: The Main Hall
@@ -1171,6 +1253,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30942:
     area: tba_309
     name: The Main Hall
@@ -1192,6 +1276,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30943:
     area: tba_309
     name: South End of the Main Hall
@@ -1242,6 +1328,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30944:
     area: tba_309
     name: Entrance into the Dining Hall
@@ -1289,6 +1377,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30945:
     area: tba_309
     name: Hall of Feasting
@@ -1313,6 +1403,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30946:
     area: tba_309
     name: Hall of Feasting
@@ -1337,6 +1429,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30947:
     area: tba_309
     name: Hall of Feasting
@@ -1361,6 +1455,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30948:
     area: tba_309
     name: The Head of the Table
@@ -1381,6 +1477,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30949:
     area: tba_309
     name: The Kitchen
@@ -1407,6 +1505,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30950:
     area: tba_309
     name: Soldier's Barracks
@@ -1437,6 +1537,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30951:
     area: tba_309
     name: Soldier's Barracks
@@ -1461,6 +1563,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30952:
     area: tba_309
     name: Soldier's Barracks
@@ -1481,6 +1585,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30953:
     area: tba_309
     name: Arms Cache and Smithy
@@ -1506,6 +1612,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30954:
     area: tba_309
     name: Outer Antechamber
@@ -1541,6 +1649,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30955:
     area: tba_309
     name: Cellar
@@ -1575,6 +1685,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30956:
     area: tba_309
     name: Cellar
@@ -1599,6 +1711,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30957:
     area: tba_309
     name: Cellar
@@ -1627,6 +1741,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30958:
     area: tba_309
     name: Cellar
@@ -1651,6 +1767,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30959:
     area: tba_309
     name: Cellar
@@ -1675,6 +1793,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30960:
     area: tba_309
     name: Cellar
@@ -1703,6 +1823,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30961:
     area: tba_309
     name: Watch Post on the Battlements
@@ -1722,6 +1844,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30962:
     area: tba_309
     name: On the Battlements
@@ -1745,6 +1869,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30963:
     area: tba_309
     name: On the Battlements
@@ -1778,6 +1904,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30964:
     area: tba_309
     name: On the Battlements
@@ -1801,6 +1929,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30965:
     area: tba_309
     name: On the Battlements
@@ -1824,6 +1954,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30966:
     area: tba_309
     name: On the Battlements
@@ -1847,6 +1979,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30967:
     area: tba_309
     name: On the Battlements
@@ -1869,6 +2003,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30968:
     area: tba_309
     name: At a Guard Post on the Battlements
@@ -1889,6 +2025,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30969:
     area: tba_309
     name: Training Fields
@@ -1928,6 +2066,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30970:
     area: tba_309
     name: Training Fields
@@ -1962,6 +2102,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30971:
     area: tba_309
     name: Training Fields
@@ -1991,6 +2133,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30972:
     area: tba_309
     name: Training Fields
@@ -2014,6 +2158,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30973:
     area: tba_309
     name: Training Fields
@@ -2051,6 +2197,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30974:
     area: tba_309
     name: Training Fields
@@ -2082,6 +2230,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30975:
     area: tba_309
     name: Training Fields
@@ -2116,6 +2266,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30976:
     area: tba_309
     name: Training Fields
@@ -2143,6 +2295,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30977:
     area: tba_309
     name: Training Fields
@@ -2166,6 +2320,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30978:
     area: tba_309
     name: Outpasture
@@ -2193,6 +2349,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30979:
     area: tba_309
     name: Outpasture
@@ -2218,6 +2376,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30980:
     area: tba_309
     name: Outpasture
@@ -2259,6 +2419,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30981:
     area: tba_309
     name: Outpasture
@@ -2288,6 +2450,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30982:
     area: tba_309
     name: Outpasture
@@ -2315,6 +2479,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30983:
     area: tba_309
     name: Outpasture
@@ -2340,6 +2506,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30984:
     area: tba_309
     name: North Stables
@@ -2369,6 +2537,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30985:
     area: tba_309
     name: North Stables
@@ -2391,6 +2561,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30986:
     area: tba_309
     name: North Stables
@@ -2409,6 +2581,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30987:
     area: tba_309
     name: South Stables
@@ -2439,6 +2613,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30988:
     area: tba_309
     name: South Stables
@@ -2463,6 +2639,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30989:
     area: tba_309
     name: South Stables
@@ -2483,3 +2661,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

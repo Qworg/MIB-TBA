@@ -27,6 +27,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5701:
     area: tba_57
     name: Gemini's Hideaway
@@ -68,6 +70,8 @@ rooms:
       description: |2
            The tracks are hard to read on this polished floor and would probably be
         unreadable if not for the traces of blood.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5702:
     area: tba_57
     name: Pisces Lagoon
@@ -97,6 +101,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5703:
     area: tba_57
     name: Chamber of Aquarius
@@ -125,6 +131,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5704:
     area: tba_57
     name: Leo's Den
@@ -148,6 +156,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5705:
     area: tba_57
     name: Taurus's Pen
@@ -178,6 +188,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5706:
     area: tba_57
     name: Aries Shearing Shed
@@ -215,6 +227,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5707:
     area: tba_57
     name: Abyss of Death
@@ -228,6 +242,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5708:
     area: tba_57
     name: The Bloodstained Hallway
@@ -251,6 +267,8 @@ rooms:
       - mark
       description: |2
            This appears to be a long tail mark scraped into the roof.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5709:
     area: tba_57
     name: Ursa's Den
@@ -274,6 +292,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5710:
     area: tba_57
     name: Sagittarius' Temple of Weapons
@@ -303,6 +323,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5711:
     area: tba_57
     name: Yet Another Hallway
@@ -333,6 +355,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5712:
     area: tba_57
     name: Cancer's Hole
@@ -353,6 +377,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5713:
     area: tba_57
     name: ZodiaShop
@@ -373,6 +399,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5714:
     area: tba_57
     name: Virgos' Bedroom
@@ -398,6 +426,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5715:
     area: tba_57
     name: The Muddy Tunnel
@@ -422,6 +452,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5716:
     area: tba_57
     name: Nearing the end of the muddy hall
@@ -446,6 +478,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5717:
     area: tba_57
     name: Entering the Ethereal Void
@@ -470,6 +504,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5718:
     area: tba_57
     name: Floating in the Ethereal Void
@@ -494,6 +530,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5719:
     area: tba_57
     name: Exit from the Portal
@@ -521,6 +559,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5720:
     area: tba_57
     name: In the Pass
@@ -544,6 +584,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5721:
     area: tba_57
     name: Entrance to the valley
@@ -571,6 +613,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5722:
     area: tba_57
     name: In the valley of Capricorn
@@ -602,6 +646,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5723:
     area: tba_57
     name: Ascending the Hill of Capricorn
@@ -635,6 +681,8 @@ rooms:
       description: |2
            These tracks are insect like and very large.  Whatever made these must be
         huge.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5724:
     area: tba_57
     name: Capricorns' Hill
@@ -658,6 +706,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5725:
     area: tba_57
     name: Descending towards the Waterfall
@@ -682,6 +732,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5726:
     area: tba_57
     name: Outside the Cave
@@ -710,6 +762,8 @@ rooms:
       - glow
       description: |2
            The glow takes the form of a pair of scales.  Maybe it's Libra.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5727:
     area: tba_57
     name: Under an Oak Tree
@@ -742,6 +796,8 @@ rooms:
       - ladder
       description: |2
            Sap oozes down this ladder forming a sticky covering.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5728:
     area: tba_57
     name: The Cave
@@ -766,6 +822,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5729:
     area: tba_57
     name: The Dark Tunnel
@@ -791,6 +849,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5730:
     area: tba_57
     name: Scorpio's Throneroom
@@ -812,6 +872,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5731:
     area: tba_57
     name: On the oaken ladder
@@ -839,6 +901,8 @@ rooms:
       - sap
       description: |2
            Sticky, yucky sap dribbles down the tree trunk giving of a beautiful smell.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5732:
     area: tba_57
     name: Halfway up the Tree
@@ -866,6 +930,8 @@ rooms:
       - sap
       description: |2
            The sap is less sticky than the stuff below, maybe because it's fresher...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5733:
     area: tba_57
     name: Near the top of the Tree
@@ -891,6 +957,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5734:
     area: tba_57
     name: At the top of the tree
@@ -920,6 +988,8 @@ rooms:
       - pool
       description: |2
            A pool of bluey gray blood has collected in the corner.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5735:
     area: tba_57
     name: A Bloodied Room
@@ -946,6 +1016,8 @@ rooms:
            |     PROHIBITED     |
            |                    |
            +--------------------+
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5799:
     area: tba_57
     name: The Portal Room
@@ -960,3 +1032,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

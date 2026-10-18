@@ -27,6 +27,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24801:
     area: tba_248
     name: Entrance to the Elven Forest
@@ -46,6 +48,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24802:
     area: tba_248
     name: Guarded Path Through the Forest
@@ -77,6 +81,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24803:
     area: tba_248
     name: A Guard Room
@@ -99,6 +105,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24804:
     area: tba_248
     name: A Guard Chief's Bedroom
@@ -117,6 +125,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24805:
     area: tba_248
     name: A Cellar
@@ -136,6 +146,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24806:
     area: tba_248
     name: On the Platform
@@ -156,6 +168,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24807:
     area: tba_248
     name: A Guarded Path Through the Forest
@@ -179,6 +193,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24808:
     area: tba_248
     name: A Path Crossing
@@ -209,6 +225,8 @@ rooms:
       description: |2
            If you had been an old elven sage you might have known what the runes told,
         but you are not, so this means nothing to you....
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24809:
     area: tba_248
     name: A Fine Path Through the Elven Forest
@@ -240,6 +258,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24810:
     area: tba_248
     name: The Elven Armory
@@ -258,6 +278,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24811:
     area: tba_248
     name: The Elven Weaponry
@@ -276,6 +298,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24812:
     area: tba_248
     name: A Fine Path Through the Elven Forest
@@ -308,6 +332,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24813:
     area: tba_248
     name: Quintor's Fine Shop
@@ -326,6 +352,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24814:
     area: tba_248
     name: The Elven Magic Shop
@@ -344,6 +372,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24815:
     area: tba_248
     name: The End of the Path
@@ -371,6 +401,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24816:
     area: tba_248
     name: The Tavern of Hope
@@ -394,6 +426,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24817:
     area: tba_248
     name: Inside a Fine House
@@ -424,6 +458,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24818:
     area: tba_248
     name: A Guard Room
@@ -442,6 +478,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24819:
     area: tba_248
     name: The Trophy Room of the Elven King
@@ -460,6 +498,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24820:
     area: tba_248
     name: The Grand Stairway
@@ -482,6 +522,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24821:
     area: tba_248
     name: The Upper Floor of the House
@@ -512,6 +554,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24822:
     area: tba_248
     name: The Corridor
@@ -542,6 +586,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24823:
     area: tba_248
     name: The Library
@@ -560,6 +606,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24824:
     area: tba_248
     name: The Living Room
@@ -578,6 +626,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24825:
     area: tba_248
     name: 'Falling '
@@ -595,6 +645,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24826:
     area: tba_248
     name: The Guards Bedroom
@@ -613,6 +665,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24827:
     area: tba_248
     name: The Training Room
@@ -631,6 +685,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24890:
     area: tba_248
     name: The Reception of the Tavern of Hope
@@ -660,3 +716,5 @@ rooms:
                                   MY WAY OR THE HIGHWAY
                                      PAY YOUR RENT!
                         WE WON'T THINK TWICE BEFORE KICKING YOU OUT.
+    ambient_phases: {}
+    ambient_weather: {}

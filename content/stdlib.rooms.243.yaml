@@ -56,6 +56,8 @@ rooms:
            Shops        : 3
            Triggers     : 0
            Links        : 00sw, 23n, 68e
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24301:
     area: tba_243
     name: The Great Field Of Midgaard
@@ -94,6 +96,8 @@ rooms:
                 |   <------   BigKing's Castle - West            |
                 |                                                |
                 x------------------------------------------------x
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24302:
     area: tba_243
     name: The Great Field Of Midgaard
@@ -119,6 +123,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24303:
     area: tba_243
     name: Snowy Pass Entrance
@@ -142,6 +148,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24304:
     area: tba_243
     name: The Great Field of Midgaard
@@ -167,6 +175,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24305:
     area: tba_243
     name: The Great Field Of Midgaard
@@ -192,6 +202,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24306:
     area: tba_243
     name: In the Hills
@@ -229,6 +241,8 @@ rooms:
                           |   Beware of the strange beast   |
                           |   who lives inside this hole!   |
                           x---------------------------------x
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24307:
     area: tba_243
     name: A Small Hole
@@ -257,6 +271,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24308:
     area: tba_243
     name: A Small Hole
@@ -284,6 +300,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24309:
     area: tba_243
     name: A Small Hole
@@ -318,6 +336,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24310:
     area: tba_243
     name: A Small Room
@@ -345,6 +365,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24311:
     area: tba_243
     name: A Snowy Path
@@ -369,6 +391,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24312:
     area: tba_243
     name: A Snowy Path
@@ -397,6 +421,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24313:
     area: tba_243
     name: A Snowy Trail
@@ -421,6 +447,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24314:
     area: tba_243
     name: Frozen Shack
@@ -450,6 +478,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24315:
     area: tba_243
     name: Icy Ladder
@@ -479,6 +509,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24316:
     area: tba_243
     name: Icy Ladder
@@ -502,6 +534,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24317:
     area: tba_243
     name: Icy Ladder
@@ -525,6 +559,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24318:
     area: tba_243
     name: Icy Ladder
@@ -549,6 +585,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24320:
     area: tba_243
     name: Ski Hill Road
@@ -572,6 +610,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24321:
     area: tba_243
     name: Log Cabin
@@ -596,6 +636,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24322:
     area: tba_243
     name: A Snowy Path
@@ -624,6 +666,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24323:
     area: tba_243
     name: A Snowy Path
@@ -643,6 +687,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24325:
     area: tba_243
     name: A Cold Room
@@ -663,6 +709,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24326:
     area: tba_243
     name: A Cold Room
@@ -691,6 +739,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24327:
     area: tba_243
     name: A Cold Room
@@ -711,6 +761,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24328:
     area: tba_243
     name: A Cold Room
@@ -731,6 +783,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24329:
     area: tba_243
     name: A Cold Corridor
@@ -754,6 +808,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24330:
     area: tba_243
     name: A Cold Room
@@ -774,6 +830,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24331:
     area: tba_243
     name: A Cold Room
@@ -802,6 +860,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24332:
     area: tba_243
     name: A Cold Corridor
@@ -825,6 +885,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24334:
     area: tba_243
     name: A Cold Intersection
@@ -862,6 +924,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24335:
     area: tba_243
     name: A Cold Corridor
@@ -885,6 +949,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24336:
     area: tba_243
     name: A Cold Room
@@ -913,6 +979,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24337:
     area: tba_243
     name: A Cold Room
@@ -933,6 +1001,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24338:
     area: tba_243
     name: A Cold Corridor
@@ -956,6 +1026,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24339:
     area: tba_243
     name: A Cold Room
@@ -976,6 +1048,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24340:
     area: tba_243
     name: A Cold Room
@@ -996,6 +1070,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24341:
     area: tba_243
     name: A Cold Room
@@ -1024,6 +1100,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24342:
     area: tba_243
     name: A Cold Room
@@ -1044,6 +1122,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24345:
     area: tba_243
     name: A Snowy Path
@@ -1067,6 +1147,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24346:
     area: tba_243
     name: A Snowy Path
@@ -1090,6 +1172,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24347:
     area: tba_243
     name: Newbie ski trail
@@ -1113,6 +1197,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24348:
     area: tba_243
     name: Newbie ski trail
@@ -1140,6 +1226,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24349:
     area: tba_243
     name: Newbie ski trail
@@ -1167,6 +1255,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24350:
     area: tba_243
     name: Newbie ski trail
@@ -1191,6 +1281,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24351:
     area: tba_243
     name: Newbie ski trail
@@ -1215,6 +1307,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24352:
     area: tba_243
     name: Start of the newbie ski trail
@@ -1240,6 +1334,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24353:
     area: tba_243
     name: Newbie ski trail
@@ -1267,6 +1363,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24354:
     area: tba_243
     name: Forest
@@ -1298,6 +1396,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24355:
     area: tba_243
     name: Forest
@@ -1326,6 +1426,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24356:
     area: tba_243
     name: Lounge
@@ -1347,6 +1449,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24357:
     area: tba_243
     name: Main Path
@@ -1369,6 +1473,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24358:
     area: tba_243
     name: Bottom of the Newbie ski trail
@@ -1393,6 +1499,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24359:
     area: tba_243
     name: Forest
@@ -1424,6 +1532,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24360:
     area: tba_243
     name: Forest
@@ -1452,6 +1562,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24361:
     area: tba_243
     name: Chalet Cafateria
@@ -1477,6 +1589,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24362:
     area: tba_243
     name: Chalet
@@ -1506,6 +1620,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24363:
     area: tba_243
     name: Main Path
@@ -1534,6 +1650,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24364:
     area: tba_243
     name: Forest
@@ -1562,6 +1680,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24365:
     area: tba_243
     name: Forest
@@ -1593,6 +1713,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24366:
     area: tba_243
     name: Forest
@@ -1621,6 +1743,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24367:
     area: tba_243
     name: Forest
@@ -1649,6 +1773,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24368:
     area: tba_243
     name: Main Path
@@ -1676,6 +1802,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24369:
     area: tba_243
     name: Intermediate ski trail
@@ -1701,6 +1829,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24370:
     area: tba_243
     name: Intermediate ski trail
@@ -1729,6 +1859,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24371:
     area: tba_243
     name: Intermediate ski trail
@@ -1760,6 +1892,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24372:
     area: tba_243
     name: Intermediate ski trail
@@ -1791,6 +1925,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24373:
     area: tba_243
     name: Intermediate ski trail
@@ -1822,6 +1958,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24374:
     area: tba_243
     name: Intermediate ski trail
@@ -1853,6 +1991,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24375:
     area: tba_243
     name: Start of the intermediate trailt
@@ -1879,6 +2019,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24376:
     area: tba_243
     name: Dark Path
@@ -1903,6 +2045,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24377:
     area: tba_243
     name: Small Cave
@@ -1921,6 +2065,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24380:
     area: tba_243
     name: Forest
@@ -1945,6 +2091,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24381:
     area: tba_243
     name: Forest
@@ -1976,6 +2124,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24382:
     area: tba_243
     name: Forest
@@ -2007,6 +2157,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24383:
     area: tba_243
     name: Forest
@@ -2038,6 +2190,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24384:
     area: tba_243
     name: Forest
@@ -2069,6 +2223,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24385:
     area: tba_243
     name: Main Path
@@ -2095,6 +2251,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24386:
     area: tba_243
     name: Advanced ski trail
@@ -2138,6 +2296,8 @@ rooms:
              | on this property. (The cliff is our property in case    |
              | you were wondering.)                                    |
              x---------------------------------------------------------x
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24387:
     area: tba_243
     name: Advanced ski trail
@@ -2166,6 +2326,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24388:
     area: tba_243
     name: Advanced ski trail
@@ -2194,6 +2356,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24389:
     area: tba_243
     name: Advanced ski trail
@@ -2222,6 +2386,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24390:
     area: tba_243
     name: Start of the advanced ski trail
@@ -2246,6 +2412,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24391:
     area: tba_243
     name: Steep Cliff
@@ -2264,6 +2432,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24392:
     area: tba_243
     name: Ski Hill Entrance
@@ -2311,6 +2481,8 @@ rooms:
              |     WE ARE NOT RESPONSIBLE FOR ANY INJURIES INCURRED ON       |
              |     THIS PROPERTY!!! USE AT OWN RISK!!!                       |
              x---------------------------------------------------------------x
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24393:
     area: tba_243
     name: Main Path
@@ -2340,6 +2512,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24399:
     area: tba_243
     name: Ski Shop
@@ -2358,3 +2532,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

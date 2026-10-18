@@ -48,6 +48,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10301:
     area: tba_103
     name: Transportation Rooms
@@ -72,6 +74,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10302:
     area: tba_103
     name: Earth Teleporter
@@ -93,6 +97,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10303:
     area: tba_103
     name: Namek Teleporter
@@ -113,6 +119,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10304:
     area: tba_103
     name: Kami's Lookout
@@ -130,6 +138,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10305:
     area: tba_103
     name: Start of Planet Namek
@@ -161,6 +171,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10306:
     area: tba_103
     name: Base of Korins Tower
@@ -181,6 +193,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10307:
     area: tba_103
     name: Forest path
@@ -204,6 +218,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10308:
     area: tba_103
     name: Forest Intersection
@@ -235,6 +251,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10309:
     area: tba_103
     name: Gokus' House
@@ -254,6 +272,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10310:
     area: tba_103
     name: A Dark Hole
@@ -278,6 +298,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10311:
     area: tba_103
     name: The Base of the Dark Hole
@@ -298,6 +320,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10312:
     area: tba_103
     name: A Forest Path
@@ -321,6 +345,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10313:
     area: tba_103
     name: The end of the Forest
@@ -344,6 +370,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10314:
     area: tba_103
     name: Forests end
@@ -378,6 +406,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10315:
     area: tba_103
     name: The Entrance to Capsul Corp
@@ -401,6 +431,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10316:
     area: tba_103
     name: Capsul Corp Front Desk
@@ -426,6 +458,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10317:
     area: tba_103
     name: Entrance to the Battle Arena
@@ -457,6 +491,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10318:
     area: tba_103
     name: Th Newbie Arena
@@ -476,6 +512,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10319:
     area: tba_103
     name: Vegetas Atire
@@ -494,6 +532,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10320:
     area: tba_103
     name: Teleportation Room
@@ -516,6 +556,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10321:
     area: tba_103
     name: The Ocean Shore
@@ -538,6 +580,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10322:
     area: tba_103
     name: The Mouth of the River
@@ -556,6 +600,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10323:
     area: tba_103
     name: Taylors Credits Room
@@ -599,6 +645,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10324:
     area: tba_103
     name: Soaring Over the Ocean
@@ -619,6 +667,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10325:
     area: tba_103
     name: Soaring Over the Ocean
@@ -639,6 +689,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10326:
     area: tba_103
     name: Soaring Over the Ocean
@@ -659,6 +711,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10327:
     area: tba_103
     name: Soaring Over the Ocean
@@ -682,6 +736,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10328:
     area: tba_103
     name: In Shallow Water
@@ -702,6 +758,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10329:
     area: tba_103
     name: In front of Kami House
@@ -726,6 +784,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10330:
     area: tba_103
     name: Kami House
@@ -748,6 +808,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10331:
     area: tba_103
     name: Kami Houses Kitchen
@@ -770,6 +832,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10332:
     area: tba_103
     name: Stair Closet
@@ -793,6 +857,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10333:
     area: tba_103
     name: Roshis' Room
@@ -811,6 +877,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10334:
     area: tba_103
     name: A Small Hall
@@ -833,6 +901,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10335:
     area: tba_103
     name: A Small Hall
@@ -855,6 +925,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10336:
     area: tba_103
     name: End of the Small Hall
@@ -877,6 +949,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10337:
     area: tba_103
     name: A Small Kitchen
@@ -900,6 +974,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10338:
     area: tba_103
     name: The Living Room
@@ -923,6 +999,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10339:
     area: tba_103
     name: Play Room
@@ -948,6 +1026,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10340:
     area: tba_103
     name: The Garden
@@ -973,6 +1053,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10341:
     area: tba_103
     name: A Garden Path
@@ -997,6 +1079,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10342:
     area: tba_103
     name: A Large Oak Tree
@@ -1023,6 +1107,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10343:
     area: tba_103
     name: A Garden Path
@@ -1047,6 +1133,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10344:
     area: tba_103
     name: A Garden Path
@@ -1071,6 +1159,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10345:
     area: tba_103
     name: The End of the Garden
@@ -1091,6 +1181,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10346:
     area: tba_103
     name: Namekian Village
@@ -1116,6 +1208,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10347:
     area: tba_103
     name: Namekian Village
@@ -1141,6 +1235,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10348:
     area: tba_103
     name: Namekian Village
@@ -1166,6 +1262,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10349:
     area: tba_103
     name: Namekian Village
@@ -1191,6 +1289,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10350:
     area: tba_103
     name: Namekian Village
@@ -1216,6 +1316,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10351:
     area: tba_103
     name: Namek Road
@@ -1242,6 +1344,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10352:
     area: tba_103
     name: Namek Road
@@ -1268,6 +1372,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10353:
     area: tba_103
     name: Namek Road
@@ -1293,6 +1399,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10354:
     area: tba_103
     name: At the Foot of the Mountain
@@ -1319,6 +1427,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10355:
     area: tba_103
     name: Flying Up the Mountain
@@ -1343,6 +1453,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10356:
     area: tba_103
     name: Flying Up the Mountain
@@ -1367,6 +1479,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10357:
     area: tba_103
     name: Flying Up the Mountain
@@ -1391,6 +1505,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10358:
     area: tba_103
     name: Flying at the Top of the Mountain
@@ -1415,6 +1531,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10359:
     area: tba_103
     name: In front of the Elders House
@@ -1438,6 +1556,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10360:
     area: tba_103
     name: Elders House
@@ -1462,6 +1582,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10361:
     area: tba_103
     name: Elders Room
@@ -1482,6 +1604,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10362:
     area: tba_103
     name: Towns Entrance
@@ -1513,6 +1637,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10363:
     area: tba_103
     name: A Dirt Path
@@ -1537,6 +1663,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10364:
     area: tba_103
     name: A Dirt Path
@@ -1560,6 +1688,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10365:
     area: tba_103
     name: A Dirt Path
@@ -1583,6 +1713,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10366:
     area: tba_103
     name: A Dirt Path
@@ -1606,6 +1738,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10367:
     area: tba_103
     name: The Lake
@@ -1631,6 +1765,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10368:
     area: tba_103
     name: Dark Forest
@@ -1657,6 +1793,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10369:
     area: tba_103
     name: A Small Clearing
@@ -1680,6 +1818,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10370:
     area: tba_103
     name: A Short Forest Path
@@ -1705,6 +1845,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10371:
     area: tba_103
     name: A Large Clearing
@@ -1728,6 +1870,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10372:
     area: tba_103
     name: Opening to a Large Cave
@@ -1756,6 +1900,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10373:
     area: tba_103
     name: Entering The Cave
@@ -1780,6 +1926,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10374:
     area: tba_103
     name: Dark Cave
@@ -1805,6 +1953,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10375:
     area: tba_103
     name: Caves Intersection
@@ -1833,6 +1983,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10376:
     area: tba_103
     name: A Brightly Lit Cavern
@@ -1853,6 +2005,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10377:
     area: tba_103
     name: Leaveing Dark Cave
@@ -1877,6 +2031,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10378:
     area: tba_103
     name: Dark Caves Exit
@@ -1901,6 +2057,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10379:
     area: tba_103
     name: A Flower Field
@@ -1924,6 +2082,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10380:
     area: tba_103
     name: Path To the Villa
@@ -1947,6 +2107,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10381:
     area: tba_103
     name: In front of the Villa
@@ -1970,6 +2132,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10382:
     area: tba_103
     name: Center of the Building
@@ -2000,6 +2164,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10383:
     area: tba_103
     name: Piccolo's Bedroom
@@ -2017,6 +2183,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10384:
     area: tba_103
     name: The Villas Kitchen
@@ -2039,6 +2207,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10385:
     area: tba_103
     name: A Dimly Lit Room
@@ -2061,6 +2231,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10386:
     area: tba_103
     name: A Rusty Ladder
@@ -2083,6 +2255,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10387:
     area: tba_103
     name: Bottom of the Ladder
@@ -2105,6 +2279,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10388:
     area: tba_103
     name: A Small Hallway
@@ -2127,6 +2303,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10389:
     area: tba_103
     name: Storage Room
@@ -2145,6 +2323,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10390:
     area: tba_103
     name: A Ruined Room
@@ -2168,6 +2348,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10391:
     area: tba_103
     name: A Dark Room
@@ -2191,6 +2373,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10392:
     area: tba_103
     name: Teleportation Room
@@ -2209,6 +2393,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10393:
     area: tba_103
     name: Going To the Cave
@@ -2232,6 +2418,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10394:
     area: tba_103
     name: An Apple Orchard
@@ -2255,6 +2443,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10395:
     area: tba_103
     name: End of an Apple Orchard
@@ -2278,6 +2468,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10396:
     area: tba_103
     name: Start of the Brush
@@ -2301,6 +2493,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10397:
     area: tba_103
     name: Path Through the Brush
@@ -2324,6 +2518,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10398:
     area: tba_103
     name: A Dangerous Path
@@ -2347,6 +2543,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10399:
     area: tba_103
     name: Journeys End Inn
@@ -2366,3 +2564,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

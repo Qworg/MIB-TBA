@@ -29,6 +29,8 @@ rooms:
         through.  The field rises high up into the air, and seems to form a ceiling
         above the woods, preventing a flying entrance.  You'd also bet it extends deep
         into the ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6201:
     area: tba_62
     name: In The Forest
@@ -62,6 +64,8 @@ rooms:
         through.  The field rises high up into the air, and seems to form a ceiling
         above the woods, preventing a flying entrance.  You'd also bet it extends deep
         into the ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6202:
     area: tba_62
     name: In The Forest
@@ -96,6 +100,8 @@ rooms:
         through.  The field rises high up into the air, and seems to form a ceiling
         above the woods, preventing a flying entrance.  You'd also bet it extends deep
         into the ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6203:
     area: tba_62
     name: In The Forest
@@ -132,6 +138,8 @@ rooms:
         through.  The field rises high up into the air, and seems to form a ceiling
         above the woods, preventing a flying entrance.  You'd also bet it extends deep
         into the ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6204:
     area: tba_62
     name: In The Forest
@@ -167,6 +175,8 @@ rooms:
         through.  The field rises high up into the air, and seems to form a ceiling
         above the woods, preventing a flying entrance.  You'd also bet it extends deep
         into the ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6205:
     area: tba_62
     name: In The Forest
@@ -201,6 +211,8 @@ rooms:
         through.  The field rises high up into the air, and seems to form a ceiling
         above the woods, preventing a flying entrance.  You'd also bet it extends deep
         into the ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6206:
     area: tba_62
     name: In The Forest
@@ -234,6 +246,8 @@ rooms:
         through.  The field rises high up into the air, and seems to form a ceiling
         above the woods, preventing a flying entrance.  You'd also bet it extends deep
         into the ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6207:
     area: tba_62
     name: In The Forest
@@ -268,6 +282,8 @@ rooms:
         through.  The field rises high up into the air, and seems to form a ceiling
         above the woods, preventing a flying entrance.  You'd also bet it extends deep
         into the ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6208:
     area: tba_62
     name: In The Forest
@@ -307,6 +323,8 @@ rooms:
            You can see a clearing beyond, the barrier not fully blocking out the area
         behind.  You think it might be possible to push your way through, if the damn
         thing doesn't kill you first.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6209:
     area: tba_62
     name: The River's Edge
@@ -338,6 +356,8 @@ rooms:
         through.  The field rises high up into the air, and seems to form a ceiling
         above the woods, preventing a flying entrance.  You'd also bet it extends deep
         into the ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6210:
     area: tba_62
     name: Just Passing Through...
@@ -365,6 +385,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6211:
     area: tba_62
     name: By The Barrier
@@ -404,6 +426,8 @@ rooms:
            Demi-human, from the size.  The foreheads slop down to a blocky brow, and the
         braincase seems rather small.  On a hunch, you check one of the feet of a
         torched body.  Cloven, like a pig's...  Orcs.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6212:
     area: tba_62
     name: A Clearing In The Forest
@@ -449,6 +473,8 @@ rooms:
       - prints
       description: |2
            Cloven hoofs, two feet...  They walk erect whatever they are.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6213:
     area: tba_62
     name: A Forest Trail
@@ -475,6 +501,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6214:
     area: tba_62
     name: The River's Edge
@@ -502,6 +530,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6215:
     area: tba_62
     name: The River's Edge
@@ -529,6 +559,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6216:
     area: tba_62
     name: The River's Edge
@@ -552,6 +584,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6217:
     area: tba_62
     name: A Forest Trail
@@ -579,6 +613,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6218:
     area: tba_62
     name: A Forest Trail
@@ -608,6 +644,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6219:
     area: tba_62
     name: A Forest Trail
@@ -635,6 +673,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6220:
     area: tba_62
     name: A Forest Trail
@@ -662,6 +702,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6221:
     area: tba_62
     name: A Small Clearing
@@ -696,6 +738,8 @@ rooms:
       - boulder
       description: |2
            There is dried blood on it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6222:
     area: tba_62
     name: A Forest Trail
@@ -725,6 +769,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6223:
     area: tba_62
     name: A Forest Trail
@@ -749,6 +795,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6224:
     area: tba_62
     name: The Dead End
@@ -771,6 +819,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6225:
     area: tba_62
     name: A Forest Trail
@@ -796,6 +846,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6226:
     area: tba_62
     name: A Forest Trail
@@ -819,6 +871,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6227:
     area: tba_62
     name: A Forest Trail
@@ -846,6 +900,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6228:
     area: tba_62
     name: A Forest Trail
@@ -873,6 +929,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6229:
     area: tba_62
     name: A Forest Trail
@@ -899,6 +957,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6230:
     area: tba_62
     name: A Forest Trail
@@ -930,6 +990,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6231:
     area: tba_62
     name: A Clearing
@@ -952,6 +1014,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6232:
     area: tba_62
     name: A Forest Trail
@@ -982,6 +1046,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6233:
     area: tba_62
     name: A Forest Trail
@@ -1013,6 +1079,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6234:
     area: tba_62
     name: A Rocky Trail
@@ -1045,6 +1113,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6235:
     area: tba_62
     name: A Forest Trail
@@ -1070,6 +1140,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6236:
     area: tba_62
     name: A Forest Trail
@@ -1099,6 +1171,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6237:
     area: tba_62
     name: A Large Clearing
@@ -1124,6 +1198,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6238:
     area: tba_62
     name: A Forest Trail
@@ -1154,6 +1230,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6239:
     area: tba_62
     name: A River's Edge
@@ -1182,6 +1260,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6240:
     area: tba_62
     name: A River's Edge
@@ -1209,6 +1289,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6241:
     area: tba_62
     name: A Rocky Trail
@@ -1239,6 +1321,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6242:
     area: tba_62
     name: A Cave Entrance
@@ -1265,6 +1349,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6243:
     area: tba_62
     name: A Tunnel Forking
@@ -1303,6 +1389,8 @@ rooms:
       - signs
       description: |2
            They are orcish, and you could swear they were all warning symbols.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6244:
     area: tba_62
     name: A Tunnel
@@ -1328,6 +1416,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6245:
     area: tba_62
     name: A Tunnel
@@ -1353,6 +1443,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6246:
     area: tba_62
     name: A Cave
@@ -1379,6 +1471,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6247:
     area: tba_62
     name: A Cave
@@ -1408,6 +1502,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6248:
     area: tba_62
     name: A Cave
@@ -1436,6 +1532,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6249:
     area: tba_62
     name: A Cave
@@ -1466,6 +1564,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6250:
     area: tba_62
     name: A Cave
@@ -1502,6 +1602,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6251:
     area: tba_62
     name: A Cave
@@ -1537,6 +1639,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6252:
     area: tba_62
     name: A Cave
@@ -1564,6 +1668,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6253:
     area: tba_62
     name: A Cave
@@ -1592,6 +1698,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6254:
     area: tba_62
     name: A Cave
@@ -1618,6 +1726,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6255:
     area: tba_62
     name: A Tunnel
@@ -1652,6 +1762,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6256:
     area: tba_62
     name: A Tunnel
@@ -1693,6 +1805,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6257:
     area: tba_62
     name: A Bedroom
@@ -1720,6 +1834,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6258:
     area: tba_62
     name: A Tunnel
@@ -1747,6 +1863,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6259:
     area: tba_62
     name: The Laboratory
@@ -1772,6 +1890,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6260:
     area: tba_62
     name: The Laboratory
@@ -1805,6 +1925,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6261:
     area: tba_62
     name: A Cage
@@ -1829,6 +1951,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6262:
     area: tba_62
     name: The Laboratory
@@ -1859,6 +1983,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6263:
     area: tba_62
     name: The Laboratory
@@ -1895,6 +2021,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6264:
     area: tba_62
     name: A Cage
@@ -1919,6 +2047,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6265:
     area: tba_62
     name: The Laboratory
@@ -1942,6 +2072,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6266:
     area: tba_62
     name: The Laboratory
@@ -1980,6 +2112,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6267:
     area: tba_62
     name: A Cage
@@ -2004,3 +2138,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

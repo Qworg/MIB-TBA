@@ -46,6 +46,8 @@ rooms:
         water that cast cure light with every drink.  By making the village so difficult
         to find, we felt it would keep this fountain from being abused.
         Entrance/Exit: 00E, 28N
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26401:
     area: tba_264
     name: On a Forest Slope
@@ -77,6 +79,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26402:
     area: tba_264
     name: In a Quiet Forest
@@ -108,6 +112,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26403:
     area: tba_264
     name: In a Quiet Forest
@@ -139,6 +145,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26404:
     area: tba_264
     name: Downhill in a Forest
@@ -171,6 +179,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26405:
     area: tba_264
     name: In a Quiet Section of the Forest
@@ -204,6 +214,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26406:
     area: tba_264
     name: In a Quiet Section of the Forest
@@ -237,6 +249,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26407:
     area: tba_264
     name: In a Quiet Section of the Forest
@@ -270,6 +284,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26408:
     area: tba_264
     name: At the Base of a Huge Tree
@@ -311,6 +327,8 @@ rooms:
         -Beware the cold Embrace of the Banshee.
         There appears to be some sort of stain just below that, as well.
         It almost looks like dry blood.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26409:
     area: tba_264
     name: On Some Tangled Roots
@@ -344,6 +362,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26410:
     area: tba_264
     name: Across a Log
@@ -377,6 +397,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26411:
     area: tba_264
     name: Through the Tree Roots
@@ -410,6 +432,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26412:
     area: tba_264
     name: Heading Downhill
@@ -441,6 +465,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26413:
     area: tba_264
     name: Near a Fox's Den
@@ -474,6 +500,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26414:
     area: tba_264
     name: Lost in the Forest
@@ -506,6 +534,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26415:
     area: tba_264
     name: A Faint Path
@@ -538,6 +568,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26416:
     area: tba_264
     name: Near a Stand of Evergreens
@@ -571,6 +603,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26417:
     area: tba_264
     name: On a Large Boulder
@@ -605,6 +639,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26418:
     area: tba_264
     name: Just Below a Large Boulder
@@ -638,6 +674,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26419:
     area: tba_264
     name: Hanging Vines
@@ -671,6 +709,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26420:
     area: tba_264
     name: A Quiet Section of the Forest
@@ -703,6 +743,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26421:
     area: tba_264
     name: Near a Rabbit Hole
@@ -735,6 +777,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26422:
     area: tba_264
     name: A Lightning Blasted Tree
@@ -768,6 +812,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26423:
     area: tba_264
     name: Leaf Strewn Slope
@@ -800,6 +846,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26424:
     area: tba_264
     name: Leaf Strewn Slope
@@ -832,6 +880,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26425:
     area: tba_264
     name: An Abandoned Campsite on the Hillside
@@ -864,6 +914,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26426:
     area: tba_264
     name: The Dark Forest
@@ -898,6 +950,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26427:
     area: tba_264
     name: The Dark Forest
@@ -932,6 +986,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26428:
     area: tba_264
     name: Heading Down a Leaf Strewn Slope
@@ -964,6 +1020,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26429:
     area: tba_264
     name: On a Hill in the Forest
@@ -996,6 +1054,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26430:
     area: tba_264
     name: At the Fringes of Civilization
@@ -1028,6 +1088,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26431:
     area: tba_264
     name: Voce Lane
@@ -1057,6 +1119,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26432:
     area: tba_264
     name: Voce Lane
@@ -1085,6 +1149,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26433:
     area: tba_264
     name: Voce Lane
@@ -1109,6 +1175,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26434:
     area: tba_264
     name: Voce Lane
@@ -1138,6 +1206,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26435:
     area: tba_264
     name: Voce Lane
@@ -1163,6 +1233,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26436:
     area: tba_264
     name: Voce Lane
@@ -1191,6 +1263,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26437:
     area: tba_264
     name: Voce Lane
@@ -1221,6 +1295,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26438:
     area: tba_264
     name: At the Fringes of Civilization
@@ -1252,6 +1328,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26439:
     area: tba_264
     name: Inner Hallway
@@ -1287,6 +1365,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26440:
     area: tba_264
     name: Inner Hallway
@@ -1317,6 +1397,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26441:
     area: tba_264
     name: A Small Apartment
@@ -1346,6 +1428,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26442:
     area: tba_264
     name: A Small Apartment
@@ -1365,6 +1449,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26443:
     area: tba_264
     name: A Small Apartment
@@ -1384,6 +1470,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26444:
     area: tba_264
     name: A Small Apartment
@@ -1403,6 +1491,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26445:
     area: tba_264
     name: Inner Hallway
@@ -1438,6 +1528,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26446:
     area: tba_264
     name: Inner Hallway
@@ -1468,6 +1560,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26447:
     area: tba_264
     name: A Small Apartment
@@ -1487,6 +1581,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26448:
     area: tba_264
     name: A Small Apartment
@@ -1516,6 +1612,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26449:
     area: tba_264
     name: A Small Apartment
@@ -1545,6 +1643,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26450:
     area: tba_264
     name: A Small Apartment
@@ -1564,6 +1664,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26451:
     area: tba_264
     name: A Small Apartment
@@ -1593,6 +1695,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26452:
     area: tba_264
     name: Inner Hallway
@@ -1623,6 +1727,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26453:
     area: tba_264
     name: A Small Apartment
@@ -1652,6 +1758,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26454:
     area: tba_264
     name: A Small Apartment
@@ -1671,6 +1779,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26455:
     area: tba_264
     name: Inner Hallway
@@ -1706,6 +1816,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26456:
     area: tba_264
     name: A Small Apartment
@@ -1725,6 +1837,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26457:
     area: tba_264
     name: Inner Hallway
@@ -1760,6 +1874,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26458:
     area: tba_264
     name: Inner Hallway
@@ -1790,6 +1906,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26459:
     area: tba_264
     name: A Small Apartment
@@ -1819,6 +1937,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26460:
     area: tba_264
     name: A Small Apartment
@@ -1838,6 +1958,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26461:
     area: tba_264
     name: A Small Apartment
@@ -1867,6 +1989,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26462:
     area: tba_264
     name: A Small Apartment
@@ -1886,6 +2010,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26463:
     area: tba_264
     name: The Temple Blvd
@@ -1912,6 +2038,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26464:
     area: tba_264
     name: The Temple Blvd
@@ -1943,6 +2071,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26465:
     area: tba_264
     name: The Home of the Father
@@ -1965,6 +2095,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26466:
     area: tba_264
     name: Temple of the Voce
@@ -1988,3 +2120,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

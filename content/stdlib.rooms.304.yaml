@@ -32,6 +32,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30401:
     area: tba_304
     name: A Grassy Field
@@ -57,6 +59,8 @@ rooms:
       - grass
       description: |2
            Looks like an average grass stalk.  You pluck one and put it in your mouth.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30402:
     area: tba_304
     name: Before the Temple
@@ -81,6 +85,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30403:
     area: tba_304
     name: Under the Arch
@@ -115,6 +121,8 @@ rooms:
       - marble
       description: |2
            It is a remarkably well polished marble door.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30404:
     area: tba_304
     name: The Temple
@@ -136,6 +144,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30405:
     area: tba_304
     name: The Temple
@@ -167,6 +177,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30406:
     area: tba_304
     name: The Temple
@@ -188,6 +200,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30407:
     area: tba_304
     name: The Temple
@@ -213,6 +227,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30408:
     area: tba_304
     name: The Atrium and Gardens
@@ -248,6 +264,8 @@ rooms:
       - plants
       description: |2
            They seem to be doing very well, someone around here has a green thumb.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30409:
     area: tba_304
     name: The Temple
@@ -273,6 +291,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30410:
     area: tba_304
     name: The Stairwell
@@ -298,6 +318,8 @@ rooms:
       - stairwell
       description: |2
            A work of great craftmanship!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30411:
     area: tba_304
     name: The Temple
@@ -326,6 +348,8 @@ rooms:
            *        March 1994          *
            *                            *
            *-*-*-*-* o==[=====- *-*-*-*-*
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30412:
     area: tba_304
     name: The Stairwell
@@ -347,6 +371,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30413:
     area: tba_304
     name: The Upper Temple
@@ -379,6 +405,8 @@ rooms:
       - fur
       description: |2
            The fur is brown, short, and coarse.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30414:
     area: tba_304
     name: Mateon's Chamber
@@ -406,6 +434,8 @@ rooms:
       - window
       description: |2
            The window overlooks a grassy field.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30415:
     area: tba_304
     name: The Upper Temple
@@ -438,6 +468,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30416:
     area: tba_304
     name: The Corridor
@@ -468,6 +500,8 @@ rooms:
       - window
       description: |2
            The window overlooks a grassy field.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30417:
     area: tba_304
     name: Aten's Chamber
@@ -484,6 +518,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30418:
     area: tba_304
     name: The Corridor
@@ -513,6 +549,8 @@ rooms:
       - balcony
       description: |2
            Its a simple piece of polished wood.  You can see the gardens below.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30419:
     area: tba_304
     name: The Cul-de-Sac
@@ -530,6 +568,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30420:
     area: tba_304
     name: The Bull's Chamber
@@ -567,6 +607,8 @@ rooms:
       - window
       description: |2
            Its a great, big walk-through window.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30421:
     area: tba_304
     name: The Dark Chamber
@@ -597,6 +639,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30422:
     area: tba_304
     name: The Balcony
@@ -615,3 +659,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

@@ -31,6 +31,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17501:
     area: tba_175
     name: A Gravel Path
@@ -54,6 +56,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17502:
     area: tba_175
     name: A Dead End
@@ -83,6 +87,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17503:
     area: tba_175
     name: The Wizard's Mansion
@@ -126,6 +132,8 @@ rooms:
            The mirror is a gray stone frame the size of a door set against the wall.
         Within it, a vertical pool of quicksilver ripples gently, held in place by some
         magical means.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17504:
     area: tba_175
     name: An Indoor River
@@ -159,6 +167,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17505:
     area: tba_175
     name: A Tight Space
@@ -185,6 +195,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17506:
     area: tba_175
     name: The River Quickens
@@ -203,6 +215,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17507:
     area: tba_175
     name: A Bend in the River
@@ -221,6 +235,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17508:
     area: tba_175
     name: The River Continues
@@ -239,6 +255,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17509:
     area: tba_175
     name: A Bend to the East
@@ -258,6 +276,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17510:
     area: tba_175
     name: Out on the Lake
@@ -285,6 +305,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17511:
     area: tba_175
     name: Trilless's Sanctuary.
@@ -315,6 +337,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17512:
     area: tba_175
     name: The Mirror on the Lake
@@ -338,6 +362,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17513:
     area: tba_175
     name: The Guardian Room
@@ -379,6 +405,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17514:
     area: tba_175
     name: The Flowing River
@@ -397,6 +425,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17515:
     area: tba_175
     name: Inside the Mirror
@@ -415,6 +445,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17516:
     area: tba_175
     name: The Base of the Stairs
@@ -445,6 +477,8 @@ rooms:
            My Tower of Evil lies above.  All tresspassers will be killed on sight.
         Turn back now, or face my wrath.
         - Carcophan
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17517:
     area: tba_175
     name: The Foyer of the Tower
@@ -480,6 +514,8 @@ rooms:
            There is a small porthole covering the ascent of the stairwell.
         There is an inscription written on the porthole:
         I am the end of every life, and the beginning of every end. What am I?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17518:
     area: tba_175
     name: Behind the Desk
@@ -497,6 +533,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17519:
     area: tba_175
     name: Outside
@@ -560,6 +598,8 @@ rooms:
            The inscription on the porthole reads:
         "This way is now barred to you,
         You, my friend, cannot come through."
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17520:
     area: tba_175
     name: The Forge.
@@ -596,6 +636,8 @@ rooms:
         Five keys you need to find,
         Look for them all in your forge's anvil,
         And you will find they be of like kind."
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17521:
     area: tba_175
     name: The Windy Chimney
@@ -625,6 +667,8 @@ rooms:
         Mouthless mutters,
         Toothless shrieks,
         Wingless flutters.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17522:
     area: tba_175
     name: Deeper Within the Darkness
@@ -665,6 +709,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17523:
     area: tba_175
     name: Within the Darkness
@@ -685,6 +731,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17524:
     area: tba_175
     name: Carcophan's Study
@@ -711,6 +759,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17525:
     area: tba_175
     name: Before a Cliff Face
@@ -730,6 +780,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.17526:
     area: tba_175
     name: Before a Cliff Face
@@ -753,3 +805,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

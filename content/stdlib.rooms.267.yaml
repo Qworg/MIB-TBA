@@ -33,6 +33,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26701:
     area: tba_267
     name: Port Harem
@@ -67,6 +69,8 @@ rooms:
         and every grain is a single crystal; it reflects the light of the sun into a
         blinding display of bright white.  While each one exhibits a different color,
         they all blend into this pristine color.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26702:
     area: tba_267
     name: Beachside Harem
@@ -95,6 +99,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26703:
     area: tba_267
     name: Beach Road
@@ -122,6 +128,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26704:
     area: tba_267
     name: Harem
@@ -143,6 +151,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26705:
     area: tba_267
     name: Beach Road
@@ -171,6 +181,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26706:
     area: tba_267
     name: Creepy Road
@@ -199,6 +211,8 @@ rooms:
       - skeletons
       description: |2
            They're quite real, and quite frightening.  We weren't lying to you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26707:
     area: tba_267
     name: Creepy Road
@@ -226,6 +240,8 @@ rooms:
       - skeletons
       description: |2
            They're quite real, and quite frightening.  We weren't lying to you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26708:
     area: tba_267
     name: Creepy Road
@@ -260,6 +276,8 @@ rooms:
       - skeletons
       description: |2
            They're quite real, and quite frightening.  We weren't lying to you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26709:
     area: tba_267
     name: Vice Hill
@@ -285,6 +303,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26710:
     area: tba_267
     name: Vice Hill
@@ -310,6 +330,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26711:
     area: tba_267
     name: Tarry Tunnel
@@ -338,6 +360,8 @@ rooms:
       - tar
       description: |2
            The tar looks disgusting, but not too dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26712:
     area: tba_267
     name: Tarry Tunnel
@@ -366,6 +390,8 @@ rooms:
       - tar
       description: |2
            The tar looks disgusting, but not too dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26713:
     area: tba_267
     name: Tarry Tunnel
@@ -394,6 +420,8 @@ rooms:
       - tar
       description: |2
            The tar looks disgusting, but not too dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26714:
     area: tba_267
     name: Tarry Tunnel
@@ -422,6 +450,8 @@ rooms:
       - tar
       description: |2
            The tar looks disgusting, but not too dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26715:
     area: tba_267
     name: Tarry Tunnel
@@ -450,6 +480,8 @@ rooms:
       - tar
       description: |2
            The tar looks disgusting, but not too dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26716:
     area: tba_267
     name: Tarry Tunnel
@@ -478,6 +510,8 @@ rooms:
       - tar
       description: |2
            The tar looks disgusting, but not too dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26717:
     area: tba_267
     name: Tarry Tunnel
@@ -506,6 +540,8 @@ rooms:
       - tar
       description: |2
            The tar looks disgusting, but not too dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26718:
     area: tba_267
     name: Tarry Tunnel
@@ -534,6 +570,8 @@ rooms:
       - tar
       description: |2
            The tar looks disgusting, but not too dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26719:
     area: tba_267
     name: Tarry Tunnel
@@ -562,6 +600,8 @@ rooms:
       - tar
       description: |2
            The tar looks disgusting, but not too dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26720:
     area: tba_267
     name: Tarry Tunnel
@@ -590,6 +630,8 @@ rooms:
       - tar
       description: |2
            The tar looks disgusting, but not too dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26721:
     area: tba_267
     name: Tarry Tunnel
@@ -620,6 +662,8 @@ rooms:
       - tar
       description: |2
            The tar looks disgusting, but not too dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26722:
     area: tba_267
     name: Tarry Tunnel
@@ -650,6 +694,8 @@ rooms:
       - tar
       description: |2
            The tar looks disgusting, but not too dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26723:
     area: tba_267
     name: Vice Hill
@@ -688,6 +734,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26724:
     area: tba_267
     name: Tarry Road
@@ -714,6 +762,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26725:
     area: tba_267
     name: Tarry Road
@@ -754,6 +804,8 @@ rooms:
                                     TAR PIT
                                DO NOT ENTER ! ! !
                         THIS IS THE POINT OF NO RETURN!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26726:
     area: tba_267
     name: Tarry Road
@@ -783,6 +835,8 @@ rooms:
       description: |2
            It's big, black, boiling, sticky, and gooey.  What more incintive do you need
         to stay away from it?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26727:
     area: tba_267
     name: Boiling Tar Pit
@@ -803,6 +857,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26728:
     area: tba_267
     name: Vice Hill
@@ -839,6 +895,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26729:
     area: tba_267
     name: High Path
@@ -866,6 +924,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26730:
     area: tba_267
     name: Trail of Terror
@@ -897,6 +957,8 @@ rooms:
            This must have been a HUGE monster!  Whoever slayed it--no, you'd rather just
         not have to find out.  Each rib seems to be razer-sharp at the edges, and the
         bones have been cleaned to a perfect white.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26731:
     area: tba_267
     name: High Path
@@ -924,6 +986,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26732:
     area: tba_267
     name: Trail of Terror
@@ -955,6 +1019,8 @@ rooms:
            This must have been a HUGE monster!  Whoever slayed it--no, you'd rather just
         not have to find out.  Each rib seems to be razer-sharp at the edges, and the
         bones have been cleaned to a perfect white.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26733:
     area: tba_267
     name: High Path
@@ -982,6 +1048,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26734:
     area: tba_267
     name: Trail of Terror
@@ -1013,6 +1081,8 @@ rooms:
            This must have been a HUGE monster!  Whoever slayed it--no, you'd rather just
         not have to find out.  Each rib seems to be razer-sharp at the edges, and the
         bones have been cleaned to a perfect white.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26735:
     area: tba_267
     name: High Path
@@ -1040,6 +1110,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26736:
     area: tba_267
     name: Trail of Terror
@@ -1071,6 +1143,8 @@ rooms:
            This must have been a HUGE monster!  Whoever slayed it--no, you'd rather just
         not have to find out.  Each rib seems to be razer-sharp at the edges, and the
         bones have been cleaned to a perfect white.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26737:
     area: tba_267
     name: High Path
@@ -1104,6 +1178,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26738:
     area: tba_267
     name: Trail of Terror
@@ -1142,6 +1218,8 @@ rooms:
            This must have been a HUGE monster!  Whoever slayed it--no, you'd rather just
         not have to find out.  Each rib seems to be razer-sharp at the edges, and the
         bones have been cleaned to a perfect white.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26739:
     area: tba_267
     name: Vice Hill
@@ -1189,6 +1267,8 @@ rooms:
            Nothing describes this island with more clarity than "horror".  All around
         you, you can sense evil, but you can't pinpoint why.  The entire island is quite
         silent--not a chirp can be heard.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26740:
     area: tba_267
     name: Cliff Road
@@ -1218,6 +1298,8 @@ rooms:
       description: |2
            You can't quite see it yet--all you can see is a line that extends across the
         horizon.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26741:
     area: tba_267
     name: Cliff Road
@@ -1246,6 +1328,8 @@ rooms:
       - cliff
       description: |2
            You can now see a little of it.  It looks quite unstable.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26742:
     area: tba_267
     name: Cliff Road
@@ -1274,6 +1358,8 @@ rooms:
       - cliff
       description: |2
            You can see it.  It looks quite close.  It looks very dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26743:
     area: tba_267
     name: Cliff Road
@@ -1303,6 +1389,8 @@ rooms:
       description: |2
            Umm...  We've warned you quite enough.  Either go back, or face the
         consequences.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26744:
     area: tba_267
     name: Cliff's Edge
@@ -1320,6 +1408,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26745:
     area: tba_267
     name: Entrance to the Building of Fear
@@ -1354,6 +1444,8 @@ rooms:
                                    Building of Fear
                      HIGH PRIESTS OF TERROR ALLOWED SAFE PASSAGE ONLY
                               You have been forewarned.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26746:
     area: tba_267
     name: The Tapestry Room
@@ -1379,6 +1471,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26747:
     area: tba_267
     name: Gargoyle Room
@@ -1402,6 +1496,8 @@ rooms:
       description: |2
            It's a gargoyle, with a large gaping mouth.  Since you shouldn't be able to
         wee it, we're not going to tell you anything else.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26748:
     area: tba_267
     name: Trophy Room
@@ -1455,6 +1551,8 @@ rooms:
            Each pedestal is about the size of your waist; each skull--well, it just
         depends.  None look benevolent...  Whoever caught them must have been a very
         skilled hunter.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26749:
     area: tba_267
     name: Dressing Room
@@ -1481,6 +1579,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26750:
     area: tba_267
     name: Wailing Tower
@@ -1512,6 +1612,8 @@ rooms:
       - staircase
       description: |2
            This staircase appears to go up to infinity.  You can't see where it ends.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26751:
     area: tba_267
     name: On the staircase
@@ -1537,6 +1639,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26752:
     area: tba_267
     name: Cell
@@ -1591,6 +1695,8 @@ rooms:
            The cot is made of black.  A mattress made of straw lies on top of it--very
         thin, and certainly not comfortable.  Rats scuttle underneath the bed as you
         walk near it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26753:
     area: tba_267
     name: Strangely shaped hallway.
@@ -1645,6 +1751,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26754:
     area: tba_267
     name: Open Hearth
@@ -1678,6 +1786,8 @@ rooms:
       description: |2
            They're wet, and mushy.  As you pick one up, it crumbles into a disgusting
         mass of mud in your hand.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26755:
     area: tba_267
     name: Supply Room
@@ -1710,6 +1820,8 @@ rooms:
       description: |2
            The crates are old, rotting, and totally empty--except for one, snuck in the
         corner.  It looks to have an o268 device of some kind in it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26756:
     area: tba_267
     name: Deserted Bedroom
@@ -1741,6 +1853,8 @@ rooms:
       description: |2
            The bed has a pink/tapia canopy hanging over it, with cobwebs covering its
         entire surface.  The spiders seemed to have a heyday over this one.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26757:
     area: tba_267
     name: Creepy Hallway
@@ -1788,6 +1902,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26758:
     area: tba_267
     name: Office of the High Priest of Fear
@@ -1833,6 +1949,8 @@ rooms:
       description: |2
            The manacles are small, and have spikes on the insides of them.  They look
         very painful.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26759:
     area: tba_267
     name: Creepy Hallway
@@ -1862,6 +1980,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26760:
     area: tba_267
     name: Closet
@@ -1887,6 +2007,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26761:
     area: tba_267
     name: Creepy Hallway
@@ -1910,6 +2032,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26762:
     area: tba_267
     name: Creepy Hallway
@@ -1933,6 +2057,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26763:
     area: tba_267
     name: Creepy Hallway
@@ -1956,6 +2082,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26764:
     area: tba_267
     name: Balcony
@@ -1978,6 +2106,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26765:
     area: tba_267
     name: Torture Chambre
@@ -2010,6 +2140,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26766:
     area: tba_267
     name: Screening Room
@@ -2044,6 +2176,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26767:
     area: tba_267
     name: Outlay
@@ -2068,6 +2202,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26768:
     area: tba_267
     name: Outlay
@@ -2092,6 +2228,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26769:
     area: tba_267
     name: Waiting Room
@@ -2110,6 +2248,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26770:
     area: tba_267
     name: Interrogation Center
@@ -2135,6 +2275,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26771:
     area: tba_267
     name: Office of the Priest of Despair
@@ -2160,6 +2302,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26772:
     area: tba_267
     name: Waiting Room
@@ -2178,6 +2322,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26773:
     area: tba_267
     name: Outlay
@@ -2202,6 +2348,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26775:
     area: tba_267
     name: Alcove
@@ -2224,6 +2372,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26776:
     area: tba_267
     name: Sitting Room
@@ -2243,6 +2393,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26777:
     area: tba_267
     name: Outlay
@@ -2267,6 +2419,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26778:
     area: tba_267
     name: Square
@@ -2309,6 +2463,8 @@ rooms:
       description: |2
                           YOU HAVE ENTERED THE HALL OF DESPAIR
                        AUTHORIZED PERSONNEL AND PRISONERS ONLY!!!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26779:
     area: tba_267
     name: Entrance to the Hall of Hopelessness
@@ -2336,6 +2492,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26780:
     area: tba_267
     name: Deserted Corridor
@@ -2368,6 +2526,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26781:
     area: tba_267
     name: Deserted Corridor
@@ -2404,6 +2564,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26782:
     area: tba_267
     name: Deserted Corridor
@@ -2442,6 +2604,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26783:
     area: tba_267
     name: Dark Room
@@ -2467,6 +2631,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26784:
     area: tba_267
     name: Through the Trees
@@ -2497,6 +2663,8 @@ rooms:
       description: |2
            The netting is firm, and made from some extremely tough substance--it looks
         quite strong, and supportable.  You don't need to fear being on it at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26785:
     area: tba_267
     name: Through the Trees
@@ -2527,6 +2695,8 @@ rooms:
       description: |2
            The netting is firm, and made from some extremely tough substance--it looks
         quite strong, and supportable.  You don't need to fear being on it at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26786:
     area: tba_267
     name: Through the Trees
@@ -2557,6 +2727,8 @@ rooms:
       description: |2
            The netting is firm, and made from some extremely tough substance--it looks
         quite strong, and supportable.  You don't need to fear being on it at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26787:
     area: tba_267
     name: Through the Trees
@@ -2588,6 +2760,8 @@ rooms:
       description: |2
            The netting is firm, and made from some extremely tough substance--it looks
         quite strong, and supportable.  You don't need to fear being on it at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26788:
     area: tba_267
     name: Through the Trees
@@ -2618,6 +2792,8 @@ rooms:
       description: |2
            The netting is firm, and made from some extremely tough substance--it looks
         quite strong, and supportable.  You don't need to fear being on it at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26789:
     area: tba_267
     name: Through the Trees
@@ -2648,6 +2824,8 @@ rooms:
       description: |2
            The netting is firm, and made from some extremely tough substance--it looks
         quite strong, and supportable.  You don't need to fear being on it at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26790:
     area: tba_267
     name: Port by the Forest
@@ -2669,6 +2847,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26791:
     area: tba_267
     name: Hall of Wax
@@ -2691,6 +2871,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26792:
     area: tba_267
     name: Entrance to the Office of the High Priest of Terror
@@ -2720,6 +2902,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26793:
     area: tba_267
     name: Hall of Torture
@@ -2745,6 +2929,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26794:
     area: tba_267
     name: Hall of Death
@@ -2780,6 +2966,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26795:
     area: tba_267
     name: Office of the High Priest of Terror
@@ -2829,6 +3017,8 @@ rooms:
       description: |2
            The chair is made of redwood, and looks very comfortable.  It also looks VERY
         heavy.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26797:
     area: tba_267
     name: Entrance to the Temple of Terror
@@ -2870,6 +3060,8 @@ rooms:
       description: |2
            All the light seems to emenate from this globe.  It's made from material that
         looks to come from the sun itself--yet it's cold--very cold.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26798:
     area: tba_267
     name: Blindingly lit hallway
@@ -2897,6 +3089,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26799:
     area: tba_267
     name: Shrine to Vice
@@ -2922,3 +3116,5 @@ rooms:
       description: |2
            This small alter looks as if you could bow and pray with relative comfort.
         But you somehow get the feeling you shouldn't bend over.
+    ambient_phases: {}
+    ambient_weather: {}

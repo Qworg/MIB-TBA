@@ -20,6 +20,8 @@ rooms:
       - info
       description: |2
            Arina Links: 01n
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7801:
     area: tba_78
     name: Narrow Path
@@ -48,6 +50,8 @@ rooms:
            Tall and stately, the fir trees sway gently in the breeze.  The tops reaching
         seemingly endlessly toward the heavens with branches so heavily laden with moss
         the lower ones droop to the ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7802:
     area: tba_78
     name: Narrow Path
@@ -74,6 +78,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7803:
     area: tba_78
     name: Village of Gideon, Gate
@@ -114,6 +120,8 @@ rooms:
       - south
       description: |2
            You see the gate leading to the Village of Gideon.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7804:
     area: tba_78
     name: Village of Gideon, Mahnra Road
@@ -150,6 +158,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7805:
     area: tba_78
     name: Village of Gideon, Mahnra Road
@@ -179,6 +189,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7806:
     area: tba_78
     name: Village of Gideon, Mahnra Road
@@ -204,6 +216,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7807:
     area: tba_78
     name: Village of Gideon, Mahnra Road
@@ -233,6 +247,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7808:
     area: tba_78
     name: Village of Gideon, Mahnra Park
@@ -259,6 +275,8 @@ rooms:
       description: |2
            The water laps at the banks of the pond.  Fish swim lazily around, but wait..
         One just jumped out of the water!  What a beauty!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7809:
     area: tba_78
     name: Village of Gideon, Shantrell Lane
@@ -283,6 +301,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7810:
     area: tba_78
     name: Village of Gideon, Talipia Way
@@ -308,6 +328,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7811:
     area: tba_78
     name: Village of Gideon, Talipia Way
@@ -332,6 +354,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7812:
     area: tba_78
     name: Village of Gideon, Talipia Way
@@ -361,6 +385,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7813:
     area: tba_78
     name: Village of Gideon, Talipia Way
@@ -391,6 +417,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7814:
     area: tba_78
     name: Village of Gideon, Vestra Court
@@ -419,6 +447,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7815:
     area: tba_78
     name: Village of Gideon, Mahnra Road
@@ -449,6 +479,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7816:
     area: tba_78
     name: Village of Gideon, Lantoom Court
@@ -477,6 +509,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7817:
     area: tba_78
     name: Village of Gideon, Talipia Way
@@ -504,6 +538,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7818:
     area: tba_78
     name: Village of Gideon, Village Square Fountain
@@ -538,6 +574,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7819:
     area: tba_78
     name: Village of Gideon, Mahnra Road
@@ -578,6 +616,8 @@ rooms:
       - sign
       description: |2
            Stamnell's Bakery
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7820:
     area: tba_78
     name: Stamnell's Bakery
@@ -598,6 +638,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7821:
     area: tba_78
     name: Village of Gideon, Mahnra Road
@@ -630,6 +672,8 @@ rooms:
       - sign
       description: |2
            The sign reads "Vhispera's General Store"
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7822:
     area: tba_78
     name: Vhispera's General Store
@@ -650,6 +694,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7823:
     area: tba_78
     name: Village of Gideon, Pinery Lane
@@ -678,6 +724,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7824:
     area: tba_78
     name: 'Village of Gideon, Talipia Way '
@@ -702,6 +750,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7825:
     area: tba_78
     name: 'Village of Gideon, Talipia Way '
@@ -725,6 +775,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7826:
     area: tba_78
     name: Village of Gideon, Western Gate
@@ -746,3 +798,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

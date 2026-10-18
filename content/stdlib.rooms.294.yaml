@@ -77,6 +77,8 @@ rooms:
         and all receive our deepest gratitude: Shane Finkel Josh 'Champion of
         Bagels' Megerman John D. Horner and the System Adminstrators of ODU
         Replace XXXX with a town name of your choosing.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29401:
     area: tba_294
     name: Trade Road
@@ -120,6 +122,8 @@ rooms:
            The gatheouse stands to the west, allowing entrance and exit through the city
         walls.  Approximately fifteen feet tall, the gates seem permanently open,
         allowing free passage.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29402:
     area: tba_294
     name: Trade Road
@@ -167,6 +171,8 @@ rooms:
       description: |2
            Upon closer inspection, the northern one appears to be a butchery, and the
         southern one has a sign reading, 'Baubles and Beads.  '
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29403:
     area: tba_294
     name: Trade Road
@@ -207,6 +213,8 @@ rooms:
            The gatheouse stands to the west, allowing entrance and exit through the city
         walls.  Approximately fifteen feet tall, the gates seem permanently open,
         allowing free passage.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29404:
     area: tba_294
     name: Alley
@@ -236,6 +244,8 @@ rooms:
       - rubbish
       description: |2
            Garbage, trash, and filth.  You decide not to root through it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29405:
     area: tba_294
     name: Alley
@@ -264,6 +274,8 @@ rooms:
       - rubbish
       description: |2
            Garbage, trash, and filth.  You decide not to root through it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29406:
     area: tba_294
     name: Clay Street
@@ -307,6 +319,8 @@ rooms:
       - guards
       description: |2
            A guard on patrol looks at your boredly and walks by...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29407:
     area: tba_294
     name: Clay Street
@@ -345,6 +359,8 @@ rooms:
       description: |2
            There's a larger building to the north, looking to be some sort of factory.
         You smell a faint tinge of alcohol in the air.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29408:
     area: tba_294
     name: Clay Street
@@ -385,6 +401,8 @@ rooms:
       - path
       description: |2
            It looks like it was destroyed many, many years ago.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29409:
     area: tba_294
     name: Alley
@@ -415,6 +433,8 @@ rooms:
       - dead
       description: |2
            Its been dead a few days.  Food for flies and rats.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29410:
     area: tba_294
     name: Alley
@@ -455,6 +475,8 @@ rooms:
       - chair
       description: |2
            A truly disgusting dining experience, to say the least!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29411:
     area: tba_294
     name: Alley
@@ -495,6 +517,8 @@ rooms:
       - wall
       description: |2
            It says, "Drazel kamp miya fond.  "
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29412:
     area: tba_294
     name: Clay Street
@@ -523,6 +547,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29413:
     area: tba_294
     name: Clay Street
@@ -569,6 +595,8 @@ rooms:
       description: |2
            There is an old shop to the west.  The door is almost falling off its hinges
         with heavy use.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29414:
     area: tba_294
     name: Trade Road
@@ -609,6 +637,8 @@ rooms:
       - building
       description: |2
            A large building with many tethering posts outside is to the north.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29415:
     area: tba_294
     name: Trade Road
@@ -655,6 +685,8 @@ rooms:
       description: |2
            Its a wide area, suitable for flea markets, festivals, bazaars and carnivals.
         Right now it's closed, though.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29416:
     area: tba_294
     name: Trade Road
@@ -698,6 +730,8 @@ rooms:
            The gatheouse stands to the west, allowing entrance and exit through the city
         walls.  Approximately fifteen feet tall, the gates seem permanently open,
         allowing free passage.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29417:
     area: tba_294
     name: Gatheouse
@@ -729,6 +763,8 @@ rooms:
       description: |2
            The wall stands high and proud.  Guards walk along its length on top, looking
         out for the safety of the city, and intruders.  Makes you feel safe, somehow.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29418:
     area: tba_294
     name: Staid Avenue
@@ -754,6 +790,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29419:
     area: tba_294
     name: Staid Avenue
@@ -783,6 +821,8 @@ rooms:
       - building
       description: |2
            The seem to be low-class, low-quality, and heavily used.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29420:
     area: tba_294
     name: Harple Road
@@ -826,6 +866,8 @@ rooms:
       - house
       description: |2
            Its a nasty, ugly, run-down boarding house to the north.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29421:
     area: tba_294
     name: Harple Road
@@ -862,6 +904,8 @@ rooms:
       - houses
       description: |2
            Its not a very nice place to visit, and you wouldn't want to live here.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29422:
     area: tba_294
     name: Harple Road
@@ -890,6 +934,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29423:
     area: tba_294
     name: Harple Road
@@ -917,6 +963,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29424:
     area: tba_294
     name: Alley
@@ -955,6 +1003,8 @@ rooms:
       - building
       description: |2
            They loom, tall and spooky over you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29425:
     area: tba_294
     name: Alley
@@ -979,6 +1029,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29426:
     area: tba_294
     name: Staid Avenue
@@ -1022,6 +1074,8 @@ rooms:
       - buildings
       description: |2
            They're getting noticeably worse now.  You have a sudden attack of deja vu.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29427:
     area: tba_294
     name: Staid Avenue
@@ -1059,6 +1113,8 @@ rooms:
       - shop
       description: |2
            A small shop is to the west.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29428:
     area: tba_294
     name: Klelk Boulevard
@@ -1105,6 +1161,8 @@ rooms:
       - dives
       description: |2
            There's a tavern to the north west from here.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29429:
     area: tba_294
     name: Klelk Boulevard
@@ -1151,6 +1209,8 @@ rooms:
       - taverns
       description: |2
            A horrible, disgusting tavers is to the north.  It's open.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29430:
     area: tba_294
     name: Klelk Boulevard
@@ -1180,6 +1240,8 @@ rooms:
       description: |2
            The wall stands high and proud.  Guards walk along its length on top, looking
         out for the safety of the city, and intruders.  Makes you feel safe, somehow.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29431:
     area: tba_294
     name: Alley
@@ -1203,6 +1265,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29432:
     area: tba_294
     name: Alley
@@ -1232,6 +1296,8 @@ rooms:
       description: |2
            Broken furniture, paper trash, and even an old shattered prosthetic arm.
         Junk.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29433:
     area: tba_294
     name: Klelk Boulevard
@@ -1275,6 +1341,8 @@ rooms:
       - docks
       description: |2
            There is a maze of wooden docks to the south.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29434:
     area: tba_294
     name: City Docks
@@ -1320,6 +1388,8 @@ rooms:
       - sigil
       description: |2
            Replace this.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29435:
     area: tba_294
     name: Butcher's Shop
@@ -1369,6 +1439,8 @@ rooms:
       - numbers
       description: |2
            Next number on the sign is number 4.  That's not too long of a wait...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29436:
     area: tba_294
     name: Jeweller's
@@ -1410,6 +1482,8 @@ rooms:
       - backroom
       description: |2
            It's locked, and you don't see a keyhole.  Strange...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29437:
     area: tba_294
     name: Alley
@@ -1434,6 +1508,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29438:
     area: tba_294
     name: Rubble and Ruin
@@ -1478,6 +1554,8 @@ rooms:
       - cores
       description: |2
            A few hours old, not more than that.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29439:
     area: tba_294
     name: Brewery
@@ -1522,6 +1600,8 @@ rooms:
       description: |2
            Big stains and little stains.  The workers look at you funny as you spend
         time examining the floor...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29440:
     area: tba_294
     name: Sakifan's Library
@@ -1553,6 +1633,8 @@ rooms:
            "The Ways of Poke-Fu" "How to train a seagull" "Elementary Elementals"
         "Dwarven Rituals" "An annotated history of XXXX" "The art of pleasing a man" The
         last makes you blush a little bit, and you try not to obviously look at it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29441:
     area: tba_294
     name: Leatherworker's Shop
@@ -1590,6 +1672,8 @@ rooms:
       - products
       description: |2
            Not bad, not bad at all...  For leather.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29442:
     area: tba_294
     name: Ceran's Contracting
@@ -1633,6 +1717,8 @@ rooms:
       description: |2
            Looks nice.  One problem, though....  Looks like its planned to be built
         right over top a bunch of apartment houses.  You guess this is 'progress'.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29443:
     area: tba_294
     name: Boarding House
@@ -1672,6 +1758,8 @@ rooms:
       description: |2
            There's only one page left in the book.  So many people have signed it that
         it is now illegible.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29444:
     area: tba_294
     name: Hallway
@@ -1711,6 +1799,8 @@ rooms:
       description: |2
            Tiny, tiny things.  Sleeping in one would be a cramped affair to say the
         least!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29445:
     area: tba_294
     name: A private home
@@ -1742,6 +1832,8 @@ rooms:
       - toy
       description: |2
            Its a very crudely crafted toy.  The wheels move, though.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29446:
     area: tba_294
     name: A private home
@@ -1775,6 +1867,8 @@ rooms:
       - loaves
       description: |2
            Smells good, but it hasn't quite finished rising yet...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29447:
     area: tba_294
     name: A private home
@@ -1811,6 +1905,8 @@ rooms:
       - meal
       description: |2
            Looks like its been picked clean by the bugs that live here.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29448:
     area: tba_294
     name: A private home
@@ -1845,6 +1941,8 @@ rooms:
       description: |2
            Homemade, but better crafted than a lot of store-bought furniture you've
         seen...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29449:
     area: tba_294
     name: A private home
@@ -1878,6 +1976,8 @@ rooms:
       - XXXX
       description: |2
            It's old.  You'd be better off typing 'News' and reading the newest version.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29450:
     area: tba_294
     name: Ship Shop
@@ -1915,6 +2015,8 @@ rooms:
       description: |2
            The river flows by grandly, only slightly polluted by the city and its
         populace.  Looks nice, but get your drinking water from upstream.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29451:
     area: tba_294
     name: Wrecked Shop
@@ -1942,6 +2044,8 @@ rooms:
       - barrels
       description: |2
            Useless.  Trashed.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29452:
     area: tba_294
     name: Grebe's Tavern
@@ -1972,6 +2076,8 @@ rooms:
       - walls
       description: |2
            Bare, except for the holes.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29453:
     area: tba_294
     name: Trading Post
@@ -2015,6 +2121,8 @@ rooms:
       - schedule
       description: |2
            Looks like another caravan from the east is due in any day now...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29454:
     area: tba_294
     name: Clay Street
@@ -2039,6 +2147,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29455:
     area: tba_294
     name: Clay Street
@@ -2063,6 +2173,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29456:
     area: tba_294
     name: Rubble and Ruin
@@ -2087,6 +2199,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29457:
     area: tba_294
     name: Clay Street
@@ -2111,6 +2225,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29458:
     area: tba_294
     name: harple Road
@@ -2135,6 +2251,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29459:
     area: tba_294
     name: Staid Avenue
@@ -2159,6 +2277,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29460:
     area: tba_294
     name: Trade Road
@@ -2184,6 +2304,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29461:
     area: tba_294
     name: Trade Road
@@ -2208,6 +2330,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29462:
     area: tba_294
     name: Trade Road
@@ -2224,6 +2348,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29463:
     area: tba_294
     name: Trade Road
@@ -2240,6 +2366,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29464:
     area: tba_294
     name: Trade Road
@@ -2256,6 +2384,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29465:
     area: tba_294
     name: Trade Road
@@ -2280,6 +2410,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29466:
     area: tba_294
     name: Trade Road
@@ -2304,6 +2436,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29467:
     area: tba_294
     name: Alley
@@ -2329,6 +2463,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29468:
     area: tba_294
     name: Alley
@@ -2354,6 +2490,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29469:
     area: tba_294
     name: Klelk Boulevard
@@ -2378,3 +2516,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

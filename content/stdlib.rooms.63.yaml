@@ -13,6 +13,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6301:
     area: tba_63
     name: The Webbed Entrance
@@ -39,6 +41,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6302:
     area: tba_63
     name: The Webby Passage
@@ -71,6 +75,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6303:
     area: tba_63
     name: The Wasp Hive
@@ -90,6 +96,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6304:
     area: tba_63
     name: The Webby Passage
@@ -112,6 +120,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6305:
     area: tba_63
     name: Beneath The Busy Path
@@ -135,6 +145,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6306:
     area: tba_63
     name: On The Busy Path
@@ -158,6 +170,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6307:
     area: tba_63
     name: On The Busy Path
@@ -181,6 +195,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6308:
     area: tba_63
     name: On The Busy Path
@@ -212,6 +228,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6309:
     area: tba_63
     name: A Split In The Path
@@ -240,6 +258,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6310:
     area: tba_63
     name: A Fuzzy Tree Limb
@@ -263,6 +283,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6311:
     area: tba_63
     name: The Tree Trunk
@@ -286,6 +308,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6312:
     area: tba_63
     name: The Tree Lair Entrance
@@ -310,6 +334,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6313:
     area: tba_63
     name: The Wolf Spider Lair
@@ -329,6 +355,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6320:
     area: tba_63
     name: The Webless Path
@@ -352,6 +380,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6321:
     area: tba_63
     name: Above The Ravine
@@ -381,6 +411,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6322:
     area: tba_63
     name: The Rainbow Web
@@ -400,6 +432,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6323:
     area: tba_63
     name: The Web Forest
@@ -423,6 +457,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6324:
     area: tba_63
     name: The Slave Pit
@@ -446,6 +482,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6325:
     area: tba_63
     name: The Tether Path
@@ -469,6 +507,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6326:
     area: tba_63
     name: A Road Crossing
@@ -490,6 +530,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6327:
     area: tba_63
     name: A Leader Strand
@@ -514,6 +556,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6328:
     area: tba_63
     name: The Entrance Of The Ethereal Web
@@ -533,6 +577,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6330:
     area: tba_63
     name: The Young Wyrmkin's Crib
@@ -554,6 +600,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6331:
     area: tba_63
     name: The Base Of The Web
@@ -586,6 +634,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6332:
     area: tba_63
     name: Through The Trees
@@ -613,6 +663,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6333:
     area: tba_63
     name: Above The Clouds
@@ -640,6 +692,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6334:
     area: tba_63
     name: On A Cloud
@@ -659,6 +713,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6335:
     area: tba_63
     name: A Link In The Ethereal Web
@@ -681,6 +737,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6336:
     area: tba_63
     name: The Tenuous Strand
@@ -707,6 +765,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6340:
     area: tba_63
     name: The Elder Wyrmkin's Room
@@ -726,6 +786,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6341:
     area: tba_63
     name: Another Tree Limb
@@ -752,6 +814,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6342:
     area: tba_63
     name: The Bird Spider's Lair
@@ -771,6 +835,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6345:
     area: tba_63
     name: A Link In The Ethereal Web
@@ -797,6 +863,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6346:
     area: tba_63
     name: The Quiet Tree Top
@@ -823,6 +891,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6347:
     area: tba_63
     name: On The Web
@@ -850,6 +920,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6350:
     area: tba_63
     name: The Ki-Rin Chamber
@@ -868,6 +940,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6355:
     area: tba_63
     name: A Link In The Ethereal Web
@@ -891,6 +965,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6360:
     area: tba_63
     name: Yevaud's Lair
@@ -910,6 +986,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6365:
     area: tba_63
     name: A Link In The Ethereal Web
@@ -942,6 +1020,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6366:
     area: tba_63
     name: The Entrance To The Donjonkeep
@@ -962,6 +1042,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6367:
     area: tba_63
     name: The Guardian's Room
@@ -984,6 +1066,8 @@ rooms:
       - chair
       description: |2
            An ordinary chair, well used, glued to the ground by spiderweb.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6368:
     area: tba_63
     name: The Realm Of The Hopeless
@@ -1004,6 +1088,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6369:
     area: tba_63
     name: The Realm Of The Hopeless
@@ -1028,6 +1114,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6370:
     area: tba_63
     name: The Donjonkeep
@@ -1049,6 +1137,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6371:
     area: tba_63
     name: The Single Spider Line
@@ -1073,6 +1163,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6372:
     area: tba_63
     name: The Single Spider Line
@@ -1095,6 +1187,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6373:
     area: tba_63
     name: The Hermit's Corner
@@ -1119,6 +1213,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6380:
     area: tba_63
     name: Mahatma's Inescapable Trap
@@ -1142,6 +1238,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6390:
     area: tba_63
     name: The Entrance To The Arachnos' Lair
@@ -1160,6 +1258,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6391:
     area: tba_63
     name: The Sticky Chamber
@@ -1185,6 +1285,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6392:
     area: tba_63
     name: The Great Door
@@ -1213,6 +1315,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6399:
     area: tba_63
     name: The Lair Of Arachnos
@@ -1241,3 +1345,5 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

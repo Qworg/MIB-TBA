@@ -41,6 +41,8 @@ rooms:
            Zone 324 is linked to the following zones:
         326 Army Perimeter                 at 32400 (west ) ---> 32610
         326 Army Perimeter                 at 32414 (east ) ---> 32640
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32401:
     area: tba_324
     name: The Guard Walk
@@ -74,6 +76,8 @@ rooms:
       description: |2
            An ordinary number 2 lead pencil.  Judging by the teeth marks on the shaft,
         the user should see a dentist very soon!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32402:
     area: tba_324
     name: The Guard Walk
@@ -102,6 +106,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32403:
     area: tba_324
     name: The Guard Walk
@@ -132,6 +138,8 @@ rooms:
            The benches are made of rough cut lumber that has dried and split over time.
         You would probably get splinters if sat on them.  The words "BURT WAS HERE" have
         been carved into one of the benches with exquisite care.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32404:
     area: tba_324
     name: The Guard Walk
@@ -168,6 +176,8 @@ rooms:
       description: |2
            They look like they form the words "Onivel Cinemod Semaj" But you could be
         mistaken.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32405:
     area: tba_324
     name: The Guard Walk
@@ -196,6 +206,8 @@ rooms:
       description: |2
            The gate has been permanently rusted shut and is further secured by a large
         chain and padlock.  Don't even bother THINKING about trying to open it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32406:
     area: tba_324
     name: The Guard Walk
@@ -243,6 +255,8 @@ rooms:
              Buy    - Tells me what you want to buy.
              Value  - Tells you what I will pay for an item.
              Sell   - Tells me you will sell that item, to me.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32407:
     area: tba_324
     name: The Guard Walk
@@ -276,6 +290,8 @@ rooms:
       - crate
       description: |2
            There are literally thousands of each.  Take your pick.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32408:
     area: tba_324
     name: The Guard Walk
@@ -313,6 +329,8 @@ rooms:
         Roman government are to the east.  To the south east, off in the distance, is
         the massive aqueduct and further in that direction lies the Mountain of the
         Gods.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32409:
     area: tba_324
     name: The Guard Walk
@@ -357,6 +375,8 @@ rooms:
       - trainer
       description: |2
            The coach tells you "Stop bothering my athletes and get lost!  "
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32410:
     area: tba_324
     name: The Guard Walk
@@ -394,6 +414,8 @@ rooms:
         CLANG!  CRASH!!!!....  Judging from the blood and the amount of distance that
         now separates the gladiators head from the rest of his body, you can safely
         assume that this was the final combat of his life.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32411:
     area: tba_324
     name: The Guard Walk
@@ -422,6 +444,8 @@ rooms:
       description: |2
            DISGUSTING!  Each is about the size of matchbox and very slimy.  You are VERY
         glad that you have access to a cleric!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32412:
     area: tba_324
     name: The Guard Walk
@@ -451,6 +475,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32413:
     area: tba_324
     name: The Guard Walk
@@ -479,6 +505,8 @@ rooms:
       description: |2
            The furniture that you see is very simple and plain.  It is made of rough
         hewn wood and fastened together with nails.  It looks very uncomfortable.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32414:
     area: tba_324
     name: The Guard Walk
@@ -523,6 +551,8 @@ rooms:
       - clothing
       description: |2
            It smells of sweat and is covered with mud.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32415:
     area: tba_324
     name: The Guard Walk
@@ -546,6 +576,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32416:
     area: tba_324
     name: The Guard Walk
@@ -575,6 +607,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32417:
     area: tba_324
     name: The Guard Walk
@@ -598,6 +632,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32418:
     area: tba_324
     name: The Guard Walk
@@ -634,6 +670,8 @@ rooms:
       description: |2
            A larger than life stone statue of Caligula, the Mad Emperor looks at you.
         It looks like it is holding a phallus.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32419:
     area: tba_324
     name: The Guard Walk
@@ -657,6 +695,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32420:
     area: tba_324
     name: The Guard Walk
@@ -701,6 +741,8 @@ rooms:
       description: |2
            Hey!!  This is first-class stuff!!  - White Cloud brand with lotion.  The
         roll is about half-used.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32421:
     area: tba_324
     name: The Guard Walk
@@ -724,6 +766,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32422:
     area: tba_324
     name: The Guard Walk
@@ -753,6 +797,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32423:
     area: tba_324
     name: The Guard Walk
@@ -776,6 +822,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32424:
     area: tba_324
     name: The Guard Walk
@@ -811,6 +859,8 @@ rooms:
       - tiberius
       description: |2
            The statue of Tiberius, made of iron, stands here.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32425:
     area: tba_324
     name: The Guard Walk
@@ -841,6 +891,8 @@ rooms:
         to a fortune in Rome isn't even worth one gold coin.  The contents of the box
         add up to about ....  Well forget it.  It isn't worth your time or trouble to
         carry it around.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32426:
     area: tba_324
     name: The Guard Walk
@@ -875,6 +927,8 @@ rooms:
       description: |2
            That would probably be the Coliseum.  There are a few good matches scheduled
         for today.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32427:
     area: tba_324
     name: The Guard Walk
@@ -925,6 +979,8 @@ rooms:
            All of the plants, trees and shrubs are perfectly trimmed, without so much as
         a dead leaf anywhere to be seen.  You welcome the shade that they give from the
         harsh sun above.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32428:
     area: tba_324
     name: Guard Tower
@@ -959,6 +1015,8 @@ rooms:
       description: |2
            You hope to eventually be able to own a piece of furniture just like these
         someday.  These are only dreams, of course.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32429:
     area: tba_324
     name: Guard Tower
@@ -985,6 +1043,8 @@ rooms:
       - road
       description: |2
            The road is wide and very muddy.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32430:
     area: tba_324
     name: Guard Tower
@@ -1003,6 +1063,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32431:
     area: tba_324
     name: Guard Tower
@@ -1021,6 +1083,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32432:
     area: tba_324
     name: Guard Tower
@@ -1051,6 +1115,8 @@ rooms:
       description: |2
            To the southeast, off in the distance, stands a large stone structure that is
         used to channel water into the city.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32433:
     area: tba_324
     name: Guard Tower
@@ -1069,6 +1135,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32434:
     area: tba_324
     name: Guard Tower
@@ -1087,6 +1155,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32435:
     area: tba_324
     name: Guard Tower
@@ -1105,6 +1175,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32436:
     area: tba_324
     name: Guard Tower
@@ -1153,6 +1225,8 @@ rooms:
       - plant
       description: |2
            The plants contribute to a very relaxing atmosphere.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32437:
     area: tba_324
     name: Guard Tower
@@ -1171,6 +1245,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32438:
     area: tba_324
     name: Guard Tower
@@ -1189,6 +1265,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32439:
     area: tba_324
     name: Guard Tower
@@ -1213,6 +1291,8 @@ rooms:
       description: |2
            It looks like some kind of bizarre or festival is occurring to the west.
         There are hundreds of people of all classes shopping, talking or eating.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32440:
     area: tba_324
     name: Roadway
@@ -1267,6 +1347,8 @@ rooms:
            *            Magic Platform Company        *
            *                                          *
            ********************************************
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32441:
     area: tba_324
     name: Roadway
@@ -1298,6 +1380,8 @@ rooms:
            Due to the availability of moisture and nutrients, a green, viscous slime has
         grown and covered everything with a slippery coating.  It seems to go out of its
         way to drip on you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32442:
     area: tba_324
     name: Roadway
@@ -1343,6 +1427,8 @@ rooms:
              Buy    - Tells me what you want to buy.
              Value  - Tells you what I will pay for an item.
              Sell   - Tells me you will sell that item, to me.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32443:
     area: tba_324
     name: Roadway
@@ -1372,6 +1458,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32444:
     area: tba_324
     name: The Tanner
@@ -1391,6 +1479,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32445:
     area: tba_324
     name: Roadway
@@ -1425,6 +1515,8 @@ rooms:
       - statues
       description: |2
            There is really nothing noteworthy about them.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32446:
     area: tba_324
     name: Smithy
@@ -1464,6 +1556,8 @@ rooms:
       description: |2
            Off to the southwest, you can see a huge mountain that is partially obscured
         by the haze.  It is rumored that the gods reside there and protect the city.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32447:
     area: tba_324
     name: Armor Cache
@@ -1482,6 +1576,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32448:
     area: tba_324
     name: Weapon Cache
@@ -1507,6 +1603,8 @@ rooms:
            Due to the availability of moisture and nutrients, a green viscous slime has
         grown and covered everything with a slippery coating.  It seems to go out of its
         way to drip on you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32449:
     area: tba_324
     name: Roadway
@@ -1547,6 +1645,8 @@ rooms:
       description: |2
            The ashes are a very fine grayish white powder that seems to be the only
         worldly remains of Froboz's "test specimens".
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32450:
     area: tba_324
     name: Barracks Tent
@@ -1579,6 +1679,8 @@ rooms:
       - seal
       description: |2
            The seal of the emperor is mounted above the judge's stand.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32451:
     area: tba_324
     name: Fire Pit
@@ -1621,6 +1723,8 @@ rooms:
       description: |2
            The gate is fabricated from iron and has been designed to keep intruders out
         of the city.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32452:
     area: tba_324
     name: Barracks Tent
@@ -1644,6 +1748,8 @@ rooms:
       - trail
       description: |2
            The mountain trail is a little muddy, due to the recent rains.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32453:
     area: tba_324
     name: Barracks Tent
@@ -1663,6 +1769,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32454:
     area: tba_324
     name: Roadway
@@ -1699,6 +1807,8 @@ rooms:
            Due to the availability of moisture and nutrients, a green, viscous slime has
         grown and covered the everything with a slippery coating.  It seems to go out of
         its way to drip on you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32455:
     area: tba_324
     name: Hay Barn
@@ -1731,6 +1841,8 @@ rooms:
            There are hundreds of pages of petitions, lawsuits and court orders sitting
         on the desk.  One particularly interesting case involves a nobleman, a slave and
         a roll of toilet paper.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32456:
     area: tba_324
     name: Mess Tent
@@ -1767,6 +1879,8 @@ rooms:
       - path
       description: |2
            The path is a little muddy, possibly due to a recent thundershower.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32457:
     area: tba_324
     name: Roadway
@@ -1807,6 +1921,8 @@ rooms:
            Due to the availability of moisture and nutrients, a green, viscous slime has
         grown and covered everything with a slippery coating.  It seems to go out of its
         way to drip on you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32458:
     area: tba_324
     name: Barn
@@ -1843,6 +1959,8 @@ rooms:
            The fruit trees, nourished by the fertile ground at the edge of the stream
         and sustained by the brilliant sunshine, line the banks of the stream and are
         laden with fruit.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32459:
     area: tba_324
     name: Corral
@@ -1881,6 +1999,8 @@ rooms:
       description: |2
            The trees are old and tower hundreds of feet above the ground.  If you stand
         still and listen carefully, you can hear the birds singing.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32460:
     area: tba_324
     name: Branding Block
@@ -1906,6 +2026,8 @@ rooms:
       description: |2
            You can see small and very cramped cells which are filthy.  You shiver and
         vow to never do anything that would cause you to become a resident.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32461:
     area: tba_324
     name: Livestock Pasture
@@ -1927,6 +2049,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32462:
     area: tba_324
     name: Roadway
@@ -1971,6 +2095,8 @@ rooms:
            The sign has a note posted on it.  It reads: List - Tells you what I have to
         sell.  Buy - Tells me what you want to buy.  Value - Tells you what I will pay
         for an item.  Sell - Tells me you will sell that item, to me.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32463:
     area: tba_324
     name: Dry Storage
@@ -2004,6 +2130,8 @@ rooms:
              Buy    - Tells me what you want to buy.
              Value  - Tells you what I will pay for an item.
              Sell   - Tells me you will sell that item, to me.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32464:
     area: tba_324
     name: Cold Storage
@@ -2028,6 +2156,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32465:
     area: tba_324
     name: Footman's Training Grounds
@@ -2054,6 +2184,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32466:
     area: tba_324
     name: Grandstands
@@ -2080,6 +2212,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32467:
     area: tba_324
     name: Parade Grounds
@@ -2109,6 +2243,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32468:
     area: tba_324
     name: Strategies
@@ -2127,6 +2263,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32469:
     area: tba_324
     name: Roadway
@@ -2160,6 +2298,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32470:
     area: tba_324
     name: Roadway
@@ -2188,6 +2328,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32471:
     area: tba_324
     name: Roadway
@@ -2215,6 +2357,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32472:
     area: tba_324
     name: Roadway
@@ -2249,6 +2393,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32473:
     area: tba_324
     name: Stream
@@ -2268,6 +2414,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32474:
     area: tba_324
     name: Latrines
@@ -2293,6 +2441,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32475:
     area: tba_324
     name: Roadway
@@ -2315,6 +2465,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32476:
     area: tba_324
     name: General's Tent
@@ -2335,6 +2487,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32477:
     area: tba_324
     name: Roadway
@@ -2364,6 +2518,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32478:
     area: tba_324
     name: Lumber Yard
@@ -2384,6 +2540,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32479:
     area: tba_324
     name: Cavalry Fields
@@ -2403,6 +2561,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32480:
     area: tba_324
     name: Medical Tent
@@ -2422,3 +2582,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

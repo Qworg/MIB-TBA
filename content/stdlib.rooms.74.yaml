@@ -122,6 +122,8 @@ rooms:
         1 -  then Equip with a pair of blackened chain sleeves [7424], Worn on arms, Max : 100
         2 -  then Equip with a pair of blackened chain leggings [7425], Worn on legs, Max : 100
         3 -  then Equip with a charred suit of mail [7423], Worn on body, Max : 100
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7401:
     area: tba_74
     name: The Mourners Path
@@ -153,6 +155,8 @@ rooms:
            Beautiful and fully in bloom, these flowers are said to sweeten the path to
         the other realm.  They are grouped in bunches of six or seven large blossoms
         and spaced about a foot or so apart along the path.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7402:
     area: tba_74
     name: The Mourners Path
@@ -178,6 +182,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7403:
     area: tba_74
     name: A Bend in the Path
@@ -213,6 +219,8 @@ rooms:
         as if in the height of spring, alight with blossoms.  It is said that the tree
         was planted atop the grave of a great and powerful druid and stands here as
         sentinel to her memory.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7404:
     area: tba_74
     name: The Mourners Path
@@ -246,6 +254,8 @@ rooms:
            Nearly a handspan deep, this hole was once home to a cluster of hyacinths.
         Now, it is half-full of severed roots and worms.  Surely the groundskeepers
         will be very upset.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7405:
     area: tba_74
     name: The Mourners Path
@@ -270,6 +280,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7406:
     area: tba_74
     name: At the Gates of the Cemetary
@@ -305,6 +317,8 @@ rooms:
            This magnificent gate was built by an artificer on great talent years ago.
         The iron bars are worked carefully to depict tall black mourners in procession
         and the lock mechanism is cleverly disguised as a clump of iron flowers.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7407:
     area: tba_74
     name: Within the Graveyard
@@ -331,6 +345,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7408:
     area: tba_74
     name: Citizens Plots
@@ -362,6 +378,8 @@ rooms:
            Little more than a deep squared hole in the ground, rich black soil is
         exposed to the elements while waiting to house the body of the recently
         departed.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7409:
     area: tba_74
     name: Citizens Plots
@@ -392,6 +410,8 @@ rooms:
            Little more than a deep squared hole in the ground, rich black soil is
         exposed to the elements while waiting to house the body of the recently
         departed.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7410:
     area: tba_74
     name: Citizens Plots
@@ -422,6 +442,8 @@ rooms:
            Little more than a deep squared hole in the ground, rich black soil is
         exposed to the elements while waiting to house the body of the recently
         departed.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7411:
     area: tba_74
     name: Children's Plots
@@ -465,6 +487,8 @@ rooms:
            Most of the gravemarkers here are carved statues of children and marble
         renditions of mournful mothers.  Each gravesite is smaller than an adult grave
         by nearly half.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7412:
     area: tba_74
     name: Children's Plots
@@ -493,6 +517,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7413:
     area: tba_74
     name: Family Plots
@@ -517,6 +543,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7414:
     area: tba_74
     name: Family Plots
@@ -541,6 +569,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7415:
     area: tba_74
     name: Family Plots
@@ -565,6 +595,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7416:
     area: tba_74
     name: Empty Plots
@@ -588,6 +620,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7417:
     area: tba_74
     name: Empty Plots
@@ -615,6 +649,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7418:
     area: tba_74
     name: Wealthy Plots
@@ -640,6 +676,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7419:
     area: tba_74
     name: Wealthy Plots
@@ -665,6 +703,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7420:
     area: tba_74
     name: Wealthy Plots
@@ -699,6 +739,8 @@ rooms:
            This tree grows purposely in the center of a shady patch of gravesites.  A
         wide circle of hyacinths grows around the tree, lending their sweet scent to
         the beauty of the landscape.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7421:
     area: tba_74
     name: Children's Plots
@@ -723,6 +765,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7422:
     area: tba_74
     name: The Northern Reaches of the Graveyard
@@ -748,6 +792,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7423:
     area: tba_74
     name: A Clearing in the Graveyard
@@ -776,6 +822,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7424:
     area: tba_74
     name: The Heroes' Rest
@@ -829,6 +877,8 @@ rooms:
       description: |2
            Sturdy and unbreachable, this door is a massive slab of steel with a small
         copper lock near the lower half of the door.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7425:
     area: tba_74
     name: The Heroes' Rest
@@ -882,6 +932,8 @@ rooms:
       description: |2
            Heavy steel and reinforced with iron bindings, this door does not look
         breachable.  Even the narrow steel lock appears pickproof.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7426:
     area: tba_74
     name: The Heroes' Rest
@@ -939,6 +991,8 @@ rooms:
         windows have been placed on the front of the crypt, but were since covered with
         thick iron bars.  A large stone plaque above the door depicts two vials crossed
         on a field of black.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7427:
     area: tba_74
     name: The Alchemist's Crypt
@@ -967,6 +1021,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7428:
     area: tba_74
     name: The Lord's Crypt
@@ -995,6 +1051,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7429:
     area: tba_74
     name: The Halfling Cleric's Crypt
@@ -1023,6 +1081,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7430:
     area: tba_74
     name: At the Mausoleum Doors
@@ -1047,6 +1107,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7431:
     area: tba_74
     name: The Pyre
@@ -1069,6 +1131,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.7432:
     area: tba_74
     name: Within the Mausoleum
@@ -1089,3 +1153,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

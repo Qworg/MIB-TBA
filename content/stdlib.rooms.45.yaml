@@ -39,6 +39,8 @@ rooms:
         Theme        :
         Plot         :
         Links        : 12w
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4501:
     area: tba_45
     name: A Dormitory
@@ -59,6 +61,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4502:
     area: tba_45
     name: The End of the Hallway
@@ -87,6 +91,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4503:
     area: tba_45
     name: A Dormitory
@@ -106,6 +112,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4504:
     area: tba_45
     name: A Hallway
@@ -129,6 +137,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4505:
     area: tba_45
     name: An Intersection
@@ -160,6 +170,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4506:
     area: tba_45
     name: A Hallway
@@ -183,6 +195,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4507:
     area: tba_45
     name: The Grand Hall
@@ -203,6 +217,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4508:
     area: tba_45
     name: End of the Hall
@@ -230,6 +246,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4509:
     area: tba_45
     name: In the Kitchen
@@ -249,6 +267,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4510:
     area: tba_45
     name: Inside the Temple
@@ -272,6 +292,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4511:
     area: tba_45
     name: Inside the Monastery
@@ -303,6 +325,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4512:
     area: tba_45
     name: Outside the Monastery
@@ -332,6 +356,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4513:
     area: tba_45
     name: A Small Path
@@ -355,6 +381,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4514:
     area: tba_45
     name: The Treasure Chamber
@@ -380,6 +408,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4515:
     area: tba_45
     name: The Top of the Dark Staircase
@@ -420,6 +450,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4516:
     area: tba_45
     name: The Phoenix's Lair
@@ -445,6 +477,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4517:
     area: tba_45
     name: Behind the Tapestry
@@ -476,6 +510,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4518:
     area: tba_45
     name: Atop the Stairs
@@ -505,6 +541,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4519:
     area: tba_45
     name: The Garden Gate
@@ -534,6 +572,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4520:
     area: tba_45
     name: The Celery Corner
@@ -557,6 +597,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4521:
     area: tba_45
     name: The Tomato Corner
@@ -580,6 +622,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4522:
     area: tba_45
     name: The Carrot Row
@@ -618,6 +662,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4523:
     area: tba_45
     name: The Carrot Row
@@ -655,6 +701,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4524:
     area: tba_45
     name: A Strawberry Patch
@@ -678,6 +726,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4525:
     area: tba_45
     name: A Gopher Hole
@@ -703,6 +753,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4526:
     area: tba_45
     name: A Clear Trail
@@ -723,6 +775,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4527:
     area: tba_45
     name: The End of the Path
@@ -753,6 +807,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4528:
     area: tba_45
     name: Within the Walls
@@ -787,6 +843,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4529:
     area: tba_45
     name: Through the Wall
@@ -811,6 +869,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4530:
     area: tba_45
     name: A Corner of the Wall
@@ -838,6 +898,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4531:
     area: tba_45
     name: Atop the Wall
@@ -861,6 +923,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4532:
     area: tba_45
     name: Atop the Wall
@@ -885,6 +949,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4533:
     area: tba_45
     name: An Abrupy End
@@ -908,6 +974,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4534:
     area: tba_45
     name: Atop the Wall
@@ -931,6 +999,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4537:
     area: tba_45
     name: Atop the Walls
@@ -954,6 +1024,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4539:
     area: tba_45
     name: A Corner
@@ -981,6 +1053,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4540:
     area: tba_45
     name: Atop the Wall
@@ -1005,6 +1079,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4541:
     area: tba_45
     name: Atop the Wall
@@ -1028,6 +1104,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4542:
     area: tba_45
     name: End of the Wall
@@ -1051,6 +1129,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4543:
     area: tba_45
     name: A Tower
@@ -1071,6 +1151,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4544:
     area: tba_45
     name: Atop a Tower
@@ -1091,6 +1173,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4545:
     area: tba_45
     name: A Tower
@@ -1110,6 +1194,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4546:
     area: tba_45
     name: Tower
@@ -1129,6 +1215,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4557:
     area: tba_45
     name: Down the Path
@@ -1156,6 +1244,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4558:
     area: tba_45
     name: Training Area
@@ -1175,6 +1265,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4559:
     area: tba_45
     name: Path
@@ -1206,6 +1298,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4560:
     area: tba_45
     name: Path
@@ -1233,6 +1327,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4561:
     area: tba_45
     name: Smithy
@@ -1252,6 +1348,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4562:
     area: tba_45
     name: Storehouse
@@ -1271,6 +1369,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4563:
     area: tba_45
     name: Quartermaster
@@ -1294,6 +1394,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4564:
     area: tba_45
     name: BackRoom
@@ -1313,6 +1415,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4565:
     area: tba_45
     name: Barrack
@@ -1340,6 +1444,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4566:
     area: tba_45
     name: Dungeon
@@ -1363,6 +1469,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4567:
     area: tba_45
     name: Captian's Quarters
@@ -1382,6 +1490,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4568:
     area: tba_45
     name: Tunnel
@@ -1405,6 +1515,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4569:
     area: tba_45
     name: Outside
@@ -1428,6 +1540,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4570:
     area: tba_45
     name: Dragon Pit
@@ -1447,6 +1561,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4588:
     area: tba_45
     name: Atop the Wall
@@ -1474,3 +1590,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

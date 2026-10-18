@@ -30,6 +30,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10701:
     area: tba_107
     name: Central Taking
@@ -69,6 +71,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10702:
     area: tba_107
     name: Badlands
@@ -96,6 +100,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10703:
     area: tba_107
     name: Badlands
@@ -136,6 +142,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10704:
     area: tba_107
     name: Badlands
@@ -162,6 +170,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10705:
     area: tba_107
     name: Badlands
@@ -188,6 +198,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10706:
     area: tba_107
     name: Badlands
@@ -213,6 +225,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10707:
     area: tba_107
     name: Badlands
@@ -240,6 +254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10708:
     area: tba_107
     name: Badlands
@@ -263,6 +279,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10709:
     area: tba_107
     name: Wetlands
@@ -286,6 +304,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10710:
     area: tba_107
     name: Wetlands
@@ -326,6 +346,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10711:
     area: tba_107
     name: Wetlands
@@ -351,6 +373,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10712:
     area: tba_107
     name: Wetlands
@@ -375,6 +399,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10713:
     area: tba_107
     name: Wetlands
@@ -400,6 +426,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10714:
     area: tba_107
     name: Wetlands
@@ -424,6 +452,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10715:
     area: tba_107
     name: Wetlands
@@ -448,6 +478,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10716:
     area: tba_107
     name: Stone Ruins
@@ -473,6 +505,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10717:
     area: tba_107
     name: Cave-in Tundra
@@ -502,6 +536,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10718:
     area: tba_107
     name: Stone Ruins
@@ -537,6 +573,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10719:
     area: tba_107
     name: Stone Ruins
@@ -570,6 +608,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10720:
     area: tba_107
     name: Swampy Flats
@@ -595,6 +635,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10721:
     area: tba_107
     name: Swampy Flats
@@ -622,6 +664,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10722:
     area: tba_107
     name: Swampy Flats
@@ -646,6 +690,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10723:
     area: tba_107
     name: Swampy Flats
@@ -669,6 +715,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10724:
     area: tba_107
     name: Cave-in Tundra
@@ -693,6 +741,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10725:
     area: tba_107
     name: Cave-in Tundra
@@ -731,6 +781,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10726:
     area: tba_107
     name: Cave-in Tundra
@@ -750,6 +802,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10727:
     area: tba_107
     name: Cave-in Tundra
@@ -775,6 +829,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10728:
     area: tba_107
     name: Cave-in Tundra
@@ -799,6 +855,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10729:
     area: tba_107
     name: Cave-in Tundra
@@ -823,6 +881,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10730:
     area: tba_107
     name: Cave-in Tundra
@@ -848,6 +908,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10731:
     area: tba_107
     name: Writing Iuel
@@ -871,6 +933,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10732:
     area: tba_107
     name: Central Armory and Weaponary
@@ -893,6 +957,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10733:
     area: tba_107
     name: Cauldron Skyways
@@ -914,6 +980,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10734:
     area: tba_107
     name: Wisdom Revise
@@ -935,6 +1003,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10735:
     area: tba_107
     name: Drugstore
@@ -959,6 +1029,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10736:
     area: tba_107
     name: The Post Office of Iuel
@@ -979,6 +1051,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10737:
     area: tba_107
     name: The Bank of Iuel
@@ -1000,6 +1074,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10738:
     area: tba_107
     name: Pet Shop of Iuel
@@ -1019,6 +1095,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10739:
     area: tba_107
     name: PETSHOP STOREROOM
@@ -1041,6 +1119,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10740:
     area: tba_107
     name: Entrance to Iuel
@@ -1060,6 +1140,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10741:
     area: tba_107
     name: Sink Holes
@@ -1096,6 +1178,8 @@ rooms:
     coord: null
     sector: underwater
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10742:
     area: tba_107
     name: Sink Holes
@@ -1134,6 +1218,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10743:
     area: tba_107
     name: Sink Holes
@@ -1166,6 +1252,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10744:
     area: tba_107
     name: Sink Holes
@@ -1202,6 +1290,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10745:
     area: tba_107
     name: Sink Holes
@@ -1234,6 +1324,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10746:
     area: tba_107
     name: Sink Holes
@@ -1262,6 +1354,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10747:
     area: tba_107
     name: Sink Holes
@@ -1290,6 +1384,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10748:
     area: tba_107
     name: Sink Holes
@@ -1318,6 +1414,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10749:
     area: tba_107
     name: Sink Holes
@@ -1346,6 +1444,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10750:
     area: tba_107
     name: Sink Holes
@@ -1384,6 +1484,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10751:
     area: tba_107
     name: Sink Holes
@@ -1412,6 +1514,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10752:
     area: tba_107
     name: Sink Holes
@@ -1450,6 +1554,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10753:
     area: tba_107
     name: Sink Holes
@@ -1478,6 +1584,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10754:
     area: tba_107
     name: Sink Holes
@@ -1510,6 +1618,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10755:
     area: tba_107
     name: Sink Holes
@@ -1538,6 +1648,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10756:
     area: tba_107
     name: Sink Holes
@@ -1576,6 +1688,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10757:
     area: tba_107
     name: Sink Holes
@@ -1604,6 +1718,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10758:
     area: tba_107
     name: Sink Holes
@@ -1632,6 +1748,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10759:
     area: tba_107
     name: Sink Holes
@@ -1660,6 +1778,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10760:
     area: tba_107
     name: Sink Holes
@@ -1688,6 +1808,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10761:
     area: tba_107
     name: Sink Holes
@@ -1720,6 +1842,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10762:
     area: tba_107
     name: Sink Holes
@@ -1744,6 +1868,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10763:
     area: tba_107
     name: Sink Holes
@@ -1768,6 +1894,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10764:
     area: tba_107
     name: Sink Holes
@@ -1796,6 +1924,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10765:
     area: tba_107
     name: Sink Holes
@@ -1824,6 +1954,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10766:
     area: tba_107
     name: Sink Holes
@@ -1852,6 +1984,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10767:
     area: tba_107
     name: Sink Holes
@@ -1880,6 +2014,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10768:
     area: tba_107
     name: Sink Holes
@@ -1908,6 +2044,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10769:
     area: tba_107
     name: Sink Holes
@@ -1936,6 +2074,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10770:
     area: tba_107
     name: Sink Holes
@@ -1974,6 +2114,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10771:
     area: tba_107
     name: Sink Holes
@@ -2006,6 +2148,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10772:
     area: tba_107
     name: Submerge Under
@@ -2028,6 +2172,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10773:
     area: tba_107
     name: Body Count
@@ -2044,6 +2190,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10774:
     area: tba_107
     name: Sink Holes
@@ -2094,6 +2242,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10775:
     area: tba_107
     name: Sink Holes
@@ -2122,6 +2272,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10776:
     area: tba_107
     name: Sink Holes
@@ -2150,6 +2302,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10777:
     area: tba_107
     name: Sink Holes
@@ -2188,6 +2342,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10778:
     area: tba_107
     name: Sink Holes
@@ -2220,6 +2376,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10779:
     area: tba_107
     name: Sink Holes
@@ -2252,6 +2410,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10780:
     area: tba_107
     name: Sink Holes
@@ -2280,6 +2440,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10781:
     area: tba_107
     name: Sink Holes
@@ -2308,6 +2470,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10782:
     area: tba_107
     name: Sink Holes
@@ -2346,6 +2510,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10783:
     area: tba_107
     name: Sink Holes
@@ -2374,6 +2540,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10784:
     area: tba_107
     name: Sink Holes
@@ -2402,6 +2570,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10785:
     area: tba_107
     name: Sink Holes
@@ -2434,6 +2604,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10786:
     area: tba_107
     name: Sink Holes
@@ -2462,6 +2634,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10787:
     area: tba_107
     name: Sink Holes
@@ -2490,6 +2664,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10788:
     area: tba_107
     name: Sink Holes
@@ -2518,6 +2694,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10789:
     area: tba_107
     name: Sink Holes
@@ -2546,3 +2724,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

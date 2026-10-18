@@ -41,6 +41,8 @@ rooms:
     - keywords:
       - changelog
       description: "   \nChangelog:\n   Entry has been changed to a trig.  To change it back, remove the two items in\n 28801 and add a door down to 28802.  Remember to replace the credit info.\n   Removed entrance from 28803 to 28802.\n   Added nomob to 28825.  Some muds have people who often go in there to kill\nall mobs with an areaspell but in a small mud where nobody goes in, all the\nmobs on that floor will end up there, sooner or later.\n   All season doors were locked both sides on the original but Ghost Shaidan\nseems to have only locked one side and I left it that way.\n   Added near-deathtrap prog (almost dead) to 28830.  Original was a deathtrap,\nport was a non-deathtrap.\n   Added trigger functions to cover the spec_cast functions mentioned in room\n28800.  These were partly written by me, mostly by Fizban.  If the damages I\nused seem a bit light, just adjust them.  Saves have not been written in.\n   Added nomob to various rooms, to keep mobs in their sections.\n   Fixed various typos, grammatical errors, changed some room descs to fit the\nchanges.\n\nParna-TBAmud-November 2009\n"
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28801:
     area: tba_288
     name: Inside a Tavern
@@ -57,6 +59,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28802:
     area: tba_288
     name: Inside the Crystal Ball
@@ -76,6 +80,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28803:
     area: tba_288
     name: Inside the Galaxy
@@ -104,6 +110,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28804:
     area: tba_288
     name: On an InterGalactic Walkway
@@ -130,6 +138,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28805:
     area: tba_288
     name: End of the InterGalactic Walkway
@@ -161,6 +171,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28806:
     area: tba_288
     name: At the Undeveloped Part of the Galaxy
@@ -183,6 +195,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28808:
     area: tba_288
     name: On the Bridge of Stars
@@ -211,6 +225,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28809:
     area: tba_288
     name: On the Bridge of Nebulae
@@ -239,6 +255,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28810:
     area: tba_288
     name: The Throne Room of the Nebula King
@@ -258,6 +276,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28812:
     area: tba_288
     name: At the Start of the Milky Way
@@ -281,6 +301,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28813:
     area: tba_288
     name: Along the Milky Way
@@ -307,6 +329,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28814:
     area: tba_288
     name: At the End of the Milky Way
@@ -333,6 +357,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28817:
     area: tba_288
     name: A Small Clearing
@@ -355,6 +381,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28818:
     area: tba_288
     name: An Edge of the Galaxy
@@ -381,6 +409,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28819:
     area: tba_288
     name: Very Near to a Gigantic Star
@@ -413,6 +443,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28820:
     area: tba_288
     name: Too Bright to Tell
@@ -429,6 +461,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28821:
     area: tba_288
     name: The Star Cluster
@@ -450,6 +484,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28822:
     area: tba_288
     name: An Edge of the Galaxy
@@ -476,6 +512,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28823:
     area: tba_288
     name: Corner of the Galaxy
@@ -502,6 +540,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28824:
     area: tba_288
     name: Lost in Space
@@ -529,6 +569,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28825:
     area: tba_288
     name: Black Hole
@@ -544,6 +586,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28826:
     area: tba_288
     name: The Homes of the Pleiades
@@ -566,6 +610,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28827:
     area: tba_288
     name: Western Side of the Temple
@@ -592,6 +638,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28828:
     area: tba_288
     name: Orion's Hunting Lodge
@@ -614,6 +662,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28829:
     area: tba_288
     name: Northern Side of the Temple
@@ -640,6 +690,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28830:
     area: tba_288
     name: The Offering Chamber
@@ -675,6 +727,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28831:
     area: tba_288
     name: The Entrance of the Ancient Temple
@@ -706,6 +760,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28832:
     area: tba_288
     name: Hercules' Mighty Throne
@@ -728,6 +784,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28833:
     area: tba_288
     name: Eastern Side of the Temple
@@ -754,6 +812,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28834:
     area: tba_288
     name: Perseus' Chamber
@@ -776,6 +836,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28839:
     area: tba_288
     name: On the Mystic Chains
@@ -822,6 +884,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28842:
     area: tba_288
     name: On a Hill
@@ -848,6 +912,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28843:
     area: tba_288
     name: Inside a Spanish Bull-Ring
@@ -870,6 +936,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28844:
     area: tba_288
     name: Inside a study
@@ -889,6 +957,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28845:
     area: tba_288
     name: Along the seashore
@@ -911,6 +981,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28846:
     area: tba_288
     name: Within the Deep Jungle
@@ -929,6 +1001,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28847:
     area: tba_288
     name: Inside a Luxurious Bedroom
@@ -946,6 +1020,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28848:
     area: tba_288
     name: The Supreme Court
@@ -968,6 +1044,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28849:
     area: tba_288
     name: In the Dry Desert
@@ -990,6 +1068,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28850:
     area: tba_288
     name: In the Woods
@@ -1008,6 +1088,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28851:
     area: tba_288
     name: On a Mountain Peak
@@ -1030,6 +1112,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28852:
     area: tba_288
     name: Inside a Waterfall
@@ -1048,6 +1132,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28853:
     area: tba_288
     name: Inside a Gigantic Clam
@@ -1066,6 +1152,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28854:
     area: tba_288
     name: End of the Mystic Chains
@@ -1102,6 +1190,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28855:
     area: tba_288
     name: On the Draco
@@ -1131,6 +1221,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28856:
     area: tba_288
     name: Tail of the Draco
@@ -1155,6 +1247,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28857:
     area: tba_288
     name: Path of the Draco
@@ -1178,6 +1272,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28858:
     area: tba_288
     name: Near the Legs of Draco
@@ -1202,6 +1298,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28859:
     area: tba_288
     name: On the Back of Draco
@@ -1231,6 +1329,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28860:
     area: tba_288
     name: Between the Wings of Draco
@@ -1260,6 +1360,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28861:
     area: tba_288
     name: Near the Arms of Draco
@@ -1283,6 +1385,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28862:
     area: tba_288
     name: On the Neck of Draco
@@ -1306,6 +1410,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28863:
     area: tba_288
     name: Approaching the Head of Draco
@@ -1335,6 +1441,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28864:
     area: tba_288
     name: At the Entrance of the Great Dipper
@@ -1368,6 +1476,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28865:
     area: tba_288
     name: Cassiopeia's Throne
@@ -1390,6 +1500,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28866:
     area: tba_288
     name: Along the Path of the Dipper
@@ -1412,6 +1524,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28867:
     area: tba_288
     name: Cepheus' Throne
@@ -1438,6 +1552,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28868:
     area: tba_288
     name: Along the path of the Dipper
@@ -1460,6 +1576,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28869:
     area: tba_288
     name: Along the path of the Dipper
@@ -1482,6 +1600,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28870:
     area: tba_288
     name: End of the Dipper
@@ -1505,6 +1625,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28871:
     area: tba_288
     name: The Polar Star
@@ -1525,3 +1647,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

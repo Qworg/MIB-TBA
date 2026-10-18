@@ -45,6 +45,8 @@ rooms:
         This is the classic Shire area. It is in a mixed format, part Merc 2.2, part standard Diku.
         Links
         50u
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27701:
     area: tba_277
     name: A Dimly Lit Path
@@ -69,6 +71,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27702:
     area: tba_277
     name: A Dimly Lit Path
@@ -92,6 +96,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27703:
     area: tba_277
     name: Entrance to the Shire
@@ -120,6 +126,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27704:
     area: tba_277
     name: Bywater Road
@@ -148,6 +156,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27705:
     area: tba_277
     name: The General Store
@@ -167,6 +177,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27706:
     area: tba_277
     name: Bywater Road
@@ -199,6 +211,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27707:
     area: tba_277
     name: The House of Arms
@@ -218,6 +232,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27708:
     area: tba_277
     name: Kid'n Keep
@@ -238,6 +254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27709:
     area: tba_277
     name: A Bend in the Road
@@ -270,6 +288,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27710:
     area: tba_277
     name: Shiriff Post of the Eastern Shire
@@ -299,6 +319,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27711:
     area: tba_277
     name: Thain's Office
@@ -325,6 +347,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27712:
     area: tba_277
     name: Bywater Road
@@ -354,6 +378,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27713:
     area: tba_277
     name: Bywater Road
@@ -386,6 +412,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27714:
     area: tba_277
     name: A Smial
@@ -405,6 +433,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27715:
     area: tba_277
     name: A Smial
@@ -424,6 +454,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27716:
     area: tba_277
     name: The Ivy Bush
@@ -443,6 +475,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27717:
     area: tba_277
     name: Shiriff Training Grounds
@@ -463,6 +497,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27718:
     area: tba_277
     name: Bywater Road
@@ -491,6 +527,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27719:
     area: tba_277
     name: Shiriff Post of the Bridge
@@ -510,6 +548,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27720:
     area: tba_277
     name: Bywater Road
@@ -542,6 +582,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27721:
     area: tba_277
     name: The Grocer's Delight
@@ -562,6 +604,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27722:
     area: tba_277
     name: Bywater Road
@@ -590,6 +634,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27723:
     area: tba_277
     name: Entrance to a Watermill
@@ -614,6 +660,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27724:
     area: tba_277
     name: The Watermill
@@ -643,6 +691,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27725:
     area: tba_277
     name: Back of the Watermill
@@ -666,6 +716,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27726:
     area: tba_277
     name: Took Hill
@@ -692,6 +744,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27727:
     area: tba_277
     name: Northern End of a Grassy Field
@@ -712,6 +766,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27728:
     area: tba_277
     name: A Grassy Field
@@ -744,6 +800,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27729:
     area: tba_277
     name: Southern End of a Grassy Field
@@ -764,6 +822,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27730:
     area: tba_277
     name: Western End of a Grassy Field
@@ -784,6 +844,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27731:
     area: tba_277
     name: Brandywine Bridge
@@ -809,6 +871,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27732:
     area: tba_277
     name: Delving Lane
@@ -838,6 +902,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27733:
     area: tba_277
     name: Delving Lane
@@ -870,6 +936,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27734:
     area: tba_277
     name: Delving Lane
@@ -900,6 +968,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27735:
     area: tba_277
     name: Bag End
@@ -933,6 +1003,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27736:
     area: tba_277
     name: Bedroom
@@ -953,6 +1025,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27737:
     area: tba_277
     name: Pantry
@@ -983,6 +1057,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27738:
     area: tba_277
     name: A Grassy Field
@@ -1011,6 +1087,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27739:
     area: tba_277
     name: Pig Pen
@@ -1035,6 +1113,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27740:
     area: tba_277
     name: A Stony Path
@@ -1059,6 +1139,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27741:
     area: tba_277
     name: Gamgee Residence
@@ -1078,6 +1160,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27742:
     area: tba_277
     name: A Barn
@@ -1101,6 +1185,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27743:
     area: tba_277
     name: A Chicken Coop
@@ -1120,6 +1206,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27744:
     area: tba_277
     name: The Green Dragon
@@ -1145,6 +1233,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27745:
     area: tba_277
     name: Shiriff Post of Delving Lane
@@ -1164,6 +1254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27746:
     area: tba_277
     name: A Dark Tunnel
@@ -1188,6 +1280,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27747:
     area: tba_277
     name: Smuggler's Storage
@@ -1212,6 +1306,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27748:
     area: tba_277
     name: Smuggler's Storage
@@ -1235,6 +1331,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27749:
     area: tba_277
     name: A Three-way Intersection
@@ -1262,6 +1360,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27750:
     area: tba_277
     name: End of a Dark Tunnel
@@ -1282,6 +1382,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27751:
     area: tba_277
     name: A dark tunnel
@@ -1314,6 +1416,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27752:
     area: tba_277
     name: A dark tunnel
@@ -1341,6 +1445,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27753:
     area: tba_277
     name: Shiriff Post of the Lower Shire
@@ -1361,6 +1467,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27754:
     area: tba_277
     name: A halfling hole
@@ -1380,6 +1488,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27755:
     area: tba_277
     name: A halfling hole
@@ -1399,6 +1509,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27756:
     area: tba_277
     name: End of a dark tunnel
@@ -1421,6 +1533,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27757:
     area: tba_277
     name: The Inn of the Green Dragon
@@ -1440,6 +1554,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27758:
     area: tba_277
     name: The Tailor's
@@ -1460,3 +1576,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

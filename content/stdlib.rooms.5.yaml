@@ -35,6 +35,8 @@ rooms:
         Theme        :
         Plot         :
         Links        : 00
+    ambient_phases: {}
+    ambient_weather: {}
   tba.501:
     area: tba_5
     name: Small Path
@@ -62,6 +64,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.502:
     area: tba_5
     name: Farm Entrance
@@ -89,6 +93,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.503:
     area: tba_5
     name: Small Path
@@ -111,6 +117,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.504:
     area: tba_5
     name: Farm Entrance
@@ -142,6 +150,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.505:
     area: tba_5
     name: Farm Entrance
@@ -165,6 +175,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.506:
     area: tba_5
     name: Farm
@@ -191,6 +203,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.507:
     area: tba_5
     name: Farm
@@ -217,6 +231,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.508:
     area: tba_5
     name: Farm
@@ -243,6 +259,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.509:
     area: tba_5
     name: Trail
@@ -265,6 +283,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.510:
     area: tba_5
     name: Trail
@@ -289,6 +309,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.511:
     area: tba_5
     name: Field
@@ -312,6 +334,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.512:
     area: tba_5
     name: Field
@@ -339,6 +363,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.513:
     area: tba_5
     name: Field
@@ -361,6 +387,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.514:
     area: tba_5
     name: Field
@@ -379,6 +407,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.515:
     area: tba_5
     name: Trail
@@ -403,6 +433,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.516:
     area: tba_5
     name: Barn
@@ -426,6 +458,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.517:
     area: tba_5
     name: Barn
@@ -449,6 +483,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.518:
     area: tba_5
     name: Milk Room
@@ -476,6 +512,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.519:
     area: tba_5
     name: Milk Room
@@ -494,6 +532,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.520:
     area: tba_5
     name: Walkway through the Barn
@@ -517,6 +557,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.521:
     area: tba_5
     name: Hayloft
@@ -536,6 +578,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.522:
     area: tba_5
     name: Walkway through the Barn
@@ -563,6 +607,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.523:
     area: tba_5
     name: Abandoned Stall
@@ -586,6 +632,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.524:
     area: tba_5
     name: Field
@@ -609,6 +657,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.525:
     area: tba_5
     name: Field
@@ -631,6 +681,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.526:
     area: tba_5
     name: Barn
@@ -657,6 +709,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.527:
     area: tba_5
     name: Back Door of the Barn
@@ -684,6 +738,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.528:
     area: tba_5
     name: Hole in the Wall
@@ -711,6 +767,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.529:
     area: tba_5
     name: Barn
@@ -734,6 +792,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.530:
     area: tba_5
     name: Corn Field
@@ -757,6 +817,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.531:
     area: tba_5
     name: Corn Field
@@ -780,6 +842,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.532:
     area: tba_5
     name: Corn Field
@@ -803,6 +867,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.533:
     area: tba_5
     name: Corn Field
@@ -826,6 +892,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.534:
     area: tba_5
     name: Corn Field
@@ -849,6 +917,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.535:
     area: tba_5
     name: Corn Field
@@ -872,6 +942,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.536:
     area: tba_5
     name: Corn Field
@@ -895,6 +967,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.537:
     area: tba_5
     name: Corn Field
@@ -918,6 +992,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.538:
     area: tba_5
     name: Manure Pit
@@ -941,6 +1017,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.539:
     area: tba_5
     name: Manure Pit
@@ -964,6 +1042,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.540:
     area: tba_5
     name: Manure Pit
@@ -988,6 +1068,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.541:
     area: tba_5
     name: Manure Pit
@@ -1010,6 +1092,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.542:
     area: tba_5
     name: Gates of the Stock Yard
@@ -1033,6 +1117,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.543:
     area: tba_5
     name: Stock Yard
@@ -1056,6 +1142,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.544:
     area: tba_5
     name: Stock Yard
@@ -1079,6 +1167,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.545:
     area: tba_5
     name: Stock Yard
@@ -1110,6 +1200,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.546:
     area: tba_5
     name: Dead End
@@ -1128,6 +1220,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.547:
     area: tba_5
     name: Dead End
@@ -1146,6 +1240,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.548:
     area: tba_5
     name: Gopher Hole
@@ -1173,6 +1269,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.549:
     area: tba_5
     name: Silo
@@ -1199,6 +1297,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.550:
     area: tba_5
     name: Silo
@@ -1222,6 +1322,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.551:
     area: tba_5
     name: Silo
@@ -1245,6 +1347,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.552:
     area: tba_5
     name: Silo
@@ -1268,6 +1372,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.553:
     area: tba_5
     name: Silo
@@ -1287,6 +1393,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.554:
     area: tba_5
     name: Stock Yard
@@ -1309,6 +1417,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.555:
     area: tba_5
     name: Gopher Hole
@@ -1332,6 +1442,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.556:
     area: tba_5
     name: Gopher Hole
@@ -1354,6 +1466,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.557:
     area: tba_5
     name: Gopher Hole
@@ -1377,6 +1491,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.558:
     area: tba_5
     name: Gopher Hole
@@ -1399,6 +1515,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.559:
     area: tba_5
     name: Gopher Hole
@@ -1422,6 +1540,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.560:
     area: tba_5
     name: Stock Yard
@@ -1441,6 +1561,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.561:
     area: tba_5
     name: Stock Yard
@@ -1464,6 +1586,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.562:
     area: tba_5
     name: Stock Yard
@@ -1486,6 +1610,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.563:
     area: tba_5
     name: Stall
@@ -1504,6 +1630,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.564:
     area: tba_5
     name: Stables
@@ -1527,6 +1655,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.565:
     area: tba_5
     name: Stall
@@ -1554,6 +1684,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.566:
     area: tba_5
     name: Stables
@@ -1573,6 +1705,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.567:
     area: tba_5
     name: Stables
@@ -1595,6 +1729,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.568:
     area: tba_5
     name: Stall
@@ -1618,6 +1754,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.569:
     area: tba_5
     name: Stables Entrance
@@ -1637,6 +1775,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.570:
     area: tba_5
     name: Field
@@ -1660,6 +1800,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.571:
     area: tba_5
     name: Field
@@ -1683,6 +1825,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.572:
     area: tba_5
     name: Field
@@ -1706,6 +1850,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.573:
     area: tba_5
     name: Hole
@@ -1733,6 +1879,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.574:
     area: tba_5
     name: Inside the Hole
@@ -1749,6 +1897,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.575:
     area: tba_5
     name: Field
@@ -1771,6 +1921,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.576:
     area: tba_5
     name: Entrance to the Chicken Coop
@@ -1794,6 +1946,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.577:
     area: tba_5
     name: Chicken Coop
@@ -1821,6 +1975,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.578:
     area: tba_5
     name: Chicken Coop
@@ -1840,6 +1996,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.579:
     area: tba_5
     name: Chicken Coop
@@ -1862,6 +2020,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.580:
     area: tba_5
     name: Dead End
@@ -1881,6 +2041,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.581:
     area: tba_5
     name: Chicken Coop
@@ -1904,6 +2066,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.582:
     area: tba_5
     name: Farm
@@ -1931,6 +2095,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.583:
     area: tba_5
     name: Hunters Cabin
@@ -1956,6 +2122,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.584:
     area: tba_5
     name: Hunters Cabin
@@ -1980,6 +2148,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.585:
     area: tba_5
     name: Hunters Cabin
@@ -2003,6 +2173,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.586:
     area: tba_5
     name: Dirt Path
@@ -2026,6 +2198,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.587:
     area: tba_5
     name: Dirt Path
@@ -2049,6 +2223,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.588:
     area: tba_5
     name: Farm
@@ -2072,6 +2248,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.589:
     area: tba_5
     name: Well
@@ -2095,6 +2273,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.590:
     area: tba_5
     name: Well
@@ -2118,6 +2298,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.591:
     area: tba_5
     name: Well
@@ -2144,6 +2326,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.592:
     area: tba_5
     name: Underground Cave
@@ -2163,6 +2347,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.593:
     area: tba_5
     name: Underground Cave
@@ -2190,6 +2376,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.594:
     area: tba_5
     name: Underground Cave
@@ -2213,6 +2401,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.595:
     area: tba_5
     name: Underground Cave
@@ -2236,6 +2426,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.596:
     area: tba_5
     name: Underground Cave
@@ -2259,6 +2451,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.597:
     area: tba_5
     name: Hole
@@ -2282,6 +2476,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.598:
     area: tba_5
     name: Hole
@@ -2305,6 +2501,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.599:
     area: tba_5
     name: Farm
@@ -2324,3 +2522,5 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

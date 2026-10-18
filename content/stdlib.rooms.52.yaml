@@ -24,6 +24,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5201:
     area: tba_52
     name: Main Street
@@ -56,6 +58,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5202:
     area: tba_52
     name: Main Street
@@ -89,6 +93,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5203:
     area: tba_52
     name: A Garden Path
@@ -121,6 +127,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5204:
     area: tba_52
     name: A Garden Path
@@ -153,6 +161,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5205:
     area: tba_52
     name: A Garden Path
@@ -185,6 +195,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5206:
     area: tba_52
     name: A Garden Path
@@ -217,6 +229,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5207:
     area: tba_52
     name: The Market Place
@@ -249,6 +263,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5208:
     area: tba_52
     name: The Market Place
@@ -275,6 +291,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5209:
     area: tba_52
     name: A Side Street
@@ -302,6 +320,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5210:
     area: tba_52
     name: A Side Street
@@ -341,6 +361,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5211:
     area: tba_52
     name: A Side Street
@@ -372,6 +394,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5212:
     area: tba_52
     name: A Side Street
@@ -405,6 +429,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5213:
     area: tba_52
     name: A Side Street
@@ -437,6 +463,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5214:
     area: tba_52
     name: A Side Street
@@ -463,6 +491,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5215:
     area: tba_52
     name: Under A Ruined Watchtower
@@ -489,6 +519,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5216:
     area: tba_52
     name: A Back Alley
@@ -511,6 +543,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5217:
     area: tba_52
     name: The Meat Stand
@@ -539,6 +573,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5218:
     area: tba_52
     name: A Back Alley
@@ -561,6 +597,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5219:
     area: tba_52
     name: The Guild House
@@ -581,6 +619,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5220:
     area: tba_52
     name: The Produce Stand
@@ -604,6 +644,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5221:
     area: tba_52
     name: The Smithy
@@ -622,6 +664,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5222:
     area: tba_52
     name: The Tapestry Stand
@@ -650,6 +694,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5223:
     area: tba_52
     name: A Back Alley
@@ -672,6 +718,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5224:
     area: tba_52
     name: Under The Watchtower
@@ -698,6 +746,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5225:
     area: tba_52
     name: The Jewellery Stand
@@ -721,6 +771,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5226:
     area: tba_52
     name: A Ruined Clay Dwelling
@@ -739,6 +791,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5227:
     area: tba_52
     name: A Collapsed Stone Dwelling
@@ -758,6 +812,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5228:
     area: tba_52
     name: A Back Alley
@@ -780,6 +836,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5229:
     area: tba_52
     name: An Abandoned Shop
@@ -799,6 +857,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5230:
     area: tba_52
     name: The Tavern Of The Sun
@@ -821,6 +881,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5231:
     area: tba_52
     name: The South Wing Of The City Hall
@@ -845,6 +907,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5232:
     area: tba_52
     name: The City Hall
@@ -877,6 +941,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5233:
     area: tba_52
     name: The East Wing Of The City Hall
@@ -901,6 +967,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5234:
     area: tba_52
     name: The Private Gardens And Courtyard Of Thalos
@@ -928,6 +996,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5235:
     area: tba_52
     name: A Small Guard House
@@ -946,6 +1016,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5236:
     area: tba_52
     name: A Collapsed Home
@@ -965,6 +1037,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5237:
     area: tba_52
     name: A Tall Dwelling
@@ -994,6 +1068,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5238:
     area: tba_52
     name: A Small Shack
@@ -1014,6 +1090,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5239:
     area: tba_52
     name: A Back Alley
@@ -1036,6 +1114,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5240:
     area: tba_52
     name: A Back Alley
@@ -1059,6 +1139,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5241:
     area: tba_52
     name: Under A Watchtower
@@ -1086,6 +1168,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5242:
     area: tba_52
     name: A Bath House
@@ -1112,6 +1196,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5243:
     area: tba_52
     name: A Back Alley
@@ -1139,6 +1225,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5244:
     area: tba_52
     name: An Upright House
@@ -1162,6 +1250,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5245:
     area: tba_52
     name: On The Second Floor
@@ -1177,6 +1267,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5246:
     area: tba_52
     name: The North-West Watchtower
@@ -1196,6 +1288,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5247:
     area: tba_52
     name: The South-West Watchtower
@@ -1216,6 +1310,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5248:
     area: tba_52
     name: The North-East Watchtower
@@ -1237,6 +1333,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5249:
     area: tba_52
     name: Under A Watchtower
@@ -1251,6 +1349,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5250:
     area: tba_52
     name: The Temple Of Thalos
@@ -1288,3 +1388,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

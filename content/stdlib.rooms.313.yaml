@@ -61,6 +61,8 @@ rooms:
         Hope you like it.
         Exits: 07s, 16s
         Links: 00n cave, 33w cave
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31301:
     area: tba_313
     name: The Rocky Flatlands at the City Wall
@@ -93,6 +95,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31302:
     area: tba_313
     name: At the Wall of Ofingia
@@ -115,6 +119,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31303:
     area: tba_313
     name: Rocky Flatlands at the City Wall
@@ -138,6 +144,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31304:
     area: tba_313
     name: At the City Wall
@@ -166,6 +174,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31305:
     area: tba_313
     name: The Outer Rocklands of Ofingia
@@ -191,6 +201,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31306:
     area: tba_313
     name: The Outer Rocklands of Ofingia
@@ -225,6 +237,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31307:
     area: tba_313
     name: The Outer Rocklands of Ofingia
@@ -250,6 +264,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31308:
     area: tba_313
     name: A Breathtaking View
@@ -278,6 +294,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31309:
     area: tba_313
     name: On the Causeway
@@ -305,6 +323,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31310:
     area: tba_313
     name: High Upon the Causeway
@@ -328,6 +348,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31311:
     area: tba_313
     name: Stone Causeway
@@ -355,6 +377,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31312:
     area: tba_313
     name: Narrow Causeway
@@ -379,6 +403,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31313:
     area: tba_313
     name: Narrow Causeway
@@ -403,6 +429,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31314:
     area: tba_313
     name: A Split in the Causeway
@@ -433,6 +461,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31315:
     area: tba_313
     name: Poorly-made Section of the Causeway
@@ -456,6 +486,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31316:
     area: tba_313
     name: Strewn Rubble Causeway
@@ -480,6 +512,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31317:
     area: tba_313
     name: The End of the Causeway
@@ -505,6 +539,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31318:
     area: tba_313
     name: The Base of the Causeway
@@ -535,6 +571,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31319:
     area: tba_313
     name: The Eastern Causeway
@@ -563,6 +601,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31320:
     area: tba_313
     name: The Eastern Causeway
@@ -586,6 +626,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31321:
     area: tba_313
     name: The Eastern Causeway
@@ -611,6 +653,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31322:
     area: tba_313
     name: South End of the Eastern Causeway
@@ -636,6 +680,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31323:
     area: tba_313
     name: The Southeastern Corner
@@ -668,6 +714,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31324:
     area: tba_313
     name: Stone Causeway
@@ -691,6 +739,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31325:
     area: tba_313
     name: Stone Causeway
@@ -716,6 +766,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31326:
     area: tba_313
     name: A Wide Crossroads
@@ -743,6 +795,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31327:
     area: tba_313
     name: Wide Causeway
@@ -770,6 +824,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31328:
     area: tba_313
     name: Wide Causeway
@@ -793,6 +849,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31329:
     area: tba_313
     name: Rocky Causeway
@@ -817,6 +875,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31330:
     area: tba_313
     name: Intersection on the Causeway
@@ -844,6 +904,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31331:
     area: tba_313
     name: A Short Section
@@ -867,6 +929,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31332:
     area: tba_313
     name: Private Causeway
@@ -892,6 +956,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31333:
     area: tba_313
     name: The End of a Private Causeway
@@ -918,6 +984,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31334:
     area: tba_313
     name: A Short Causeway
@@ -944,6 +1012,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31335:
     area: tba_313
     name: A Short Causeway
@@ -970,6 +1040,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31336:
     area: tba_313
     name: Nearing the End of the Causeway
@@ -997,6 +1069,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31337:
     area: tba_313
     name: Nearing the End of the Causeway
@@ -1025,6 +1099,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31338:
     area: tba_313
     name: The End of the Main Causeway
@@ -1051,6 +1127,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31339:
     area: tba_313
     name: Scorched Earth
@@ -1074,6 +1152,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31340:
     area: tba_313
     name: Burnt Field
@@ -1099,6 +1179,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31341:
     area: tba_313
     name: Scorched Earth
@@ -1125,6 +1207,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31342:
     area: tba_313
     name: Burnt Field
@@ -1151,6 +1235,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31343:
     area: tba_313
     name: Scorched Earth
@@ -1177,6 +1263,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31344:
     area: tba_313
     name: Burnt Field
@@ -1201,6 +1289,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31345:
     area: tba_313
     name: Watershed
@@ -1221,6 +1311,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31346:
     area: tba_313
     name: Burnt Field
@@ -1243,6 +1335,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31347:
     area: tba_313
     name: Scorched Earth
@@ -1269,6 +1363,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31348:
     area: tba_313
     name: Burnt Field
@@ -1295,6 +1391,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31349:
     area: tba_313
     name: Scorched Earth
@@ -1321,6 +1419,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31350:
     area: tba_313
     name: Burnt Field
@@ -1349,6 +1449,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31351:
     area: tba_313
     name: A Crude Barricade
@@ -1378,6 +1480,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31352:
     area: tba_313
     name: A Crude Barricade
@@ -1404,6 +1508,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31353:
     area: tba_313
     name: Trampled and Bloodied Ground
@@ -1430,6 +1536,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31354:
     area: tba_313
     name: Burnt Field
@@ -1456,6 +1564,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31355:
     area: tba_313
     name: Smoking Farmlands
@@ -1482,6 +1592,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31356:
     area: tba_313
     name: Smoking Farmlands
@@ -1504,6 +1616,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31357:
     area: tba_313
     name: Charred Battlesite
@@ -1532,6 +1646,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31358:
     area: tba_313
     name: Charred Battlesite
@@ -1557,6 +1673,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31359:
     area: tba_313
     name: Charred Battlesite
@@ -1584,6 +1702,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31360:
     area: tba_313
     name: Charred Battlesite
@@ -1611,6 +1731,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31361:
     area: tba_313
     name: Blackened Soil
@@ -1637,6 +1759,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31362:
     area: tba_313
     name: Blackened Soil
@@ -1663,6 +1787,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31363:
     area: tba_313
     name: Blackened Soil
@@ -1689,6 +1815,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31364:
     area: tba_313
     name: Blackened Soil
@@ -1715,6 +1843,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31365:
     area: tba_313
     name: Blackened Soil
@@ -1737,6 +1867,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31366:
     area: tba_313
     name: Blackened Soil
@@ -1760,6 +1892,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31367:
     area: tba_313
     name: Scorfahr Farms
@@ -1780,6 +1914,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31368:
     area: tba_313
     name: The Remains of an Opulent Farmhouse
@@ -1810,6 +1946,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31369:
     area: tba_313
     name: Scorfahr Farms
@@ -1840,6 +1978,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31370:
     area: tba_313
     name: Scorfahr Farms
@@ -1868,6 +2008,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31371:
     area: tba_313
     name: Scorfahr Farms
@@ -1897,6 +2039,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31372:
     area: tba_313
     name: Scorfahr Farms
@@ -1921,6 +2065,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31373:
     area: tba_313
     name: Scorfahr Farms
@@ -1945,6 +2091,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31374:
     area: tba_313
     name: Northern Fields
@@ -1969,6 +2117,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31375:
     area: tba_313
     name: Northern Fields
@@ -1993,6 +2143,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31376:
     area: tba_313
     name: Northern Fields
@@ -2021,6 +2173,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31377:
     area: tba_313
     name: Northern Fields
@@ -2043,6 +2197,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31378:
     area: tba_313
     name: Northern Fields
@@ -2071,6 +2227,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31379:
     area: tba_313
     name: Northern Fields
@@ -2100,6 +2258,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31380:
     area: tba_313
     name: Ruined Barnyard
@@ -2127,6 +2287,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31381:
     area: tba_313
     name: Burnt Shell of a Barn
@@ -2150,6 +2312,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31382:
     area: tba_313
     name: Ruined Barnyard
@@ -2175,6 +2339,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31383:
     area: tba_313
     name: Northern Fields
@@ -2203,6 +2369,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31384:
     area: tba_313
     name: Blackened Battleground
@@ -2228,6 +2396,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31385:
     area: tba_313
     name: Blackened Battleground
@@ -2258,6 +2428,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31386:
     area: tba_313
     name: Blackened Battleground
@@ -2287,6 +2459,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31387:
     area: tba_313
     name: Blackened Battleground
@@ -2316,6 +2490,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31388:
     area: tba_313
     name: Blackened Battleground
@@ -2345,6 +2521,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31389:
     area: tba_313
     name: Blackened Battleground
@@ -2374,6 +2552,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31390:
     area: tba_313
     name: Blackened Battleground
@@ -2404,6 +2584,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31391:
     area: tba_313
     name: Blackened Battleground
@@ -2429,6 +2611,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31392:
     area: tba_313
     name: The Reservoir
@@ -2452,6 +2636,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31393:
     area: tba_313
     name: Reservoir at the Waterfall
@@ -2472,3 +2658,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

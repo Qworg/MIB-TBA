@@ -24,6 +24,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6501:
     area: tba_65
     name: The Path At The Base Of The Mountain
@@ -46,6 +48,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6502:
     area: tba_65
     name: The Path At The Middle Of The Mountain
@@ -68,6 +72,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6503:
     area: tba_65
     name: The Top Of The Mountain
@@ -95,6 +101,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6504:
     area: tba_65
     name: The Narrow Path
@@ -117,6 +125,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6505:
     area: tba_65
     name: The Entrance To The Mountain
@@ -145,6 +155,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6506:
     area: tba_65
     name: A Bend In The Narrow Path
@@ -172,6 +184,8 @@ rooms:
       - trees
       description: |2
            They hang over the road in the most ominous of ways.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6507:
     area: tba_65
     name: The Narrow Path
@@ -192,6 +206,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6508:
     area: tba_65
     name: The Narrow North-South Path
@@ -213,6 +229,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6509:
     area: tba_65
     name: The Door To The Kingdom
@@ -244,6 +262,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6510:
     area: tba_65
     name: On The Path To The Castle
@@ -272,6 +292,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6511:
     area: tba_65
     name: Still On The Path To The Castle
@@ -294,6 +316,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6512:
     area: tba_65
     name: The Door To The Castle
@@ -326,6 +350,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6513:
     area: tba_65
     name: Inside The Entrance
@@ -357,6 +383,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6514:
     area: tba_65
     name: The Path
@@ -378,6 +406,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6515:
     area: tba_65
     name: A Turn In The Road
@@ -399,6 +429,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6516:
     area: tba_65
     name: The Hide & Tooth Shop
@@ -421,6 +453,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6517:
     area: tba_65
     name: The Path To The North Of The Shop
@@ -446,6 +480,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6518:
     area: tba_65
     name: North Of The Shops
@@ -467,6 +503,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6519:
     area: tba_65
     name: A Path By The Hospital
@@ -492,6 +530,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6520:
     area: tba_65
     name: A Path Next To The Barracks
@@ -512,6 +552,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6521:
     area: tba_65
     name: The Entrance To The Barracks
@@ -539,6 +581,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6522:
     area: tba_65
     name: A Guard House
@@ -560,6 +604,8 @@ rooms:
       - poster
       description: |2
            There is a wall poster of a nude Minne Pearl.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6523:
     area: tba_65
     name: The First Barrack Room
@@ -587,6 +633,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6524:
     area: tba_65
     name: The Back Of The Barracks
@@ -604,6 +652,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6525:
     area: tba_65
     name: Inside Of Castle Strangelove
@@ -632,6 +682,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6526:
     area: tba_65
     name: A Store Room
@@ -665,6 +717,8 @@ rooms:
       - dust
       description: |2
            After blowing all the dust off the floor, you notice a trapdoor!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6527:
     area: tba_65
     name: The Wine Cellar
@@ -689,6 +743,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6528:
     area: tba_65
     name: On The Stairs In Castle Strangelove
@@ -709,6 +765,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6529:
     area: tba_65
     name: On The Stairs
@@ -731,6 +789,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6530:
     area: tba_65
     name: At The Top Of The Stairs
@@ -752,6 +812,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6531:
     area: tba_65
     name: The Queen's Waiting Room
@@ -782,6 +844,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6532:
     area: tba_65
     name: The Queen's Bedroom
@@ -834,6 +898,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6533:
     area: tba_65
     name: The North Side Of Castle Strangelove
@@ -855,6 +921,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6534:
     area: tba_65
     name: The Hospital
@@ -872,6 +940,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6535:
     area: tba_65
     name: Granite Head's Bakery
@@ -889,6 +959,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6540:
     area: tba_65
     name: The Dark Path
@@ -920,6 +992,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6541:
     area: tba_65
     name: The Mine Entrance
@@ -947,6 +1021,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6542:
     area: tba_65
     name: At The Bottom Of The Mineshaft
@@ -969,6 +1045,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6543:
     area: tba_65
     name: On The Path Inside The Mine
@@ -991,6 +1069,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6544:
     area: tba_65
     name: The Mine Crossroad
@@ -1027,6 +1107,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6545:
     area: tba_65
     name: The Coal Room
@@ -1046,6 +1128,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6546:
     area: tba_65
     name: The Mine Maze
@@ -1074,6 +1158,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6547:
     area: tba_65
     name: At The Maze Inscription
@@ -1103,6 +1189,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6548:
     area: tba_65
     name: The Maze
@@ -1128,6 +1216,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6549:
     area: tba_65
     name: The Maze
@@ -1153,6 +1243,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6550:
     area: tba_65
     name: The Maze
@@ -1182,6 +1274,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6551:
     area: tba_65
     name: The Mining Equipment Room
@@ -1201,6 +1295,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6552:
     area: tba_65
     name: The End Of The Maze
@@ -1228,6 +1324,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6553:
     area: tba_65
     name: The Mazekeeper's Room
@@ -1247,6 +1345,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6554:
     area: tba_65
     name: The Treasury
@@ -1271,3 +1371,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

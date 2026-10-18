@@ -44,6 +44,8 @@ rooms:
         Theme        : Futuristic Fantasy
         Plot         : After the book/movie the Terminator.
         Links        : 00es
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1801:
     area: tba_18
     name: Nuclear Wasteland
@@ -72,6 +74,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1802:
     area: tba_18
     name: Nuclear Wasteland
@@ -100,6 +104,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1803:
     area: tba_18
     name: Nuclear Wasteland
@@ -128,6 +134,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1804:
     area: tba_18
     name: Nuclear Wasteland
@@ -156,6 +164,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1805:
     area: tba_18
     name: Nuclear Wasteland
@@ -184,6 +194,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1806:
     area: tba_18
     name: Nuclear Wasteland
@@ -212,6 +224,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1807:
     area: tba_18
     name: Nuclear Wasteland
@@ -240,6 +254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1808:
     area: tba_18
     name: Nuclear Wasteland
@@ -268,6 +284,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1809:
     area: tba_18
     name: Nuclear Wasteland
@@ -296,6 +314,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1810:
     area: tba_18
     name: Nuclear Wasteland
@@ -324,6 +344,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1811:
     area: tba_18
     name: Nuclear Wasteland
@@ -352,6 +374,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1812:
     area: tba_18
     name: Nuclear Wasteland
@@ -376,6 +400,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1813:
     area: tba_18
     name: Resistance Force Headquarters
@@ -399,6 +425,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1814:
     area: tba_18
     name: Resistance Force Headquarters
@@ -426,6 +454,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1815:
     area: tba_18
     name: Resistance Force Headquarters
@@ -458,6 +488,8 @@ rooms:
       - east
       description: |2
            Live free or die.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1816:
     area: tba_18
     name: Resistance Force Headquarters
@@ -491,6 +523,8 @@ rooms:
       - east
       description: |2
            We created them, we can destroy them.  We created them, we can destroy them.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1817:
     area: tba_18
     name: Resistance Force Headquarters
@@ -514,6 +548,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1825:
     area: tba_18
     name: Nuclear Wasteland
@@ -541,6 +577,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1826:
     area: tba_18
     name: Nuclear Wasteland
@@ -573,6 +611,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1827:
     area: tba_18
     name: Nuclear Wasteland
@@ -605,6 +645,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1828:
     area: tba_18
     name: Nuclear Wasteland
@@ -637,6 +679,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1829:
     area: tba_18
     name: Nuclear Wasteland
@@ -669,6 +713,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1830:
     area: tba_18
     name: Nuclear Wasteland
@@ -701,6 +747,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1831:
     area: tba_18
     name: Nuclear Wasteland
@@ -733,6 +781,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1832:
     area: tba_18
     name: Nuclear Wasteland
@@ -765,6 +815,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1833:
     area: tba_18
     name: Nuclear Wasteland
@@ -797,6 +849,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1834:
     area: tba_18
     name: Nuclear Wasteland
@@ -829,6 +883,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1835:
     area: tba_18
     name: Nuclear Wasteland
@@ -861,6 +917,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1836:
     area: tba_18
     name: Nuclear Wasteland
@@ -893,6 +951,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1837:
     area: tba_18
     name: Nuclear Wasteland
@@ -931,6 +991,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1838:
     area: tba_18
     name: Resistance Force Headquarters
@@ -964,6 +1026,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1839:
     area: tba_18
     name: Resistance Force Headquarters
@@ -991,6 +1055,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1840:
     area: tba_18
     name: Resistance Force Headquarters
@@ -1018,6 +1084,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1841:
     area: tba_18
     name: Resistance Force Headquarters
@@ -1045,6 +1113,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1842:
     area: tba_18
     name: Resistance Force Headquarters
@@ -1072,6 +1142,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1843:
     area: tba_18
     name: Resistance Force Headquarters
@@ -1095,6 +1167,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1844:
     area: tba_18
     name: Resistance Force Headquarters
@@ -1115,6 +1189,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1850:
     area: tba_18
     name: Nuclear Wasteland
@@ -1142,6 +1218,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1851:
     area: tba_18
     name: Nuclear Wasteland
@@ -1174,6 +1252,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1852:
     area: tba_18
     name: Nuclear Wasteland
@@ -1206,6 +1286,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1853:
     area: tba_18
     name: Nuclear Wasteland
@@ -1234,6 +1316,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1854:
     area: tba_18
     name: Nuclear Wasteland
@@ -1266,6 +1350,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1855:
     area: tba_18
     name: Nuclear Wasteland
@@ -1298,6 +1384,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1856:
     area: tba_18
     name: Nuclear Wasteland
@@ -1330,6 +1418,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1857:
     area: tba_18
     name: Nuclear Wasteland
@@ -1362,6 +1452,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1858:
     area: tba_18
     name: Nuclear Wasteland
@@ -1394,6 +1486,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1859:
     area: tba_18
     name: Nuclear Wasteland
@@ -1426,6 +1520,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1860:
     area: tba_18
     name: Nuclear Wasteland
@@ -1458,6 +1554,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1861:
     area: tba_18
     name: Nuclear Wasteland
@@ -1490,6 +1588,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1862:
     area: tba_18
     name: Nuclear Wasteland
@@ -1522,6 +1622,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1863:
     area: tba_18
     name: Nuclear Wasteland
@@ -1545,6 +1647,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1864:
     area: tba_18
     name: Entrance
@@ -1568,6 +1672,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1865:
     area: tba_18
     name: Cyberdyne Building
@@ -1591,6 +1697,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1866:
     area: tba_18
     name: Cyberdyne Building
@@ -1614,6 +1722,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1867:
     area: tba_18
     name: Cyberdyne Building
@@ -1637,6 +1747,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1868:
     area: tba_18
     name: Cyberdyne Building
@@ -1661,6 +1773,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1869:
     area: tba_18
     name: Cyberdyne Building
@@ -1684,6 +1798,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1870:
     area: tba_18
     name: Cyberdyne Lab
@@ -1703,6 +1819,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1871:
     area: tba_18
     name: Skynet Storage
@@ -1722,6 +1840,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1875:
     area: tba_18
     name: Nuclear Wasteland
@@ -1745,6 +1865,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1876:
     area: tba_18
     name: Nuclear Wasteland
@@ -1771,6 +1893,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1877:
     area: tba_18
     name: Nuclear Wasteland
@@ -1798,6 +1922,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1878:
     area: tba_18
     name: Nuclear Wasteland
@@ -1825,6 +1951,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1879:
     area: tba_18
     name: Nuclear Wasteland
@@ -1852,6 +1980,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1880:
     area: tba_18
     name: Nuclear Wasteland
@@ -1879,6 +2009,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1881:
     area: tba_18
     name: Nuclear Wasteland
@@ -1906,6 +2038,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1882:
     area: tba_18
     name: Nuclear Wasteland
@@ -1933,6 +2067,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1883:
     area: tba_18
     name: Nuclear Wasteland
@@ -1960,6 +2096,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1884:
     area: tba_18
     name: Nuclear Wasteland
@@ -1987,6 +2125,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1885:
     area: tba_18
     name: Nuclear Wasteland
@@ -2014,6 +2154,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1886:
     area: tba_18
     name: Nuclear Wasteland
@@ -2041,6 +2183,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1887:
     area: tba_18
     name: Nuclear Wasteland
@@ -2080,6 +2224,8 @@ rooms:
       description: |2
            The word "Skynet" can still be read even though the marble has been heavily
         tarnished with age and abuse.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1888:
     area: tba_18
     name: Skynet
@@ -2109,6 +2255,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1889:
     area: tba_18
     name: Skynet
@@ -2132,6 +2280,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1890:
     area: tba_18
     name: Skynet
@@ -2155,6 +2305,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1891:
     area: tba_18
     name: Skynet
@@ -2178,6 +2330,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1892:
     area: tba_18
     name: Skynet
@@ -2201,6 +2355,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1893:
     area: tba_18
     name: Skynet
@@ -2224,6 +2380,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1894:
     area: tba_18
     name: Skynet
@@ -2247,6 +2405,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1895:
     area: tba_18
     name: Skynet
@@ -2271,6 +2431,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1896:
     area: tba_18
     name: Skynet Laboratories
@@ -2295,3 +2457,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

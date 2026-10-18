@@ -25,6 +25,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3601:
     area: tba_36
     name: A White Square
@@ -47,6 +49,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3602:
     area: tba_36
     name: A Black Square
@@ -73,6 +77,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3603:
     area: tba_36
     name: A White Square
@@ -99,6 +105,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3604:
     area: tba_36
     name: A Black Square
@@ -135,6 +143,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3605:
     area: tba_36
     name: A White Square
@@ -161,6 +171,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3606:
     area: tba_36
     name: A Black Square
@@ -187,6 +199,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3607:
     area: tba_36
     name: A White Square
@@ -213,6 +227,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3608:
     area: tba_36
     name: A Black Square
@@ -235,6 +251,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3609:
     area: tba_36
     name: A Black Square
@@ -261,6 +279,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3610:
     area: tba_36
     name: A White Square
@@ -291,6 +311,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3611:
     area: tba_36
     name: A Black Square
@@ -321,6 +343,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3612:
     area: tba_36
     name: A White Square
@@ -351,6 +375,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3613:
     area: tba_36
     name: A Black Square
@@ -381,6 +407,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3614:
     area: tba_36
     name: A White Square
@@ -411,6 +439,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3615:
     area: tba_36
     name: A Black Square
@@ -441,6 +471,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3616:
     area: tba_36
     name: A White Square
@@ -467,6 +499,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3617:
     area: tba_36
     name: A White Square
@@ -492,6 +526,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3618:
     area: tba_36
     name: A Black Square
@@ -521,6 +557,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3619:
     area: tba_36
     name: A White Square
@@ -550,6 +588,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3620:
     area: tba_36
     name: A Black Square
@@ -579,6 +619,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3621:
     area: tba_36
     name: A White Square
@@ -608,6 +650,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3622:
     area: tba_36
     name: A Black Square
@@ -637,6 +681,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3623:
     area: tba_36
     name: A White Square
@@ -666,6 +712,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3624:
     area: tba_36
     name: A Black Square
@@ -692,6 +740,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3625:
     area: tba_36
     name: A Black Square
@@ -717,6 +767,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3626:
     area: tba_36
     name: A White Square
@@ -746,6 +798,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3627:
     area: tba_36
     name: A Black Square
@@ -775,6 +829,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3628:
     area: tba_36
     name: A White Square
@@ -804,6 +860,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3629:
     area: tba_36
     name: A Black Square
@@ -833,6 +891,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3630:
     area: tba_36
     name: A White Square
@@ -862,6 +922,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3631:
     area: tba_36
     name: A Black Square
@@ -892,6 +954,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3632:
     area: tba_36
     name: A White Square
@@ -922,6 +986,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3633:
     area: tba_36
     name: A White Square
@@ -947,6 +1013,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3634:
     area: tba_36
     name: A Black Square
@@ -976,6 +1044,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3635:
     area: tba_36
     name: A White Square
@@ -1005,6 +1075,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3636:
     area: tba_36
     name: A Black Square
@@ -1034,6 +1106,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3637:
     area: tba_36
     name: A White Square
@@ -1063,6 +1137,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3638:
     area: tba_36
     name: A Black Square
@@ -1092,6 +1168,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3639:
     area: tba_36
     name: A White Square
@@ -1121,6 +1199,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3640:
     area: tba_36
     name: A Black Square
@@ -1147,6 +1227,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3641:
     area: tba_36
     name: A Black Square
@@ -1172,6 +1254,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3642:
     area: tba_36
     name: A White Square
@@ -1201,6 +1285,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3643:
     area: tba_36
     name: A Black Square
@@ -1230,6 +1316,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3644:
     area: tba_36
     name: A White Square
@@ -1259,6 +1347,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3645:
     area: tba_36
     name: A Black Square
@@ -1288,6 +1378,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3646:
     area: tba_36
     name: A White Square
@@ -1317,6 +1409,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3647:
     area: tba_36
     name: A Black Square
@@ -1346,6 +1440,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3648:
     area: tba_36
     name: A White Square
@@ -1371,6 +1467,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3649:
     area: tba_36
     name: A White Square
@@ -1397,6 +1495,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3650:
     area: tba_36
     name: A Black Square
@@ -1427,6 +1527,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3651:
     area: tba_36
     name: A White Square
@@ -1457,6 +1559,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3652:
     area: tba_36
     name: A Black Square
@@ -1487,6 +1591,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3653:
     area: tba_36
     name: A White Square
@@ -1517,6 +1623,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3654:
     area: tba_36
     name: A Black Square
@@ -1547,6 +1655,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3655:
     area: tba_36
     name: A White Square
@@ -1577,6 +1687,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3656:
     area: tba_36
     name: A Black Square
@@ -1603,6 +1715,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3657:
     area: tba_36
     name: A Black Square
@@ -1625,6 +1739,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3658:
     area: tba_36
     name: A White Square
@@ -1651,6 +1767,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3659:
     area: tba_36
     name: A Black Square
@@ -1677,6 +1795,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3660:
     area: tba_36
     name: A White Square
@@ -1713,6 +1833,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3661:
     area: tba_36
     name: A Black Square
@@ -1739,6 +1861,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3662:
     area: tba_36
     name: A White Square
@@ -1765,6 +1889,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3663:
     area: tba_36
     name: A Black Square
@@ -1791,6 +1917,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3664:
     area: tba_36
     name: A White Square
@@ -1813,6 +1941,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3665:
     area: tba_36
     name: The Black Treasury
@@ -1838,6 +1968,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3666:
     area: tba_36
     name: The White Treasury
@@ -1863,3 +1995,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

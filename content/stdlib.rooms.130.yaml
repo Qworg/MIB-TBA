@@ -26,6 +26,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13001:
     area: tba_130
     name: In the Mist
@@ -44,6 +46,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13002:
     area: tba_130
     name: In the Mist
@@ -74,6 +78,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13003:
     area: tba_130
     name: In the Mist
@@ -92,6 +98,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13004:
     area: tba_130
     name: In the Mist
@@ -118,6 +126,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13005:
     area: tba_130
     name: In the Mist
@@ -140,6 +150,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13006:
     area: tba_130
     name: In the Mist
@@ -162,6 +174,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13007:
     area: tba_130
     name: In the Mist
@@ -184,6 +198,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13008:
     area: tba_130
     name: In the Mist
@@ -202,6 +218,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13009:
     area: tba_130
     name: In the Mist
@@ -220,6 +238,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13010:
     area: tba_130
     name: In the Mist
@@ -238,6 +258,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13011:
     area: tba_130
     name: In the Mist
@@ -260,6 +282,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13012:
     area: tba_130
     name: In the Mist
@@ -282,6 +306,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13013:
     area: tba_130
     name: In the Mist
@@ -308,6 +334,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13014:
     area: tba_130
     name: In the Mist
@@ -330,6 +358,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13015:
     area: tba_130
     name: In the Mist
@@ -356,6 +386,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13016:
     area: tba_130
     name: In the Mist
@@ -378,6 +410,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13017:
     area: tba_130
     name: In the Mist
@@ -404,6 +438,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13018:
     area: tba_130
     name: In the Mist
@@ -426,6 +462,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13019:
     area: tba_130
     name: In the Mist
@@ -448,6 +486,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13020:
     area: tba_130
     name: In the Mist
@@ -474,6 +514,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13021:
     area: tba_130
     name: In the Mist
@@ -492,6 +534,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13022:
     area: tba_130
     name: In the Mist
@@ -510,6 +554,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13023:
     area: tba_130
     name: In the Mist
@@ -536,6 +582,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13024:
     area: tba_130
     name: In the Mist
@@ -562,6 +610,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13025:
     area: tba_130
     name: In the Mist
@@ -588,6 +638,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13026:
     area: tba_130
     name: In the Mist
@@ -610,6 +662,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13027:
     area: tba_130
     name: In the Mist
@@ -632,6 +686,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13028:
     area: tba_130
     name: In the Mist
@@ -654,6 +710,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13029:
     area: tba_130
     name: In the Mist
@@ -676,6 +734,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13030:
     area: tba_130
     name: In the Mist
@@ -694,6 +754,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13031:
     area: tba_130
     name: In the Mist
@@ -720,6 +782,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13032:
     area: tba_130
     name: In the Mist
@@ -738,6 +802,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13033:
     area: tba_130
     name: In the Mist
@@ -764,6 +830,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13034:
     area: tba_130
     name: In the Mist
@@ -782,6 +850,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13035:
     area: tba_130
     name: In the Mist
@@ -804,6 +874,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13036:
     area: tba_130
     name: In the Mist
@@ -826,6 +898,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13037:
     area: tba_130
     name: In the Mist
@@ -844,6 +918,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13038:
     area: tba_130
     name: In the Mist
@@ -866,6 +942,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13039:
     area: tba_130
     name: In the Mist
@@ -888,6 +966,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13040:
     area: tba_130
     name: In the Mist
@@ -910,6 +990,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13041:
     area: tba_130
     name: In the Mist
@@ -932,6 +1014,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13042:
     area: tba_130
     name: In the Mist
@@ -954,6 +1038,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13043:
     area: tba_130
     name: In the Mist
@@ -976,6 +1062,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13044:
     area: tba_130
     name: In the Mist
@@ -998,6 +1086,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13045:
     area: tba_130
     name: In the Mist
@@ -1020,6 +1110,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13046:
     area: tba_130
     name: In the Mist
@@ -1042,6 +1134,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13047:
     area: tba_130
     name: In the Mist
@@ -1064,6 +1158,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13048:
     area: tba_130
     name: In the Mist
@@ -1090,6 +1186,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13049:
     area: tba_130
     name: In the Mist
@@ -1116,6 +1214,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13050:
     area: tba_130
     name: In the Mist
@@ -1138,6 +1238,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13051:
     area: tba_130
     name: In the Mist
@@ -1156,6 +1258,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13052:
     area: tba_130
     name: In the Mist
@@ -1182,6 +1286,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13053:
     area: tba_130
     name: In the Mist
@@ -1204,6 +1310,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13054:
     area: tba_130
     name: In the Mist
@@ -1222,6 +1330,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13055:
     area: tba_130
     name: In the Mist
@@ -1244,6 +1354,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13056:
     area: tba_130
     name: In the Mist
@@ -1266,6 +1378,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13057:
     area: tba_130
     name: In the Mist
@@ -1288,6 +1402,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13058:
     area: tba_130
     name: In the Mist
@@ -1314,6 +1430,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13059:
     area: tba_130
     name: In the Mist
@@ -1336,6 +1454,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13060:
     area: tba_130
     name: In the Mist
@@ -1366,6 +1486,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13061:
     area: tba_130
     name: In the Mist
@@ -1384,6 +1506,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13062:
     area: tba_130
     name: In the Mist
@@ -1406,6 +1530,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13063:
     area: tba_130
     name: In the Mist
@@ -1428,6 +1554,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13064:
     area: tba_130
     name: In the Mist
@@ -1446,6 +1574,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13065:
     area: tba_130
     name: In the Mist
@@ -1472,6 +1602,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13066:
     area: tba_130
     name: In the Mist
@@ -1494,6 +1626,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13067:
     area: tba_130
     name: In the Mist
@@ -1520,6 +1654,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13068:
     area: tba_130
     name: In the Mist
@@ -1542,6 +1678,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13069:
     area: tba_130
     name: In the Mist
@@ -1560,6 +1698,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13070:
     area: tba_130
     name: In the Mist
@@ -1578,6 +1718,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13071:
     area: tba_130
     name: In the Mist
@@ -1600,6 +1742,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13072:
     area: tba_130
     name: In the Mist
@@ -1618,6 +1762,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13073:
     area: tba_130
     name: In the Mist
@@ -1640,6 +1786,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13074:
     area: tba_130
     name: In the Mist
@@ -1666,6 +1814,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13075:
     area: tba_130
     name: In the Mist
@@ -1692,6 +1842,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13076:
     area: tba_130
     name: In the Mist
@@ -1718,6 +1870,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13077:
     area: tba_130
     name: In the Mist
@@ -1740,6 +1894,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13078:
     area: tba_130
     name: In the Mist
@@ -1758,6 +1914,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13079:
     area: tba_130
     name: In the Mist
@@ -1776,6 +1934,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13080:
     area: tba_130
     name: In the Mist
@@ -1798,6 +1958,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13081:
     area: tba_130
     name: In the Mist
@@ -1824,6 +1986,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13082:
     area: tba_130
     name: In the Mist
@@ -1850,6 +2014,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13083:
     area: tba_130
     name: In the Mist
@@ -1868,6 +2034,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13084:
     area: tba_130
     name: In the Mist
@@ -1890,6 +2058,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13085:
     area: tba_130
     name: In the Mist
@@ -1916,6 +2086,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13086:
     area: tba_130
     name: In the Mist
@@ -1942,6 +2114,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13087:
     area: tba_130
     name: In the Mist
@@ -1960,6 +2134,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13088:
     area: tba_130
     name: In the Mist
@@ -1986,6 +2162,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13089:
     area: tba_130
     name: In the Mist
@@ -2020,6 +2198,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13090:
     area: tba_130
     name: In the Mist
@@ -2054,6 +2234,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13091:
     area: tba_130
     name: In the Mist
@@ -2072,6 +2254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13092:
     area: tba_130
     name: In the Mist
@@ -2094,6 +2278,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13093:
     area: tba_130
     name: In the Mist
@@ -2120,6 +2306,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13094:
     area: tba_130
     name: In the Mist
@@ -2146,6 +2334,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13095:
     area: tba_130
     name: In the Mist
@@ -2170,6 +2360,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13096:
     area: tba_130
     name: In the Mist
@@ -2192,6 +2384,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13097:
     area: tba_130
     name: In the Mist
@@ -2214,6 +2408,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13098:
     area: tba_130
     name: In the Mist
@@ -2232,6 +2428,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.13099:
     area: tba_130
     name: Mist Maze Corpse Disposal
@@ -2247,3 +2445,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

@@ -24,6 +24,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18601:
     area: tba_186
     name: The Beginning Of The Passage
@@ -48,6 +50,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18602:
     area: tba_186
     name: The Dirty Hallway
@@ -82,6 +86,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18603:
     area: tba_186
     name: A Nexus
@@ -124,6 +130,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18604:
     area: tba_186
     name: A Narrow Passage
@@ -153,6 +161,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18605:
     area: tba_186
     name: The Dark Pit
@@ -179,6 +189,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18606:
     area: tba_186
     name: A Small Room
@@ -226,6 +238,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18607:
     area: tba_186
     name: More Of The Hallway
@@ -258,6 +272,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18608:
     area: tba_186
     name: An Open Field By The Great Field
@@ -282,6 +298,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18609:
     area: tba_186
     name: The End Of The Passage
@@ -304,6 +322,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18610:
     area: tba_186
     name: A Brighter Hallway
@@ -325,6 +345,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18611:
     area: tba_186
     name: Another Corner
@@ -358,6 +380,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18612:
     area: tba_186
     name: The Alchemist's Room
@@ -406,6 +430,8 @@ rooms:
       description: |2
            The sign next to the stairs says: If you are below level 7 and alone, or
         below level 4 then bugger off!  Or else don't blame me if you die...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18620:
     area: tba_186
     name: A Turn In The Passage
@@ -428,6 +454,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18621:
     area: tba_186
     name: A T-Intersection In The Passage
@@ -455,6 +483,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18622:
     area: tba_186
     name: Another Corner
@@ -478,6 +508,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18623:
     area: tba_186
     name: A Corner In The Hallway
@@ -502,6 +534,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18624:
     area: tba_186
     name: Another Turn
@@ -525,6 +559,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18625:
     area: tba_186
     name: A Large Room
@@ -547,6 +583,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18626:
     area: tba_186
     name: A Long East-West Passage
@@ -570,6 +608,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18627:
     area: tba_186
     name: A Crossing Of Corridors
@@ -601,6 +641,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18628:
     area: tba_186
     name: A Corner Room
@@ -624,6 +666,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18629:
     area: tba_186
     name: The Red Room
@@ -659,6 +703,8 @@ rooms:
       description: |2
            It looks as if you could go down into it...  But you can't be sure of where
         you will end up, or if you can get back.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18630:
     area: tba_186
     name: A Branching Passage
@@ -685,6 +731,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18631:
     area: tba_186
     name: A Passage
@@ -713,6 +761,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18632:
     area: tba_186
     name: The Entrance
@@ -745,6 +795,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18633:
     area: tba_186
     name: Another Corner
@@ -767,6 +819,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18634:
     area: tba_186
     name: An Intersection Of Passages
@@ -794,6 +848,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18635:
     area: tba_186
     name: A Turn In The Passage
@@ -818,6 +874,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18636:
     area: tba_186
     name: A Branch To The South
@@ -846,6 +904,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18637:
     area: tba_186
     name: Yet Another Corner
@@ -869,6 +929,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18638:
     area: tba_186
     name: A Large Room
@@ -893,6 +955,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18639:
     area: tba_186
     name: A Large Room
@@ -928,6 +992,8 @@ rooms:
       description: |2
            There is a crude picture of a man with the head of a bull with some writing
         next to it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18640:
     area: tba_186
     name: The Statue's Room
@@ -962,6 +1028,8 @@ rooms:
       description: |2
            It says:
         Maynard, Death Jester of the Harlequins
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18641:
     area: tba_186
     name: The Hallway
@@ -986,6 +1054,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18642:
     area: tba_186
     name: The North Stairs
@@ -1021,6 +1091,8 @@ rooms:
       - stairs
       description: |2
            They are constructed of smooth, beautiful marble
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18643:
     area: tba_186
     name: The Balcony
@@ -1052,6 +1124,8 @@ rooms:
       - stairs
       description: |2
            They are constructed of smooth, beautiful marble
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18644:
     area: tba_186
     name: A Bright Hallway
@@ -1087,6 +1161,8 @@ rooms:
       - design
       description: |2
            It appears to be the Crest of the Harlequin Guild.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18645:
     area: tba_186
     name: The Balcony
@@ -1117,6 +1193,8 @@ rooms:
       - stairs
       description: |2
            They are constructed of smooth, beautiful marble.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18646:
     area: tba_186
     name: A Bright Hallway
@@ -1151,6 +1229,8 @@ rooms:
       - design
       description: |2
            It appears to be the crest of the Harlequin Guild.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18647:
     area: tba_186
     name: The South Stairs
@@ -1190,3 +1270,5 @@ rooms:
       - stairs
       description: |2
            They are constructed of smooth, beautiful marble.
+    ambient_phases: {}
+    ambient_weather: {}

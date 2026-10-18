@@ -380,6 +380,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
             ids::area_id(source.number),
             AreaDef {
                 name: source.zone.name.clone(),
+                weather_zone: None,
             },
         );
 
@@ -991,6 +992,8 @@ fn map_room(
         coord: None,
         sector,
         extra_descriptions,
+        ambient_phases: BTreeMap::new(),
+        ambient_weather: BTreeMap::new(),
     }
 }
 

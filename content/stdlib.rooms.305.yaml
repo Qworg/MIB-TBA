@@ -51,6 +51,8 @@ rooms:
         Bill Pelletier
         wjp@hopper.unh.edu
         Aten/Talisman of GenericMUD
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30501:
     area: tba_305
     name: The Smooth Tunnel
@@ -74,6 +76,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30502:
     area: tba_305
     name: The Furnished Chamber
@@ -103,6 +107,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30503:
     area: tba_305
     name: The Stone Staircase
@@ -125,6 +131,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30504:
     area: tba_305
     name: Down..Down..Down..
@@ -145,6 +153,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30505:
     area: tba_305
     name: The Slide
@@ -164,6 +174,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30506:
     area: tba_305
     name: The Ledge
@@ -188,6 +200,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30507:
     area: tba_305
     name: The Ladder
@@ -210,6 +224,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30508:
     area: tba_305
     name: The Black Square
@@ -231,6 +247,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30509:
     area: tba_305
     name: The White Square
@@ -256,6 +274,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30510:
     area: tba_305
     name: The Black Square
@@ -281,6 +301,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30511:
     area: tba_305
     name: The White Square
@@ -306,6 +328,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30512:
     area: tba_305
     name: The Black Square
@@ -331,6 +355,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30513:
     area: tba_305
     name: The White Square
@@ -356,6 +382,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30514:
     area: tba_305
     name: The Black Square
@@ -381,6 +409,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30515:
     area: tba_305
     name: The White Square
@@ -402,6 +432,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30516:
     area: tba_305
     name: The Black Square
@@ -427,6 +459,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30517:
     area: tba_305
     name: The White Square
@@ -456,6 +490,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30518:
     area: tba_305
     name: The Black Square
@@ -485,6 +521,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30519:
     area: tba_305
     name: The White Square
@@ -514,6 +552,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30520:
     area: tba_305
     name: The Black Square
@@ -543,6 +583,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30521:
     area: tba_305
     name: The White Square
@@ -572,6 +614,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30522:
     area: tba_305
     name: The Black Square
@@ -601,6 +645,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30523:
     area: tba_305
     name: The White Square
@@ -626,6 +672,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30524:
     area: tba_305
     name: The Black Square
@@ -651,6 +699,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30525:
     area: tba_305
     name: The White Square
@@ -680,6 +730,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30526:
     area: tba_305
     name: The Black Square
@@ -709,6 +761,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30527:
     area: tba_305
     name: The White Square
@@ -738,6 +792,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30528:
     area: tba_305
     name: The Black Square
@@ -767,6 +823,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30529:
     area: tba_305
     name: The White Square
@@ -796,6 +854,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30530:
     area: tba_305
     name: The Black Square
@@ -825,6 +885,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30531:
     area: tba_305
     name: The White Square
@@ -850,6 +912,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30532:
     area: tba_305
     name: The Black Square
@@ -875,6 +939,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30533:
     area: tba_305
     name: The White Square
@@ -904,6 +970,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30534:
     area: tba_305
     name: The Black Square
@@ -933,6 +1001,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30535:
     area: tba_305
     name: The White Square
@@ -962,6 +1032,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30536:
     area: tba_305
     name: The Black Square
@@ -991,6 +1063,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30537:
     area: tba_305
     name: The White Square
@@ -1020,6 +1094,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30538:
     area: tba_305
     name: The Black Square
@@ -1049,6 +1125,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30539:
     area: tba_305
     name: The White Square
@@ -1084,6 +1162,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30540:
     area: tba_305
     name: The Black Square
@@ -1109,6 +1189,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30541:
     area: tba_305
     name: The White Square
@@ -1138,6 +1220,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30542:
     area: tba_305
     name: The Black Square
@@ -1167,6 +1251,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30543:
     area: tba_305
     name: The White Square
@@ -1196,6 +1282,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30544:
     area: tba_305
     name: The Black Square
@@ -1225,6 +1313,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30545:
     area: tba_305
     name: The White Square
@@ -1254,6 +1344,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30546:
     area: tba_305
     name: The Black Square
@@ -1283,6 +1375,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30547:
     area: tba_305
     name: The White Square
@@ -1318,6 +1412,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30548:
     area: tba_305
     name: The Black Square
@@ -1343,6 +1439,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30549:
     area: tba_305
     name: The White Square
@@ -1372,6 +1470,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30550:
     area: tba_305
     name: The Black Square
@@ -1401,6 +1501,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30551:
     area: tba_305
     name: The White Square
@@ -1430,6 +1532,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30552:
     area: tba_305
     name: The Black Square
@@ -1459,6 +1563,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30553:
     area: tba_305
     name: The White Square
@@ -1488,6 +1594,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30554:
     area: tba_305
     name: The Black Square
@@ -1517,6 +1625,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30555:
     area: tba_305
     name: The White Square
@@ -1542,6 +1652,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30556:
     area: tba_305
     name: The Black Square
@@ -1567,6 +1679,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30557:
     area: tba_305
     name: The White Square
@@ -1596,6 +1710,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30558:
     area: tba_305
     name: The Black Square
@@ -1635,6 +1751,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30559:
     area: tba_305
     name: The White Square
@@ -1664,6 +1782,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30560:
     area: tba_305
     name: The Black Square
@@ -1693,6 +1813,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30561:
     area: tba_305
     name: The White Square
@@ -1722,6 +1844,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30562:
     area: tba_305
     name: The Black Square
@@ -1751,6 +1875,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30563:
     area: tba_305
     name: The White Square
@@ -1776,6 +1902,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30564:
     area: tba_305
     name: The Black Square
@@ -1797,6 +1925,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30565:
     area: tba_305
     name: The White Square
@@ -1822,6 +1952,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30566:
     area: tba_305
     name: The Black Square
@@ -1847,6 +1979,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30567:
     area: tba_305
     name: The White Square
@@ -1872,6 +2006,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30568:
     area: tba_305
     name: The Black Square
@@ -1897,6 +2033,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30569:
     area: tba_305
     name: The White Square
@@ -1922,6 +2060,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30570:
     area: tba_305
     name: The Black Square
@@ -1947,6 +2087,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30571:
     area: tba_305
     name: The White Square
@@ -1968,6 +2110,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30572:
     area: tba_305
     name: The Lost Chamber
@@ -1981,6 +2125,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30573:
     area: tba_305
     name: The Joker's Teacup
@@ -1997,6 +2143,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30574:
     area: tba_305
     name: The Joker's Teacup
@@ -2013,6 +2161,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30575:
     area: tba_305
     name: The Joker's Teacup
@@ -2029,6 +2179,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30576:
     area: tba_305
     name: The Black Queen's Chamber
@@ -2061,6 +2213,8 @@ rooms:
         It appears to be a crazily laughing man dressed in bright clashing clothes.  He
         looks into your eyes and points downward.  "Come visit me, dearie..  ", he says
         with a cackle.  The image abruptly fades...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30577:
     area: tba_305
     name: The White Queen's Chamber
@@ -2093,6 +2247,8 @@ rooms:
         It appears to be a crazily laughing man dressed in bright clashing clothes.  He
         looks into your eyes and points downward "Come visit me, dearie..  ", he says
         with a cackle.  The image abruptly fades...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30578:
     area: tba_305
     name: The Landing
@@ -2111,6 +2267,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30579:
     area: tba_305
     name: The Landing
@@ -2129,6 +2287,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30580:
     area: tba_305
     name: The Dock
@@ -2153,6 +2313,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30581:
     area: tba_305
     name: The Dock
@@ -2177,6 +2339,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30582:
     area: tba_305
     name: The Sulking Swan
@@ -2195,6 +2359,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30583:
     area: tba_305
     name: The Underground River
@@ -2212,6 +2378,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30584:
     area: tba_305
     name: Arrival
@@ -2232,6 +2400,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30585:
     area: tba_305
     name: The Second Dock
@@ -2261,6 +2431,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30586:
     area: tba_305
     name: The Entrance Hall
@@ -2282,6 +2454,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30587:
     area: tba_305
     name: The Entrance Hall
@@ -2304,6 +2478,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30588:
     area: tba_305
     name: The Joker's Throne
@@ -2321,3 +2497,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

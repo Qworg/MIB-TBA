@@ -53,6 +53,8 @@ rooms:
 
         Links: 13n
         Postmaster: 83
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25701:
     area: tba_257
     name: North Bourbon St.
@@ -90,6 +92,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25702:
     area: tba_257
     name: Floris Avenue
@@ -124,6 +128,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25703:
     area: tba_257
     name: Floris Ave
@@ -156,6 +162,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25704:
     area: tba_257
     name: Blood Bank
@@ -177,6 +185,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25705:
     area: tba_257
     name: Jareth City Proper
@@ -210,6 +220,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25706:
     area: tba_257
     name: Floris Ave
@@ -242,6 +254,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25707:
     area: tba_257
     name: Floris Ave
@@ -276,6 +290,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25708:
     area: tba_257
     name: The Reception
@@ -308,6 +324,8 @@ rooms:
                                   MY WAY OR THE HIGHWAY
                                      PAY YOUR RENT!
                         WE WON'T THINK TWICE BEFORE KICKING YOU OUT.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25709:
     area: tba_257
     name: The Wellmaster
@@ -328,6 +346,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25710:
     area: tba_257
     name: Captain Vulcevic's Boat House
@@ -352,6 +372,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25711:
     area: tba_257
     name: Jareth City Bank
@@ -379,6 +401,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25712:
     area: tba_257
     name: River St
@@ -406,6 +430,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25713:
     area: tba_257
     name: Floris Avenue
@@ -432,6 +458,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25714:
     area: tba_257
     name: South Bourbon St.
@@ -471,6 +499,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25715:
     area: tba_257
     name: Reception Area at the Kitty-Kat Club
@@ -504,6 +534,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25716:
     area: tba_257
     name: Town Provisioner
@@ -528,6 +560,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25717:
     area: tba_257
     name: Clariss' Concoctions
@@ -552,6 +586,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25718:
     area: tba_257
     name: River St
@@ -581,6 +617,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25719:
     area: tba_257
     name: Jahred's Tavern
@@ -603,6 +641,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25720:
     area: tba_257
     name: Granny's Quilt Shop
@@ -634,6 +674,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25721:
     area: tba_257
     name: Blacksmith
@@ -655,6 +697,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25722:
     area: tba_257
     name: The Pet Shop
@@ -676,6 +720,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25723:
     area: tba_257
     name: PETSHOP STOREROOM
@@ -698,6 +744,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25724:
     area: tba_257
     name: The Bloated Goat
@@ -725,6 +773,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25725:
     area: tba_257
     name: South Bourbon St.
@@ -758,6 +808,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25726:
     area: tba_257
     name: Main Hall to Ranger's Guild
@@ -788,6 +840,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25727:
     area: tba_257
     name: The Hire Room
@@ -814,6 +868,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25728:
     area: tba_257
     name: Floris Ave
@@ -845,6 +901,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25729:
     area: tba_257
     name: East Gate
@@ -873,6 +931,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25730:
     area: tba_257
     name: South Bourbon St.
@@ -912,6 +972,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25731:
     area: tba_257
     name: The Kitty-Kat Club
@@ -936,6 +998,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25732:
     area: tba_257
     name: Grainy's Bar & Grille
@@ -959,6 +1023,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25733:
     area: tba_257
     name: The Bootery
@@ -978,6 +1044,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25734:
     area: tba_257
     name: Jeweler
@@ -997,6 +1065,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25735:
     area: tba_257
     name: Scrolls and More
@@ -1017,6 +1087,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25736:
     area: tba_257
     name: Contracts, Ltd.
@@ -1040,6 +1112,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25737:
     area: tba_257
     name: Mage Reception
@@ -1065,6 +1139,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25738:
     area: tba_257
     name: Practice & Reading Room
@@ -1089,6 +1165,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25739:
     area: tba_257
     name: Mage's Guild
@@ -1112,6 +1190,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25740:
     area: tba_257
     name: Square
@@ -1148,6 +1228,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25741:
     area: tba_257
     name: Worship Way
@@ -1182,6 +1264,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25742:
     area: tba_257
     name: River St
@@ -1217,6 +1301,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25743:
     area: tba_257
     name: Dark Alley
@@ -1244,6 +1330,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25744:
     area: tba_257
     name: Dark Alley
@@ -1269,6 +1357,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25745:
     area: tba_257
     name: Ranger's Guild Hall
@@ -1291,6 +1381,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25746:
     area: tba_257
     name: Floris Ave
@@ -1322,6 +1414,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25747:
     area: tba_257
     name: Dark Alley
@@ -1359,6 +1453,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25748:
     area: tba_257
     name: Thieves' Guild
@@ -1401,6 +1497,8 @@ rooms:
       - coins
       description: |2
            There could be as much as one million gold in that chest...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25749:
     area: tba_257
     name: The Assassin's Guild
@@ -1427,6 +1525,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25750:
     area: tba_257
     name: Floris Ave
@@ -1456,6 +1556,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25751:
     area: tba_257
     name: Boardwalk
@@ -1484,6 +1586,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25752:
     area: tba_257
     name: Floris Ave
@@ -1507,6 +1611,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25753:
     area: tba_257
     name: The Cartwright
@@ -1531,6 +1637,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25754:
     area: tba_257
     name: North Bourbon St.
@@ -1563,6 +1671,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25755:
     area: tba_257
     name: Dark Alley
@@ -1589,6 +1699,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25756:
     area: tba_257
     name: West Gate
@@ -1617,6 +1729,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25757:
     area: tba_257
     name: Constable's Outpost
@@ -1639,6 +1753,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25758:
     area: tba_257
     name: Worship Way
@@ -1671,6 +1787,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25759:
     area: tba_257
     name: River St.
@@ -1702,6 +1820,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25760:
     area: tba_257
     name: Worship Way
@@ -1736,6 +1856,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25761:
     area: tba_257
     name: Assassin's Weaponry
@@ -1756,6 +1878,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25762:
     area: tba_257
     name: Dalston Outfitters
@@ -1780,6 +1904,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25763:
     area: tba_257
     name: Maris' Weaponry
@@ -1807,6 +1933,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25764:
     area: tba_257
     name: The Cryogenic Center
@@ -1825,6 +1953,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25765:
     area: tba_257
     name: Horse Trader
@@ -1845,6 +1975,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25766:
     area: tba_257
     name: Ranger Reception
@@ -1874,6 +2006,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25767:
     area: tba_257
     name: Thief Shop
@@ -1902,6 +2036,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25768:
     area: tba_257
     name: Constabulary
@@ -1947,6 +2083,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25769:
     area: tba_257
     name: Holding Cell
@@ -1974,6 +2112,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25770:
     area: tba_257
     name: The Magistrate's Office
@@ -2040,6 +2180,8 @@ rooms:
                                                          |        Quilt Shop
                                                          |
                                                      Dark Alley - Dark Alley - Thieve's Guild
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25771:
     area: tba_257
     name: Cobbled St
@@ -2063,6 +2205,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25772:
     area: tba_257
     name: Stables
@@ -2082,6 +2226,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25773:
     area: tba_257
     name: Grigor's Bait and Tackle
@@ -2101,6 +2247,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25774:
     area: tba_257
     name: Warrior's Lounge
@@ -2130,6 +2278,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25775:
     area: tba_257
     name: Warrior's Guild
@@ -2150,6 +2300,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25776:
     area: tba_257
     name: Temple of All and None
@@ -2176,6 +2328,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25777:
     area: tba_257
     name: Meditation and Prayer
@@ -2202,6 +2356,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25778:
     area: tba_257
     name: Cleric's Guild
@@ -2222,6 +2378,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25779:
     area: tba_257
     name: River St Bridge
@@ -2250,6 +2408,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25780:
     area: tba_257
     name: River St
@@ -2278,6 +2438,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25781:
     area: tba_257
     name: Ulath Way
@@ -2305,6 +2467,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25782:
     area: tba_257
     name: Constable's Outpost
@@ -2327,6 +2491,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25783:
     area: tba_257
     name: Post Office
@@ -2346,6 +2512,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25784:
     area: tba_257
     name: Hospital
@@ -2365,6 +2533,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25785:
     area: tba_257
     name: Library
@@ -2384,6 +2554,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25786:
     area: tba_257
     name: Clothing Shop
@@ -2403,6 +2575,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25787:
     area: tba_257
     name: Training Hall
@@ -2421,6 +2595,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25788:
     area: tba_257
     name: Casino
@@ -2442,6 +2618,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25789:
     area: tba_257
     name: Salazar's on the River
@@ -2464,6 +2642,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25790:
     area: tba_257
     name: Ulath Way
@@ -2490,6 +2670,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25791:
     area: tba_257
     name: Ulath Way
@@ -2516,6 +2698,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25792:
     area: tba_257
     name: Ulath Way
@@ -2542,6 +2726,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25793:
     area: tba_257
     name: Ulath Way
@@ -2569,6 +2755,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25794:
     area: tba_257
     name: Boardwalk
@@ -2591,6 +2779,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25795:
     area: tba_257
     name: 'Boardwalk  '
@@ -2614,6 +2804,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25796:
     area: tba_257
     name: Boardwalk
@@ -2638,6 +2830,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25797:
     area: tba_257
     name: Boardwalk
@@ -2665,6 +2859,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25798:
     area: tba_257
     name: Boardwalk
@@ -2694,6 +2890,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25799:
     area: tba_257
     name: The Boardwalk
@@ -2720,3 +2918,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

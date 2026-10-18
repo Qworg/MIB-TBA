@@ -76,6 +76,8 @@ rooms:
         using our areas.  We love your feedback, even the flames.
         *
         Mercutio's donation to the Curious Areas Workshop is highly appreciated.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30001:
     area: tba_300
     name: Before The Dragon
@@ -101,6 +103,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30002:
     area: tba_300
     name: In The Dragon's Mouth
@@ -123,6 +127,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30003:
     area: tba_300
     name: By Some Stone Tonsils
@@ -145,6 +151,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30004:
     area: tba_300
     name: A Throat Of Stone
@@ -168,6 +176,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30005:
     area: tba_300
     name: Further Down The Dragon's Throat
@@ -190,6 +200,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30006:
     area: tba_300
     name: A Junction
@@ -226,6 +238,8 @@ rooms:
       - flap
       description: |2
            Who can say which part of draconian anatomy this might be?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30007:
     area: tba_300
     name: A Stone Tunnel
@@ -248,6 +262,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30008:
     area: tba_300
     name: A Dragon Lung
@@ -264,6 +280,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30009:
     area: tba_300
     name: The Heart Of The Dragon
@@ -285,6 +303,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30010:
     area: tba_300
     name: A Stone Tunnel
@@ -307,6 +327,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30011:
     area: tba_300
     name: A Dragon Lung
@@ -326,6 +348,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30012:
     area: tba_300
     name: Ancalador's Stomach
@@ -355,6 +379,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30013:
     area: tba_300
     name: A Wooden Bridge
@@ -382,6 +408,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30014:
     area: tba_300
     name: A Wooden Bridge
@@ -408,6 +436,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30015:
     area: tba_300
     name: A Wooden Bridge
@@ -435,6 +465,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30016:
     area: tba_300
     name: A Stalagmite Forest
@@ -449,6 +481,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30017:
     area: tba_300
     name: The Acid Forest
@@ -472,6 +506,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30018:
     area: tba_300
     name: The Acid Forest
@@ -498,6 +534,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30019:
     area: tba_300
     name: The Acid Forest
@@ -520,6 +558,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30020:
     area: tba_300
     name: The Acid Forest
@@ -551,6 +591,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30021:
     area: tba_300
     name: The Acid Forest
@@ -581,6 +623,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30022:
     area: tba_300
     name: The Acid Forest
@@ -607,6 +651,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30023:
     area: tba_300
     name: The Acid Forest
@@ -628,6 +674,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30024:
     area: tba_300
     name: The Acid Forest
@@ -654,6 +702,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30025:
     area: tba_300
     name: The Acid Forest
@@ -676,6 +726,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30026:
     area: tba_300
     name: The End Of The Stomach
@@ -711,6 +763,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30027:
     area: tba_300
     name: The Dragon's Pancreas
@@ -746,6 +800,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30028:
     area: tba_300
     name: The Small Intestine
@@ -770,6 +826,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30029:
     area: tba_300
     name: The Small Intestine
@@ -791,6 +849,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30030:
     area: tba_300
     name: The Small Intestine
@@ -812,6 +872,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30031:
     area: tba_300
     name: The Small Intestine
@@ -833,6 +895,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30032:
     area: tba_300
     name: The Small Intestine
@@ -854,6 +918,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30033:
     area: tba_300
     name: The Small Intestine
@@ -876,6 +942,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30034:
     area: tba_300
     name: The Small Intestine
@@ -898,6 +966,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30035:
     area: tba_300
     name: The Small Intestine
@@ -921,6 +991,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30036:
     area: tba_300
     name: The Small Intestine
@@ -942,6 +1014,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30037:
     area: tba_300
     name: The Small Intestine
@@ -963,6 +1037,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30038:
     area: tba_300
     name: The Large Intestine
@@ -986,6 +1062,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30039:
     area: tba_300
     name: The Large Intestine
@@ -1008,6 +1086,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30040:
     area: tba_300
     name: The Large Intestine
@@ -1030,6 +1110,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30041:
     area: tba_300
     name: The Large Intestine
@@ -1052,6 +1134,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30042:
     area: tba_300
     name: The Large Intestine
@@ -1073,6 +1157,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30043:
     area: tba_300
     name: A Stony Sphincter
@@ -1096,6 +1182,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30044:
     area: tba_300
     name: At The Dragon's Tail
@@ -1140,6 +1228,8 @@ rooms:
         steer people away from something that he or she does not want them to see at the
         present moment.  Speaking of which, you *did* see the path leading away to the
         south did you not?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30045:
     area: tba_300
     name: An Undead Garden
@@ -1164,6 +1254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30046:
     area: tba_300
     name: The Private Chambers
@@ -1190,6 +1282,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30047:
     area: tba_300
     name: The Macabre Amphitheather
@@ -1225,6 +1319,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30048:
     area: tba_300
     name: The Temple Of Death
@@ -1248,6 +1344,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30049:
     area: tba_300
     name: Cold Storage
@@ -1272,6 +1370,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30050:
     area: tba_300
     name: The Kennel Of The Demised
@@ -1294,6 +1394,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30051:
     area: tba_300
     name: The Operating Room
@@ -1317,6 +1419,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30052:
     area: tba_300
     name: The Guildhall
@@ -1352,6 +1456,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30053:
     area: tba_300
     name: The Altar Of Annihilation
@@ -1390,6 +1496,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30054:
     area: tba_300
     name: The Darken Pit
@@ -1415,6 +1523,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30055:
     area: tba_300
     name: A Stone Tunnel
@@ -1438,6 +1548,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30056:
     area: tba_300
     name: A Stone Corridor
@@ -1481,6 +1593,8 @@ rooms:
       - walls
       description: |2
            A small fissure appears to be set in the south wall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30057:
     area: tba_300
     name: Muddy Riverbank
@@ -1502,3 +1616,5 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

@@ -40,6 +40,8 @@ rooms:
         relatively high level - even the bats kick some ass. This zone is
         mainly intended to be a zone for high level players to gain good exp
         and find some good eq.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32301:
     area: tba_323
     name: Descending Into the Depths
@@ -65,6 +67,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32302:
     area: tba_323
     name: The Air Gets Cold
@@ -91,6 +95,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32303:
     area: tba_323
     name: Deeper and Deeper
@@ -118,6 +124,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32304:
     area: tba_323
     name: Hundreds of Feet Below the Surface
@@ -143,6 +151,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32305:
     area: tba_323
     name: The Floor Levels
@@ -168,6 +178,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32306:
     area: tba_323
     name: A Smooth Passage
@@ -197,6 +209,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32307:
     area: tba_323
     name: A Secret Chamber
@@ -222,6 +236,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32308:
     area: tba_323
     name: Chamber of Fear
@@ -245,6 +261,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32309:
     area: tba_323
     name: A Curve in the Passage
@@ -270,6 +288,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32310:
     area: tba_323
     name: Near an Alcove
@@ -301,6 +321,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32311:
     area: tba_323
     name: An Alcove
@@ -323,6 +345,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32312:
     area: tba_323
     name: The Passage Widens
@@ -348,6 +372,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32313:
     area: tba_323
     name: An Enormous Cavern
@@ -381,6 +407,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32314:
     area: tba_323
     name: An Enormous Cavern
@@ -405,6 +433,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32315:
     area: tba_323
     name: An Enormous Cavern
@@ -437,6 +467,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32316:
     area: tba_323
     name: An Enormous Cavern
@@ -469,6 +501,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32317:
     area: tba_323
     name: An Enormous Cavern
@@ -497,6 +531,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32318:
     area: tba_323
     name: An Enormous Cavern
@@ -527,6 +563,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32319:
     area: tba_323
     name: An Enormous Cavern
@@ -557,6 +595,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32320:
     area: tba_323
     name: An Enormous Cavern
@@ -590,6 +630,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32321:
     area: tba_323
     name: An Enormous Cavern
@@ -623,6 +665,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32322:
     area: tba_323
     name: An Enormous Cavern
@@ -651,6 +695,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32323:
     area: tba_323
     name: An Enormous Cavern
@@ -679,6 +725,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32324:
     area: tba_323
     name: An Enormous Cavern
@@ -706,6 +754,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32325:
     area: tba_323
     name: Narrow Crack in the Walls
@@ -733,6 +783,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32326:
     area: tba_323
     name: Horror Chamber
@@ -753,6 +805,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32327:
     area: tba_323
     name: An Enormous Cavern
@@ -777,6 +831,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32328:
     area: tba_323
     name: An Enormous Cavern
@@ -807,6 +863,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32329:
     area: tba_323
     name: A Wide Passage
@@ -831,6 +889,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32330:
     area: tba_323
     name: Three-Way Split
@@ -861,6 +921,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32331:
     area: tba_323
     name: Noisy Tunnel
@@ -886,6 +948,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32332:
     area: tba_323
     name: A Thousand Small Voices
@@ -910,6 +974,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32333:
     area: tba_323
     name: An Enormous Din
@@ -938,6 +1004,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32334:
     area: tba_323
     name: A Private Chamber
@@ -958,6 +1026,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32335:
     area: tba_323
     name: Loud as Hell
@@ -987,6 +1057,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32336:
     area: tba_323
     name: A Large Room
@@ -1008,6 +1080,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32337:
     area: tba_323
     name: A Private Chamber
@@ -1028,6 +1102,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32338:
     area: tba_323
     name: A Wide Passage
@@ -1053,6 +1129,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32339:
     area: tba_323
     name: A Wide Passage
@@ -1077,6 +1155,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32340:
     area: tba_323
     name: Entrance to the Dens
@@ -1102,6 +1182,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32341:
     area: tba_323
     name: Den of the Bugbears
@@ -1126,6 +1208,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32342:
     area: tba_323
     name: Den of the Bugbears
@@ -1150,6 +1234,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32343:
     area: tba_323
     name: Den of the Bugbears
@@ -1174,6 +1260,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32344:
     area: tba_323
     name: Main Room in the Den
@@ -1205,6 +1293,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32345:
     area: tba_323
     name: Den of the Bugbears
@@ -1229,6 +1319,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32346:
     area: tba_323
     name: Den of the Bugbears
@@ -1252,6 +1344,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32347:
     area: tba_323
     name: Den of the Bugbears
@@ -1276,6 +1370,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32348:
     area: tba_323
     name: Den of the Bugbears
@@ -1297,6 +1393,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32349:
     area: tba_323
     name: Den of the Bugbears
@@ -1329,6 +1427,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32350:
     area: tba_323
     name: Den of the Bugbears
@@ -1350,6 +1450,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32351:
     area: tba_323
     name: Den of the Bugbears
@@ -1372,6 +1474,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32352:
     area: tba_323
     name: A Steep Climb
@@ -1396,6 +1500,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32353:
     area: tba_323
     name: Up Toward a Fresh Scent
@@ -1420,6 +1526,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32354:
     area: tba_323
     name: Small Cavernway
@@ -1452,6 +1560,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32355:
     area: tba_323
     name: Along the Tributary
@@ -1477,6 +1587,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32356:
     area: tba_323
     name: Along the Tributary
@@ -1500,6 +1612,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32357:
     area: tba_323
     name: The Water Flows Under
@@ -1525,6 +1639,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32358:
     area: tba_323
     name: A Tiny Crack
@@ -1551,6 +1667,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32359:
     area: tba_323
     name: Death's Kiss
@@ -1571,6 +1689,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32360:
     area: tba_323
     name: The Lake's Edge
@@ -1599,6 +1719,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32361:
     area: tba_323
     name: Moldy Passage
@@ -1623,6 +1745,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32362:
     area: tba_323
     name: Moldy Passage
@@ -1647,6 +1771,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32363:
     area: tba_323
     name: Mold Cavern
@@ -1676,6 +1802,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32364:
     area: tba_323
     name: Mold Cavern
@@ -1701,6 +1829,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32365:
     area: tba_323
     name: Cold Storage
@@ -1721,6 +1851,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32366:
     area: tba_323
     name: Mold Cavern
@@ -1751,6 +1883,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32367:
     area: tba_323
     name: Mold Cavern
@@ -1776,6 +1910,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32368:
     area: tba_323
     name: The Lake's Edge
@@ -1800,6 +1936,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32369:
     area: tba_323
     name: The Lake's Edge
@@ -1824,6 +1962,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32370:
     area: tba_323
     name: Vaulted Chamber
@@ -1850,6 +1990,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32371:
     area: tba_323
     name: Vaulted Chamber
@@ -1875,6 +2017,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32372:
     area: tba_323
     name: Top of the Shaft
@@ -1900,6 +2044,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32373:
     area: tba_323
     name: In the Shaft
@@ -1924,6 +2070,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32374:
     area: tba_323
     name: Bottom of the Shaft
@@ -1948,6 +2096,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32375:
     area: tba_323
     name: Vaulted Chamber
@@ -1974,6 +2124,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32376:
     area: tba_323
     name: Archway
@@ -2006,6 +2158,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32377:
     area: tba_323
     name: Wide Carpeted Caveway
@@ -2030,6 +2184,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32378:
     area: tba_323
     name: Wide Carpeted Caveway
@@ -2053,6 +2209,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32379:
     area: tba_323
     name: Wide Carpeted Caveway
@@ -2076,6 +2234,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32380:
     area: tba_323
     name: Before the Chamber
@@ -2101,6 +2261,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32381:
     area: tba_323
     name: Waiting Chamber
@@ -2122,6 +2284,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32382:
     area: tba_323
     name: Side Chamber
@@ -2143,6 +2307,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32383:
     area: tba_323
     name: Entering the Chamber
@@ -2174,6 +2340,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32384:
     area: tba_323
     name: Chamber of the Pale Man
@@ -2205,6 +2373,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32385:
     area: tba_323
     name: Throne Room
@@ -2226,6 +2396,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32386:
     area: tba_323
     name: Waiting Chamber
@@ -2247,6 +2419,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32387:
     area: tba_323
     name: Side Chamber
@@ -2268,6 +2442,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32388:
     area: tba_323
     name: The Cavern Widens
@@ -2296,6 +2472,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32389:
     area: tba_323
     name: A Grim Chamber
@@ -2317,6 +2495,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32390:
     area: tba_323
     name: Deep Well
@@ -2343,6 +2523,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32391:
     area: tba_323
     name: In the Well
@@ -2366,6 +2548,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32392:
     area: tba_323
     name: Well's Base
@@ -2390,6 +2574,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32393:
     area: tba_323
     name: Crosschamber
@@ -2418,6 +2604,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32394:
     area: tba_323
     name: Near a Glow
@@ -2442,6 +2630,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32395:
     area: tba_323
     name: The Dragon's Hoarde
@@ -2462,6 +2652,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32396:
     area: tba_323
     name: Side Tunnel
@@ -2486,6 +2678,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32397:
     area: tba_323
     name: Side Tunnel
@@ -2510,6 +2704,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32398:
     area: tba_323
     name: Deep Room
@@ -2530,6 +2726,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32399:
     area: tba_323
     name: The Aboleth's Lair
@@ -2550,3 +2748,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

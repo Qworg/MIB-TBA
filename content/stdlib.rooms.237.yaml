@@ -54,6 +54,8 @@ rooms:
            The view is excellent from uphere.  You have a splendid view over the
         mountains, and you think they're sooo beautiful...  They do, however get boring
         eventually.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23701:
     area: tba_237
     name: On a well used road through the mountains
@@ -79,6 +81,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23702:
     area: tba_237
     name: On a well used road through the mountains
@@ -109,6 +113,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23703:
     area: tba_237
     name: At a turn on the paved road in the mountains.
@@ -135,6 +141,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23704:
     area: tba_237
     name: A well used road near certain death.
@@ -159,6 +167,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23705:
     area: tba_237
     name: At a turn on the paved road through the mountains.
@@ -186,6 +196,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23706:
     area: tba_237
     name: Before the enormous boulder on the road.
@@ -214,6 +226,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23707:
     area: tba_237
     name: In the lookouts cabin
@@ -251,6 +265,8 @@ rooms:
         A thick length of rope leads from the handles out through the north wall.
         They are probably connecting to the traps.
         You feel tempted to pull a handle!!!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23708:
     area: tba_237
     name: On the stone stairs.
@@ -275,6 +291,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23709:
     area: tba_237
     name: On a road in the mountains.
@@ -302,6 +320,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23710:
     area: tba_237
     name: On a road in the mountains.
@@ -331,6 +351,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23711:
     area: tba_237
     name: On a road in the mountains.
@@ -356,6 +378,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23712:
     area: tba_237
     name: On a road in the mountains.
@@ -382,6 +406,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23713:
     area: tba_237
     name: On a road passing the promontory.
@@ -407,6 +433,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23715:
     area: tba_237
     name: On a road high in the mountains.
@@ -434,6 +462,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23716:
     area: tba_237
     name: On a road ascending the mountains.
@@ -461,6 +491,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23717:
     area: tba_237
     name: Above the foothills.
@@ -491,6 +523,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23718:
     area: tba_237
     name: On a paved road through foothills
@@ -516,6 +550,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23719:
     area: tba_237
     name: On a paved road through foothills
@@ -543,6 +579,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23720:
     area: tba_237
     name: On a paved road through low foothills
@@ -568,6 +606,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23721:
     area: tba_237
     name: On a paved road through low foothills
@@ -594,6 +634,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23722:
     area: tba_237
     name: On a paved road through low foothills
@@ -620,6 +662,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23723:
     area: tba_237
     name: On a paved road through grasslands.
@@ -646,6 +690,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23724:
     area: tba_237
     name: On a paved road through grasslands.
@@ -670,6 +716,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23725:
     area: tba_237
     name: Crossing the Landslide
@@ -700,6 +748,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23726:
     area: tba_237
     name: Crossing the Landslide
@@ -719,6 +769,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23727:
     area: tba_237
     name: Climbing Up the Landslide
@@ -742,6 +794,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23728:
     area: tba_237
     name: Nearing the Top of the Landslide
@@ -766,6 +820,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23729:
     area: tba_237
     name: The Top of the Landslide
@@ -786,3 +842,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

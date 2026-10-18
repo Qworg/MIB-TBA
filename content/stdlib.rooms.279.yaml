@@ -37,6 +37,8 @@ rooms:
            An area based on the Notre Dame Cathedral in Paris and the Three Musketeers.
         By Apollo (modified by Detta)
         Links: 96-98ns portals
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27901:
     area: tba_279
     name: The Beginning of Notre Dame Street
@@ -61,6 +63,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27902:
     area: tba_279
     name: Notre Dame Street
@@ -85,6 +89,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27903:
     area: tba_279
     name: The Entrance to the Cathedral
@@ -120,6 +126,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27904:
     area: tba_279
     name: The End of Notre Dame Street
@@ -139,6 +147,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27905:
     area: tba_279
     name: The Atrium of the Cathedral
@@ -178,6 +188,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27906:
     area: tba_279
     name: The Atrium of Notre Dame
@@ -197,6 +209,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27907:
     area: tba_279
     name: The Atrium of Notre Dame
@@ -217,6 +231,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27908:
     area: tba_279
     name: The Central Corridor
@@ -249,6 +265,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27909:
     area: tba_279
     name: The Eastern Corridor
@@ -275,6 +293,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27910:
     area: tba_279
     name: The Waiting Room of the Cathedral
@@ -305,6 +325,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27911:
     area: tba_279
     name: A Little Chapel
@@ -331,6 +353,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27912:
     area: tba_279
     name: The Western Corridor
@@ -364,6 +388,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27913:
     area: tba_279
     name: A Small Room
@@ -393,6 +419,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27914:
     area: tba_279
     name: The Way to the Steeple
@@ -418,6 +446,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27915:
     area: tba_279
     name: Western Aisle
@@ -445,6 +475,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27916:
     area: tba_279
     name: The Central Nave
@@ -476,6 +508,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27917:
     area: tba_279
     name: The Eastern Aisle
@@ -503,6 +537,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27918:
     area: tba_279
     name: Eastern Aisle
@@ -530,6 +566,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27919:
     area: tba_279
     name: The Central Nave
@@ -562,6 +600,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27920:
     area: tba_279
     name: The Western Aisle
@@ -589,6 +629,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27921:
     area: tba_279
     name: The Western Aisle
@@ -612,6 +654,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27922:
     area: tba_279
     name: The Nave
@@ -643,6 +687,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27923:
     area: tba_279
     name: Eastern Aisle
@@ -666,6 +712,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27924:
     area: tba_279
     name: The Cathedral Altar
@@ -685,6 +733,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27925:
     area: tba_279
     name: The Second Floor of Notre Dame
@@ -719,6 +769,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27926:
     area: tba_279
     name: The Cathedral Steeple
@@ -745,6 +797,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27927:
     area: tba_279
     name: A Corridor
@@ -771,6 +825,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27928:
     area: tba_279
     name: The Central Corridor of the Second Floor
@@ -799,6 +855,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27929:
     area: tba_279
     name: The Room of Quasimodo
@@ -819,6 +877,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27930:
     area: tba_279
     name: The Central Corridor of the Second Floor
@@ -846,6 +906,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27931:
     area: tba_279
     name: A Corridor in the Second Floor
@@ -873,6 +935,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27932:
     area: tba_279
     name: The End of a Corridor
@@ -900,6 +964,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27933:
     area: tba_279
     name: The End of the Central Corridor
@@ -931,6 +997,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27934:
     area: tba_279
     name: The Eastern Room of the Second Floor
@@ -952,6 +1020,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27935:
     area: tba_279
     name: A Trap in Notre Dame
@@ -966,6 +1036,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27936:
     area: tba_279
     name: The Western Room of the Second Floor
@@ -985,6 +1057,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27937:
     area: tba_279
     name: A Bridge In France
@@ -1014,6 +1088,8 @@ rooms:
       - sign
       description: |2
            To the North lies the city of Paris and to the South; the city of Lyon.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27938:
     area: tba_279
     name: The Entrance to Lyon
@@ -1039,6 +1115,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27939:
     area: tba_279
     name: The Principal Street of Lyon
@@ -1072,6 +1150,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27940:
     area: tba_279
     name: A Lyon House
@@ -1091,6 +1171,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27941:
     area: tba_279
     name: The Lyon Park
@@ -1112,6 +1194,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27942:
     area: tba_279
     name: Downtown
@@ -1145,6 +1229,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27943:
     area: tba_279
     name: The Magic Shop of France
@@ -1165,6 +1251,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27944:
     area: tba_279
     name: The End of the Principal Street
@@ -1196,6 +1284,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27945:
     area: tba_279
     name: A Lyon Cabin
@@ -1216,6 +1306,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27946:
     area: tba_279
     name: A House of Lyon
@@ -1236,6 +1328,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27947:
     area: tba_279
     name: Carriage Station
@@ -1267,6 +1361,8 @@ rooms:
       description: |2
            PRICES FOR SERVICES To the downtown of Lyon: 50 gold coins. To the downtown
         of Paris: 85 gold coins
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27948:
     area: tba_279
     name: A Dark Tunnel
@@ -1293,6 +1389,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27949:
     area: tba_279
     name: A Dead End
@@ -1315,6 +1413,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27950:
     area: tba_279
     name: The Entrance to Champs Elysees
@@ -1355,6 +1455,8 @@ rooms:
            Danger! Explore this forest at your own risk, we are not responsible for
         visitors who become lost whilst wandering about. If you dare to enter, we
         recommend a visit to the historical center of Paris, simply head N E N W S W N W.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27951:
     area: tba_279
     name: Champs Elysees
@@ -1395,6 +1497,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27952:
     area: tba_279
     name: Champs Elysees
@@ -1429,6 +1533,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27953:
     area: tba_279
     name: Champs Elysees
@@ -1463,6 +1569,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27954:
     area: tba_279
     name: Champs Elysees
@@ -1497,6 +1605,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27955:
     area: tba_279
     name: Champs Elysees
@@ -1531,6 +1641,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27956:
     area: tba_279
     name: Champs Elysees
@@ -1565,6 +1677,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27957:
     area: tba_279
     name: An Encampment of Gypsies
@@ -1596,6 +1710,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27958:
     area: tba_279
     name: Champs Elysees
@@ -1630,6 +1746,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27959:
     area: tba_279
     name: Champs Elysees
@@ -1664,6 +1782,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27960:
     area: tba_279
     name: The Historical Center of France
@@ -1689,6 +1809,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27961:
     area: tba_279
     name: The Entrance to the Plaza Louis XIV
@@ -1728,6 +1850,8 @@ rooms:
       description: |2
            The Plaza Louis XIV will soon be renamed to the Plaza of the Revolution.
         -Robespierre
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27962:
     area: tba_279
     name: Plaza Louis XIV
@@ -1751,6 +1875,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27963:
     area: tba_279
     name: Plaza Louis XIV
@@ -1776,6 +1902,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27964:
     area: tba_279
     name: Concorde Plaza
@@ -1804,6 +1932,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27965:
     area: tba_279
     name: The Center of the Plaza
@@ -1836,6 +1966,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27966:
     area: tba_279
     name: Concorde Plaza
@@ -1864,6 +1996,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27967:
     area: tba_279
     name: Revolution Plaza
@@ -1894,6 +2028,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27968:
     area: tba_279
     name: The Entrance to Musketeer H.Q.
@@ -1931,6 +2067,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27969:
     area: tba_279
     name: Revolution Plaza
@@ -1955,6 +2093,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27970:
     area: tba_279
     name: The Entrance of Musketeer H.Q.
@@ -1989,6 +2129,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27971:
     area: tba_279
     name: The French Cafeteria
@@ -2009,6 +2151,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27972:
     area: tba_279
     name: A Hall in the H.Q.
@@ -2036,6 +2180,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27973:
     area: tba_279
     name: The Eastern Passage
@@ -2058,6 +2204,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27974:
     area: tba_279
     name: The Eastern Passage
@@ -2081,6 +2229,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27975:
     area: tba_279
     name: The Eastern Intersection
@@ -2107,6 +2257,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27976:
     area: tba_279
     name: The Eastern Corridor
@@ -2130,6 +2282,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27977:
     area: tba_279
     name: The Eastern End Of The Corridor
@@ -2154,6 +2308,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27978:
     area: tba_279
     name: The Musketeer's Room
@@ -2184,6 +2340,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27979:
     area: tba_279
     name: A Hall in the H.Q.
@@ -2217,6 +2375,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27980:
     area: tba_279
     name: A Way to the Dungeon
@@ -2247,6 +2407,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27981:
     area: tba_279
     name: The Western Intersection
@@ -2273,6 +2435,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27982:
     area: tba_279
     name: The Western Corridor
@@ -2295,6 +2459,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27983:
     area: tba_279
     name: The Western End of the Corridor
@@ -2317,6 +2483,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27984:
     area: tba_279
     name: A Way to the Tower
@@ -2340,6 +2508,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27985:
     area: tba_279
     name: The Western Passage
@@ -2363,6 +2533,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27986:
     area: tba_279
     name: The Western Passage
@@ -2396,6 +2568,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27987:
     area: tba_279
     name: A French Stable
@@ -2421,6 +2595,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27988:
     area: tba_279
     name: A French Hotel
@@ -2441,6 +2617,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27989:
     area: tba_279
     name: A Corridor to the Cells
@@ -2465,6 +2643,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27990:
     area: tba_279
     name: A Corridor in the Dungeon
@@ -2490,6 +2670,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27991:
     area: tba_279
     name: At the End of the Dungeon Corridor
@@ -2541,6 +2723,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27992:
     area: tba_279
     name: A Cell in the Dungeon
@@ -2568,6 +2752,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27993:
     area: tba_279
     name: A Tomb-Like Cell
@@ -2584,6 +2770,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27994:
     area: tba_279
     name: A Cell in the Dungeon
@@ -2610,6 +2798,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27995:
     area: tba_279
     name: A Tower in the H.Q.
@@ -2630,6 +2820,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27996:
     area: tba_279
     name: A Strange Passage
@@ -2654,6 +2846,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27997:
     area: tba_279
     name: A Strange Passage
@@ -2678,6 +2872,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27998:
     area: tba_279
     name: A Small Miscellaneous Shop
@@ -2698,6 +2894,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27999:
     area: tba_279
     name: Royal Hall
@@ -2724,3 +2922,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

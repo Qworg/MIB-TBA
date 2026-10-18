@@ -27,6 +27,8 @@ rooms:
       - info
       description: |2
            Welcor
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2801:
     area: tba_28
     name: 'Mudschool 1st Lesson: Finding your way around.'
@@ -65,6 +67,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2802:
     area: tba_28
     name: 'Mudschool 2nd Lesson: Finders Keepers'
@@ -104,6 +108,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2803:
     area: tba_28
     name: 'Mudschool 3rd Lesson: Money talks.'
@@ -139,6 +145,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2804:
     area: tba_28
     name: 'Mudschool 4th Lesson: How to not go through life naked!'
@@ -181,6 +189,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2805:
     area: tba_28
     name: 'Mudschool 5th Lesson: Preparing for battle.'
@@ -215,6 +225,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2806:
     area: tba_28
     name: 'Mudschool 6th Lesson: The end of poor piglet.'
@@ -247,6 +259,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2807:
     area: tba_28
     name: 'Mudschool 7th Lesson: Lunch break.'
@@ -283,6 +297,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2808:
     area: tba_28
     name: 'Mudschool 8th Lesson: Classes !? - Why?'
@@ -366,6 +382,8 @@ rooms:
         <cast 'armor' xxx> and <cast 'cure light' xxx>
         where xxx is the name of your target.
 
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2809:
     area: tba_28
     name: 'Mudschool 9th Lesson: Who Am I - really ?'
@@ -401,6 +419,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2810:
     area: tba_28
     name: 'Mudschool 10th Lesson: Shortcuts'
@@ -438,6 +458,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2811:
     area: tba_28
     name: 'Mudschool 11th Lesson : Doors - a menace to free movement.'
@@ -476,6 +498,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2812:
     area: tba_28
     name: 'Mudschool 12th Lesson : Socialising'
@@ -520,6 +544,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2813:
     area: tba_28
     name: 'Mudschool 14th Lesson : What NOT to do :)'
@@ -545,6 +571,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2814:
     area: tba_28
     name: 'Mudschool 13th Lesson : Getting the game on your side.'
@@ -571,6 +599,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2815:
     area: tba_28
     name: Welcors ~~~ ~~~ furnace
@@ -603,3 +633,5 @@ rooms:
       - Welcor
       description: |2
            Even when not here, you sense his presence.
+    ambient_phases: {}
+    ambient_weather: {}

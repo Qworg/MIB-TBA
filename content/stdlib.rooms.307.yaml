@@ -44,6 +44,8 @@ rooms:
         and had it ready for play immediately. All things considered, its not
         a bad zone for what it was created for.
         Links: 80n
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30701:
     area: tba_307
     name: Wide Road Through the Foothills
@@ -76,6 +78,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30702:
     area: tba_307
     name: At the Castle Entry
@@ -115,6 +119,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30703:
     area: tba_307
     name: Foyer
@@ -164,6 +170,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30704:
     area: tba_307
     name: Short Hallway
@@ -186,6 +194,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30705:
     area: tba_307
     name: Short Hallway
@@ -214,6 +224,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30706:
     area: tba_307
     name: The Lord's State Room
@@ -250,6 +262,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30707:
     area: tba_307
     name: Short Hallway
@@ -278,6 +292,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30708:
     area: tba_307
     name: Short Hallway
@@ -306,6 +322,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30709:
     area: tba_307
     name: The Lord and Lady's Bedchamber
@@ -342,6 +360,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30710:
     area: tba_307
     name: The Main Hall
@@ -374,6 +394,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30711:
     area: tba_307
     name: The Main Hall
@@ -408,6 +430,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30712:
     area: tba_307
     name: The Grand Ballroom
@@ -431,6 +455,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30713:
     area: tba_307
     name: The Grand Ballroom
@@ -454,6 +480,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30714:
     area: tba_307
     name: Back Hall
@@ -482,6 +510,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30715:
     area: tba_307
     name: Back Hall
@@ -504,6 +534,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30716:
     area: tba_307
     name: Back Hall
@@ -528,6 +560,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30717:
     area: tba_307
     name: The Back Exit
@@ -546,6 +580,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30718:
     area: tba_307
     name: Storage
@@ -565,6 +601,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30719:
     area: tba_307
     name: Kitchen
@@ -599,6 +637,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30720:
     area: tba_307
     name: Southern Hallway
@@ -622,6 +662,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30721:
     area: tba_307
     name: Southern Hallway
@@ -645,6 +687,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30722:
     area: tba_307
     name: Southern Hallway
@@ -674,6 +718,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30723:
     area: tba_307
     name: A Bend in the Hallway
@@ -696,6 +742,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30724:
     area: tba_307
     name: Western Hallway
@@ -718,6 +766,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30725:
     area: tba_307
     name: Western Hallway
@@ -746,6 +796,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30726:
     area: tba_307
     name: The Base of the Stairwell
@@ -785,6 +837,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30727:
     area: tba_307
     name: Guest Room
@@ -809,6 +863,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30728:
     area: tba_307
     name: Guest Room
@@ -833,6 +889,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30729:
     area: tba_307
     name: Northern End of the Hall
@@ -861,6 +919,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30730:
     area: tba_307
     name: Upper Hallway
@@ -893,6 +953,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30731:
     area: tba_307
     name: Upper Hallway
@@ -935,6 +997,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30732:
     area: tba_307
     name: Upper Hallway
@@ -982,6 +1046,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30733:
     area: tba_307
     name: Upper Hallway
@@ -1024,6 +1090,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30734:
     area: tba_307
     name: Upper Hallway
@@ -1066,6 +1134,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30735:
     area: tba_307
     name: Upper Hallway
@@ -1098,6 +1168,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30736:
     area: tba_307
     name: Southern End of the Hall
@@ -1126,6 +1198,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30737:
     area: tba_307
     name: Guest Room
@@ -1150,6 +1224,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30738:
     area: tba_307
     name: Guest Room
@@ -1174,6 +1250,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30739:
     area: tba_307
     name: Guest Room
@@ -1198,6 +1276,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30740:
     area: tba_307
     name: Guest Room
@@ -1222,6 +1302,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30741:
     area: tba_307
     name: Guest Room
@@ -1246,6 +1328,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30742:
     area: tba_307
     name: Guest Room
@@ -1270,6 +1354,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30743:
     area: tba_307
     name: Guest Room
@@ -1294,6 +1380,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30744:
     area: tba_307
     name: Guest Room
@@ -1319,6 +1407,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30745:
     area: tba_307
     name: Guest Room
@@ -1343,6 +1433,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30746:
     area: tba_307
     name: Guest Room
@@ -1367,6 +1459,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30747:
     area: tba_307
     name: Along the Castle Wall
@@ -1395,6 +1489,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30748:
     area: tba_307
     name: The Rolling Foothills
@@ -1426,6 +1522,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30749:
     area: tba_307
     name: The Rolling Foothills
@@ -1457,6 +1555,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30750:
     area: tba_307
     name: The Rolling Foothills
@@ -1488,6 +1588,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30751:
     area: tba_307
     name: The Rolling Foothills
@@ -1511,6 +1613,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30752:
     area: tba_307
     name: Along the Castle Wall
@@ -1539,6 +1643,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30753:
     area: tba_307
     name: Along the Castle Wall
@@ -1563,6 +1669,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30754:
     area: tba_307
     name: The Rolling Foothills
@@ -1594,6 +1702,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30755:
     area: tba_307
     name: The Rolling Foothills
@@ -1625,6 +1735,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30756:
     area: tba_307
     name: The Rolling Foothills
@@ -1652,6 +1764,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30757:
     area: tba_307
     name: The Rolling Foothills
@@ -1675,6 +1789,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30758:
     area: tba_307
     name: The Rolling Foothills
@@ -1698,6 +1814,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30759:
     area: tba_307
     name: A Side Path
@@ -1726,6 +1844,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30760:
     area: tba_307
     name: Rolling Foothills
@@ -1757,6 +1877,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30761:
     area: tba_307
     name: Rolling Foothills
@@ -1788,6 +1910,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30762:
     area: tba_307
     name: Rolling Foothills
@@ -1819,6 +1943,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30763:
     area: tba_307
     name: Rolling Foothills
@@ -1842,6 +1968,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30764:
     area: tba_307
     name: A Side Path
@@ -1869,6 +1997,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30765:
     area: tba_307
     name: Rolling Foothills
@@ -1900,6 +2030,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30766:
     area: tba_307
     name: Rolling Foothills
@@ -1931,6 +2063,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30767:
     area: tba_307
     name: Rolling Foothills
@@ -1954,6 +2088,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30768:
     area: tba_307
     name: Rolling Foothills
@@ -1981,6 +2117,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30769:
     area: tba_307
     name: Rolling Foothills
@@ -2012,6 +2150,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30770:
     area: tba_307
     name: A Side Path
@@ -2039,6 +2179,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30771:
     area: tba_307
     name: A Side Path
@@ -2071,6 +2213,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30772:
     area: tba_307
     name: Barn
@@ -2090,6 +2234,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30773:
     area: tba_307
     name: Rolling Foothills
@@ -2109,6 +2255,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30774:
     area: tba_307
     name: Stable
@@ -2126,6 +2274,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30775:
     area: tba_307
     name: Rolling Foothills
@@ -2157,6 +2307,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30776:
     area: tba_307
     name: Rolling Foothills
@@ -2184,6 +2336,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30777:
     area: tba_307
     name: Rolling Foothills
@@ -2211,6 +2365,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30778:
     area: tba_307
     name: Rolling Foothills
@@ -2238,6 +2394,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30779:
     area: tba_307
     name: Rolling Foothills
@@ -2265,6 +2423,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30780:
     area: tba_307
     name: Rolling Foothills
@@ -2288,6 +2448,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30781:
     area: tba_307
     name: Wide Road Through the Foothills
@@ -2322,6 +2484,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30782:
     area: tba_307
     name: Wide Road Through the Foothills
@@ -2356,6 +2520,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30783:
     area: tba_307
     name: Cold Storage
@@ -2381,3 +2547,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

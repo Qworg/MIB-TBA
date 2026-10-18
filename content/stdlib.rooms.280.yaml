@@ -41,6 +41,8 @@ rooms:
         looks very futuristic, lights flash all about the portal, and things beep.
         This portal is probably the work of some ancient Technomancer(computer
         geek/wizard).
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28001:
     area: tba_280
     name: The corner of the motherboard.
@@ -66,6 +68,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28002:
     area: tba_280
     name: A microchip cluster.
@@ -95,6 +99,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28003:
     area: tba_280
     name: An expanse of motherboard.
@@ -124,6 +130,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28004:
     area: tba_280
     name: A warped section of motherboard.
@@ -152,6 +160,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28005:
     area: tba_280
     name: An area of transistors.
@@ -184,6 +194,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28006:
     area: tba_280
     name: Another warped area.
@@ -210,6 +222,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28007:
     area: tba_280
     name: Some jumpers.
@@ -237,6 +251,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28008:
     area: tba_280
     name: More $%# microchips.
@@ -264,6 +280,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28009:
     area: tba_280
     name: Another warped area.
@@ -296,6 +314,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28010:
     area: tba_280
     name: The SouthWestern edge of the motherboard.
@@ -318,6 +338,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28011:
     area: tba_280
     name: The edge of the motherboard.
@@ -344,6 +366,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28012:
     area: tba_280
     name: A silicon expanse.
@@ -374,6 +398,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28013:
     area: tba_280
     name: An exposed circuit.
@@ -391,6 +417,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28014:
     area: tba_280
     name: A power outlet.
@@ -421,6 +449,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28015:
     area: tba_280
     name: A MicroChip cluster.
@@ -450,6 +480,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28016:
     area: tba_280
     name: Mo' motherboard.
@@ -480,6 +512,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28017:
     area: tba_280
     name: A damaged section of the motherboard.
@@ -514,6 +548,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28018:
     area: tba_280
     name: A barren area of the motherboard.
@@ -544,6 +580,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28019:
     area: tba_280
     name: Transistors.
@@ -574,6 +612,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28020:
     area: tba_280
     name: The northern edge of the motherboard.
@@ -604,6 +644,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28021:
     area: tba_280
     name: More Jumpers.
@@ -629,6 +671,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28022:
     area: tba_280
     name: The motherboard.
@@ -659,6 +703,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28023:
     area: tba_280
     name: Another power outlet.
@@ -690,6 +736,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28024:
     area: tba_280
     name: The manufacturer's label.
@@ -729,6 +777,8 @@ rooms:
         Ryan Kelley(rkelley@exis.net)
         E-mail with suggestions or comments, or for a listing of other products
         available.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28025:
     area: tba_280
     name: Guess.
@@ -758,6 +808,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28026:
     area: tba_280
     name: A blasted space.
@@ -788,6 +840,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28027:
     area: tba_280
     name: A very busy area.
@@ -817,6 +871,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28028:
     area: tba_280
     name: Before the FPU.
@@ -846,6 +902,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28029:
     area: tba_280
     name: The FPU socket.
@@ -876,6 +934,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28030:
     area: tba_280
     name: Southern Edge.
@@ -901,6 +961,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28031:
     area: tba_280
     name: The southern edge of the motherboard.
@@ -927,6 +989,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28032:
     area: tba_280
     name: The CPU socket.
@@ -957,6 +1021,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28033:
     area: tba_280
     name: A silicon landscape.
@@ -987,6 +1053,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28034:
     area: tba_280
     name: A burned out socket.
@@ -1017,6 +1085,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28035:
     area: tba_280
     name: Jumpers.
@@ -1047,6 +1117,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28036:
     area: tba_280
     name: An open socket.
@@ -1076,6 +1148,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28037:
     area: tba_280
     name: Another area of the motherboard.
@@ -1105,6 +1179,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28038:
     area: tba_280
     name: SIMM bank 0.
@@ -1134,6 +1210,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28039:
     area: tba_280
     name: SIMM bank 1.
@@ -1163,6 +1241,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28040:
     area: tba_280
     name: SIMM bank 2.
@@ -1187,6 +1267,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28041:
     area: tba_280
     name: SIMM bank 3.
@@ -1208,6 +1290,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28042:
     area: tba_280
     name: SIMM bank 4.
@@ -1232,6 +1316,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28043:
     area: tba_280
     name: SIMM bank 5.
@@ -1256,6 +1342,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28044:
     area: tba_280
     name: A PCI slot.
@@ -1281,6 +1369,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28045:
     area: tba_280
     name: The second the PCI slot.
@@ -1305,6 +1395,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28046:
     area: tba_280
     name: Another PCI slot.
@@ -1329,6 +1421,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28047:
     area: tba_280
     name: The last PCI slot.
@@ -1353,6 +1447,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28048:
     area: tba_280
     name: Another area of the motherboard.
@@ -1378,6 +1474,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28049:
     area: tba_280
     name: The eastern edge.
@@ -1403,6 +1501,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28050:
     area: tba_280
     name: The south-eastern edge.
@@ -1424,6 +1524,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28051:
     area: tba_280
     name: Off the edge of the motherboard.
@@ -1446,3 +1548,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

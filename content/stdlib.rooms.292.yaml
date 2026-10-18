@@ -78,6 +78,8 @@ rooms:
       - throne
       description: |2
            Its nice, for a chair, but drab, for a throne.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29201:
     area: tba_292
     name: MouseRider's Bedroom
@@ -104,6 +106,8 @@ rooms:
       - west
       description: |2
            This door seems welded shut.  You'll never open it!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29202:
     area: tba_292
     name: Plaza of Kerofk
@@ -146,6 +150,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29203:
     area: tba_292
     name: The Blue Temple
@@ -177,6 +183,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29204:
     area: tba_292
     name: Center Road, East
@@ -204,6 +212,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29205:
     area: tba_292
     name: Intersection
@@ -236,6 +246,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29206:
     area: tba_292
     name: Center Road, East
@@ -259,6 +271,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29207:
     area: tba_292
     name: The Red Card
@@ -280,6 +294,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29208:
     area: tba_292
     name: Intersection at the Cliff's Edge
@@ -314,6 +330,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29209:
     area: tba_292
     name: Cliffside Road, South
@@ -348,6 +366,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29210:
     area: tba_292
     name: Intersection at the Cliff's Edge
@@ -377,6 +397,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29211:
     area: tba_292
     name: Moon Gate Road, East
@@ -405,6 +427,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29212:
     area: tba_292
     name: Intersection
@@ -432,6 +456,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29213:
     area: tba_292
     name: Citizen's Road, South
@@ -455,6 +481,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29214:
     area: tba_292
     name: Cliffside Road, North
@@ -487,6 +515,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29215:
     area: tba_292
     name: Intersection at the Cliff's Edge
@@ -515,6 +545,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29216:
     area: tba_292
     name: Star Gate Road, East
@@ -542,6 +574,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29217:
     area: tba_292
     name: Intersection
@@ -569,6 +603,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29218:
     area: tba_292
     name: Citizen's Road, North
@@ -597,6 +633,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29219:
     area: tba_292
     name: Star Gate Road, East
@@ -625,6 +663,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29220:
     area: tba_292
     name: Star Gate Road
@@ -651,6 +691,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29221:
     area: tba_292
     name: Star Gate Road, West
@@ -680,6 +722,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29222:
     area: tba_292
     name: Intersection
@@ -711,6 +755,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29223:
     area: tba_292
     name: Business Road, North
@@ -739,6 +785,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29224:
     area: tba_292
     name: Intersection
@@ -772,6 +820,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29225:
     area: tba_292
     name: Center Road, West
@@ -801,6 +851,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29226:
     area: tba_292
     name: Moon Gate Road, East
@@ -829,6 +881,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29227:
     area: tba_292
     name: Moon Gate Road
@@ -856,6 +910,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29228:
     area: tba_292
     name: Moon Gate Road, West
@@ -884,6 +940,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29229:
     area: tba_292
     name: Intersection
@@ -911,6 +969,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29230:
     area: tba_292
     name: Business Road, South
@@ -938,6 +998,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29231:
     area: tba_292
     name: Moon Gate Road, West
@@ -966,6 +1028,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29232:
     area: tba_292
     name: Intersection
@@ -994,6 +1058,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29233:
     area: tba_292
     name: Wall Side Road, South
@@ -1017,6 +1083,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29234:
     area: tba_292
     name: Intersection
@@ -1047,6 +1115,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29235:
     area: tba_292
     name: Wall Side Road, North
@@ -1073,6 +1143,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29236:
     area: tba_292
     name: Intersection
@@ -1102,6 +1174,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29237:
     area: tba_292
     name: Star Gate Road, West
@@ -1125,6 +1199,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29238:
     area: tba_292
     name: Center Road, West
@@ -1153,6 +1229,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29239:
     area: tba_292
     name: Jenk's Place
@@ -1185,6 +1263,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29240:
     area: tba_292
     name: The Back Room
@@ -1210,6 +1290,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29241:
     area: tba_292
     name: The Edge of Luck
@@ -1236,6 +1318,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29242:
     area: tba_292
     name: Benzaldehyde's Office
@@ -1266,6 +1350,8 @@ rooms:
       description: |2
            With a closer look, you realize the pictures are all of someone else's
         family.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29243:
     area: tba_292
     name: Bob's Armory and Tackle
@@ -1287,6 +1373,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29244:
     area: tba_292
     name: The Fortress
@@ -1313,6 +1401,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29245:
     area: tba_292
     name: The Reception Area
@@ -1333,6 +1423,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29246:
     area: tba_292
     name: The CliffHanger
@@ -1354,6 +1446,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29247:
     area: tba_292
     name: The Bookstore
@@ -1384,6 +1478,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29248:
     area: tba_292
     name: Thieves Guild
@@ -1410,6 +1506,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29249:
     area: tba_292
     name: Mages' Guild, Entrance
@@ -1460,6 +1558,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29250:
     area: tba_292
     name: The Kerofk MobChute
@@ -1498,6 +1598,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29251:
     area: tba_292
     name: Leonna's Office
@@ -1519,6 +1621,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29252:
     area: tba_292
     name: Mages' Guild Storeroom
@@ -1544,6 +1648,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29253:
     area: tba_292
     name: The Mages' Library
@@ -1571,6 +1677,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29254:
     area: tba_292
     name: The Herbalist's Shoppe
@@ -1592,6 +1700,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29255:
     area: tba_292
     name: Town Hall--Entrance
@@ -1631,6 +1741,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29256:
     area: tba_292
     name: Outer Office
@@ -1653,6 +1765,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29257:
     area: tba_292
     name: Mayor Kell's Office
@@ -1675,6 +1789,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29258:
     area: tba_292
     name: Courtroom
@@ -1693,6 +1809,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29259:
     area: tba_292
     name: Outer Chamber
@@ -1722,6 +1840,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29260:
     area: tba_292
     name: Inner Chamber
@@ -1752,6 +1872,8 @@ rooms:
       - table
       description: |2
            You notice a small engraving on one side: 'Amanda was here.  '
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29261:
     area: tba_292
     name: Jailer's Room
@@ -1788,6 +1910,8 @@ rooms:
       - newspaper
       description: |2
            Seems all it is is war news.  How boring!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29262:
     area: tba_292
     name: Cells
@@ -1815,6 +1939,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29263:
     area: tba_292
     name: Kell's House
@@ -1842,6 +1968,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29264:
     area: tba_292
     name: Reception
@@ -1861,6 +1989,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29265:
     area: tba_292
     name: Kell's Tavern
@@ -1880,6 +2010,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29266:
     area: tba_292
     name: Uh-Oh!
@@ -1898,6 +2030,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29267:
     area: tba_292
     name: Whoops...
@@ -1913,6 +2047,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29268:
     area: tba_292
     name: The Kerofk MobChute
@@ -1952,6 +2088,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29269:
     area: tba_292
     name: Temple of XXXX
@@ -1981,6 +2119,8 @@ rooms:
       description: |2
            Upon closer inspection, you notice the statue is sticking his
         tongue out at you...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29270:
     area: tba_292
     name: Living Area
@@ -2000,6 +2140,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29271:
     area: tba_292
     name: Recruiting Office
@@ -2024,6 +2166,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29272:
     area: tba_292
     name: Captain's Office
@@ -2043,6 +2187,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29273:
     area: tba_292
     name: Vacant Lot
@@ -2061,6 +2207,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29274:
     area: tba_292
     name: History of Kerofk
@@ -2092,6 +2240,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29275:
     area: tba_292
     name: Shrine to the Emperor
@@ -2124,6 +2274,8 @@ rooms:
         stone eye, worn smooth by time and the elements.  It feels strangely
         warm to the touch, and you feel a tingling as you pass your hand above
         it...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29276:
     area: tba_292
     name: Star Gate
@@ -2155,6 +2307,8 @@ rooms:
         destroy the evil orb inside.  I shall pay well for the deed!!!  Please stop by
         my temple and get the magic scroll used for entering the foul area if you are
         powerful enough to withstand the trials!!!  --MouseRider, sage of Kerofk.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29277:
     area: tba_292
     name: Moon Gate
@@ -2186,6 +2340,8 @@ rooms:
         destroy the evil orb within.  I shall pay thee well for the deed!  Please stop
         by my temple and get the magic scroll used for entering the foul area, if you
         are powerful enough to withstand its trials!!!  --MouseRider, sage of Kerofk.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29278:
     area: tba_292
     name: Front Yard
@@ -2212,6 +2368,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29279:
     area: tba_292
     name: Foyer
@@ -2236,6 +2394,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29280:
     area: tba_292
     name: Main Hall
@@ -2273,6 +2433,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29281:
     area: tba_292
     name: Back Yard
@@ -2298,6 +2460,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29282:
     area: tba_292
     name: Entrance to the Garden
@@ -2328,6 +2492,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29283:
     area: tba_292
     name: Fountain Area
@@ -2355,6 +2521,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29284:
     area: tba_292
     name: In the Garden
@@ -2379,6 +2547,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29285:
     area: tba_292
     name: In the Garden
@@ -2401,6 +2571,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29286:
     area: tba_292
     name: Hallway
@@ -2431,6 +2603,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29287:
     area: tba_292
     name: Sitting Room
@@ -2452,6 +2626,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29288:
     area: tba_292
     name: A Trashed Room
@@ -2472,6 +2648,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29289:
     area: tba_292
     name: Hallway
@@ -2500,6 +2678,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29290:
     area: tba_292
     name: Dining Room
@@ -2520,6 +2700,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29291:
     area: tba_292
     name: Second Floor Hallway
@@ -2549,6 +2731,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29292:
     area: tba_292
     name: Kitchen
@@ -2570,6 +2754,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29293:
     area: tba_292
     name: Hallway
@@ -2592,6 +2778,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29294:
     area: tba_292
     name: Bedroom
@@ -2613,6 +2801,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29295:
     area: tba_292
     name: Hallway
@@ -2643,6 +2833,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29296:
     area: tba_292
     name: Guest Bedroom
@@ -2673,6 +2865,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29297:
     area: tba_292
     name: Bedroom
@@ -2695,6 +2889,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29298:
     area: tba_292
     name: Attic
@@ -2739,6 +2935,8 @@ rooms:
            Um, the more you look at this jar, the more the thing floating
         inside begins to look at a piece of human anatomy.  *urp* You are
         beginning to feel _very_ ill.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29299:
     area: tba_292
     name: Bedroom
@@ -2766,3 +2964,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

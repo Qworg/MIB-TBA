@@ -36,6 +36,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31001:
     area: tba_310
     name: The attachment room
@@ -49,6 +51,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31002:
     area: tba_310
     name: The Great Field
@@ -69,6 +73,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31003:
     area: tba_310
     name: The Forest's Edge
@@ -94,6 +100,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31004:
     area: tba_310
     name: Entrance to the Forest of Graye
@@ -128,6 +136,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31005:
     area: tba_310
     name: The Forest of Graye
@@ -149,6 +159,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31006:
     area: tba_310
     name: The Forest of Graye
@@ -174,6 +186,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31007:
     area: tba_310
     name: The Forest of Graye
@@ -199,6 +213,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31008:
     area: tba_310
     name: The Forest of Graye
@@ -220,6 +236,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31009:
     area: tba_310
     name: The Forest of Graye
@@ -263,6 +281,8 @@ rooms:
         *                            *
         *                            *
         ******************************
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31010:
     area: tba_310
     name: The Forest of Graye
@@ -295,6 +315,8 @@ rooms:
       - face
       description: |2
            The face of the cliff seems impossible to scale.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31011:
     area: tba_310
     name: The Forest of Graye
@@ -325,6 +347,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31012:
     area: tba_310
     name: The Forest of Graye
@@ -354,6 +378,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31013:
     area: tba_310
     name: The Forest of Graye
@@ -375,6 +401,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31014:
     area: tba_310
     name: The Forest of Graye
@@ -407,6 +435,8 @@ rooms:
       - face
       description: |2
            The cliff face seems impossible to scale.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31015:
     area: tba_310
     name: The Forest of Graye
@@ -436,6 +466,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31016:
     area: tba_310
     name: The Forest of Graye
@@ -461,6 +493,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31017:
     area: tba_310
     name: The Forest of Graye
@@ -493,6 +527,8 @@ rooms:
       description: |2
            It seems that if you put your toe right here, and your left hand over here,
         that you just might be able to climb it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31018:
     area: tba_310
     name: The Forest of Graye
@@ -518,6 +554,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31019:
     area: tba_310
     name: The Forest of Graye
@@ -539,6 +577,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31020:
     area: tba_310
     name: The Cliff Wall
@@ -562,6 +602,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31021:
     area: tba_310
     name: The Overhang
@@ -585,6 +627,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31022:
     area: tba_310
     name: Hanging By a Thread
@@ -611,6 +655,8 @@ rooms:
       - thin
       description: |2
            The ledge is very narrow, perhaps two feet at it's widest part.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31023:
     area: tba_310
     name: The Thin Ledge
@@ -637,6 +683,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31024:
     area: tba_310
     name: The Ledge
@@ -661,6 +709,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31025:
     area: tba_310
     name: Oops.
@@ -678,6 +728,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31026:
     area: tba_310
     name: Top of the Cliff
@@ -702,6 +754,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31027:
     area: tba_310
     name: The Clearing
@@ -728,6 +782,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31028:
     area: tba_310
     name: The Clearing
@@ -758,6 +814,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31029:
     area: tba_310
     name: The Clearing
@@ -784,6 +842,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31030:
     area: tba_310
     name: The Clearing
@@ -806,6 +866,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31031:
     area: tba_310
     name: Entrance to the City of Graye
@@ -824,6 +886,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31032:
     area: tba_310
     name: The Clearing
@@ -846,6 +910,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31033:
     area: tba_310
     name: The Demon's Wood
@@ -869,6 +935,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31034:
     area: tba_310
     name: The Demon's Wood
@@ -892,6 +960,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31035:
     area: tba_310
     name: The Demon's Wood
@@ -915,6 +985,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31036:
     area: tba_310
     name: The Demon's Wood
@@ -938,6 +1010,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31037:
     area: tba_310
     name: The City Street
@@ -979,6 +1053,8 @@ rooms:
         and killed!
         signed,
         The Graye Guard
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31038:
     area: tba_310
     name: The City Streets
@@ -1004,6 +1080,8 @@ rooms:
            The poster reads:
         Great rewards will be given to anyone who can
         rescue the benevolent King Relnar.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31039:
     area: tba_310
     name: The City Streets
@@ -1022,6 +1100,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31040:
     area: tba_310
     name: Inside the Castle
@@ -1040,6 +1120,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31041:
     area: tba_310
     name: Entrance to Relnar's Castle
@@ -1070,6 +1152,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31042:
     area: tba_310
     name: Inside the Castle
@@ -1088,6 +1172,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31043:
     area: tba_310
     name: Relnar's Study
@@ -1116,6 +1202,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31044:
     area: tba_310
     name: The Throne Room
@@ -1153,6 +1241,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31045:
     area: tba_310
     name: Rymat's Chamber
@@ -1185,6 +1275,8 @@ rooms:
       - washbasin
       description: |2
            It is a very nice washbasin.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31046:
     area: tba_310
     name: The Tunnel
@@ -1220,6 +1312,8 @@ rooms:
       - magical
       description: |2
            They provide light with a soft magical glow.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31047:
     area: tba_310
     name: The Tunnel
@@ -1242,6 +1336,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31048:
     area: tba_310
     name: Tunnel's End
@@ -1271,6 +1367,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31049:
     area: tba_310
     name: The Valley of Demons
@@ -1302,6 +1400,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31050:
     area: tba_310
     name: The Valley of Demons
@@ -1327,6 +1427,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31051:
     area: tba_310
     name: The Valley Floor
@@ -1350,6 +1452,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31052:
     area: tba_310
     name: The Rift
@@ -1373,6 +1477,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31053:
     area: tba_310
     name: Inside the Rift
@@ -1396,6 +1502,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31054:
     area: tba_310
     name: The Tunnel
@@ -1420,6 +1528,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31055:
     area: tba_310
     name: Irgon's Guard Room
@@ -1450,6 +1560,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31056:
     area: tba_310
     name: Scrytin's Chamber of Doom
@@ -1485,6 +1597,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31057:
     area: tba_310
     name: Relnar's Cell
@@ -1512,6 +1626,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31058:
     area: tba_310
     name: The Lava
@@ -1530,6 +1646,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31059:
     area: tba_310
     name: The secret passage
@@ -1553,6 +1671,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31060:
     area: tba_310
     name: The Catacombs
@@ -1577,6 +1697,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31061:
     area: tba_310
     name: The Tomb of Graye
@@ -1605,3 +1727,5 @@ rooms:
       - tablet
       description: |2
            It is a giant stone tablet supporting the coffin of Graye.
+    ambient_phases: {}
+    ambient_weather: {}

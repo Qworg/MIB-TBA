@@ -22,6 +22,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27501:
     area: tba_275
     name: The Port Of New Sparta
@@ -47,6 +49,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27502:
     area: tba_275
     name: Central Harbourplace
@@ -81,6 +85,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27503:
     area: tba_275
     name: Broadway
@@ -117,6 +123,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27504:
     area: tba_275
     name: Harbourplace East
@@ -141,6 +149,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27505:
     area: tba_275
     name: Harbourplace West
@@ -168,6 +178,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27506:
     area: tba_275
     name: Broadway
@@ -199,6 +211,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27507:
     area: tba_275
     name: Charlie's Fish Store
@@ -219,6 +233,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27508:
     area: tba_275
     name: Tin Can Alley
@@ -248,6 +264,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27509:
     area: tba_275
     name: By The Shore
@@ -267,6 +285,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27510:
     area: tba_275
     name: By The Shore
@@ -288,6 +308,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27511:
     area: tba_275
     name: Broadway
@@ -321,6 +343,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27512:
     area: tba_275
     name: The Sexy Seventies Cafe
@@ -343,6 +367,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27513:
     area: tba_275
     name: Harry's Pharmacy
@@ -369,6 +395,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27514:
     area: tba_275
     name: The Entrance To The Thieves' Guild
@@ -390,6 +418,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27515:
     area: tba_275
     name: Tin Can Alley
@@ -414,6 +444,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27516:
     area: tba_275
     name: The Intersection Of First And Broadway
@@ -448,6 +480,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27517:
     area: tba_275
     name: The Weapons Shop
@@ -470,6 +504,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27518:
     area: tba_275
     name: The Seven-Eleven
@@ -489,6 +525,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27519:
     area: tba_275
     name: The Entrance To The Clerics' Guild
@@ -511,6 +549,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27520:
     area: tba_275
     name: The Clerics' Bar
@@ -533,6 +573,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27521:
     area: tba_275
     name: The Inner Sanctum
@@ -551,6 +593,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27522:
     area: tba_275
     name: Tin Can Alley
@@ -576,6 +620,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27523:
     area: tba_275
     name: The Entrance To The Guild Of Swordsmen
@@ -599,6 +645,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27524:
     area: tba_275
     name: The Bar Of Swordsmen
@@ -623,6 +671,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27525:
     area: tba_275
     name: The Tournament And Practice Yard
@@ -639,6 +689,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27526:
     area: tba_275
     name: Baltimore Avenue
@@ -668,6 +720,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27527:
     area: tba_275
     name: Pee Wee's Peep Show
@@ -688,6 +742,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27528:
     area: tba_275
     name: Baltimore Avenue
@@ -712,6 +768,8 @@ rooms:
       - graffiti
       description: |2
            Try Peggy at Pee Wee's, She's da Best!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27529:
     area: tba_275
     name: First Avenue
@@ -734,6 +792,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27530:
     area: tba_275
     name: The Entrance To The WarDome
@@ -783,6 +843,8 @@ rooms:
            *                                                        *
            *                   STANDING ROOM ONLY                   *
            **********************************************************
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27531:
     area: tba_275
     name: Inside The WarDome
@@ -815,6 +877,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27532:
     area: tba_275
     name: The West Stands
@@ -839,6 +903,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27533:
     area: tba_275
     name: The West Stands
@@ -862,6 +928,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27534:
     area: tba_275
     name: The West Stands
@@ -891,6 +959,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27535:
     area: tba_275
     name: The West Stands
@@ -914,6 +984,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27536:
     area: tba_275
     name: The West Stands
@@ -944,6 +1016,8 @@ rooms:
            This group of blondes, brunettes, and redheads is one of the most stunning
         you have ever seen.  These are the best that New Sparta has to offer.  It is
         just too bad you can't get a closer look (at least not from here).
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27537:
     area: tba_275
     name: Northwest Corner Of The WarDome
@@ -969,6 +1043,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27538:
     area: tba_275
     name: Behind WarVision
@@ -994,6 +1070,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27539:
     area: tba_275
     name: The Concourse Behind WarVision
@@ -1015,6 +1093,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27540:
     area: tba_275
     name: The End of the Concourse
@@ -1060,6 +1140,8 @@ rooms:
            *                       The Management   *
            *                                        *
            ******************************************
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27541:
     area: tba_275
     name: The Visitor's Locker Room
@@ -1084,6 +1166,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27542:
     area: tba_275
     name: The Shower Room
@@ -1105,6 +1189,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27543:
     area: tba_275
     name: The Blue Seats
@@ -1130,6 +1216,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27544:
     area: tba_275
     name: The Blue Seats
@@ -1162,6 +1250,8 @@ rooms:
       - steps
       description: |2
            Many have ventured down these steps...  Not as many have returned.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27545:
     area: tba_275
     name: The Blue Seats
@@ -1181,6 +1271,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27546:
     area: tba_275
     name: The Tunnel
@@ -1208,6 +1300,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27547:
     area: tba_275
     name: The Tunnel
@@ -1235,6 +1329,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27548:
     area: tba_275
     name: The 50-Meter Line
@@ -1265,6 +1361,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27549:
     area: tba_275
     name: The Warriors' Zone
@@ -1291,6 +1389,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27550:
     area: tba_275
     name: The Warriors' End Zone
@@ -1315,6 +1415,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27551:
     area: tba_275
     name: The Warriors' Zone
@@ -1345,6 +1447,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27552:
     area: tba_275
     name: The Warriors' End Zone
@@ -1377,6 +1481,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27553:
     area: tba_275
     name: Centerfield
@@ -1410,6 +1516,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27554:
     area: tba_275
     name: The Raiders' Zone
@@ -1440,6 +1548,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27555:
     area: tba_275
     name: The 50-Meter Line
@@ -1466,6 +1576,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27556:
     area: tba_275
     name: The Warriors' End Zone
@@ -1490,6 +1602,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27557:
     area: tba_275
     name: The Warriors' Zone
@@ -1516,6 +1630,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27558:
     area: tba_275
     name: The Raiders' Zone
@@ -1542,6 +1658,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27559:
     area: tba_275
     name: The Raiders' End Zone
@@ -1567,6 +1685,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27560:
     area: tba_275
     name: The Raiders' End Zone
@@ -1592,6 +1712,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27561:
     area: tba_275
     name: The Raiders' Zone
@@ -1618,6 +1740,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27562:
     area: tba_275
     name: The Raiders' End Zone
@@ -1647,6 +1771,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27566:
     area: tba_275
     name: Broadway
@@ -1680,6 +1806,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27567:
     area: tba_275
     name: The Armory
@@ -1698,6 +1826,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27568:
     area: tba_275
     name: Wally's Wonderful World Of Magic
@@ -1725,6 +1855,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27569:
     area: tba_275
     name: Broadway
@@ -1756,6 +1888,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27570:
     area: tba_275
     name: Intersection of Broadway and Second Avenue
@@ -1787,6 +1921,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27571:
     area: tba_275
     name: Broadway
@@ -1821,6 +1957,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27572:
     area: tba_275
     name: The Museum Of National History
@@ -1843,6 +1981,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27573:
     area: tba_275
     name: The Lobby Of The Waldorf Astoria
@@ -1869,6 +2009,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27574:
     area: tba_275
     name: Broadway
@@ -1900,6 +2042,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27575:
     area: tba_275
     name: The Entrance To The Mages' Guild
@@ -1920,6 +2064,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27576:
     area: tba_275
     name: The Mages' Bar
@@ -1942,6 +2088,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27577:
     area: tba_275
     name: The Mages' Laboratory
@@ -1962,6 +2110,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27579:
     area: tba_275
     name: The New Spartan Bank
@@ -1982,6 +2132,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27580:
     area: tba_275
     name: Broadway
@@ -2014,6 +2166,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27581:
     area: tba_275
     name: The Lobby To Goethe's Library
@@ -2037,6 +2191,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27582:
     area: tba_275
     name: The Entrance To Cheers Bar
@@ -2064,6 +2220,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27583:
     area: tba_275
     name: The Main Bar
@@ -2096,6 +2254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27584:
     area: tba_275
     name: The Stools By The Bar
@@ -2127,6 +2287,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27585:
     area: tba_275
     name: Inside The Bar
@@ -2149,6 +2311,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27586:
     area: tba_275
     name: The Stairs To Melville's
@@ -2180,6 +2344,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27587:
     area: tba_275
     name: Inside The Bar
@@ -2203,6 +2369,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27588:
     area: tba_275
     name: Inside The Bar
@@ -2243,6 +2411,8 @@ rooms:
       description: |2
            You see a picture of the famous Indian, Geronimo.  An inscription says in
         loving memory of Coach.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27589:
     area: tba_275
     name: The Pool Room
@@ -2268,6 +2438,8 @@ rooms:
       - table
       description: |2
            This is your standard tournament pool table (would you expect anything less).
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27590:
     area: tba_275
     name: Melville's Restaurant
@@ -2290,6 +2462,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27591:
     area: tba_275
     name: Rebecca's Office
@@ -2325,6 +2499,8 @@ rooms:
       - desk
       description: |2
            This is a large desk, good for doing many various things.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27592:
     area: tba_275
     name: City Hall
@@ -2348,6 +2524,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27593:
     area: tba_275
     name: Mayor Abe's Office
@@ -2369,6 +2547,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27594:
     area: tba_275
     name: The Reception In The Waldorf Astoria
@@ -2388,6 +2568,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27595:
     area: tba_275
     name: The Rogues' Bar
@@ -2412,6 +2594,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27596:
     area: tba_275
     name: The Secret Yard
@@ -2429,6 +2613,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27597:
     area: tba_275
     name: The Renaissance Department Store
@@ -2447,6 +2633,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27598:
     area: tba_275
     name: Second Avenue
@@ -2471,6 +2659,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27599:
     area: tba_275
     name: The East End Of Second Avenue
@@ -2497,3 +2687,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

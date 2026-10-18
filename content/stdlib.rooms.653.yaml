@@ -51,6 +51,8 @@ rooms:
     - keywords:
       - Plan
       description: "   Plan\n\n98-99-00\n    |\n   97\n\n      37    38    39        .        52    53    54      \n       |     |     |        .         |     |     |\n       |     |     |        .         |     |     |\n       |     |     |        .         |     |     |\n51----05----06----07----40  .  66----13----14----15----55\n       |     |     |        .         |     |     |\n       |     |     |        .         |     |     |\n       |     |     |        .         |     |     |\n49----08-50 01 42-09----41  .  64----16-65 02 57-17----56\n       |           |        .         |           |\n       |    46     |        .         |    61     |\n       |     |     |        .         |     |     |\n48----10----11----12----43  .  63----18----19----20----58\n       |     |     |        .         |     |     |\n       |     |     |        .         |     |     |\n       |     |     |        .         |     |     |\n      47    45    44        .        62    60    59      \n.........................................................\n      67    68    69        .        82    83    84      \n       |     |     |        .         |     |     |\n       |     |     |        .         |     |     |\n       |     |     |        .         |     |     |\n81----21----22----23----70  .  96----29----30----31----85\n       |     |     |        .         |     |     |\n       |     |     |        .         |     |     |\n       |     |     |        .         |     |     |\n79----24-80 03 72-25----71  .  94----32-95 04 87-33----86\n       |           |        .         |           |\n       |    76     |        .         |    91     |\n       |     |     |        .         |     |     |\n78----26----27----28----73  .  93----34----35----36----88\n       |     |     |        .         |     |     |\n       |     |     |        .         |     |     |\n       |     |     |        .         |     |     |\n      77    75    74        .        92    90    89      \nElevator: 01-04\nHalls: 05-36\nApartments: 37-96\n"
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65301:
     area: tba_653
     name: The Elevator
@@ -86,6 +88,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65302:
     area: tba_653
     name: Second Floor Elevator
@@ -119,6 +123,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65303:
     area: tba_653
     name: Third Floor Elevator
@@ -158,6 +164,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65304:
     area: tba_653
     name: Fourth Floor Elevator
@@ -187,6 +195,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65305:
     area: tba_653
     name: First Floor North-West Corner
@@ -216,6 +226,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65306:
     area: tba_653
     name: First Floor North
@@ -252,6 +264,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65307:
     area: tba_653
     name: First Floor North-East Corner
@@ -281,6 +295,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65308:
     area: tba_653
     name: First Floor East
@@ -310,6 +326,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65309:
     area: tba_653
     name: First Floor South-East Corner
@@ -339,6 +357,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65310:
     area: tba_653
     name: First Floor South
@@ -368,6 +388,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65311:
     area: tba_653
     name: First Floor South-West Corner
@@ -397,6 +419,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65312:
     area: tba_653
     name: First Floor West
@@ -426,6 +450,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65313:
     area: tba_653
     name: Second Floor North-West Corner
@@ -455,6 +481,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65314:
     area: tba_653
     name: Second Floor North
@@ -491,6 +519,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65315:
     area: tba_653
     name: Second Floor North-East Corner
@@ -520,6 +550,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65316:
     area: tba_653
     name: Second Floor East
@@ -549,6 +581,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65317:
     area: tba_653
     name: Second Floor South-East Corner
@@ -578,6 +612,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65318:
     area: tba_653
     name: Second Floor South
@@ -607,6 +643,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65319:
     area: tba_653
     name: Second Floor South-West Corner
@@ -636,6 +674,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65320:
     area: tba_653
     name: Second Floor West
@@ -665,6 +705,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65321:
     area: tba_653
     name: Third Floor North-West Corner
@@ -694,6 +736,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65322:
     area: tba_653
     name: Third Floor North
@@ -730,6 +774,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65323:
     area: tba_653
     name: Third Floor North-East Corner
@@ -759,6 +805,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65324:
     area: tba_653
     name: Third Floor East
@@ -788,6 +836,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65325:
     area: tba_653
     name: Third Floor South-East Corner
@@ -817,6 +867,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65326:
     area: tba_653
     name: Third Floor South
@@ -846,6 +898,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65327:
     area: tba_653
     name: Third Floor South-West Corner
@@ -875,6 +929,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65328:
     area: tba_653
     name: Third Floor West
@@ -904,6 +960,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65329:
     area: tba_653
     name: Fourth Floor North-West Corner
@@ -933,6 +991,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65330:
     area: tba_653
     name: Fourth Floor North
@@ -979,6 +1039,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65331:
     area: tba_653
     name: Fourth Floor North-East Corner
@@ -1008,6 +1070,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65332:
     area: tba_653
     name: Fourth Floor East
@@ -1037,6 +1101,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65333:
     area: tba_653
     name: Fourth Floor South-East Corner
@@ -1066,6 +1132,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65334:
     area: tba_653
     name: Fourth Floor South
@@ -1095,6 +1163,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65335:
     area: tba_653
     name: Fourth Floor South-West Corner
@@ -1124,6 +1194,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65336:
     area: tba_653
     name: Fourth Floor West
@@ -1153,6 +1225,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65337:
     area: tba_653
     name: Apartment 101
@@ -1181,6 +1255,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65338:
     area: tba_653
     name: Apartment 102
@@ -1209,6 +1285,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65339:
     area: tba_653
     name: Apartment 103
@@ -1237,6 +1315,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65340:
     area: tba_653
     name: Apartment 104
@@ -1265,6 +1345,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65341:
     area: tba_653
     name: Apartment 105
@@ -1293,6 +1375,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65342:
     area: tba_653
     name: Apartment 106
@@ -1321,6 +1405,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65343:
     area: tba_653
     name: Apartment 107
@@ -1349,6 +1435,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65344:
     area: tba_653
     name: Apartment 108
@@ -1377,6 +1465,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65345:
     area: tba_653
     name: Apartment 109
@@ -1405,6 +1495,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65346:
     area: tba_653
     name: Apartment 110
@@ -1433,6 +1525,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65347:
     area: tba_653
     name: Apartment 111
@@ -1461,6 +1555,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65348:
     area: tba_653
     name: Apartment 112
@@ -1489,6 +1585,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65349:
     area: tba_653
     name: Apartment 113
@@ -1517,6 +1615,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65350:
     area: tba_653
     name: Apartment 114
@@ -1545,6 +1645,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65351:
     area: tba_653
     name: Apartment 115
@@ -1573,6 +1675,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65352:
     area: tba_653
     name: Apartment 201
@@ -1601,6 +1705,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65353:
     area: tba_653
     name: Apartment 202
@@ -1629,6 +1735,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65354:
     area: tba_653
     name: Apartment 203
@@ -1657,6 +1765,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65355:
     area: tba_653
     name: Apartment 204
@@ -1685,6 +1795,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65356:
     area: tba_653
     name: Apartment 205
@@ -1713,6 +1825,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65357:
     area: tba_653
     name: Apartment 206
@@ -1741,6 +1855,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65358:
     area: tba_653
     name: Apartment 207
@@ -1769,6 +1885,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65359:
     area: tba_653
     name: Apartment 208
@@ -1797,6 +1915,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65360:
     area: tba_653
     name: Apartment 209
@@ -1825,6 +1945,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65361:
     area: tba_653
     name: Apartment 210
@@ -1853,6 +1975,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65362:
     area: tba_653
     name: Apartment 211
@@ -1881,6 +2005,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65363:
     area: tba_653
     name: Apartment 212
@@ -1909,6 +2035,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65364:
     area: tba_653
     name: Apartment 213
@@ -1937,6 +2065,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65365:
     area: tba_653
     name: Apartment 214
@@ -1965,6 +2095,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65366:
     area: tba_653
     name: Apartment 215
@@ -1993,6 +2125,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65367:
     area: tba_653
     name: Apartment 301
@@ -2021,6 +2155,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65368:
     area: tba_653
     name: Apartment 302
@@ -2049,6 +2185,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65369:
     area: tba_653
     name: Apartment 303
@@ -2077,6 +2215,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65370:
     area: tba_653
     name: Apartment 304
@@ -2105,6 +2245,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65371:
     area: tba_653
     name: Apartment 305
@@ -2133,6 +2275,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65372:
     area: tba_653
     name: Apartment 306
@@ -2161,6 +2305,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65373:
     area: tba_653
     name: Apartment 307
@@ -2189,6 +2335,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65374:
     area: tba_653
     name: Apartment 308
@@ -2217,6 +2365,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65375:
     area: tba_653
     name: Apartment 309
@@ -2245,6 +2395,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65376:
     area: tba_653
     name: Apartment 310
@@ -2273,6 +2425,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65377:
     area: tba_653
     name: Apartment 311
@@ -2301,6 +2455,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65378:
     area: tba_653
     name: Apartment 312
@@ -2329,6 +2485,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65379:
     area: tba_653
     name: Apartment 313
@@ -2357,6 +2515,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65380:
     area: tba_653
     name: Apartment 314
@@ -2385,6 +2545,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65381:
     area: tba_653
     name: Apartment 315
@@ -2413,6 +2575,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65382:
     area: tba_653
     name: Apartment 401
@@ -2441,6 +2605,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65383:
     area: tba_653
     name: Apartment 402
@@ -2469,6 +2635,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65384:
     area: tba_653
     name: Apartment 403
@@ -2497,6 +2665,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65385:
     area: tba_653
     name: Apartment 404
@@ -2525,6 +2695,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65386:
     area: tba_653
     name: Apartment 405
@@ -2553,6 +2725,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65387:
     area: tba_653
     name: Apartment 406
@@ -2581,6 +2755,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65388:
     area: tba_653
     name: Apartment 407
@@ -2609,6 +2785,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65389:
     area: tba_653
     name: Apartment 408
@@ -2637,6 +2815,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65390:
     area: tba_653
     name: Apartment 409
@@ -2665,6 +2845,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65391:
     area: tba_653
     name: Apartment 410
@@ -2693,6 +2875,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65392:
     area: tba_653
     name: Apartment 411
@@ -2721,6 +2905,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65393:
     area: tba_653
     name: Apartment 412
@@ -2749,6 +2935,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65394:
     area: tba_653
     name: Apartment 413
@@ -2777,6 +2965,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65395:
     area: tba_653
     name: Apartment 414
@@ -2805,6 +2995,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65396:
     area: tba_653
     name: Apartment 415
@@ -2833,6 +3025,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65397:
     area: tba_653
     name: A Generic Sort of Building
@@ -2861,6 +3055,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65398:
     area: tba_653
     name: Building Foyer
@@ -2900,6 +3096,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65399:
     area: tba_653
     name: Inside the Elevator
@@ -2931,3 +3129,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

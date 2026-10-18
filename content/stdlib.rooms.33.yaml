@@ -47,6 +47,8 @@ rooms:
       - info
       description: |2
            DT: 3372
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3301:
     area: tba_33
     name: A Scraggly Trail
@@ -72,6 +74,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3302:
     area: tba_33
     name: A Groomed Path
@@ -100,6 +104,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3303:
     area: tba_33
     name: Outside A House
@@ -133,6 +139,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3304:
     area: tba_33
     name: The Smithery
@@ -179,6 +187,8 @@ rooms:
       - dust
       description: |2
            Three sets of prints lead out where the back door used to stand.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3305:
     area: tba_33
     name: A Small Garden
@@ -209,6 +219,8 @@ rooms:
       - track
       description: |2
            They lead east.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3306:
     area: tba_33
     name: Mountain Ridge
@@ -239,6 +251,8 @@ rooms:
       - track
       description: |2
            The tracks lead south.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3307:
     area: tba_33
     name: The Mountain Ridge
@@ -271,6 +285,8 @@ rooms:
       - track
       description: |2
            They lead south.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3308:
     area: tba_33
     name: The Diverging Paths
@@ -310,6 +326,8 @@ rooms:
       - track
       description: |2
            The three sets of tracks split up here, one west, one east, one south.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3309:
     area: tba_33
     name: A Steep Slope
@@ -346,6 +364,8 @@ rooms:
       description: |2
            A few boot prints lead way in the dust here.  There is definitely traffic
         here, but this area is not what you would call well-travelled.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3310:
     area: tba_33
     name: A Small Plateau
@@ -375,6 +395,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3311:
     area: tba_33
     name: A Small Plateau
@@ -402,6 +424,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3312:
     area: tba_33
     name: A Rocky Slope
@@ -428,6 +452,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3313:
     area: tba_33
     name: The Overlook
@@ -453,6 +479,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3314:
     area: tba_33
     name: A Rocky Slope
@@ -478,6 +506,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3315:
     area: tba_33
     name: The Depression Floor
@@ -504,6 +534,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3316:
     area: tba_33
     name: The Depression Floor
@@ -529,6 +561,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3317:
     area: tba_33
     name: A Cave Entrance
@@ -557,6 +591,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3318:
     area: tba_33
     name: A Cave Passageway
@@ -587,6 +623,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3319:
     area: tba_33
     name: A Cave Passageway
@@ -612,6 +650,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3320:
     area: tba_33
     name: A Cave Passageway
@@ -636,6 +676,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3321:
     area: tba_33
     name: A Cave Passageway
@@ -660,6 +702,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3322:
     area: tba_33
     name: A Cave Passageway
@@ -690,6 +734,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3323:
     area: tba_33
     name: A Cave
@@ -709,6 +755,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3324:
     area: tba_33
     name: A Cave Passageway
@@ -734,6 +782,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3325:
     area: tba_33
     name: A Cave Passageway
@@ -757,6 +807,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3326:
     area: tba_33
     name: A Cave Passageway
@@ -783,6 +835,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3327:
     area: tba_33
     name: A Cave Passageway
@@ -808,6 +862,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3328:
     area: tba_33
     name: A Cave Passageway
@@ -833,6 +889,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3329:
     area: tba_33
     name: The End Of The Passageway
@@ -864,6 +922,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3330:
     area: tba_33
     name: A Cavern
@@ -892,6 +952,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3331:
     area: tba_33
     name: A Cave Passageway
@@ -917,6 +979,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3332:
     area: tba_33
     name: A Cave Passageway
@@ -941,6 +1005,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3333:
     area: tba_33
     name: A Cave Passageway
@@ -965,6 +1031,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3334:
     area: tba_33
     name: A Cave Passageway
@@ -988,6 +1056,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3335:
     area: tba_33
     name: A Cave Passageway
@@ -1014,6 +1084,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3336:
     area: tba_33
     name: A Cave Passageway
@@ -1041,6 +1113,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3337:
     area: tba_33
     name: A Cave Passageway
@@ -1066,6 +1140,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3338:
     area: tba_33
     name: A Cave Passageway
@@ -1090,6 +1166,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3339:
     area: tba_33
     name: A Cave Passageway
@@ -1115,6 +1193,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3340:
     area: tba_33
     name: The End Of The Passage
@@ -1135,6 +1215,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3341:
     area: tba_33
     name: A Rocky Slope
@@ -1163,6 +1245,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3342:
     area: tba_33
     name: A Rocky Slope
@@ -1191,6 +1275,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3343:
     area: tba_33
     name: Main Road
@@ -1241,6 +1327,8 @@ rooms:
                         |  |
                         |  |
                         |  |
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3344:
     area: tba_33
     name: The Mountain Tavern
@@ -1261,6 +1349,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3345:
     area: tba_33
     name: The General Store
@@ -1278,6 +1368,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3346:
     area: tba_33
     name: Main Road
@@ -1306,6 +1398,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3347:
     area: tba_33
     name: The Corral
@@ -1326,6 +1420,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3348:
     area: tba_33
     name: The Intersection
@@ -1361,6 +1457,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3349:
     area: tba_33
     name: A Small Road
@@ -1391,6 +1489,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3350:
     area: tba_33
     name: The Farmer's Market
@@ -1410,6 +1510,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3351:
     area: tba_33
     name: A Small Road
@@ -1440,6 +1542,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3352:
     area: tba_33
     name: A Private Home
@@ -1467,6 +1571,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3353:
     area: tba_33
     name: A Small Road
@@ -1497,6 +1603,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3354:
     area: tba_33
     name: A Private Home
@@ -1523,6 +1631,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3355:
     area: tba_33
     name: Main Road
@@ -1556,6 +1666,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3356:
     area: tba_33
     name: Stanneg Inn
@@ -1591,6 +1703,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3357:
     area: tba_33
     name: The Common Room
@@ -1612,6 +1726,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3358:
     area: tba_33
     name: The Reception
@@ -1633,6 +1749,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3359:
     area: tba_33
     name: A Rocky Slope
@@ -1659,6 +1777,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3360:
     area: tba_33
     name: A Ledge
@@ -1690,6 +1810,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3361:
     area: tba_33
     name: Outside Of A Cottage
@@ -1716,6 +1838,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3362:
     area: tba_33
     name: The Torched Cottage
@@ -1738,6 +1862,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3363:
     area: tba_33
     name: A Mountain Trail
@@ -1765,6 +1891,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3364:
     area: tba_33
     name: A Mountain Trail
@@ -1790,6 +1918,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3365:
     area: tba_33
     name: A Mountain Trail
@@ -1814,6 +1944,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3366:
     area: tba_33
     name: Near The Peak
@@ -1841,6 +1973,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3367:
     area: tba_33
     name: A Small, Dangerous Path
@@ -1866,6 +2000,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3368:
     area: tba_33
     name: A Small, Dangerous Path
@@ -1892,6 +2028,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3369:
     area: tba_33
     name: The Cave Entrance
@@ -1924,6 +2062,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3370:
     area: tba_33
     name: A Sloping Tunnel
@@ -1949,6 +2089,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3371:
     area: tba_33
     name: A Sloping Tunnel
@@ -1994,6 +2136,8 @@ rooms:
       description: |2
            The floor up ahead looks...  Strange.  You don't think going ahead would be a
         good idea.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3372:
     area: tba_33
     name: The Pit
@@ -2009,6 +2153,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3373:
     area: tba_33
     name: A Sloping Tunnel
@@ -2035,6 +2181,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3374:
     area: tba_33
     name: A Sloping Tunnel
@@ -2063,6 +2211,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3375:
     area: tba_33
     name: The Lair
@@ -2086,3 +2236,5 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

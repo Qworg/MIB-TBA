@@ -32,6 +32,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8301:
     area: tba_83
     name: Near the Shore
@@ -53,6 +55,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8302:
     area: tba_83
     name: The Sea
@@ -76,6 +80,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8303:
     area: tba_83
     name: The Sea
@@ -103,6 +109,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8304:
     area: tba_83
     name: The Sea
@@ -130,6 +138,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8305:
     area: tba_83
     name: The Sea
@@ -162,6 +172,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8306:
     area: tba_83
     name: The Sea
@@ -189,6 +201,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8307:
     area: tba_83
     name: The Sea
@@ -216,6 +230,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8308:
     area: tba_83
     name: The Sea
@@ -243,6 +259,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8309:
     area: tba_83
     name: The Sea
@@ -272,6 +290,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8310:
     area: tba_83
     name: The Sea
@@ -305,6 +325,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8311:
     area: tba_83
     name: The Sea
@@ -338,6 +360,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8312:
     area: tba_83
     name: The Sea
@@ -371,6 +395,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8313:
     area: tba_83
     name: The Sea
@@ -404,6 +430,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8314:
     area: tba_83
     name: The Sea
@@ -437,6 +465,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8315:
     area: tba_83
     name: The Sea
@@ -470,6 +500,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8316:
     area: tba_83
     name: The Sea
@@ -503,6 +535,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8317:
     area: tba_83
     name: The Sea
@@ -536,6 +570,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8318:
     area: tba_83
     name: The Sea
@@ -568,6 +604,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8319:
     area: tba_83
     name: The Sea
@@ -600,6 +638,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8320:
     area: tba_83
     name: The Sea
@@ -632,6 +672,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8321:
     area: tba_83
     name: The Sea
@@ -664,6 +706,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8322:
     area: tba_83
     name: The Sea
@@ -696,6 +740,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8323:
     area: tba_83
     name: The Sea
@@ -728,6 +774,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8324:
     area: tba_83
     name: The Sea
@@ -760,6 +808,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8325:
     area: tba_83
     name: The Sea
@@ -792,6 +842,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8326:
     area: tba_83
     name: The Sea
@@ -824,6 +876,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8327:
     area: tba_83
     name: The Sea
@@ -856,6 +910,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8328:
     area: tba_83
     name: The Sea
@@ -888,6 +944,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8329:
     area: tba_83
     name: The Sea
@@ -920,6 +978,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8330:
     area: tba_83
     name: The Sea
@@ -952,6 +1012,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8331:
     area: tba_83
     name: The Sea
@@ -984,6 +1046,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8332:
     area: tba_83
     name: The Sea
@@ -1016,6 +1080,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8333:
     area: tba_83
     name: The Sea
@@ -1048,6 +1114,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8334:
     area: tba_83
     name: The Sea
@@ -1080,6 +1148,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8335:
     area: tba_83
     name: The Sea
@@ -1112,6 +1182,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8336:
     area: tba_83
     name: The Sea
@@ -1144,6 +1216,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8337:
     area: tba_83
     name: The Sea
@@ -1176,6 +1250,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8338:
     area: tba_83
     name: The Sea
@@ -1208,6 +1284,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8339:
     area: tba_83
     name: The Sea
@@ -1240,6 +1318,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8340:
     area: tba_83
     name: The Sea
@@ -1272,6 +1352,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8341:
     area: tba_83
     name: The Sea
@@ -1304,6 +1386,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8342:
     area: tba_83
     name: The Sea
@@ -1336,6 +1420,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8343:
     area: tba_83
     name: The Sea
@@ -1368,6 +1454,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8344:
     area: tba_83
     name: The Sea
@@ -1400,6 +1488,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8345:
     area: tba_83
     name: The Sea
@@ -1432,6 +1522,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8346:
     area: tba_83
     name: The Sea
@@ -1464,6 +1556,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8347:
     area: tba_83
     name: The Sea
@@ -1496,6 +1590,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8348:
     area: tba_83
     name: The Sea
@@ -1528,6 +1624,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8349:
     area: tba_83
     name: The Sea
@@ -1560,6 +1658,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8350:
     area: tba_83
     name: The Sea
@@ -1592,6 +1692,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8351:
     area: tba_83
     name: The Sea
@@ -1624,6 +1726,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8352:
     area: tba_83
     name: The Sea
@@ -1656,6 +1760,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8353:
     area: tba_83
     name: Near a Small Island
@@ -1688,6 +1794,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8354:
     area: tba_83
     name: The Sea
@@ -1720,6 +1828,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8355:
     area: tba_83
     name: Near a Small Island
@@ -1752,6 +1862,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8356:
     area: tba_83
     name: On a Small Island
@@ -1790,6 +1902,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8357:
     area: tba_83
     name: Near a Small Island
@@ -1822,6 +1936,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8358:
     area: tba_83
     name: The Sea
@@ -1854,6 +1970,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8359:
     area: tba_83
     name: Near a Small Island
@@ -1886,6 +2004,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8360:
     area: tba_83
     name: The Sea
@@ -1918,6 +2038,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8361:
     area: tba_83
     name: The Sea
@@ -1950,6 +2072,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8362:
     area: tba_83
     name: The Sea
@@ -1982,6 +2106,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8363:
     area: tba_83
     name: The Sea
@@ -2014,6 +2140,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8364:
     area: tba_83
     name: The Sea
@@ -2046,6 +2174,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8365:
     area: tba_83
     name: The Sea
@@ -2078,6 +2208,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8366:
     area: tba_83
     name: The Sea
@@ -2110,6 +2242,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8367:
     area: tba_83
     name: The Sea
@@ -2142,6 +2276,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8368:
     area: tba_83
     name: The Sea
@@ -2174,6 +2310,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8369:
     area: tba_83
     name: The Sea
@@ -2206,6 +2344,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8370:
     area: tba_83
     name: The Sea
@@ -2238,6 +2378,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8371:
     area: tba_83
     name: The Sea
@@ -2270,6 +2412,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8372:
     area: tba_83
     name: The Sea
@@ -2302,6 +2446,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8373:
     area: tba_83
     name: The Sea
@@ -2335,6 +2481,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8374:
     area: tba_83
     name: The Bow of a Pirate's Ship
@@ -2354,6 +2502,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8375:
     area: tba_83
     name: The Starboard Side of the Boat
@@ -2378,6 +2528,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8376:
     area: tba_83
     name: The Fore Deck of a Pirate's Ship
@@ -2414,6 +2566,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8377:
     area: tba_83
     name: Walking the Plank...
@@ -2443,6 +2597,8 @@ rooms:
       description: |2
            The old wooden plank is full of cracks and is swaying very uneasily under
         your weight.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8378:
     area: tba_83
     name: The Captain's Quarters
@@ -2472,6 +2628,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8379:
     area: tba_83
     name: Inside a Pirate's Ship
@@ -2515,6 +2673,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8380:
     area: tba_83
     name: The Galley
@@ -2550,6 +2710,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8381:
     area: tba_83
     name: The Captain's Quarters
@@ -2568,6 +2730,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8382:
     area: tba_83
     name: Inside a Pirate's Ship
@@ -2596,6 +2760,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8383:
     area: tba_83
     name: Near a Stairway
@@ -2634,6 +2800,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8384:
     area: tba_83
     name: The Mid-Deck
@@ -2666,6 +2834,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8385:
     area: tba_83
     name: The Crow's Nest
@@ -2728,6 +2898,8 @@ rooms:
 
            For more history of the Jolly Roger,
            visit http://www.skullandcrossbones.org
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8386:
     area: tba_83
     name: Davy Jones' Locker
@@ -2772,6 +2944,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8387:
     area: tba_83
     name: The Mid-Deck
@@ -2794,6 +2968,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8392:
     area: tba_83
     name: A Cramped Cell
@@ -2831,6 +3007,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8393:
     area: tba_83
     name: The Mid-Deck
@@ -2864,6 +3042,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8394:
     area: tba_83
     name: The Brig
@@ -2903,6 +3083,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8395:
     area: tba_83
     name: The Treasury
@@ -2927,6 +3109,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8396:
     area: tba_83
     name: A Small Hutt
@@ -2948,6 +3132,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8397:
     area: tba_83
     name: On a Fishing Boat
@@ -2974,6 +3160,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8398:
     area: tba_83
     name: The Bow of a Fishing Boat
@@ -3000,6 +3188,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8399:
     area: tba_83
     name: The Mid-Deck
@@ -3024,3 +3214,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

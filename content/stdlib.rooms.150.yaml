@@ -37,6 +37,8 @@ rooms:
       description: |2
            The traveller smiles cheerfully and calls 'hello' when you greet him, but
         continues on his way.  The traveller is in excellent condition.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15001:
     area: tba_150
     name: The King's Road
@@ -59,6 +61,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15002:
     area: tba_150
     name: The King's Road
@@ -82,6 +86,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15003:
     area: tba_150
     name: On The King's Road Outside A Castle
@@ -108,6 +114,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15004:
     area: tba_150
     name: On The Drawbridge
@@ -145,6 +153,8 @@ rooms:
       description: |2
            You can't see much, but it seems that something beneath the surface is
         creating them.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15005:
     area: tba_150
     name: The Kitchen
@@ -169,6 +179,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15006:
     area: tba_150
     name: A Small Passage
@@ -197,6 +209,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15007:
     area: tba_150
     name: The Entrance Hall
@@ -239,6 +253,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15008:
     area: tba_150
     name: The Guard Room
@@ -256,6 +272,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15009:
     area: tba_150
     name: Under The Tower
@@ -284,6 +302,8 @@ rooms:
       - stairs
       description: |2
            The stairs are old, but in good repair.  They lead up into the tower.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15010:
     area: tba_150
     name: The Small Passage
@@ -306,6 +326,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15011:
     area: tba_150
     name: The Great Hall
@@ -339,6 +361,8 @@ rooms:
         is fairly heavy-bellied and incredibly hairy, with a massive beard.  Also among
         them are the great enemies and wrongdoers, such as the evil Goddess Yochlol and
         the powerful evil Wizard Tharoecon.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15012:
     area: tba_150
     name: The Great Hall
@@ -382,6 +406,8 @@ rooms:
         is fairly heavy-bellied and incredibly hairy, with a massive beard.  Also among
         them are the great enemies and wrongdoers, such as the evil Goddess Yochlol and
         the powerful evil Wizard Tharoecon.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15013:
     area: tba_150
     name: The Great Hall
@@ -415,6 +441,8 @@ rooms:
         is fairly heavy-bellied and incredibly hairy, with a massive beard.  Also among
         them are the great enemies and wrongdoers, such as the evil Goddess Yochlol and
         the powerful, evil Wizard Tharoecon.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15014:
     area: tba_150
     name: A Passage
@@ -436,6 +464,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15015:
     area: tba_150
     name: The Passage
@@ -461,6 +491,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15016:
     area: tba_150
     name: The Great Hall
@@ -500,6 +532,8 @@ rooms:
         is fairly heavy-bellied and incredibly hairy, with a massive beard.  Also among
         them are the great enemies and wrongdoers, such as the evil Goddess Yochlol and
         the powerful evil Wizard Tharoecon.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15017:
     area: tba_150
     name: By The Throne In The Great Hall
@@ -544,6 +578,8 @@ rooms:
       description: |2
            It is large and very beautiful.  The carvings are mainly of animals and magic
         beasts.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15018:
     area: tba_150
     name: The Great Hall
@@ -583,6 +619,8 @@ rooms:
         is fairly heavy-bellied and incredibly hairy, with a massive beard.  Also among
         them are the great enemies and wrongdoers, such as the evil Goddess Yochlol and
         the powerful evil Wizard Tharoecon.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15019:
     area: tba_150
     name: The Small Passage
@@ -608,6 +646,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15020:
     area: tba_150
     name: The Passage
@@ -639,6 +679,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15021:
     area: tba_150
     name: The Servants' Corridor
@@ -678,6 +720,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15022:
     area: tba_150
     name: The End Of The Servants' Corridor
@@ -705,6 +749,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15023:
     area: tba_150
     name: The Training Room
@@ -735,6 +781,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15024:
     area: tba_150
     name: The Small Passage
@@ -761,6 +809,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15025:
     area: tba_150
     name: The Stair Room
@@ -797,6 +847,8 @@ rooms:
       - trees
       description: |2
            Very nice.  Squirrels and little birds all over.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15026:
     area: tba_150
     name: The Servants' Quarters
@@ -826,6 +878,8 @@ rooms:
       description: |2
            The beds all look comfortable, despite the fact that this is just the
         servants' place.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15027:
     area: tba_150
     name: The Butler's Quarters
@@ -855,6 +909,8 @@ rooms:
       - bed
       description: |2
            Looks very comfortable indeed.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15028:
     area: tba_150
     name: The Guards' Barracks
@@ -884,6 +940,8 @@ rooms:
       - bunks
       description: |2
            They look a bit hard, but you could sleep in them.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15029:
     area: tba_150
     name: The Stairs
@@ -914,6 +972,8 @@ rooms:
       description: |2
            They seem to be made of granite, and stretch down into a more dimly lit area
         than where you come from.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15030:
     area: tba_150
     name: At A Bend In The Corridor
@@ -934,6 +994,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15031:
     area: tba_150
     name: The Corridor
@@ -955,6 +1017,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15032:
     area: tba_150
     name: The Corridor
@@ -976,6 +1040,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15033:
     area: tba_150
     name: The Corridor
@@ -998,6 +1064,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15034:
     area: tba_150
     name: In The South-East Tower
@@ -1019,6 +1087,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15035:
     area: tba_150
     name: The Corridor
@@ -1045,6 +1115,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15036:
     area: tba_150
     name: By The Treasure Room
@@ -1078,6 +1150,8 @@ rooms:
            TREASURE ROOM
            Authorized personnel only - all others keep out.
         ANY trespassing will be SEVERELY punished!!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15037:
     area: tba_150
     name: The Great Treasury
@@ -1115,6 +1189,8 @@ rooms:
       description: |2
            It seems they are stored here temporarily to enable changing of the
         decoration in the Castle on a regular basis.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15038:
     area: tba_150
     name: The Guest Wing
@@ -1153,6 +1229,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15039:
     area: tba_150
     name: The Guest Suite
@@ -1183,6 +1261,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15040:
     area: tba_150
     name: The Corridor
@@ -1204,6 +1284,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15041:
     area: tba_150
     name: The Ball Room
@@ -1225,6 +1307,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15042:
     area: tba_150
     name: By The Stage
@@ -1247,6 +1331,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15043:
     area: tba_150
     name: A Guest Room
@@ -1271,6 +1357,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15044:
     area: tba_150
     name: The Bedroom
@@ -1293,6 +1381,8 @@ rooms:
       - bed
       description: |2
            Large, comfortable, bolstered...  Invites you to sleep in it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15045:
     area: tba_150
     name: The Corridor
@@ -1319,6 +1409,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15046:
     area: tba_150
     name: The Ball Room
@@ -1344,6 +1436,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15047:
     area: tba_150
     name: The Ball Room
@@ -1369,6 +1463,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15048:
     area: tba_150
     name: In The Tower
@@ -1395,6 +1491,8 @@ rooms:
       - stairs
       description: |2
            The stairs are made out of granite, and seem solid enough.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15049:
     area: tba_150
     name: The Grand Staircase
@@ -1435,6 +1533,8 @@ rooms:
       description: |2
            The stairs are made of marble, and there are pillars carved in the likenesses
         of trees with little animals running up and down the trunks.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15050:
     area: tba_150
     name: The Cosy Room
@@ -1477,6 +1577,8 @@ rooms:
       - chairs
       description: |2
            The chairs are arranged around the fireplace.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15051:
     area: tba_150
     name: King Welmar's Bedroom
@@ -1523,6 +1625,8 @@ rooms:
       description: |2
            Beginner?  This book goes beyond most of what YOU know about magic anyway.
         But then, there are levels of magical knowledge, it seems.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15052:
     area: tba_150
     name: Up In The Tower
@@ -1550,6 +1654,8 @@ rooms:
       - candle
       description: |2
            Small, uninteresting...  A candle that is as normal as can be.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15053:
     area: tba_150
     name: The Top Of The Tower
@@ -1575,6 +1681,8 @@ rooms:
       - slit
       description: |2
            As you look out the windows, you are granted a view of the countryside.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15054:
     area: tba_150
     name: The Top Of The Tower
@@ -1596,6 +1704,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15055:
     area: tba_150
     name: The Bottom Of The Stairs
@@ -1620,6 +1730,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15056:
     area: tba_150
     name: The Guard Room
@@ -1665,6 +1777,8 @@ rooms:
       description: |2
            The card on the floor seems to be the Ace of Spades...  A bad card to find
         indeed.  What could be the bad luck brought about by this discovery?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15057:
     area: tba_150
     name: The Prison
@@ -1733,6 +1847,8 @@ rooms:
       description: |2
            The plaque in the keystone is engraved with four simple words: Ergan,
         Murderer of Townsbridge
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15058:
     area: tba_150
     name: A Cell
@@ -1761,6 +1877,8 @@ rooms:
       - hole
       description: |2
            The hole is much too small for you to clamber through.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15059:
     area: tba_150
     name: Ergan's Cell
@@ -1788,6 +1906,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15060:
     area: tba_150
     name: A Cell
@@ -1812,6 +1932,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15061:
     area: tba_150
     name: An Overgrown Trail
@@ -1839,6 +1961,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15062:
     area: tba_150
     name: An Overgrown Trail
@@ -1868,6 +1992,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15063:
     area: tba_150
     name: An Overgrown Trail
@@ -1899,6 +2025,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15064:
     area: tba_150
     name: A Dirt Road
@@ -1946,6 +2074,8 @@ rooms:
            \----------------------------------/
            The number 276 has been scratched out and replaced with the
         number 0.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15065:
     area: tba_150
     name: A Small Intersection
@@ -1980,6 +2110,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15066:
     area: tba_150
     name: A Dirt Road
@@ -2021,6 +2153,8 @@ rooms:
            The sign is covered with soot and the wood is quite charred, but you can
         still make out the following letters:
                 T   TO  SB  DGE   NER L    RE
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15067:
     area: tba_150
     name: A Large Pit
@@ -2045,6 +2179,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15068:
     area: tba_150
     name: A House
@@ -2067,6 +2203,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15069:
     area: tba_150
     name: A House
@@ -2092,6 +2230,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15070:
     area: tba_150
     name: A Small Cottage
@@ -2114,6 +2254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15071:
     area: tba_150
     name: The Burned Shop
@@ -2139,6 +2281,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15072:
     area: tba_150
     name: A Dark Path
@@ -2167,6 +2311,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15073:
     area: tba_150
     name: A Dark Path
@@ -2192,6 +2338,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.15074:
     area: tba_150
     name: The Circle Of Stones
@@ -2227,3 +2375,5 @@ rooms:
       description: |2
            Each stone is at least fifteen feet tall, maybe more, and the dark material
         glows with a greenish aura providing more than enough light for you to see by.
+    ambient_phases: {}
+    ambient_weather: {}

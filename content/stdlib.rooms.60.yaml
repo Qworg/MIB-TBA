@@ -35,6 +35,8 @@ rooms:
       - trail
       description: |2
            The forest trail winds westwards through the trees.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6001:
     area: tba_60
     name: A Trail Through The Light Forest
@@ -78,6 +80,8 @@ rooms:
       - trail
       description: |2
            The forest trail winds east-west through the trees.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6002:
     area: tba_60
     name: A Trail Through The Light Forest
@@ -120,6 +124,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6003:
     area: tba_60
     name: A Trail Through The Dense Forest
@@ -152,6 +158,8 @@ rooms:
       - trail
       description: |2
            The forest trail seems almost fragile compared to the massive trunks.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6004:
     area: tba_60
     name: A Trail Through The Dense Forest
@@ -193,6 +201,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6005:
     area: tba_60
     name: A Small Path In The Dense Forest
@@ -226,6 +236,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6006:
     area: tba_60
     name: A Small Path In The Dense Forest
@@ -259,6 +271,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6007:
     area: tba_60
     name: An Intersection In The Dense Forest
@@ -296,6 +310,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6008:
     area: tba_60
     name: The Forest Clearing
@@ -350,6 +366,8 @@ rooms:
       description: |2
            Even though the logs have been chopped to shorter pieces, they are quite
         heavy as they are fresh and still filled with sap.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6009:
     area: tba_60
     name: Outside A Small Cabin In The Forest
@@ -399,6 +417,8 @@ rooms:
       description: |2
            It looks simple but comfortable and the slender trees make the whole place
         seem pretty idyllic.  It is a cabin built from wooden logs.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6010:
     area: tba_60
     name: Inside The Cabin
@@ -447,6 +467,8 @@ rooms:
       - bed
       description: |2
            It is definitely not the most comfortable bed you have seen in your life.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6011:
     area: tba_60
     name: A Small Path Through The Light Forest
@@ -479,6 +501,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6012:
     area: tba_60
     name: An Intersection In The Dense Forest
@@ -516,6 +540,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6013:
     area: tba_60
     name: A Small Path In The Dense Forest
@@ -549,6 +575,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6014:
     area: tba_60
     name: An Intersection In The Dense Forest
@@ -586,6 +614,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6015:
     area: tba_60
     name: A Small Path In The Dense Forest
@@ -619,6 +649,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6016:
     area: tba_60
     name: A Small Path In The Dense Forest
@@ -656,6 +688,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6017:
     area: tba_60
     name: A Small Path In The Dense Forest
@@ -696,6 +730,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6018:
     area: tba_60
     name: An Intersection In The Light Forest
@@ -733,6 +769,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6019:
     area: tba_60
     name: A Small Path In The Dense Forest
@@ -766,6 +804,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6020:
     area: tba_60
     name: A Small Path In The Dense Forest
@@ -799,6 +839,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6021:
     area: tba_60
     name: A Small Path In The Dense Forest
@@ -843,6 +885,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6022:
     area: tba_60
     name: Inside The Cave
@@ -878,6 +922,8 @@ rooms:
       - debris
       description: |2
            It consists mostly of gnawed bones mixed with small pieces of torn fur.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6023:
     area: tba_60
     name: A Grassy Field
@@ -928,6 +974,8 @@ rooms:
       - grass
       description: |2
            The tall grass makes a nice hiding place for animals.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6024:
     area: tba_60
     name: The Lower Part Of The Grassy Field
@@ -967,6 +1015,8 @@ rooms:
       - grass
       description: |2
            The tall grass makes a nice hiding place for animals.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6025:
     area: tba_60
     name: Beside The Lake In A Grassy Field
@@ -1026,6 +1076,8 @@ rooms:
       - grass
       description: |2
            The tall grass makes a nice hiding place for animals.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6026:
     area: tba_60
     name: The Northern Section Of A Grassy Field
@@ -1081,6 +1133,8 @@ rooms:
       description: |2
            The tall grass makes a nice hiding place for animals.  You see some of the
         animals you frightened away peeking furtively out at you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6027:
     area: tba_60
     name: On The Lake
@@ -1123,6 +1177,8 @@ rooms:
       description: |2
            Trout and perhaps a catfish or two swim about below you, totally ignoring
         your presence.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6028:
     area: tba_60
     name: A Small Path In The Dense Forest
@@ -1156,6 +1212,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6029:
     area: tba_60
     name: Near A Large Tree In The Dense Forest
@@ -1220,6 +1278,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6030:
     area: tba_60
     name: In The Lower Branches Of A Large Oak
@@ -1292,6 +1352,8 @@ rooms:
            After a short period of looking, you notice a bird's nest on a limb not far
         above you, and a large squirrel's nest in the crook of a large limb that
         stretches out towards the west.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6031:
     area: tba_60
     name: Out On A Limb In A Large Oak
@@ -1360,6 +1422,8 @@ rooms:
            You notice that several of the squirrels sought refuge in a large nest that
         is well within your reach.  Looking into the nest, you see two pairs of eyes
         staring back at you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6032:
     area: tba_60
     name: Midway To The Top Of The Large Oak
@@ -1426,6 +1490,8 @@ rooms:
       description: |2
            A medium sized bird's nest is close to you here, and it looks like it has
         some nice looking eggs in it too!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6033:
     area: tba_60
     name: High In The Large Oak
@@ -1482,6 +1548,8 @@ rooms:
         It is said that large wolves live there.  You've also heard rumors of horrible
         spiders and drow living there.  You'd be best off leaving that area to more
         experienced adventurers.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6060:
     area: tba_60
     name: A Shaded Path Through The Forest
@@ -1516,6 +1584,8 @@ rooms:
       - shaded
       description: |2
            The shaded path is probably used by the small animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6061:
     area: tba_60
     name: A Shaded Path Through The Forest
@@ -1551,6 +1621,8 @@ rooms:
       - shadowed
       description: |2
            The shadowy path is probably used by the small animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6062:
     area: tba_60
     name: A Shaded Path Through The Dense Forest
@@ -1591,6 +1663,8 @@ rooms:
       - shadowy
       description: |2
            The shaded path is probably used by the small animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6063:
     area: tba_60
     name: A Shaded Path Through The Dense Forest
@@ -1625,6 +1699,8 @@ rooms:
       - shaded
       description: |2
            The shaded path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6064:
     area: tba_60
     name: A Shadowy Path Through The Dense Forest
@@ -1659,6 +1735,8 @@ rooms:
       - shadowy
       description: |2
            The shadowy path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6065:
     area: tba_60
     name: A Shaded Path Through The Forest
@@ -1693,6 +1771,8 @@ rooms:
       - shaded
       description: |2
            The shadowed path is probably used by the small animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6066:
     area: tba_60
     name: A Fork On The Shaded Path Through The Forest
@@ -1731,6 +1811,8 @@ rooms:
       - shaded
       description: |2
            The shaded path is probably used by the small animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6067:
     area: tba_60
     name: At The Fallen Tree
@@ -1784,6 +1866,8 @@ rooms:
       - paths
       description: |2
            The shaded paths are probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6068:
     area: tba_60
     name: An Intersection On The Shaded Path
@@ -1822,6 +1906,8 @@ rooms:
       - shaded
       description: |2
            The shaded path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6069:
     area: tba_60
     name: A Shadowy Path Through The Dense Forest
@@ -1857,6 +1943,8 @@ rooms:
       - shadowy
       description: |2
            The shadowy path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6070:
     area: tba_60
     name: Off Of The Path In The Shaded Forest
@@ -1900,6 +1988,8 @@ rooms:
       description: |2
            The path is long behind you now...  You aren't sure which direction it lies
         in anymore.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6071:
     area: tba_60
     name: A Shaded Path Through The Forest
@@ -1939,6 +2029,8 @@ rooms:
       - shadowed
       description: |2
            The shadowy path is probably used by the small animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6072:
     area: tba_60
     name: A Shaded Path Though The Forest
@@ -1977,6 +2069,8 @@ rooms:
       - shaded
       description: |2
            The shaded path is probably used by the small animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6073:
     area: tba_60
     name: A Shadowy Path Through The Dense Forest
@@ -2018,6 +2112,8 @@ rooms:
       - shadowy
       description: |2
            The shadowy path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6074:
     area: tba_60
     name: A Small Trail Through The Forest
@@ -2060,6 +2156,8 @@ rooms:
       - paths
       description: |2
            The narrow path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6075:
     area: tba_60
     name: A Shaded Path Through The Forest
@@ -2111,6 +2209,8 @@ rooms:
       - shaded
       description: |2
            The shaded path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6076:
     area: tba_60
     name: In The Dense Forest Between The Hills
@@ -2161,6 +2261,8 @@ rooms:
       description: |2
            The path is probably around here somewhere...  If only you had paid more
         attention.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6077:
     area: tba_60
     name: In The Dense Forest Between The Hills
@@ -2211,6 +2313,8 @@ rooms:
       description: |2
            The path is probably around here somewhere...  If only you had paid more
         attention.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6078:
     area: tba_60
     name: In The Dense Forest Between The Hills
@@ -2247,6 +2351,8 @@ rooms:
       - shaded
       description: |2
            The shaded path is probably used by the animals living in the forest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6079:
     area: tba_60
     name: In The Dense Forest Between The Hills
@@ -2297,6 +2403,8 @@ rooms:
       description: |2
            The path is probably around here somewhere...  If only you had paid more
         attention.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6080:
     area: tba_60
     name: In The Dense Forest Between The Hills
@@ -2347,6 +2455,8 @@ rooms:
       description: |2
            The path is probably around here somewhere...  If only you had paid more
         attention.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6081:
     area: tba_60
     name: In The Dense Forest Between The Hills
@@ -2397,6 +2507,8 @@ rooms:
       description: |2
            The path is probably around here somewhere...  If only you had paid more
         attention.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6082:
     area: tba_60
     name: In The Dense Forest Between The Hills
@@ -2435,6 +2547,8 @@ rooms:
       - trees
       description: |2
            The trees are mostly old beeches and oaks.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6090:
     area: tba_60
     name: A Road Through The Plains
@@ -2476,6 +2590,8 @@ rooms:
       - trail
       description: |2
            The forest trail winds westwards through the trees.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6091:
     area: tba_60
     name: A Road Through The Plains
@@ -2520,6 +2636,8 @@ rooms:
       description: |2
            The large forest of Haon-Dor spreads out to the west.  Small and large game
         is plentiful there...  As is adventure, and of course, danger!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6092:
     area: tba_60
     name: A Road Through The Plains
@@ -2556,3 +2674,5 @@ rooms:
       description: |2
            The large forest of Haon-dor spreads out to the west.  Small and large game
         is plentiful there...  As is adventure, and of course, danger!
+    ambient_phases: {}
+    ambient_weather: {}

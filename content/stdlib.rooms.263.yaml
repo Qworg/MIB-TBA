@@ -35,6 +35,8 @@ rooms:
         Links: 00n, 15e, 32e, 49n, 95s
         Zone 263 is linked to the following zones:
         257 Jareth Main City               at 26300 (east ) ---> 25756
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26301:
     area: tba_263
     name: Western Road
@@ -57,6 +59,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26302:
     area: tba_263
     name: Western Fork
@@ -85,6 +89,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26303:
     area: tba_263
     name: DragonTooth Road
@@ -102,6 +108,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26304:
     area: tba_263
     name: Western Road
@@ -125,6 +133,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26305:
     area: tba_263
     name: Western Road
@@ -151,6 +161,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26306:
     area: tba_263
     name: Western Road
@@ -177,6 +189,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26307:
     area: tba_263
     name: Dairy Farm
@@ -201,6 +215,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26308:
     area: tba_263
     name: Hay Barn
@@ -224,6 +240,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26309:
     area: tba_263
     name: Hay Loft
@@ -243,6 +261,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26310:
     area: tba_263
     name: Western Road
@@ -270,6 +290,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26311:
     area: tba_263
     name: Driveway
@@ -293,6 +315,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26312:
     area: tba_263
     name: Driveway
@@ -316,6 +340,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26313:
     area: tba_263
     name: Dirt Court
@@ -347,6 +373,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26314:
     area: tba_263
     name: Barn
@@ -369,6 +397,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26315:
     area: tba_263
     name: Pasture
@@ -394,6 +424,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26316:
     area: tba_263
     name: Pasture
@@ -417,6 +449,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26317:
     area: tba_263
     name: Girschwyn's Home
@@ -440,6 +474,8 @@ rooms:
       - play
       description: |2
            You punch out an old tune about a boy named Johnny B Good.  You rock!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26318:
     area: tba_263
     name: Western Road
@@ -463,6 +499,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26319:
     area: tba_263
     name: Lake's Edge
@@ -490,6 +528,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26320:
     area: tba_263
     name: Lake's Edge
@@ -512,6 +552,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26321:
     area: tba_263
     name: Lake's Edge
@@ -535,6 +577,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26322:
     area: tba_263
     name: Lake's Edge at the Dock
@@ -566,6 +610,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26323:
     area: tba_263
     name: Dock
@@ -585,6 +631,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26324:
     area: tba_263
     name: Farmstead
@@ -617,6 +665,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26325:
     area: tba_263
     name: Corn Field
@@ -635,6 +685,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26326:
     area: tba_263
     name: Wheat Field
@@ -654,6 +706,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26327:
     area: tba_263
     name: Farm House
@@ -672,6 +726,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26328:
     area: tba_263
     name: Lake's Edge
@@ -694,6 +750,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26329:
     area: tba_263
     name: Lake's Edge
@@ -716,6 +774,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26330:
     area: tba_263
     name: Lake's Edge
@@ -742,6 +802,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26331:
     area: tba_263
     name: Lake's Edge
@@ -765,6 +827,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26332:
     area: tba_263
     name: Lake's Edge
@@ -789,6 +853,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26333:
     area: tba_263
     name: Lake's Edge
@@ -811,6 +877,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26334:
     area: tba_263
     name: Lake's Edge
@@ -838,6 +906,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26335:
     area: tba_263
     name: Lake's Edge
@@ -862,6 +932,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26336:
     area: tba_263
     name: Lake's Edge
@@ -886,6 +958,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26337:
     area: tba_263
     name: Western Road
@@ -914,6 +988,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26338:
     area: tba_263
     name: Farm
@@ -938,6 +1014,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26339:
     area: tba_263
     name: Smelly Barn
@@ -966,6 +1044,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26340:
     area: tba_263
     name: Chicken Yard
@@ -985,6 +1065,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26341:
     area: tba_263
     name: Pig Wallows
@@ -1004,6 +1086,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26342:
     area: tba_263
     name: Western Road
@@ -1032,6 +1116,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26343:
     area: tba_263
     name: Western Road
@@ -1058,6 +1144,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26344:
     area: tba_263
     name: Western Road
@@ -1082,6 +1170,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26345:
     area: tba_263
     name: Murky Path
@@ -1102,6 +1192,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26346:
     area: tba_263
     name: Western Road
@@ -1130,6 +1222,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26347:
     area: tba_263
     name: Gnarled and Twisty Path
@@ -1147,6 +1241,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26348:
     area: tba_263
     name: Small Dark Path
@@ -1168,6 +1264,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26349:
     area: tba_263
     name: Thinning Trail
@@ -1191,6 +1289,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26350:
     area: tba_263
     name: Rocky Path
@@ -1220,6 +1320,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26351:
     area: tba_263
     name: A Dead End Path
@@ -1249,6 +1351,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26352:
     area: tba_263
     name: Western Road
@@ -1275,6 +1379,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26353:
     area: tba_263
     name: Western Road
@@ -1299,6 +1405,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26354:
     area: tba_263
     name: Western Road
@@ -1331,6 +1439,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26355:
     area: tba_263
     name: Western Road
@@ -1356,6 +1466,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26356:
     area: tba_263
     name: Western Road
@@ -1385,6 +1497,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26357:
     area: tba_263
     name: Western Road
@@ -1405,3 +1519,5 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

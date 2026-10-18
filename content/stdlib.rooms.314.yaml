@@ -43,6 +43,8 @@ rooms:
         There are a few spec_procs I added to a couple of mobs - just for
         effect, really. The zone probably will not lack without these procs.
         Links: 00n
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31401:
     area: tba_314
     name: At the Old Fountain
@@ -76,6 +78,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31402:
     area: tba_314
     name: The Asylum Grounds
@@ -117,6 +121,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31403:
     area: tba_314
     name: The Asylum Grounds
@@ -142,6 +148,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31404:
     area: tba_314
     name: The Asylum Grounds
@@ -183,6 +191,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31405:
     area: tba_314
     name: The Asylum Grounds
@@ -219,6 +229,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31406:
     area: tba_314
     name: The Asylum Grounds
@@ -249,6 +261,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31407:
     area: tba_314
     name: Inner Hall of the Academy
@@ -291,6 +305,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31408:
     area: tba_314
     name: Inner Hall of the Academy
@@ -326,6 +342,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31409:
     area: tba_314
     name: Inner Hall of the Academy
@@ -361,6 +379,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31410:
     area: tba_314
     name: Classing Room
@@ -389,6 +409,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31411:
     area: tba_314
     name: Classing Room
@@ -416,6 +438,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31412:
     area: tba_314
     name: Classing Room
@@ -452,6 +476,8 @@ rooms:
         repeated as well as some short poetry.  One reads Here I sit all broken
         hearted, tried to shit but only, and then it too becomes too faded to tell
         what follows.  Must have been quite important - possibly runes of some sort.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31413:
     area: tba_314
     name: Upper Hall
@@ -486,6 +512,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31414:
     area: tba_314
     name: Upper Hall
@@ -519,6 +547,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31415:
     area: tba_314
     name: Upper Hall
@@ -549,6 +579,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31416:
     area: tba_314
     name: Classing Room
@@ -579,6 +611,8 @@ rooms:
       description: |2
            You can see a small bit of the next room over - it appears to be much in the
         same condition as this one.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31417:
     area: tba_314
     name: Classing Room
@@ -605,6 +639,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31418:
     area: tba_314
     name: Classing Room
@@ -631,6 +667,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31419:
     area: tba_314
     name: Hall's End
@@ -662,6 +700,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31420:
     area: tba_314
     name: Inner Hall
@@ -696,6 +736,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31421:
     area: tba_314
     name: An Old Office
@@ -716,6 +758,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31422:
     area: tba_314
     name: Administrative Office
@@ -741,6 +785,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31423:
     area: tba_314
     name: Inner Hall
@@ -766,6 +812,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31424:
     area: tba_314
     name: Base of a Crumbling Stairway
@@ -793,6 +841,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31425:
     area: tba_314
     name: At the Top of a Crumbled Stair
@@ -826,6 +876,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31426:
     area: tba_314
     name: A Darkened Hall
@@ -849,6 +901,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31427:
     area: tba_314
     name: An Old Office
@@ -875,6 +929,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31428:
     area: tba_314
     name: Rubble-Strewn Hallway
@@ -899,6 +955,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31429:
     area: tba_314
     name: Office
@@ -925,6 +983,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31430:
     area: tba_314
     name: End of a Hallway
@@ -955,6 +1015,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31431:
     area: tba_314
     name: Receiving Chamber
@@ -991,6 +1053,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31432:
     area: tba_314
     name: Living Area
@@ -1020,6 +1084,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31433:
     area: tba_314
     name: Bedchamber
@@ -1042,6 +1108,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31434:
     area: tba_314
     name: Jumbled Path
@@ -1074,6 +1142,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31435:
     area: tba_314
     name: A Flickering Path
@@ -1104,6 +1174,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31436:
     area: tba_314
     name: Jumbled Path Near the Courtyard
@@ -1136,6 +1208,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31437:
     area: tba_314
     name: Just North of the Courtyard
@@ -1164,6 +1238,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31438:
     area: tba_314
     name: The Guards' Quarters
@@ -1188,6 +1264,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31439:
     area: tba_314
     name: The Guards' Quarters
@@ -1207,6 +1285,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31440:
     area: tba_314
     name: The Old Stables
@@ -1232,6 +1312,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31441:
     area: tba_314
     name: The Old Stables
@@ -1253,6 +1335,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31442:
     area: tba_314
     name: Asylum Courtyard
@@ -1281,6 +1365,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31443:
     area: tba_314
     name: Asylum Courtyard
@@ -1310,6 +1396,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31444:
     area: tba_314
     name: Asylum Courtyard
@@ -1341,6 +1429,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31445:
     area: tba_314
     name: Asylum Courtyard
@@ -1376,6 +1466,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31446:
     area: tba_314
     name: Asylum Courtyard
@@ -1409,6 +1501,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31447:
     area: tba_314
     name: The Gazebo Steps
@@ -1443,6 +1537,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31448:
     area: tba_314
     name: Asylum Courtyard
@@ -1472,6 +1568,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31449:
     area: tba_314
     name: The Gazebo Steps
@@ -1506,6 +1604,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31450:
     area: tba_314
     name: Entrance to a Building
@@ -1539,6 +1639,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31451:
     area: tba_314
     name: X'Raantra's Altar
@@ -1574,6 +1676,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31452:
     area: tba_314
     name: Asylum Courtyard
@@ -1602,6 +1706,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31453:
     area: tba_314
     name: Asylum Courtyard
@@ -1635,6 +1741,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31454:
     area: tba_314
     name: The Gazebo Steps
@@ -1669,6 +1777,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31455:
     area: tba_314
     name: Asylum Courtyard
@@ -1702,6 +1812,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31456:
     area: tba_314
     name: The Gazebo Steps
@@ -1736,6 +1848,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31457:
     area: tba_314
     name: Asylum Courtyard
@@ -1769,6 +1883,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31458:
     area: tba_314
     name: Asylum Courtyard
@@ -1795,6 +1911,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31459:
     area: tba_314
     name: Asylum Courtyard
@@ -1825,6 +1943,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31460:
     area: tba_314
     name: Entrance to the Chapel
@@ -1866,6 +1986,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31461:
     area: tba_314
     name: Asylum Courtyard
@@ -1893,6 +2015,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31462:
     area: tba_314
     name: Asylum Courtyard
@@ -1921,6 +2045,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31463:
     area: tba_314
     name: Asylum Courtyard
@@ -1953,6 +2079,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31464:
     area: tba_314
     name: Asylum Courtyard
@@ -1981,6 +2109,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31465:
     area: tba_314
     name: Asylum Courtyard
@@ -2013,6 +2143,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31466:
     area: tba_314
     name: Asylum Courtyard
@@ -2041,6 +2173,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31467:
     area: tba_314
     name: Chapel Entryway
@@ -2085,6 +2219,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31468:
     area: tba_314
     name: Cloaking Room
@@ -2113,6 +2249,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31469:
     area: tba_314
     name: Shaft
@@ -2138,6 +2276,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31470:
     area: tba_314
     name: Chapel Worship Room
@@ -2160,6 +2300,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31471:
     area: tba_314
     name: In the Shaft
@@ -2183,6 +2325,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31472:
     area: tba_314
     name: Bell Tower
@@ -2209,6 +2353,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31473:
     area: tba_314
     name: Chapel Roof
@@ -2232,6 +2378,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31474:
     area: tba_314
     name: Library Entry
@@ -2257,6 +2405,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31475:
     area: tba_314
     name: Library
@@ -2275,6 +2425,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31476:
     area: tba_314
     name: Faculty Rooms
@@ -2301,6 +2453,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31477:
     area: tba_314
     name: Dormitory
@@ -2328,6 +2482,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31478:
     area: tba_314
     name: Faculty Rooms
@@ -2354,6 +2510,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31479:
     area: tba_314
     name: Dormitory
@@ -2377,6 +2535,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31480:
     area: tba_314
     name: Dormitory
@@ -2400,6 +2560,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31481:
     area: tba_314
     name: Storage and Detainment Area
@@ -2429,6 +2591,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31482:
     area: tba_314
     name: The Cooling Room
@@ -2456,6 +2620,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31483:
     area: tba_314
     name: Old Cobbled Trail
@@ -2481,6 +2647,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31484:
     area: tba_314
     name: Old Cobbled Trail
@@ -2505,6 +2673,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31485:
     area: tba_314
     name: Old Cobbled Trail
@@ -2529,6 +2699,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31486:
     area: tba_314
     name: Entrance to the Auditorium
@@ -2554,6 +2726,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31487:
     area: tba_314
     name: Auditorium Floor
@@ -2583,6 +2757,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31488:
     area: tba_314
     name: Auditorium Floor
@@ -2608,6 +2784,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31489:
     area: tba_314
     name: Auditorium Floor
@@ -2637,6 +2815,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31490:
     area: tba_314
     name: Auditorium Floor
@@ -2666,6 +2846,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31491:
     area: tba_314
     name: Auditorium Seating
@@ -2689,6 +2871,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31492:
     area: tba_314
     name: Auditorium Seating
@@ -2712,6 +2896,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31493:
     area: tba_314
     name: Cracked Path
@@ -2737,6 +2923,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31494:
     area: tba_314
     name: Cracked Path
@@ -2766,6 +2954,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31495:
     area: tba_314
     name: In the Base of the Water Tower
@@ -2791,6 +2981,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31496:
     area: tba_314
     name: At the Top of the Water Tower
@@ -2812,6 +3004,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31497:
     area: tba_314
     name: Cracked Path
@@ -2837,6 +3031,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31498:
     area: tba_314
     name: Ruins of a Building
@@ -2861,6 +3057,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31499:
     area: tba_314
     name: Ruins of a Building
@@ -2882,3 +3080,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

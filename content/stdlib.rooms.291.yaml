@@ -29,6 +29,8 @@ rooms:
            A zone built by Silverangel on Ironic Building MUD:
           ironic.betterbox.net port 1919
         Contains a forest, a tower, and a disco.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29101:
     area: tba_291
     name: Just Outside the Black Forest
@@ -53,6 +55,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29102:
     area: tba_291
     name: The outskirts of the Black Forest
@@ -87,6 +91,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29103:
     area: tba_291
     name: A Deserted Cabin
@@ -108,6 +114,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29104:
     area: tba_291
     name: The Black Forest
@@ -134,6 +142,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29105:
     area: tba_291
     name: The Black Forest
@@ -160,6 +170,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29106:
     area: tba_291
     name: Hopelessly Lost
@@ -179,6 +191,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29107:
     area: tba_291
     name: The great oak
@@ -209,6 +223,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29108:
     area: tba_291
     name: The dense woods
@@ -236,6 +252,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29109:
     area: tba_291
     name: The dead end
@@ -256,6 +274,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29110:
     area: tba_291
     name: The Bridge
@@ -286,6 +306,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29111:
     area: tba_291
     name: Under the bridge
@@ -311,6 +333,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29112:
     area: tba_291
     name: Deeper into the Black Forest
@@ -338,6 +362,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29113:
     area: tba_291
     name: Ed's Disco Palace
@@ -363,6 +389,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29114:
     area: tba_291
     name: The Dance floor
@@ -390,6 +418,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29115:
     area: tba_291
     name: The Dark Heart of the woods
@@ -420,6 +450,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29116:
     area: tba_291
     name: Nearing a clearing
@@ -448,6 +480,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29117:
     area: tba_291
     name: The Glade
@@ -481,6 +515,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29118:
     area: tba_291
     name: Boogie Time!
@@ -501,6 +537,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29119:
     area: tba_291
     name: the Stream
@@ -530,6 +568,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29120:
     area: tba_291
     name: Hopelessly Lost
@@ -552,6 +592,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29121:
     area: tba_291
     name: Hopelessly Lost
@@ -574,6 +616,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29122:
     area: tba_291
     name: Hopelessly Lost
@@ -596,6 +640,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29123:
     area: tba_291
     name: Hopelessly Lost
@@ -618,6 +664,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29124:
     area: tba_291
     name: Hopelessly Lost
@@ -640,6 +688,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29125:
     area: tba_291
     name: Hopelessly Lost
@@ -658,6 +708,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29126:
     area: tba_291
     name: In the shadow of the citadel
@@ -694,6 +746,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29127:
     area: tba_291
     name: Up against the wall.
@@ -722,6 +776,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29128:
     area: tba_291
     name: Up against the wall.
@@ -750,6 +806,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29129:
     area: tba_291
     name: The Front Gate
@@ -784,6 +842,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29130:
     area: tba_291
     name: Up against the wall.
@@ -812,6 +872,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29131:
     area: tba_291
     name: Are you sure this is a good idea?
@@ -836,6 +898,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29132:
     area: tba_291
     name: Trapped like a rat!
@@ -859,6 +923,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29133:
     area: tba_291
     name: The rockey ravine
@@ -878,6 +944,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29134:
     area: tba_291
     name: On the Trail to the Ruins
@@ -906,6 +974,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29135:
     area: tba_291
     name: The Ruined Castle
@@ -939,6 +1009,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29136:
     area: tba_291
     name: The Ruined Chapel
@@ -965,6 +1037,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29137:
     area: tba_291
     name: The Ruined Stables
@@ -988,6 +1062,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29138:
     area: tba_291
     name: The Ruined Great Hall
@@ -1020,6 +1096,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29139:
     area: tba_291
     name: The Ruined Bell Tower
@@ -1041,6 +1119,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29140:
     area: tba_291
     name: The Torture Chamber
@@ -1063,6 +1143,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29141:
     area: tba_291
     name: The Antechamber
@@ -1082,6 +1164,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29142:
     area: tba_291
     name: The Black Forest
@@ -1112,6 +1196,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29143:
     area: tba_291
     name: More of the black forest
@@ -1139,6 +1225,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29144:
     area: tba_291
     name: Disco Inferno!
@@ -1158,6 +1246,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29145:
     area: tba_291
     name: The Ruined Castle Keep
@@ -1182,6 +1272,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29146:
     area: tba_291
     name: The Murky Mire
@@ -1206,6 +1298,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29147:
     area: tba_291
     name: Ivy Island
@@ -1227,6 +1321,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29148:
     area: tba_291
     name: Still More of the forest
@@ -1250,6 +1346,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29149:
     area: tba_291
     name: Even more of the Black Forest
@@ -1279,6 +1377,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29150:
     area: tba_291
     name: The Citadel antechamber
@@ -1310,6 +1410,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29151:
     area: tba_291
     name: Inside the Citadel
@@ -1340,6 +1442,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29152:
     area: tba_291
     name: The South end of the Hall of Mirrors
@@ -1363,6 +1467,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29153:
     area: tba_291
     name: The North end of the Hall of Mirrors
@@ -1386,6 +1492,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29154:
     area: tba_291
     name: The Library
@@ -1409,6 +1517,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29155:
     area: tba_291
     name: The Master Armorer's Workshop
@@ -1434,6 +1544,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29156:
     area: tba_291
     name: In the Halls of the Citadel
@@ -1460,6 +1572,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29157:
     area: tba_291
     name: In the Halls of the Citadel
@@ -1490,6 +1604,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29158:
     area: tba_291
     name: The Gallery
@@ -1515,6 +1631,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29159:
     area: tba_291
     name: The Observing tower
@@ -1542,6 +1660,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29160:
     area: tba_291
     name: The Room of 10,000 pillars
@@ -1566,6 +1686,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29161:
     area: tba_291
     name: The Room of 10,000 pillars
@@ -1590,6 +1712,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29162:
     area: tba_291
     name: The Room of 10,000 pillars
@@ -1618,6 +1742,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29163:
     area: tba_291
     name: The Room of 10,000 pillars
@@ -1642,6 +1768,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29164:
     area: tba_291
     name: The Room of 10,000 pillars
@@ -1674,6 +1802,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29165:
     area: tba_291
     name: The Room of 10,000 pillars
@@ -1702,6 +1832,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29166:
     area: tba_291
     name: The Room of 10,000 pillars
@@ -1734,6 +1866,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29167:
     area: tba_291
     name: The Room of 10,000 pillars
@@ -1758,6 +1892,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29168:
     area: tba_291
     name: The Room of 10,000 pillars
@@ -1786,6 +1922,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29169:
     area: tba_291
     name: The Room of 10,000 pillars
@@ -1807,6 +1945,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29170:
     area: tba_291
     name: The Observing Chamber
@@ -1826,6 +1966,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29171:
     area: tba_291
     name: In the Halls of the Citadel
@@ -1852,6 +1994,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29172:
     area: tba_291
     name: In the Halls of the Citadel
@@ -1878,6 +2022,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29173:
     area: tba_291
     name: The Clock Tower
@@ -1905,6 +2051,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29174:
     area: tba_291
     name: A Connecting Corridor
@@ -1926,6 +2074,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29175:
     area: tba_291
     name: In the Clock Tower
@@ -1950,6 +2100,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29176:
     area: tba_291
     name: Amongst the cogs.
@@ -1978,6 +2130,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29177:
     area: tba_291
     name: Between the Gears
@@ -1996,6 +2150,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29178:
     area: tba_291
     name: The Top of the Clock Tower
@@ -2018,6 +2174,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29179:
     area: tba_291
     name: On the Clock Face
@@ -2041,6 +2199,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29180:
     area: tba_291
     name: The Ground Floor of the Spire
@@ -2074,6 +2234,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29181:
     area: tba_291
     name: The Tower Dungeon
@@ -2100,6 +2262,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29182:
     area: tba_291
     name: The Infernal Altar
@@ -2124,6 +2288,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29183:
     area: tba_291
     name: The Great Spiral Staircase
@@ -2149,6 +2315,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29184:
     area: tba_291
     name: The Great Spiral Staircase
@@ -2173,6 +2341,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29185:
     area: tba_291
     name: The Choice
@@ -2201,6 +2371,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29186:
     area: tba_291
     name: Damned if You Do
@@ -2213,6 +2385,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29187:
     area: tba_291
     name: Damned if You Don't
@@ -2225,6 +2399,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29188:
     area: tba_291
     name: The Music Room
@@ -2253,6 +2429,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29189:
     area: tba_291
     name: The Great Spiral Staircase
@@ -2275,6 +2453,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29190:
     area: tba_291
     name: At Death's Door
@@ -2304,6 +2484,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29191:
     area: tba_291
     name: The Final Ascent
@@ -2333,6 +2515,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29192:
     area: tba_291
     name: Beyond the point of no return
@@ -2353,6 +2537,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29193:
     area: tba_291
     name: Near the Balcony
@@ -2382,6 +2568,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29194:
     area: tba_291
     name: The High Balcony
@@ -2409,6 +2597,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29195:
     area: tba_291
     name: Look Before you Leap
@@ -2429,6 +2619,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29196:
     area: tba_291
     name: The Guardian's Chamber
@@ -2454,6 +2646,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29197:
     area: tba_291
     name: Ilian's Throne Room
@@ -2481,6 +2675,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29198:
     area: tba_291
     name: The Way Out
@@ -2501,6 +2697,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29199:
     area: tba_291
     name: Even more of the Black Forest
@@ -2530,3 +2728,5 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

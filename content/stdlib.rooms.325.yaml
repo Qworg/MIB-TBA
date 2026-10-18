@@ -26,6 +26,8 @@ rooms:
       description: |2
            Encampment by Kaan
         Links: 04s
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32501:
     area: tba_325
     name: Matted-down Grass
@@ -53,6 +55,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32502:
     area: tba_325
     name: A Beaten Grassy Path
@@ -82,6 +86,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32503:
     area: tba_325
     name: At the Tonic Wagon
@@ -101,6 +107,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32504:
     area: tba_325
     name: At a Bright Wagon
@@ -121,6 +129,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32505:
     area: tba_325
     name: Festival Grounds
@@ -152,6 +162,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32506:
     area: tba_325
     name: Festival Grounds
@@ -175,6 +187,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32507:
     area: tba_325
     name: Festival Grounds
@@ -199,6 +213,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32508:
     area: tba_325
     name: Festival Grounds
@@ -229,6 +245,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32509:
     area: tba_325
     name: Festival Grounds
@@ -262,6 +280,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32510:
     area: tba_325
     name: Festival Grounds
@@ -292,6 +312,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32511:
     area: tba_325
     name: Festival Grounds
@@ -322,6 +344,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32512:
     area: tba_325
     name: Festival Grounds
@@ -353,6 +377,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32513:
     area: tba_325
     name: Festival Grounds
@@ -385,6 +411,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32514:
     area: tba_325
     name: Festival Grounds
@@ -413,6 +441,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32515:
     area: tba_325
     name: Festival Grounds
@@ -443,6 +473,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32516:
     area: tba_325
     name: Festival Grounds
@@ -469,6 +501,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32517:
     area: tba_325
     name: Road
@@ -497,6 +531,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32518:
     area: tba_325
     name: Eastern Grassway
@@ -528,6 +564,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32519:
     area: tba_325
     name: Clothing Wagon
@@ -548,6 +586,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32520:
     area: tba_325
     name: Eastern Grassway
@@ -575,6 +615,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32521:
     area: tba_325
     name: Eastern Grassway
@@ -606,6 +648,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32522:
     area: tba_325
     name: Costume Jewelry
@@ -626,6 +670,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32523:
     area: tba_325
     name: Eastern Grassway
@@ -654,6 +700,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32524:
     area: tba_325
     name: Eastern Grassway
@@ -682,6 +730,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32525:
     area: tba_325
     name: Court
@@ -709,6 +759,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32526:
     area: tba_325
     name: The Gypsys' Court
@@ -737,6 +789,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32527:
     area: tba_325
     name: The Gypsys' Court
@@ -764,6 +818,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32528:
     area: tba_325
     name: The Gypsys' Court
@@ -791,6 +847,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32529:
     area: tba_325
     name: Ale Tent
@@ -814,6 +872,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32530:
     area: tba_325
     name: A Gypsy Wagon
@@ -832,6 +892,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32531:
     area: tba_325
     name: Food Cart
@@ -856,6 +918,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32532:
     area: tba_325
     name: Gypsy Wagon
@@ -875,6 +939,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32533:
     area: tba_325
     name: Stage
@@ -897,6 +963,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32534:
     area: tba_325
     name: Stage
@@ -919,6 +987,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32535:
     area: tba_325
     name: Grassy Walkway
@@ -942,6 +1012,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32536:
     area: tba_325
     name: Grassy Walkway
@@ -965,6 +1037,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32537:
     area: tba_325
     name: Grassy Court
@@ -996,6 +1070,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32538:
     area: tba_325
     name: Grassy Court
@@ -1024,6 +1100,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32539:
     area: tba_325
     name: Grassy Court
@@ -1054,6 +1132,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32540:
     area: tba_325
     name: Puppet Show
@@ -1075,6 +1155,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32541:
     area: tba_325
     name: Petting Zoo
@@ -1097,6 +1179,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32542:
     area: tba_325
     name: Petting Zoo
@@ -1117,6 +1201,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32543:
     area: tba_325
     name: Face Painting
@@ -1136,6 +1222,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32544:
     area: tba_325
     name: Open Air Restaurant
@@ -1156,6 +1244,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32545:
     area: tba_325
     name: Path
@@ -1180,6 +1270,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32546:
     area: tba_325
     name: Path
@@ -1203,6 +1295,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32547:
     area: tba_325
     name: Path
@@ -1234,6 +1328,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32548:
     area: tba_325
     name: Madame Zayla's Wagon
@@ -1260,6 +1356,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32549:
     area: tba_325
     name: Festival Grounds
@@ -1283,6 +1381,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32550:
     area: tba_325
     name: At the Performance
@@ -1310,6 +1410,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32551:
     area: tba_325
     name: Festival Grounds
@@ -1337,6 +1439,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32552:
     area: tba_325
     name: Beaten Trail
@@ -1361,6 +1465,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32553:
     area: tba_325
     name: Beaten Trail
@@ -1389,6 +1495,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32554:
     area: tba_325
     name: Beaten Trail
@@ -1416,6 +1524,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32555:
     area: tba_325
     name: Forest Trail
@@ -1439,6 +1549,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32556:
     area: tba_325
     name: Forest Trail
@@ -1463,6 +1575,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32557:
     area: tba_325
     name: Open Clearing
@@ -1495,6 +1609,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32558:
     area: tba_325
     name: Open Clearing
@@ -1527,6 +1643,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32559:
     area: tba_325
     name: Open Clearing
@@ -1559,6 +1677,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32560:
     area: tba_325
     name: Open Clearing
@@ -1591,6 +1711,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32561:
     area: tba_325
     name: Open Clearing
@@ -1623,6 +1745,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32562:
     area: tba_325
     name: Open Clearing
@@ -1655,6 +1779,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32563:
     area: tba_325
     name: Wagon
@@ -1674,6 +1800,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32564:
     area: tba_325
     name: Wagon
@@ -1693,6 +1821,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32565:
     area: tba_325
     name: Wagon
@@ -1712,6 +1842,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32566:
     area: tba_325
     name: Tent
@@ -1730,6 +1862,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32567:
     area: tba_325
     name: Tent
@@ -1748,6 +1882,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32568:
     area: tba_325
     name: Tent
@@ -1766,6 +1902,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32569:
     area: tba_325
     name: Teepee
@@ -1785,6 +1923,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32570:
     area: tba_325
     name: Teepee
@@ -1804,6 +1944,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32571:
     area: tba_325
     name: Teepee
@@ -1823,6 +1965,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32572:
     area: tba_325
     name: Side Stage Left
@@ -1846,6 +1990,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32573:
     area: tba_325
     name: Side Stage Right
@@ -1869,6 +2015,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32574:
     area: tba_325
     name: At the Riverbank
@@ -1893,6 +2041,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32575:
     area: tba_325
     name: In the Brook
@@ -1911,6 +2061,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32576:
     area: tba_325
     name: The Bard's Stump
@@ -1930,6 +2082,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32577:
     area: tba_325
     name: The Storyteller's Stump
@@ -1951,3 +2105,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

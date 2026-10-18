@@ -31,6 +31,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10601:
     area: tba_106
     name: Cathedral Altar
@@ -49,6 +51,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10602:
     area: tba_106
     name: Inside the Elcardo Cathedral
@@ -72,6 +76,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10603:
     area: tba_106
     name: Outside the Elcardorian Cathedral
@@ -96,6 +102,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10604:
     area: tba_106
     name: Cathedral Square
@@ -119,6 +127,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10605:
     area: tba_106
     name: Peddler's Square
@@ -151,6 +161,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10606:
     area: tba_106
     name: Intersection to the Guild Halls
@@ -185,6 +197,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10607:
     area: tba_106
     name: Citizens Square
@@ -217,6 +231,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10608:
     area: tba_106
     name: Inside the South Gate of Elcardo
@@ -242,6 +258,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10609:
     area: tba_106
     name: Outside the South Gate of Elcardo
@@ -262,6 +280,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10610:
     area: tba_106
     name: Peddler's Road
@@ -293,6 +313,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10611:
     area: tba_106
     name: Peddler's Road
@@ -324,6 +346,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10612:
     area: tba_106
     name: Inside the East Gate of Elcardo
@@ -348,6 +372,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10613:
     area: tba_106
     name: Outside the East Gate of Elcardo
@@ -369,6 +395,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10614:
     area: tba_106
     name: Peddler's Road
@@ -401,6 +429,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10615:
     area: tba_106
     name: Peddler's Road
@@ -428,6 +458,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10616:
     area: tba_106
     name: Inside the West Gate of Elcardo
@@ -452,6 +484,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10617:
     area: tba_106
     name: Outside the West Gate of Elcardo
@@ -477,6 +511,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10618:
     area: tba_106
     name: Guild Halls
@@ -501,6 +537,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10619:
     area: tba_106
     name: Guild Halls
@@ -525,6 +563,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10620:
     area: tba_106
     name: Guild Halls
@@ -546,6 +586,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10621:
     area: tba_106
     name: Guild Halls
@@ -572,6 +614,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10622:
     area: tba_106
     name: Guild Halls
@@ -593,6 +637,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10623:
     area: tba_106
     name: Citizens Street
@@ -617,6 +663,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10624:
     area: tba_106
     name: Citizens Street
@@ -641,6 +689,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10625:
     area: tba_106
     name: Citizens Street
@@ -665,6 +715,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10626:
     area: tba_106
     name: Dead End
@@ -689,6 +741,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10627:
     area: tba_106
     name: Pathway to the Saloon
@@ -713,6 +767,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10628:
     area: tba_106
     name: Entrance to the Saloon
@@ -737,6 +793,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10629:
     area: tba_106
     name: Inside the Elcardo Saloon
@@ -761,6 +819,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10630:
     area: tba_106
     name: Center of the Saloon
@@ -785,6 +845,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10631:
     area: tba_106
     name: The Back Room
@@ -805,6 +867,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10632:
     area: tba_106
     name: The Armor Shop
@@ -828,6 +892,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10633:
     area: tba_106
     name: The Bank of Elcardo
@@ -846,6 +912,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10634:
     area: tba_106
     name: The weapon shop
@@ -868,6 +936,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10635:
     area: tba_106
     name: Mayor's Hut
@@ -898,6 +968,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10636:
     area: tba_106
     name: Inside the Mayor's room
@@ -923,6 +995,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10637:
     area: tba_106
     name: Grandma's Diner
@@ -942,6 +1016,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10638:
     area: tba_106
     name: Elcardo Grocer
@@ -960,6 +1036,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10639:
     area: tba_106
     name: Lara's Magic Supplies
@@ -980,6 +1058,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10641:
     area: tba_106
     name: Inside the Shack
@@ -1017,6 +1097,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10642:
     area: tba_106
     name: Poor Barracks
@@ -1036,6 +1118,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10643:
     area: tba_106
     name: Poor Barracks
@@ -1060,6 +1144,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10644:
     area: tba_106
     name: An Empty Room
@@ -1083,6 +1169,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10645:
     area: tba_106
     name: Chambers of Sujin Suncas
@@ -1110,6 +1198,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10646:
     area: tba_106
     name: Entrance to the Dungeon
@@ -1141,6 +1231,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10647:
     area: tba_106
     name: Death Chamber
@@ -1160,6 +1252,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10648:
     area: tba_106
     name: Torture Room
@@ -1179,6 +1273,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10649:
     area: tba_106
     name: Dungeon Hallway
@@ -1207,6 +1303,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10650:
     area: tba_106
     name: Body Count
@@ -1223,6 +1321,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10651:
     area: tba_106
     name: Dungeon Hallway
@@ -1254,6 +1354,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10652:
     area: tba_106
     name: A Black Cell
@@ -1273,6 +1375,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10653:
     area: tba_106
     name: Suncas Jail Cell.
@@ -1293,6 +1397,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10654:
     area: tba_106
     name: The Guard Room
@@ -1312,6 +1418,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10655:
     area: tba_106
     name: A Path between Hannah and Elcardo
@@ -1335,6 +1443,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10656:
     area: tba_106
     name: A Path between Hannah and Elcardo
@@ -1359,6 +1469,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10657:
     area: tba_106
     name: Before the City of Hannah
@@ -1379,3 +1491,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

@@ -23,6 +23,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25601:
     area: tba_256
     name: Cobbled Street
@@ -45,6 +47,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25602:
     area: tba_256
     name: Guard Tower
@@ -73,6 +77,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25603:
     area: tba_256
     name: Guard Tower
@@ -101,6 +107,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25604:
     area: tba_256
     name: The Armory
@@ -138,6 +146,8 @@ rooms:
       - dust
       description: |2
            Three sets of prints lead out where the back door used to stand.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25605:
     area: tba_256
     name: Guest Room
@@ -163,6 +173,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25606:
     area: tba_256
     name: Dining Hall
@@ -196,6 +208,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25607:
     area: tba_256
     name: Guest Room
@@ -222,6 +236,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25608:
     area: tba_256
     name: Guest Room
@@ -248,6 +264,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25609:
     area: tba_256
     name: The Lord's Stables
@@ -266,6 +284,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25610:
     area: tba_256
     name: Guest Room
@@ -290,6 +310,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25611:
     area: tba_256
     name: Guest Room
@@ -316,6 +338,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25612:
     area: tba_256
     name: Bath Room
@@ -341,6 +365,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25613:
     area: tba_256
     name: Bath Room
@@ -365,6 +391,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25614:
     area: tba_256
     name: Guest Room
@@ -390,6 +418,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25615:
     area: tba_256
     name: Hallway
@@ -422,6 +452,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25616:
     area: tba_256
     name: Hallway
@@ -454,6 +486,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25617:
     area: tba_256
     name: Hallway
@@ -486,6 +520,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25618:
     area: tba_256
     name: Hallway
@@ -523,6 +559,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25619:
     area: tba_256
     name: Hallway
@@ -552,6 +590,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25620:
     area: tba_256
     name: Grand Reception Hall
@@ -601,6 +641,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25621:
     area: tba_256
     name: Hallway
@@ -630,6 +672,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25622:
     area: tba_256
     name: Hallway
@@ -661,6 +705,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25623:
     area: tba_256
     name: Hallway
@@ -703,6 +749,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25624:
     area: tba_256
     name: Hallway
@@ -735,6 +783,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25625:
     area: tba_256
     name: Hallway
@@ -777,6 +827,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25626:
     area: tba_256
     name: Courtyard
@@ -815,6 +867,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25627:
     area: tba_256
     name: Courtyard
@@ -843,6 +897,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25628:
     area: tba_256
     name: The Beginning of a Very Dark & Uncomfortable Passageway
@@ -876,6 +932,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25629:
     area: tba_256
     name: Balcony
@@ -897,6 +955,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25630:
     area: tba_256
     name: Lord's Dining Room
@@ -920,6 +980,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25631:
     area: tba_256
     name: Reception Waiting Room
@@ -958,6 +1020,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25632:
     area: tba_256
     name: Kitchen
@@ -998,6 +1062,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25633:
     area: tba_256
     name: Hallway
@@ -1040,6 +1106,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25634:
     area: tba_256
     name: The Tea Room
@@ -1076,6 +1144,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25635:
     area: tba_256
     name: Lord's Garden
@@ -1100,6 +1170,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25636:
     area: tba_256
     name: Lord's Reception
@@ -1138,6 +1210,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25637:
     area: tba_256
     name: Lord's Garden
@@ -1167,6 +1241,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25638:
     area: tba_256
     name: Lord's Garden
@@ -1194,6 +1270,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25639:
     area: tba_256
     name: Lord's Gardens
@@ -1231,6 +1309,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25640:
     area: tba_256
     name: Library
@@ -1277,6 +1357,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25641:
     area: tba_256
     name: Hallway
@@ -1308,6 +1390,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25642:
     area: tba_256
     name: Lord's Bedroom
@@ -1345,6 +1429,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25643:
     area: tba_256
     name: Bathing Chambers
@@ -1364,6 +1450,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25644:
     area: tba_256
     name: Courtyard
@@ -1388,6 +1476,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25645:
     area: tba_256
     name: Courtyard, at the pool
@@ -1416,6 +1506,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25646:
     area: tba_256
     name: Courtyard
@@ -1444,6 +1536,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25647:
     area: tba_256
     name: Guest Room
@@ -1469,6 +1563,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25648:
     area: tba_256
     name: Hallway
@@ -1506,6 +1602,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25649:
     area: tba_256
     name: Courtyard
@@ -1540,6 +1638,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25650:
     area: tba_256
     name: Gazebo
@@ -1566,6 +1666,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25651:
     area: tba_256
     name: Along the Parapet
@@ -1589,6 +1691,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25652:
     area: tba_256
     name: Hallway
@@ -1618,6 +1722,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25653:
     area: tba_256
     name: Lord's Garden
@@ -1641,6 +1747,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25654:
     area: tba_256
     name: Lord's Garden
@@ -1664,6 +1772,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25655:
     area: tba_256
     name: Courtyard
@@ -1698,6 +1808,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25656:
     area: tba_256
     name: Stanneg Inn
@@ -1718,6 +1830,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25657:
     area: tba_256
     name: Guest Room
@@ -1743,6 +1857,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25658:
     area: tba_256
     name: Grand Reception Hall
@@ -1782,6 +1898,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25659:
     area: tba_256
     name: North Drawbridge Guard Tower
@@ -1804,6 +1922,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25660:
     area: tba_256
     name: Along the Parapet
@@ -1827,6 +1947,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25661:
     area: tba_256
     name: Northeast Guard Tower
@@ -1849,6 +1971,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25662:
     area: tba_256
     name: Along the Parapet
@@ -1872,6 +1996,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25663:
     area: tba_256
     name: Cobbled Street
@@ -1897,6 +2023,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25664:
     area: tba_256
     name: Cobbled Street
@@ -1921,6 +2049,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25665:
     area: tba_256
     name: Lord's Court
@@ -1944,6 +2074,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25666:
     area: tba_256
     name: On the Drawbridge
@@ -1972,6 +2104,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25667:
     area: tba_256
     name: Under the Portcullis
@@ -2017,6 +2151,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25668:
     area: tba_256
     name: Along the Parapet
@@ -2040,6 +2176,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25669:
     area: tba_256
     name: Northwest Guard Tower
@@ -2062,6 +2200,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25670:
     area: tba_256
     name: A Sloping Tunnel
@@ -2086,6 +2226,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25671:
     area: tba_256
     name: A Sloping Tunnel
@@ -2126,6 +2268,8 @@ rooms:
       description: |2
            The floor up ahead looks...  Strange.  You don't think going ahead would be a
         good idea.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25672:
     area: tba_256
     name: Along the Parapet
@@ -2150,6 +2294,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25673:
     area: tba_256
     name: A Sloping Tunnel
@@ -2175,6 +2321,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25674:
     area: tba_256
     name: A Sloping Tunnel
@@ -2202,6 +2350,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25675:
     area: tba_256
     name: Along the Parapet
@@ -2224,6 +2374,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25676:
     area: tba_256
     name: Along the Parapet
@@ -2246,6 +2398,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25677:
     area: tba_256
     name: Along the Parapet
@@ -2268,6 +2422,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25678:
     area: tba_256
     name: Along the Parapet
@@ -2290,6 +2446,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25679:
     area: tba_256
     name: Along the Parapet
@@ -2312,6 +2470,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25680:
     area: tba_256
     name: Along the Parapet
@@ -2334,6 +2494,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25681:
     area: tba_256
     name: Along the Parapet
@@ -2356,6 +2518,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25682:
     area: tba_256
     name: Southeast Guard Tower
@@ -2379,6 +2543,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25683:
     area: tba_256
     name: Along the Parapet
@@ -2401,6 +2567,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25684:
     area: tba_256
     name: Along the Parapet
@@ -2423,6 +2591,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25685:
     area: tba_256
     name: Along the Parapet
@@ -2445,6 +2615,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25686:
     area: tba_256
     name: Southwestern Guard Tower
@@ -2467,6 +2639,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25687:
     area: tba_256
     name: Along the Parapet
@@ -2490,6 +2664,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25688:
     area: tba_256
     name: Along the Parapet
@@ -2512,6 +2688,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25689:
     area: tba_256
     name: Along the Parapet
@@ -2535,6 +2713,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25690:
     area: tba_256
     name: South Drawbridge Guard Tower
@@ -2557,6 +2737,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25691:
     area: tba_256
     name: Wine Cellar
@@ -2574,6 +2756,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25692:
     area: tba_256
     name: Musty Dusty Corrider
@@ -2599,6 +2783,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25693:
     area: tba_256
     name: Root Cellar
@@ -2616,3 +2802,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
