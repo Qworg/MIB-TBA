@@ -24,6 +24,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1201:
     area: tba_12
     name: The Inn Of The Gods
@@ -42,6 +44,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1202:
     area: tba_12
     name: The Ice Box Of The Gods
@@ -57,6 +61,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1203:
     area: tba_12
     name: The Gods' Mortal Board Room
@@ -75,6 +81,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1204:
     area: tba_12
     name: The Immortal Board Room
@@ -100,6 +108,8 @@ rooms:
         east and the meeting room for the gods is to the south.  To the north is the
         Gods' Inn and to the west is a post office for Gods.  In the northeast corner
         you spot a small staircase leading upwards.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1205:
     area: tba_12
     name: The Post Office Of The Gods
@@ -119,6 +129,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1206:
     area: tba_12
     name: Advertising/Business Center
@@ -139,6 +151,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1290:
     area: tba_12
     name: The Immortal Board Hall
@@ -165,6 +179,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1291:
     area: tba_12
     name: The Builders' Board Room
@@ -183,6 +199,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1292:
     area: tba_12
     name: The Immortals' Mortal Board Room
@@ -202,6 +220,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1293:
     area: tba_12
     name: The Halls Of Justice
@@ -231,3 +251,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

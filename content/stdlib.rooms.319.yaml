@@ -69,6 +69,8 @@ rooms:
         320 Yllythad Sea II                at 31998 (west ) ---> 32065
         320 Yllythad Sea II                at 31999 (west ) ---> 32060
         Links: 01n to the beach
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31901:
     area: tba_319
     name: Calm Waters
@@ -97,6 +99,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31902:
     area: tba_319
     name: Calm Waters
@@ -124,6 +128,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31903:
     area: tba_319
     name: A Choppy Section of the Sea
@@ -156,6 +162,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31904:
     area: tba_319
     name: A Choppy Section of the Sea
@@ -189,6 +197,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31905:
     area: tba_319
     name: Placid Waters
@@ -222,6 +232,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31906:
     area: tba_319
     name: Placid Waters
@@ -253,6 +265,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31907:
     area: tba_319
     name: Placid Waters
@@ -284,6 +298,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31908:
     area: tba_319
     name: A Swift Wind
@@ -315,6 +331,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31909:
     area: tba_319
     name: A Swift Wind
@@ -346,6 +364,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31910:
     area: tba_319
     name: A Strong Current
@@ -376,6 +396,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31911:
     area: tba_319
     name: Among the Tradewinds
@@ -407,6 +429,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31912:
     area: tba_319
     name: Wild, Foaming Crests
@@ -438,6 +462,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31913:
     area: tba_319
     name: Among the Tradewinds
@@ -468,6 +494,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31914:
     area: tba_319
     name: Among the Tradewinds
@@ -499,6 +527,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31915:
     area: tba_319
     name: Wild, Foaming Crests
@@ -530,6 +560,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31916:
     area: tba_319
     name: Wild, Foaming Crests
@@ -561,6 +593,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31917:
     area: tba_319
     name: In the Fog
@@ -592,6 +626,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31918:
     area: tba_319
     name: In the Fog
@@ -623,6 +659,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31919:
     area: tba_319
     name: A Drizzling Rain
@@ -654,6 +692,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31920:
     area: tba_319
     name: A Gentle Breeze
@@ -685,6 +725,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31921:
     area: tba_319
     name: Among Fifteen Foot Waves
@@ -716,6 +758,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31922:
     area: tba_319
     name: Among Fifteen Foot Waves
@@ -746,6 +790,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31923:
     area: tba_319
     name: A Drizzling Rain
@@ -777,6 +823,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31924:
     area: tba_319
     name: A Gentle Breeze
@@ -809,6 +857,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31925:
     area: tba_319
     name: Upon the Mighty Sea
@@ -840,6 +890,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31926:
     area: tba_319
     name: Calm Waters
@@ -873,6 +925,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31927:
     area: tba_319
     name: Calm Waters
@@ -904,6 +958,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31928:
     area: tba_319
     name: Calm Waters
@@ -934,6 +990,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31929:
     area: tba_319
     name: A Choppy Section of the Sea
@@ -965,6 +1023,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31930:
     area: tba_319
     name: A Choppy Section of the Sea
@@ -996,6 +1056,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31931:
     area: tba_319
     name: Placid Waters
@@ -1029,6 +1091,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31932:
     area: tba_319
     name: Placid Waters
@@ -1060,6 +1124,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31933:
     area: tba_319
     name: Placid Waters
@@ -1091,6 +1157,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31934:
     area: tba_319
     name: A Swift Wind
@@ -1122,6 +1190,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31935:
     area: tba_319
     name: A Swift Wind
@@ -1153,6 +1223,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31936:
     area: tba_319
     name: A Strong Current
@@ -1182,6 +1254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31937:
     area: tba_319
     name: Among the Tradewinds
@@ -1213,6 +1287,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31938:
     area: tba_319
     name: Wild, Foaming Crests
@@ -1244,6 +1320,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31939:
     area: tba_319
     name: Among the Tradewinds
@@ -1274,6 +1352,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31940:
     area: tba_319
     name: Among the Tradewinds
@@ -1305,6 +1385,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31941:
     area: tba_319
     name: Wild, Foaming Crests
@@ -1334,6 +1416,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31942:
     area: tba_319
     name: Wild, Foaming Crests
@@ -1365,6 +1449,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31943:
     area: tba_319
     name: In the Fog
@@ -1396,6 +1482,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31944:
     area: tba_319
     name: In the Fog
@@ -1427,6 +1515,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31945:
     area: tba_319
     name: A Drizzling Rain
@@ -1458,6 +1548,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31946:
     area: tba_319
     name: A Gentle Breeze
@@ -1483,6 +1575,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31947:
     area: tba_319
     name: Among Fifteen Foot Waves
@@ -1510,6 +1604,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31948:
     area: tba_319
     name: Among Fifteen Foot Waves
@@ -1536,6 +1632,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31949:
     area: tba_319
     name: A Drizzling Rain
@@ -1563,6 +1661,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31950:
     area: tba_319
     name: A Gentle Breeze
@@ -1591,6 +1691,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31951:
     area: tba_319
     name: Upon the Mighty Sea
@@ -1622,6 +1724,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31952:
     area: tba_319
     name: Calm Waters
@@ -1654,6 +1758,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31953:
     area: tba_319
     name: Calm Waters
@@ -1685,6 +1791,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31954:
     area: tba_319
     name: Calm Waters
@@ -1715,6 +1823,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31955:
     area: tba_319
     name: A Choppy Section of the Sea
@@ -1742,6 +1852,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31956:
     area: tba_319
     name: A Choppy Section of the Sea
@@ -1773,6 +1885,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31957:
     area: tba_319
     name: Placid Waters
@@ -1804,6 +1918,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31958:
     area: tba_319
     name: Placid Waters
@@ -1835,6 +1951,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31959:
     area: tba_319
     name: Placid Waters
@@ -1866,6 +1984,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31960:
     area: tba_319
     name: A Swift Wind
@@ -1893,6 +2013,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31961:
     area: tba_319
     name: A Swift Wind
@@ -1924,6 +2046,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31962:
     area: tba_319
     name: A Strong Current
@@ -1954,6 +2078,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31963:
     area: tba_319
     name: Among the Tradewinds
@@ -1985,6 +2111,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31964:
     area: tba_319
     name: Wild, Foaming Crests
@@ -2016,6 +2144,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31965:
     area: tba_319
     name: Among the Tradewinds
@@ -2042,6 +2172,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31966:
     area: tba_319
     name: Among the Tradewinds
@@ -2073,6 +2205,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31967:
     area: tba_319
     name: Wild, Foaming Crests
@@ -2104,6 +2238,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31968:
     area: tba_319
     name: Wild, Foaming Crests
@@ -2135,6 +2271,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31969:
     area: tba_319
     name: In the Fog
@@ -2166,6 +2304,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31970:
     area: tba_319
     name: In the Fog
@@ -2193,6 +2333,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31971:
     area: tba_319
     name: A Drizzling Rain
@@ -2220,6 +2362,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31972:
     area: tba_319
     name: A Gentle Breeze
@@ -2247,6 +2391,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31973:
     area: tba_319
     name: Among Fifteen Foot Waves
@@ -2274,6 +2420,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31974:
     area: tba_319
     name: Among Fifteen Foot Waves
@@ -2300,6 +2448,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31975:
     area: tba_319
     name: A Drizzling Rain
@@ -2323,6 +2473,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31976:
     area: tba_319
     name: A Gentle Breeze
@@ -2355,6 +2507,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31977:
     area: tba_319
     name: Upon the Mighty Sea
@@ -2386,6 +2540,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31978:
     area: tba_319
     name: Calm Waters
@@ -2418,6 +2574,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31979:
     area: tba_319
     name: Calm Waters
@@ -2449,6 +2607,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31980:
     area: tba_319
     name: Calm Waters
@@ -2479,6 +2639,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31981:
     area: tba_319
     name: A Choppy Section of the Sea
@@ -2510,6 +2672,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31982:
     area: tba_319
     name: A Choppy Section of the Sea
@@ -2541,6 +2705,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31983:
     area: tba_319
     name: Placid Waters
@@ -2572,6 +2738,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31984:
     area: tba_319
     name: Placid Waters
@@ -2603,6 +2771,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31985:
     area: tba_319
     name: Placid Waters
@@ -2634,6 +2804,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31986:
     area: tba_319
     name: A Swift Wind
@@ -2665,6 +2837,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31987:
     area: tba_319
     name: A Swift Wind
@@ -2696,6 +2870,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31988:
     area: tba_319
     name: A Strong Current
@@ -2726,6 +2902,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31989:
     area: tba_319
     name: Among the Tradewinds
@@ -2757,6 +2935,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31990:
     area: tba_319
     name: Wild, Foaming Crests
@@ -2788,6 +2968,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31991:
     area: tba_319
     name: Among the Tradewinds
@@ -2818,6 +3000,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31992:
     area: tba_319
     name: Among the Tradewinds
@@ -2849,6 +3033,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31993:
     area: tba_319
     name: Wild, Foaming Crests
@@ -2880,6 +3066,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31994:
     area: tba_319
     name: Wild, Foaming Crests
@@ -2911,6 +3099,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31995:
     area: tba_319
     name: In the Fog
@@ -2942,6 +3132,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31996:
     area: tba_319
     name: In the Fog
@@ -2973,6 +3165,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31997:
     area: tba_319
     name: A Drizzling Rain
@@ -3004,6 +3198,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31998:
     area: tba_319
     name: A Gentle Breeze
@@ -3035,6 +3231,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31999:
     area: tba_319
     name: Among Fifteen Foot Waves
@@ -3066,3 +3264,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

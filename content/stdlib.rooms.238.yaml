@@ -27,6 +27,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23801:
     area: tba_238
     name: Before the lake
@@ -58,6 +60,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23802:
     area: tba_238
     name: In the lake
@@ -88,6 +92,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23803:
     area: tba_238
     name: In the Lake
@@ -118,6 +124,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23804:
     area: tba_238
     name: In the lake
@@ -154,6 +162,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23805:
     area: tba_238
     name: In the lake
@@ -190,6 +200,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23806:
     area: tba_238
     name: In the lake
@@ -226,6 +238,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23807:
     area: tba_238
     name: In the lake
@@ -262,6 +276,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23808:
     area: tba_238
     name: In the lake
@@ -298,6 +314,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23809:
     area: tba_238
     name: Patch of land
@@ -334,6 +352,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23810:
     area: tba_238
     name: In the lake
@@ -371,6 +391,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23811:
     area: tba_238
     name: In the lake
@@ -412,6 +434,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23812:
     area: tba_238
     name: In the lake
@@ -453,6 +477,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23813:
     area: tba_238
     name: In the lake
@@ -494,6 +520,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23814:
     area: tba_238
     name: In the lake
@@ -535,6 +563,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23815:
     area: tba_238
     name: In the lake
@@ -576,6 +606,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23816:
     area: tba_238
     name: In the lake
@@ -617,6 +649,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23817:
     area: tba_238
     name: In the lake
@@ -653,6 +687,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23818:
     area: tba_238
     name: In the lake
@@ -689,6 +725,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23819:
     area: tba_238
     name: In the lake
@@ -729,6 +767,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23820:
     area: tba_238
     name: In the lake
@@ -769,6 +809,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23821:
     area: tba_238
     name: In the lake
@@ -809,6 +851,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23822:
     area: tba_238
     name: In the lake
@@ -849,6 +893,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23823:
     area: tba_238
     name: In the lake
@@ -889,6 +935,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23824:
     area: tba_238
     name: In the lake
@@ -929,6 +977,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23825:
     area: tba_238
     name: In the lake
@@ -965,6 +1015,8 @@ rooms:
       description: |2
            You notice that these prints are different creatures.  It appears that they
         were drug or have drug themselves into this room and and then walked out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23826:
     area: tba_238
     name: In the fog
@@ -989,6 +1041,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23827:
     area: tba_238
     name: In the fog
@@ -1017,6 +1071,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23828:
     area: tba_238
     name: In the fog
@@ -1045,6 +1101,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23829:
     area: tba_238
     name: In the fog
@@ -1073,6 +1131,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23830:
     area: tba_238
     name: In the fog
@@ -1101,6 +1161,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23831:
     area: tba_238
     name: In the fog
@@ -1129,6 +1191,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23832:
     area: tba_238
     name: In the fog
@@ -1157,6 +1221,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23833:
     area: tba_238
     name: Before the castle
@@ -1182,6 +1248,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23834:
     area: tba_238
     name: Under the sand
@@ -1218,6 +1286,8 @@ rooms:
       - web
       description: |2
            There are many small spiders around the room looking for a bite to eat.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23835:
     area: tba_238
     name: Through the tunnel
@@ -1243,6 +1313,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23836:
     area: tba_238
     name: Through the tunnel
@@ -1268,6 +1340,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23837:
     area: tba_238
     name: Through the tunnel
@@ -1294,6 +1368,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23838:
     area: tba_238
     name: Through the tunnel
@@ -1319,6 +1395,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23839:
     area: tba_238
     name: Through the tunnel
@@ -1344,6 +1422,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23840:
     area: tba_238
     name: Through the tunnel
@@ -1365,6 +1445,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23841:
     area: tba_238
     name: Entrance to the castle
@@ -1415,6 +1497,8 @@ rooms:
            There are many heads strown across the room with many nasty smells to follow.
         These heads appear to have been gnawed off of the owners neck very visiously as
         if torn off by animals.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23842:
     area: tba_238
     name: Corpses
@@ -1442,6 +1526,8 @@ rooms:
       description: |2
            There are many decapitated corpse strown about the room piled in all corners
         of the room.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23843:
     area: tba_238
     name: Storage room
@@ -1461,6 +1547,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23844:
     area: tba_238
     name: Treasure room
@@ -1477,6 +1565,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23845:
     area: tba_238
     name: Main floor hallway
@@ -1525,6 +1615,8 @@ rooms:
       - pillar
       description: |2
            These pillars appear to be made of pure crystal and are about 10 feet tall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23846:
     area: tba_238
     name: Outside the castle
@@ -1550,6 +1642,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23847:
     area: tba_238
     name: Intersection
@@ -1587,6 +1681,8 @@ rooms:
       description: |2
            Looking at this picture woven into carpet seems to put you into a trance
         making it hard to believe that this picture is just a picture.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23848:
     area: tba_238
     name: Western hallway
@@ -1611,6 +1707,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23849:
     area: tba_238
     name: Dead end
@@ -1640,6 +1738,8 @@ rooms:
       - scratch
       description: |2
            There are many scratches forming a small circle in the middle of the tiles.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23850:
     area: tba_238
     name: Eastern hallway
@@ -1669,6 +1769,8 @@ rooms:
       description: |2
            Looking more carefully you notice that these spots appear to be some kind of
         tracks leading fomr the roof to the floor.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23851:
     area: tba_238
     name: Further on the eastern hallway
@@ -1695,6 +1797,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23854:
     area: tba_238
     name: Northern hallway
@@ -1724,6 +1828,8 @@ rooms:
       description: |2
            The tapestries are very elegant and well kept they are pictures of different
         land scapes.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23855:
     area: tba_238
     name: Dead end
@@ -1749,6 +1855,8 @@ rooms:
       description: |2
            These pictures seem to be people but they are slightly blurred when you try
         to focus on them.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23856:
     area: tba_238
     name: Hidden hallway
@@ -1769,6 +1877,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23857:
     area: tba_238
     name: Further on the hidden hallway
@@ -1803,6 +1913,8 @@ rooms:
       - sky
       description: |2
            This really looks like the real sky except it is sturdy and can hold you up.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23858:
     area: tba_238
     name: Walking through the sky
@@ -1827,6 +1939,8 @@ rooms:
     coord: null
     sector: flying
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23859:
     area: tba_238
     name: Near the end
@@ -1851,6 +1965,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23860:
     area: tba_238
     name: The end
@@ -1886,6 +2002,8 @@ rooms:
       description: |2
            The troll's marking appear to be those of Lords Of Pain signifying power and
         courage.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23861:
     area: tba_238
     name: Portal room
@@ -1911,6 +2029,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23862:
     area: tba_238
     name: Through the blue portal
@@ -1936,6 +2056,8 @@ rooms:
       description: |2
            There are many small spots that appear to be some kind of smaller portals
         inside of the big portal.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23863:
     area: tba_238
     name: Through the red portal
@@ -1961,6 +2083,8 @@ rooms:
       description: |2
            Looking in for further examination you see that they are balls of energy, as
         you turn back one pops you in the face OUCH!!!!!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23864:
     area: tba_238
     name: Through the green portal
@@ -1984,6 +2108,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23865:
     area: tba_238
     name: Portal room
@@ -2003,6 +2129,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23866:
     area: tba_238
     name: Portal room
@@ -2023,6 +2151,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23867:
     area: tba_238
     name: Further in the blue portal
@@ -2046,6 +2176,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23868:
     area: tba_238
     name: Further in the blue portal
@@ -2069,6 +2201,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23869:
     area: tba_238
     name: Further in the blue portal
@@ -2093,6 +2227,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23870:
     area: tba_238
     name: Kings chamber
@@ -2113,6 +2249,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23871:
     area: tba_238
     name: Further through the red portal.
@@ -2136,6 +2274,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23872:
     area: tba_238
     name: Far into the red portal.
@@ -2159,6 +2299,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23873:
     area: tba_238
     name: Towards the end
@@ -2183,6 +2325,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23874:
     area: tba_238
     name: Queen plegia's room
@@ -2208,6 +2352,8 @@ rooms:
       description: |2
            Made of solid gold linned with silk this throne appears to be a very eligant
         sitting.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23875:
     area: tba_238
     name: South road
@@ -2227,6 +2373,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23876:
     area: tba_238
     name: Towards the lake
@@ -2251,6 +2399,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23877:
     area: tba_238
     name: In the fog
@@ -2275,6 +2425,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23878:
     area: tba_238
     name: In the fog
@@ -2299,6 +2451,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23879:
     area: tba_238
     name: In the fog
@@ -2323,6 +2477,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23880:
     area: tba_238
     name: A Clearing Before the Lake
@@ -2346,6 +2502,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23881:
     area: tba_238
     name: Dragons Lair
@@ -2371,3 +2529,5 @@ rooms:
       description: |2
            Looking in for a closer look you see that these scratches are from some kind
         of animal.
+    ambient_phases: {}
+    ambient_weather: {}

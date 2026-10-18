@@ -26,6 +26,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4401:
     area: tba_44
     name: Before the Clearing
@@ -46,6 +48,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4402:
     area: tba_44
     name: In the clearing.
@@ -78,6 +82,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4403:
     area: tba_44
     name: In a tent.
@@ -96,6 +102,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4404:
     area: tba_44
     name: In a Tent
@@ -113,6 +121,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4405:
     area: tba_44
     name: In the clearing.
@@ -145,6 +155,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4406:
     area: tba_44
     name: The orc leaders tent.
@@ -174,6 +186,8 @@ rooms:
       description: |2
            A weaponsrack is here, just ready to put all your weapons on.  Only too heavy
         to carry around.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4407:
     area: tba_44
     name: The resting area.
@@ -193,6 +207,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4408:
     area: tba_44
     name: In the clearing.
@@ -231,6 +247,8 @@ rooms:
       description: |2
            The Forest is so dense here, that no man or beast could ever hope to get
         through.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4409:
     area: tba_44
     name: In a small tent.
@@ -256,6 +274,8 @@ rooms:
       description: |2
            A small iron pot is on the fireplace, filled with a strange green stew-like
         thing.  Yuk!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4410:
     area: tba_44
     name: In the clearing.
@@ -287,6 +307,8 @@ rooms:
       - thicket
       description: |2
            This thicket looks like you might be able to hack your way through it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4411:
     area: tba_44
     name: The Throne room.
@@ -321,6 +343,8 @@ rooms:
       - skulls
       description: |2
            Human skulls, no doubt about it!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4412:
     area: tba_44
     name: Sleeping room.
@@ -357,6 +381,8 @@ rooms:
             XXXXXX +--+--+ XXX
              XXXXX    |    XX
               XXXXXXX + XXXX
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4413:
     area: tba_44
     name: In the Shamans Tent
@@ -383,6 +409,8 @@ rooms:
       - bunk
       description: |2
            An ordinary sleeping place.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4414:
     area: tba_44
     name: Deep in the forest.
@@ -408,6 +436,8 @@ rooms:
       description: |2
            The forest is very dense, actually you can see no more than 3' in all
         directions
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4415:
     area: tba_44
     name: Behind the shubbery.
@@ -437,6 +467,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4416:
     area: tba_44
     name: A wide path through the forest
@@ -460,6 +492,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4417:
     area: tba_44
     name: A wide path through the forest
@@ -480,6 +514,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4436:
     area: tba_44
     name: An unfinished room
@@ -493,3 +529,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

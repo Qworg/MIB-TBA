@@ -23,6 +23,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.901:
     area: tba_9
     name: The Riverbank
@@ -51,6 +53,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.902:
     area: tba_9
     name: The Twisty Part Of The River
@@ -74,6 +78,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.903:
     area: tba_9
     name: The Scenic Route
@@ -97,6 +103,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.904:
     area: tba_9
     name: The Swift River Delta
@@ -128,6 +136,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.905:
     area: tba_9
     name: Near The Rocks
@@ -151,6 +161,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.906:
     area: tba_9
     name: The South River Delta
@@ -184,6 +196,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.907:
     area: tba_9
     name: The Pier
@@ -207,6 +221,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.908:
     area: tba_9
     name: Mired In Seaweed
@@ -235,6 +251,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.909:
     area: tba_9
     name: The Last Stop
@@ -259,6 +277,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.910:
     area: tba_9
     name: The Beach Head
@@ -278,6 +298,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.911:
     area: tba_9
     name: The North Channel
@@ -305,6 +327,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.912:
     area: tba_9
     name: The North Channel
@@ -331,6 +355,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.913:
     area: tba_9
     name: Near The Isle
@@ -355,6 +381,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.914:
     area: tba_9
     name: The Lane Of The Lying
@@ -386,6 +414,8 @@ rooms:
            A sign beside the dark cave opening reads:
            WARNING! Only fools and dead people pass this way.
         The tests of Minos, our glorious ruler, await.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.915:
     area: tba_9
     name: The First Trial Of Minos
@@ -405,6 +435,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.916:
     area: tba_9
     name: The Second Trial Of Minos
@@ -426,6 +458,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.917:
     area: tba_9
     name: The Third Trial Of Minos
@@ -445,6 +479,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.918:
     area: tba_9
     name: The Fourth Trial Of Minos
@@ -463,6 +499,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.919:
     area: tba_9
     name: The Fifth Trial Of Minos
@@ -482,6 +520,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.920:
     area: tba_9
     name: The Sixth Trial Of Minos
@@ -507,6 +547,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.921:
     area: tba_9
     name: The Final Trial Of Minos
@@ -533,6 +575,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.922:
     area: tba_9
     name: The Royal Chamber
@@ -553,6 +597,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.923:
     area: tba_9
     name: Above, On The Beach
@@ -572,3 +618,5 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

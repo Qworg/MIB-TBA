@@ -39,6 +39,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21101:
     area: tba_211
     name: Outside a small building
@@ -93,6 +95,8 @@ rooms:
       - brass
       - bright
       description: "   \n       Sibyl, Esmerelda and Jaelle\n\n              Tarot Readings\n\n"
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21102:
     area: tba_211
     name: A Room For Waiting
@@ -169,6 +173,8 @@ rooms:
         Reader's Digest, Sports Illustrated, Entertainment Weekly and a few other
         familiar names.  Are Time and Fortune here because they're popular or are they
         some sort of joke?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21103:
     area: tba_211
     name: A Brightly-Lit Corridor
@@ -195,6 +201,8 @@ rooms:
       description: |2
            If you didn't look before but wanted to see the cards now:
         http://en.wikipedia.org/wiki/Rider-Waite_tarot_deck
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21110:
     area: tba_211
     name: Sibyl's office
@@ -230,6 +238,8 @@ rooms:
         would like to see the cards that have been dealt to you, representations can be
         found at:
         http://en.wikipedia.org/wiki/Rider-Waite_tarot_deck
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21111:
     area: tba_211
     name: This card covers
@@ -255,6 +265,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21112:
     area: tba_211
     name: This card crosses
@@ -290,6 +302,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21113:
     area: tba_211
     name: This card is below
@@ -325,6 +339,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21114:
     area: tba_211
     name: This card is behind
@@ -360,6 +376,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21115:
     area: tba_211
     name: This card is above
@@ -395,6 +413,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21116:
     area: tba_211
     name: This card is before
@@ -430,6 +450,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21117:
     area: tba_211
     name: This card shows fears
@@ -466,6 +488,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21118:
     area: tba_211
     name: This card shows opinions
@@ -501,6 +525,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21119:
     area: tba_211
     name: This card shows hopes
@@ -536,6 +562,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21120:
     area: tba_211
     name: This card shows the outcome
@@ -574,6 +602,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21121:
     area: tba_211
     name: South-West Corner
@@ -606,6 +636,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21122:
     area: tba_211
     name: North-West Corner
@@ -638,6 +670,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21123:
     area: tba_211
     name: North-East Corner
@@ -670,6 +704,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21124:
     area: tba_211
     name: South-East Corner
@@ -702,6 +738,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21125:
     area: tba_211
     name: Sibyl's Private Room
@@ -718,6 +756,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21130:
     area: tba_211
     name: Esmerelda's office
@@ -753,6 +793,8 @@ rooms:
         would like to see the cards that have been dealt to you, representations can be
         found at:
         http://en.wikipedia.org/wiki/Rider-Waite_tarot_deck
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21131:
     area: tba_211
     name: This card covers
@@ -778,6 +820,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21132:
     area: tba_211
     name: This card crosses
@@ -813,6 +857,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21133:
     area: tba_211
     name: This card is below
@@ -848,6 +894,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21134:
     area: tba_211
     name: This card is behind
@@ -883,6 +931,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21135:
     area: tba_211
     name: This card is above
@@ -918,6 +968,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21136:
     area: tba_211
     name: This card is before
@@ -953,6 +1005,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21137:
     area: tba_211
     name: This card shows fears
@@ -989,6 +1043,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21138:
     area: tba_211
     name: This card shows opinions
@@ -1024,6 +1080,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21139:
     area: tba_211
     name: This card shows hopes
@@ -1059,6 +1117,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21140:
     area: tba_211
     name: This card shows the outcome
@@ -1097,6 +1157,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21141:
     area: tba_211
     name: South-West Corner
@@ -1129,6 +1191,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21142:
     area: tba_211
     name: North-West Corner
@@ -1161,6 +1225,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21143:
     area: tba_211
     name: North-East Corner
@@ -1193,6 +1259,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21144:
     area: tba_211
     name: South-East Corner
@@ -1225,6 +1293,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21145:
     area: tba_211
     name: Esmerelda's Private Room
@@ -1241,6 +1311,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21150:
     area: tba_211
     name: Jaelle's office
@@ -1276,6 +1348,8 @@ rooms:
         would like to see the cards that have been dealt to you, representations can be
         found at:
         http://en.wikipedia.org/wiki/Rider-Waite_tarot_deck
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21151:
     area: tba_211
     name: This card covers
@@ -1301,6 +1375,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21152:
     area: tba_211
     name: This card crosses
@@ -1336,6 +1412,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21153:
     area: tba_211
     name: This card is below
@@ -1371,6 +1449,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21154:
     area: tba_211
     name: This card is behind
@@ -1406,6 +1486,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21155:
     area: tba_211
     name: This card is above
@@ -1441,6 +1523,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21156:
     area: tba_211
     name: This card is before
@@ -1476,6 +1560,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21157:
     area: tba_211
     name: This card shows fears
@@ -1512,6 +1598,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21158:
     area: tba_211
     name: This card shows opinions
@@ -1547,6 +1635,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21159:
     area: tba_211
     name: This card shows hopes
@@ -1582,6 +1672,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21160:
     area: tba_211
     name: This card shows the outcome
@@ -1620,6 +1712,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21161:
     area: tba_211
     name: South-West Corner
@@ -1652,6 +1746,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21162:
     area: tba_211
     name: North-West Corner
@@ -1684,6 +1780,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21163:
     area: tba_211
     name: North-East Corner
@@ -1716,6 +1814,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21164:
     area: tba_211
     name: South-East Corner
@@ -1748,6 +1848,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21165:
     area: tba_211
     name: Jaelle's Private Room
@@ -1764,6 +1866,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.21199:
     area: tba_211
     name: Purge Room
@@ -1781,3 +1885,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

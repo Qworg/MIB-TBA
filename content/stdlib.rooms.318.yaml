@@ -23,6 +23,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31801:
     area: tba_318
     name: West Main
@@ -47,6 +49,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31802:
     area: tba_318
     name: West Main
@@ -71,6 +75,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31803:
     area: tba_318
     name: West Main
@@ -100,6 +106,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31804:
     area: tba_318
     name: East Main
@@ -123,6 +131,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31805:
     area: tba_318
     name: East Main
@@ -148,6 +158,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31806:
     area: tba_318
     name: East Main
@@ -177,6 +189,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31807:
     area: tba_318
     name: Alley at the Cock Fights
@@ -201,6 +215,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31808:
     area: tba_318
     name: East Main
@@ -229,6 +245,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31809:
     area: tba_318
     name: East Main
@@ -258,6 +276,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31810:
     area: tba_318
     name: East Main
@@ -285,6 +305,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31811:
     area: tba_318
     name: East Main
@@ -320,6 +342,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31812:
     area: tba_318
     name: Netweaver
@@ -340,6 +364,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31813:
     area: tba_318
     name: McGintey Boat Station
@@ -378,6 +404,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31814:
     area: tba_318
     name: McGintey Boat Station
@@ -410,6 +438,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31815:
     area: tba_318
     name: Dibrova Travels
@@ -429,6 +459,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31816:
     area: tba_318
     name: Travels Abroad
@@ -448,6 +480,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31817:
     area: tba_318
     name: Island Escapes
@@ -467,6 +501,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31818:
     area: tba_318
     name: Ocean Adventures
@@ -486,6 +522,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31819:
     area: tba_318
     name: Hodges Travel, Inc.
@@ -505,6 +543,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31820:
     area: tba_318
     name: Narrow Alley
@@ -530,6 +570,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31821:
     area: tba_318
     name: Narrow Alley
@@ -555,6 +597,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31822:
     area: tba_318
     name: Dead End in Narrow Alley
@@ -587,6 +631,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31823:
     area: tba_318
     name: The HQ of the Bloody Scythe Gang
@@ -615,6 +661,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31824:
     area: tba_318
     name: Dock Road
@@ -638,6 +686,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31825:
     area: tba_318
     name: Dock Road
@@ -662,6 +712,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31826:
     area: tba_318
     name: Dock Road
@@ -684,6 +736,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31827:
     area: tba_318
     name: Dock Road
@@ -714,6 +768,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31828:
     area: tba_318
     name: Dirt Trail
@@ -737,6 +793,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31829:
     area: tba_318
     name: In Front of a Shack
@@ -767,6 +825,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31830:
     area: tba_318
     name: HQ for the Dead Boys
@@ -795,6 +855,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31831:
     area: tba_318
     name: The Cracked Mug
@@ -814,6 +876,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31832:
     area: tba_318
     name: East Main
@@ -847,6 +911,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31833:
     area: tba_318
     name: Myra's House of Ill Repute
@@ -865,6 +931,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31834:
     area: tba_318
     name: Warehouse Road
@@ -892,6 +960,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31835:
     area: tba_318
     name: Warehouse Road
@@ -918,6 +988,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31836:
     area: tba_318
     name: Warehouse Road
@@ -941,6 +1013,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31837:
     area: tba_318
     name: Abandoned Building
@@ -961,6 +1035,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31838:
     area: tba_318
     name: Warehouse
@@ -979,6 +1055,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31839:
     area: tba_318
     name: East Main
@@ -1008,6 +1086,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31840:
     area: tba_318
     name: Warehouse
@@ -1026,6 +1106,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31841:
     area: tba_318
     name: Roach Motel
@@ -1045,6 +1127,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31842:
     area: tba_318
     name: Dock Road
@@ -1077,6 +1161,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31843:
     area: tba_318
     name: Dock Road
@@ -1104,6 +1190,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31844:
     area: tba_318
     name: Dock Road
@@ -1132,6 +1220,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31845:
     area: tba_318
     name: Shipyard
@@ -1151,6 +1241,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31846:
     area: tba_318
     name: Dock Road
@@ -1177,6 +1269,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31847:
     area: tba_318
     name: Dock Road
@@ -1203,6 +1297,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31848:
     area: tba_318
     name: Dock Road
@@ -1235,6 +1331,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31849:
     area: tba_318
     name: Dock Road
@@ -1258,6 +1356,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31850:
     area: tba_318
     name: A Garbage Littered Hallway
@@ -1284,6 +1384,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31851:
     area: tba_318
     name: Bottom Floor of an Old Apartment Building
@@ -1303,3 +1405,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

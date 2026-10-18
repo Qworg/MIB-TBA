@@ -32,6 +32,8 @@ rooms:
                  Made A. D. 1997 by Pippin
            This zone contains a small town and a
            rather large dungeon full of goblins.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28701:
     area: tba_287
     name: A Tunnel in the Mountains
@@ -61,6 +63,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28702:
     area: tba_287
     name: A Tunnel in the Mountains
@@ -114,6 +118,8 @@ rooms:
         something like this: Tuo sdael lennut nretsae.  Retsasid ot sdael lennut htuos.
         Ekat ot eno eht si nretsae eht Htaed ylrae na diova ot tnaw uoy fi.  Nam
         Mooreeffoc Eht Morf.  What could it mean?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28703:
     area: tba_287
     name: A Narrow Ledge
@@ -149,6 +155,8 @@ rooms:
       description: |2
            It is in every known language, and some others: W A R N I N G ! ! ! The Ledge
         to the South is Unsafe!!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28704:
     area: tba_287
     name: The Fall is Fine but the Landing Hurts
@@ -166,6 +174,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28705:
     area: tba_287
     name: A Short Tunnel
@@ -218,6 +228,8 @@ rooms:
            It says, more or less: Krsd be al tem blude noms Krsd be al tem blude dwrvs
         Krsd be al tem blude elfs Krsd be da hobits but tey tasty Haf ogrs aint bad
         fokes Rit by Orfax da orc
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28706:
     area: tba_287
     name: The Tunnel's Entrance
@@ -252,6 +264,8 @@ rooms:
                                 |  Was Delved by Pippin   |
                                 |  Year of Our Lord 1997  |
                                 |_________________________|
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28707:
     area: tba_287
     name: The Old Plank Road
@@ -294,6 +308,8 @@ rooms:
       - stone
       description: |2
            It says "Sorvecgden-Lacgorr 6 stadia"
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28708:
     area: tba_287
     name: The Old Plank Road
@@ -325,6 +341,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28709:
     area: tba_287
     name: King's Way
@@ -371,6 +389,8 @@ rooms:
       description: |2
                         The Crossbow Inn
                         By Reilly Morgan
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28710:
     area: tba_287
     name: A Small Square
@@ -415,6 +435,8 @@ rooms:
       description: |2
            It says: St.  John Nepomucene Church Today's Sermon: Ogres and the Gospel:
         Can they be saved?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28711:
     area: tba_287
     name: King's Way
@@ -447,6 +469,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28712:
     area: tba_287
     name: The Market Square
@@ -478,6 +502,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28713:
     area: tba_287
     name: Southwestern Market Square
@@ -514,6 +540,8 @@ rooms:
       - chalk
       description: |2
            It says, "Keep an eye peeled!  The goblins are crafty.  "
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28714:
     area: tba_287
     name: Joel Kreb's Fine Woodbutchery
@@ -538,6 +566,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28715:
     area: tba_287
     name: Drovers' Street
@@ -571,6 +601,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28716:
     area: tba_287
     name: Inside the South Gate of Ofingia
@@ -599,6 +631,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28717:
     area: tba_287
     name: The Guard Headquarters
@@ -635,6 +669,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28718:
     area: tba_287
     name: The Church of St. John Nepomucene.
@@ -660,6 +696,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28719:
     area: tba_287
     name: Dorig Foehammer's Smithy
@@ -685,6 +723,8 @@ rooms:
       description: |2
            The wall-hung axe is too high to reach, but you can see it is named
         "Lucille".
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28720:
     area: tba_287
     name: Maxtrum Holloknob's Dry Goods
@@ -714,6 +754,8 @@ rooms:
            There are also some crossbow quarrels driven into this picture of a
         leprechaun, who is grinning and holding a bag of gold.  It is not a great work
         of art; perhaps the shopkeeper has a grudge against leprechauns.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28721:
     area: tba_287
     name: Northeastern Market Square
@@ -745,6 +787,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28722:
     area: tba_287
     name: Southeastern Market Square
@@ -775,6 +819,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28723:
     area: tba_287
     name: The Great Hall
@@ -832,6 +878,8 @@ rooms:
                                      And Book Store.
                                      Open 8 to 11 A.M.
                                       And 5 to 9 P.M.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28724:
     area: tba_287
     name: The Ofintine Public Library
@@ -895,6 +943,8 @@ rooms:
       - painting
       description: |2
            It is a picture of Claeregina Mahzi, queen of Adacaract.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28725:
     area: tba_287
     name: The Secret Library Vault
@@ -1002,6 +1052,8 @@ rooms:
         But it is hard to prepare.  The ground leaves must have been picked under the
         dying moon of late November, when the mevais is dry, and browned.  Then they
         must be You can read no more, nor can you reach the book.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28726:
     area: tba_287
     name: The Eastern End of the Great Hall
@@ -1045,6 +1097,8 @@ rooms:
         just enough to be handsome without looking overly fancy.  Gold plates and
         brackets look lovely against the dark wood.  You need not read the engraved
         plate on its side to know the work of Joel Kreb.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28727:
     area: tba_287
     name: The Sheriff Office
@@ -1083,6 +1137,8 @@ rooms:
                                   &
                            Killing Dwarves
                          in the Dwarven Village.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28728:
     area: tba_287
     name: The Crossbow Inn
@@ -1129,6 +1185,8 @@ rooms:
         part of the world.  The whitetail is the craftiest animal in the woods; if you
         can stalk one and bring it down with a bow, as Fred Bear used to say, you can
         stalk anything.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28729:
     area: tba_287
     name: D. Shattershock's Fine Armor.
@@ -1147,6 +1205,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28730:
     area: tba_287
     name: Churt's Mortar and Pestle
@@ -1180,6 +1240,8 @@ rooms:
       description: |2
            An alembic bubbles and boils on a charcoal brazier, filled with sharp-
         smelling liquid.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28731:
     area: tba_287
     name: Marya Luzarna's Bakery
@@ -1200,6 +1262,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28732:
     area: tba_287
     name: Rzesk and Zykub, Jewelers.
@@ -1225,6 +1289,8 @@ rooms:
       description: |2
            "Rzesk & Zykub" has been crossed out with a single line, and below it has
         been painted "Closed for the Duration".
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28733:
     area: tba_287
     name: The Dog-Leg
@@ -1266,6 +1332,8 @@ rooms:
       description: |2
            It is certainly not natural.  There is a peculiar square crack, and you
         suspect it opens up.  Only one way to find out!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28734:
     area: tba_287
     name: Down, Down, to Goblin-Town!
@@ -1285,6 +1353,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28735:
     area: tba_287
     name: The Stone Hallway
@@ -1307,6 +1377,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28736:
     area: tba_287
     name: The Stone Hallway
@@ -1329,6 +1401,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28737:
     area: tba_287
     name: The Stone Hallway
@@ -1365,6 +1439,8 @@ rooms:
       - runes
       description: |2
            You do not understand much but the name Orfax is repeated often.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28738:
     area: tba_287
     name: The Guard Room
@@ -1390,6 +1466,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28739:
     area: tba_287
     name: The Stone Hallway
@@ -1419,6 +1497,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28740:
     area: tba_287
     name: The Stone Hallway
@@ -1451,6 +1531,8 @@ rooms:
       - water
       description: |2
            It is very cold, too cold to safely drink.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28741:
     area: tba_287
     name: The Stone Hallway
@@ -1498,6 +1580,8 @@ rooms:
         dwarven mansions were stolen and ruined by the goblins.  Even in Moria some of
         the dwarf lights burn still with their old light.  If dwarves lived here once,
         they are long gone.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28742:
     area: tba_287
     name: A Small Chamber
@@ -1524,6 +1608,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28743:
     area: tba_287
     name: The Spiral Tunnel
@@ -1552,6 +1638,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28744:
     area: tba_287
     name: The Spiral Tunnel
@@ -1575,6 +1663,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28745:
     area: tba_287
     name: The Spiral Tunnel
@@ -1598,6 +1688,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28746:
     area: tba_287
     name: The Spiral Tunnel
@@ -1622,6 +1714,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28747:
     area: tba_287
     name: The Spiral Tunnel
@@ -1644,6 +1738,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28748:
     area: tba_287
     name: The Spiral Tunnel
@@ -1667,6 +1763,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28749:
     area: tba_287
     name: The Treasury
@@ -1690,6 +1788,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28750:
     area: tba_287
     name: The Spiral Tunnel's End
@@ -1714,6 +1814,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28751:
     area: tba_287
     name: Upper Goblin-Town
@@ -1751,6 +1853,8 @@ rooms:
       description: |2
                        Let the fate of he whose arms rest here
                      Warn the fool who follows him to Goblin Town
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28752:
     area: tba_287
     name: A Small Armory
@@ -1774,6 +1878,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28753:
     area: tba_287
     name: A Dark Hall in Goblin-Town
@@ -1806,6 +1912,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28754:
     area: tba_287
     name: A Small Storeroom
@@ -1830,6 +1938,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28755:
     area: tba_287
     name: A Dark Hall in Goblin-Town.
@@ -1869,6 +1979,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28756:
     area: tba_287
     name: A Small Room
@@ -1893,6 +2005,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28757:
     area: tba_287
     name: A Guard Room
@@ -1927,6 +2041,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28758:
     area: tba_287
     name: A Landing
@@ -1961,6 +2077,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28759:
     area: tba_287
     name: The Barracks
@@ -1990,6 +2108,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28760:
     area: tba_287
     name: A Pale-Glowing Hall in Goblin-Town
@@ -2020,6 +2140,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28761:
     area: tba_287
     name: A Pale-Glowing Hall in Goblin-Town
@@ -2062,6 +2184,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28762:
     area: tba_287
     name: A Barracks Room
@@ -2087,6 +2211,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28763:
     area: tba_287
     name: A Pale-Glowing Hall in Goblin-Town
@@ -2129,6 +2255,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28764:
     area: tba_287
     name: A Barracks Room
@@ -2153,6 +2281,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28765:
     area: tba_287
     name: A Pale-Glowing Hall in Goblin-Town
@@ -2184,6 +2314,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28766:
     area: tba_287
     name: A Barracks Room
@@ -2208,6 +2340,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28767:
     area: tba_287
     name: A Glowing Hallway in Goblin-Town
@@ -2229,6 +2363,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28768:
     area: tba_287
     name: The Mess
@@ -2265,6 +2401,8 @@ rooms:
            These bones all look somewhat decayed and smell very bad.  They don't whet
         your appetite, that is certain.  Besides, they may be poisoned after sitting
         around for so long.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28769:
     area: tba_287
     name: The Mess
@@ -2295,6 +2433,8 @@ rooms:
       description: |2
            They are of all different sizes.  Some are only Deer or Rabbit bones, but too
         many are from creatures that walk on two legs.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28770:
     area: tba_287
     name: The Mess
@@ -2319,6 +2459,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28771:
     area: tba_287
     name: The Mess
@@ -2365,6 +2507,8 @@ rooms:
            Goblins never make anything beautiful, but this door is very well made.  You
         suspect this cave once had better occupants.  The door is in excellent condition
         (though scrawled on) ...  Glowing
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28772:
     area: tba_287
     name: A Small Room
@@ -2395,6 +2539,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28773:
     area: tba_287
     name: The Barracks Room
@@ -2422,6 +2568,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28774:
     area: tba_287
     name: The Barracks Room
@@ -2454,6 +2602,8 @@ rooms:
       - holes
       description: |2
            They appear to be latrines.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28775:
     area: tba_287
     name: The Chieftain's Quarters
@@ -2503,6 +2653,8 @@ rooms:
       - runes
       description: |2
            What you can read says: Dy kng Korbor!  Todstol lede sune!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28776:
     area: tba_287
     name: A Rough Tunnel
@@ -2532,6 +2684,8 @@ rooms:
       description: |2
            The rubble strewn on the floor has sharply broken edges.  This passage, then,
         is probably newly made, and still being enlarged.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28777:
     area: tba_287
     name: A Rough Tunnel
@@ -2555,6 +2709,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28778:
     area: tba_287
     name: A Rough Tunnel
@@ -2577,6 +2733,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28779:
     area: tba_287
     name: A Rough Tunnel
@@ -2609,6 +2767,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28780:
     area: tba_287
     name: The Iron Foundry
@@ -2647,6 +2807,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28781:
     area: tba_287
     name: A Corner In the Mines
@@ -2679,6 +2841,8 @@ rooms:
       description: |2
            This water is flowing towards some exit; perhaps it leads out of this
         mountain?  But once you dive down, you won't get back up here without wings.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28782:
     area: tba_287
     name: A Rough Tunnel
@@ -2720,6 +2884,8 @@ rooms:
            They say: Ware traveller!  You think you have left the goblins but the worst
         lies still below!  Heed my warning!  A river runs from this mountain, its
         current fast and strong, but it is safer than these rat-holes!  Gloin
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28783:
     area: tba_287
     name: A Corner in the Mines
@@ -2751,6 +2917,8 @@ rooms:
       - holes
       description: |2
            There is an odd sulfurous-smelling residue in these holes.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28784:
     area: tba_287
     name: The Mine Shaft
@@ -2787,6 +2955,8 @@ rooms:
            The trapdoor has some dwarf-runes scribbled on its edge.  They say: I, Gloin,
         warn you not to go this way unless you are a brave warrior, whose heart never
         fails him!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28785:
     area: tba_287
     name: On the Underground Lake
@@ -2808,6 +2978,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28786:
     area: tba_287
     name: On the Underground Stream
@@ -2827,6 +2999,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28787:
     area: tba_287
     name: The Stream at the Underground Cliff
@@ -2852,6 +3026,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28788:
     area: tba_287
     name: The Waterfall
@@ -2867,6 +3043,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28789:
     area: tba_287
     name: The Ledge
@@ -2890,6 +3068,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28790:
     area: tba_287
     name: The Crevasse
@@ -2908,6 +3088,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28791:
     area: tba_287
     name: The Crevasse
@@ -2926,6 +3108,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28792:
     area: tba_287
     name: The Crevasse
@@ -2943,6 +3127,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28793:
     area: tba_287
     name: Up the Cliff We Go
@@ -2961,6 +3147,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28794:
     area: tba_287
     name: A Crossing of Tunnels
@@ -3027,6 +3215,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28795:
     area: tba_287
     name: The Storeroom
@@ -3051,6 +3241,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28796:
     area: tba_287
     name: The Guard Chamber
@@ -3075,6 +3267,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28797:
     area: tba_287
     name: The North End of a Hall
@@ -3105,6 +3299,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28798:
     area: tba_287
     name: The Goblin Treasury
@@ -3130,6 +3326,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28799:
     area: tba_287
     name: The Throne Room
@@ -3155,3 +3353,5 @@ rooms:
       description: |2
            It is made, seemingly, of the bones of the many enemies that the Great Goblin
         killed.  All over it evil signs are carved; it glows with a pale, sickly light.
+    ambient_phases: {}
+    ambient_weather: {}

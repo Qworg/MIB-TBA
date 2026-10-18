@@ -85,6 +85,8 @@ fn world() -> App {
                 default_position: Position::Standing,
                 behaviour: Vec::new(),
                 damage: None,
+                attributes: TbaAttributes::mob_default(),
+                saves: TbaSaves::default(),
             },
         );
     app

@@ -54,6 +54,8 @@ rooms:
         Roads
         Atria
         Houses
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65401:
     area: tba_654
     name: '#2 First Street'
@@ -81,6 +83,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65402:
     area: tba_654
     name: '#3 First Street'
@@ -112,6 +116,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65403:
     area: tba_654
     name: '#4 First Street'
@@ -139,6 +145,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65404:
     area: tba_654
     name: '#5 First Street'
@@ -166,6 +174,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65405:
     area: tba_654
     name: '#6 First Street'
@@ -193,6 +203,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65406:
     area: tba_654
     name: '#7 First Street'
@@ -220,6 +232,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65407:
     area: tba_654
     name: '#8 First Street'
@@ -251,6 +265,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65408:
     area: tba_654
     name: '#9 First Street'
@@ -278,6 +294,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65409:
     area: tba_654
     name: '#10 First Street'
@@ -301,6 +319,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65410:
     area: tba_654
     name: '#1 Second Street'
@@ -324,6 +344,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65411:
     area: tba_654
     name: '#2 Second Street'
@@ -351,6 +373,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65412:
     area: tba_654
     name: '#3 Second Street'
@@ -382,6 +406,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65413:
     area: tba_654
     name: '#4 Second Street'
@@ -409,6 +435,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65414:
     area: tba_654
     name: '#5 Second Street'
@@ -436,6 +464,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65415:
     area: tba_654
     name: '#6 Second Street'
@@ -463,6 +493,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65416:
     area: tba_654
     name: '#7 Second Street'
@@ -490,6 +522,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65417:
     area: tba_654
     name: '#8 Second Street'
@@ -521,6 +555,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65418:
     area: tba_654
     name: '#9 Second Street'
@@ -548,6 +584,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65419:
     area: tba_654
     name: '#10 Second Street'
@@ -571,6 +609,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65420:
     area: tba_654
     name: Atrium - 1 First Street
@@ -596,6 +636,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65421:
     area: tba_654
     name: Inside 1 First Street
@@ -622,6 +664,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65422:
     area: tba_654
     name: Atrium - 2 First Street
@@ -647,6 +691,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65423:
     area: tba_654
     name: Inside 2 First Street
@@ -673,6 +719,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65424:
     area: tba_654
     name: Atrium - 3 First Street
@@ -698,6 +746,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65425:
     area: tba_654
     name: Inside 3 First Street
@@ -724,6 +774,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65426:
     area: tba_654
     name: Atrium - 4 First Street
@@ -749,6 +801,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65427:
     area: tba_654
     name: Inside 4 First Street
@@ -775,6 +829,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65428:
     area: tba_654
     name: Atrium - 5 First Street
@@ -800,6 +856,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65429:
     area: tba_654
     name: Inside 5 First Street
@@ -826,6 +884,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65430:
     area: tba_654
     name: Atrium - 6 First Street
@@ -851,6 +911,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65431:
     area: tba_654
     name: Inside 6 First Street
@@ -877,6 +939,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65432:
     area: tba_654
     name: Atrium - 7 First Street
@@ -902,6 +966,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65433:
     area: tba_654
     name: Inside 7 First Street
@@ -928,6 +994,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65434:
     area: tba_654
     name: Atrium - 8 First Street
@@ -953,6 +1021,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65435:
     area: tba_654
     name: Inside 8 First Street
@@ -979,6 +1049,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65436:
     area: tba_654
     name: Atrium - 9 First Street
@@ -1004,6 +1076,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65437:
     area: tba_654
     name: Inside 9 First Street
@@ -1030,6 +1104,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65438:
     area: tba_654
     name: Atrium - 10 First Street
@@ -1055,6 +1131,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65439:
     area: tba_654
     name: Inside 10 First Street
@@ -1081,6 +1159,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65440:
     area: tba_654
     name: Atrium - 1 Second Street
@@ -1106,6 +1186,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65441:
     area: tba_654
     name: Inside 1 Second Street
@@ -1132,6 +1214,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65442:
     area: tba_654
     name: Atrium - 2 Second Street
@@ -1157,6 +1241,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65443:
     area: tba_654
     name: Inside 2 Second Street
@@ -1183,6 +1269,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65444:
     area: tba_654
     name: Atrium - 3 Second Street
@@ -1208,6 +1296,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65445:
     area: tba_654
     name: Inside 3 Second Street
@@ -1234,6 +1324,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65446:
     area: tba_654
     name: Atrium - 4 Second Street
@@ -1259,6 +1351,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65447:
     area: tba_654
     name: Inside 4 Second Street
@@ -1285,6 +1379,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65448:
     area: tba_654
     name: Atrium - 5 Second Street
@@ -1310,6 +1406,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65449:
     area: tba_654
     name: Inside 5 Second Street
@@ -1336,6 +1434,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65450:
     area: tba_654
     name: Atrium - 6 Second Street
@@ -1361,6 +1461,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65451:
     area: tba_654
     name: Inside 6 Second Street
@@ -1387,6 +1489,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65452:
     area: tba_654
     name: Atrium - 7 Second Street
@@ -1412,6 +1516,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65453:
     area: tba_654
     name: Inside 7 Second Street
@@ -1438,6 +1544,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65454:
     area: tba_654
     name: Atrium - 8 Second Street
@@ -1463,6 +1571,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65455:
     area: tba_654
     name: Inside 8 Second Street
@@ -1489,6 +1599,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65456:
     area: tba_654
     name: Atrium - 9 Second Street
@@ -1514,6 +1626,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65457:
     area: tba_654
     name: Inside 9 Second Street
@@ -1540,6 +1654,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65458:
     area: tba_654
     name: Atrium - 10 Second Street
@@ -1565,6 +1681,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65459:
     area: tba_654
     name: Inside 10 Second Street
@@ -1591,6 +1709,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65460:
     area: tba_654
     name: Atrium - 1 First Avenue
@@ -1616,6 +1736,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65461:
     area: tba_654
     name: Inside 1 First Avenue
@@ -1642,6 +1764,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65462:
     area: tba_654
     name: Atrium - 2 First Avenue
@@ -1667,6 +1791,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65463:
     area: tba_654
     name: Inside 2 First Avenue
@@ -1693,6 +1819,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65464:
     area: tba_654
     name: Atrium - 3 First Avenue
@@ -1718,6 +1846,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65465:
     area: tba_654
     name: Inside 3 First Avenue
@@ -1744,6 +1874,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65466:
     area: tba_654
     name: Atrium - 4 First Avenue
@@ -1769,6 +1901,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65467:
     area: tba_654
     name: Inside 4 First Avenue
@@ -1795,6 +1929,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65468:
     area: tba_654
     name: Atrium - 5 First Avenue
@@ -1820,6 +1956,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65469:
     area: tba_654
     name: Inside 5 First Avenue
@@ -1846,6 +1984,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65470:
     area: tba_654
     name: Atrium - 6 First Avenue
@@ -1871,6 +2011,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65471:
     area: tba_654
     name: Inside 6 First Avenue
@@ -1897,6 +2039,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65472:
     area: tba_654
     name: Atrium - 7 First Avenue
@@ -1922,6 +2066,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65473:
     area: tba_654
     name: Inside 7 First Avenue
@@ -1948,6 +2094,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65474:
     area: tba_654
     name: Atrium - 8 First Avenue
@@ -1973,6 +2121,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65475:
     area: tba_654
     name: Inside 8 First Avenue
@@ -1999,6 +2149,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65476:
     area: tba_654
     name: Atrium - 1 Second Avenue
@@ -2024,6 +2176,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65477:
     area: tba_654
     name: Inside 1 Second Avenue
@@ -2050,6 +2204,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65478:
     area: tba_654
     name: Atrium - 2 Second Avenue
@@ -2075,6 +2231,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65479:
     area: tba_654
     name: Inside 2 Second Avenue
@@ -2101,6 +2259,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65480:
     area: tba_654
     name: Atrium - 3 Second Avenue
@@ -2126,6 +2286,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65481:
     area: tba_654
     name: Inside 3 Second Avenue
@@ -2152,6 +2314,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65482:
     area: tba_654
     name: Atrium - 4 Second Avenue
@@ -2177,6 +2341,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65483:
     area: tba_654
     name: Inside 4 Second Avenue
@@ -2203,6 +2369,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65484:
     area: tba_654
     name: Atrium - 5 Second Avenue
@@ -2228,6 +2396,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65485:
     area: tba_654
     name: Inside 5 Second Avenue
@@ -2254,6 +2424,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65486:
     area: tba_654
     name: Atrium - 6 Second Avenue
@@ -2279,6 +2451,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65487:
     area: tba_654
     name: Inside 6 Second Avenue
@@ -2305,6 +2479,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65488:
     area: tba_654
     name: Atrium - 7 Second Avenue
@@ -2330,6 +2506,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65489:
     area: tba_654
     name: Inside 7 Second Avenue
@@ -2356,6 +2534,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65490:
     area: tba_654
     name: Atrium - 8 Second Avenue
@@ -2381,6 +2561,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65491:
     area: tba_654
     name: Inside 8 Second Avenue
@@ -2407,6 +2589,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65492:
     area: tba_654
     name: 'First Avenue - #1/#2'
@@ -2438,6 +2622,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65493:
     area: tba_654
     name: 'First Avenue - #3/#4'
@@ -2469,6 +2655,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65494:
     area: tba_654
     name: 'First Avenue - #5/#6'
@@ -2500,6 +2688,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65495:
     area: tba_654
     name: 'First Avenue - #7/#8'
@@ -2531,6 +2721,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65496:
     area: tba_654
     name: 'Second Avenue - #1/#2'
@@ -2562,6 +2754,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65497:
     area: tba_654
     name: 'Second Avenue - #3/#4'
@@ -2593,6 +2787,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65498:
     area: tba_654
     name: 'Second Avenue - #5/#6'
@@ -2624,6 +2820,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.65499:
     area: tba_654
     name: 'Second Avenue - #7/#8'
@@ -2655,3 +2853,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

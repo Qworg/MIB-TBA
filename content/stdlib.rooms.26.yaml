@@ -32,6 +32,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2601:
     area: tba_26
     name: A Store Room
@@ -67,6 +69,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2602:
     area: tba_26
     name: The Master Spellbinder's Chamber
@@ -102,6 +106,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2603:
     area: tba_26
     name: The Spellbinder's Cache
@@ -137,6 +143,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2604:
     area: tba_26
     name: A Hallway
@@ -158,6 +166,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2605:
     area: tba_26
     name: A Hallway
@@ -190,6 +200,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2606:
     area: tba_26
     name: A Bend In The Hallway
@@ -212,6 +224,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2607:
     area: tba_26
     name: A Hallway
@@ -233,6 +247,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2608:
     area: tba_26
     name: A Hallway
@@ -265,6 +281,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2609:
     area: tba_26
     name: The Golem Master's Workshop
@@ -307,6 +325,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2610:
     area: tba_26
     name: A Store Room
@@ -324,6 +344,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2611:
     area: tba_26
     name: The Golem Chamber
@@ -342,6 +364,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2612:
     area: tba_26
     name: It Is Very Dark Here...
@@ -375,6 +399,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2613:
     area: tba_26
     name: A Hallway
@@ -396,6 +422,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2614:
     area: tba_26
     name: A Bend In The Hallway
@@ -418,6 +446,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2615:
     area: tba_26
     name: A Hallway
@@ -439,6 +469,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2616:
     area: tba_26
     name: A Hallway
@@ -471,6 +503,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2617:
     area: tba_26
     name: The Illusion Master's Chamber
@@ -500,6 +534,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2618:
     area: tba_26
     name: A Bedroom
@@ -531,6 +567,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2619:
     area: tba_26
     name: A Hallway
@@ -563,6 +601,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2620:
     area: tba_26
     name: The Meditation Chamber
@@ -589,6 +629,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2621:
     area: tba_26
     name: A Bend In The Hallway
@@ -611,6 +653,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2622:
     area: tba_26
     name: A Hallway
@@ -643,6 +687,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2623:
     area: tba_26
     name: A Dark Room
@@ -672,6 +718,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2624:
     area: tba_26
     name: A Dark Room
@@ -697,6 +745,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2625:
     area: tba_26
     name: The Necromancer's Lair
@@ -717,6 +767,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2626:
     area: tba_26
     name: A Hallway
@@ -738,6 +790,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2627:
     area: tba_26
     name: A Hallway
@@ -759,6 +813,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2628:
     area: tba_26
     name: The End Of The Hallway
@@ -781,6 +837,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2629:
     area: tba_26
     name: A Corridor
@@ -805,6 +863,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2630:
     area: tba_26
     name: A Corridor
@@ -828,6 +888,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2631:
     area: tba_26
     name: A Bend In The Corridor
@@ -851,6 +913,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2632:
     area: tba_26
     name: A Corridor
@@ -874,6 +938,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2633:
     area: tba_26
     name: An Intersection
@@ -904,6 +970,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2634:
     area: tba_26
     name: A Corridor
@@ -933,6 +1001,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2635:
     area: tba_26
     name: The Scrying Chamber
@@ -962,6 +1032,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2636:
     area: tba_26
     name: A Corridor
@@ -990,6 +1062,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2637:
     area: tba_26
     name: The Entrance To The Library
@@ -1027,6 +1101,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2638:
     area: tba_26
     name: In The Library
@@ -1059,6 +1135,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2639:
     area: tba_26
     name: In The Library
@@ -1091,6 +1169,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2640:
     area: tba_26
     name: In The Library
@@ -1123,6 +1203,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2641:
     area: tba_26
     name: In The Library
@@ -1155,6 +1237,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2642:
     area: tba_26
     name: In The Library
@@ -1187,6 +1271,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2643:
     area: tba_26
     name: In The Library
@@ -1211,6 +1297,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2644:
     area: tba_26
     name: Between The Shelves
@@ -1234,6 +1322,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2645:
     area: tba_26
     name: The Reading Room
@@ -1255,6 +1345,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2646:
     area: tba_26
     name: A Corridor
@@ -1278,6 +1370,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2647:
     area: tba_26
     name: The End Of The Corridor
@@ -1301,6 +1395,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2648:
     area: tba_26
     name: The Arched Entrance
@@ -1324,6 +1420,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2649:
     area: tba_26
     name: The Landing
@@ -1346,6 +1444,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2650:
     area: tba_26
     name: An Intersection
@@ -1384,6 +1484,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2651:
     area: tba_26
     name: A Gray Tiled Hallway
@@ -1406,6 +1508,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2652:
     area: tba_26
     name: A Gray Tiled Hallway
@@ -1435,6 +1539,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2653:
     area: tba_26
     name: The Antechamber
@@ -1465,6 +1571,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2654:
     area: tba_26
     name: The Main Chamber
@@ -1496,6 +1604,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2655:
     area: tba_26
     name: The Study
@@ -1516,6 +1626,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2656:
     area: tba_26
     name: A Closet
@@ -1534,6 +1646,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2657:
     area: tba_26
     name: A Bedroom
@@ -1552,6 +1666,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2658:
     area: tba_26
     name: A Dark Hallway
@@ -1575,6 +1691,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2659:
     area: tba_26
     name: A Dark Hallway
@@ -1598,6 +1716,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2660:
     area: tba_26
     name: The End Of The Hallway
@@ -1628,6 +1748,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2661:
     area: tba_26
     name: The Chamber Of Darkness
@@ -1666,6 +1788,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2662:
     area: tba_26
     name: It Is Very Dark Here...
@@ -1683,6 +1807,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2663:
     area: tba_26
     name: A Torture Chamber
@@ -1703,6 +1829,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2664:
     area: tba_26
     name: The Inner Chamber
@@ -1723,6 +1851,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2665:
     area: tba_26
     name: A Bright Hallway
@@ -1746,6 +1876,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2666:
     area: tba_26
     name: A Bright Hallway
@@ -1777,6 +1909,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2667:
     area: tba_26
     name: An Antechamber
@@ -1806,6 +1940,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2669:
     area: tba_26
     name: The Chamber Of The White Light
@@ -1838,6 +1974,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2670:
     area: tba_26
     name: The Meditation Chamber
@@ -1857,6 +1995,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2671:
     area: tba_26
     name: A Study
@@ -1875,6 +2015,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2672:
     area: tba_26
     name: A Closet
@@ -1894,6 +2036,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2673:
     area: tba_26
     name: A Wide Hallway
@@ -1923,6 +2067,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2674:
     area: tba_26
     name: A Wide Hallway
@@ -1958,6 +2104,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2675:
     area: tba_26
     name: A Wide Hallway
@@ -1993,6 +2141,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2676:
     area: tba_26
     name: The Entranceway
@@ -2022,6 +2172,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2677:
     area: tba_26
     name: The Audience Chamber
@@ -2059,6 +2211,8 @@ rooms:
       - throne
       description: |2
            The giant emerald is flawless, and must be incredibly valuable.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2678:
     area: tba_26
     name: A Dressing Room
@@ -2078,6 +2232,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2679:
     area: tba_26
     name: The Library
@@ -2097,6 +2253,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2680:
     area: tba_26
     name: The Altar
@@ -2136,6 +2294,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2681:
     area: tba_26
     name: The Treasury
@@ -2159,6 +2319,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2682:
     area: tba_26
     name: A Passage
@@ -2190,6 +2352,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2683:
     area: tba_26
     name: In The Light
@@ -2210,3 +2374,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

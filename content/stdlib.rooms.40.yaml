@@ -25,6 +25,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4001:
     area: tba_40
     name: The Hills
@@ -50,6 +52,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4002:
     area: tba_40
     name: The End Of The Path
@@ -76,6 +80,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4010:
     area: tba_40
     name: The Cave
@@ -101,6 +107,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4011:
     area: tba_40
     name: The Tunnel
@@ -125,6 +133,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4012:
     area: tba_40
     name: The Tunnel
@@ -148,6 +158,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4013:
     area: tba_40
     name: The Tunnel
@@ -171,6 +183,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4014:
     area: tba_40
     name: The Tunnel
@@ -199,6 +213,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4015:
     area: tba_40
     name: The Tunnel
@@ -223,6 +239,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4016:
     area: tba_40
     name: The Large Cave
@@ -251,6 +269,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4017:
     area: tba_40
     name: The Large Cave
@@ -271,6 +291,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4018:
     area: tba_40
     name: The Cave
@@ -300,6 +322,8 @@ rooms:
       - bones
       description: |2
            You had better watch out - some of the bones are human!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4019:
     area: tba_40
     name: The Tunnel
@@ -323,6 +347,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4020:
     area: tba_40
     name: The Hole
@@ -347,6 +373,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4021:
     area: tba_40
     name: The Hole
@@ -372,6 +400,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4022:
     area: tba_40
     name: The Damp Tunnel
@@ -400,6 +430,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4023:
     area: tba_40
     name: The Large Cave
@@ -425,6 +457,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4024:
     area: tba_40
     name: The Damp Tunnel
@@ -450,6 +484,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4025:
     area: tba_40
     name: The Cave
@@ -473,6 +509,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4026:
     area: tba_40
     name: The Many Tunnels
@@ -506,6 +544,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4027:
     area: tba_40
     name: The Tunnel
@@ -534,6 +574,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4028:
     area: tba_40
     name: The Smelly Tunnel
@@ -557,6 +599,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4029:
     area: tba_40
     name: The Cave
@@ -580,6 +624,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4030:
     area: tba_40
     name: The Light Cave
@@ -606,6 +652,8 @@ rooms:
            Looking at the corpses lying around the cave, they all appear to have been
         torn to shreds by some large creature.  As a further not too unexpected point to
         note, they all smell terrible.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4031:
     area: tba_40
     name: The Valley
@@ -634,6 +682,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4032:
     area: tba_40
     name: The Foothills
@@ -656,6 +706,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4033:
     area: tba_40
     name: The Intersection In The Foothills
@@ -683,6 +735,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4034:
     area: tba_40
     name: The Grassy Area In The Foothills
@@ -712,6 +766,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4035:
     area: tba_40
     name: At The Foothills' End
@@ -735,6 +791,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4036:
     area: tba_40
     name: The Plains
@@ -758,6 +816,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4037:
     area: tba_40
     name: The Path Through The Foothills
@@ -783,6 +843,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4038:
     area: tba_40
     name: The Base Of The Mountain
@@ -809,6 +871,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4039:
     area: tba_40
     name: A Trail Up The Mountain
@@ -832,6 +896,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4040:
     area: tba_40
     name: The Mountain Top
@@ -861,6 +927,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4041:
     area: tba_40
     name: The Lion's Den
@@ -880,6 +948,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4042:
     area: tba_40
     name: The Level Foothills
@@ -905,6 +975,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4043:
     area: tba_40
     name: The Cave Entrance
@@ -929,6 +1001,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4044:
     area: tba_40
     name: The Hill Giant Cave
@@ -953,6 +1027,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4045:
     area: tba_40
     name: The Steep Trail
@@ -977,6 +1053,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4046:
     area: tba_40
     name: Between The Mountains
@@ -1000,6 +1078,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4047:
     area: tba_40
     name: The Foothills
@@ -1024,6 +1104,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4048:
     area: tba_40
     name: The Foothills
@@ -1049,6 +1131,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4049:
     area: tba_40
     name: The Foothills
@@ -1073,6 +1157,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4050:
     area: tba_40
     name: The Tunnel
@@ -1097,6 +1183,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4051:
     area: tba_40
     name: The Tunnel
@@ -1122,6 +1210,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4052:
     area: tba_40
     name: The Tunnel
@@ -1145,6 +1235,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4053:
     area: tba_40
     name: The Tunnel
@@ -1172,6 +1264,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4054:
     area: tba_40
     name: The Light Cave
@@ -1202,6 +1296,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4055:
     area: tba_40
     name: The Maze
@@ -1221,6 +1317,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4056:
     area: tba_40
     name: The Light Cave
@@ -1251,6 +1349,8 @@ rooms:
            The fire seems to have been burning for quite a long time.  The ceiling is
         covered with soot from the smoke, and ashes are littered all over the floor of
         the cave.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4057:
     area: tba_40
     name: The Maze
@@ -1274,6 +1374,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4058:
     area: tba_40
     name: The Maze
@@ -1297,6 +1399,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4059:
     area: tba_40
     name: The Tunnel
@@ -1323,6 +1427,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4060:
     area: tba_40
     name: The Tunnel
@@ -1352,6 +1458,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4061:
     area: tba_40
     name: The Light Cave
@@ -1382,6 +1490,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4062:
     area: tba_40
     name: The Maze
@@ -1405,6 +1515,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4063:
     area: tba_40
     name: The Maze
@@ -1428,6 +1540,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4064:
     area: tba_40
     name: The Tunnel
@@ -1454,6 +1568,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4065:
     area: tba_40
     name: The Maze
@@ -1478,6 +1594,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4066:
     area: tba_40
     name: The Maze
@@ -1506,6 +1624,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4067:
     area: tba_40
     name: The Maze
@@ -1529,6 +1649,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4068:
     area: tba_40
     name: The Large Cave
@@ -1555,6 +1677,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4069:
     area: tba_40
     name: The Large Cave
@@ -1586,6 +1710,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4070:
     area: tba_40
     name: The Large Cave
@@ -1612,6 +1738,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4071:
     area: tba_40
     name: The Large Cave
@@ -1643,6 +1771,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4072:
     area: tba_40
     name: The Tunnel
@@ -1671,6 +1801,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4073:
     area: tba_40
     name: The End Of The Tunnel
@@ -1691,6 +1823,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4074:
     area: tba_40
     name: The Hole
@@ -1716,6 +1850,8 @@ rooms:
       description: |2
            The small hole in the floor refuses to give up its secrets about what can be
         found below.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4075:
     area: tba_40
     name: The Copse Of Trees
@@ -1740,6 +1876,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4076:
     area: tba_40
     name: On A Mountain Trail
@@ -1768,6 +1906,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4077:
     area: tba_40
     name: In The Hidden Valley
@@ -1793,6 +1933,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.4078:
     area: tba_40
     name: In The Hidden Valley
@@ -1817,3 +1959,5 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

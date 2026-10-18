@@ -48,6 +48,8 @@ rooms:
         102 The Dream Halls - Hiruma       at 31271 (east ) ---> 10245
         102 The Dream Halls - Hiruma       at 31272 (east ) ---> 10244
         102 The Dream Halls - Hiruma       at 31273 (east ) ---> 10243
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31201:
     area: tba_312
     name: Footpath Through Leper's Village
@@ -80,6 +82,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31202:
     area: tba_312
     name: A Hut of Rough Timber
@@ -99,6 +103,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31203:
     area: tba_312
     name: A Modest Hut Made From Thatch and Mud
@@ -118,6 +124,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31204:
     area: tba_312
     name: Footpath Through Leper's Village
@@ -146,6 +154,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31205:
     area: tba_312
     name: Footpath Through Leper's Village
@@ -173,6 +183,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31206:
     area: tba_312
     name: Footpath Through Leper's Village
@@ -206,6 +218,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31207:
     area: tba_312
     name: A Small Clay Hut
@@ -225,6 +239,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31208:
     area: tba_312
     name: A Hut Made from Clay and Thatch
@@ -244,6 +260,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31209:
     area: tba_312
     name: Pig Pen
@@ -264,6 +282,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31210:
     area: tba_312
     name: Chicken Coop
@@ -285,6 +305,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31211:
     area: tba_312
     name: A Small Thatch Hut
@@ -314,6 +336,8 @@ rooms:
       description: |2
            The clothing is folded very neatly within, kept in an exact spot on the floor
         away from the main walkthrough.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31212:
     area: tba_312
     name: Footpath Through Leper's Village
@@ -346,6 +370,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31213:
     area: tba_312
     name: Footpath Through Leper's Village
@@ -370,6 +396,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31214:
     area: tba_312
     name: Garden
@@ -391,6 +419,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31215:
     area: tba_312
     name: A Tidy Hut
@@ -409,6 +439,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31216:
     area: tba_312
     name: Footpath Through Leper's Village
@@ -441,6 +473,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31217:
     area: tba_312
     name: Leper Memorial
@@ -472,6 +506,8 @@ rooms:
                Vllad Tullins                 Rangol Urga
                Conrad Welters                Urvon Ingha
                Jonah Reantl
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31218:
     area: tba_312
     name: A Well-kept Hut Made From Clay
@@ -490,6 +526,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31219:
     area: tba_312
     name: Footpath Through Leper's Village
@@ -524,6 +562,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31220:
     area: tba_312
     name: Chapel
@@ -544,6 +584,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31221:
     area: tba_312
     name: Trail Into the Jungle
@@ -569,6 +611,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31222:
     area: tba_312
     name: Trail Through the Jungle
@@ -592,6 +636,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31223:
     area: tba_312
     name: Trail Through the Jungle
@@ -620,6 +666,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31224:
     area: tba_312
     name: Trail Through the Jungle
@@ -644,6 +692,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31225:
     area: tba_312
     name: Trail Through the Jungle
@@ -669,6 +719,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31226:
     area: tba_312
     name: Trail Through the Jungle
@@ -692,6 +744,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31227:
     area: tba_312
     name: Trail Through the Jungle
@@ -721,6 +775,8 @@ rooms:
       description: |2
            It looks to be a very sedate pool of water.  The only ripples on the surface
         of the water come from gentle breezes which blow through the jungle.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31228:
     area: tba_312
     name: Pond
@@ -747,6 +803,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31229:
     area: tba_312
     name: Pond
@@ -774,6 +832,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31230:
     area: tba_312
     name: Pond
@@ -797,6 +857,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31231:
     area: tba_312
     name: Pond
@@ -820,6 +882,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31232:
     area: tba_312
     name: Trail Into the Jungle
@@ -849,6 +913,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31233:
     area: tba_312
     name: Well-used Trail Through the Jungle
@@ -872,6 +938,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31234:
     area: tba_312
     name: Well-used Trail Through the Jungle
@@ -896,6 +964,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31235:
     area: tba_312
     name: Well-used Trail Through the Jungle
@@ -920,6 +990,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31236:
     area: tba_312
     name: Well-used Trail Through the Jungle
@@ -943,6 +1015,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31237:
     area: tba_312
     name: Lookout Post
@@ -968,6 +1042,8 @@ rooms:
       description: |2
            It is a very smooth boulder which rises gradually from the forest floor to a
         height overlooking the cliffs out onto the sea.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31238:
     area: tba_312
     name: Trail Through the Jungle
@@ -991,6 +1067,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31239:
     area: tba_312
     name: Trail Through the Jungle
@@ -1019,6 +1097,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31240:
     area: tba_312
     name: Trail Through the Jungle
@@ -1043,6 +1123,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31241:
     area: tba_312
     name: Trail Through the Jungle
@@ -1068,6 +1150,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31242:
     area: tba_312
     name: Trail Through the Jungle
@@ -1091,6 +1175,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31243:
     area: tba_312
     name: Trail Through the Jungle
@@ -1116,6 +1202,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31244:
     area: tba_312
     name: Trail Through the Jungle
@@ -1139,6 +1227,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31245:
     area: tba_312
     name: Trail Through the Jungle
@@ -1163,6 +1253,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31246:
     area: tba_312
     name: Trail Through the Jungle
@@ -1192,6 +1284,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31247:
     area: tba_312
     name: At a Tepid Pond's Shore
@@ -1216,6 +1310,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31248:
     area: tba_312
     name: A Tepid Pond
@@ -1235,6 +1331,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31249:
     area: tba_312
     name: Encampment
@@ -1261,6 +1359,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31250:
     area: tba_312
     name: Encampment
@@ -1295,6 +1395,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31251:
     area: tba_312
     name: Open Dirt Area
@@ -1323,6 +1425,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31252:
     area: tba_312
     name: Dirt Area
@@ -1353,6 +1457,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31253:
     area: tba_312
     name: Community Gathering Area
@@ -1373,6 +1479,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31254:
     area: tba_312
     name: Grubby Animal Pen
@@ -1394,6 +1502,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31255:
     area: tba_312
     name: Community Hut
@@ -1413,6 +1523,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31256:
     area: tba_312
     name: The House of Death
@@ -1434,6 +1546,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31257:
     area: tba_312
     name: The Base of the Volcano
@@ -1463,6 +1577,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31258:
     area: tba_312
     name: Trail to the Volcano's Crest
@@ -1488,6 +1604,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31259:
     area: tba_312
     name: Trail to the Volcano's Crest
@@ -1512,6 +1630,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31260:
     area: tba_312
     name: Smoking Crest of the Volcano
@@ -1534,6 +1654,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31261:
     area: tba_312
     name: Cliff's Edge
@@ -1554,6 +1676,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31262:
     area: tba_312
     name: Cliff's Edge
@@ -1581,6 +1705,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31263:
     area: tba_312
     name: Cliff's Edge
@@ -1605,6 +1731,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31264:
     area: tba_312
     name: Cliff
@@ -1628,6 +1756,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31265:
     area: tba_312
     name: White Sand Beach
@@ -1657,6 +1787,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31266:
     area: tba_312
     name: White Sand Beach
@@ -1677,6 +1809,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31267:
     area: tba_312
     name: White Sand Beach
@@ -1699,6 +1833,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31268:
     area: tba_312
     name: Narrow Gulley
@@ -1725,6 +1861,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31269:
     area: tba_312
     name: Narrow Gully
@@ -1749,6 +1887,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31270:
     area: tba_312
     name: Narrow Gully
@@ -1775,6 +1915,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31271:
     area: tba_312
     name: White Sand Beach
@@ -1801,6 +1943,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31272:
     area: tba_312
     name: White Sand Beach
@@ -1826,6 +1970,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31273:
     area: tba_312
     name: White Sand Beach
@@ -1846,6 +1992,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31275:
     area: tba_312
     name: In Thick Bracken
@@ -1870,6 +2018,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31276:
     area: tba_312
     name: A Tangle of Vines
@@ -1893,6 +2043,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31277:
     area: tba_312
     name: Near an Old, Wet, Fallen Tree
@@ -1916,6 +2068,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31278:
     area: tba_312
     name: Through a Tangle of Jungle Brush
@@ -1939,6 +2093,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31279:
     area: tba_312
     name: Near a Large Tree
@@ -1967,6 +2123,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31280:
     area: tba_312
     name: Through a Growth of Tall Weeds
@@ -1991,6 +2149,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31281:
     area: tba_312
     name: Branch Clustered Area
@@ -2015,6 +2175,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31282:
     area: tba_312
     name: Near a Large Hole
@@ -2039,6 +2201,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31283:
     area: tba_312
     name: Outside a Hollow Tree
@@ -2066,6 +2230,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31284:
     area: tba_312
     name: Inside a Hollow Tree
@@ -2091,6 +2257,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31285:
     area: tba_312
     name: In a Lion's Den
@@ -2109,6 +2277,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.31286:
     area: tba_312
     name: A Leaf Shrouded Section of the Jungle
@@ -2132,3 +2302,5 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

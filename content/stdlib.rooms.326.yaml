@@ -35,6 +35,8 @@ rooms:
         324 Army Encampment                at 32610 (east ) ---> 32400
         324 Army Encampment                at 32640 (west ) ---> 32414
         Links: 79e
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32601:
     area: tba_326
     name: Trampled Dirt Highway
@@ -60,6 +62,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32602:
     area: tba_326
     name: Trampled Dirt Highway
@@ -89,6 +93,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32603:
     area: tba_326
     name: Trampled Dirt Highway
@@ -117,6 +123,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32604:
     area: tba_326
     name: Trampled Dirt Highway
@@ -146,6 +154,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32605:
     area: tba_326
     name: Trampled Dirt Highway
@@ -172,6 +182,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32606:
     area: tba_326
     name: Trampled Dirt Highway
@@ -197,6 +209,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32607:
     area: tba_326
     name: Trampled Dirt Highway
@@ -228,6 +242,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32608:
     area: tba_326
     name: Trampled Dirt Highway
@@ -256,6 +272,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32609:
     area: tba_326
     name: Trampled Dirt Highway
@@ -286,6 +304,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32610:
     area: tba_326
     name: Camp Perimeter
@@ -323,6 +343,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32611:
     area: tba_326
     name: Leaf-Strewn Trail
@@ -351,6 +373,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32612:
     area: tba_326
     name: Leaf-Strewn Trail
@@ -379,6 +403,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32613:
     area: tba_326
     name: Leaf-Strewn Trail
@@ -405,6 +431,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32614:
     area: tba_326
     name: Leaf-Strewn Trail
@@ -427,6 +455,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32615:
     area: tba_326
     name: Leaf-Strewn Trail
@@ -459,6 +489,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32616:
     area: tba_326
     name: Narrow Forest Trail
@@ -482,6 +514,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32617:
     area: tba_326
     name: Narrow Forest Trail
@@ -504,6 +538,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32618:
     area: tba_326
     name: Narrow Forest Trail
@@ -529,6 +565,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32619:
     area: tba_326
     name: Well Worn Path Through the Trees
@@ -558,6 +596,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32620:
     area: tba_326
     name: Well Worn Path Through the Trees
@@ -587,6 +627,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32621:
     area: tba_326
     name: Well Worn Path Through the Trees
@@ -611,6 +653,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32622:
     area: tba_326
     name: Well Worn Path Through the Trees
@@ -637,6 +681,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32623:
     area: tba_326
     name: Well Worn Path Through the Trees
@@ -659,6 +705,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32624:
     area: tba_326
     name: Lookout Post
@@ -678,6 +726,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32625:
     area: tba_326
     name: Lookout Post
@@ -697,6 +747,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32626:
     area: tba_326
     name: Lookout Post
@@ -716,6 +768,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32627:
     area: tba_326
     name: Lookout Post
@@ -735,6 +789,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32628:
     area: tba_326
     name: Lookout Post
@@ -756,6 +812,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32629:
     area: tba_326
     name: Camp Perimeter
@@ -784,6 +842,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32630:
     area: tba_326
     name: Camp Perimeter
@@ -812,6 +872,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32631:
     area: tba_326
     name: Camp Perimeter
@@ -835,6 +897,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32632:
     area: tba_326
     name: Camp Perimeter
@@ -862,6 +926,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32633:
     area: tba_326
     name: Camp Perimeter
@@ -885,6 +951,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32634:
     area: tba_326
     name: Camp Perimeter
@@ -909,6 +977,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32635:
     area: tba_326
     name: Camp Perimeter
@@ -936,6 +1006,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32636:
     area: tba_326
     name: Camp Perimeter
@@ -960,6 +1032,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32637:
     area: tba_326
     name: Camp Perimeter
@@ -988,6 +1062,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32638:
     area: tba_326
     name: Camp Perimeter
@@ -1014,6 +1090,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32639:
     area: tba_326
     name: Camp Perimeter
@@ -1036,6 +1114,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32640:
     area: tba_326
     name: Camp Perimeter
@@ -1075,6 +1155,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32641:
     area: tba_326
     name: Camp Perimeter
@@ -1102,6 +1184,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32642:
     area: tba_326
     name: Camp Perimeter
@@ -1128,6 +1212,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32643:
     area: tba_326
     name: Camp Perimeter
@@ -1152,6 +1238,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32644:
     area: tba_326
     name: Camp Perimeter
@@ -1176,6 +1264,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32645:
     area: tba_326
     name: Camp Perimeter
@@ -1199,6 +1289,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32646:
     area: tba_326
     name: Camp Perimeter
@@ -1226,6 +1318,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32647:
     area: tba_326
     name: Camp Perimeter
@@ -1253,6 +1347,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32648:
     area: tba_326
     name: Camp Perimeter
@@ -1279,6 +1375,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32649:
     area: tba_326
     name: Forest Path
@@ -1301,6 +1399,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32650:
     area: tba_326
     name: Forest Path
@@ -1327,6 +1427,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32651:
     area: tba_326
     name: Forest Path
@@ -1350,6 +1452,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32652:
     area: tba_326
     name: Forest Path
@@ -1381,6 +1485,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32653:
     area: tba_326
     name: Forest Path
@@ -1405,6 +1511,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32654:
     area: tba_326
     name: Path Through the Trees
@@ -1434,6 +1542,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32655:
     area: tba_326
     name: Path Through the Trees
@@ -1457,6 +1567,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32656:
     area: tba_326
     name: Path Through the Trees
@@ -1479,6 +1591,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32657:
     area: tba_326
     name: Path Through the Trees
@@ -1501,6 +1615,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32658:
     area: tba_326
     name: Path Through the Trees
@@ -1528,6 +1644,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32659:
     area: tba_326
     name: Path Through the Trees
@@ -1550,6 +1668,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32660:
     area: tba_326
     name: Faint Path Through the Forest
@@ -1574,6 +1694,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32661:
     area: tba_326
     name: Faint Path Through the Forest
@@ -1596,6 +1718,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32662:
     area: tba_326
     name: Faint Path Through the Forest
@@ -1622,6 +1746,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32663:
     area: tba_326
     name: Faint Path Through the Forest
@@ -1645,6 +1771,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32664:
     area: tba_326
     name: Faint Path Through the Forest
@@ -1669,6 +1797,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32665:
     area: tba_326
     name: Lookout Post
@@ -1688,6 +1818,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32666:
     area: tba_326
     name: Lookout Post
@@ -1707,6 +1839,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32667:
     area: tba_326
     name: Lookout Post
@@ -1726,6 +1860,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32668:
     area: tba_326
     name: Lookout Post
@@ -1745,6 +1881,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32669:
     area: tba_326
     name: Lookout Post
@@ -1763,6 +1901,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32670:
     area: tba_326
     name: Logging Area
@@ -1791,6 +1931,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32671:
     area: tba_326
     name: Logging Area
@@ -1823,6 +1965,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32672:
     area: tba_326
     name: Logging Area
@@ -1847,6 +1991,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32673:
     area: tba_326
     name: Logging Area
@@ -1876,6 +2022,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32674:
     area: tba_326
     name: Logging Area
@@ -1902,6 +2050,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32675:
     area: tba_326
     name: Logging Area
@@ -1925,6 +2075,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32676:
     area: tba_326
     name: A Large Stump
@@ -1947,6 +2099,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32677:
     area: tba_326
     name: Wide Trail
@@ -1972,6 +2126,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32678:
     area: tba_326
     name: Wide Road
@@ -1995,6 +2151,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.32679:
     area: tba_326
     name: Wide Road
@@ -2015,3 +2173,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

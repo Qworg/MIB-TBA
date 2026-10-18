@@ -34,6 +34,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8601:
     area: tba_86
     name: A Dirt Road
@@ -64,6 +66,8 @@ rooms:
       description: |2
            Charcoal gray smoke rises straight and true from some chimney set deep into
         the heart of the Keep.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8602:
     area: tba_86
     name: A Dirt Road
@@ -106,6 +110,8 @@ rooms:
       description: |2
            Old and weathered this wrought iron fence and its gate have seen many'a
         traveller.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8603:
     area: tba_86
     name: Before the Keep
@@ -137,6 +143,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8604:
     area: tba_86
     name: The Foyer
@@ -178,6 +186,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8605:
     area: tba_86
     name: Short Hallway
@@ -202,6 +212,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8606:
     area: tba_86
     name: Stairway
@@ -231,6 +243,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8607:
     area: tba_86
     name: Upstairs
@@ -264,6 +278,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8608:
     area: tba_86
     name: Alcove
@@ -312,6 +328,8 @@ rooms:
       description: |2
            A faint moldy, damp smell greets your nostrils as you bend closer.  Your
         image distorts further until you are nothing but a blur.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8609:
     area: tba_86
     name: Dim Flight of Stairs
@@ -342,6 +360,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8610:
     area: tba_86
     name: Dim Flight of Stairs
@@ -367,6 +387,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8611:
     area: tba_86
     name: Dirt Path
@@ -391,6 +413,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8612:
     area: tba_86
     name: Old Courtyard
@@ -413,6 +437,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8614:
     area: tba_86
     name: The Grand Room
@@ -456,6 +482,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8615:
     area: tba_86
     name: An Open Archway
@@ -482,6 +510,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8616:
     area: tba_86
     name: Dining Room
@@ -515,6 +545,8 @@ rooms:
       description: |2
            This design is a complicated pattern of silver and wrought iron.  Curiously
         though it doesn't seem as rusted or faded as the rest of the Keep.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8617:
     area: tba_86
     name: Eastern Wing
@@ -540,6 +572,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8620:
     area: tba_86
     name: Bottom of the Stairs
@@ -573,6 +607,8 @@ rooms:
            Strange runes cover the entire surface of the door frame.  The runes
         themselves are unintelligable but their mere presence seems to be a warning of
         what lays beyond.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8621:
     area: tba_86
     name: Caverns Beneath the Keep
@@ -598,6 +634,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8622:
     area: tba_86
     name: Dirt Path
@@ -623,6 +661,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8623:
     area: tba_86
     name: End of the Dirt Path
@@ -655,6 +695,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8624:
     area: tba_86
     name: Butler's Pantry
@@ -691,6 +733,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8625:
     area: tba_86
     name: Underground
@@ -726,6 +770,8 @@ rooms:
       - keg
       description: |2
            One of the two kegs is open and contains beer and a floating rat.  Eww!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8626:
     area: tba_86
     name: Bandit's Lair
@@ -747,6 +793,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8627:
     area: tba_86
     name: Eastern Wing
@@ -778,6 +826,8 @@ rooms:
       - sturdy
       description: |2
            This sturdy oak door appears to be jammed shut
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8631:
     area: tba_86
     name: Caverns
@@ -803,6 +853,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8634:
     area: tba_86
     name: The Kitchens
@@ -831,6 +883,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8636:
     area: tba_86
     name: Sitting Room
@@ -860,6 +914,8 @@ rooms:
       description: |2
            This grand harp stands one human man-height tall.  Alas, the strings have
         been snapped and lay uselessly against the floor.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8637:
     area: tba_86
     name: Eastern Wing
@@ -892,6 +948,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8639:
     area: tba_86
     name: Dead End
@@ -912,6 +970,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8640:
     area: tba_86
     name: Deeper Within the Caverns
@@ -948,6 +1008,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8641:
     area: tba_86
     name: Caverns
@@ -986,6 +1048,8 @@ rooms:
       description: |2
            This fence reaches from the somewhat dry cavern floor straight to the
         ceiling.  There is a large spider-shaped lock on the far right bar.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8646:
     area: tba_86
     name: Servants Quarters
@@ -1021,6 +1085,8 @@ rooms:
            This old wooden dresser had four drawers in which the servants stored their
         meager clothing and uniforms.  However, only the top drawer reamins in tact
         after all this time.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8647:
     area: tba_86
     name: Eastern Wing
@@ -1061,6 +1127,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8648:
     area: tba_86
     name: Wash Room
@@ -1083,6 +1151,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8650:
     area: tba_86
     name: Caverns
@@ -1108,6 +1178,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8651:
     area: tba_86
     name: Caverns
@@ -1134,6 +1206,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8652:
     area: tba_86
     name: Caverns
@@ -1159,6 +1233,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8653:
     area: tba_86
     name: Open Cavern
@@ -1212,6 +1288,8 @@ rooms:
       description: |2
            Pouring gently from a few feet above the rough stone floor this waterfall
         splashes down and pools outward to the midpoint of this room.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8656:
     area: tba_86
     name: Balcony
@@ -1242,6 +1320,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8657:
     area: tba_86
     name: Master Bedroom
@@ -1301,6 +1381,8 @@ rooms:
            Most of the tapestries have faded beyond recognition but one singular
         tapestry nearest to the main doors proudly displays the Kalithorn coat of arm.
 
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8658:
     area: tba_86
     name: Bedroom Closet
@@ -1323,6 +1405,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8659:
     area: tba_86
     name: A Dirt Road
@@ -1351,6 +1435,8 @@ rooms:
       description: |2
            Charcoal gray smoke rises straight and true from some chimney set deep into
         the heart of the Keep.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8660:
     area: tba_86
     name: A Dirt Road
@@ -1375,6 +1461,8 @@ rooms:
       description: |2
            Charcoal gray smoke rises straight and true from some chimney set deep into
         the heart of the Keep.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.8699:
     area: tba_86
     name: Western Wing
@@ -1397,3 +1485,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

@@ -83,6 +83,8 @@ rooms:
           2 Sanctus II                     at   197 (south) --->   204
           2 Sanctus II                     at   198 (south) --->   205
           2 Sanctus II                     at   199 (south) --->   206
+    ambient_phases: {}
+    ambient_weather: {}
   tba.101:
     area: tba_1
     name: The Temple of the Gods
@@ -124,6 +126,8 @@ rooms:
         with a high back.  Almost as if it was meant to be some sort of seat.
         Inscriptions in some foreign tongue are written on every square inch of the
         altar.  You wonder what they must say and who could have written it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.102:
     area: tba_1
     name: Inner Sanctum
@@ -145,6 +149,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.103:
     area: tba_1
     name: High Council Meeting Room
@@ -173,6 +179,8 @@ rooms:
         center.  The twelve chairs on the sides are used by the councillors while the
         head chair, which is garnished in silver, is only used by the High Councilman.
 
+    ambient_phases: {}
+    ambient_weather: {}
   tba.104:
     area: tba_1
     name: Inner Void
@@ -199,6 +207,8 @@ rooms:
       - void
       description: |2
            How can you look at something that does not even exist.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.105:
     area: tba_1
     name: Rean's Zone Description Room
@@ -229,6 +239,8 @@ rooms:
         They are Gray and Purple.  Those colors symbolize the stages in the raising of
         a Magi.  Few every achieve that honor.  None have for the Order of the Purple
         or Gray Robe.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.106:
     area: tba_1
     name: Above the Northern Gate
@@ -261,6 +273,8 @@ rooms:
         and allows everyone to exist in peace.  Those brave enough to venture beyond
         the dome do so at their own risk.  Beyond the dome the scale of balance has
         collapsed and the laws of science and nature are in disorder.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.107:
     area: tba_1
     name: Training Room
@@ -282,6 +296,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.108:
     area: tba_1
     name: War Room
@@ -315,6 +331,8 @@ rooms:
       description: |2
            The table is made out of cherry.  It is worn from years of use.  The glass
         top allows for an excellent view of the map protected within.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.109:
     area: tba_1
     name: Thieves Retreat
@@ -336,6 +354,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.110:
     area: tba_1
     name: Scheming Room
@@ -356,6 +376,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.111:
     area: tba_1
     name: Northwest Corner of the Inner Wall
@@ -377,6 +399,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.112:
     area: tba_1
     name: Northeast Corner of the Inner Wall
@@ -399,6 +423,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.113:
     area: tba_1
     name: Quest Room
@@ -429,6 +455,8 @@ rooms:
         in shining golden armor waving a bejewled sword high over his head, roaring a
         challenge to some unseen beast within a nearby cave.  All are supposedly true
         tales, but most have been forgotten with the passing of time.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.114:
     area: tba_1
     name: Above the Western Gate
@@ -460,6 +488,8 @@ rooms:
         and allows everyone to exist in peace.  Those brave enough to venture beyond
         the dome do so at their own risk.  Beyond the dome the scale of balance has
         collapsed and the laws of science and nature are in disorder.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.115:
     area: tba_1
     name: Above the Inner Wall
@@ -481,6 +511,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.116:
     area: tba_1
     name: Travelling Room
@@ -518,6 +550,8 @@ rooms:
            You can look out over the inner wall to the western side of Sanctus.  The
         smell of charred human remains and smoldering plaster makes your eyes water so
         it is difficult to see much else through the tiny hole.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.117:
     area: tba_1
     name: Travelling Room
@@ -539,6 +573,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.118:
     area: tba_1
     name: Above the Inner Wall
@@ -560,6 +596,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.119:
     area: tba_1
     name: Above the Eastern Gate
@@ -591,6 +629,8 @@ rooms:
         and allows everyone to exist in peace.  Those brave enough to venture beyond
         the dome do so at their own risk.  Beyond the dome the scale of balance has
         collapsed and the laws of science and nature are in disorder.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.120:
     area: tba_1
     name: Travelling Room
@@ -613,6 +653,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.121:
     area: tba_1
     name: Southwestern Corner of the Inner Wall
@@ -642,6 +684,8 @@ rooms:
         and allows everyone to exist in peace.  Those brave enough to venture beyond
         the dome do so at their own risk.  Beyond the dome the scale of balance has
         collapsed and the laws of science and nature are in disorder.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.122:
     area: tba_1
     name: Southeastern Corner of the Inner Wall
@@ -671,6 +715,8 @@ rooms:
         and allows everyone to exist in peace.  Those brave enough to venture beyond
         the dome do so at their own risk.  Beyond the dome the scale of balance has
         collapsed and the laws of science and nature are in disorder.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.123:
     area: tba_1
     name: Closet
@@ -691,6 +737,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.124:
     area: tba_1
     name: High Councillors Chambers
@@ -726,6 +774,8 @@ rooms:
         painting of the city below them.  The two figures seem to be looking down at
         the city with looks of worry and hopelessness.  An unlit candle and mirror lay
         on the floor beside the small shrine.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.125:
     area: tba_1
     name: Plane of the Magi
@@ -766,6 +816,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.126:
     area: tba_1
     name: Plane of the Magi
@@ -806,6 +858,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.127:
     area: tba_1
     name: Healer's Room
@@ -826,6 +880,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.128:
     area: tba_1
     name: Tower of Sanctum
@@ -866,6 +922,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.129:
     area: tba_1
     name: Tower of Sanctum
@@ -905,6 +963,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.130:
     area: tba_1
     name: Bunk Room
@@ -924,6 +984,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.131:
     area: tba_1
     name: Home of the Magi
@@ -944,6 +1006,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.132:
     area: tba_1
     name: Tower of the Magi
@@ -984,6 +1048,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.133:
     area: tba_1
     name: Tower of the Magi
@@ -1024,6 +1090,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.134:
     area: tba_1
     name: Orb of Sanctum
@@ -1044,6 +1112,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.135:
     area: tba_1
     name: Healers Chambers
@@ -1086,6 +1156,8 @@ rooms:
            The bed is made of a sturdy pine.  A thin mattress covered in a white sheet
         with a down pillow overlaying it.  The mattress is too thin to hold anything of
         value.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.136:
     area: tba_1
     name: Kitchen
@@ -1106,6 +1178,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.137:
     area: tba_1
     name: Supply Room
@@ -1125,6 +1199,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.138:
     area: tba_1
     name: Room of the Magi
@@ -1145,6 +1221,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.139:
     area: tba_1
     name: Above the Southern Gate
@@ -1175,6 +1253,8 @@ rooms:
         and allows everyone to exist in peace.  Those brave enough to venture beyond
         the dome do so at their own risk.  Beyond the dome the scale of balance has
         collapsed and the laws of science and nature are in disorder.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.140:
     area: tba_1
     name: Northern Gate of Sanctus
@@ -1208,6 +1288,8 @@ rooms:
         and allows everyone to exist in peace.  Those brave enough to venture beyond
         the dome do so at their own risk.  Beyond the dome the scale of balance has
         collapsed and the laws of science and nature are in disorder.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.141:
     area: tba_1
     name: Entrance to the Warriors Guild
@@ -1231,6 +1313,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.142:
     area: tba_1
     name: Hannibal's Bar
@@ -1259,6 +1343,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.143:
     area: tba_1
     name: Letzgo Inn
@@ -1281,6 +1367,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.144:
     area: tba_1
     name: Shiro's Weaponry
@@ -1301,6 +1389,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.145:
     area: tba_1
     name: Sarge's Smithy
@@ -1323,6 +1413,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.146:
     area: tba_1
     name: The Northern Road
@@ -1348,6 +1440,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.147:
     area: tba_1
     name: Logan's Pawn
@@ -1368,6 +1462,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.148:
     area: tba_1
     name: The Rustic
@@ -1386,6 +1482,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.149:
     area: tba_1
     name: The Leather Shop
@@ -1405,6 +1503,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.150:
     area: tba_1
     name: Thieves Retreat
@@ -1430,6 +1530,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.151:
     area: tba_1
     name: Entrance to the Thieves Guild
@@ -1453,6 +1555,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.152:
     area: tba_1
     name: The Warriors Barracks
@@ -1476,6 +1580,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.153:
     area: tba_1
     name: The Warriors Barracks
@@ -1509,6 +1615,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.154:
     area: tba_1
     name: The Warriors Quarter
@@ -1547,6 +1655,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.155:
     area: tba_1
     name: Warriors Avenue
@@ -1585,6 +1695,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.156:
     area: tba_1
     name: Warriors Avenue
@@ -1623,6 +1735,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.157:
     area: tba_1
     name: Warriors Avenue
@@ -1661,6 +1775,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.158:
     area: tba_1
     name: Warriors Avenue
@@ -1698,6 +1814,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.159:
     area: tba_1
     name: The Northern Intersection
@@ -1731,6 +1849,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.160:
     area: tba_1
     name: Thieves Avenue
@@ -1770,6 +1890,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.161:
     area: tba_1
     name: Thieves Avenue
@@ -1808,6 +1930,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.162:
     area: tba_1
     name: Thieves Avenue
@@ -1846,6 +1970,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.163:
     area: tba_1
     name: Thieves Avenue
@@ -1884,6 +2010,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.164:
     area: tba_1
     name: Thieves Quarter
@@ -1922,6 +2050,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.165:
     area: tba_1
     name: The Thieves' Warehouse
@@ -1956,6 +2086,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.166:
     area: tba_1
     name: A Storage Room
@@ -1979,6 +2111,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.167:
     area: tba_1
     name: The Warriors Hallway
@@ -2006,6 +2140,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.168:
     area: tba_1
     name: The Bunk Room
@@ -2033,6 +2169,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.169:
     area: tba_1
     name: Warriors Avenue
@@ -2057,6 +2195,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.170:
     area: tba_1
     name: A Fine Home
@@ -2082,6 +2222,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.171:
     area: tba_1
     name: A Beggars Home
@@ -2107,6 +2249,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.172:
     area: tba_1
     name: An Extravagant Home
@@ -2132,6 +2276,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.173:
     area: tba_1
     name: A Poor Home
@@ -2157,6 +2303,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.174:
     area: tba_1
     name: The Northern Road
@@ -2182,6 +2330,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.175:
     area: tba_1
     name: An Extravagant Home
@@ -2207,6 +2357,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.176:
     area: tba_1
     name: A Cramped Home
@@ -2232,6 +2384,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.177:
     area: tba_1
     name: A Small Home
@@ -2257,6 +2411,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.178:
     area: tba_1
     name: A Clean House
@@ -2281,6 +2437,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.179:
     area: tba_1
     name: Thieves Avenue
@@ -2305,6 +2463,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.180:
     area: tba_1
     name: The Thieves Warehouse
@@ -2328,6 +2488,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.181:
     area: tba_1
     name: A Storage Room
@@ -2351,6 +2513,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.182:
     area: tba_1
     name: The Warriors Hallway
@@ -2378,6 +2542,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.183:
     area: tba_1
     name: The Bunk Room
@@ -2405,6 +2571,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.184:
     area: tba_1
     name: The Northwest Intersection
@@ -2433,6 +2601,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.185:
     area: tba_1
     name: Warriors Alley
@@ -2458,6 +2628,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.186:
     area: tba_1
     name: Warriors Alley
@@ -2481,6 +2653,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.187:
     area: tba_1
     name: Warriors Alley
@@ -2505,6 +2679,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.188:
     area: tba_1
     name: Warriors Alley
@@ -2529,6 +2705,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.189:
     area: tba_1
     name: The Northern Road
@@ -2561,6 +2739,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.190:
     area: tba_1
     name: Thieves Alley
@@ -2585,6 +2765,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.191:
     area: tba_1
     name: Thieves Alley
@@ -2609,6 +2791,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.192:
     area: tba_1
     name: Thieves Alley
@@ -2633,6 +2817,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.193:
     area: tba_1
     name: Thieves Alley
@@ -2657,6 +2843,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.194:
     area: tba_1
     name: The Northeast Intersection
@@ -2685,6 +2873,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.195:
     area: tba_1
     name: Wagon Bay
@@ -2712,6 +2902,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.196:
     area: tba_1
     name: Wagon Bay
@@ -2745,6 +2937,8 @@ rooms:
       description: |2
            The mushrooms appear not to be poisonous and are relatively clean. They look
         edible.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.197:
     area: tba_1
     name: A Work Room
@@ -2774,6 +2968,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.198:
     area: tba_1
     name: The Mess Hall
@@ -2801,6 +2997,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.199:
     area: tba_1
     name: Warriors Avenue
@@ -2825,3 +3023,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

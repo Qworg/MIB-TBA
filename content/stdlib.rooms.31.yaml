@@ -27,6 +27,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3101:
     area: tba_31
     name: The Promenade
@@ -54,6 +56,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3102:
     area: tba_31
     name: The Promenade
@@ -81,6 +85,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3103:
     area: tba_31
     name: The Promenade
@@ -108,6 +114,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3104:
     area: tba_31
     name: The Northeast End Of The Concourse
@@ -137,6 +145,8 @@ rooms:
       description: |2
            It is built from large gray rocks that have been fastened to each other with
         some kind of mortar.  It is far too high to climb.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3105:
     area: tba_31
     name: The Park Entrance
@@ -165,6 +175,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3106:
     area: tba_31
     name: Park Cafe
@@ -183,6 +195,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3107:
     area: tba_31
     name: A Small Path In The Park
@@ -205,6 +219,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3108:
     area: tba_31
     name: A Small Path In The Park
@@ -232,6 +248,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3109:
     area: tba_31
     name: A Small Path In The Park
@@ -254,6 +272,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3110:
     area: tba_31
     name: Cityguard HeadQuarters
@@ -276,6 +296,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3111:
     area: tba_31
     name: Park Road
@@ -322,6 +344,8 @@ rooms:
                          Cityguard HeadQuarters
 
                    WARNING: Authorized Personnel Only!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3112:
     area: tba_31
     name: The Western Park Entrance
@@ -345,6 +369,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3113:
     area: tba_31
     name: A Path In The Park
@@ -371,6 +397,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3114:
     area: tba_31
     name: The Pond
@@ -393,6 +421,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3115:
     area: tba_31
     name: A Path In The Park
@@ -419,6 +449,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3116:
     area: tba_31
     name: The Eastern Park Entrance
@@ -443,6 +475,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3117:
     area: tba_31
     name: Emerald Avenue
@@ -474,6 +508,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3118:
     area: tba_31
     name: Park Road
@@ -495,6 +531,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3119:
     area: tba_31
     name: Emerald Avenue
@@ -517,6 +555,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3120:
     area: tba_31
     name: The Road Crossing
@@ -569,6 +609,8 @@ rooms:
       description: |2
            The chain reaches the clouds high above you.  It must take some really
         powerful magic to hold such a chain in place.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3121:
     area: tba_31
     name: Emerald Avenue
@@ -591,6 +633,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3122:
     area: tba_31
     name: Park Road
@@ -617,6 +661,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3123:
     area: tba_31
     name: Elm Street
@@ -639,6 +685,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3124:
     area: tba_31
     name: The End Of Elm Street
@@ -656,6 +704,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3125:
     area: tba_31
     name: Emerald Avenue
@@ -678,6 +728,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3126:
     area: tba_31
     name: Park Road
@@ -700,6 +752,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3127:
     area: tba_31
     name: On The Concourse
@@ -726,6 +780,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3128:
     area: tba_31
     name: On The Concourse
@@ -752,6 +808,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3129:
     area: tba_31
     name: On The Concourse
@@ -788,6 +846,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3130:
     area: tba_31
     name: On The Concourse
@@ -810,6 +870,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3131:
     area: tba_31
     name: Park Road
@@ -831,6 +893,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3132:
     area: tba_31
     name: Emerald Avenue
@@ -857,6 +921,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3133:
     area: tba_31
     name: Emerald Avenue
@@ -879,6 +945,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3134:
     area: tba_31
     name: Emerald Avenue
@@ -901,6 +969,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3135:
     area: tba_31
     name: Park Road
@@ -923,6 +993,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3136:
     area: tba_31
     name: Park Road
@@ -945,6 +1017,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3137:
     area: tba_31
     name: The Waiting Room
@@ -983,6 +1057,8 @@ rooms:
            It is an ancient Quifatronic T-1000 mk I.  These machines are known for their
         incredible durability, and for their even more incredible weight.  They make a
         Cray II look like a laptop.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3138:
     area: tba_31
     name: The Mayor's Office
@@ -1014,6 +1090,8 @@ rooms:
            This chair is really a masterpiece.  A chair where one can sit as comfortably
         as in a bed.  All auditoriums should be equipped with these things.  A shame
         that there wouldn't be room for the students too, though.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3139:
     area: tba_31
     name: Penny Lane
@@ -1036,6 +1114,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3140:
     area: tba_31
     name: Penny Lane
@@ -1057,6 +1137,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3141:
     area: tba_31
     name: The End Of Penny Lane
@@ -1074,6 +1156,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3150:
     area: tba_31
     name: A Gravel Road In The Graveyard
@@ -1103,6 +1187,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3151:
     area: tba_31
     name: A Gravel Road In The Graveyard
@@ -1125,6 +1211,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3152:
     area: tba_31
     name: A Gravel Road In The Graveyard
@@ -1147,6 +1235,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3153:
     area: tba_31
     name: A Gravel Road In The Graveyard
@@ -1169,6 +1259,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3154:
     area: tba_31
     name: In Front Of The Chapel
@@ -1197,6 +1289,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3155:
     area: tba_31
     name: Inside The Chapel
@@ -1238,3 +1332,5 @@ rooms:
       - rows
       description: |2
            The benches are not of the comfortable kind.
+    ambient_phases: {}
+    ambient_weather: {}

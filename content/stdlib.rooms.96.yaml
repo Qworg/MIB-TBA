@@ -54,6 +54,8 @@ rooms:
       description: |2
            Large oaken trees block out most of the light, giving the everything in the
         forest a dim green appearance.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9601:
     area: tba_96
     name: On the Path into the forest
@@ -84,6 +86,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9602:
     area: tba_96
     name: Path to a distant hut
@@ -125,6 +129,8 @@ rooms:
       description: |2
            The hut is a crude one, fashioned of daub and mud.  Thatched straw serves as
         the roof, and the windows are mere holes in the cracked walls.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9603:
     area: tba_96
     name: A Cleared Path
@@ -143,6 +149,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9604:
     area: tba_96
     name: A path through Domiae
@@ -169,6 +177,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9605:
     area: tba_96
     name: A four-way intersection
@@ -201,6 +211,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9606:
     area: tba_96
     name: A dead end
@@ -222,6 +234,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9607:
     area: tba_96
     name: A path deeper into the forest
@@ -246,6 +260,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9608:
     area: tba_96
     name: A mushy path
@@ -270,6 +286,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9609:
     area: tba_96
     name: A swampy pit
@@ -290,6 +308,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9610:
     area: tba_96
     name: A path into Domiae
@@ -316,6 +336,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9611:
     area: tba_96
     name: A path into Domiae
@@ -342,6 +364,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9612:
     area: tba_96
     name: A turn in the path
@@ -373,6 +397,8 @@ rooms:
       description: |2
            Peering into the hole, it looks like a mole has chosen to make it's home
         here.  The soil inside the burrow is dry and grainy.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9613:
     area: tba_96
     name: A three-way intersection
@@ -402,6 +428,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9614:
     area: tba_96
     name: A path into Domiae
@@ -428,6 +456,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9615:
     area: tba_96
     name: A turn in the path
@@ -459,6 +489,8 @@ rooms:
       description: |2
            Peering into the hole, it looks like a mole has chosen to make it's home
         here.  The soil inside the burrow is dry and grainy.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9616:
     area: tba_96
     name: A dead end
@@ -480,6 +512,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9617:
     area: tba_96
     name: A path into Domiae
@@ -506,6 +540,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9618:
     area: tba_96
     name: A turn in the path
@@ -530,6 +566,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9619:
     area: tba_96
     name: The Entrance of the Forest Domiae
@@ -562,6 +600,8 @@ rooms:
       description: |2
            Large oaken trees block out most of the light, giving the everything in the
         forest a dim green appearance.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9620:
     area: tba_96
     name: Another turn in the path
@@ -587,6 +627,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9621:
     area: tba_96
     name: A path nearing the cave
@@ -611,6 +653,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9622:
     area: tba_96
     name: A path nearing the cave
@@ -635,6 +679,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9623:
     area: tba_96
     name: A turn in the path
@@ -661,6 +707,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9624:
     area: tba_96
     name: In front of the cave
@@ -689,6 +737,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9625:
     area: tba_96
     name: A refuse pit
@@ -709,6 +759,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9626:
     area: tba_96
     name: In the mouth of the cave
@@ -731,6 +783,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9627:
     area: tba_96
     name: Inside the cave
@@ -763,6 +817,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9628:
     area: tba_96
     name: Inside the cave
@@ -787,6 +843,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9629:
     area: tba_96
     name: Inside the cave
@@ -811,6 +869,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9630:
     area: tba_96
     name: Inside the cave
@@ -839,6 +899,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9631:
     area: tba_96
     name: Inside the cave
@@ -863,6 +925,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9632:
     area: tba_96
     name: Inside the cave
@@ -887,6 +951,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9633:
     area: tba_96
     name: Inside the outer gate
@@ -920,6 +986,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9634:
     area: tba_96
     name: A stairwell
@@ -945,6 +1013,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9635:
     area: tba_96
     name: A stairwell
@@ -970,6 +1040,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9636:
     area: tba_96
     name: A small tower
@@ -990,6 +1062,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9637:
     area: tba_96
     name: A small tower
@@ -1010,6 +1084,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9638:
     area: tba_96
     name: Foyer
@@ -1034,6 +1110,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9639:
     area: tba_96
     name: The throne room
@@ -1066,6 +1144,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9640:
     area: tba_96
     name: Banquet hall
@@ -1095,6 +1175,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9641:
     area: tba_96
     name: Kitchen
@@ -1130,6 +1212,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9642:
     area: tba_96
     name: Cellar
@@ -1156,6 +1240,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9643:
     area: tba_96
     name: A hall
@@ -1179,6 +1265,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9644:
     area: tba_96
     name: A hall
@@ -1202,6 +1290,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9645:
     area: tba_96
     name: A stairwell
@@ -1237,6 +1327,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9646:
     area: tba_96
     name: A stairwell
@@ -1271,6 +1363,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9647:
     area: tba_96
     name: A holding chamber.
@@ -1296,6 +1390,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9648:
     area: tba_96
     name: A holding chamber.
@@ -1321,6 +1417,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9649:
     area: tba_96
     name: A hallway entrance
@@ -1344,6 +1442,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9650:
     area: tba_96
     name: A hallway entrance
@@ -1367,6 +1467,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9651:
     area: tba_96
     name: The royal hallway
@@ -1390,6 +1492,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9652:
     area: tba_96
     name: The royal hallway
@@ -1413,6 +1517,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9653:
     area: tba_96
     name: In front of the King's bedroom
@@ -1446,6 +1552,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9654:
     area: tba_96
     name: The King's Bedroom
@@ -1474,6 +1582,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9655:
     area: tba_96
     name: A Cleared Path
@@ -1497,3 +1607,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

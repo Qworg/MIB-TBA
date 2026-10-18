@@ -43,6 +43,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1101:
     area: tba_11
     name: A Luminous Path
@@ -62,6 +64,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1102:
     area: tba_11
     name: The White Drawbridge
@@ -85,6 +89,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1103:
     area: tba_11
     name: A Frozen Portcullis
@@ -112,6 +118,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1104:
     area: tba_11
     name: Stalagmitic Armory
@@ -146,6 +154,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1105:
     area: tba_11
     name: Hall of Legends
@@ -172,6 +182,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1106:
     area: tba_11
     name: Lords' Chamber
@@ -206,6 +218,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1107:
     area: tba_11
     name: A Cold Throneroom
@@ -240,6 +254,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1108:
     area: tba_11
     name: A Frosty Dining Hall
@@ -265,6 +281,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1109:
     area: tba_11
     name: A Frosty Dining Hall
@@ -290,6 +308,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1110:
     area: tba_11
     name: A Glacial Music Room
@@ -323,6 +343,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1111:
     area: tba_11
     name: Ladies' Chamber
@@ -358,6 +380,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1112:
     area: tba_11
     name: Hall of Forgotten Arts
@@ -383,6 +407,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1113:
     area: tba_11
     name: Fissured Gallery
@@ -417,6 +443,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1114:
     area: tba_11
     name: Sphalerite Stair
@@ -444,6 +472,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1115:
     area: tba_11
     name: Hall of Forgotten Arts
@@ -468,6 +498,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1116:
     area: tba_11
     name: Sphalerite Stair
@@ -495,6 +527,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1117:
     area: tba_11
     name: Hall of Legends
@@ -520,6 +554,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1118:
     area: tba_11
     name: A Frosty Dining Hall
@@ -545,6 +581,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1119:
     area: tba_11
     name: The Southwest Stair
@@ -579,6 +617,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1120:
     area: tba_11
     name: The Southeast Stair
@@ -612,6 +652,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1121:
     area: tba_11
     name: The Northeast Stair
@@ -645,6 +687,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1122:
     area: tba_11
     name: The Northwest Stair
@@ -679,6 +723,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1123:
     area: tba_11
     name: Snowy Courtyard
@@ -716,6 +762,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1124:
     area: tba_11
     name: Fountain of Light
@@ -741,6 +789,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1125:
     area: tba_11
     name: Snowy Courtyard
@@ -778,6 +828,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1126:
     area: tba_11
     name: A Forsaken Statuette
@@ -798,6 +850,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1127:
     area: tba_11
     name: A Forsaken Statuette
@@ -819,6 +873,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1128:
     area: tba_11
     name: A Smashed Statuette
@@ -840,6 +896,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1129:
     area: tba_11
     name: A Forsaken Statuette
@@ -860,6 +918,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1130:
     area: tba_11
     name: Upper Part of the Southwest Stair
@@ -900,6 +960,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1131:
     area: tba_11
     name: Upper Part of the Southeast Stair
@@ -945,6 +1007,8 @@ rooms:
       description: |2
            A subtle tapestry guards the way to the north, delicately hung and fitted so
         that upon closing the passage beyond cannot be seen.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1132:
     area: tba_11
     name: Upper Part of the Northeast Stair
@@ -975,6 +1039,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1133:
     area: tba_11
     name: Upper Part of the Northwest Stair
@@ -1005,6 +1071,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1134:
     area: tba_11
     name: Sphalerite Stair
@@ -1033,6 +1101,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1135:
     area: tba_11
     name: A Snow-covered Windlass
@@ -1064,6 +1134,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1136:
     area: tba_11
     name: Sphalerite Stair
@@ -1092,6 +1164,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1137:
     area: tba_11
     name: Freezing Balcony
@@ -1114,6 +1188,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1138:
     area: tba_11
     name: A Chilly Oratory
@@ -1134,6 +1210,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1139:
     area: tba_11
     name: Icicle-adorned Hall
@@ -1168,6 +1246,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1140:
     area: tba_11
     name: Icicle-adorned Hall
@@ -1191,6 +1271,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1141:
     area: tba_11
     name: Icicle-adorned Hall
@@ -1231,6 +1313,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1142:
     area: tba_11
     name: The Lady's Sitting Room
@@ -1263,6 +1347,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1143:
     area: tba_11
     name: The Lady's Garderobe
@@ -1297,6 +1383,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1144:
     area: tba_11
     name: The Lady's Bower
@@ -1327,6 +1415,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1145:
     area: tba_11
     name: A Glittering Secret Chamber
@@ -1366,6 +1456,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1146:
     area: tba_11
     name: The Lord's Solar
@@ -1395,6 +1487,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1147:
     area: tba_11
     name: The Lord's Garderobe
@@ -1428,6 +1522,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1148:
     area: tba_11
     name: The Lord's Study
@@ -1458,6 +1554,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1149:
     area: tba_11
     name: Hall of Stalactites
@@ -1497,6 +1595,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1150:
     area: tba_11
     name: Hall of Stalactites
@@ -1520,6 +1620,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1151:
     area: tba_11
     name: Hall of Stalactites
@@ -1553,6 +1655,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1152:
     area: tba_11
     name: An Arctic Aumbry
@@ -1576,6 +1680,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1153:
     area: tba_11
     name: Crystalline Chamber of the Princess
@@ -1605,6 +1711,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1154:
     area: tba_11
     name: Wintry Privy
@@ -1634,6 +1742,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1155:
     area: tba_11
     name: A Glassy Guestroom
@@ -1663,6 +1773,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1156:
     area: tba_11
     name: A Bitterly Cold Privy
@@ -1693,6 +1805,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1157:
     area: tba_11
     name: Lower Part of the Northeast Stair
@@ -1716,6 +1830,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1158:
     area: tba_11
     name: A Frozen Kitchen
@@ -1743,6 +1859,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1159:
     area: tba_11
     name: A Silver Scullery
@@ -1766,6 +1884,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1160:
     area: tba_11
     name: A Chilled Pantry
@@ -1785,6 +1905,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1161:
     area: tba_11
     name: A Frozen Kitchen
@@ -1816,6 +1938,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1162:
     area: tba_11
     name: A Frozen Kitchen
@@ -1839,6 +1963,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1163:
     area: tba_11
     name: A Blustery Buttery
@@ -1859,6 +1985,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1164:
     area: tba_11
     name: Collapsing Corridor
@@ -1882,6 +2010,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1165:
     area: tba_11
     name: The Servants' Lounge
@@ -1910,6 +2040,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1166:
     area: tba_11
     name: Bards' Retreat
@@ -1934,6 +2066,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1167:
     area: tba_11
     name: Seamstresses' Corner
@@ -1962,6 +2096,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1168:
     area: tba_11
     name: A Snowed-in Roasting Pit
@@ -1990,6 +2126,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1169:
     area: tba_11
     name: A Cracked Corridor
@@ -2013,6 +2151,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1170:
     area: tba_11
     name: A Crumbling Corridor
@@ -2040,6 +2180,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1171:
     area: tba_11
     name: A Whispering Corridor
@@ -2071,6 +2213,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1172:
     area: tba_11
     name: Steward's Room
@@ -2090,6 +2234,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1173:
     area: tba_11
     name: Corridor of Shadows
@@ -2117,6 +2263,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1174:
     area: tba_11
     name: Priest's Chamber
@@ -2140,6 +2288,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1175:
     area: tba_11
     name: Treasury
@@ -2159,6 +2309,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1176:
     area: tba_11
     name: Keeper of the Dungeon
@@ -2183,6 +2335,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1177:
     area: tba_11
     name: Healer's Abode
@@ -2202,6 +2356,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1178:
     area: tba_11
     name: Servants' Sleeping Quarters
@@ -2225,6 +2381,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1179:
     area: tba_11
     name: Lower Part of the Southeast Stair
@@ -2249,6 +2407,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1180:
     area: tba_11
     name: Lower Part of the Southwest Stair
@@ -2272,6 +2432,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1181:
     area: tba_11
     name: Misty Dungeon
@@ -2299,6 +2461,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1182:
     area: tba_11
     name: Blood-spattered Cell
@@ -2322,6 +2486,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1183:
     area: tba_11
     name: Dungeon of Tears
@@ -2350,6 +2516,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1184:
     area: tba_11
     name: A Haunted Prison Cell
@@ -2369,6 +2537,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1185:
     area: tba_11
     name: Lower Part of the Northeast Stair
@@ -2392,6 +2562,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1186:
     area: tba_11
     name: The Oubliette
@@ -2411,6 +2583,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1187:
     area: tba_11
     name: Underground Passage
@@ -2438,6 +2612,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1188:
     area: tba_11
     name: The Well-House
@@ -2458,6 +2634,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1189:
     area: tba_11
     name: Dove-Cote
@@ -2477,6 +2655,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1190:
     area: tba_11
     name: High in a Castle Tower
@@ -2506,6 +2686,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1191:
     area: tba_11
     name: On Top of the Castle
@@ -2531,6 +2713,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1199:
     area: tba_11
     name: Room for Trigs
@@ -2545,3 +2729,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

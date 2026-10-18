@@ -38,6 +38,8 @@ rooms:
         p.s  If you are looking for a builder, I need somewhere to build :)-
              gimmie a mail at the above address.
         Links: 00n
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29501:
     area: tba_295
     name: Deeper into the jungle
@@ -61,6 +63,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29502:
     area: tba_295
     name: Deeper in to the jungle
@@ -88,6 +92,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29503:
     area: tba_295
     name: On a small trail
@@ -111,6 +117,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29504:
     area: tba_295
     name: The gate to the camp
@@ -140,6 +148,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29505:
     area: tba_295
     name: In the camp
@@ -184,6 +194,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29506:
     area: tba_295
     name: The food store
@@ -202,6 +214,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29507:
     area: tba_295
     name: The womans room
@@ -221,6 +235,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29508:
     area: tba_295
     name: The chiefs room
@@ -245,6 +261,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29509:
     area: tba_295
     name: To the monkeys!
@@ -273,6 +291,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29510:
     area: tba_295
     name: In the trees
@@ -295,6 +315,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29511:
     area: tba_295
     name: In the trees
@@ -319,6 +341,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29512:
     area: tba_295
     name: In the trees
@@ -337,6 +361,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29513:
     area: tba_295
     name: Close to the monkeys
@@ -360,6 +386,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29514:
     area: tba_295
     name: The meeting room
@@ -383,6 +411,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29515:
     area: tba_295
     name: North of the meeting place
@@ -402,3 +432,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

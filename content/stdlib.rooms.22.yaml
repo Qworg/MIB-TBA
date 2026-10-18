@@ -45,6 +45,8 @@ rooms:
                        hidden dungeon and captured princess.
         Notes        : My FIRST zone!
         Links        : 00s
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2201:
     area: tba_22
     name: A Dark Hallway
@@ -67,6 +69,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2202:
     area: tba_22
     name: A Dark Hallway
@@ -90,6 +94,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2203:
     area: tba_22
     name: A Dark Hallway
@@ -113,6 +119,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2204:
     area: tba_22
     name: A Dark Hallway
@@ -135,6 +143,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2205:
     area: tba_22
     name: A Dark Hallway
@@ -157,6 +167,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2206:
     area: tba_22
     name: A Dark Hallway
@@ -189,6 +201,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2207:
     area: tba_22
     name: A Dark Hallway
@@ -216,6 +230,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2208:
     area: tba_22
     name: A Dark Hallway
@@ -242,6 +258,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2209:
     area: tba_22
     name: A Dark Hallway
@@ -276,6 +294,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2210:
     area: tba_22
     name: A Dark Hallway
@@ -298,6 +318,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2211:
     area: tba_22
     name: A Dark Hallway
@@ -320,6 +342,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2212:
     area: tba_22
     name: A Dark Hallway
@@ -342,6 +366,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2213:
     area: tba_22
     name: A Dark Hallway
@@ -365,6 +391,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2214:
     area: tba_22
     name: A Dark Hallway
@@ -387,6 +415,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2215:
     area: tba_22
     name: Stairs
@@ -409,6 +439,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2216:
     area: tba_22
     name: Hidden Room
@@ -433,6 +465,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2217:
     area: tba_22
     name: Hidden Room
@@ -457,6 +491,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2218:
     area: tba_22
     name: Red Hallway
@@ -479,6 +515,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2219:
     area: tba_22
     name: Red Hallway
@@ -501,6 +539,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2220:
     area: tba_22
     name: Red Hallway
@@ -523,6 +563,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2221:
     area: tba_22
     name: Red Hallway
@@ -545,6 +587,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2223:
     area: tba_22
     name: A Green Hallway
@@ -567,6 +611,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2224:
     area: tba_22
     name: A Green Hallway
@@ -589,6 +635,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2225:
     area: tba_22
     name: A Green Hallway
@@ -612,6 +660,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2226:
     area: tba_22
     name: A Red Hallway
@@ -634,6 +684,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2227:
     area: tba_22
     name: Stairs
@@ -656,6 +708,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2228:
     area: tba_22
     name: A Red Hallway
@@ -689,6 +743,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2229:
     area: tba_22
     name: A Red Hallway
@@ -712,6 +768,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2230:
     area: tba_22
     name: A Green Hallway
@@ -734,6 +792,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2231:
     area: tba_22
     name: A Dead End
@@ -751,6 +811,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2232:
     area: tba_22
     name: Stairs
@@ -773,6 +835,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2233:
     area: tba_22
     name: A Green Hallway
@@ -799,6 +863,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2234:
     area: tba_22
     name: A Red Hallway
@@ -821,6 +887,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2235:
     area: tba_22
     name: A Red Hallway
@@ -843,6 +911,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2236:
     area: tba_22
     name: A Red Hallway
@@ -865,6 +935,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2237:
     area: tba_22
     name: A Red Hallway
@@ -887,6 +959,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2238:
     area: tba_22
     name: A Green Hallway
@@ -909,6 +983,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2239:
     area: tba_22
     name: A Green Hallway
@@ -931,6 +1007,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2240:
     area: tba_22
     name: A Green Hallway
@@ -954,6 +1032,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2241:
     area: tba_22
     name: A Green Hallway
@@ -976,6 +1056,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2242:
     area: tba_22
     name: Bloody Stairs
@@ -998,6 +1080,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2243:
     area: tba_22
     name: Bloody Hallway
@@ -1028,6 +1112,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2244:
     area: tba_22
     name: Bloody Hallway
@@ -1046,6 +1132,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2245:
     area: tba_22
     name: Bloody Hallway
@@ -1068,6 +1156,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2246:
     area: tba_22
     name: Bloody Hallway
@@ -1098,6 +1188,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2247:
     area: tba_22
     name: Torture Chamber
@@ -1117,6 +1209,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2248:
     area: tba_22
     name: Waiting Room
@@ -1135,6 +1229,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2249:
     area: tba_22
     name: Torture Chamber
@@ -1153,6 +1249,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2250:
     area: tba_22
     name: Bloody Hallway
@@ -1175,6 +1273,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2251:
     area: tba_22
     name: Empty Hallway
@@ -1197,6 +1297,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2252:
     area: tba_22
     name: A Steel Ladder
@@ -1220,6 +1322,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2253:
     area: tba_22
     name: A Wooden Ladder
@@ -1243,6 +1347,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2254:
     area: tba_22
     name: Stairs
@@ -1265,6 +1371,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2255:
     area: tba_22
     name: Empty Hallway
@@ -1291,6 +1399,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2256:
     area: tba_22
     name: Empty Hallway
@@ -1317,6 +1427,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2257:
     area: tba_22
     name: Empty Hallway
@@ -1339,6 +1451,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2258:
     area: tba_22
     name: Empty Hallway
@@ -1365,6 +1479,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2259:
     area: tba_22
     name: Stairs
@@ -1387,6 +1503,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2260:
     area: tba_22
     name: A Dark Hallway
@@ -1409,6 +1527,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2261:
     area: tba_22
     name: A Dark Hallway
@@ -1431,6 +1551,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2262:
     area: tba_22
     name: A Lighted Hallway
@@ -1453,6 +1575,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2263:
     area: tba_22
     name: A Lighted Hallway
@@ -1476,6 +1600,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2264:
     area: tba_22
     name: A Dark Hallway
@@ -1498,6 +1624,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2265:
     area: tba_22
     name: A Dark Hallway
@@ -1519,6 +1647,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2266:
     area: tba_22
     name: A Lighted Hallway
@@ -1541,6 +1671,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2267:
     area: tba_22
     name: A Lighted Hallway
@@ -1563,6 +1695,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2268:
     area: tba_22
     name: Ladder
@@ -1586,6 +1720,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2269:
     area: tba_22
     name: A Long Ramp
@@ -1608,6 +1744,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2270:
     area: tba_22
     name: Spiral Staircase
@@ -1631,6 +1769,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2271:
     area: tba_22
     name: A Wooden Ladder
@@ -1654,6 +1794,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2272:
     area: tba_22
     name: A Hall of Corpses
@@ -1676,6 +1818,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2273:
     area: tba_22
     name: A Hall of Corpses
@@ -1698,6 +1842,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2274:
     area: tba_22
     name: A Cold Hallway
@@ -1721,6 +1867,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2275:
     area: tba_22
     name: A Cold Hallway
@@ -1743,6 +1891,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2276:
     area: tba_22
     name: Ramp
@@ -1765,6 +1915,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2277:
     area: tba_22
     name: A Hall of Corpses
@@ -1787,6 +1939,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2278:
     area: tba_22
     name: A Cold Hallway
@@ -1809,6 +1963,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2279:
     area: tba_22
     name: Ladder
@@ -1831,6 +1987,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2280:
     area: tba_22
     name: Ramp
@@ -1853,6 +2011,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2281:
     area: tba_22
     name: Staircase
@@ -1875,6 +2035,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2282:
     area: tba_22
     name: Hall of Rebirth
@@ -1897,6 +2059,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2283:
     area: tba_22
     name: Hall of Rebirth
@@ -1924,6 +2088,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2284:
     area: tba_22
     name: A Hallway
@@ -1950,6 +2116,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2285:
     area: tba_22
     name: A Hallway
@@ -1971,6 +2139,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2286:
     area: tba_22
     name: Hall of Rebirth
@@ -1989,6 +2159,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2287:
     area: tba_22
     name: A Damsel in Distress
@@ -2008,6 +2180,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2288:
     area: tba_22
     name: Spiral Staircase
@@ -2030,6 +2204,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2289:
     area: tba_22
     name: A Collapsing Room
@@ -2048,6 +2224,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2290:
     area: tba_22
     name: Vampires Lair
@@ -2067,6 +2245,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2291:
     area: tba_22
     name: Rumbles Dungeon
@@ -2089,6 +2269,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2292:
     area: tba_22
     name: Rumbles Dungeon
@@ -2111,6 +2293,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2293:
     area: tba_22
     name: Rumbles Dungeon
@@ -2133,6 +2317,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2294:
     area: tba_22
     name: Rumbles Dungeon
@@ -2155,6 +2341,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2295:
     area: tba_22
     name: Rumbles Dungeon
@@ -2194,6 +2382,8 @@ rooms:
         equal to that of the God's.  While within this warded room his powers
         are that of only a mortal.  But Beware, DO NOT let him escape his cell.
         RUMBLE
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2296:
     area: tba_22
     name: Rumbles Dungeon
@@ -2216,6 +2406,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2297:
     area: tba_22
     name: Rumbles Dungeon
@@ -2238,6 +2430,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2298:
     area: tba_22
     name: Rumbles Dungeon
@@ -2260,6 +2454,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.2299:
     area: tba_22
     name: Dungeon Cell
@@ -2284,3 +2480,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

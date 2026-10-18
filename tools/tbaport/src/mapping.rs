@@ -16,7 +16,9 @@ use mib_stdlib::content::{
     NpcBehaviorFlags, NpcDef, NpcId, QuestDef, QuestId, QuestOrigin, QuestStepDef, RewardSpec,
     RoomDef, RoomId, RoomTag, Sector,
 };
-use mib_tba::combat::{GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID, GOLD_ITEM_NAME};
+use mib_tba::combat::{
+    GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID, GOLD_ITEM_NAME, TbaAttributes, TbaSaves,
+};
 use mib_tba::content::{
     AffectDef, AffectLocation, DoorReset, ItemAffectFlag, ItemExtraFlag, NpcBehaviour, Position,
     ResetMode, ShopDef, ShopHours, ShopTrade, SocialDef, TbaItemDef, TbaItemKind, TbaNpcStats,
@@ -378,6 +380,7 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
             ids::area_id(source.number),
             AreaDef {
                 name: source.zone.name.clone(),
+                weather_zone: None,
             },
         );
 
@@ -989,6 +992,8 @@ fn map_room(
         coord: None,
         sector,
         extra_descriptions,
+        ambient_phases: BTreeMap::new(),
+        ambient_weather: BTreeMap::new(),
     }
 }
 
@@ -1071,6 +1076,8 @@ fn map_npc(raw: &RawMob, zr: &mut ZoneReport) -> (NpcDef, TbaNpcStats) {
     use crate::source::tokens::bit;
     let object = format!("npc tba_npc_{}", raw.vnum);
 
+    let especs = map_especs(&raw.especs, &object, zr);
+
     let f0 = raw.mob_flags[0];
     let behaviors = NpcBehaviorFlags {
         sentinel: bit(f0, 1),
@@ -1143,7 +1150,7 @@ fn map_npc(raw: &RawMob, zr: &mut ZoneReport) -> (NpcDef, TbaNpcStats) {
             &object,
             "mob_flag",
             MOB_FLAG_NAMES[0],
-            "special procedures are a non-goal (see #31)",
+            "permanent drop: `MOB_SPEC` is a legacy marker; the procedure is assigned in C (`spec_assign.c`/`castle.c`), not the world file (see #31)",
         );
     }
 
@@ -1159,15 +1166,6 @@ fn map_npc(raw: &RawMob, zr: &mut ZoneReport) -> (NpcDef, TbaNpcStats) {
         }
     }
 
-    for espec in &raw.especs {
-        push_unmapped(
-            zr,
-            &object,
-            "mob_espec",
-            espec.trim(),
-            "permanent drop: enhanced-mob e-specs have no target field",
-        );
-    }
     push_unmapped(
         zr,
         &object,
@@ -1207,9 +1205,100 @@ fn map_npc(raw: &RawMob, zr: &mut ZoneReport) -> (NpcDef, TbaNpcStats) {
         default_position: map_position(raw.default_position, &object, zr),
         behaviour,
         damage: Some(raw.damage),
+        attributes: especs.attributes,
+        saves: especs.saves,
     };
 
     (npc, stats)
+}
+
+/// Decoded enhanced-mob e-specs (`interpret_espec`, `tbamud/src/db.c:1775`).
+struct Especs {
+    attributes: TbaAttributes,
+    saves: TbaSaves,
+}
+
+/// Decode the `Keyword: value` lines of an enhanced (`E`) mob.
+///
+/// `interpret_espec` starts from [`TbaAttributes::mob_default`] (the simple-mob
+/// loader's 11, `db.c:1682`) and zero saves, then clamps each value to its
+/// source range. The six attributes and five saving throws have schema fields
+/// ([`TbaNpcStats::attributes`] / [`TbaNpcStats::saves`]); the other two
+/// keywords do not and are named drops.
+fn map_especs(lines: &[String], object: &str, zr: &mut ZoneReport) -> Especs {
+    let mut especs = Especs {
+        attributes: TbaAttributes::mob_default(),
+        saves: TbaSaves::default(),
+    };
+    for line in lines {
+        let line = line.trim();
+        let Some((keyword, value)) = line.split_once(':') else {
+            push_unmapped(
+                zr,
+                object,
+                "mob_espec",
+                line,
+                "permanent drop: not a `Keyword: value` e-spec; `interpret_espec` ignores it",
+            );
+            continue;
+        };
+        let value = espec_atoi(value);
+        match keyword.trim().to_ascii_lowercase().as_str() {
+            "str" => especs.attributes.strength = value.clamp(3, 25),
+            "int" => especs.attributes.intelligence = value.clamp(3, 25),
+            "wis" => especs.attributes.wisdom = value.clamp(3, 25),
+            "dex" => especs.attributes.dexterity = value.clamp(3, 25),
+            "con" => especs.attributes.constitution = value.clamp(3, 25),
+            "cha" => especs.attributes.charisma = value.clamp(3, 25),
+            "savingpara" => especs.saves.para = value.clamp(0, 100),
+            "savingrod" => especs.saves.rod = value.clamp(0, 100),
+            "savingpetri" => especs.saves.petri = value.clamp(0, 100),
+            "savingbreath" => especs.saves.breath = value.clamp(0, 100),
+            "savingspell" => especs.saves.spell = value.clamp(0, 100),
+            "stradd" => push_unmapped(
+                zr,
+                object,
+                "mob_espec",
+                line,
+                "permanent drop: exceptional strength (`str_add`) is not modelled",
+            ),
+            "barehandattack" => push_unmapped(
+                zr,
+                object,
+                "mob_espec",
+                line,
+                "permanent drop: bare-hand attack is a display-only message type; damage comes from the `damage` dice",
+            ),
+            _ => push_unmapped(
+                zr,
+                object,
+                "mob_espec",
+                line,
+                "permanent drop: unknown e-spec keyword; `interpret_espec` ignores it",
+            ),
+        }
+    }
+    especs
+}
+
+/// C `atoi` on an e-spec value: optional sign and leading digits, else 0.
+fn espec_atoi(value: &str) -> i32 {
+    let value = value.trim_start();
+    let (negative, digits) = match value.as_bytes().first() {
+        Some(b'-') => (true, &value[1..]),
+        Some(b'+') => (false, &value[1..]),
+        _ => (false, value),
+    };
+    let end = digits
+        .char_indices()
+        .find(|(_, c)| !c.is_ascii_digit())
+        .map_or(digits.len(), |(index, _)| index);
+    if end == 0 {
+        return 0;
+    }
+    let magnitude = digits[..end].parse::<i64>().unwrap_or(i64::MAX);
+    let signed = if negative { -magnitude } else { magnitude };
+    signed.clamp(i64::from(i32::MIN), i64::from(i32::MAX)) as i32
 }
 
 fn map_position(value: i32, object: &str, zr: &mut ZoneReport) -> Position {
@@ -2523,6 +2612,71 @@ mod tests {
             trigger_variables: Vec::new(),
             zone_trigger_links: Vec::new(),
         }
+    }
+
+    #[test]
+    fn especs_map_attributes_and_saves_and_name_the_unmapped_keys() {
+        let mut zr = zone_report();
+        let lines = [
+            "Str: 18".to_owned(),
+            "Int: 25".to_owned(),
+            "SavingSpell: 2".to_owned(),
+            "BareHandAttack: 12".to_owned(),
+            "StrAdd: 50".to_owned(),
+            "Unknown: 1".to_owned(),
+            "no colon".to_owned(),
+        ];
+        let especs = map_especs(&lines, "npc tba_npc_1", &mut zr);
+
+        assert_eq!(especs.attributes.strength, 18);
+        assert_eq!(especs.attributes.intelligence, 25);
+        assert_eq!(
+            especs.attributes.dexterity, 11,
+            "an absent e-spec keeps the loader's mob baseline"
+        );
+        assert_eq!(especs.saves.spell, 2);
+        assert_eq!(especs.saves.para, 0);
+
+        let dropped: Vec<_> = zr
+            .unmapped
+            .iter()
+            .map(|drop| (drop.kind.as_str(), drop.name.as_str()))
+            .collect();
+        assert_eq!(
+            dropped,
+            [
+                ("mob_espec", "BareHandAttack: 12"),
+                ("mob_espec", "StrAdd: 50"),
+                ("mob_espec", "Unknown: 1"),
+                ("mob_espec", "no colon"),
+            ]
+        );
+    }
+
+    #[test]
+    fn espec_values_are_clamped_and_parsed_like_atoi() {
+        let mut zr = zone_report();
+        let lines = [
+            "Str: 99".to_owned(),
+            "Dex: abc".to_owned(),
+            "Cha: +7".to_owned(),
+            "Con: -4".to_owned(),
+            "SavingPara: 101".to_owned(),
+        ];
+        let especs = map_especs(&lines, "npc tba_npc_1", &mut zr);
+
+        assert_eq!(especs.attributes.strength, 25, "Str clamps to 25");
+        assert_eq!(
+            especs.attributes.dexterity, 3,
+            "atoi(abc) is 0, clamps to 3"
+        );
+        assert_eq!(especs.attributes.charisma, 7, "a leading + is accepted");
+        assert_eq!(
+            especs.attributes.constitution, 3,
+            "a negative value clamps to the floor"
+        );
+        assert_eq!(especs.saves.para, 100);
+        assert!(zr.unmapped.is_empty());
     }
 
     #[test]

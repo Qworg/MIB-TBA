@@ -86,6 +86,8 @@ rooms:
            The remains of the two doors that served as the main entranceway to the
         cathedral are now lying in near ruins on the ground.  The doors are covered with
         scuff and scratch marks and are merely a shadow of their former glory.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29901:
     area: tba_299
     name: The Cathedral Entrance
@@ -122,6 +124,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29902:
     area: tba_299
     name: An Alcove
@@ -146,6 +150,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29903:
     area: tba_299
     name: An Alcove
@@ -169,6 +175,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29904:
     area: tba_299
     name: The Aisle Of Pews
@@ -195,6 +203,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29905:
     area: tba_299
     name: The Worship Hall
@@ -253,6 +263,8 @@ rooms:
            The stains on the floor and wall look to be relatively recent as compared to
         the destruction that hit the cathedral.  You are uncertain as to what they could
         be, but they are fairly large.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29906:
     area: tba_299
     name: The Confessional
@@ -279,6 +291,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29907:
     area: tba_299
     name: The Confessional
@@ -305,6 +319,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29908:
     area: tba_299
     name: The High Pews
@@ -332,6 +348,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29909:
     area: tba_299
     name: At The Altar
@@ -363,6 +381,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29910:
     area: tba_299
     name: The Clergical Chambers
@@ -404,6 +424,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29911:
     area: tba_299
     name: The Inner Sanctum
@@ -432,6 +454,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29912:
     area: tba_299
     name: A Spiral Stairway
@@ -461,6 +485,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29913:
     area: tba_299
     name: A Spiral Stairway
@@ -492,6 +518,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29914:
     area: tba_299
     name: A Spiral Stairway
@@ -515,6 +543,8 @@ rooms:
     coord: null
     sector: underwater
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29915:
     area: tba_299
     name: The Bell Tower
@@ -542,6 +572,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29916:
     area: tba_299
     name: A Spiral Stairway
@@ -571,6 +603,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29917:
     area: tba_299
     name: The Bell Tower
@@ -597,6 +631,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29918:
     area: tba_299
     name: The Bell Room
@@ -621,6 +657,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29919:
     area: tba_299
     name: The Cloister Hall
@@ -650,6 +688,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29920:
     area: tba_299
     name: The End Of The Dark Hall
@@ -686,6 +726,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29921:
     area: tba_299
     name: A Monk's Room
@@ -709,6 +751,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29922:
     area: tba_299
     name: The Abbott's Room
@@ -739,6 +783,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29923:
     area: tba_299
     name: A Cloistered Hall
@@ -772,6 +818,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29924:
     area: tba_299
     name: A Monk's Room
@@ -795,6 +843,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29925:
     area: tba_299
     name: A Monk's Room
@@ -818,6 +868,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29926:
     area: tba_299
     name: A Cloistered Hall
@@ -852,6 +904,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29927:
     area: tba_299
     name: A Cloistered Hall
@@ -888,6 +942,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29928:
     area: tba_299
     name: A Nun's Room
@@ -911,6 +967,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29929:
     area: tba_299
     name: A Nun's Room
@@ -934,6 +992,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29930:
     area: tba_299
     name: A Nun's Room
@@ -957,6 +1017,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29931:
     area: tba_299
     name: Mother Superior's Room
@@ -984,6 +1046,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29932:
     area: tba_299
     name: A Crypt
@@ -1025,6 +1089,8 @@ rooms:
            The small metal plates in the walls seem to be drawers of some sort.  Each
         one is inset with a small brass plaque.  Each plaque lists the name of the
         occupant, none of whom you recognize at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29933:
     area: tba_299
     name: A Crypt
@@ -1064,6 +1130,8 @@ rooms:
            The small metal plates in the walls seem to be drawers of some sort.  Each
         one is inset with a small brass plaque.  Each plaque lists the name of the
         occupant, none of whom you recognize at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29934:
     area: tba_299
     name: A Crypt
@@ -1104,6 +1172,8 @@ rooms:
            The small metal plates in the walls seem to be drawers of some sort.  Each
         one is inset with a small brass plaque.  Each plaque lists the name of the
         occupant, none of whom you recognize at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29935:
     area: tba_299
     name: A Crypt
@@ -1142,6 +1212,8 @@ rooms:
            The small metal plates in the walls seem to be drawers of some sort.  Each
         one is inset with a small brass plaque.  Each plaque lists the name of the
         occupant, none of whom you recognize at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29936:
     area: tba_299
     name: A Crypt
@@ -1180,6 +1252,8 @@ rooms:
            The small metal plates in the walls seem to be drawers of some sort.  Each
         one is inset with a small brass plaque.  Each plaque lists the name of the
         occupant, none of whom you recognize at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29937:
     area: tba_299
     name: A Crypt
@@ -1219,6 +1293,8 @@ rooms:
            The small metal plates in the walls seem to be drawers of some sort.  Each
         one is inset with a small brass plaque.  Each plaque lists the name of the
         occupant, none of whom you recognize at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29938:
     area: tba_299
     name: A Crypt
@@ -1254,6 +1330,8 @@ rooms:
            The small metal plates in the walls seem to be drawers of some sort.  Each
         one is inset with a small brass plaque.  Each plaque lists the name of the
         occupant, none of whom you recognize at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29939:
     area: tba_299
     name: A Crypt
@@ -1288,6 +1366,8 @@ rooms:
            The small metal plates in the walls seem to be drawers of some sort.  Each
         one is inset with a small brass plaque.  Each plaque lists the name of the
         occupant, none of whom you recognize at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29940:
     area: tba_299
     name: A Crypt
@@ -1318,6 +1398,8 @@ rooms:
            The small metal plates in the walls seem to be drawers of some sort.  Each
         one is inset with a small brass plaque.  Each plaque lists the name of the
         occupant, none of whom you recognize at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29941:
     area: tba_299
     name: The Antechamber
@@ -1360,6 +1442,8 @@ rooms:
            The mosaics covering the walls of this room appear to be merely strange
         designs made of multitudes of small tiles.  The one to the south does not appear
         to be properly attached to the wall, perhaps you could open it...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29942:
     area: tba_299
     name: The Inner Crypt
@@ -1406,6 +1490,8 @@ rooms:
       description: |2
            The worn down track in the floor leads to the north wall.  It certainly seems
         to take a lot of hints to get this fact through to you, doesn't it?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29943:
     area: tba_299
     name: The Inner Crypt
@@ -1436,6 +1522,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29944:
     area: tba_299
     name: The Inner Crypt
@@ -1461,6 +1549,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29945:
     area: tba_299
     name: The Inner Crypt
@@ -1486,6 +1576,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29946:
     area: tba_299
     name: The Inner Crypt
@@ -1511,6 +1603,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29947:
     area: tba_299
     name: The Inner Crypt
@@ -1558,6 +1652,8 @@ rooms:
         appear to be runes of protection.  Mostly against rot and ruin, but there is one
         near the center of the design which looks to be for protection against the
         undead.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29948:
     area: tba_299
     name: The Tomb Of Princess Evalynn
@@ -1603,6 +1699,8 @@ rooms:
         was forced to take the kingdom in hand and defend it against many attacks over
         the years by those who thought that Gildoria would fall easily without any solid
         male leadership.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29949:
     area: tba_299
     name: The Large Cavern
@@ -1624,6 +1722,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29950:
     area: tba_299
     name: A Bottomless Pit
@@ -1647,6 +1747,8 @@ rooms:
     coord: null
     sector: underwater
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29951:
     area: tba_299
     name: Down The Bottomless Pit
@@ -1670,6 +1772,8 @@ rooms:
     coord: null
     sector: underwater
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29952:
     area: tba_299
     name: Falling Down The Bottomless Pit
@@ -1694,6 +1798,8 @@ rooms:
     coord: null
     sector: underwater
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29953:
     area: tba_299
     name: Above The Molten Lava
@@ -1718,6 +1824,8 @@ rooms:
     coord: null
     sector: underwater
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29954:
     area: tba_299
     name: Being Burnt Alive
@@ -1733,6 +1841,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29955:
     area: tba_299
     name: An Old Stone Road
@@ -1765,3 +1875,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

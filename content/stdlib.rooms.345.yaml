@@ -25,6 +25,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34501:
     area: tba_345
     name: A Paved Road
@@ -52,6 +54,8 @@ rooms:
            The wall is made of a crumbling red brick. Vines cover the bottom half of it
         and reach upwards. Lining the top of the wall are decorative black iron bars,
         to keep people out, or perhaps in.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34502:
     area: tba_345
     name: Before a Gate
@@ -96,6 +100,8 @@ rooms:
       description: |2
            Made from heavy black iron, the left side of the gate is only hanging by the
         bottom hinge. A large mansion can be seen through the bars.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34503:
     area: tba_345
     name: A Broken Road
@@ -122,6 +128,8 @@ rooms:
            The wall is made of a crumbling red brick. Vines cover the bottom half of it
         and reach upwards. Lining the top of the wall are decorative black iron bars,
         to keep people out, or perhaps in.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34504:
     area: tba_345
     name: Inside the Gate
@@ -159,6 +167,8 @@ rooms:
       description: |2
            Made from heavy black iron, the right side of the gate is only hanging by the
         bottom hinge. A crumbling old road can be seen through the bars.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34505:
     area: tba_345
     name: Before the Sanatorium
@@ -187,6 +197,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34506:
     area: tba_345
     name: At the Doors
@@ -219,6 +231,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34507:
     area: tba_345
     name: A Well Worn Path
@@ -258,6 +272,8 @@ rooms:
       - gate
       description: |2
            A black wrought iron gate, hanging slightly from its hinges.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34508:
     area: tba_345
     name: Entrance to the Asylum
@@ -299,6 +315,8 @@ rooms:
     - keywords:
       - sign
       description: "   \n*********************************\n*       Doctor Offices          *\n*          Upstairs             *\n*                               *\n*        Patient Rooms          *\n*    To the North or South      *\n*                               *\n*       Procedure Rooms         *\n*         Downstairs            *\n*********************************\n"
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34509:
     area: tba_345
     name: Entrance to the Cemetery
@@ -337,6 +355,8 @@ rooms:
       - gate
       description: |2
            A black wrought iron gate, hanging slightly from its hinges.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34510:
     area: tba_345
     name: Among Crumbled Stone
@@ -366,6 +386,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34511:
     area: tba_345
     name: Among Crumbled Stone
@@ -404,6 +426,8 @@ rooms:
            The headstone is like any of the many others in this graveyard. The name has
         been worn down with time. The only letter that can be distinguished now is the
         letter E.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34512:
     area: tba_345
     name: Among Crumbled Stone
@@ -434,6 +458,8 @@ rooms:
            The headstone is like any of the many others in this graveyard. The name has
         been worn down with time. The only letter that can be distinguished now is the
         letter D.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34513:
     area: tba_345
     name: Among Crumbled Stone
@@ -468,6 +494,8 @@ rooms:
            This headstone is in the shape of a giant letter G for some unknown reason.
         Perhaps the name of the person buried here started with a G. Time has seen to
         it that no one will ever find out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34514:
     area: tba_345
     name: Among Crumbled Stone
@@ -502,6 +530,8 @@ rooms:
            The headstone is like any of the many others in this graveyard. The name has
         been worn down with time. The only letter that can be distinguished now is the
         letter A.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34515:
     area: tba_345
     name: Among Crumbled Stone
@@ -541,6 +571,8 @@ rooms:
            The headstone is like any of the many others in this graveyard except this
         one had an ornately carved R place at the top of it. It stands out because
         there is no reason for it to be there... Odd.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34516:
     area: tba_345
     name: Among the Headstones
@@ -573,6 +605,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34517:
     area: tba_345
     name: Among the Headstones
@@ -601,6 +635,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34518:
     area: tba_345
     name: Among the Headstones
@@ -629,6 +665,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34519:
     area: tba_345
     name: A Courtyard
@@ -666,6 +704,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34520:
     area: tba_345
     name: A Dark Hallway
@@ -701,6 +741,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34521:
     area: tba_345
     name: A Long Dark Hallway
@@ -739,6 +781,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34522:
     area: tba_345
     name: A Long Dark Hallway
@@ -768,6 +812,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34523:
     area: tba_345
     name: A Dark Hallway
@@ -801,6 +847,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34524:
     area: tba_345
     name: A Dark Hallway
@@ -839,6 +887,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34525:
     area: tba_345
     name: A Long Dark Hallway
@@ -871,6 +921,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34526:
     area: tba_345
     name: A Long Dark Hallway
@@ -899,6 +951,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34527:
     area: tba_345
     name: A Patient's Room
@@ -924,6 +978,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34528:
     area: tba_345
     name: A Padded Room
@@ -949,6 +1005,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34529:
     area: tba_345
     name: Community Room
@@ -969,6 +1027,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34530:
     area: tba_345
     name: Staff Room
@@ -988,6 +1048,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34531:
     area: tba_345
     name: A Patient's Room
@@ -1013,6 +1075,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34532:
     area: tba_345
     name: The Kitchen
@@ -1032,6 +1096,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34533:
     area: tba_345
     name: A Padded Room
@@ -1051,6 +1117,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34534:
     area: tba_345
     name: Second Floor Landing
@@ -1089,6 +1157,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34535:
     area: tba_345
     name: A Hallway
@@ -1122,6 +1192,8 @@ rooms:
       description: |2
            The pictures are not anything special. They look to be past doctors that had
         worked here or perhaps ran the asylum.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34536:
     area: tba_345
     name: A Red Office
@@ -1148,6 +1220,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34537:
     area: tba_345
     name: A Green Office
@@ -1186,6 +1260,8 @@ rooms:
       description: |2
            The paper, yellowed with age, has only one simple line on it: If one is
         seeking true enlightenment, one must first learn the correct words.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34538:
     area: tba_345
     name: A Hallway
@@ -1219,6 +1295,8 @@ rooms:
       description: |2
            The pictures are not anything special. They look to be past doctors that had
         worked here or perhaps ran the asylum.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34539:
     area: tba_345
     name: A Purple Office
@@ -1244,6 +1322,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34540:
     area: tba_345
     name: In the Basement
@@ -1273,6 +1353,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34541:
     area: tba_345
     name: A Crumbling Hallway
@@ -1297,6 +1379,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34542:
     area: tba_345
     name: A Crumbling Hallway
@@ -1321,6 +1405,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34543:
     area: tba_345
     name: An Operating Room
@@ -1344,6 +1430,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34544:
     area: tba_345
     name: A Crumbling Hallway
@@ -1368,6 +1456,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34545:
     area: tba_345
     name: A Hallway in Disrepair
@@ -1392,6 +1482,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34546:
     area: tba_345
     name: Insulin Shock Room
@@ -1416,6 +1508,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34547:
     area: tba_345
     name: Electro-Shock Therapy
@@ -1440,6 +1534,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34548:
     area: tba_345
     name: A Hallway in Disarray
@@ -1463,6 +1559,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34549:
     area: tba_345
     name: 'A Hallway in Disarray '
@@ -1485,6 +1583,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34550:
     area: tba_345
     name: A Crumbling Hallway
@@ -1508,6 +1608,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34551:
     area: tba_345
     name: A Crumbling Hallway
@@ -1532,6 +1634,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.34552:
     area: tba_345
     name: A Secret Room
@@ -1563,3 +1667,5 @@ rooms:
       description: |2
            The paintings are of morbid landscapes or of hell it. They are both
         beautiful and disturbing. They are framed in thick mahogany.
+    ambient_phases: {}
+    ambient_weather: {}

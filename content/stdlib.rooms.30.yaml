@@ -26,6 +26,8 @@ rooms:
       - info
       description: |2
            Guilds: 20-23
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3001:
     area: tba_30
     name: The Temple Of Midgaard
@@ -78,6 +80,8 @@ rooms:
       description: |2
            The paintings are numerous in style and quality.  But, they all have the same
         surreal quality that tugs at the mind to become lost in their depth and detail.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3002:
     area: tba_30
     name: The Clerics' Inner Sanctum
@@ -102,6 +106,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3003:
     area: tba_30
     name: The Bar Of Divination
@@ -132,6 +138,8 @@ rooms:
            Buy  - Buy something (drinkable) from the waiter.
            List - The waiter will show you all the different drinks and
                   specialties, and tell the price of each.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3004:
     area: tba_30
     name: The Entrance To The Clerics' Guild
@@ -154,6 +162,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3005:
     area: tba_30
     name: The Temple Square
@@ -186,6 +196,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3006:
     area: tba_30
     name: The Entrance Hall Of The Grunting Boar Inn
@@ -217,6 +229,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3007:
     area: tba_30
     name: The Grunting Boar
@@ -254,6 +268,8 @@ rooms:
       description: |2
            Although it is very hard to understand, you think it looks a lot like beer,
         poems about beer, and small beer-mugs.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3008:
     area: tba_30
     name: The Reception
@@ -289,6 +305,8 @@ rooms:
                                   MY WAY OR THE HIGHWAY
                                      PAY YOUR RENT!
                         WE WON'T THINK TWICE BEFORE KICKING YOU OUT.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3009:
     area: tba_30
     name: The Bakery
@@ -324,6 +342,8 @@ rooms:
            Buy  - Will buy you some bread or pastry.
            List - The baker will kindly tell you the price and sort of the bread in
                   his bakery.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3010:
     area: tba_30
     name: The General Store
@@ -351,6 +371,8 @@ rooms:
           Value - The shopkeeper will (free of charge) tell how much he will
                   pay for your item.
           Sell  - Sell an item.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3011:
     area: tba_30
     name: The Weapon Shop
@@ -378,6 +400,8 @@ rooms:
           Value - The shopkeeper will (free of charge) tell how much he will
                   pay for your item.
           Sell  - Sell an item.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3012:
     area: tba_30
     name: Main Street
@@ -410,6 +434,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3013:
     area: tba_30
     name: Main Street
@@ -441,6 +467,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3014:
     area: tba_30
     name: Market Square
@@ -477,6 +505,8 @@ rooms:
       - statue
       description: |2
            What you see is the Midgaard Worm, stretching around the Palace of Midgaard.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3015:
     area: tba_30
     name: Main Street
@@ -508,6 +538,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3016:
     area: tba_30
     name: Main Street
@@ -539,6 +571,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3017:
     area: tba_30
     name: The Entrance To The Mages' Guild
@@ -559,6 +593,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3018:
     area: tba_30
     name: The Mages' Bar
@@ -581,6 +617,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3019:
     area: tba_30
     name: The Mages' Laboratory
@@ -602,6 +640,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3020:
     area: tba_30
     name: The Armory
@@ -630,6 +670,8 @@ rooms:
           list             Gives you a listing of the shop's inventory.
                 WE DON'T GIVE CREDIT; WE DON'T EXPECT TO RECEIVE CREDIT!
                                      NO HAGGLING
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3021:
     area: tba_30
     name: The Entrance Hall To The Guild Of Swordsmen
@@ -652,6 +694,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3022:
     area: tba_30
     name: The Bar Of Swordsmen
@@ -675,6 +719,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3023:
     area: tba_30
     name: The Tournament And Practice Yard
@@ -697,6 +743,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3024:
     area: tba_30
     name: The Eastern End Of Poor Alley
@@ -723,6 +771,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3025:
     area: tba_30
     name: The Common Square
@@ -754,6 +804,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3026:
     area: tba_30
     name: The Dark Alley
@@ -784,6 +836,8 @@ rooms:
       - guild
       description: |2
            It is the thieves' guild, don't enter if you care about your health or money.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3027:
     area: tba_30
     name: The Entrance Hall To The Guild Of Thieves
@@ -806,6 +860,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3028:
     area: tba_30
     name: The Thieves' Bar
@@ -834,6 +890,8 @@ rooms:
       - furniture
       description: |2
            As you look at the furniture, the chair you sit on disappears.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3029:
     area: tba_30
     name: The Secret Yard
@@ -856,6 +914,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3030:
     area: tba_30
     name: The Dump
@@ -886,6 +946,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3031:
     area: tba_30
     name: The Pet Shop
@@ -917,6 +979,8 @@ rooms:
           You can name the pet you buy with: 'buy <pet> <name>'
          Regards,
          The Shopkeeper
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3032:
     area: tba_30
     name: PETSHOP STOREROOM
@@ -939,6 +1003,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3033:
     area: tba_30
     name: The Magic Shop
@@ -956,6 +1022,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3040:
     area: tba_30
     name: Inside The West Gate Of Midgaard
@@ -1012,6 +1080,8 @@ rooms:
       description: |2
            It is built from large gray rocks that have been fastened to each other with
         some kind of mortar.  It is far too high to climb.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3041:
     area: tba_30
     name: Inside The East Gate Of Midgaard
@@ -1068,6 +1138,8 @@ rooms:
       description: |2
            It is built from large gray rocks that have been fastened to each other with
         some kind of mortar.  It is far too high to climb.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3042:
     area: tba_30
     name: Wall Road
@@ -1095,6 +1167,8 @@ rooms:
       description: |2
            It is built from large gray rocks that have been fastened to each other with
         some kind of mortar.  It is far too high to climb.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3043:
     area: tba_30
     name: Wall Road
@@ -1133,6 +1207,8 @@ rooms:
       description: |2
            It is built from large gray rocks that have been fastened to each other with
         some kind of mortar.  It is far too high to climb.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3044:
     area: tba_30
     name: Poor Alley
@@ -1155,6 +1231,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3045:
     area: tba_30
     name: The Dark Alley At The Levee
@@ -1181,6 +1259,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3046:
     area: tba_30
     name: The Eastern End Of The Alley
@@ -1204,6 +1284,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3047:
     area: tba_30
     name: Wall Road
@@ -1231,6 +1313,8 @@ rooms:
       description: |2
            It is built from large gray rocks that have been fastened to each other with
         some kind of mortar.  It is far too high to climb.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3048:
     area: tba_30
     name: Grubby Inn
@@ -1248,6 +1332,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3049:
     area: tba_30
     name: The Levee
@@ -1270,6 +1356,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3050:
     area: tba_30
     name: The Deserted Warehouse
@@ -1287,6 +1375,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3051:
     area: tba_30
     name: On The Bridge
@@ -1324,6 +1414,8 @@ rooms:
       description: |2
            It is built from large gray rocks that have been fastened to each other with
         some kind of mortar.  It is far too high to climb.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3052:
     area: tba_30
     name: Outside The West Gate Of Midgaard
@@ -1376,6 +1468,8 @@ rooms:
       description: |2
            It is built from large gray rocks that have been fastened to each other with
         some kind of mortar.  It is far too high to climb.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3053:
     area: tba_30
     name: Outside The East Gate Of Midgaard
@@ -1428,6 +1522,8 @@ rooms:
       description: |2
            It is built from large gray rocks that have been fastened to each other with
         some kind of mortar.  It is far too high to climb.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3054:
     area: tba_30
     name: By The Temple Altar
@@ -1467,6 +1563,8 @@ rooms:
         long, gray hair and beard and a strict look on his face.  On top of the throne,
         just above his shoulders, his two ravens Hugin and Munin are sitting and at his
         feet are his wolves Gere and Freke.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3058:
     area: tba_30
     name: Ye Olde Water Shoppe
@@ -1485,6 +1583,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3059:
     area: tba_30
     name: Behind The Temple Altar
@@ -1508,6 +1608,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3060:
     area: tba_30
     name: The Great Field Of Midgaard
@@ -1538,6 +1640,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3061:
     area: tba_30
     name: The Great Field Of Midgaard
@@ -1577,6 +1681,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3062:
     area: tba_30
     name: The Post Office
@@ -1646,6 +1752,8 @@ rooms:
         crates on the west wall.  Some of them look quite familar, sorta like that guy
         who you saw in the Reception a minute ago...  But then again, they are rather
         hard to see past the crates.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3063:
     area: tba_30
     name: The Midgaard Donation Room
@@ -1666,6 +1774,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3064:
     area: tba_30
     name: The Cryogenic Center
@@ -1684,6 +1794,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3065:
     area: tba_30
     name: The Great Field Of Midgaard
@@ -1716,6 +1828,8 @@ rooms:
       description: |2
            What more is a plot device than something to block a certain direction for
         reasons beyond your comprehension.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3066:
     area: tba_30
     name: The Dirt Path
@@ -1747,3 +1861,5 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

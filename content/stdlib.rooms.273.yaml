@@ -69,6 +69,8 @@ rooms:
       description: |2
            Yes, your presence in this room has been noticed by the proto-aliens in the
         pods!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27301:
     area: tba_273
     name: Weapon Storage Chamber
@@ -103,6 +105,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27302:
     area: tba_273
     name: Officer's Mess
@@ -138,6 +142,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27303:
     area: tba_273
     name: Systems Officer's Quarters
@@ -173,6 +179,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27304:
     area: tba_273
     name: Communications Officer's Quarters
@@ -207,6 +215,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27305:
     area: tba_273
     name: Captain's Quarters
@@ -252,6 +262,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27306:
     area: tba_273
     name: Main Axis Transportation Column
@@ -307,6 +319,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27307:
     area: tba_273
     name: Science Officer's Quarters
@@ -353,6 +367,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27308:
     area: tba_273
     name: Recreation Room
@@ -388,6 +404,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27309:
     area: tba_273
     name: The Latrine
@@ -423,6 +441,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27310:
     area: tba_273
     name: A Storage Room
@@ -457,6 +477,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27311:
     area: tba_273
     name: Food Storage
@@ -491,6 +513,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27312:
     area: tba_273
     name: Storage Room
@@ -524,6 +548,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27313:
     area: tba_273
     name: Bio Lab
@@ -559,6 +585,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27314:
     area: tba_273
     name: Cryo Storage
@@ -594,6 +622,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27315:
     area: tba_273
     name: An Empty Stateroom
@@ -627,6 +657,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27316:
     area: tba_273
     name: 'Hangar #1'
@@ -654,6 +686,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27317:
     area: tba_273
     name: 'Air Lock #1'
@@ -707,6 +741,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27318:
     area: tba_273
     name: Main Axis Transportation Column
@@ -762,6 +798,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27319:
     area: tba_273
     name: 'Airlock #2'
@@ -816,6 +854,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27320:
     area: tba_273
     name: 'Hanger #2'
@@ -840,6 +880,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27321:
     area: tba_273
     name: 'Preparation Room #1'
@@ -873,6 +915,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27322:
     area: tba_273
     name: Repair Shop
@@ -907,6 +951,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27323:
     area: tba_273
     name: A Storage Room
@@ -941,6 +987,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27324:
     area: tba_273
     name: 'Preparation Room #2'
@@ -975,6 +1023,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27325:
     area: tba_273
     name: A Kitchen
@@ -1009,6 +1059,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27326:
     area: tba_273
     name: A Crew Stateroom
@@ -1042,6 +1094,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27327:
     area: tba_273
     name: A Crew Stateroom
@@ -1076,6 +1130,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27328:
     area: tba_273
     name: A Crew Stateroom
@@ -1111,6 +1167,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27329:
     area: tba_273
     name: Video Room
@@ -1157,6 +1215,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27330:
     area: tba_273
     name: Main Axis Transportation Column
@@ -1211,6 +1271,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27331:
     area: tba_273
     name: Crew Stateroom
@@ -1255,6 +1317,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27332:
     area: tba_273
     name: Sceen of a Battle
@@ -1291,6 +1355,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27333:
     area: tba_273
     name: A Crew Stateroom
@@ -1327,6 +1393,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27334:
     area: tba_273
     name: A Small Theater
@@ -1363,6 +1431,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27335:
     area: tba_273
     name: Observation Room
@@ -1398,6 +1468,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27336:
     area: tba_273
     name: 'Agrodome #1'
@@ -1432,6 +1504,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27337:
     area: tba_273
     name: 'Agrodome #2'
@@ -1468,6 +1542,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27338:
     area: tba_273
     name: 'Agrodome #3'
@@ -1506,6 +1582,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27339:
     area: tba_273
     name: 'Agrodome #4'
@@ -1541,6 +1619,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27340:
     area: tba_273
     name: Hangar Delta
@@ -1566,6 +1646,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27341:
     area: tba_273
     name: Preparation Room
@@ -1620,6 +1702,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27342:
     area: tba_273
     name: Main Axis Transportation Column
@@ -1674,6 +1758,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27343:
     area: tba_273
     name: Predator Remote Command Facility
@@ -1729,6 +1815,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27344:
     area: tba_273
     name: Hangar Gamma
@@ -1764,6 +1852,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27345:
     area: tba_273
     name: A Storage Room
@@ -1798,6 +1888,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27346:
     area: tba_273
     name: A Passageway
@@ -1831,6 +1923,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27347:
     area: tba_273
     name: Cleaning Room
@@ -1864,6 +1958,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27348:
     area: tba_273
     name: The Sickbay
@@ -1899,6 +1995,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27349:
     area: tba_273
     name: Surgery
@@ -1933,6 +2031,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27350:
     area: tba_273
     name: A Crew Stateroom
@@ -1967,6 +2067,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27351:
     area: tba_273
     name: A Passageway
@@ -2000,6 +2102,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27352:
     area: tba_273
     name: A Passageway
@@ -2033,6 +2137,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27353:
     area: tba_273
     name: A Passageway
@@ -2070,6 +2176,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27354:
     area: tba_273
     name: Main Axis Transportation Column
@@ -2111,6 +2219,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27355:
     area: tba_273
     name: A Passageway
@@ -2148,6 +2258,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27356:
     area: tba_273
     name: A Passageway
@@ -2181,6 +2293,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27357:
     area: tba_273
     name: A Passageway
@@ -2214,6 +2328,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27358:
     area: tba_273
     name: A Passageway
@@ -2247,6 +2363,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27359:
     area: tba_273
     name: A Passageway
@@ -2280,6 +2398,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27360:
     area: tba_273
     name: Reactor Room
@@ -2306,6 +2426,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27361:
     area: tba_273
     name: Space Shuttle Galeleo
@@ -2324,6 +2446,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27362:
     area: tba_273
     name: The Bridge of the Predator Craft
@@ -2358,6 +2482,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27363:
     area: tba_273
     name: Trophy Room
@@ -2381,6 +2507,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.27366:
     area: tba_273
     name: Predator Engine Room
@@ -2402,3 +2530,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

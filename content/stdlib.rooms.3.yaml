@@ -61,6 +61,8 @@ rooms:
           1 Sanctus                        at   346 (up   ) --->   133
           1 Sanctus                        at   362 (up   ) --->   139
           1 Sanctus                        at   365 (north) --->   101
+    ambient_phases: {}
+    ambient_weather: {}
   tba.301:
     area: tba_3
     name: Clerics Avenue
@@ -85,6 +87,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.302:
     area: tba_3
     name: The Southern Road
@@ -109,6 +113,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.303:
     area: tba_3
     name: Magi Avenue
@@ -133,6 +139,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.304:
     area: tba_3
     name: An Elegant Hall
@@ -160,6 +168,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.305:
     area: tba_3
     name: The Baths
@@ -187,6 +197,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.306:
     area: tba_3
     name: A large Bunk Room
@@ -211,6 +223,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.307:
     area: tba_3
     name: A Long Hallway
@@ -238,6 +252,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.308:
     area: tba_3
     name: The Southwest Intersection
@@ -266,6 +282,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.309:
     area: tba_3
     name: Clerics Alley
@@ -290,6 +308,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.310:
     area: tba_3
     name: Clerics Alley
@@ -315,6 +335,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.311:
     area: tba_3
     name: Clerics Alley
@@ -340,6 +362,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.312:
     area: tba_3
     name: Clerics Alley
@@ -364,6 +388,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.313:
     area: tba_3
     name: The Southern Road
@@ -397,6 +423,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.314:
     area: tba_3
     name: Magi Alley
@@ -421,6 +449,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.315:
     area: tba_3
     name: Magi Alley
@@ -445,6 +475,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.316:
     area: tba_3
     name: Magi Alley
@@ -469,6 +501,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.317:
     area: tba_3
     name: Magi Alley
@@ -493,6 +527,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.318:
     area: tba_3
     name: The Southeastern Intersection
@@ -521,6 +557,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.319:
     area: tba_3
     name: An Elegant Hall
@@ -550,6 +588,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.320:
     area: tba_3
     name: The Kitchen
@@ -577,6 +617,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.321:
     area: tba_3
     name: A Room of Prayer
@@ -606,6 +648,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.322:
     area: tba_3
     name: The Hall of Clerics
@@ -634,6 +678,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.323:
     area: tba_3
     name: Clerics Avenue
@@ -659,6 +705,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.324:
     area: tba_3
     name: A Training Room
@@ -683,6 +731,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.325:
     area: tba_3
     name: A Training Room
@@ -709,6 +759,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.326:
     area: tba_3
     name: A Training Room
@@ -737,6 +789,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.327:
     area: tba_3
     name: An Advanced Training Room
@@ -761,6 +815,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.328:
     area: tba_3
     name: The Southern Road
@@ -785,6 +841,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.329:
     area: tba_3
     name: The Training Room
@@ -809,6 +867,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.330:
     area: tba_3
     name: The Training Room
@@ -836,6 +896,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.331:
     area: tba_3
     name: The Training Room
@@ -863,6 +925,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.332:
     area: tba_3
     name: The Training Room
@@ -886,6 +950,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.333:
     area: tba_3
     name: Magi Avenue
@@ -911,6 +977,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.334:
     area: tba_3
     name: The Foyier
@@ -935,6 +1003,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.335:
     area: tba_3
     name: A Back Hall
@@ -959,6 +1029,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.336:
     area: tba_3
     name: An Emergency Shelter
@@ -983,6 +1055,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.337:
     area: tba_3
     name: The Hall of Clerics
@@ -1016,6 +1090,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.338:
     area: tba_3
     name: The Clerics' Quarters
@@ -1061,6 +1137,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.339:
     area: tba_3
     name: The Tower of the High Council of Clerics
@@ -1093,6 +1171,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.340:
     area: tba_3
     name: The Tower of Clerics
@@ -1129,6 +1209,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.341:
     area: tba_3
     name: The Tower of the Clerics
@@ -1164,6 +1246,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.342:
     area: tba_3
     name: The Tower of the High Council of Clerics
@@ -1196,6 +1280,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.343:
     area: tba_3
     name: The Southern Road
@@ -1228,6 +1314,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.344:
     area: tba_3
     name: The Tower of the Magi
@@ -1260,6 +1348,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.345:
     area: tba_3
     name: The Tower of the Magi
@@ -1296,6 +1386,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.346:
     area: tba_3
     name: The Tower of the Magi
@@ -1330,6 +1422,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.347:
     area: tba_3
     name: The Tower of the Magi
@@ -1363,6 +1457,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.348:
     area: tba_3
     name: The Magi Quarters
@@ -1406,6 +1502,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.349:
     area: tba_3
     name: The Magi Mansion
@@ -1439,6 +1537,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.350:
     area: tba_3
     name: A Study
@@ -1473,6 +1573,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.351:
     area: tba_3
     name: The Healer's Shop
@@ -1499,6 +1601,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.352:
     area: tba_3
     name: Clerics in Training
@@ -1523,6 +1627,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.353:
     area: tba_3
     name: A Large Basin
@@ -1550,6 +1656,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.354:
     area: tba_3
     name: Clerics' Hallway
@@ -1577,6 +1685,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.355:
     area: tba_3
     name: A Waiting Room
@@ -1600,6 +1710,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.356:
     area: tba_3
     name: The Southern Road
@@ -1624,6 +1736,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.357:
     area: tba_3
     name: The Magi Training Room
@@ -1648,6 +1762,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.358:
     area: tba_3
     name: A Tower Hallway
@@ -1675,6 +1791,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.359:
     area: tba_3
     name: The Magi Hallway
@@ -1703,6 +1821,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.360:
     area: tba_3
     name: A Magi Training Room
@@ -1727,6 +1847,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.361:
     area: tba_3
     name: Sareth's Scrolls
@@ -1754,6 +1876,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.362:
     area: tba_3
     name: The Southern Gate
@@ -1781,6 +1905,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.363:
     area: tba_3
     name: The Stables
@@ -1801,6 +1927,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.364:
     area: tba_3
     name: PETSHOP STOREROOM
@@ -1821,6 +1949,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.365:
     area: tba_3
     name: On the Window Ledge
@@ -1841,6 +1971,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.366:
     area: tba_3
     name: The Lab
@@ -1866,6 +1998,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.367:
     area: tba_3
     name: Hazel's Living Quarters
@@ -1903,6 +2037,8 @@ rooms:
            The stone floor is the same shade of gray as the sky and is completely plain
         and unscratched. It is probably too hard for anything to leave as much as a
         scratch on it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.391:
     area: tba_3
     name: Bomber's Trial Vnum
@@ -1916,6 +2052,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.399:
     area: tba_3
     name: Welcome to the Builder Academy
@@ -1947,3 +2085,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

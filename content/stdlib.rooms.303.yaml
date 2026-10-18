@@ -36,6 +36,8 @@ rooms:
            (Mobs Stay_Zone flags have all been disabled to allow free access between
         301, 302 and 303.  Please ensure that any entrances into the area are flagged
         nomob to keep them in.  -  Parna for TBAMud.)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30301:
     area: tba_303
     name: The Animal Cage
@@ -73,6 +75,8 @@ rooms:
         by jumping around and looking like an idiot as you try and avert your eyes so
         that it can be seen.  Unfortunately, seeing it doesn't help.  It looks like some
         sort of Italian Bistro...  Rather strange actually.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30302:
     area: tba_303
     name: Hallway
@@ -116,6 +120,8 @@ rooms:
       - erp
       description: |2
            Get it...  Elephants Ride Porcupines!  ...  ERP!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30303:
     area: tba_303
     name: Smithville
@@ -144,6 +150,8 @@ rooms:
       description: |2
            The town is rather accurately portrayed here...  Wait are those really people
         moving down there?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30304:
     area: tba_303
     name: Ledge
@@ -174,6 +182,8 @@ rooms:
            It sure is a long way down...  Look at the neat things on it though, you can
         almost reach one...  Wait...  EEEEK!!!  You almost let go and fell down to ....
         Type EXIT to see what you almost fell to.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30305:
     area: tba_303
     name: A Really Bad, Evil, And Nasty Deathtrap
@@ -192,6 +202,8 @@ rooms:
       description: |2
            It's designed to kill, so if you are reading this, either you have avoided it
         somehow or you are an immortal or something.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30306:
     area: tba_303
     name: Really Narrow Stairwell, Part I
@@ -221,6 +233,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30307:
     area: tba_303
     name: Really Narrow Stairwell, Part II
@@ -247,6 +261,8 @@ rooms:
       - stairwell
       description: |2
            The Stairwells' Revenge...  Montezuma's Revenge.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30308:
     area: tba_303
     name: Entry Hall
@@ -274,6 +290,8 @@ rooms:
       - mudroom
       description: |2
            Bad pun, Eh?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30309:
     area: tba_303
     name: Living Room
@@ -312,6 +330,8 @@ rooms:
       description: |2
            The flowery pattern makes you recoil in disgust, but other than that it seems
         to be a normal piece of furniture.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30310:
     area: tba_303
     name: Bedroom
@@ -349,6 +369,8 @@ rooms:
       - dresser
       description: |2
            Too bad none of the clothes in here fit you at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30311:
     area: tba_303
     name: Balcony
@@ -399,6 +421,8 @@ rooms:
            No, this isn't a spelling mistake!  It's just a neat little creature that you
         have never seen before and will probably never see again after this.  After all,
         this is an illusion, or something, isn't it?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30312:
     area: tba_303
     name: Hallway Junction
@@ -432,6 +456,8 @@ rooms:
                         The Campus Party is Here!!
                         Vote for the Campus Party,
                         Supporting our Beliefs!!!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30313:
     area: tba_303
     name: Hallway
@@ -457,6 +483,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30314:
     area: tba_303
     name: The V.P.'s Room
@@ -500,6 +528,8 @@ rooms:
            The pictures cover the walls completely and you find it difficult to see any
         of the wall whatsoever between the pictures of snowscapes that you don't
         recognize and boats that you would love to own.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30315:
     area: tba_303
     name: Hallway
@@ -530,6 +560,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30316:
     area: tba_303
     name: Bubble Land
@@ -555,6 +587,8 @@ rooms:
       description: |2
            All you can see in this room are large, pink bubbles.  As you reach out to
         touch one *pop* ...  Well maybe not.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30317:
     area: tba_303
     name: C.S.E.
@@ -598,6 +632,8 @@ rooms:
       description: |2
            It's only the business sections, and they are old.  Type NEWS for a more
         updated edition.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30318:
     area: tba_303
     name: Lennon's Shrine
@@ -631,6 +667,8 @@ rooms:
       description: |2
            Wait...  There's one of Paul...  See it?  The one with all the darts stuck in
         it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30319:
     area: tba_303
     name: Common Room
@@ -670,6 +708,8 @@ rooms:
       - couches
       description: |2
            You don't see any such thing.  Read the description.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30320:
     area: tba_303
     name: Hallway
@@ -704,6 +744,8 @@ rooms:
       - curve
       description: |2
            Yes, it's round.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30321:
     area: tba_303
     name: Hallway
@@ -738,6 +780,8 @@ rooms:
       - curve
       description: |2
            Yes, it's round.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30322:
     area: tba_303
     name: Hallway
@@ -771,6 +815,8 @@ rooms:
       - curve
       description: |2
            Yes, it's round.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30323:
     area: tba_303
     name: Hallway
@@ -804,6 +850,8 @@ rooms:
       - curve
       description: |2
            Yes, it's round.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30324:
     area: tba_303
     name: Hallway
@@ -838,6 +886,8 @@ rooms:
       - curve
       description: |2
            Yes, it's round.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30325:
     area: tba_303
     name: An Odd Circular Room
@@ -867,6 +917,8 @@ rooms:
       - curve
       description: |2
            Yes, it's round.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30326:
     area: tba_303
     name: Lecture Hall "B"
@@ -901,6 +953,8 @@ rooms:
       - order
       description: |2
            You aren't too sure that there is an order to the lettering scheme.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30327:
     area: tba_303
     name: Lecture Hall "A"
@@ -935,6 +989,8 @@ rooms:
       - order
       description: |2
            You aren't too sure that there is an order to the lettering scheme.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30328:
     area: tba_303
     name: Lecture Hall "D"
@@ -969,6 +1025,8 @@ rooms:
       - order
       description: |2
            You aren't too sure that there is an order to the lettering scheme.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30329:
     area: tba_303
     name: Lecture Hall "C"
@@ -1003,6 +1061,8 @@ rooms:
       - order
       description: |2
            You aren't too sure that there is an order to the lettering scheme.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30330:
     area: tba_303
     name: Hallway
@@ -1032,6 +1092,8 @@ rooms:
       description: |2
            The pictures on the wall make up a large mural depicting Mediterranean
         scenery and make you feel extraordinarily comfortable.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30331:
     area: tba_303
     name: Abattoir
@@ -1061,3 +1123,5 @@ rooms:
            This section of the area was designed in accordance with Monty Python
         guidelines in mind...  Thanx to Monty Python for their infamous "Architect's
         Sketch".
+    ambient_phases: {}
+    ambient_weather: {}

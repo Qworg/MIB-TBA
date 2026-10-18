@@ -47,6 +47,8 @@ rooms:
       description: |2
            As you examine the bunk closer you notice some of the rags may not be as shabby
         as you originally thought. No one would miss them, would they?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10001:
     area: tba_100
     name: In Front of the Hermit's Cabin
@@ -71,6 +73,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10002:
     area: tba_100
     name: Along the City Wall
@@ -99,6 +103,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10003:
     area: tba_100
     name: Along the City Wall
@@ -127,6 +133,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10004:
     area: tba_100
     name: The Northern Road
@@ -155,6 +163,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10005:
     area: tba_100
     name: Along the City Wall
@@ -182,6 +192,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10006:
     area: tba_100
     name: Along the City Wall
@@ -210,6 +222,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10007:
     area: tba_100
     name: A Dead End
@@ -229,6 +243,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10008:
     area: tba_100
     name: Deep Forest
@@ -252,6 +268,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10009:
     area: tba_100
     name: Deep Forest
@@ -283,6 +301,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10010:
     area: tba_100
     name: Off the Northern Road
@@ -314,6 +334,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10011:
     area: tba_100
     name: The Northern Road
@@ -346,6 +368,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10012:
     area: tba_100
     name: Off the Northern Road
@@ -377,6 +401,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10013:
     area: tba_100
     name: The Beginning of the Plains
@@ -400,6 +426,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10014:
     area: tba_100
     name: Deep Forest
@@ -424,6 +452,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10015:
     area: tba_100
     name: Deep Forest
@@ -455,6 +485,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10016:
     area: tba_100
     name: Off the Northern Road
@@ -486,6 +518,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10017:
     area: tba_100
     name: The Northern Road
@@ -519,6 +553,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10018:
     area: tba_100
     name: Light Forest
@@ -550,6 +586,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10019:
     area: tba_100
     name: Before the Plains
@@ -573,6 +611,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10020:
     area: tba_100
     name: Deep Forest
@@ -596,6 +636,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10021:
     area: tba_100
     name: Deep Forest
@@ -619,6 +661,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10022:
     area: tba_100
     name: A Bend in the Northern Road
@@ -651,6 +695,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10023:
     area: tba_100
     name: The Northern Road
@@ -678,6 +724,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10024:
     area: tba_100
     name: A Bend in the Northern Road
@@ -705,6 +753,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10025:
     area: tba_100
     name: Edge of the Lake
@@ -732,6 +782,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10026:
     area: tba_100
     name: Light Forest
@@ -756,6 +808,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10027:
     area: tba_100
     name: Before the Plains
@@ -779,6 +833,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10028:
     area: tba_100
     name: By the River
@@ -802,6 +858,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10029:
     area: tba_100
     name: By the River
@@ -825,6 +883,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10030:
     area: tba_100
     name: The River Bridge
@@ -852,6 +912,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10031:
     area: tba_100
     name: Beside the Lake
@@ -875,6 +937,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10032:
     area: tba_100
     name: Light Forest
@@ -898,6 +962,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10033:
     area: tba_100
     name: Before the Plains
@@ -926,6 +992,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10034:
     area: tba_100
     name: Deep Forest
@@ -949,6 +1017,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10035:
     area: tba_100
     name: A Curve in the Northern Road
@@ -976,6 +1046,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10036:
     area: tba_100
     name: A Curve in the Northern Road
@@ -1007,6 +1079,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10037:
     area: tba_100
     name: North of the Lake
@@ -1034,6 +1108,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10038:
     area: tba_100
     name: North of the Lake
@@ -1061,6 +1137,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10039:
     area: tba_100
     name: Light Forest
@@ -1085,6 +1163,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10040:
     area: tba_100
     name: Swamp
@@ -1105,6 +1185,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10041:
     area: tba_100
     name: Before the Plains
@@ -1128,6 +1210,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10042:
     area: tba_100
     name: The Northern Road
@@ -1156,6 +1240,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10043:
     area: tba_100
     name: A Curve in the Northern Road
@@ -1184,6 +1270,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10044:
     area: tba_100
     name: Swamp
@@ -1215,6 +1303,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10045:
     area: tba_100
     name: Swamp
@@ -1247,6 +1337,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10046:
     area: tba_100
     name: Swamp
@@ -1279,6 +1371,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10047:
     area: tba_100
     name: Swamp
@@ -1310,6 +1404,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10048:
     area: tba_100
     name: Swamp
@@ -1338,6 +1434,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10049:
     area: tba_100
     name: Edge of the Plains
@@ -1366,6 +1464,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10050:
     area: tba_100
     name: The Northern Road
@@ -1389,6 +1489,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10051:
     area: tba_100
     name: Beside the Pond
@@ -1416,6 +1518,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10052:
     area: tba_100
     name: Swamp
@@ -1439,6 +1543,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10053:
     area: tba_100
     name: A Small Bridge
@@ -1462,6 +1568,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10054:
     area: tba_100
     name: The Edge of a Sink Hole
@@ -1487,6 +1595,8 @@ rooms:
            It definitely is a corpse. But not human. As you look closer it seems it must
         have been a minotaur. You can just barely make out some horns and one leg floating
         in the muck has a hoove.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10055:
     area: tba_100
     name: The Edge of the Plains
@@ -1510,6 +1620,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10056:
     area: tba_100
     name: The Northern Road
@@ -1538,6 +1650,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10057:
     area: tba_100
     name: A Turn in the Northern Road
@@ -1565,6 +1679,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10058:
     area: tba_100
     name: Swamp
@@ -1596,6 +1712,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10059:
     area: tba_100
     name: Deep Forest
@@ -1623,6 +1741,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10060:
     area: tba_100
     name: Deep Forest
@@ -1654,6 +1774,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10061:
     area: tba_100
     name: Light Forest
@@ -1682,6 +1804,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10062:
     area: tba_100
     name: Light Forest
@@ -1709,6 +1833,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10063:
     area: tba_100
     name: The Edge of the Plains
@@ -1736,6 +1862,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10064:
     area: tba_100
     name: Deep Forest
@@ -1759,6 +1887,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10065:
     area: tba_100
     name: The Northern Road
@@ -1782,6 +1912,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10066:
     area: tba_100
     name: Deep Forest
@@ -1805,6 +1937,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10067:
     area: tba_100
     name: Deep Forest
@@ -1832,6 +1966,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10068:
     area: tba_100
     name: Light Forest
@@ -1863,6 +1999,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10069:
     area: tba_100
     name: Light Forest
@@ -1891,6 +2029,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10070:
     area: tba_100
     name: Light Forest
@@ -1915,6 +2055,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10071:
     area: tba_100
     name: The Edge of the Plains
@@ -1938,6 +2080,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10072:
     area: tba_100
     name: Deep Forest
@@ -1961,6 +2105,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10073:
     area: tba_100
     name: A Turn in the Northern Road
@@ -1988,6 +2134,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10074:
     area: tba_100
     name: The Northern Road
@@ -2015,6 +2163,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10075:
     area: tba_100
     name: The Northern Road
@@ -2046,6 +2196,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10076:
     area: tba_100
     name: A Small Road
@@ -2077,6 +2229,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10077:
     area: tba_100
     name: A Bend in the Small Road
@@ -2108,6 +2262,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10078:
     area: tba_100
     name: Light Forest
@@ -2131,6 +2287,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10079:
     area: tba_100
     name: The Edge of the Plains
@@ -2155,6 +2313,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10080:
     area: tba_100
     name: A Small Road
@@ -2178,6 +2338,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10081:
     area: tba_100
     name: A Small Road
@@ -2209,6 +2371,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10082:
     area: tba_100
     name: Deep Forest
@@ -2232,6 +2396,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10083:
     area: tba_100
     name: The Northern Road
@@ -2264,6 +2430,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10084:
     area: tba_100
     name: Light Forest
@@ -2295,6 +2463,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10085:
     area: tba_100
     name: A Small Road
@@ -2322,6 +2492,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10086:
     area: tba_100
     name: A Small Road
@@ -2349,6 +2521,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10087:
     area: tba_100
     name: A Small Road Into the Plains
@@ -2372,6 +2546,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10088:
     area: tba_100
     name: Deep Forest
@@ -2399,6 +2575,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10089:
     area: tba_100
     name: Deep Forest
@@ -2427,6 +2605,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10090:
     area: tba_100
     name: Near the End of the Northern Road
@@ -2458,6 +2638,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10091:
     area: tba_100
     name: Light Forest
@@ -2489,6 +2671,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10092:
     area: tba_100
     name: Light Forest
@@ -2512,6 +2696,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10093:
     area: tba_100
     name: Edge of the Plains
@@ -2539,6 +2725,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10094:
     area: tba_100
     name: Beside the City Walls of Dun Maura
@@ -2562,6 +2750,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10095:
     area: tba_100
     name: Beside the City Walls of Dun Maura
@@ -2589,6 +2779,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10096:
     area: tba_100
     name: Before the City of Dun Maura
@@ -2617,6 +2809,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10097:
     area: tba_100
     name: Beside the City Walls of Dun Maura
@@ -2645,6 +2839,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10098:
     area: tba_100
     name: Beside the City Walls of Dun Maura
@@ -2669,6 +2865,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.10099:
     area: tba_100
     name: Beside the City Walls of Dun Maura
@@ -2692,3 +2890,5 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

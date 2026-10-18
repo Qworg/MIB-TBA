@@ -32,6 +32,8 @@ rooms:
         Zone 255 is linked to the following zones:
         265 Beach & Lighthouse             at 25507 (up   ) ---> 26506
         265 Beach & Lighthouse             at 25531 (west ) ---> 26502
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25501:
     area: tba_255
     name: Skeleton Room
@@ -57,6 +59,8 @@ rooms:
       - pile
       description: |2
            They look like any other pile of bones you've looked through.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25507:
     area: tba_255
     name: On a Rope Ladder
@@ -83,6 +87,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25508:
     area: tba_255
     name: Out of the Mists
@@ -110,6 +116,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25509:
     area: tba_255
     name: Crow's Nest - Main Mast
@@ -134,6 +142,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25510:
     area: tba_255
     name: Gangway - Midships
@@ -171,6 +181,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25511:
     area: tba_255
     name: Gangway
@@ -201,6 +213,8 @@ rooms:
       - hatch
       description: |2
            The hatch has a handle set into it.  It does not appear to be locked.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25512:
     area: tba_255
     name: Gangway at Foremast
@@ -224,6 +238,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25513:
     area: tba_255
     name: Forecastle
@@ -249,6 +265,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25514:
     area: tba_255
     name: Bow
@@ -271,6 +289,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25515:
     area: tba_255
     name: Poopdeck
@@ -293,6 +313,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25516:
     area: tba_255
     name: At the Wheel
@@ -316,6 +338,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25517:
     area: tba_255
     name: Stern
@@ -335,6 +359,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25518:
     area: tba_255
     name: Port Gunwale
@@ -351,6 +377,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25519:
     area: tba_255
     name: Starboard Gunwale
@@ -368,6 +396,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25520:
     area: tba_255
     name: In a Corridor - Lower Deck
@@ -395,6 +425,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25521:
     area: tba_255
     name: In a Corridor - Lower Deck
@@ -437,6 +469,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25522:
     area: tba_255
     name: North End of Corridor
@@ -465,6 +499,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25523:
     area: tba_255
     name: In a Corridor - Lower Deck
@@ -508,6 +544,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25524:
     area: tba_255
     name: South End of Corridor
@@ -536,6 +574,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25525:
     area: tba_255
     name: Captain's Quarters
@@ -562,6 +602,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25526:
     area: tba_255
     name: Bunk Room
@@ -588,6 +630,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25527:
     area: tba_255
     name: Galley and Mess Room
@@ -613,6 +657,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25528:
     area: tba_255
     name: The Latrine
@@ -638,6 +684,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25529:
     area: tba_255
     name: Rowing Room - Starboard Side
@@ -663,6 +711,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25530:
     area: tba_255
     name: Rowing Room - Port Side
@@ -688,6 +738,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25531:
     area: tba_255
     name: Cave Entrance
@@ -712,3 +764,5 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

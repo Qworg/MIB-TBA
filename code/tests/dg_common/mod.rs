@@ -75,6 +75,14 @@ pub fn room(app: &mut App, vnum: u32) -> Entity {
                 media: Vec::new(),
                 sector: mib_stdlib::content::Sector::Field,
                 extra_descriptions: Vec::new(),
+                outdoor: false,
+                weather_zone: None,
+                ambient: None,
+                ambient_stamp: None,
+                ambient_phases: Default::default(),
+                ambient_weather: Default::default(),
+                time: None,
+                weather_state: None,
             },
             RoomState::default(),
         ))
@@ -209,6 +217,8 @@ pub fn define_npc_level(app: &mut App, vnum: u32, level: u32) {
                 default_position: Position::Standing,
                 behaviour: Vec::new(),
                 damage: None,
+                attributes: TbaAttributes::mob_default(),
+                saves: TbaSaves::default(),
             },
         );
 }

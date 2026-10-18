@@ -28,6 +28,8 @@ rooms:
       description: |2
            It is built from large gray rocks that have been fastened to each other with
         some kind of mortar.  Looks pretty solid.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3201:
     area: tba_32
     name: On The River
@@ -51,6 +53,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3202:
     area: tba_32
     name: On The River
@@ -73,6 +77,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3203:
     area: tba_32
     name: On The River
@@ -99,6 +105,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3204:
     area: tba_32
     name: On The River
@@ -121,6 +129,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3205:
     area: tba_32
     name: On The River
@@ -143,3 +153,5 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

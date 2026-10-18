@@ -59,6 +59,8 @@ rooms:
         265 Beach & Lighthouse             at 25874 (down ) ---> 26500
 
         TODO: several missing rooms/links from dibrova zone 35
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25801:
     area: tba_258
     name: A Shady Lane
@@ -82,6 +84,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25802:
     area: tba_258
     name: A Well Travelled Road
@@ -105,6 +109,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25803:
     area: tba_258
     name: The City Entrance
@@ -128,6 +134,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25804:
     area: tba_258
     name: A Shady Lane
@@ -155,6 +163,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25805:
     area: tba_258
     name: Dirt Road
@@ -182,6 +192,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25806:
     area: tba_258
     name: Dirt Road
@@ -208,6 +220,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25807:
     area: tba_258
     name: Dirt Road
@@ -230,6 +244,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25808:
     area: tba_258
     name: On a Wide Road
@@ -253,6 +269,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25809:
     area: tba_258
     name: Skirting the Clearing
@@ -275,6 +293,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25810:
     area: tba_258
     name: Edge of a Clearing
@@ -301,6 +321,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25811:
     area: tba_258
     name: A Forest Trail
@@ -324,6 +346,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25812:
     area: tba_258
     name: On the River
@@ -347,6 +371,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25813:
     area: tba_258
     name: A Dark and Gloomy Trail
@@ -370,6 +396,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25814:
     area: tba_258
     name: On the River
@@ -394,6 +422,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25815:
     area: tba_258
     name: On a Wide Road
@@ -418,6 +448,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25816:
     area: tba_258
     name: On a Wide Road
@@ -441,6 +473,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25817:
     area: tba_258
     name: A Wide Bend
@@ -464,6 +498,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25818:
     area: tba_258
     name: A Wide Road
@@ -487,6 +523,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25819:
     area: tba_258
     name: Large Field
@@ -519,6 +557,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25820:
     area: tba_258
     name: The Dark Forest
@@ -543,6 +583,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25821:
     area: tba_258
     name: Old Stone Road
@@ -578,6 +620,8 @@ rooms:
            The corpses looked as if they have been pierced by a large, jagged spear.
         The damage these people sustained is simply amazing.  Worse, the lips on the
         bodies are a light shade of blue, hinting at poison in their systems.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25822:
     area: tba_258
     name: Deep in the Forest
@@ -601,6 +645,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25823:
     area: tba_258
     name: Grassy Field
@@ -631,6 +677,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25824:
     area: tba_258
     name: Along the Cliff
@@ -656,6 +704,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25825:
     area: tba_258
     name: Near the Bridges
@@ -682,6 +732,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25826:
     area: tba_258
     name: Toll Booth
@@ -710,6 +762,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25827:
     area: tba_258
     name: Between the Booths
@@ -742,6 +796,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25828:
     area: tba_258
     name: Eastern Toll Booth
@@ -769,6 +825,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25829:
     area: tba_258
     name: Stables
@@ -788,6 +846,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25830:
     area: tba_258
     name: Memorial Park
@@ -808,6 +868,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25831:
     area: tba_258
     name: A Fork in the Road
@@ -836,6 +898,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25832:
     area: tba_258
     name: Forest Road
@@ -855,6 +919,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25833:
     area: tba_258
     name: A Wide Road
@@ -877,6 +943,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25850:
     area: tba_258
     name: Near a Cliff
@@ -909,6 +977,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25851:
     area: tba_258
     name: A Wide Road Near the City
@@ -933,6 +1003,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25852:
     area: tba_258
     name: Just West of XXXX
@@ -956,6 +1028,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25853:
     area: tba_258
     name: A Tunnel In The Mountains
@@ -980,6 +1054,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25854:
     area: tba_258
     name: Diminishing Trail
@@ -1010,6 +1086,8 @@ rooms:
       description: |2
            The twigs and leaves have all been piled together as a makeshift bed for some
         small humanoid.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25855:
     area: tba_258
     name: Faint Trail
@@ -1033,6 +1111,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25856:
     area: tba_258
     name: Nearing the Maze
@@ -1056,6 +1136,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25870:
     area: tba_258
     name: Old Stone Road
@@ -1083,6 +1165,8 @@ rooms:
       description: |2
            The sign reads:
            The Woodsman
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25871:
     area: tba_258
     name: Cliff's Edge
@@ -1110,6 +1194,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25872:
     area: tba_258
     name: Old Stone Road
@@ -1133,6 +1219,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25873:
     area: tba_258
     name: Cliff's Edge
@@ -1161,6 +1249,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25874:
     area: tba_258
     name: On a Rock Landing
@@ -1184,6 +1274,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25875:
     area: tba_258
     name: The Ambush Point
@@ -1208,6 +1300,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25876:
     area: tba_258
     name: The Bar
@@ -1227,6 +1321,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25877:
     area: tba_258
     name: Along the Cliff
@@ -1250,6 +1346,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25879:
     area: tba_258
     name: Atop the Hill
@@ -1276,6 +1374,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25881:
     area: tba_258
     name: West of Town
@@ -1298,6 +1398,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25882:
     area: tba_258
     name: A Dark and Gloomy Trail
@@ -1322,6 +1424,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25883:
     area: tba_258
     name: A Dark and Gloomy Trail
@@ -1347,6 +1451,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25884:
     area: tba_258
     name: A Dead End Trail
@@ -1367,6 +1473,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.25885:
     area: tba_258
     name: Entrance to the Maze
@@ -1386,3 +1494,5 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

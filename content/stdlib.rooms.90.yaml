@@ -39,6 +39,8 @@ rooms:
         Zone 90 was linked to the following zones:
         170 South Pass                     at  9030 (south) ---> 17018
         140 Wyvern City                    at  9031 (east ) ---> 14000
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9001:
     area: tba_90
     name: In the Desert
@@ -63,6 +65,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9002:
     area: tba_90
     name: Between Sand Dunes
@@ -94,6 +98,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9003:
     area: tba_90
     name: Beside the Oasis
@@ -127,6 +133,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9004:
     area: tba_90
     name: Between Sand Dunes
@@ -159,6 +167,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9005:
     area: tba_90
     name: On a Sand Dune
@@ -183,6 +193,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9006:
     area: tba_90
     name: A Sandy Path
@@ -207,6 +219,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9007:
     area: tba_90
     name: In the Desert
@@ -231,6 +245,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9008:
     area: tba_90
     name: In the Desert
@@ -259,6 +275,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9009:
     area: tba_90
     name: In the Desert
@@ -283,6 +301,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9010:
     area: tba_90
     name: Beside the Oasis
@@ -307,6 +327,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9011:
     area: tba_90
     name: The Oasis
@@ -340,6 +362,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9012:
     area: tba_90
     name: Beside the Oasis
@@ -364,6 +388,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9013:
     area: tba_90
     name: A Sandy Path
@@ -388,6 +414,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9014:
     area: tba_90
     name: A Rocky Path
@@ -412,6 +440,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9015:
     area: tba_90
     name: The Desert
@@ -436,6 +466,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9016:
     area: tba_90
     name: The Desert
@@ -460,6 +492,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9017:
     area: tba_90
     name: The Desert
@@ -483,6 +517,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9018:
     area: tba_90
     name: A Rocky Path
@@ -507,6 +543,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9019:
     area: tba_90
     name: A Dried Up River Bed
@@ -531,6 +569,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9020:
     area: tba_90
     name: A Dried Up River Bed
@@ -555,6 +595,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9021:
     area: tba_90
     name: The Desert
@@ -579,6 +621,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9022:
     area: tba_90
     name: A Dried Up River Bed
@@ -602,6 +646,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9023:
     area: tba_90
     name: A Dried Up River Bed
@@ -622,6 +668,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9024:
     area: tba_90
     name: The Desert
@@ -645,6 +693,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9025:
     area: tba_90
     name: The Desert
@@ -669,6 +719,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9026:
     area: tba_90
     name: A Trail
@@ -693,6 +745,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9027:
     area: tba_90
     name: A Faded Trail
@@ -717,6 +771,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9028:
     area: tba_90
     name: A Faded Trail
@@ -740,6 +796,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9029:
     area: tba_90
     name: Before the Mountains
@@ -763,6 +821,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9030:
     area: tba_90
     name: Before the Mountains
@@ -793,6 +853,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9031:
     area: tba_90
     name: A Hidden Path
@@ -820,6 +882,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9032:
     area: tba_90
     name: A Hidden Path
@@ -844,6 +908,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.9033:
     area: tba_90
     name: A Secluded Grove
@@ -864,3 +930,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

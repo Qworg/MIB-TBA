@@ -64,6 +64,8 @@ rooms:
         Diku Builders' Handbook. VieMud (viemud.org 4000) for giving us a
         chance, and another, and...
         Links: 17
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29001:
     area: tba_290
     name: The Quest Preparation Room
@@ -87,6 +89,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29002:
     area: tba_290
     name: A Tunnel
@@ -120,6 +124,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29003:
     area: tba_290
     name: A Tunnel
@@ -142,6 +148,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29004:
     area: tba_290
     name: A Tunnel
@@ -169,6 +177,8 @@ rooms:
       - hole
       description: |2
            The hole leads down.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29005:
     area: tba_290
     name: Tunnel End
@@ -205,6 +215,8 @@ rooms:
       - door
       description: |2
            You have to be able to Pick or Knock this door open, unless you got LUCKY.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29006:
     area: tba_290
     name: The Conjuring Chamber
@@ -251,6 +263,8 @@ rooms:
       - whirlpool
       description: |2
            This just looks scary and EXTREMELY dangerous.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29007:
     area: tba_290
     name: The Whirlpool
@@ -267,6 +281,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29008:
     area: tba_290
     name: A Hallway
@@ -295,6 +311,8 @@ rooms:
       description: |2
            It is dead straight but it goes down and east...  M.  C.  Escher has struck
         again!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29009:
     area: tba_290
     name: A Hallway
@@ -321,6 +339,8 @@ rooms:
       - hall
       description: |2
            This hall is BENT!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29010:
     area: tba_290
     name: A Completely Useless Room
@@ -337,6 +357,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29011:
     area: tba_290
     name: The Throne Room Annex
@@ -364,6 +386,8 @@ rooms:
       - loom
       description: |2
            What a descriptive word that is.  Loom.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29012:
     area: tba_290
     name: Throne Room
@@ -398,6 +422,8 @@ rooms:
       - wall
       description: |2
            What a useless concept.  Why didn't the designer just put actual pillars in?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29013:
     area: tba_290
     name: Temple Of Morgash
@@ -432,6 +458,8 @@ rooms:
       - door
       description: |2
            It is quite large with a small keyhole.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29014:
     area: tba_290
     name: Quest End
@@ -462,6 +490,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29015:
     area: tba_290
     name: Quest Preparation Room
@@ -479,6 +509,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29016:
     area: tba_290
     name: LUCKY
@@ -506,6 +538,8 @@ rooms:
       - sign
       description: |2
            The sign says: Boy are you ever LUCKY!!!!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29017:
     area: tba_290
     name: The Real World Ends Here
@@ -530,6 +564,8 @@ rooms:
       - huge
       description: |2
            It's one of those huge studio-like doors.  It seems pretty strong.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29018:
     area: tba_290
     name: Mr. Hooper's store
@@ -552,3 +588,5 @@ rooms:
       - counter
       description: |2
            The counter is nice and clean.  Mr.  Hooper looks at you expectantly.
+    ambient_phases: {}
+    ambient_weather: {}

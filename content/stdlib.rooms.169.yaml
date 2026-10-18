@@ -17,6 +17,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16901:
     area: tba_169
     name: A Mountain Trail
@@ -41,6 +43,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16902:
     area: tba_169
     name: A Mountain Trail
@@ -67,6 +71,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16903:
     area: tba_169
     name: A Small Clearing
@@ -91,6 +97,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16904:
     area: tba_169
     name: A Mountain Trail Ends
@@ -122,6 +130,8 @@ rooms:
         roots from the trees growing atop the hill.  It looks like you can easily get a
         foothold, and climb the roots up the bank without too much trouble or injury.
 
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16905:
     area: tba_169
     name: A Rocky Hill
@@ -147,6 +157,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16906:
     area: tba_169
     name: A Craggy Slope
@@ -172,6 +184,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16907:
     area: tba_169
     name: A Craggy Slope
@@ -199,6 +213,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16908:
     area: tba_169
     name: A Mountainside
@@ -223,6 +239,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16909:
     area: tba_169
     name: A Mountainside
@@ -246,6 +264,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16910:
     area: tba_169
     name: A Rocky Precipice
@@ -270,6 +290,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16911:
     area: tba_169
     name: A Mountainside
@@ -294,6 +316,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16912:
     area: tba_169
     name: A Rocky Cliff
@@ -318,6 +342,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16913:
     area: tba_169
     name: A Rocky Cliff Outside A Cave Entrance
@@ -352,6 +378,8 @@ rooms:
            The cave is basically a great, yawning, orifice in the rocky face of the
         mountain, resembling the mouth of some great beast, daring you to enter and
         meet your doom.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16914:
     area: tba_169
     name: Inside A Dark Cave
@@ -384,6 +412,8 @@ rooms:
         apart and left in the dirt.  Maggots are greedily feasting on what remains of
         the animals' flesh, while the fur, heavily caked with dried blood, sticks to
         the bones.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16915:
     area: tba_169
     name: A Dark Cave
@@ -408,6 +438,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16916:
     area: tba_169
     name: A Dark Cave
@@ -430,6 +462,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16917:
     area: tba_169
     name: A Dark Cave
@@ -455,6 +489,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16918:
     area: tba_169
     name: A Wide Tunnel
@@ -484,6 +520,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16919:
     area: tba_169
     name: A Wide Tunnel
@@ -516,6 +554,8 @@ rooms:
         You can only guess that they may have been gibberlings who died in the cave, or
         others, who unwittingly stumbled upon this nest of depraved creatures, only to
         die an agonizing, pitiless death, at the hands of their barbaric attackers.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16920:
     area: tba_169
     name: A Stony Corridor
@@ -540,6 +580,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16921:
     area: tba_169
     name: A Stony Corridor
@@ -567,6 +609,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16922:
     area: tba_169
     name: A Stony Corridor
@@ -596,6 +640,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16923:
     area: tba_169
     name: The Feeding Room
@@ -621,6 +667,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16924:
     area: tba_169
     name: A Wet Corner
@@ -649,6 +697,8 @@ rooms:
       description: |2
            The hole appears to be wide enough for many people to travel through at
         once.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16925:
     area: tba_169
     name: The Torture Pit
@@ -673,6 +723,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16926:
     area: tba_169
     name: The Torture Pit
@@ -695,6 +747,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16927:
     area: tba_169
     name: A Stuffy Chamber
@@ -730,6 +784,8 @@ rooms:
            Animal hides are piled up in the corners, obviously meant for use as
         blankets during cold nights spent on the hard, cold, cave floors.  Strangely
         the heads of the animals have not been removed from the hides.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16928:
     area: tba_169
     name: A Makeshift Landing
@@ -759,6 +815,8 @@ rooms:
       description: |2
            It's a hole in the stone floor, reaching down into a lower level.  What did
         you expect?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16929:
     area: tba_169
     name: A Short Wooden Bridge
@@ -798,6 +856,8 @@ rooms:
       description: |2
            It is too deep and dark, to see much more than what appears to be a
         bottomless pit, reaching far into the subterranean regions.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16930:
     area: tba_169
     name: A Stony Landing
@@ -820,6 +880,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16931:
     area: tba_169
     name: A Cold Chamber
@@ -859,6 +921,8 @@ rooms:
            You cannot make out the writing on the door, which appears to be gibberish,
         however a crude painted image above the writing leads you to beleive this must
         be the throne room.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16932:
     area: tba_169
     name: Throne Room of the Gibberlings
@@ -913,6 +977,8 @@ rooms:
         fate at the hands of gibberling raiders years ago in battle.  The bones are
         bound together by the dried sinew of a dragon, and the seat is covered with
         various hides skinned from all the myriad races.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16935:
     area: tba_169
     name: A Secret Chamber
@@ -939,6 +1005,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16977:
     area: tba_169
     name: Tanto's Teepee
@@ -962,6 +1030,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16978:
     area: tba_169
     name: Tanto's Yard
@@ -1004,6 +1074,8 @@ rooms:
         horde of monstrous warriors.  The top of each bench is a single rectangular
         stone slab, supported by four stone legs, shaped like the hind legs of a lion,
         or griffon.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.16999:
     area: tba_169
     name: A Mountain Trail
@@ -1024,3 +1096,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

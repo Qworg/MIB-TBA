@@ -33,6 +33,8 @@ rooms:
       - gate
       description: |2
            A large adamantite gate with giant spider shaped emblems stands here.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5101:
     area: tba_51
     name: A City Street
@@ -69,6 +71,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5102:
     area: tba_51
     name: A City Street
@@ -90,6 +94,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5103:
     area: tba_51
     name: A City Street
@@ -116,6 +122,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5104:
     area: tba_51
     name: The 3rd House
@@ -145,6 +153,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5105:
     area: tba_51
     name: The Throne Room
@@ -169,6 +179,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5106:
     area: tba_51
     name: A City Street
@@ -195,6 +207,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5107:
     area: tba_51
     name: A City Street
@@ -221,6 +235,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5108:
     area: tba_51
     name: The 2nd House
@@ -249,6 +265,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5109:
     area: tba_51
     name: The Throne Room
@@ -273,6 +291,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5110:
     area: tba_51
     name: The Main Gate
@@ -306,6 +326,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5111:
     area: tba_51
     name: The 1st House
@@ -335,6 +357,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5112:
     area: tba_51
     name: The Throne Room
@@ -363,6 +387,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5113:
     area: tba_51
     name: The Main Chamber
@@ -387,6 +413,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5114:
     area: tba_51
     name: A City Street
@@ -412,6 +440,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5115:
     area: tba_51
     name: A City Street
@@ -434,6 +464,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5116:
     area: tba_51
     name: The Clerics' Academy
@@ -451,6 +483,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5117:
     area: tba_51
     name: A City Street
@@ -483,6 +517,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5118:
     area: tba_51
     name: The Warriors' Academy
@@ -500,6 +536,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5119:
     area: tba_51
     name: The Entrance To The Temple Of Lloth
@@ -529,6 +567,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5120:
     area: tba_51
     name: The Mages' Academy
@@ -547,6 +587,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5121:
     area: tba_51
     name: A City Street
@@ -573,6 +615,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5122:
     area: tba_51
     name: The Slave Chamber
@@ -591,6 +635,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5123:
     area: tba_51
     name: A City Street
@@ -623,6 +669,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5124:
     area: tba_51
     name: The 4th House
@@ -651,6 +699,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5125:
     area: tba_51
     name: The Throne Room
@@ -669,6 +719,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5126:
     area: tba_51
     name: The Entrance Hall
@@ -692,6 +744,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5127:
     area: tba_51
     name: A Hallway
@@ -725,6 +779,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5128:
     area: tba_51
     name: A Long Hallway
@@ -749,6 +805,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5129:
     area: tba_51
     name: A Long Hallway
@@ -784,6 +842,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5130:
     area: tba_51
     name: A Long Hallway
@@ -808,6 +868,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5131:
     area: tba_51
     name: A Long Hallway
@@ -832,6 +894,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5132:
     area: tba_51
     name: A Long Hallway
@@ -867,6 +931,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5133:
     area: tba_51
     name: The Warriors' Barracks
@@ -892,6 +958,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5134:
     area: tba_51
     name: A Long Hallway
@@ -916,6 +984,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5135:
     area: tba_51
     name: The Grand Stairway
@@ -938,6 +1008,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5136:
     area: tba_51
     name: The Grand Hallway
@@ -970,6 +1042,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5137:
     area: tba_51
     name: The Mages' Barracks
@@ -995,6 +1069,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5138:
     area: tba_51
     name: The Grand Hallway
@@ -1028,6 +1104,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5139:
     area: tba_51
     name: The Clerics' Barracks
@@ -1053,6 +1131,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5140:
     area: tba_51
     name: The Grand Stairway
@@ -1081,6 +1161,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5141:
     area: tba_51
     name: The Main Chamber
@@ -1114,6 +1196,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5142:
     area: tba_51
     name: The Eastern Side Of The Main Chamber
@@ -1146,6 +1230,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5143:
     area: tba_51
     name: The Sacrificial Pit
@@ -1163,6 +1249,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5144:
     area: tba_51
     name: The Western Side Of The Main Chamber
@@ -1185,6 +1273,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5145:
     area: tba_51
     name: The Altar
@@ -1217,6 +1307,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5146:
     area: tba_51
     name: The Slave Cells
@@ -1251,6 +1343,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5147:
     area: tba_51
     name: The Slave Pen
@@ -1276,6 +1370,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5148:
     area: tba_51
     name: The Dias
@@ -1305,6 +1401,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5149:
     area: tba_51
     name: The Treasury
@@ -1329,6 +1427,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.5150:
     area: tba_51
     name: The Weaponsmaster's Chamber
@@ -1353,3 +1453,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

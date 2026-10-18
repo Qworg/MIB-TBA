@@ -56,6 +56,8 @@ rooms:
            This zone links north to room 9030.  Build all rooms south of that
         connection point.  Best link to zone 90 would be south to room 23904 and north
         from 23904 to room 9030.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23901:
     area: tba_239
     name: Southern Desert
@@ -97,6 +99,8 @@ rooms:
       description: |2
            The sand is an endless sea of white waves of sparkling silicon fragments
         being tossed around by the merciless wind.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23902:
     area: tba_239
     name: Barren Hills
@@ -140,6 +144,8 @@ rooms:
         waves of golden white in countless shapes and sizes.  The hills are countless
         black slate mini giants swimming in the sea of sand, but to where do they go?
         Only they know.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23903:
     area: tba_239
     name: Sloping Slate Hills
@@ -171,6 +177,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23904:
     area: tba_239
     name: Slate Slopes
@@ -199,6 +207,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23905:
     area: tba_239
     name: Slate Gorge
@@ -243,6 +253,8 @@ rooms:
       description: |2
            It's way too hot to view the scenery you should find you way out of here
         before you die of thirst or starvation.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23906:
     area: tba_239
     name: A Rocky Cliff
@@ -301,6 +313,8 @@ rooms:
         of NewHaven dwarves, drow demons, caves with riches and great battles with
         dragons, orcs, elephants, and horses abound the land but they have been called
         'old wives tales' and dubious to the truth of such tales.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23907:
     area: tba_239
     name: Low End of a Path
@@ -327,6 +341,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23908:
     area: tba_239
     name: Entrance to a Cave
@@ -350,6 +366,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23909:
     area: tba_239
     name: Inside a Small Cave
@@ -389,6 +407,8 @@ rooms:
         the drow, or to slay mindflayers, this is your direct route to the underdark.
         Some speculate there might be other ways to get there as well, but it has never
         been proven.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23910:
     area: tba_239
     name: Great Southern Desert
@@ -415,6 +435,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23911:
     area: tba_239
     name: Drifts of Southern Desert
@@ -449,6 +471,8 @@ rooms:
         more danger they are in of dying a worthless death, forgotten, without
         accomplishing anything.  The job of an adventurer is a tough job, they must
         rely on their determination and wits in order to survive.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23912:
     area: tba_239
     name: An Ascending Trail
@@ -475,6 +499,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23913:
     area: tba_239
     name: A Turn in the Trail
@@ -505,6 +531,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23914:
     area: tba_239
     name: A Desolate Precipice
@@ -529,6 +557,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23915:
     area: tba_239
     name: A Narrow Ledge
@@ -555,6 +585,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23916:
     area: tba_239
     name: A Long Climb
@@ -580,6 +612,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23917:
     area: tba_239
     name: Around the Peak
@@ -605,6 +639,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23918:
     area: tba_239
     name: A Snow Bank on the Mountain
@@ -637,6 +673,8 @@ rooms:
            You notice a golden plaque attached to the side of the mountain and even
         though you cannot read the ancient runes you understand them somehow.
         TO ENTER SAY THESE WORDS: Friend of NewHaven
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23919:
     area: tba_239
     name: A Secret Entrance to the Cavern
@@ -672,6 +710,8 @@ rooms:
            You see ancient dwarven runes that you can not read but somehow you
         understand what they mean
         SAY THESE WORDS: Farewell King
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23920:
     area: tba_239
     name: A Dwarven Stone Road
@@ -702,6 +742,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23921:
     area: tba_239
     name: A Huge Pile of Bones
@@ -734,6 +776,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23922:
     area: tba_239
     name: Next to a Broken Bridge
@@ -777,6 +821,8 @@ rooms:
         not made by dwarves but by someone else.  An unsure adventurer would turn back
         and go the way that he came, but a brave and gallant adventurer would follow
         the path.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23923:
     area: tba_239
     name: On a Hidden Path
@@ -815,6 +861,8 @@ rooms:
         dangerous, a brave adventurer would probably follow it.  A more cautious
         adventurer would probably go back the way that he came, at least they would
         know what was there.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23924:
     area: tba_239
     name: Further Down the Path
@@ -850,6 +898,8 @@ rooms:
            The path is covered with thousands of footprints, they seem like those of
         orc.  Probably an orc army uses this path as a shortcut to battles they fight
         all around the lands.  The clay is a light brown color, smooth and wet.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23925:
     area: tba_239
     name: A Giant Ponderosa Pine
@@ -889,6 +939,8 @@ rooms:
         someone fell down they surely would injure themselves badly.  Wise judgement
         would tell them not to climb the tree and that it would be far too dangerous.
 
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23926:
     area: tba_239
     name: Below the Tree
@@ -917,6 +969,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23927:
     area: tba_239
     name: A Lookout Post
@@ -967,6 +1021,8 @@ rooms:
         side of the mountain can be seen.  Also, a zig zag trail leading down and off
         to the west . A medium sized desert is below and what appears to been a small
         oasis.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23928:
     area: tba_239
     name: Up in a Tree
@@ -995,6 +1051,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23929:
     area: tba_239
     name: Out on a Branch
@@ -1015,6 +1073,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23930:
     area: tba_239
     name: A Branch in the Tree
@@ -1036,6 +1096,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23931:
     area: tba_239
     name: A Branch in the Ponderosa Pine
@@ -1056,6 +1118,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23932:
     area: tba_239
     name: Out on a Branch of the Tree
@@ -1077,6 +1141,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23933:
     area: tba_239
     name: A Branch of the Pine Tree
@@ -1097,6 +1163,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23934:
     area: tba_239
     name: On a Ponderosa Pine Branch
@@ -1117,6 +1185,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23935:
     area: tba_239
     name: Out on a Sturdy Branch
@@ -1137,6 +1207,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23936:
     area: tba_239
     name: Up in a Tree
@@ -1174,6 +1246,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23937:
     area: tba_239
     name: Near the Trunk of a Ponderosa Pine
@@ -1206,6 +1280,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23938:
     area: tba_239
     name: In the Ponderosa Pine
@@ -1240,6 +1316,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23939:
     area: tba_239
     name: The Roots of the Tree
@@ -1284,6 +1362,8 @@ rooms:
         crack" and have stood here alone since.  Now all I have is the company of birds
         and small creatures in my bough and I am unable to walk back to my forest of
         Drenwood and my heart grows weary and homesick.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23940:
     area: tba_239
     name: A Turn in the Path
@@ -1318,6 +1398,8 @@ rooms:
         constructed by the NewHaven Dwarves of old.  Legend has it that they suddenly
         disappeared from the world and that many of their great feats of workmanship
         still exists to this day
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23941:
     area: tba_239
     name: A Path Up the Mountain
@@ -1353,6 +1435,8 @@ rooms:
         their substance is returning to the soil, nourishing the new growths that will
         come in the future, giving themselves to their offspring and other wildlife in
         a never-ending cycle of life and death.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23942:
     area: tba_239
     name: A Winding Slope in the Hilly Woods
@@ -1379,6 +1463,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23943:
     area: tba_239
     name: A Winding Path Thru the Hills
@@ -1402,6 +1488,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23944:
     area: tba_239
     name: Along the Side of the Chasm
@@ -1431,6 +1519,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23945:
     area: tba_239
     name: Further into the Chasm
@@ -1457,6 +1547,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23946:
     area: tba_239
     name: A Fork in the Path
@@ -1487,6 +1579,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23947:
     area: tba_239
     name: A Glowing Cave
@@ -1512,6 +1606,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23948:
     area: tba_239
     name: Inside a Goblin Cave
@@ -1542,6 +1638,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23949:
     area: tba_239
     name: Inside a Goblin Cave
@@ -1568,6 +1666,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23950:
     area: tba_239
     name: Another Part of the Cave
@@ -1602,6 +1702,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23951:
     area: tba_239
     name: Another Part of the Cave
@@ -1628,6 +1730,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23952:
     area: tba_239
     name: Another Part of the Cave
@@ -1654,6 +1758,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23953:
     area: tba_239
     name: Another Part of the Cave
@@ -1688,6 +1794,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23954:
     area: tba_239
     name: Another Part of the Cave
@@ -1722,6 +1830,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23955:
     area: tba_239
     name: Another Part of the Cave
@@ -1751,6 +1861,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23956:
     area: tba_239
     name: Another Part of the Cave
@@ -1776,6 +1888,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23957:
     area: tba_239
     name: Inside a Goblin Cave
@@ -1805,6 +1919,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23958:
     area: tba_239
     name: Inside a Goblin Cave
@@ -1827,6 +1943,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23959:
     area: tba_239
     name: A Ledge on the Chasm Path
@@ -1859,6 +1977,8 @@ rooms:
       description: |2
            These fountains are dry but probably once quenched the thirst of travelers
         and their beasts along the path.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23960:
     area: tba_239
     name: Along a Deep Chasm
@@ -1886,6 +2006,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23961:
     area: tba_239
     name: A Huge Gate
@@ -1931,6 +2053,8 @@ rooms:
       description: |2
            An obsidian gate 8 metrons high, 4 metrons wide carved with drow runes.
         There is a red rune in the center of the door which might be a keyhole.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23962:
     area: tba_239
     name: An Obsidian Cave
@@ -1966,6 +2090,8 @@ rooms:
       description: |2
            An obsidian gate 8 metrons high, 4 metrons wide carved with drow runes.
         There is a red rune in the center of the door which might be a keyhole.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23963:
     area: tba_239
     name: A Dark Passage
@@ -1999,6 +2125,8 @@ rooms:
       description: |2
            The light comes from what looks like tracks of many footprints traveling
         thru a red glowing powder thru the passage.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23964:
     area: tba_239
     name: Mouth of a Cave
@@ -2024,6 +2152,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23965:
     area: tba_239
     name: A Dark Corner of the Cave
@@ -2049,6 +2179,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23966:
     area: tba_239
     name: Another Part of the Cave
@@ -2074,6 +2206,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23967:
     area: tba_239
     name: Another Part of the Cave
@@ -2099,6 +2233,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23968:
     area: tba_239
     name: Another Part of the Cave
@@ -2130,6 +2266,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23969:
     area: tba_239
     name: Another Part of the Cave
@@ -2168,6 +2306,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23970:
     area: tba_239
     name: Obsidian Hallway
@@ -2208,6 +2348,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23971:
     area: tba_239
     name: South End of Slave Corridor
@@ -2260,6 +2402,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23972:
     area: tba_239
     name: Middle of Slave Corridor
@@ -2306,6 +2450,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23973:
     area: tba_239
     name: North End of Slave Corridor
@@ -2358,6 +2504,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23974:
     area: tba_239
     name: A Slave Chamber
@@ -2386,6 +2534,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23975:
     area: tba_239
     name: A Slave Chamber
@@ -2416,6 +2566,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23976:
     area: tba_239
     name: A Slave Chamber
@@ -2444,6 +2596,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23977:
     area: tba_239
     name: A Slave Chamber
@@ -2472,6 +2626,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23978:
     area: tba_239
     name: A Slave Chamber
@@ -2500,6 +2656,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23979:
     area: tba_239
     name: A Slave Chamber
@@ -2528,6 +2686,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23980:
     area: tba_239
     name: A Dark Hallway
@@ -2564,6 +2724,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23981:
     area: tba_239
     name: A Dark Hallway
@@ -2593,6 +2755,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23982:
     area: tba_239
     name: A Dark Hallway
@@ -2622,6 +2786,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23983:
     area: tba_239
     name: A Dark Hallway
@@ -2651,6 +2817,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23984:
     area: tba_239
     name: A Dark Hallway
@@ -2680,6 +2848,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23985:
     area: tba_239
     name: A Dark Hallway
@@ -2709,6 +2879,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23986:
     area: tba_239
     name: The Outer Chamber
@@ -2732,6 +2904,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23999:
     area: tba_239
     name: South Pass Links Room {Crysanthia]
@@ -2749,3 +2923,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

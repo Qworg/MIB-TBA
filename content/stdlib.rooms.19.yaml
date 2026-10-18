@@ -110,6 +110,8 @@ rooms:
         an empty vial placed into the contraption and the mixture poured out.
         If any combination of ingredients other than those listed are combined,
         a black potion will be produced which lowers all three attributes.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1901:
     area: tba_19
     name: Muddy Crossroads
@@ -156,6 +158,8 @@ rooms:
            This old splintered sign has long lost any visible markings, black rivulets
         of ink staining the rotting wood that stands uselessly here, just a remnant of
         past inhabitants.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1902:
     area: tba_19
     name: Squelching Ground
@@ -187,6 +191,8 @@ rooms:
       description: |2
            Limp and miserable, these plants look as though they are barely surviving on
         what little nourishment and sunlight the swamp provides.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1903:
     area: tba_19
     name: Shadow of a Great Rock
@@ -225,6 +231,8 @@ rooms:
         long sunk irretrievably into the swamp.  A faint glow surrounds it, and an
         unnatural coldness fills the air as if this place were somehow connected with
         some evil magic.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1904:
     area: tba_19
     name: Drowned Land
@@ -252,6 +260,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1905:
     area: tba_19
     name: Bloodied Soil
@@ -291,6 +301,8 @@ rooms:
       description: |2
            These large dark patches in the mud glisten slightly crimson in any light,
         the faded blood stains of many fallen warriors.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1906:
     area: tba_19
     name: Crimson Waters
@@ -338,6 +350,8 @@ rooms:
         left of an obviously mighty battle.  There are no corpses to be found, all that
         died presumably devoured by creatures here or rotted long before these metals
         began to rust.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1907:
     area: tba_19
     name: Slippery Slope
@@ -367,6 +381,8 @@ rooms:
       description: |2
            Tiny veins of sparkling water line the surface of this slanted ground, muddy
         churning water bubbling continously in the pool that saturates the lower ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1908:
     area: tba_19
     name: Scattered Rocks
@@ -419,6 +435,8 @@ rooms:
            These rocks look almost like the remnants of a huge embedded boulder or
         statue that has been broken away by some massive force.  Firmly entrenched in
         the mud, the rough-edged base spikes out like several rows of teeth.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1909:
     area: tba_19
     name: Rotting Branch
@@ -453,6 +471,8 @@ rooms:
            These dark creeping moulds cover the wood in an almost velvety texture,
         little swamp mushrooms sprouting here and there, feeding off of the damp and
         rot.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1910:
     area: tba_19
     name: Flooded Waterway
@@ -477,6 +497,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1911:
     area: tba_19
     name: Dark Waters
@@ -509,6 +531,8 @@ rooms:
            These simple swamp insects flit so fast it is hard to see them properly, tiny
         and plated with defensive exoskeletons they pause only to feed on the smaller
         zooplankton in the water.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1912:
     area: tba_19
     name: Ditch of the Dead
@@ -547,6 +571,8 @@ rooms:
       description: |2
            Old broken pieces of weapons and shields float in shards amongst the bubbling
         water, stirring as though in some cauldron of death.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1913:
     area: tba_19
     name: Toppled Tree
@@ -583,6 +609,8 @@ rooms:
            These are charred areas in the wood that have burnt in strange patterns.  It
         looks as though it may indeed be the work of lightning, though evil magic is
         more likely considering these whereabouts.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1914:
     area: tba_19
     name: Scorched Trunk
@@ -613,6 +641,8 @@ rooms:
            These strange and ominous markings appear almost to have been designed, not
         just the random streaks of lightning or fire.  The evils of lethal magic are
         almost certainly at work here.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1915:
     area: tba_19
     name: Stony Path
@@ -644,6 +674,8 @@ rooms:
       description: |2
            These little rocks stick up like stalagmites from the muddy and unstable
         ground, perilous but weight-supporting enough to act as a trail.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1916:
     area: tba_19
     name: Puddle of Algae
@@ -667,6 +699,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1917:
     area: tba_19
     name: Buried Tree
@@ -708,6 +742,8 @@ rooms:
            Broken, splintered wood gapes widely around this mud-slicked hole.  It
         appears a tree has become submerged within the ground, the contents of its
         hollow trunk just beyond the scope of normal vision.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1918:
     area: tba_19
     name: Within the Roots
@@ -732,6 +768,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1919:
     area: tba_19
     name: Hollow Trunk
@@ -764,6 +802,8 @@ rooms:
            These little creatures are gorging on the filth and decay that coats this
         dying tree, it seems almost that every scavenging insect in the place as homed
         in on this location.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1920:
     area: tba_19
     name: Submerged
@@ -788,6 +828,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1921:
     area: tba_19
     name: Straggling Trees
@@ -835,6 +877,8 @@ rooms:
            The plant life here is abundant but miserable looking, as though there is
         constant competition to survive, nutrients being scavenged by almost every form
         of life imaginable.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1922:
     area: tba_19
     name: A Broken Bridge
@@ -859,6 +903,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1923:
     area: tba_19
     name: Sunken Road
@@ -896,6 +942,8 @@ rooms:
         surfaces with their colored remains.  It is impossible to tell which of these
         are alive and which are long dead, most seem perfectly content to stay
         completely motionless.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1924:
     area: tba_19
     name: Peak of the Rock
@@ -919,6 +967,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1925:
     area: tba_19
     name: Rising Water
@@ -951,6 +1001,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1926:
     area: tba_19
     name: Flooded Cave
@@ -982,6 +1034,8 @@ rooms:
            Once in a while, something shiny moves to the surface, lingering just long
         enough to reveal itself as a piece of warrior's equipment before sinking back
         down into the deep.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1927:
     area: tba_19
     name: Underwater Enclosure
@@ -1002,6 +1056,8 @@ rooms:
     coord: null
     sector: underwater
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1928:
     area: tba_19
     name: Sunken Road
@@ -1030,6 +1086,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1929:
     area: tba_19
     name: A Great Cavern
@@ -1058,6 +1116,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1930:
     area: tba_19
     name: A Great Cavern
@@ -1081,6 +1141,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1931:
     area: tba_19
     name: Cavernous Gates
@@ -1115,6 +1177,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1932:
     area: tba_19
     name: A Great Cavern
@@ -1139,6 +1203,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1933:
     area: tba_19
     name: A Primitive Throne Room
@@ -1191,6 +1257,8 @@ rooms:
            These rather beautiful swords have been carelessly bent and fastened together
         to form a slightly unusual but attractive throne, colored gems sparkling in the
         hilts and firelight reflecting off the still shiny metal.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1934:
     area: tba_19
     name: Mirey Path
@@ -1219,6 +1287,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1935:
     area: tba_19
     name: Dripping Cave
@@ -1238,6 +1308,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1936:
     area: tba_19
     name: Cluttered Campsite
@@ -1282,6 +1354,8 @@ rooms:
            These recently used tools have been dumped on the ground with pieces of flesh
         still clinging to them, the smell of rotting is almost unbearable and flies buzz
         almost frantically around the filthy surfaces.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1937:
     area: tba_19
     name: Grassy Hole
@@ -1309,6 +1383,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1938:
     area: tba_19
     name: Rainy Chasm
@@ -1334,6 +1410,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1939:
     area: tba_19
     name: Firelit Cavern
@@ -1364,6 +1442,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1940:
     area: tba_19
     name: Nesting Grounds
@@ -1383,6 +1463,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1941:
     area: tba_19
     name: Hatchery
@@ -1402,6 +1484,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1942:
     area: tba_19
     name: Stone Larder
@@ -1421,6 +1505,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1943:
     area: tba_19
     name: Smokey Path
@@ -1454,6 +1540,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1944:
     area: tba_19
     name: Wetlands
@@ -1482,6 +1570,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1945:
     area: tba_19
     name: Eerie Wetlands
@@ -1514,6 +1604,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1946:
     area: tba_19
     name: Eerie Wetlands
@@ -1541,6 +1633,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1947:
     area: tba_19
     name: Absolute Darkness
@@ -1561,6 +1655,8 @@ rooms:
     coord: null
     sector: underwater
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1948:
     area: tba_19
     name: '[Private Set Aside Room for Trigger]'
@@ -1577,6 +1673,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1949:
     area: tba_19
     name: Endless Marshlands
@@ -1604,6 +1702,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1950:
     area: tba_19
     name: Endless Marshlands
@@ -1631,6 +1731,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1951:
     area: tba_19
     name: Crumbling Oak
@@ -1651,6 +1753,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1952:
     area: tba_19
     name: Endless Marshlands
@@ -1679,6 +1783,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1953:
     area: tba_19
     name: Endless Marshlands
@@ -1707,6 +1813,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1954:
     area: tba_19
     name: Air-Filled Cavern
@@ -1727,6 +1835,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1955:
     area: tba_19
     name: Opening in a Circle of Trees
@@ -1755,6 +1865,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1956:
     area: tba_19
     name: Circle of Trees
@@ -1779,6 +1891,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1957:
     area: tba_19
     name: Circle of Trees
@@ -1803,6 +1917,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1958:
     area: tba_19
     name: Circle of Trees
@@ -1826,6 +1942,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1959:
     area: tba_19
     name: Circle of Trees
@@ -1850,6 +1968,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1960:
     area: tba_19
     name: Drowned Path
@@ -1881,6 +2001,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1961:
     area: tba_19
     name: Circle of Trees
@@ -1908,6 +2030,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1962:
     area: tba_19
     name: Circle of Trees
@@ -1931,6 +2055,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1963:
     area: tba_19
     name: Place of Worship
@@ -1956,6 +2082,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1964:
     area: tba_19
     name: Drizzling Path
@@ -1983,6 +2111,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1965:
     area: tba_19
     name: Pool of Mud
@@ -2008,6 +2138,8 @@ rooms:
     coord: null
     sector: water_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1966:
     area: tba_19
     name: Bend in an Ancient Path
@@ -2039,6 +2171,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1967:
     area: tba_19
     name: Place of Meeting
@@ -2066,6 +2200,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1968:
     area: tba_19
     name: '[Inside the Cocoon (for Trigger)]'
@@ -2082,6 +2218,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1969:
     area: tba_19
     name: Wooden Shelter
@@ -2102,6 +2240,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1970:
     area: tba_19
     name: A Cozy Hut
@@ -2123,6 +2263,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1971:
     area: tba_19
     name: A Dank Prison
@@ -2144,6 +2286,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1972:
     area: tba_19
     name: A Large Hut
@@ -2168,6 +2312,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1973:
     area: tba_19
     name: Trophy Room
@@ -2192,6 +2338,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1974:
     area: tba_19
     name: Jumbled Armory
@@ -2215,6 +2363,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1975:
     area: tba_19
     name: Treasure Storage
@@ -2235,6 +2385,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1976:
     area: tba_19
     name: Palace Entrance
@@ -2260,6 +2412,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1977:
     area: tba_19
     name: Webbed Corridor
@@ -2288,6 +2442,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1978:
     area: tba_19
     name: Damaged Passageway
@@ -2316,6 +2472,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1979:
     area: tba_19
     name: Blood-Spattered Corridor
@@ -2344,6 +2502,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1980:
     area: tba_19
     name: Halls of the Aranea
@@ -2372,6 +2532,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1981:
     area: tba_19
     name: Halls of the Aranea
@@ -2400,6 +2562,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1982:
     area: tba_19
     name: Zanassu's Altar
@@ -2419,6 +2583,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1983:
     area: tba_19
     name: Palace of Lost Ajhuutal
@@ -2443,6 +2609,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1984:
     area: tba_19
     name: Palace of Lost Ajhuutal
@@ -2470,6 +2638,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1985:
     area: tba_19
     name: Palace of Lost Ahjuutal
@@ -2497,6 +2667,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1986:
     area: tba_19
     name: Palace of Lost Ahjuutal
@@ -2526,6 +2698,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1987:
     area: tba_19
     name: Palace of Lost Ahjuutal
@@ -2554,6 +2728,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1988:
     area: tba_19
     name: Palace of Lost Ahjuutal
@@ -2581,6 +2757,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1989:
     area: tba_19
     name: Weaponry of the Spider Demon
@@ -2602,6 +2780,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1990:
     area: tba_19
     name: Chamber of Strange Arts
@@ -2623,6 +2803,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1991:
     area: tba_19
     name: Torture Chamber
@@ -2643,6 +2825,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1992:
     area: tba_19
     name: Sticky Passage
@@ -2670,6 +2854,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1993:
     area: tba_19
     name: Spider Lair
@@ -2691,6 +2877,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1994:
     area: tba_19
     name: Food Storage
@@ -2712,6 +2900,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1995:
     area: tba_19
     name: Place of Plunder
@@ -2733,6 +2923,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1996:
     area: tba_19
     name: Regal Armory
@@ -2755,6 +2947,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1997:
     area: tba_19
     name: Throne of the Champion of Lloth
@@ -2779,6 +2973,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1998:
     area: tba_19
     name: Cocooned Cell
@@ -2799,6 +2995,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1999:
     area: tba_19
     name: Withered Grasses
@@ -2819,3 +3017,5 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

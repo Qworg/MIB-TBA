@@ -256,6 +256,8 @@ rooms:
         a fiery bloodstone amulet.  This amulet has the power to move you to a safe
         place whenever you use it.  This can however, only be used about once every 20
         minutes, as the amulet needs to recharge itself.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11801:
     area: tba_118
     name: A Dimly-lit Room
@@ -280,6 +282,8 @@ rooms:
       description: |2
            Smoothly dome-shaped and a subtle cream color, this melon-sized light sends
         pulses of light spreading out over the whole room.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11802:
     area: tba_118
     name: A Dusty Antiques Shop
@@ -342,6 +346,8 @@ rooms:
       description: |2
            It looks almost as if someone had a fit of rage and pounded on it, a long
         black crack running along its length so that it barely holds up its own weight.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11803:
     area: tba_118
     name: Entrance to a Grand House
@@ -379,6 +385,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11804:
     area: tba_118
     name: A Bright Hallway
@@ -411,6 +419,8 @@ rooms:
            These delicately feminine parasols are designed to shade the effects of the
         sun, being used here however for simple ornamental purposes.  The intricate
         floral pattern and woven lace making them stunning decorations.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11805:
     area: tba_118
     name: A Little Nursery
@@ -481,6 +491,8 @@ rooms:
       description: |2
            These little windows are trimmed with lacey curtains, a few purple flowers
         nodding lazily just outside.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11806:
     area: tba_118
     name: A Concrete Corridor
@@ -522,6 +534,8 @@ rooms:
       description: |2
            These are very small handprints indeed, and freshly made, perhaps those of a
         very young child, or a baby just learning to walk.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11807:
     area: tba_118
     name: A Baby's Room
@@ -573,6 +587,8 @@ rooms:
       description: |2
            The shape of a little piano, this clear plastic music box tinkles gently with
         the sleepy tune of Twinkle Twinkle Little Star.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11808:
     area: tba_118
     name: A Concrete Corridor
@@ -605,6 +621,8 @@ rooms:
       description: |2
            They look like bits of lint and fluff from clothing, unremarkable except for
         the fact that they are wriggling in the breeze as though alive.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11809:
     area: tba_118
     name: A Little Girl's Room
@@ -645,6 +663,8 @@ rooms:
       description: |2
            Tall grasses can be seen waving just slightly above window level, indicating
         that this room is below ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11810:
     area: tba_118
     name: A Bright Hallway
@@ -686,6 +706,8 @@ rooms:
         A solemn unshaven man and a starry-eyed young woman hold two tiny children on
         their laps.  The small girl has her arm around what presumably is her baby
         brother, both smiling toothlessly.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11811:
     area: tba_118
     name: A Carpeted Hallway
@@ -739,6 +761,8 @@ rooms:
       description: |2
            These small plastic lights give off just enough illumination for walking
         around without bumping into things.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11812:
     area: tba_118
     name: Their Room
@@ -788,6 +812,8 @@ rooms:
            This pretty little light fixture has been made from glass beads and pendants
         dangling from delicate metal chains.  The resulting effect is one of a brilliant
         shimmering dome of light.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11813:
     area: tba_118
     name: A Spotless Bathroom
@@ -844,6 +870,8 @@ rooms:
       description: |2
            Amongst these relatively unremarkable supplies are the visible brand names of
         moisturisers and perfumes, most of them half-used.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11814:
     area: tba_118
     name: A Little Airing Cupboard
@@ -869,6 +897,8 @@ rooms:
       description: |2
            These folded piles of quilting smell absolutely delicious, as though they are
         fresh from a hot wash and a long dry in mountain breezes.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11815:
     area: tba_118
     name: The Recreation Room
@@ -916,6 +946,8 @@ rooms:
       description: |2
            These shades are made from cream-colored tassled fabric, the kind that shows
         any speck of dust, only these are in absolutely pristine condition.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11816:
     area: tba_118
     name: A Cheery Kitchen
@@ -940,6 +972,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11817:
     area: tba_118
     name: A Grand Living Room
@@ -982,6 +1016,8 @@ rooms:
       description: |2
            Carefully sculpted wooden frames hold a luxurious array of padded leather
         cushions, the smooth black texture of the sofa looking comfortable and inviting.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11818:
     area: tba_118
     name: The Music Room
@@ -1008,6 +1044,8 @@ rooms:
       description: |2
            Various instrumental cds make up the bulk of the collection, panpipes and
         piano the most commonly featured kind.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11819:
     area: tba_118
     name: A Big Wooden Patio
@@ -1034,6 +1072,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11820:
     area: tba_118
     name: A Large Outdoor Swimming Pool
@@ -1079,6 +1119,8 @@ rooms:
       description: |2
            This simple ladder is fastened to the side of the pool, enabling swimmers to
         climb either in or out.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11821:
     area: tba_118
     name: Way to the Beginning
@@ -1111,6 +1153,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11822:
     area: tba_118
     name: The Crossroads
@@ -1151,6 +1195,8 @@ rooms:
            Little smatterings of golden pollen blossom into a full crimson head of
         petals, hanging wearily downward as though too heavy a burden for the stems that
         bear them.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11823:
     area: tba_118
     name: Way to the Middle
@@ -1188,6 +1234,8 @@ rooms:
       description: |2
            A large garage stands, closed to the outside and padlocked, its large metal
         door painted blue.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11824:
     area: tba_118
     name: Way to the End
@@ -1229,6 +1277,8 @@ rooms:
            The plastic rustles eerily, covering the span of the windows so that nothing
         can be seen within, a layer of dirt and grime streaked across the rippling
         sheets.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11825:
     area: tba_118
     name: A Small Front Porch
@@ -1268,6 +1318,8 @@ rooms:
       description: |2
            Most of the coats and jackets here are in states of disrepair, starting to
         tear or fray in places, and covered with smudges of grass and dirt.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11826:
     area: tba_118
     name: Top of the Stairs
@@ -1308,6 +1360,8 @@ rooms:
       description: |2
            These little bits of rusty metal look to have been pulled from the floor in
         some kind of renovation and abandoned in the midst of the work.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11827:
     area: tba_118
     name: A Banistered Hallway
@@ -1359,6 +1413,8 @@ rooms:
            Carved simply, this banister is made up of a series of wooden poles, fastened
         together in a kind of fence framework to shield the gap where the stairs plunge
         downward.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11828:
     area: tba_118
     name: A Modest Bathroom
@@ -1396,6 +1452,8 @@ rooms:
       description: |2
            The view into the garden reveals a bright collection of daffodils and roses,
         sweeping green trees shielding the majority of the ground from view.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11829:
     area: tba_118
     name: Their Room
@@ -1431,6 +1489,8 @@ rooms:
            This large bed stands in the middle of the room, squarely cut and slightly
         rough looking as if it has been bought second-hand, or merely used for many
         years.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11830:
     area: tba_118
     name: A Banistered Hallway
@@ -1477,6 +1537,8 @@ rooms:
            Carved simply, this railing is made up of a series of wooden poles, fastened
         together in a kind of fence framework to shield the gap where the stairs plunge
         downward.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11831:
     area: tba_118
     name: A Girl's Bedroom
@@ -1519,6 +1581,8 @@ rooms:
       description: |2
            Various depictions of Disney characters cover most of the wooden surfaces,
         brightly and carefully hand-painted, although smudged with little fingerprints.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11832:
     area: tba_118
     name: A Boy's Bedroom
@@ -1555,6 +1619,8 @@ rooms:
       description: |2
            Just a regular wooden bed, this little piece of furniture stands tucked as
         closely against the wall as it can get, made with blue bedding.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11833:
     area: tba_118
     name: A Cozy Living Room
@@ -1602,6 +1668,8 @@ rooms:
            This television is covered in a very fine layer of dust, indicating that it
         has not been turned on for some time though it is large and prominent in the
         room.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11834:
     area: tba_118
     name: A Homey Kitchen
@@ -1626,6 +1694,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11835:
     area: tba_118
     name: An Attached Dining Room
@@ -1655,6 +1725,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11836:
     area: tba_118
     name: An Empty Garage
@@ -1676,6 +1748,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11837:
     area: tba_118
     name: A Large Flowering Garden
@@ -1701,6 +1775,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11838:
     area: tba_118
     name: A Treehouse Camp
@@ -1722,6 +1798,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11839:
     area: tba_118
     name: On the Roof of the Garage
@@ -1749,6 +1827,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11840:
     area: tba_118
     name: A Cluttered Front Porch
@@ -1778,6 +1858,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11841:
     area: tba_118
     name: The Livingroom
@@ -1809,6 +1891,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11842:
     area: tba_118
     name: The Livingroom
@@ -1833,6 +1917,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11843:
     area: tba_118
     name: The Office
@@ -1852,6 +1938,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11844:
     area: tba_118
     name: A Messy Kitchen
@@ -1881,6 +1969,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11845:
     area: tba_118
     name: A Messy Kitchen
@@ -1904,6 +1994,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11846:
     area: tba_118
     name: A Mud-slicked Back Porch
@@ -1927,6 +2019,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11847:
     area: tba_118
     name: A Massive Garden
@@ -1954,6 +2048,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11848:
     area: tba_118
     name: A Massive Garden
@@ -1977,6 +2073,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11849:
     area: tba_118
     name: A Massive Garden
@@ -2001,6 +2099,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11850:
     area: tba_118
     name: By the Gazebo
@@ -2029,6 +2129,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11851:
     area: tba_118
     name: In the Basement
@@ -2061,6 +2163,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11852:
     area: tba_118
     name: A Furnace Room
@@ -2080,6 +2184,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11853:
     area: tba_118
     name: In the Basement
@@ -2111,6 +2217,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11854:
     area: tba_118
     name: A Girl's Bedroom
@@ -2135,6 +2243,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11855:
     area: tba_118
     name: A Cold Bathroom
@@ -2155,6 +2265,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11856:
     area: tba_118
     name: A Makeshift Bedroom
@@ -2176,6 +2288,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11857:
     area: tba_118
     name: A Dimly-lit Sitting Room
@@ -2199,6 +2313,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11858:
     area: tba_118
     name: The Crawl-space
@@ -2227,6 +2343,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11859:
     area: tba_118
     name: Storage in the Crawl-space
@@ -2247,6 +2365,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11860:
     area: tba_118
     name: A Play Area in the Crawl-space
@@ -2271,6 +2391,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11861:
     area: tba_118
     name: A Play Area in the Crawl-space
@@ -2292,6 +2414,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11862:
     area: tba_118
     name: A Dark Hallway
@@ -2330,6 +2454,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11863:
     area: tba_118
     name: A Little Book Closet
@@ -2356,6 +2482,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11864:
     area: tba_118
     name: A Filthy Bathroom
@@ -2375,6 +2503,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11865:
     area: tba_118
     name: A Dark Hallway
@@ -2406,6 +2536,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11866:
     area: tba_118
     name: A Boy's Bedroom
@@ -2426,6 +2558,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11867:
     area: tba_118
     name: Their Room
@@ -2449,6 +2583,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11868:
     area: tba_118
     name: A Small Private Bathroom
@@ -2468,6 +2604,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11869:
     area: tba_118
     name: The Bunkbed Room
@@ -2492,6 +2630,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11870:
     area: tba_118
     name: The Bunkbed Room
@@ -2512,6 +2652,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11871:
     area: tba_118
     name: Under the Bed
@@ -2530,6 +2672,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11872:
     area: tba_118
     name: Inside the Gazebo
@@ -2551,6 +2695,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11873:
     area: tba_118
     name: A Girl's Bedroom
@@ -2573,6 +2719,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11874:
     area: tba_118
     name: On the Tip of a Hill
@@ -2597,6 +2745,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11875:
     area: tba_118
     name: On the Tip of a Hill
@@ -2620,6 +2770,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11876:
     area: tba_118
     name: A Sloping Ridge
@@ -2651,6 +2803,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11877:
     area: tba_118
     name: A Sloping Ridge
@@ -2682,6 +2836,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11878:
     area: tba_118
     name: A Sloping Ridge
@@ -2702,6 +2858,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11879:
     area: tba_118
     name: A Sloping Ridge
@@ -2722,6 +2880,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11880:
     area: tba_118
     name: A Grave Plain
@@ -2749,6 +2909,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11881:
     area: tba_118
     name: A Grave Plain
@@ -2777,6 +2939,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11882:
     area: tba_118
     name: A Grave Plain
@@ -2804,6 +2968,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11883:
     area: tba_118
     name: Dark Grasses
@@ -2836,6 +3002,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11884:
     area: tba_118
     name: Dark Grasses
@@ -2859,6 +3027,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11885:
     area: tba_118
     name: Dark Grasses
@@ -2882,6 +3052,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11886:
     area: tba_118
     name: Dark Grasses
@@ -2905,6 +3077,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11887:
     area: tba_118
     name: Dark Grasses
@@ -2936,6 +3110,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11888:
     area: tba_118
     name: Dark Grasses
@@ -2959,6 +3135,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11889:
     area: tba_118
     name: Dark Grasses
@@ -2982,6 +3160,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11890:
     area: tba_118
     name: Dark Grasses
@@ -3005,6 +3185,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11891:
     area: tba_118
     name: A Grave Plain
@@ -3032,6 +3214,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11892:
     area: tba_118
     name: A Grave Plain
@@ -3059,6 +3243,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11893:
     area: tba_118
     name: A Grave Plain
@@ -3087,6 +3273,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11894:
     area: tba_118
     name: How Perceptive Are You?
@@ -3120,6 +3308,8 @@ rooms:
         The answer is that there are 6 :)
         Most people only count three as the brain does not process the F in the word of
         PS. if you are really stuck, type LOOK TWO, to see exactly where the F's are
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11895:
     area: tba_118
     name: By a Gentle Stream
@@ -3140,6 +3330,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11896:
     area: tba_118
     name: A Quiet Place
@@ -3156,6 +3348,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11897:
     area: tba_118
     name: A Quiet Place
@@ -3172,6 +3366,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11899:
     area: tba_118
     name: A Street Corner
@@ -3194,3 +3390,5 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

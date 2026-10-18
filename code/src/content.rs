@@ -30,6 +30,8 @@ use mib_stdlib::prelude::{ItemId, ItemsSection, NpcId, NpcsSection, RoomId, Room
 use serde::{Deserialize, Serialize};
 use smol_str::SmolStr;
 
+use crate::combat::{TbaAttributes, TbaSaves};
+
 // ---------------------------------------------------------------------------
 // Shared domain types
 // ---------------------------------------------------------------------------
@@ -401,6 +403,25 @@ pub struct TbaNpcStats {
     /// back to unarmed damage.
     #[serde(default)]
     pub damage: Option<Dice>,
+    /// Enhanced-mob e-spec prime attributes (`Str`/`Int`/…,
+    /// `interpret_espec`, `tbamud/src/db.c:1718`).
+    ///
+    /// The simple-mob loader sets every attribute to **11** before reading the
+    /// e-spec section (`db.c:1682-1687`), so an absent block means
+    /// [`TbaAttributes::mob_default`], not the player-side baseline of 13.
+    #[serde(
+        default = "TbaAttributes::mob_default",
+        skip_serializing_if = "TbaAttributes::is_mob_default"
+    )]
+    pub attributes: TbaAttributes,
+    /// Enhanced-mob saving-throw modifiers (`SavingPara`/`SavingRod`/…,
+    /// `interpret_espec`).
+    ///
+    /// These are `apply_saving_throw[]` modifiers layered on the warrior base
+    /// table by [`mag_savingthrow`](crate::combat::mag_savingthrow), the same
+    /// way a player's [`TbaSaves`](crate::combat::TbaSaves) are.
+    #[serde(default, skip_serializing_if = "TbaSaves::is_default")]
+    pub saves: TbaSaves,
 }
 
 /// `tba.npc_stats` — keyed by the `stdlib.npcs` id it describes.

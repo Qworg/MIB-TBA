@@ -23,6 +23,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28601:
     area: tba_286
     name: Stone Archway
@@ -51,6 +53,8 @@ rooms:
         *chuckle*
         Made for levels 50-85
         Brought to you by Strahd
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28602:
     area: tba_286
     name: Ancient Room
@@ -79,6 +83,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28603:
     area: tba_286
     name: Dark Stairway
@@ -103,6 +109,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28604:
     area: tba_286
     name: Landing
@@ -140,6 +148,8 @@ rooms:
            These black iron gates are covered with grotesque faces and creatures in
         various poses and acts of violence and lust.  The gates seem to make your blood
         run cold...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28605:
     area: tba_286
     name: Gateway to Hell
@@ -184,6 +194,8 @@ rooms:
            These black iron gates are covered with grotesque faces and creatures in
         various poses and acts of violence and lust.  The gates seem to make your blood
         run cold...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28606:
     area: tba_286
     name: Hall of the Damned
@@ -216,6 +228,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28607:
     area: tba_286
     name: Hall of the Damned
@@ -248,6 +262,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28608:
     area: tba_286
     name: Hall of the Damned
@@ -280,6 +296,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28609:
     area: tba_286
     name: Hall of the Damned
@@ -316,6 +334,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28610:
     area: tba_286
     name: Hall of the Damned
@@ -340,6 +360,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28611:
     area: tba_286
     name: Mural of the Dead
@@ -363,6 +385,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28612:
     area: tba_286
     name: Living Walls
@@ -390,6 +414,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28613:
     area: tba_286
     name: Trapped souls
@@ -417,6 +443,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28614:
     area: tba_286
     name: Tortured Beings
@@ -445,6 +473,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28615:
     area: tba_286
     name: Gluttony
@@ -473,6 +503,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28616:
     area: tba_286
     name: Greed
@@ -507,6 +539,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28617:
     area: tba_286
     name: Bedroom
@@ -533,6 +567,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28618:
     area: tba_286
     name: Ancient Shrine
@@ -555,6 +591,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28619:
     area: tba_286
     name: Room full of Body Parts
@@ -579,6 +617,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28620:
     area: tba_286
     name: Fountain of Blood
@@ -602,6 +642,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28621:
     area: tba_286
     name: Bloody Stairway
@@ -626,6 +668,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28622:
     area: tba_286
     name: Ancient Room
@@ -648,6 +692,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28623:
     area: tba_286
     name: Room of Lost Souls
@@ -680,6 +726,8 @@ rooms:
       - dispenser
       description: |2
            This is one of those red ticket dispensers that never seem to work right.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28624:
     area: tba_286
     name: Room of Lost Souls
@@ -712,6 +760,8 @@ rooms:
       - dispenser
       description: |2
            This is one of those red ticket dispensers that never seem to work right.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28625:
     area: tba_286
     name: Pit of Fire
@@ -739,6 +789,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28626:
     area: tba_286
     name: Blackened Hallway
@@ -765,6 +817,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28627:
     area: tba_286
     name: Blackened Hallway
@@ -787,6 +841,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28628:
     area: tba_286
     name: Blood Room
@@ -810,6 +866,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28629:
     area: tba_286
     name: Living Walls
@@ -837,6 +895,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28630:
     area: tba_286
     name: Skeleton Factory
@@ -861,6 +921,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28631:
     area: tba_286
     name: Bottom of Stairway
@@ -881,6 +943,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28632:
     area: tba_286
     name: Stone Hall
@@ -905,6 +969,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28633:
     area: tba_286
     name: Cell
@@ -930,6 +996,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28634:
     area: tba_286
     name: Stone Hall
@@ -954,6 +1022,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28635:
     area: tba_286
     name: Stone Hall
@@ -988,6 +1058,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28636:
     area: tba_286
     name: Stone Hall
@@ -1012,6 +1084,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28637:
     area: tba_286
     name: Cell
@@ -1037,6 +1111,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28638:
     area: tba_286
     name: Stone Hall
@@ -1061,6 +1137,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28639:
     area: tba_286
     name: Stone Hall
@@ -1105,6 +1183,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28640:
     area: tba_286
     name: Cell
@@ -1130,6 +1210,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28641:
     area: tba_286
     name: Hidden Room
@@ -1149,6 +1231,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28642:
     area: tba_286
     name: Stone Hall
@@ -1173,6 +1257,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28643:
     area: tba_286
     name: Stone Hall
@@ -1208,6 +1294,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28644:
     area: tba_286
     name: Stone Hall
@@ -1232,6 +1320,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28645:
     area: tba_286
     name: Cell
@@ -1257,6 +1347,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28646:
     area: tba_286
     name: Stone Hall
@@ -1281,6 +1373,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28647:
     area: tba_286
     name: Stone Hall
@@ -1316,6 +1410,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28648:
     area: tba_286
     name: Stone Hall
@@ -1340,6 +1436,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28649:
     area: tba_286
     name: Cell
@@ -1365,6 +1463,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28650:
     area: tba_286
     name: Hot Stairs
@@ -1389,6 +1489,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28651:
     area: tba_286
     name: Crack in Wall
@@ -1413,6 +1515,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28652:
     area: tba_286
     name: Stone Arch
@@ -1448,6 +1552,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28653:
     area: tba_286
     name: Hall of Fire
@@ -1473,6 +1579,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28654:
     area: tba_286
     name: Hall of Fire
@@ -1498,6 +1606,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28655:
     area: tba_286
     name: Construction Area
@@ -1523,6 +1633,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28656:
     area: tba_286
     name: Construction Area
@@ -1548,6 +1660,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28657:
     area: tba_286
     name: Construction Area
@@ -1573,6 +1687,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28658:
     area: tba_286
     name: Hall of Fire
@@ -1598,6 +1714,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28659:
     area: tba_286
     name: Hall of Fire
@@ -1628,6 +1746,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28660:
     area: tba_286
     name: Fire Pits of Hades
@@ -1652,6 +1772,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28661:
     area: tba_286
     name: Fire Mural
@@ -1675,6 +1797,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28662:
     area: tba_286
     name: Foreman's Office
@@ -1701,6 +1825,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28663:
     area: tba_286
     name: Cold Stairway
@@ -1724,6 +1850,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28664:
     area: tba_286
     name: Hall of Fire
@@ -1749,6 +1877,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28665:
     area: tba_286
     name: Construction Area
@@ -1778,6 +1908,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28666:
     area: tba_286
     name: Construction Area
@@ -1803,6 +1935,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28667:
     area: tba_286
     name: Construction Area
@@ -1832,6 +1966,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28668:
     area: tba_286
     name: Hall of Fire
@@ -1858,6 +1994,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28669:
     area: tba_286
     name: Wall of Fire
@@ -1887,6 +2025,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28670:
     area: tba_286
     name: Lake of Fire
@@ -1914,6 +2054,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28671:
     area: tba_286
     name: Hot Hall
@@ -1936,6 +2078,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28672:
     area: tba_286
     name: Icy Landing
@@ -1956,6 +2100,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28673:
     area: tba_286
     name: Ice Room
@@ -1980,6 +2126,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28674:
     area: tba_286
     name: Meat Locker
@@ -2005,6 +2153,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28675:
     area: tba_286
     name: Meat Locker
@@ -2036,6 +2186,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28676:
     area: tba_286
     name: Penguin Room
@@ -2071,6 +2223,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28677:
     area: tba_286
     name: Penguin Room
@@ -2096,6 +2250,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28678:
     area: tba_286
     name: Ice-Creamery
@@ -2119,6 +2275,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28679:
     area: tba_286
     name: Ice-Creamery
@@ -2153,6 +2311,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28680:
     area: tba_286
     name: White Marble Hall
@@ -2182,6 +2342,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28681:
     area: tba_286
     name: Refrigerator Room
@@ -2200,6 +2362,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28682:
     area: tba_286
     name: Ice Room
@@ -2228,6 +2392,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28683:
     area: tba_286
     name: Ice Room
@@ -2262,6 +2428,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28684:
     area: tba_286
     name: Meat Locker
@@ -2296,6 +2464,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28685:
     area: tba_286
     name: Meat Locker
@@ -2318,6 +2488,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28686:
     area: tba_286
     name: Penguin Room
@@ -2343,6 +2515,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28687:
     area: tba_286
     name: Penguin Room
@@ -2368,6 +2542,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28688:
     area: tba_286
     name: Ice-Creamery
@@ -2396,6 +2572,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28689:
     area: tba_286
     name: Ice-Creamery
@@ -2419,6 +2597,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28690:
     area: tba_286
     name: Marble Hall
@@ -2444,6 +2624,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28691:
     area: tba_286
     name: Records Hall
@@ -2464,6 +2646,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28692:
     area: tba_286
     name: Records Hall
@@ -2492,6 +2676,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28693:
     area: tba_286
     name: Records Hall
@@ -2516,6 +2702,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28694:
     area: tba_286
     name: Records Hall
@@ -2536,6 +2724,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28695:
     area: tba_286
     name: Small Altar
@@ -2564,6 +2754,8 @@ rooms:
         ***GO TO HELL!!!  ****
 
         You'll be damned if you don't  ;)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28696:
     area: tba_286
     name: Blackened Hall
@@ -2599,6 +2791,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28697:
     area: tba_286
     name: Office of the High Priest
@@ -2625,6 +2819,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28698:
     area: tba_286
     name: Blackened Hall
@@ -2649,6 +2845,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28699:
     area: tba_286
     name: Blackened Hall
@@ -2679,3 +2877,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

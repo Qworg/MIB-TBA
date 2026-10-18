@@ -31,6 +31,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3501:
     area: tba_35
     name: The Lane
@@ -55,6 +57,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3502:
     area: tba_35
     name: The Laneway
@@ -92,6 +96,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3503:
     area: tba_35
     name: The City Entrance
@@ -117,6 +123,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3504:
     area: tba_35
     name: The South Gate
@@ -141,6 +149,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3505:
     area: tba_35
     name: The Trail To Miden'Nir
@@ -173,6 +183,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3506:
     area: tba_35
     name: The Miden'nir
@@ -199,6 +211,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3507:
     area: tba_35
     name: The Miden'nir
@@ -226,6 +240,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3508:
     area: tba_35
     name: On a Small Path
@@ -248,6 +264,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3509:
     area: tba_35
     name: The Miden'nir
@@ -275,6 +293,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3510:
     area: tba_35
     name: A Crossroads
@@ -302,6 +322,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3511:
     area: tba_35
     name: The Trail
@@ -325,6 +347,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3512:
     area: tba_35
     name: The Miden'nir
@@ -352,6 +376,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3513:
     area: tba_35
     name: The Miden'nir
@@ -376,6 +402,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3514:
     area: tba_35
     name: The Deep Forest
@@ -407,6 +435,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3515:
     area: tba_35
     name: The Light Forest
@@ -434,6 +464,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3516:
     area: tba_35
     name: Some Muddy Ground
@@ -466,6 +498,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3517:
     area: tba_35
     name: Near The Mountains
@@ -489,6 +523,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3518:
     area: tba_35
     name: The Fading Trail
@@ -512,6 +548,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3519:
     area: tba_35
     name: The Dark Path
@@ -539,6 +577,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3520:
     area: tba_35
     name: The Dark Forest
@@ -564,6 +604,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3521:
     area: tba_35
     name: The Carnage
@@ -604,6 +646,8 @@ rooms:
            The corpses looked as if they have been pierced by a large, jagged spear.
         The damage these people sustained is simply amazing.  Worse, the lips on the
         bodies are a light shade of blue, hinting at poison in their systems.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3522:
     area: tba_35
     name: Deep In The Forest Of Miden'nir
@@ -627,6 +671,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3523:
     area: tba_35
     name: The Dark Forest
@@ -655,6 +701,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3550:
     area: tba_35
     name: At The Foot Of The Mountains
@@ -678,6 +726,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3551:
     area: tba_35
     name: Deep In The Forest Of Miden'nir
@@ -704,6 +754,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3552:
     area: tba_35
     name: A Tunnel In The Mountains
@@ -728,6 +780,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3553:
     area: tba_35
     name: A Tunnel In The Mountains
@@ -756,6 +810,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3554:
     area: tba_35
     name: A Small Alcove
@@ -782,6 +838,8 @@ rooms:
       description: |2
            The twigs and leaves have all been piled together as a makeshift bed for some
         small humanoid.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3555:
     area: tba_35
     name: A Tunnel In The Mountains
@@ -806,6 +864,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3556:
     area: tba_35
     name: The Goblin HeadQuarters
@@ -827,6 +887,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3570:
     area: tba_35
     name: The Front Of The Inn
@@ -864,6 +926,8 @@ rooms:
       - sign
       description: |2
            The sign reads: The Woodsman
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3571:
     area: tba_35
     name: North Of The Inn
@@ -884,6 +948,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3572:
     area: tba_35
     name: South Of The Inn
@@ -911,6 +977,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3573:
     area: tba_35
     name: Behind The Inn
@@ -935,6 +1003,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3574:
     area: tba_35
     name: The Woodsman Inn
@@ -968,6 +1038,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3575:
     area: tba_35
     name: The Ambush Point
@@ -992,6 +1064,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3576:
     area: tba_35
     name: The Bar
@@ -1012,6 +1086,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3577:
     area: tba_35
     name: The Bard's Table
@@ -1030,6 +1106,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3578:
     area: tba_35
     name: The Garbage Dump
@@ -1048,6 +1126,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3579:
     area: tba_35
     name: A Quieter Section Of The Inn
@@ -1065,6 +1145,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3581:
     area: tba_35
     name: On The Trail Of The Horsemen
@@ -1087,6 +1169,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3582:
     area: tba_35
     name: On The Trail Of The Horsemen
@@ -1109,6 +1193,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3583:
     area: tba_35
     name: On The Trail Of The Horsemen
@@ -1131,6 +1217,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.3584:
     area: tba_35
     name: A Dead End Trail
@@ -1150,3 +1238,5 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

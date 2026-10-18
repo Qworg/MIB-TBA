@@ -27,6 +27,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1501:
     area: tba_15
     name: A Long Road
@@ -50,6 +52,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1502:
     area: tba_15
     name: A Long Road
@@ -73,6 +77,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1503:
     area: tba_15
     name: A Long Road
@@ -95,6 +101,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1504:
     area: tba_15
     name: A Long Road
@@ -117,6 +125,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1505:
     area: tba_15
     name: A Test for the Faithful
@@ -140,6 +150,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1506:
     area: tba_15
     name: Halls of the Forgotten
@@ -166,6 +178,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1507:
     area: tba_15
     name: Shahadah
@@ -193,6 +207,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1508:
     area: tba_15
     name: Earthly Evil
@@ -216,6 +232,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1509:
     area: tba_15
     name: Misguidance
@@ -240,6 +258,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1510:
     area: tba_15
     name: Temptation
@@ -264,6 +284,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1511:
     area: tba_15
     name: Hypocrisy
@@ -290,6 +312,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1512:
     area: tba_15
     name: Hate
@@ -316,6 +340,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1513:
     area: tba_15
     name: Spiritual Danger
@@ -340,6 +366,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1514:
     area: tba_15
     name: The Fall
@@ -363,6 +391,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1515:
     area: tba_15
     name: Temptation
@@ -387,6 +417,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1516:
     area: tba_15
     name: The Last Day
@@ -410,6 +442,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1517:
     area: tba_15
     name: Flame
@@ -434,6 +468,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1518:
     area: tba_15
     name: Earthly Light
@@ -458,6 +494,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1519:
     area: tba_15
     name: The Light of the Rashidun
@@ -482,6 +520,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1520:
     area: tba_15
     name: The Light of the Rashidun
@@ -506,6 +546,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1521:
     area: tba_15
     name: The Light of the Rashidun
@@ -529,6 +571,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1522:
     area: tba_15
     name: The Light of the Rashidun
@@ -553,6 +597,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1523:
     area: tba_15
     name: Spritual Reward
@@ -576,6 +622,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1524:
     area: tba_15
     name: Creation
@@ -598,6 +646,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1525:
     area: tba_15
     name: Revelation
@@ -621,6 +671,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1526:
     area: tba_15
     name: Conversion
@@ -644,6 +696,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1527:
     area: tba_15
     name: Deliverance
@@ -666,6 +720,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1528:
     area: tba_15
     name: Repentance
@@ -693,6 +749,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1529:
     area: tba_15
     name: Pilgrimage
@@ -721,6 +779,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1530:
     area: tba_15
     name: Intercession
@@ -748,6 +808,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1531:
     area: tba_15
     name: The Upper Reaches
@@ -774,6 +836,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1532:
     area: tba_15
     name: The Upper Reaches
@@ -800,6 +864,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1533:
     area: tba_15
     name: The Upper Reaches
@@ -827,6 +893,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1534:
     area: tba_15
     name: The Final Facing
@@ -854,6 +922,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1535:
     area: tba_15
     name: The Final Facing
@@ -889,6 +959,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1536:
     area: tba_15
     name: The Final Facing
@@ -916,6 +988,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1537:
     area: tba_15
     name: A Straight Path
@@ -939,6 +1013,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1538:
     area: tba_15
     name: Progression
@@ -961,6 +1037,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1539:
     area: tba_15
     name: Judgment
@@ -983,6 +1061,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.1540:
     area: tba_15
     name: The Utmost Throne
@@ -1003,3 +1083,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

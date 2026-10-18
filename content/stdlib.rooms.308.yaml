@@ -41,6 +41,8 @@ rooms:
         the Baron itself.
         A great deal of excellent eq is included in this zone as well as some
         extremely difficult mobs.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30801:
     area: tba_308
     name: Gravel Road
@@ -65,6 +67,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30802:
     area: tba_308
     name: Gravel Road
@@ -88,6 +92,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30803:
     area: tba_308
     name: Gravel Road
@@ -112,6 +118,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30804:
     area: tba_308
     name: Gravel Road at the Settlement
@@ -139,6 +147,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30805:
     area: tba_308
     name: Gravel Road
@@ -161,6 +171,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30806:
     area: tba_308
     name: Gravel Road
@@ -184,6 +196,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30807:
     area: tba_308
     name: Gravel Road
@@ -207,6 +221,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30808:
     area: tba_308
     name: Gravel Road
@@ -231,6 +247,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30809:
     area: tba_308
     name: Bend in the Gravel Road
@@ -254,6 +272,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30810:
     area: tba_308
     name: Bend in the Gravel Road
@@ -277,6 +297,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30811:
     area: tba_308
     name: Before a Large Barn
@@ -306,6 +328,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30812:
     area: tba_308
     name: West of the Tower
@@ -329,6 +353,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30813:
     area: tba_308
     name: Before the Tower
@@ -353,6 +379,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30814:
     area: tba_308
     name: The Tower Entry Gate
@@ -382,6 +410,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30815:
     area: tba_308
     name: Scrupulously Clean Barn
@@ -410,6 +440,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30816:
     area: tba_308
     name: The Pastures
@@ -443,6 +475,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30817:
     area: tba_308
     name: The Pastures
@@ -462,6 +496,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30818:
     area: tba_308
     name: The Pastures
@@ -481,6 +517,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30819:
     area: tba_308
     name: Town Road
@@ -511,6 +549,8 @@ rooms:
            All travelers welcome in Cailveh Town.
         Bring no malice with ye upon entry, but only the goodwill harbored
         within your heart. May the Gods be with you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30820:
     area: tba_308
     name: Intersection on Town Road
@@ -543,6 +583,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30821:
     area: tba_308
     name: Town Road
@@ -585,6 +627,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30822:
     area: tba_308
     name: Town Road
@@ -627,6 +671,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30823:
     area: tba_308
     name: Cul-de-sac
@@ -676,6 +722,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30824:
     area: tba_308
     name: Simple Home
@@ -701,6 +749,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30825:
     area: tba_308
     name: Town Road
@@ -738,6 +788,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30826:
     area: tba_308
     name: Schoolhouse Square
@@ -781,6 +833,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30827:
     area: tba_308
     name: Ye Olde School
@@ -799,6 +853,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30828:
     area: tba_308
     name: Small Home
@@ -823,6 +879,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30829:
     area: tba_308
     name: Tidy Home
@@ -850,6 +908,8 @@ rooms:
       - sign
       description: |2
            Please remove shoes!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30830:
     area: tba_308
     name: Empty Home
@@ -868,6 +928,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30831:
     area: tba_308
     name: Freshly-Painted Home
@@ -894,6 +956,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30832:
     area: tba_308
     name: Quiet Home
@@ -918,6 +982,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30833:
     area: tba_308
     name: Simple Home
@@ -943,6 +1009,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30834:
     area: tba_308
     name: Small Home
@@ -967,6 +1035,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30835:
     area: tba_308
     name: Thatch-Roofed Home
@@ -991,6 +1061,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30836:
     area: tba_308
     name: Small Log Home
@@ -1011,6 +1083,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30837:
     area: tba_308
     name: Cozy Home
@@ -1035,6 +1109,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30838:
     area: tba_308
     name: Town Road
@@ -1063,6 +1139,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30839:
     area: tba_308
     name: Town Square
@@ -1094,6 +1172,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30840:
     area: tba_308
     name: Town Road
@@ -1124,6 +1204,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30841:
     area: tba_308
     name: Northern Square
@@ -1156,6 +1238,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30842:
     area: tba_308
     name: The Apothecary
@@ -1174,6 +1258,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30843:
     area: tba_308
     name: Town Doctor
@@ -1191,6 +1277,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30844:
     area: tba_308
     name: Smithy
@@ -1210,6 +1298,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30845:
     area: tba_308
     name: Salaylia's
@@ -1228,6 +1318,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30846:
     area: tba_308
     name: The Herbalist
@@ -1246,6 +1338,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30847:
     area: tba_308
     name: Colorful Park
@@ -1266,6 +1360,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30848:
     area: tba_308
     name: The Town Hall
@@ -1286,6 +1382,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30849:
     area: tba_308
     name: Tailor
@@ -1304,6 +1402,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30850:
     area: tba_308
     name: Town Road
@@ -1334,6 +1434,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30851:
     area: tba_308
     name: House of Worship
@@ -1353,6 +1455,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30852:
     area: tba_308
     name: The General Store
@@ -1371,6 +1475,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30853:
     area: tba_308
     name: Southern Square
@@ -1401,6 +1507,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30854:
     area: tba_308
     name: Distillery
@@ -1420,6 +1528,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30855:
     area: tba_308
     name: Town Gardens
@@ -1439,6 +1549,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30856:
     area: tba_308
     name: Entryway Into the Main Hall
@@ -1467,6 +1579,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30857:
     area: tba_308
     name: Main Hall
@@ -1499,6 +1613,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30858:
     area: tba_308
     name: Audience Chamber
@@ -1549,6 +1665,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30859:
     area: tba_308
     name: Behind the Gilded Chair
@@ -1578,6 +1696,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30860:
     area: tba_308
     name: The Feasting Hall
@@ -1607,6 +1727,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30861:
     area: tba_308
     name: The Feasting Hall
@@ -1636,6 +1758,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30862:
     area: tba_308
     name: Private Meeting Room
@@ -1663,6 +1787,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30863:
     area: tba_308
     name: Secret Stair Passage
@@ -1686,6 +1812,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30864:
     area: tba_308
     name: Stone and Mortar Hallway
@@ -1720,6 +1848,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30865:
     area: tba_308
     name: Stone and Mortar Hallway
@@ -1751,6 +1881,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30866:
     area: tba_308
     name: End of the Hall
@@ -1779,6 +1911,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30867:
     area: tba_308
     name: Gilzaan's Private Chambers
@@ -1809,6 +1943,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30868:
     area: tba_308
     name: Gilzaan's Private Chambers
@@ -1829,6 +1965,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30869:
     area: tba_308
     name: Necromocis' Private Chambers
@@ -1850,6 +1988,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30870:
     area: tba_308
     name: Necromocis' Private Chambers
@@ -1881,6 +2021,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30871:
     area: tba_308
     name: Sitting Room
@@ -1938,6 +2080,8 @@ rooms:
         quarter of the space that it could, the rest of it is just ornate.  Most of the
         rocks are made from regular, grayish stone but there is a particular run of them
         that are a bit darker than the rest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30872:
     area: tba_308
     name: Cailveh's Private Chambers
@@ -1961,6 +2105,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30873:
     area: tba_308
     name: Cailveh's Private Chambers
@@ -1980,6 +2126,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30874:
     area: tba_308
     name: Bathing Area
@@ -2000,6 +2148,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30875:
     area: tba_308
     name: Runed Stairwell
@@ -2030,6 +2180,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30876:
     area: tba_308
     name: Laboratory
@@ -2058,6 +2210,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30877:
     area: tba_308
     name: Laboratory
@@ -2089,6 +2243,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30878:
     area: tba_308
     name: Study
@@ -2112,6 +2268,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30879:
     area: tba_308
     name: Library
@@ -2135,6 +2293,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30880:
     area: tba_308
     name: Observatory
@@ -2154,6 +2314,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30881:
     area: tba_308
     name: Artifact Room
@@ -2180,3 +2342,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

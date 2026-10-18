@@ -37,6 +37,8 @@ rooms:
         Links        : 00n
         Zone: 187 is linked to the following zones:
          200 Western Highway                at:  18700 (north) --->  20003
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18701:
     area: tba_187
     name: Circus Path
@@ -60,6 +62,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18702:
     area: tba_187
     name: Circus Path
@@ -85,6 +89,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18703:
     area: tba_187
     name: Circus Path
@@ -108,6 +114,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18704:
     area: tba_187
     name: Circus Path
@@ -133,6 +141,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18705:
     area: tba_187
     name: Circus Entrance
@@ -157,6 +167,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18706:
     area: tba_187
     name: Circus Area
@@ -190,6 +202,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18707:
     area: tba_187
     name: Circus Game Stall
@@ -208,6 +222,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18708:
     area: tba_187
     name: Circus Game Stall
@@ -227,6 +243,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18709:
     area: tba_187
     name: Circus Area
@@ -255,6 +273,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18710:
     area: tba_187
     name: Circus Game Stall
@@ -273,6 +293,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18711:
     area: tba_187
     name: Circus Area
@@ -305,6 +327,8 @@ rooms:
       - sign
       description: |2
            The sign reads "Ventrella, Seer of the Future"
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18712:
     area: tba_187
     name: Seer's Tent
@@ -332,6 +356,8 @@ rooms:
       - sign
       description: |2
            The sign reads "I vill be back soon, dahling"
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18713:
     area: tba_187
     name: Circus Area
@@ -357,6 +383,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18714:
     area: tba_187
     name: North of the Circus
@@ -380,6 +408,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18715:
     area: tba_187
     name: Center of Freaks
@@ -408,6 +438,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18716:
     area: tba_187
     name: Old Shack
@@ -433,6 +465,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18717:
     area: tba_187
     name: Old Shack
@@ -453,6 +487,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18718:
     area: tba_187
     name: Circus Area
@@ -477,6 +513,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18719:
     area: tba_187
     name: Circus Area
@@ -500,6 +538,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18720:
     area: tba_187
     name: Circus Area
@@ -524,6 +564,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18721:
     area: tba_187
     name: Animal Cage Area
@@ -552,6 +594,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18722:
     area: tba_187
     name: Monkey Cage
@@ -572,6 +616,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18723:
     area: tba_187
     name: Animal Cage Area
@@ -604,6 +650,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18724:
     area: tba_187
     name: Animal Cage
@@ -623,6 +671,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18725:
     area: tba_187
     name: Animal Cage
@@ -644,6 +694,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18726:
     area: tba_187
     name: Entrance to the Big Top
@@ -677,6 +729,8 @@ rooms:
       - banner
       description: |2
            Welcome to the Circus of Wonders!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18727:
     area: tba_187
     name: Inside the Big Top
@@ -702,6 +756,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18728:
     area: tba_187
     name: Inside the Big Top
@@ -729,6 +785,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18729:
     area: tba_187
     name: Inside the Big Top
@@ -758,6 +816,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18730:
     area: tba_187
     name: Inside the Big Top
@@ -779,6 +839,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18731:
     area: tba_187
     name: Inside the Big Top
@@ -801,6 +863,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18732:
     area: tba_187
     name: Inside the Big Top
@@ -820,6 +884,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.18733:
     area: tba_187
     name: Center of the Circus
@@ -846,3 +912,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

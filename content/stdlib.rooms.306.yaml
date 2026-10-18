@@ -47,6 +47,8 @@ rooms:
         This is a huge tree that newbie players may climb into and find all
         manner of tree-dwelling creatures. Eq has extremely low stats, as do
         all mobs.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30601:
     area: tba_306
     name: On the Trunk at the Lower Branch System
@@ -88,6 +90,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30602:
     area: tba_306
     name: On the Trunk at Mid Branch System
@@ -129,6 +133,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30603:
     area: tba_306
     name: On the Trunk at the Upper Branch System
@@ -166,6 +172,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30604:
     area: tba_306
     name: Inside the Trunk
@@ -195,6 +203,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30605:
     area: tba_306
     name: Inside the Trunk
@@ -214,6 +224,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30606:
     area: tba_306
     name: Traveling the Inner Branches
@@ -245,6 +257,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30607:
     area: tba_306
     name: Traveling the Inner Branches
@@ -267,6 +281,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30608:
     area: tba_306
     name: Traveling the Inner Branches
@@ -298,6 +314,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30609:
     area: tba_306
     name: Traveling the Inner Branches
@@ -320,6 +338,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30610:
     area: tba_306
     name: Traveling the Inner Branches
@@ -351,6 +371,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30611:
     area: tba_306
     name: Traveling the Inner Branches
@@ -373,6 +395,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30612:
     area: tba_306
     name: Traveling the Inner Branches
@@ -404,6 +428,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30613:
     area: tba_306
     name: Traveling the Inner Branches
@@ -426,6 +452,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30614:
     area: tba_306
     name: The Outer Branches
@@ -445,6 +473,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30615:
     area: tba_306
     name: The Outer Branches
@@ -477,6 +507,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30616:
     area: tba_306
     name: The Outer Branches
@@ -496,6 +528,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30617:
     area: tba_306
     name: The Outer Branches
@@ -515,6 +549,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30618:
     area: tba_306
     name: The Outer Branches
@@ -547,6 +583,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30619:
     area: tba_306
     name: The Outer Branches
@@ -566,6 +604,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30620:
     area: tba_306
     name: The Outer Branches
@@ -585,6 +625,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30621:
     area: tba_306
     name: The Outer Branches
@@ -617,6 +659,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30622:
     area: tba_306
     name: The Outer Branches
@@ -636,6 +680,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30623:
     area: tba_306
     name: The Outer Branches
@@ -655,6 +701,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30624:
     area: tba_306
     name: The Outer Branches
@@ -687,6 +735,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30625:
     area: tba_306
     name: The Outer Branches
@@ -706,6 +756,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30626:
     area: tba_306
     name: Out on a Limb
@@ -726,6 +778,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30627:
     area: tba_306
     name: Out on a Limb
@@ -746,6 +800,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30628:
     area: tba_306
     name: Out on a Limb
@@ -766,6 +822,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30629:
     area: tba_306
     name: Out on a Limb
@@ -786,6 +844,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30630:
     area: tba_306
     name: Traveling the Inner Branches
@@ -818,6 +878,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30631:
     area: tba_306
     name: Traveling the Inner Branches
@@ -841,6 +903,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30632:
     area: tba_306
     name: Traveling the Inner Branches
@@ -873,6 +937,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30633:
     area: tba_306
     name: Traveling the Inner Branches
@@ -896,6 +962,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30634:
     area: tba_306
     name: Traveling the Inner Branches
@@ -928,6 +996,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30635:
     area: tba_306
     name: Traveling the Inner Branches
@@ -951,6 +1021,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30636:
     area: tba_306
     name: Traveling the Inner Branches
@@ -983,6 +1055,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30637:
     area: tba_306
     name: Traveling the Inner Branches
@@ -1006,6 +1080,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30638:
     area: tba_306
     name: The Outer Branches
@@ -1025,6 +1101,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30639:
     area: tba_306
     name: The Outer Branches
@@ -1055,6 +1133,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30640:
     area: tba_306
     name: The Outer Branches
@@ -1074,6 +1154,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30641:
     area: tba_306
     name: The Outer Branches
@@ -1093,6 +1175,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30642:
     area: tba_306
     name: The Outer Branches
@@ -1123,6 +1207,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30643:
     area: tba_306
     name: The Outer Branches
@@ -1142,6 +1228,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30644:
     area: tba_306
     name: The Outer Branches
@@ -1161,6 +1249,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30645:
     area: tba_306
     name: The Outer Branches
@@ -1191,6 +1281,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30646:
     area: tba_306
     name: The Outer Branches
@@ -1206,6 +1298,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30647:
     area: tba_306
     name: The Outer Branches
@@ -1225,6 +1319,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30648:
     area: tba_306
     name: The Outer Branches
@@ -1255,6 +1351,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30649:
     area: tba_306
     name: The Outer Branches
@@ -1274,6 +1372,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30650:
     area: tba_306
     name: Out on a Limb
@@ -1294,6 +1394,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30651:
     area: tba_306
     name: Out on a Limb
@@ -1314,6 +1416,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30652:
     area: tba_306
     name: Out on a Limb
@@ -1334,6 +1438,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30653:
     area: tba_306
     name: Out on a Limb
@@ -1354,6 +1460,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30654:
     area: tba_306
     name: Traveling the Inner Branches
@@ -1385,6 +1493,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30655:
     area: tba_306
     name: Traveling the Inner Branches
@@ -1408,6 +1518,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30656:
     area: tba_306
     name: Traveling the Inner Branches
@@ -1439,6 +1551,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30657:
     area: tba_306
     name: Traveling the Inner Branches
@@ -1462,6 +1576,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30658:
     area: tba_306
     name: Traveling the Inner Branches
@@ -1493,6 +1609,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30659:
     area: tba_306
     name: Traveling the Inner Branches
@@ -1516,6 +1634,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30660:
     area: tba_306
     name: Traveling the Inner Branches
@@ -1547,6 +1667,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30661:
     area: tba_306
     name: Traveling the Inner Branches
@@ -1570,6 +1692,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30662:
     area: tba_306
     name: The Outer Branches
@@ -1590,6 +1714,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30663:
     area: tba_306
     name: The Outer Branches
@@ -1621,6 +1747,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30664:
     area: tba_306
     name: The Outer Branches
@@ -1641,6 +1769,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30665:
     area: tba_306
     name: The Outer Branches
@@ -1661,6 +1791,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30666:
     area: tba_306
     name: The Outer Branches
@@ -1692,6 +1824,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30667:
     area: tba_306
     name: The Outer Branches
@@ -1712,6 +1846,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30668:
     area: tba_306
     name: The Outer Branches
@@ -1732,6 +1868,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30669:
     area: tba_306
     name: The Outer Branches
@@ -1763,6 +1901,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30670:
     area: tba_306
     name: The Outer Branches
@@ -1783,6 +1923,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30671:
     area: tba_306
     name: The Outer Branches
@@ -1803,6 +1945,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30672:
     area: tba_306
     name: The Outer Branches
@@ -1834,6 +1978,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30673:
     area: tba_306
     name: The Outer Branches
@@ -1854,6 +2000,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30674:
     area: tba_306
     name: Out on a Limb
@@ -1872,6 +2020,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30675:
     area: tba_306
     name: Out on a Limb
@@ -1890,6 +2040,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30676:
     area: tba_306
     name: Out on a Limb
@@ -1908,6 +2060,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30677:
     area: tba_306
     name: Out on a Limb
@@ -1926,6 +2080,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30678:
     area: tba_306
     name: Out on a Limb
@@ -1945,3 +2101,5 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

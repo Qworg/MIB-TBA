@@ -71,6 +71,8 @@ rooms:
            (Mobs Stay_Zone flags have all been disabled to allow free access between
         301, 302 and 303.  Please ensure that any entrances into the area are flagged
         nomob to keep them in.  -  Parna for TBAMud.)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30101:
     area: tba_301
     name: Campus Crescent
@@ -100,6 +102,8 @@ rooms:
       - cobble
       description: |2
            The cobblestones are clean.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30102:
     area: tba_301
     name: Campus Crescent
@@ -150,6 +154,8 @@ rooms:
       - dormitories
       description: |2
            Well, they're dormitories.  What else can be said?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30103:
     area: tba_301
     name: Campus Crescent
@@ -189,6 +195,8 @@ rooms:
       - cobble
       description: |2
            The cobblestones are clean.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30104:
     area: tba_301
     name: The Crossroads
@@ -227,6 +235,8 @@ rooms:
       description: |2
            There are no cobblestones here!  You feel very silly looking at something
         that is not here.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30105:
     area: tba_301
     name: Campus Crescent
@@ -269,6 +279,8 @@ rooms:
       - cobble
       description: |2
            The cobblestones are clean.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30106:
     area: tba_301
     name: Campus Crescent
@@ -317,6 +329,8 @@ rooms:
       - cobble
       description: |2
            The cobblestones are still clean.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30107:
     area: tba_301
     name: Division Road
@@ -354,6 +368,8 @@ rooms:
       - cobble
       description: |2
            It's asphalt, you idiot!  If you want to look at cobblestones, go west.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30108:
     area: tba_301
     name: University Avenue
@@ -396,6 +412,8 @@ rooms:
       - cobble
       description: |2
            It's a dirt road.  There are NO cobblestones here, although to the north...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30109:
     area: tba_301
     name: University Avenue
@@ -428,6 +446,8 @@ rooms:
       description: |2
            It's unclean matter, such as mud, trash, earth, or soil.  (Webster's New
         World Dictionary)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30110:
     area: tba_301
     name: University Avenue
@@ -474,6 +494,8 @@ rooms:
       - cobble
       description: |2
            It's a dirt road.  There are NO cobblestones here, although to the south...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30111:
     area: tba_301
     name: University Avenue
@@ -514,6 +536,8 @@ rooms:
       description: |2
            It's unclean matter, such as mud, trash, earth, or soil.  (Webster's New
         World Dictionary)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30112:
     area: tba_301
     name: University Avenue
@@ -545,6 +569,8 @@ rooms:
       description: |2
            It's unclean matter, such as mud, trash, earth, or soil.  (Webster's New
         World Dictionary)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30113:
     area: tba_301
     name: University Avenue
@@ -585,6 +611,8 @@ rooms:
       description: |2
            It's unclean matter, such as mud, trash, earth, or soil.  (Webster's New
         World Dictionary)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30114:
     area: tba_301
     name: Union Street
@@ -621,6 +649,8 @@ rooms:
       - descript
       description: |2
            (No description)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30115:
     area: tba_301
     name: Union Street
@@ -662,6 +692,8 @@ rooms:
       - descript
       description: |2
            (No description)
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30116:
     area: tba_301
     name: Division Road
@@ -700,6 +732,8 @@ rooms:
       - arena
       description: |2
            The Jock Hardy Arena lies to the north.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30117:
     area: tba_301
     name: Division Road
@@ -731,6 +765,8 @@ rooms:
       - pavement
       description: |2
            It's asphalt.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30118:
     area: tba_301
     name: Division Road
@@ -768,6 +804,8 @@ rooms:
       description: |2
            The bookstore is a 2-story cubical building, loud noises emanate from the top
         floor.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30119:
     area: tba_301
     name: Division Road
@@ -799,6 +837,8 @@ rooms:
       - pavement
       description: |2
            It's asphalt.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30120:
     area: tba_301
     name: Division Road
@@ -831,6 +871,8 @@ rooms:
       - pavement
       description: |2
            It's asphalt.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30121:
     area: tba_301
     name: Division Road
@@ -867,6 +909,8 @@ rooms:
       - pavement
       description: |2
            It's asphalt.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30122:
     area: tba_301
     name: The Northern Campus Entrance
@@ -906,6 +950,8 @@ rooms:
                                     University of XXX
 
                                    ENTER AT YOUR OWN RISK
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30123:
     area: tba_301
     name: The Ghetto
@@ -930,6 +976,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30124:
     area: tba_301
     name: The Ghetto
@@ -954,6 +1002,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30125:
     area: tba_301
     name: Victoria Hall
@@ -979,6 +1029,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30126:
     area: tba_301
     name: Leonard Hall Lobby
@@ -1029,6 +1081,8 @@ rooms:
       - mailboxes
       description: |2
            All of the mailboxes are all empty ...  Just like normal you think.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30127:
     area: tba_301
     name: Mary Rotte Cafeteria Entrance
@@ -1074,6 +1128,8 @@ rooms:
       - caf
       description: |2
            Yes, this is the cafeteria.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30128:
     area: tba_301
     name: Mary Rotte Cafeteria Entrance
@@ -1119,6 +1175,8 @@ rooms:
       - caf
       description: |2
            Yes, this is the cafeteria.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30129:
     area: tba_301
     name: Morris House
@@ -1143,6 +1201,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30130:
     area: tba_301
     name: The Entrance To Sterling Hall
@@ -1187,6 +1247,8 @@ rooms:
       - circular
       description: |2
            Yes, it's round.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30131:
     area: tba_301
     name: The Student Health Services Entrance
@@ -1216,6 +1278,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30132:
     area: tba_301
     name: Entrance To Ellis Hall
@@ -1244,6 +1308,8 @@ rooms:
       description: |2
            These carvings depict the heroic deeds of Matrix and the Wandering Bard.
         Here they have just defeated the creature known as the Zon File.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30133:
     area: tba_301
     name: Corry-Mack Building
@@ -1281,6 +1347,8 @@ rooms:
       - hallway
       description: |2
            They are twisting alright.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30134:
     area: tba_301
     name: Corry-Mack Hall
@@ -1318,6 +1386,8 @@ rooms:
       - hallway
       description: |2
            They are twisting alright.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30135:
     area: tba_301
     name: Dunning Hall Lobby
@@ -1344,6 +1414,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30136:
     area: tba_301
     name: Frosty Annex Entrance Hall
@@ -1368,6 +1440,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30137:
     area: tba_301
     name: The Central Annex
@@ -1404,6 +1478,8 @@ rooms:
       - prawn
       description: |2
            You see nothing even remotely resembling that here.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30138:
     area: tba_301
     name: The Back Hall
@@ -1430,6 +1506,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30139:
     area: tba_301
     name: Jock Hardy Lobby
@@ -1468,6 +1546,8 @@ rooms:
       - plaques
       description: |2
            They are rather boring.  A bunch of people you don't know.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30140:
     area: tba_301
     name: The Grant Hall Building
@@ -1490,6 +1570,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30141:
     area: tba_301
     name: Campus Bookstore
@@ -1532,6 +1614,8 @@ rooms:
       description: |2
            There is absolutely no point in looking at anything because the prices are
         almost like paying two or three arms and legs to buy something to cover them...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30142:
     area: tba_301
     name: Wally World Reception Area
@@ -1559,6 +1643,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30143:
     area: tba_301
     name: The Kitchen
@@ -1597,6 +1683,8 @@ rooms:
       - doorway
       description: |2
            You stare intently at the door.  Its wooden frame enthrals you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30144:
     area: tba_301
     name: The Kitchen
@@ -1619,6 +1707,8 @@ rooms:
       - food
       description: |2
            Believe me, you don't want to look at that!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30145:
     area: tba_301
     name: Dining Hall
@@ -1655,6 +1745,8 @@ rooms:
       - food
       description: |2
            Believe me, you don't want to look at that!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30146:
     area: tba_301
     name: Dining Hall
@@ -1687,6 +1779,8 @@ rooms:
       - food
       description: |2
            Believe me, you don't want to look at that!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30147:
     area: tba_301
     name: Dining Hall
@@ -1719,6 +1813,8 @@ rooms:
       - food
       description: |2
            Believe me, you don't want to look at that!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30148:
     area: tba_301
     name: Dining Hall
@@ -1755,6 +1851,8 @@ rooms:
       - food
       description: |2
            Believe me, you don't want to look at that!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30149:
     area: tba_301
     name: Kitchen
@@ -1793,6 +1891,8 @@ rooms:
       - food
       description: |2
            Believe me, you don't want to look at that!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30150:
     area: tba_301
     name: A Storeroom
@@ -1835,6 +1935,8 @@ rooms:
       - food
       description: |2
            Well, it's food.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30151:
     area: tba_301
     name: Kitchen
@@ -1873,6 +1975,8 @@ rooms:
       - doorway
       description: |2
            You stare intently at the door.  Its wooden frame enthrals you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30152:
     area: tba_301
     name: Stairway
@@ -1893,6 +1997,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30153:
     area: tba_301
     name: Hallway
@@ -1920,6 +2026,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30154:
     area: tba_301
     name: Equipment Room
@@ -1941,6 +2049,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30155:
     area: tba_301
     name: Locker Room
@@ -1968,6 +2078,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30156:
     area: tba_301
     name: The Gym
@@ -1998,6 +2110,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30157:
     area: tba_301
     name: The Gym
@@ -2019,6 +2133,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30158:
     area: tba_301
     name: The Gym
@@ -2040,6 +2156,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30159:
     area: tba_301
     name: The Gym
@@ -2061,6 +2179,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30160:
     area: tba_301
     name: The Hall To The Arena
@@ -2083,6 +2203,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30161:
     area: tba_301
     name: Jock Hardy Arena
@@ -2117,6 +2239,8 @@ rooms:
       - covered
       description: |2
            Never seen ice before?  Try Canada.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30162:
     area: tba_301
     name: Jock Hardy Arena
@@ -2142,6 +2266,8 @@ rooms:
       - covered
       description: |2
            Never seen ice before?  Try Canada.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30163:
     area: tba_301
     name: Jock Hardy Arena
@@ -2167,6 +2293,8 @@ rooms:
       - covered
       description: |2
            Never seen ice before?  Try Canada.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30164:
     area: tba_301
     name: Jock Hardy Arena
@@ -2192,6 +2320,8 @@ rooms:
       - covered
       description: |2
            Never seen ice before?  Try Canada.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30165:
     area: tba_301
     name: Campus Pub Stairwell
@@ -2232,6 +2362,8 @@ rooms:
       - sign
       description: |2
            The sign reads: NO minors allowed.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30166:
     area: tba_301
     name: Campus Pub
@@ -2260,6 +2392,8 @@ rooms:
       - zorpa
       description: |2
            You see nothing special.  Now what is a zorpa anyways?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30167:
     area: tba_301
     name: The Infobank
@@ -2302,6 +2436,8 @@ rooms:
       description: |2
            This map shows absolutely nothing, further proving the value of student
         governments to you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30168:
     area: tba_301
     name: The Games Room
@@ -2327,6 +2463,8 @@ rooms:
       - family
       description: |2
            You can see a girl playing the Addams Family Pinball Game in one corner.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30169:
     area: tba_301
     name: The Tuck Shoppe
@@ -2346,6 +2484,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30170:
     area: tba_301
     name: The Post Office
@@ -2379,6 +2519,8 @@ rooms:
       - prawn
       description: |2
               You see nothing special.  The Prawn is in excellent condition.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30171:
     area: tba_301
     name: The Special Hidden Room
@@ -2402,6 +2544,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30172:
     area: tba_301
     name: Birth Control Center
@@ -2429,6 +2573,8 @@ rooms:
       description: |2
            This portrays various bodily functions and things vaguely related that turn
         even your stomach...  Blech!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30173:
     area: tba_301
     name: De-Tox Unit
@@ -2449,6 +2595,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30174:
     area: tba_301
     name: Ellis Hall Lobby
@@ -2495,6 +2643,8 @@ rooms:
       description: |2
            You see lots of neat engineering devices which were used in the real world at
         some point or another.  At least you think they were.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30175:
     area: tba_301
     name: Hallway
@@ -2522,6 +2672,8 @@ rooms:
       description: |2
            The hallway is non-descript, ie it has NO description, so why are you looking
         at it?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30176:
     area: tba_301
     name: Auditorium
@@ -2560,6 +2712,8 @@ rooms:
       description: |2
            The stage is located at the west end of the room.  In one corner of the
         stage, there is a hockey stick lying on the ground.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30177:
     area: tba_301
     name: Hallway
@@ -2597,6 +2751,8 @@ rooms:
       - door
       description: |2
            It looks just like every other door you've seen.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30178:
     area: tba_301
     name: The Back Exit
@@ -2626,6 +2782,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30179:
     area: tba_301
     name: Library
@@ -2662,6 +2820,8 @@ rooms:
       - textbooks
       description: |2
            These exciting books are sure to fill one of your days with joy!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30180:
     area: tba_301
     name: Upper Lobby
@@ -2693,6 +2853,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30181:
     area: tba_301
     name: A Classroom
@@ -2713,6 +2875,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30182:
     area: tba_301
     name: A Classroom
@@ -2733,6 +2897,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30183:
     area: tba_301
     name: Hallway
@@ -2769,6 +2935,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30184:
     area: tba_301
     name: A Classroom
@@ -2788,6 +2956,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30185:
     area: tba_301
     name: A Classroom
@@ -2808,6 +2978,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30186:
     area: tba_301
     name: Faculty Office
@@ -2838,6 +3010,8 @@ rooms:
       - huge
       description: |2
            It rests against the wall.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30187:
     area: tba_301
     name: Back Path
@@ -2876,6 +3050,8 @@ rooms:
       - pathway
       description: |2
            The path is well worn, but there are no discernible footsteps upon it.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30188:
     area: tba_301
     name: A Pathway
@@ -2902,6 +3078,8 @@ rooms:
       - building
       description: |2
            Wait until you can see it better.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30189:
     area: tba_301
     name: A Pathway
@@ -2925,6 +3103,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30190:
     area: tba_301
     name: Approach To The Greasepole
@@ -2948,6 +3128,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30191:
     area: tba_301
     name: The Greasepit
@@ -2977,6 +3159,8 @@ rooms:
       - greasepole
       description: |2
            This pole is covered with grease and looks horrendously hard to climb.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30192:
     area: tba_301
     name: The Greasepole
@@ -3006,6 +3190,8 @@ rooms:
       - greasepole
       description: |2
            This pole is covered with grease and looks even worse than it did before.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30193:
     area: tba_301
     name: The Greasepole
@@ -3034,6 +3220,8 @@ rooms:
       - grease
       description: |2
            The pole still looks pretty bad, and things don't seem to be getting better.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30194:
     area: tba_301
     name: The Greasepole
@@ -3062,6 +3250,8 @@ rooms:
       - grease
       description: |2
            The pole still looks pretty bad, and things don't seem to be getting better.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30195:
     area: tba_301
     name: The Greasepole
@@ -3090,6 +3280,8 @@ rooms:
       - grease
       description: |2
            The pole still looks pretty bad, and things don't seem to be getting better.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30196:
     area: tba_301
     name: The Greasepole
@@ -3118,6 +3310,8 @@ rooms:
       - grease
       description: |2
            The pole still looks pretty bad, and things don't seem to be getting better.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30197:
     area: tba_301
     name: The Greasepole
@@ -3146,6 +3340,8 @@ rooms:
       - grease
       description: |2
            The pole still looks pretty bad, and things don't seem to be getting better.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30198:
     area: tba_301
     name: The Greasepole
@@ -3174,6 +3370,8 @@ rooms:
       - grease
       description: |2
            The pole still looks pretty bad, and things don't seem to be getting better.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.30199:
     area: tba_301
     name: The Greasepole
@@ -3202,3 +3400,5 @@ rooms:
       - grease
       description: |2
            The pole still looks pretty bad, and things don't seem to be getting better.
+    ambient_phases: {}
+    ambient_weather: {}

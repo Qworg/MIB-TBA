@@ -22,6 +22,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55601:
     area: tba_556
     name: The Dungeon Moongate
@@ -50,6 +52,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55602:
     area: tba_556
     name: Minoc
@@ -73,6 +77,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55603:
     area: tba_556
     name: The Armorer
@@ -96,6 +102,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55604:
     area: tba_556
     name: Minoc's Fountain
@@ -138,6 +146,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55605:
     area: tba_556
     name: The Weaponsmith
@@ -161,6 +171,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55606:
     area: tba_556
     name: The Boatseller
@@ -184,6 +196,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55607:
     area: tba_556
     name: Sacrifice Street
@@ -222,6 +236,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55608:
     area: tba_556
     name: Sacrifice Street
@@ -248,6 +264,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55609:
     area: tba_556
     name: Sacrifice Street
@@ -286,6 +304,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55610:
     area: tba_556
     name: Forge
@@ -309,6 +329,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55611:
     area: tba_556
     name: Residence
@@ -332,6 +354,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55612:
     area: tba_556
     name: Residence
@@ -355,6 +379,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55613:
     area: tba_556
     name: The Beach
@@ -377,6 +403,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55614:
     area: tba_556
     name: The Beach
@@ -399,6 +427,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55615:
     area: tba_556
     name: The Beach
@@ -425,6 +455,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55616:
     area: tba_556
     name: The Beach
@@ -447,6 +479,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55617:
     area: tba_556
     name: The Beach
@@ -465,6 +499,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55618:
     area: tba_556
     name: The Whirlpool
@@ -494,6 +530,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55619:
     area: tba_556
     name: The Whirlpool
@@ -523,6 +561,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55620:
     area: tba_556
     name: The Whirlpool
@@ -552,6 +592,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55621:
     area: tba_556
     name: The Whirlpool
@@ -581,6 +623,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55622:
     area: tba_556
     name: The Whirlpool
@@ -610,6 +654,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55623:
     area: tba_556
     name: The Whirlpool
@@ -639,6 +685,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55624:
     area: tba_556
     name: The Whirlpool
@@ -668,6 +716,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55625:
     area: tba_556
     name: The Whirlpool
@@ -697,6 +747,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55626:
     area: tba_556
     name: The Whirlpool
@@ -726,6 +778,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55627:
     area: tba_556
     name: The Minoc Moongate
@@ -755,6 +809,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55628:
     area: tba_556
     name: A Campfire
@@ -789,6 +845,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55629:
     area: tba_556
     name: Between the Tents
@@ -811,6 +869,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55630:
     area: tba_556
     name: In Front of the Grand Tent
@@ -849,6 +909,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55631:
     area: tba_556
     name: A Small Tent
@@ -872,6 +934,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55632:
     area: tba_556
     name: A Small Tent
@@ -895,6 +959,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55633:
     area: tba_556
     name: The Treasure Tent
@@ -915,6 +981,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55634:
     area: tba_556
     name: The Grand Tent
@@ -950,6 +1018,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55635:
     area: tba_556
     name: The Map Tent
@@ -986,6 +1056,8 @@ rooms:
       description: |2
            The map has a rough drawing of the camp and to the north a small segment of
         the desert, and a drawing of a winged lizard near the very north.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55636:
     area: tba_556
     name: Dupre's Tent
@@ -1003,6 +1075,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55637:
     area: tba_556
     name: A Small Tent
@@ -1026,6 +1100,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55638:
     area: tba_556
     name: Desert Entrance
@@ -1069,6 +1145,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55639:
     area: tba_556
     name: A Small Tent
@@ -1092,6 +1170,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55640:
     area: tba_556
     name: The Desert
@@ -1114,6 +1194,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55641:
     area: tba_556
     name: The Desert
@@ -1140,6 +1222,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55642:
     area: tba_556
     name: The Desert
@@ -1166,6 +1250,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55643:
     area: tba_556
     name: The Desert Moongate
@@ -1195,6 +1281,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55644:
     area: tba_556
     name: The Desert Moongate
@@ -1223,6 +1311,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55645:
     area: tba_556
     name: The Desert
@@ -1245,6 +1335,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55646:
     area: tba_556
     name: The Desert
@@ -1271,6 +1363,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55647:
     area: tba_556
     name: The Desert Moongate
@@ -1299,6 +1393,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55648:
     area: tba_556
     name: The Dragon Cave
@@ -1317,6 +1413,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55649:
     area: tba_556
     name: The Shrine of Spirituality
@@ -1359,6 +1457,8 @@ rooms:
            Through your entire journey you have not understood the real symbol of the
         ankh.  Its true beauty only reveals itself to you now.  This knowledge
         transcends all that came before.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55650:
     area: tba_556
     name: The Place of Ultimate Evil
@@ -1381,6 +1481,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55651:
     area: tba_556
     name: The Place of Ultimate Evil
@@ -1407,6 +1509,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55652:
     area: tba_556
     name: The Place of Ultimate Evil
@@ -1429,6 +1533,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55653:
     area: tba_556
     name: The Place of Ultimate Evil
@@ -1452,6 +1558,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55654:
     area: tba_556
     name: The Place of Ultimate Evil
@@ -1482,6 +1590,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55655:
     area: tba_556
     name: The Place of Ultimate Evil
@@ -1504,6 +1614,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55656:
     area: tba_556
     name: The Graveyard
@@ -1527,6 +1639,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55657:
     area: tba_556
     name: The Graveyard
@@ -1557,6 +1671,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55658:
     area: tba_556
     name: The Graveyard
@@ -1578,6 +1694,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55659:
     area: tba_556
     name: The Graveyard
@@ -1600,6 +1718,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55660:
     area: tba_556
     name: The Graveyard
@@ -1626,6 +1746,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55661:
     area: tba_556
     name: The Graveyard
@@ -1648,6 +1770,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55662:
     area: tba_556
     name: Lord British's Castle Entrance
@@ -1665,6 +1789,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55663:
     area: tba_556
     name: Castle Fountain
@@ -1686,6 +1812,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55664:
     area: tba_556
     name: A Staircase
@@ -1707,6 +1835,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55665:
     area: tba_556
     name: Hallway
@@ -1742,6 +1872,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55666:
     area: tba_556
     name: Hallway
@@ -1770,6 +1902,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55667:
     area: tba_556
     name: The Throne Room
@@ -1793,6 +1927,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55668:
     area: tba_556
     name: Batlin's Room
@@ -1816,6 +1952,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55669:
     area: tba_556
     name: The Altar of Honesty
@@ -1844,6 +1982,8 @@ rooms:
       description: |2
            Honesty is the scrupulous respect for truth-the willingness never to deceive
         oneself or another.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55670:
     area: tba_556
     name: The Altar of Compassion
@@ -1872,6 +2012,8 @@ rooms:
       description: |2
            Compassion is nonjudgmental empathy for one's fellow creatures.  It is pure
         love.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55671:
     area: tba_556
     name: The Altar of Valor
@@ -1899,6 +2041,8 @@ rooms:
       - plaque
       description: |2
            Valor is the courage to take actions in support of one's convictions.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55672:
     area: tba_556
     name: The Altar of Justice
@@ -1926,6 +2070,8 @@ rooms:
       - plaque
       description: |2
            Justice is devotion to truth, tempered by love.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55673:
     area: tba_556
     name: The Altar of Sacrifice
@@ -1953,6 +2099,8 @@ rooms:
       - plaque
       description: |2
            Sacrifice is the courage to give of oneself in the name of love.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55674:
     area: tba_556
     name: The Altar of Honor
@@ -1980,6 +2128,8 @@ rooms:
       - plaque
       description: |2
            Honor is the courage to stand for truth, against any odds.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55675:
     area: tba_556
     name: The Altar of Spirituality
@@ -2008,6 +2158,8 @@ rooms:
       description: |2
            Spirituality is the concern with one's inner being and how one deals with
         truth, love, and courage.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55676:
     area: tba_556
     name: The Altar of Humility
@@ -2036,6 +2188,8 @@ rooms:
       description: |2
            Humility is perceiving one's place in the world, not according to one's own
         accomplishments, but according to the intrinsic value of all individuals.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55677:
     area: tba_556
     name: The Enlightenment
@@ -2061,6 +2215,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55678:
     area: tba_556
     name: In the Warp
@@ -2076,6 +2232,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55679:
     area: tba_556
     name: In the Warp
@@ -2099,6 +2257,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55680:
     area: tba_556
     name: In the Warp
@@ -2122,6 +2282,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55681:
     area: tba_556
     name: The Enlightenment
@@ -2146,6 +2308,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55682:
     area: tba_556
     name: In the Warp
@@ -2169,6 +2333,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55683:
     area: tba_556
     name: In the Warp
@@ -2192,6 +2358,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55684:
     area: tba_556
     name: The Lagoon
@@ -2215,6 +2383,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.55685:
     area: tba_556
     name: Entrance to Ultima
@@ -2246,3 +2416,5 @@ rooms:
       - plaque
       description: |2
            The plaque reads, "The Ultima Area was originally made for Merc 2.0."
+    ambient_phases: {}
+    ambient_weather: {}

@@ -33,6 +33,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20001:
     area: tba_200
     name: Western Highway
@@ -53,6 +55,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20002:
     area: tba_200
     name: Western Highway
@@ -76,6 +80,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20003:
     area: tba_200
     name: Western Highway
@@ -99,6 +105,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20004:
     area: tba_200
     name: Western Highway
@@ -122,6 +130,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20005:
     area: tba_200
     name: Western Highway
@@ -145,6 +155,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20006:
     area: tba_200
     name: Western Highway
@@ -168,6 +180,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20007:
     area: tba_200
     name: Western Highway
@@ -200,6 +214,8 @@ rooms:
       - sign
       description: |2
            Sairith's Fur Trading Post
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20008:
     area: tba_200
     name: Western Highway
@@ -223,6 +239,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20009:
     area: tba_200
     name: Western Highway
@@ -246,6 +264,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20010:
     area: tba_200
     name: Western Highway
@@ -273,6 +293,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20011:
     area: tba_200
     name: Western Highway
@@ -296,6 +318,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20012:
     area: tba_200
     name: Western Highway
@@ -323,6 +347,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20013:
     area: tba_200
     name: Western Highway
@@ -347,6 +373,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20014:
     area: tba_200
     name: Western Highway
@@ -371,6 +399,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20015:
     area: tba_200
     name: Western Highway
@@ -398,6 +428,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20016:
     area: tba_200
     name: Western Highway
@@ -421,6 +453,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20017:
     area: tba_200
     name: Western Highway
@@ -441,6 +475,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20018:
     area: tba_200
     name: Dirt Road
@@ -465,6 +501,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20019:
     area: tba_200
     name: Dirt Road
@@ -488,6 +526,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20020:
     area: tba_200
     name: Dirt Road
@@ -512,6 +552,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20021:
     area: tba_200
     name: Dirt Road
@@ -536,6 +578,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20022:
     area: tba_200
     name: Dirt Road
@@ -559,6 +603,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20023:
     area: tba_200
     name: Dirt Road
@@ -582,6 +628,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20024:
     area: tba_200
     name: Dirt Road
@@ -605,6 +653,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20025:
     area: tba_200
     name: Dirt Road
@@ -625,6 +675,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20026:
     area: tba_200
     name: Dirt Road
@@ -648,6 +700,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20027:
     area: tba_200
     name: Dirt Road
@@ -672,6 +726,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20028:
     area: tba_200
     name: Dirt Road
@@ -697,6 +753,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20029:
     area: tba_200
     name: Dirt Road
@@ -722,6 +780,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20030:
     area: tba_200
     name: Dirt Road
@@ -745,6 +805,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20031:
     area: tba_200
     name: Dirt Road
@@ -768,6 +830,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20032:
     area: tba_200
     name: Dirt Road
@@ -792,6 +856,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20033:
     area: tba_200
     name: Dirt Road
@@ -815,6 +881,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20034:
     area: tba_200
     name: Dirt Road
@@ -838,6 +906,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20035:
     area: tba_200
     name: Dirt Road
@@ -861,6 +931,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20036:
     area: tba_200
     name: Dirt Road
@@ -884,6 +956,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20037:
     area: tba_200
     name: Dirt Road
@@ -907,6 +981,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20038:
     area: tba_200
     name: Dirt Road
@@ -926,6 +1002,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20039:
     area: tba_200
     name: Narrow Path
@@ -946,6 +1024,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.20040:
     area: tba_200
     name: Sairith's Trading Post
@@ -967,3 +1047,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

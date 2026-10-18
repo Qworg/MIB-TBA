@@ -35,6 +35,8 @@ rooms:
         255 Shipwreck                      at 26502 (east ) ---> 25531
         255 Shipwreck                      at 26506 (down ) ---> 25507
         282 Infernal Pit of Kerjim         at 26536 (north) ---> 28200
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26501:
     area: tba_265
     name: Down the Cliff-Face
@@ -58,6 +60,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26502:
     area: tba_265
     name: On the Cliff Face
@@ -86,6 +90,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26503:
     area: tba_265
     name: On the Steps
@@ -109,6 +115,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26504:
     area: tba_265
     name: The Base of the Steps
@@ -135,6 +143,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26505:
     area: tba_265
     name: Along the Beach
@@ -159,6 +169,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26506:
     area: tba_265
     name: Along the Beach
@@ -193,6 +205,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26507:
     area: tba_265
     name: Sandy Beach
@@ -218,6 +232,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26508:
     area: tba_265
     name: Sandy Beach
@@ -242,6 +258,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26509:
     area: tba_265
     name: Sandy Beach
@@ -267,6 +285,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26510:
     area: tba_265
     name: The Base of the City
@@ -293,6 +313,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26511:
     area: tba_265
     name: Along a Rocky Beach
@@ -316,6 +338,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26512:
     area: tba_265
     name: Rocky Path
@@ -339,6 +363,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26513:
     area: tba_265
     name: Rocky Path
@@ -361,6 +387,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26514:
     area: tba_265
     name: Rocky Path
@@ -384,6 +412,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26515:
     area: tba_265
     name: Rocky Path at Takker's Jetty
@@ -411,6 +441,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26516:
     area: tba_265
     name: Rocky Path
@@ -434,6 +466,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26517:
     area: tba_265
     name: Takker's Jetty
@@ -456,6 +490,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26518:
     area: tba_265
     name: Takker's Jetty
@@ -479,6 +515,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26519:
     area: tba_265
     name: Takker's Jetty at the Lighthouse
@@ -507,6 +545,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26520:
     area: tba_265
     name: Entryway - Lighthouse
@@ -538,6 +578,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26521:
     area: tba_265
     name: Main Living Area - Lighthouse
@@ -586,6 +628,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26522:
     area: tba_265
     name: Lighthouse Keeper's Bedroom
@@ -615,6 +659,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26523:
     area: tba_265
     name: Light Room
@@ -636,6 +682,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26524:
     area: tba_265
     name: Lighthouse Keeper's Daughter's Bedroom
@@ -655,6 +703,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26525:
     area: tba_265
     name: On the Spiral Staircase
@@ -689,6 +739,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26526:
     area: tba_265
     name: Lighthouse Keeper's Operating Room
@@ -750,6 +802,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26527:
     area: tba_265
     name: Keeper's Playroom
@@ -776,6 +830,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26528:
     area: tba_265
     name: Cell
@@ -800,6 +856,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26529:
     area: tba_265
     name: Cell
@@ -824,6 +882,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26530:
     area: tba_265
     name: Cell
@@ -848,6 +908,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26531:
     area: tba_265
     name: Rocky Path
@@ -870,6 +932,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26532:
     area: tba_265
     name: Rocky Path
@@ -898,6 +962,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26533:
     area: tba_265
     name: Cave Entrance
@@ -922,6 +988,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26534:
     area: tba_265
     name: In the Kracken's Den
@@ -941,6 +1009,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26535:
     area: tba_265
     name: End of the Rocky Path
@@ -960,6 +1030,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.26536:
     area: tba_265
     name: End of the Path
@@ -995,3 +1067,5 @@ rooms:
       description: |2
            You think you may see a faint outline of some sort of entryway in the cliff.
         Maybe if you tried OPENing it...?
+    ambient_phases: {}
+    ambient_weather: {}

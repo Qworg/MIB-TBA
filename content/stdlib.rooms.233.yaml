@@ -38,6 +38,8 @@ rooms:
         Plot         :
         Links        : 00
         Map          : 02
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23301:
     area: tba_233
     name: Dragon Plains
@@ -65,6 +67,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23302:
     area: tba_233
     name: A Small Stream
@@ -86,6 +90,8 @@ rooms:
     coord: null
     sector: water_no_swim
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23303:
     area: tba_233
     name: Dragon Plains
@@ -114,6 +120,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23304:
     area: tba_233
     name: A Huge Footprint
@@ -134,6 +142,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23305:
     area: tba_233
     name: Sand Drift
@@ -162,6 +172,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23306:
     area: tba_233
     name: Dragon Plains
@@ -185,6 +197,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23307:
     area: tba_233
     name: Dragon Plains
@@ -208,6 +222,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23308:
     area: tba_233
     name: Skeleton Shack
@@ -231,6 +247,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23309:
     area: tba_233
     name: Skeleton Shack
@@ -252,6 +270,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23310:
     area: tba_233
     name: An Abandoned Well
@@ -275,6 +295,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23311:
     area: tba_233
     name: Dragonscale Tunnel
@@ -299,6 +321,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23312:
     area: tba_233
     name: Dragonscale Tunnel
@@ -323,6 +347,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23313:
     area: tba_233
     name: Dragonscale Tunnel
@@ -346,6 +372,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23314:
     area: tba_233
     name: Dragonscale Tunnel
@@ -369,6 +397,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23315:
     area: tba_233
     name: Dragonscale Tunnel
@@ -392,6 +422,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23316:
     area: tba_233
     name: Dragonscale Tunnel
@@ -415,6 +447,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23317:
     area: tba_233
     name: Sand Warp
@@ -439,6 +473,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23318:
     area: tba_233
     name: Sand Warp
@@ -462,6 +498,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23319:
     area: tba_233
     name: Sand Warp
@@ -485,6 +523,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23320:
     area: tba_233
     name: Dragon Cave
@@ -508,6 +548,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23321:
     area: tba_233
     name: Dragon Cave
@@ -531,6 +573,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23322:
     area: tba_233
     name: Dragon Cave
@@ -555,6 +599,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23323:
     area: tba_233
     name: Dragon Cave
@@ -578,6 +624,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23324:
     area: tba_233
     name: Dragon Cave
@@ -602,6 +650,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23325:
     area: tba_233
     name: Dragon Cave
@@ -625,6 +675,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23326:
     area: tba_233
     name: Dragon Cave
@@ -648,6 +700,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23327:
     area: tba_233
     name: Dragon Cave
@@ -671,6 +725,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23328:
     area: tba_233
     name: Crumbling Staircase
@@ -694,6 +750,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23329:
     area: tba_233
     name: Crumbling Staircase
@@ -717,6 +775,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23330:
     area: tba_233
     name: An Empty Room
@@ -741,6 +801,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23331:
     area: tba_233
     name: A Hole
@@ -764,6 +826,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23332:
     area: tba_233
     name: A Hole
@@ -788,6 +852,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23333:
     area: tba_233
     name: Secret Passage
@@ -811,6 +877,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23334:
     area: tba_233
     name: Secret Passage
@@ -834,6 +902,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23335:
     area: tba_233
     name: Secret Passage
@@ -858,6 +928,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23336:
     area: tba_233
     name: A Narrow Walkway
@@ -882,6 +954,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23337:
     area: tba_233
     name: Hall of Lost Souls
@@ -906,6 +980,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23338:
     area: tba_233
     name: Hall of Lost Souls
@@ -929,6 +1005,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23339:
     area: tba_233
     name: Hall of Lost Souls
@@ -952,6 +1030,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23340:
     area: tba_233
     name: Hall of Lost Souls
@@ -975,6 +1055,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23341:
     area: tba_233
     name: Hall of Lost Souls
@@ -998,6 +1080,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23342:
     area: tba_233
     name: A Darkened Stairwell
@@ -1023,6 +1107,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23343:
     area: tba_233
     name: A Darkened Stairwell
@@ -1048,6 +1134,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23344:
     area: tba_233
     name: A Darkened Stairwell
@@ -1072,6 +1160,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23345:
     area: tba_233
     name: A Darkened Stairwell
@@ -1095,6 +1185,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23346:
     area: tba_233
     name: A Darkened Stairwell
@@ -1118,6 +1210,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23347:
     area: tba_233
     name: A Hole in the Stairs
@@ -1141,6 +1235,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23348:
     area: tba_233
     name: A Hole in the Stairs
@@ -1164,6 +1260,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23349:
     area: tba_233
     name: A Hole in the Stairs
@@ -1192,6 +1290,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23350:
     area: tba_233
     name: Darkness
@@ -1215,6 +1315,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23351:
     area: tba_233
     name: A Darkened Stairwell
@@ -1238,6 +1340,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23352:
     area: tba_233
     name: Darkness
@@ -1263,6 +1367,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23353:
     area: tba_233
     name: A Large Empty Room
@@ -1286,6 +1392,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23354:
     area: tba_233
     name: A Large Empty Room
@@ -1309,6 +1417,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23355:
     area: tba_233
     name: Skeleton Tunnel
@@ -1333,6 +1443,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23356:
     area: tba_233
     name: Skeleton Tunnel
@@ -1356,6 +1468,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23357:
     area: tba_233
     name: A Large Empty Room
@@ -1379,6 +1493,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23358:
     area: tba_233
     name: A Small Walkway
@@ -1402,6 +1518,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23359:
     area: tba_233
     name: Skeleton Tunnel
@@ -1425,6 +1543,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23360:
     area: tba_233
     name: A Small Walkway
@@ -1448,6 +1568,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23361:
     area: tba_233
     name: Skeleton Tunnel
@@ -1471,6 +1593,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23362:
     area: tba_233
     name: Skeleton Tunnel
@@ -1494,6 +1618,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23363:
     area: tba_233
     name: Dragon Plains
@@ -1517,6 +1643,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23364:
     area: tba_233
     name: Dragon Plains
@@ -1540,6 +1668,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23365:
     area: tba_233
     name: Dragon Plains
@@ -1563,6 +1693,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23366:
     area: tba_233
     name: Dragon Plains
@@ -1586,6 +1718,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23367:
     area: tba_233
     name: Dragon Plains
@@ -1609,6 +1743,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23368:
     area: tba_233
     name: Dragon Plains
@@ -1632,6 +1768,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23369:
     area: tba_233
     name: Sand Drift
@@ -1655,6 +1793,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23370:
     area: tba_233
     name: Sand Drift
@@ -1678,6 +1818,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23371:
     area: tba_233
     name: A Small Path
@@ -1701,6 +1843,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23372:
     area: tba_233
     name: A Small Path
@@ -1724,6 +1868,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23373:
     area: tba_233
     name: A Small Path
@@ -1747,6 +1893,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23374:
     area: tba_233
     name: A Small Path
@@ -1770,6 +1918,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23375:
     area: tba_233
     name: Dragon Plains
@@ -1797,6 +1947,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23376:
     area: tba_233
     name: Sand Drift
@@ -1821,6 +1973,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23377:
     area: tba_233
     name: Sand Drift
@@ -1844,6 +1998,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23378:
     area: tba_233
     name: Dragon Plains
@@ -1867,6 +2023,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23379:
     area: tba_233
     name: Dragon Plains
@@ -1890,6 +2048,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23380:
     area: tba_233
     name: Dragon Plains
@@ -1909,6 +2069,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23381:
     area: tba_233
     name: Dragon Plains
@@ -1932,6 +2094,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23382:
     area: tba_233
     name: Indian Burial Ground
@@ -1955,6 +2119,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23383:
     area: tba_233
     name: Indian Burial Ground
@@ -1979,6 +2145,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23384:
     area: tba_233
     name: Indian Burial Ground
@@ -2002,6 +2170,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23385:
     area: tba_233
     name: Indian Burial Ground
@@ -2025,6 +2195,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23386:
     area: tba_233
     name: Gates leading out of the Burial Grounds
@@ -2048,6 +2220,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23387:
     area: tba_233
     name: Dragon Plains
@@ -2075,6 +2249,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23388:
     area: tba_233
     name: Water Hole
@@ -2098,6 +2274,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23389:
     area: tba_233
     name: Water Hole
@@ -2121,6 +2299,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23390:
     area: tba_233
     name: Water Hole
@@ -2144,6 +2324,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23391:
     area: tba_233
     name: Dragon Plains
@@ -2167,6 +2349,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23392:
     area: tba_233
     name: Dragon Plains
@@ -2190,6 +2374,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23393:
     area: tba_233
     name: Ransacked Village
@@ -2214,6 +2400,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23394:
     area: tba_233
     name: Ransacked Village
@@ -2238,6 +2426,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23395:
     area: tba_233
     name: Ransacked Village
@@ -2261,6 +2451,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23396:
     area: tba_233
     name: Dragon Plains
@@ -2284,6 +2476,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23397:
     area: tba_233
     name: Dragon Plains
@@ -2307,6 +2501,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23398:
     area: tba_233
     name: Dragon Plains
@@ -2330,6 +2526,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.23399:
     area: tba_233
     name: Dragon Plains
@@ -2349,3 +2547,5 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

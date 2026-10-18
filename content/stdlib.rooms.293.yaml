@@ -36,6 +36,8 @@ rooms:
       - credits
       description: |2
            See KEROFK zone description room.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29301:
     area: tba_293
     name: Passageway
@@ -56,6 +58,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29302:
     area: tba_293
     name: Passageway
@@ -79,6 +83,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29303:
     area: tba_293
     name: Passageway
@@ -108,6 +114,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29304:
     area: tba_293
     name: Octagonal Room
@@ -133,6 +141,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29305:
     area: tba_293
     name: Passageway
@@ -151,6 +161,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29306:
     area: tba_293
     name: Passageway
@@ -180,6 +192,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29307:
     area: tba_293
     name: Trial
@@ -225,6 +239,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29308:
     area: tba_293
     name: Passageway
@@ -250,6 +266,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29309:
     area: tba_293
     name: Passageway
@@ -270,6 +288,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29310:
     area: tba_293
     name: Passageway
@@ -299,6 +319,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29311:
     area: tba_293
     name: Passageway
@@ -325,6 +347,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29312:
     area: tba_293
     name: Passageway
@@ -344,6 +368,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29313:
     area: tba_293
     name: Passageway
@@ -367,6 +393,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29314:
     area: tba_293
     name: End of the Passageway
@@ -395,6 +423,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29315:
     area: tba_293
     name: Second Trial
@@ -430,6 +460,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29316:
     area: tba_293
     name: Passageway
@@ -454,6 +486,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29317:
     area: tba_293
     name: Passageway
@@ -472,6 +506,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29318:
     area: tba_293
     name: Passageway
@@ -500,6 +536,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29319:
     area: tba_293
     name: Trial of Defense!
@@ -523,6 +561,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29320:
     area: tba_293
     name: Passageway (Again!)
@@ -542,6 +582,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29321:
     area: tba_293
     name: Passageway
@@ -563,6 +605,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29322:
     area: tba_293
     name: Passageway
@@ -584,6 +628,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29323:
     area: tba_293
     name: Passageway
@@ -605,6 +651,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29324:
     area: tba_293
     name: Passageway's End
@@ -623,6 +671,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29325:
     area: tba_293
     name: Trial of Persistence
@@ -677,6 +727,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29326:
     area: tba_293
     name: Passageway
@@ -695,6 +747,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29327:
     area: tba_293
     name: Passageway
@@ -713,6 +767,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29328:
     area: tba_293
     name: Passageway
@@ -742,6 +798,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29329:
     area: tba_293
     name: Killed by Arrow Traps!
@@ -770,6 +828,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29330:
     area: tba_293
     name: Alcove
@@ -788,6 +848,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29331:
     area: tba_293
     name: Pedestal of the Orb!
@@ -816,6 +878,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29332:
     area: tba_293
     name: Temple of MouseRider
@@ -845,6 +909,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29333:
     area: tba_293
     name: Void
@@ -864,6 +930,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29334:
     area: tba_293
     name: View of a City
@@ -890,6 +958,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29335:
     area: tba_293
     name: Near the City
@@ -914,6 +984,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29336:
     area: tba_293
     name: Dirt Road
@@ -937,6 +1009,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29337:
     area: tba_293
     name: Turn in the Road
@@ -962,6 +1036,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29338:
     area: tba_293
     name: A City on the Edge
@@ -985,6 +1061,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29339:
     area: tba_293
     name: Fields near a City
@@ -1007,6 +1085,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29340:
     area: tba_293
     name: Near a City
@@ -1029,6 +1109,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29341:
     area: tba_293
     name: Dirt Road
@@ -1056,6 +1138,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29342:
     area: tba_293
     name: Dirt Road
@@ -1079,6 +1163,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29343:
     area: tba_293
     name: Dirt Road
@@ -1102,6 +1188,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29344:
     area: tba_293
     name: Mountain Pass
@@ -1126,6 +1214,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29345:
     area: tba_293
     name: Mountain Pass
@@ -1151,6 +1241,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29346:
     area: tba_293
     name: Mountain Pass
@@ -1171,6 +1263,8 @@ rooms:
     coord: null
     sector: hills
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29347:
     area: tba_293
     name: Fleecem and Son
@@ -1191,6 +1285,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29348:
     area: tba_293
     name: Graveyard Entrance
@@ -1220,6 +1316,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29349:
     area: tba_293
     name: Graveyard
@@ -1244,6 +1342,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29350:
     area: tba_293
     name: Graveyard
@@ -1268,6 +1368,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29351:
     area: tba_293
     name: Graveyard
@@ -1292,6 +1394,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.29352:
     area: tba_293
     name: Farmer's Stand
@@ -1311,3 +1415,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

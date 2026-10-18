@@ -24,6 +24,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6401:
     area: tba_64
     name: A Mountain Trail
@@ -47,6 +49,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6402:
     area: tba_64
     name: A Mountain Trail
@@ -73,6 +77,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6403:
     area: tba_64
     name: Near The Mountain's Peak
@@ -100,6 +106,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6404:
     area: tba_64
     name: The Trail To The Valley
@@ -125,6 +133,8 @@ rooms:
     coord: null
     sector: mountain
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6405:
     area: tba_64
     name: In The Valley
@@ -153,6 +163,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6406:
     area: tba_64
     name: In A Clearing
@@ -188,6 +200,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6407:
     area: tba_64
     name: A Stairwell
@@ -233,6 +247,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6408:
     area: tba_64
     name: A Linen Closet
@@ -268,6 +284,8 @@ rooms:
       description: |2
            White sheets, pillow-cases, etc.  Not really anything that you need, but
         interesting.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6409:
     area: tba_64
     name: A Corridor
@@ -307,6 +325,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6410:
     area: tba_64
     name: A Bathroom
@@ -333,6 +353,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6411:
     area: tba_64
     name: The Master Bedroom
@@ -368,6 +390,8 @@ rooms:
       - closet
       description: |2
            Nice clothes, but not your size at all.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6412:
     area: tba_64
     name: The Library
@@ -409,6 +433,8 @@ rooms:
       - books
       description: |2
            There are lots of books about everything here!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6413:
     area: tba_64
     name: The Stairwell
@@ -441,6 +467,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6414:
     area: tba_64
     name: A Hidden Hall
@@ -476,6 +504,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6415:
     area: tba_64
     name: A Stairwell
@@ -508,6 +538,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6416:
     area: tba_64
     name: The Hidden Treasure Room
@@ -532,6 +564,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6417:
     area: tba_64
     name: A Hallway
@@ -581,6 +615,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6418:
     area: tba_64
     name: A Servant's Room
@@ -606,6 +642,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6419:
     area: tba_64
     name: A Servant's Room
@@ -631,6 +669,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6420:
     area: tba_64
     name: A Hallway
@@ -660,6 +700,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6421:
     area: tba_64
     name: A Servant's Room
@@ -685,6 +727,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6422:
     area: tba_64
     name: The Stairwell
@@ -711,6 +755,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6423:
     area: tba_64
     name: The Dining Hall
@@ -752,6 +798,8 @@ rooms:
       description: |2
            Many of these show scenes of high magic and heroism.  Just like almost every
         tapestry and painting you've seen.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6424:
     area: tba_64
     name: The Kitchen Area
@@ -777,6 +825,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6425:
     area: tba_64
     name: The Stairwell
@@ -803,6 +853,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6426:
     area: tba_64
     name: A Hall
@@ -835,6 +887,8 @@ rooms:
       - cells
       description: |2
            It is open, empty, and uninteresting.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6427:
     area: tba_64
     name: A Hall
@@ -858,6 +912,8 @@ rooms:
       - cells
       description: |2
            It is open, empty, and uninteresting.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6428:
     area: tba_64
     name: A Hall
@@ -881,6 +937,8 @@ rooms:
       - cells
       description: |2
            It is open, empty, and uninteresting.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6429:
     area: tba_64
     name: A Stairwell
@@ -907,6 +965,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6430:
     area: tba_64
     name: A Mage's Office
@@ -940,6 +1000,8 @@ rooms:
       description: |2
            It is cluttered with all sorts of papers.  Some look half interesting,
         actually.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6431:
     area: tba_64
     name: The Stairwell
@@ -966,6 +1028,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6432:
     area: tba_64
     name: A Sitting Room
@@ -986,6 +1050,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6433:
     area: tba_64
     name: The Stairwell
@@ -1008,6 +1074,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6434:
     area: tba_64
     name: A Hallway
@@ -1037,6 +1105,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6435:
     area: tba_64
     name: The Entranceway
@@ -1076,6 +1146,8 @@ rooms:
       - tapestries
       description: |2
            They look nice, but aren't very valuable.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6436:
     area: tba_64
     name: The Doorway
@@ -1104,6 +1176,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6437:
     area: tba_64
     name: The Hallway
@@ -1133,6 +1207,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6438:
     area: tba_64
     name: The Stairs
@@ -1161,6 +1237,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6439:
     area: tba_64
     name: The Stairs
@@ -1183,6 +1261,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6440:
     area: tba_64
     name: An Alcove
@@ -1210,6 +1290,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6441:
     area: tba_64
     name: The Laboratory
@@ -1251,6 +1333,8 @@ rooms:
       - jars
       description: |2
            Looks like normal, fragile lab equipment to you.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6442:
     area: tba_64
     name: The Stairs
@@ -1273,6 +1357,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6443:
     area: tba_64
     name: The Stairs
@@ -1295,6 +1381,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6444:
     area: tba_64
     name: The Summoning Room
@@ -1327,6 +1415,8 @@ rooms:
       description: |2
            You can't see it clearly through the energy field of the pentagram, but you
         sense that whatever it is, it is very, very, very, very angry.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.6445:
     area: tba_64
     name: Inside A Pentagram
@@ -1347,3 +1437,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

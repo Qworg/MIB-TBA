@@ -90,6 +90,8 @@ rooms:
         Mobs         : 2
         Objects      : 1
         Links        :
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24401:
     area: tba_244
     name: Cell B1
@@ -138,6 +140,8 @@ rooms:
            |                                                                   |
            |         IF YOU CAN'T DO THE TIME, DON'T DO THE CRIME!             |
            x-------------------------------------------------------------------x
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24402:
     area: tba_244
     name: Cell C1
@@ -186,6 +190,8 @@ rooms:
            |                                                                   |
            |         IF YOU CAN'T DO THE TIME, DON'T DO THE CRIME!             |
            x-------------------------------------------------------------------x
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24403:
     area: tba_244
     name: Sprial Staircase
@@ -210,6 +216,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24404:
     area: tba_244
     name: Cell Hallway
@@ -255,6 +263,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24405:
     area: tba_244
     name: Cell Hallway
@@ -315,6 +325,8 @@ rooms:
         |-----\    ____/     |     |  |    | | \  |    |      | ___     |    |
         |      |  /       .  |     |  |    | |  \ |    |      |    \    |    |
         |_____/   \______    |____/   \____/ |   \|    |       \___/    \____/
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24406:
     area: tba_244
     name: Cell Hallway
@@ -360,6 +372,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24407:
     area: tba_244
     name: Cafeteria
@@ -383,6 +397,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24408:
     area: tba_244
     name: Cell A2
@@ -431,6 +447,8 @@ rooms:
            |                                                                   |
            |         IF YOU CAN'T DO THE TIME, DON'T DO THE CRIME!             |
            x-------------------------------------------------------------------x
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24409:
     area: tba_244
     name: Cell B2
@@ -458,6 +476,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24410:
     area: tba_244
     name: Cell C2
@@ -506,6 +526,8 @@ rooms:
            |                                                                   |
            |         IF YOU CAN'T DO THE TIME, DON'T DO THE CRIME!             |
            x-------------------------------------------------------------------x
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24411:
     area: tba_244
     name: A Warm Room
@@ -523,6 +545,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24412:
     area: tba_244
     name: A Prison Corridor
@@ -567,6 +591,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24413:
     area: tba_244
     name: A Cold Room
@@ -584,6 +610,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24414:
     area: tba_244
     name: A Prison Corridor
@@ -609,6 +637,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24415:
     area: tba_244
     name: A Prison Corridor at a Staircase
@@ -639,6 +669,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24416:
     area: tba_244
     name: A Prison Corridor
@@ -664,6 +696,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24417:
     area: tba_244
     name: A Prison Corridor Intersection
@@ -697,6 +731,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24418:
     area: tba_244
     name: A Prison Corridor
@@ -722,6 +758,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24419:
     area: tba_244
     name: A Prison Corridor
@@ -747,6 +785,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24420:
     area: tba_244
     name: A Prison Corridor
@@ -772,6 +812,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24421:
     area: tba_244
     name: A Prison Corridor
@@ -797,6 +839,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24422:
     area: tba_244
     name: A Prison Corridor
@@ -822,6 +866,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24423:
     area: tba_244
     name: A Prison Corridor Intersection
@@ -851,6 +897,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24424:
     area: tba_244
     name: A Prison Corridor
@@ -876,6 +924,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24425:
     area: tba_244
     name: A Prison Corridor
@@ -901,6 +951,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24426:
     area: tba_244
     name: A Prison Corridor
@@ -926,6 +978,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24427:
     area: tba_244
     name: A Prison Corridor
@@ -951,6 +1005,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24428:
     area: tba_244
     name: A Prison Corridor
@@ -976,6 +1032,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24430:
     area: tba_244
     name: A Prison Corridor
@@ -1001,6 +1059,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24431:
     area: tba_244
     name: A Prison Corridor
@@ -1026,6 +1086,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24432:
     area: tba_244
     name: A Prison Corridor
@@ -1051,6 +1113,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24433:
     area: tba_244
     name: A Prison Corridor
@@ -1076,6 +1140,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24434:
     area: tba_244
     name: A Prison Corridor
@@ -1093,6 +1159,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24435:
     area: tba_244
     name: A Prison Corridor
@@ -1118,6 +1186,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24436:
     area: tba_244
     name: A Prison Corridor
@@ -1143,6 +1213,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24437:
     area: tba_244
     name: A Prison Corridor Intersection
@@ -1176,6 +1248,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24438:
     area: tba_244
     name: A Prison Corridor
@@ -1201,6 +1275,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24439:
     area: tba_244
     name: A Prison Corridor
@@ -1226,6 +1302,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24440:
     area: tba_244
     name: A Prison Corridor
@@ -1259,6 +1337,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24441:
     area: tba_244
     name: A Prison Corridor
@@ -1277,6 +1357,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24442:
     area: tba_244
     name: A Prison Corridor
@@ -1302,6 +1384,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24443:
     area: tba_244
     name: A Prison Corridor
@@ -1327,6 +1411,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24444:
     area: tba_244
     name: A Prison Corridor at a Staircase
@@ -1352,6 +1438,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24445:
     area: tba_244
     name: A Prison Corridor
@@ -1377,6 +1465,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24446:
     area: tba_244
     name: A Prison Corridor
@@ -1406,6 +1496,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24447:
     area: tba_244
     name: A Prison Corridor
@@ -1431,6 +1523,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24448:
     area: tba_244
     name: A Prison Corridor
@@ -1449,6 +1543,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24449:
     area: tba_244
     name: A Prison Corridor
@@ -1474,6 +1570,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24450:
     area: tba_244
     name: A Prison Corridor
@@ -1499,6 +1597,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24451:
     area: tba_244
     name: A Prison Corridor
@@ -1517,6 +1617,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24452:
     area: tba_244
     name: A Prison Corridor
@@ -1535,6 +1637,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24453:
     area: tba_244
     name: A Prison Corridor
@@ -1553,6 +1657,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24454:
     area: tba_244
     name: A Prison Corridor
@@ -1571,6 +1677,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24455:
     area: tba_244
     name: Prison Upper Level
@@ -1607,6 +1715,8 @@ rooms:
             |   down this staircase if you wish to live.            |
             |                                                       |
             x-------------------------------------------------------x
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24456:
     area: tba_244
     name: Prison Upper Level
@@ -1636,6 +1746,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.24457:
     area: tba_244
     name: Cooland Prison
@@ -1679,3 +1791,5 @@ rooms:
            |           DO NOT enter!                                    |
            |                                                            |
            x------------------------------------------------------------x
+    ambient_phases: {}
+    ambient_weather: {}

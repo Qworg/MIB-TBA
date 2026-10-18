@@ -89,6 +89,8 @@ rooms:
       - paths
       description: |2
            Well-trodden paths around the sides of the building.  Not much of interest.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28901:
     area: tba_289
     name: Near a Large Building
@@ -115,6 +117,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28902:
     area: tba_289
     name: Near a Large Building
@@ -139,6 +143,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28903:
     area: tba_289
     name: Near a Large Building
@@ -163,6 +169,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28904:
     area: tba_289
     name: Outside the Wayhouse
@@ -193,6 +201,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28905:
     area: tba_289
     name: Near a Large Building
@@ -222,6 +232,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28906:
     area: tba_289
     name: Near a Large Building
@@ -245,6 +257,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28907:
     area: tba_289
     name: Near a Large Building
@@ -272,6 +286,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28908:
     area: tba_289
     name: Just Outside the Stable
@@ -297,6 +313,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28909:
     area: tba_289
     name: Inside the Stable
@@ -324,6 +342,8 @@ rooms:
     coord: null
     sector: field
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28910:
     area: tba_289
     name: Inside the Stable
@@ -347,6 +367,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28911:
     area: tba_289
     name: Inside the Stable
@@ -370,6 +392,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28912:
     area: tba_289
     name: Inside the Stable
@@ -393,6 +417,8 @@ rooms:
     coord: null
     sector: city
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28913:
     area: tba_289
     name: Main Room
@@ -422,6 +448,8 @@ rooms:
       - games
       description: |2
            Chess, checkers, stomp-the-orc...  That sort of thing.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28914:
     area: tba_289
     name: Main Room
@@ -451,6 +479,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28915:
     area: tba_289
     name: Main Room
@@ -489,6 +519,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28916:
     area: tba_289
     name: Main Room
@@ -512,6 +544,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28917:
     area: tba_289
     name: Main Room
@@ -539,6 +573,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28918:
     area: tba_289
     name: Main Room
@@ -572,6 +608,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28919:
     area: tba_289
     name: Main Room
@@ -603,6 +641,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28920:
     area: tba_289
     name: Main Room
@@ -631,6 +671,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28921:
     area: tba_289
     name: Main Room
@@ -661,6 +703,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28922:
     area: tba_289
     name: Main Room
@@ -692,6 +736,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28923:
     area: tba_289
     name: Kitchen
@@ -724,6 +770,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28924:
     area: tba_289
     name: Kitchen
@@ -748,6 +796,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28925:
     area: tba_289
     name: Kitchen
@@ -773,6 +823,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28926:
     area: tba_289
     name: Kitchen
@@ -802,6 +854,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28927:
     area: tba_289
     name: Main Room
@@ -826,6 +880,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28928:
     area: tba_289
     name: Main Room
@@ -850,6 +906,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28929:
     area: tba_289
     name: Stairwell
@@ -873,6 +931,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28930:
     area: tba_289
     name: Stairwell
@@ -897,6 +957,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28931:
     area: tba_289
     name: Hallway
@@ -941,6 +1003,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28932:
     area: tba_289
     name: Hallway
@@ -985,6 +1049,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28933:
     area: tba_289
     name: Hallway
@@ -1025,6 +1091,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28934:
     area: tba_289
     name: Private Room
@@ -1049,6 +1117,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28935:
     area: tba_289
     name: Private Room
@@ -1073,6 +1143,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28936:
     area: tba_289
     name: Private Room
@@ -1097,6 +1169,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28937:
     area: tba_289
     name: Private Room
@@ -1121,6 +1195,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28938:
     area: tba_289
     name: Private Room
@@ -1145,6 +1221,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28939:
     area: tba_289
     name: Private Room
@@ -1169,6 +1247,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.28940:
     area: tba_289
     name: Outhouse
@@ -1189,3 +1269,5 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}

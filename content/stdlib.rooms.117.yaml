@@ -29,6 +29,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11701:
     area: tba_117
     name: Pathway
@@ -67,6 +69,8 @@ rooms:
       description: |2
            The soil is a nice dark brown for all the flowers.  A ring is laying in the
         dirt.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11702:
     area: tba_117
     name: 'Entrance to Tower #1(Shops and Executive Offices)'
@@ -101,6 +105,8 @@ rooms:
            The tower is very large, standing about 7-10 stories high as it looks from
         the ground.  Inside it are many people scuttling around the shops and
         restaurants.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11703:
     area: tba_117
     name: Lobby
@@ -148,6 +154,8 @@ rooms:
       description: |2
            There is a full orchestra at the center of the lobby.  They are playing a
         song that seems to relax the soul and fit the scenery quite well.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11704:
     area: tba_117
     name: The Turkey's Gobble
@@ -191,6 +199,8 @@ rooms:
            The tables are round and are suitable for 4 people to sit at.  Theyr rather
         boring at the top but are very intricately cut at the bottim, making it look
         like a roman column.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11705:
     area: tba_117
     name: Pathway
@@ -232,6 +242,8 @@ rooms:
       description: |2
            The forest is seemingly endless from here.  The creatures make all sorts of
         pleasant noises and rustle around in the foliage.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11706:
     area: tba_117
     name: Lacela's Winery
@@ -273,6 +285,8 @@ rooms:
       description: |2
            The wine rack in the back of the room is huge.  It contains a lot of wines
         that are cooled by a large vent at the top.  It is sealed off with a glass door.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11707:
     area: tba_117
     name: Entrance to Council Officing
@@ -315,6 +329,8 @@ rooms:
       description: |2
            The floor is made with a black marble that echoes when walked on.  It sort of
         leads people to the large marble staircase leading upward.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11708:
     area: tba_117
     name: Gertrude's Office
@@ -342,6 +358,8 @@ rooms:
       description: |2
            The desk contains an open bottle of perfume, a messy pile of papers, and a
         telephone that is off the hook.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11709:
     area: tba_117
     name: Lesalie's Office
@@ -379,6 +397,8 @@ rooms:
       description: |2
            The desk has papers neatly stacked papers in one corner, and a high quality
         computer on one side.  The desk seems larger than most other desks.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11710:
     area: tba_117
     name: Phel's Office
@@ -419,6 +439,8 @@ rooms:
       - border
       description: |2
            The wall is painted tan with a dark green border around the celing.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11711:
     area: tba_117
     name: Council Corridor
@@ -464,6 +486,8 @@ rooms:
       description: |2
            The black marble tiling echoes as people walk on it.  It sort of makes a path
         to two marble staircases that lead both up and down.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11712:
     area: tba_117
     name: Miranda's Office
@@ -500,6 +524,8 @@ rooms:
       - papers
       description: |2
            The papers are scattered across the floor in a disastrous manner.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11713:
     area: tba_117
     name: Cecille's Office
@@ -528,6 +554,8 @@ rooms:
       description: |2
            On the desk is a small lamp that provides little light to this dark room.
         The drawers are partially filled with neatly stacked papers and folders.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11714:
     area: tba_117
     name: Johanes's Office
@@ -554,6 +582,8 @@ rooms:
       description: |2
            The tiny desk has papers stuffed into files in a disorganized manner, and
         minimal work space.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11715:
     area: tba_117
     name: Upper Council Corridor
@@ -598,6 +628,8 @@ rooms:
       description: |2
            The psort of path is made of marble and ivory, with a marble staircase
         leading down and an ivory staircase leading up.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11716:
     area: tba_117
     name: Luther's Office
@@ -629,6 +661,8 @@ rooms:
       description: |2
            The boxes and suitcases in the corner of the room are all packed with
         Luther's belongings.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11717:
     area: tba_117
     name: Visconti's Office
@@ -660,6 +694,8 @@ rooms:
       description: |2
            The walls are painted white, except for a dark red wall that gives a really
         nice accent into the room.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11718:
     area: tba_117
     name: Thedoric's Office
@@ -696,6 +732,8 @@ rooms:
       description: |2
            The wall is adorned with red scrolls containing the writings and beliefs of
         Thedoric.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11719:
     area: tba_117
     name: Empress's Corridor
@@ -744,6 +782,8 @@ rooms:
       - colums
       description: |2
            The corners are filled in with Mediterranean sytled column quarters.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11720:
     area: tba_117
     name: Empress Leraillia's Office
@@ -787,6 +827,8 @@ rooms:
       description: |2
            The lights are scattered at the top edges of the walls and point down to make
         a circle of light around the desk and the chair.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11721:
     area: tba_117
     name: Pathway
@@ -835,6 +877,8 @@ rooms:
       description: |2
            The pathway that is usually nicely tidy isn't so much over here.  There are
         cracks in the path that are making the citizens unwillingly trip.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11722:
     area: tba_117
     name: The Town Plaza
@@ -888,6 +932,8 @@ rooms:
       description: |2
            The white tile path is covered in brown footprints from the dirty boots and
         shoes of people.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11723:
     area: tba_117
     name: Pathway
@@ -920,6 +966,8 @@ rooms:
            The white tile path is clean swept and lined with gorgeous exotic flowers,
         including some red, some yellow, and some green and a small amount
         of blue ones.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11724:
     area: tba_117
     name: 'Entrance to Tower #2 (Housing)'
@@ -961,6 +1009,8 @@ rooms:
       description: |2
            The archway is made of a dark gray stone and isn't to impressive.  The gate
         underneath it leads into all the houses of the citizens of Los Torres.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11725:
     area: tba_117
     name: A Comfortable Lobby
@@ -1026,6 +1076,8 @@ rooms:
            The fireplace is large and made of a tan colored stone, like the walls and
         the celing.  The fire roars and crackles warming the entire room.  One of the
         tiles on the side of the fireplace is kind of loose.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11726:
     area: tba_117
     name: Behind the Fireplace
@@ -1049,6 +1101,8 @@ rooms:
     coord: null
     sector: inside
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11727:
     area: tba_117
     name: Bottom of the Staircase
@@ -1083,6 +1137,8 @@ rooms:
       - Staircase
       description: |2
            The staircase spirals up to the top of the tower.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11728:
     area: tba_117
     name: Second Floor
@@ -1122,6 +1178,8 @@ rooms:
       description: |2
            The rug is spread over the center of the floor, giving the room some
         atmosphere.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11729:
     area: tba_117
     name: Laundry Room
@@ -1150,6 +1208,8 @@ rooms:
       - dryer
       description: |2
            There is a large rumbling washer and dryer set.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11730:
     area: tba_117
     name: Chef's Room
@@ -1182,6 +1242,8 @@ rooms:
       description: |2
            There is a big sofa soutside of the kitchen, where the chef presumably
         sleeps.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11731:
     area: tba_117
     name: Third Floor
@@ -1221,6 +1283,8 @@ rooms:
       - lights
       description: |2
            The lights on the ceiling light the room up quite a bit.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11732:
     area: tba_117
     name: Dojo
@@ -1259,6 +1323,8 @@ rooms:
       - railing
       description: |2
            Railings are on the side walls so that students can stretch easily.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11733:
     area: tba_117
     name: Standard Residence
@@ -1293,6 +1359,8 @@ rooms:
       - pans
       description: |2
            The kitchen area is fairly dirty, with some pots and pans lying in the sink.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11734:
     area: tba_117
     name: Fourth Floor
@@ -1332,6 +1400,8 @@ rooms:
       - staircase
       description: |2
            More stairs, more stairs...  The stairs can take you down or up.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11735:
     area: tba_117
     name: Classroom
@@ -1365,6 +1435,8 @@ rooms:
       description: |2
            Some of the desks in the classroom have been chaotically trned over for some
         reason.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11736:
     area: tba_117
     name: Playpen
@@ -1388,6 +1460,8 @@ rooms:
       - kids
       description: |2
            The kids are behaving chaotically and are pretty much everywhere you look.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11737:
     area: tba_117
     name: Fifth Floor
@@ -1427,6 +1501,8 @@ rooms:
       description: |2
            The stairway seems to be getting lighter as it goes upward.  Perhaps the top
         of the tower is near?
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11738:
     area: tba_117
     name: Library
@@ -1462,6 +1538,8 @@ rooms:
       - dust
       description: |2
            Amazingly, there isn't any!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11739:
     area: tba_117
     name: Bathroom
@@ -1498,6 +1576,8 @@ rooms:
       description: |2
            On the west wall are urinals with dividers in between them, so nobody can
         sneak a peek, even if they wanted to.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11740:
     area: tba_117
     name: Sixth Floor
@@ -1541,6 +1621,8 @@ rooms:
       description: |2
            In the center of the room is a small statue dedicated to Thedoric, who is
         doing a dramatic pose.  By the looks of it, he hasn't really done anything.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11741:
     area: tba_117
     name: Standard Residence
@@ -1576,6 +1658,8 @@ rooms:
       description: |2
            There is a cozy looking living area with a couple of sofas gathered around a
         coffee table.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11742:
     area: tba_117
     name: Empty Room
@@ -1605,6 +1689,8 @@ rooms:
       - window
       description: |2
            There isn't anything special about this window...
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11743:
     area: tba_117
     name: Top of the Tower
@@ -1642,6 +1728,8 @@ rooms:
       - stairs
       description: |2
            The stairs only lead back down into the tower.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11744:
     area: tba_117
     name: North Balcony
@@ -1673,6 +1761,8 @@ rooms:
       description: |2
            The balcony is a stone extension of the tower.  It is made of pewter and has
         a large railing surrounding it to prevent anyone from falling.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11745:
     area: tba_117
     name: South Balcony
@@ -1704,6 +1794,8 @@ rooms:
       - chairs
       description: |2
            There are metal chairs places here so that citizens can look down and relax.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11746:
     area: tba_117
     name: Standard Residence
@@ -1739,6 +1831,8 @@ rooms:
       - pans
       description: |2
            The kitchen area is fairly dirty, with some pots and pans laying in the sink.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11747:
     area: tba_117
     name: Artist's Residence
@@ -1768,6 +1862,8 @@ rooms:
       - bed
       description: |2
            The bed is very small, though it looks very cozy.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11748:
     area: tba_117
     name: Path Behind the Tower
@@ -1791,6 +1887,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11749:
     area: tba_117
     name: End of Secret Path
@@ -1811,6 +1909,8 @@ rooms:
     coord: null
     sector: forest
     extra_descriptions: []
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11751:
     area: tba_117
     name: Defender's Dream
@@ -1851,6 +1951,8 @@ rooms:
       description: |2
            The white tile floor has been stained with muddy footprints from all the
         shoppers that have browsed around the store.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11752:
     area: tba_117
     name: Wine Cellar
@@ -1902,6 +2004,8 @@ rooms:
       - floors
       description: |2
            The floos have patches of fungi growing on them.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11753:
     area: tba_117
     name: Inside the Forest
@@ -1955,6 +2059,8 @@ rooms:
       description: |2
            The scenery is completely filled with twigs, trees, stumps, leaves and other
         foliage.  All of which seem to have an appropriate shade of red to them.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11754:
     area: tba_117
     name: The Red Forest
@@ -1996,6 +2102,8 @@ rooms:
       description: |2
            The path is scattered with red stumps, broken trigs and red leaves.  It is
         more visible than the path outside the blockade of trees.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11755:
     area: tba_117
     name: A Sudden End
@@ -2048,6 +2156,8 @@ rooms:
       description: |2
            The trees are somewhat withered away and dead.  The source of this is
         unclear.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11756:
     area: tba_117
     name: Under the Forest
@@ -2077,6 +2187,8 @@ rooms:
       description: |2
            The pile of sand in the back leads to a hole which can be used to exit the
         cave.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11757:
     area: tba_117
     name: Alcove in the Forest
@@ -2107,6 +2219,8 @@ rooms:
            The passage is stopped by a wall of trees.  Or more like leaves and trees
         covering a stone wall with a hole in it.  The hole seems like it would be used
         to spy on people or maybe fire something at them!
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11758:
     area: tba_117
     name: The Basement
@@ -2138,6 +2252,8 @@ rooms:
       description: |2
            There is a large hole in the celing from the Chandelier breaking through the
         floor of The Turkey's Gobble.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11759:
     area: tba_117
     name: In a Mysterious Cave
@@ -2181,6 +2297,8 @@ rooms:
       description: |2
            The stalactites drip water from the celing making an annoying sound with each
         drop.
+    ambient_phases: {}
+    ambient_weather: {}
   tba.11760:
     area: tba_117
     name: Prison Cell
@@ -2231,3 +2349,5 @@ rooms:
       description: |2
            There is a small pile of excrement and a puddle of urine in the far corner of
         the room.  The smell of the pile is unbearable!
+    ambient_phases: {}
+    ambient_weather: {}
