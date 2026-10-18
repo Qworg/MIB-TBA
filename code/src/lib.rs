@@ -27,6 +27,7 @@
 //! interpreter, room-local aggro and Circle combat round attach to
 //! [`TbaPlugin`] in later phases.
 
+pub mod boards;
 pub mod clock;
 pub mod combat;
 pub mod content;

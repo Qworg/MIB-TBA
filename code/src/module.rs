@@ -173,6 +173,7 @@ impl Plugin for TbaPlugin {
         app.init_resource::<TbaParties>();
         app.init_resource::<crate::spec::TbaSpecRng>();
         app.init_resource::<crate::mail::MailCompose>();
+        app.init_resource::<crate::boards::BoardCompose>();
         app.init_schedule(TbaRound);
         crate::dg::register(app);
 
@@ -246,9 +247,16 @@ impl Plugin for TbaPlugin {
         // body line is never offered to a trigger or the router.
         app.add_systems(
             Update,
-            crate::mail::compose_mail_input
+            (
+                crate::mail::compose_mail_input,
+                crate::boards::compose_board_input,
+            )
                 .in_set(CommandSet::PreRoute)
                 .before(crate::dg::intake::DgIntake::CommandGate),
+        );
+        app.add_systems(
+            Update,
+            crate::boards::intercept_board_look.in_set(CommandSet::PreRoute),
         );
         app.add_systems(
             Update,
@@ -274,6 +282,7 @@ impl Plugin for TbaPlugin {
                 crate::skills::handle_skill_commands,
                 crate::spells::handle_cast_command,
                 crate::shops::handle_shop_commands,
+                crate::boards::handle_board_commands,
                 crate::socials::handle_social_commands,
                 crate::clock::handle_time_command,
                 crate::party::handle_party_commands,

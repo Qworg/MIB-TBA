@@ -1,0 +1,24 @@
+# The TBA world's bulletin boards. The board item and its posts are generic
+# stdlib data (`mib-stdlib::boards`); Circle's board vnums are mapped here.
+boards:
+  tba_item_1226:
+    title: The Builder's Board
+    max_posts: 60
+  tba_item_1227:
+    title: The Staff Board
+    max_posts: 60
+  tba_item_1228:
+    title: The Advertising Board
+    max_posts: 60
+  tba_item_3096:
+    title: The Social Board
+    max_posts: 60
+  tba_item_3097:
+    title: The Freeze Board
+    max_posts: 60
+  tba_item_3098:
+    title: The Immortal Board
+    max_posts: 60
+  tba_item_3099:
+    title: The Mortal Board
+    max_posts: 60
