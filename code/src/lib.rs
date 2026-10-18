@@ -27,6 +27,7 @@
 //! interpreter, room-local aggro and Circle combat round attach to
 //! [`TbaPlugin`] in later phases.
 
+pub mod bank;
 pub mod boards;
 pub mod clock;
 pub mod combat;
@@ -37,6 +38,8 @@ pub mod items;
 pub mod mail;
 pub mod module;
 pub mod party;
+pub mod petshop;
+pub mod practice;
 pub mod rent;
 pub mod shops;
 pub mod skills;

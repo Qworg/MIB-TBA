@@ -68,6 +68,18 @@ verbs:
   rent:
     description: Store your belongings with a receptionist.
     effects: []
+  balance:
+    description: Ask a bank for your balance.
+    effects: []
+  deposit:
+    description: Deposit gold at a bank.
+    effects: []
+  withdraw:
+    description: Withdraw gold from a bank.
+    effects: []
+  practice:
+    description: Spend a practice session at a guildmaster.
+    effects: []
   receive:
     description: Receive mail from a postmaster.
     effects: []

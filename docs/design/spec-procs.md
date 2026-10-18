@@ -177,8 +177,11 @@ rules. They stay in `tba.npc_stats` and `mib_tba::combat`. No stdlib change.
 - **Shipped in TBA:** the postmaster (`check`/`receive`/`mail`), the board
   commands (`look`/`read`/`write`/`remove` + `stdlib.boards.yaml`), and the
   receptionist/cryogenicist (`offer`/`rent` over escrow).
-- **Remaining:** the pet-shop front end over Followers, the bank/ATM over
-  `TbaGold`, and practice/guild (Circle class/spell tables).
+- **Shipped in TBA (continued):** the bank/ATM (`balance`/`deposit`/`withdraw`
+  over `TbaGold` + the bank vnums), the pet shop (`list`/`buy` over the
+  stdlib `Followers` primitive), and practice/guild (a persisted
+  `TbaPractice` counter + per-spell/skill percentages, with the level-up
+  practice grant).
 
 ## Suggested cross-repo split
 

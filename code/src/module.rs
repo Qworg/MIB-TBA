@@ -44,6 +44,15 @@ use crate::zones::ZoneTracker;
 /// Module id; matches `[code] module = "tba"` in `packs/tba/pack.toml`.
 pub const MODULE_NAME: &str = "tba";
 
+/// The genre command chain is split across two ordered sets; a single Bevy
+/// tuple is limited to 20 systems.
+#[derive(SystemSet, Debug, Clone, Copy, PartialEq, Eq, Hash)]
+enum TbaGame {
+    Commands,
+    Extras,
+    Equipment,
+}
+
 /// The parsed `tba.*` content, installed once per boot from the loaded pack set.
 ///
 /// It is a clone of the section bodies rather than a borrow because
@@ -187,6 +196,8 @@ impl Plugin for TbaPlugin {
             registry.register::<TbaCombatant>("TbaCombatant", DocKind::Player);
             registry.register::<TbaAlignment>("TbaAlignment", DocKind::Player);
             registry.register::<TbaGold>("TbaGold", DocKind::Player);
+            registry.register::<crate::bank::TbaBank>("TbaBank", DocKind::Player);
+            registry.register::<crate::practice::TbaPractice>("TbaPractice", DocKind::Player);
             registry.register::<TbaEquipmentSave>("TbaEquipment", DocKind::Player);
             registry.register::<crate::spells::TbaBuffs>("TbaBuffs", DocKind::Player);
             // Quest variables (`remote`/`global`) survive reconnect in the
@@ -250,6 +261,7 @@ impl Plugin for TbaPlugin {
             (
                 crate::mail::compose_mail_input,
                 crate::boards::compose_board_input,
+                crate::practice::practice_cast_gate,
             )
                 .in_set(CommandSet::PreRoute)
                 .before(crate::dg::intake::DgIntake::CommandGate),
@@ -264,6 +276,8 @@ impl Plugin for TbaPlugin {
                 crate::mail::ensure_mailboxes,
                 crate::mail::seed_player_mail,
                 crate::mail::handle_mail_commands,
+                crate::bank::ensure_bank_account,
+                crate::practice::ensure_practice,
             )
                 .chain()
                 .in_set(BridgeSet::Game)
@@ -274,6 +288,13 @@ impl Plugin for TbaPlugin {
         // Equipment commands join the same chain; the affect recompute and
         // the wielded-weapon sync follow them so an equip/unequip takes effect
         // in the frame it is issued.
+        app.configure_sets(
+            Update,
+            (TbaGame::Commands, TbaGame::Extras, TbaGame::Equipment)
+                .chain()
+                .in_set(BridgeSet::Game)
+                .after(route_commands),
+        );
         app.add_systems(
             Update,
             (
@@ -287,6 +308,23 @@ impl Plugin for TbaPlugin {
                 crate::socials::handle_social_commands,
                 crate::clock::handle_time_command,
                 crate::party::handle_party_commands,
+            )
+                .chain()
+                .in_set(TbaGame::Commands),
+        );
+        app.add_systems(
+            Update,
+            (
+                crate::petshop::petshop_system,
+                crate::bank::handle_bank_commands,
+                crate::practice::handle_practice_commands,
+            )
+                .chain()
+                .in_set(TbaGame::Extras),
+        );
+        app.add_systems(
+            Update,
+            (
                 crate::equipment::handle_equipment_commands,
                 crate::equipment::recompute_equipment_affects,
                 crate::equipment::recompute_npc_equipment_affects,
@@ -299,8 +337,7 @@ impl Plugin for TbaPlugin {
                 crate::stealth::sync_perception,
             )
                 .chain()
-                .in_set(BridgeSet::Game)
-                .after(route_commands),
+                .in_set(TbaGame::Equipment),
         );
 
         // TBA-E09: the genre death rules (XP loss + gold to a carried pile)

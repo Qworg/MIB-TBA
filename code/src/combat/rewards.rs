@@ -220,7 +220,16 @@ pub fn alignment_after_kill(killer: i32, victim: i32) -> i32 {
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn award_kill_rewards(
     mut defeated: MessageReader<NpcDefeated>,
-    mut players: Query<(&mut TbaProgress, &mut TbaGold, Option<&mut TbaAlignment>), With<Player>>,
+    mut players: Query<
+        (
+            &mut TbaProgress,
+            &mut TbaGold,
+            Option<&mut TbaAlignment>,
+            Option<&mut crate::practice::TbaPractice>,
+            Option<&TbaCombatant>,
+        ),
+        With<Player>,
+    >,
     locations: Query<&Location>,
     sessions: Query<&Session>,
     parties: Option<Res<TbaParties>>,
@@ -262,7 +271,9 @@ pub fn award_kill_rewards(
         let grouped = recipients.len() > 1;
 
         for recipient in &recipients {
-            let Ok((mut progress, mut gold, mut alignment)) = players.get_mut(*recipient) else {
+            let Ok((mut progress, mut gold, mut alignment, mut practice, combatant)) =
+                players.get_mut(*recipient)
+            else {
                 // An NPC (or an uninitialised entity) killed it — no reward to
                 // pay.
                 continue;
@@ -300,6 +311,14 @@ pub fn award_kill_rewards(
                 ));
             }
             if reward.leveled_up() {
+                if let Some(practice) = practice.as_deref_mut() {
+                    let wisdom = combatant.map_or(13, |combatant| combatant.attributes.wisdom);
+                    crate::practice::award_level_practices(
+                        practice,
+                        progress.class.as_str(),
+                        wisdom,
+                    );
+                }
                 output.write(system_message(
                     *recipient,
                     format!("You have reached level {}!", reward.level),
