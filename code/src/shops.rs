@@ -18,6 +18,8 @@
 //! player sells, rounded to the nearest coin. The item's `TbaItemDef` supplies
 //! the cost and the `kind` the shop checks against its `buy_kinds` bitmask.
 
+use std::collections::BTreeMap;
+
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{
@@ -636,6 +638,9 @@ mod tests {
             trade_with: Vec::new(),
             hours: crate::content::ShopHours::default(),
             messages: Vec::new(),
+            broke_temper: 0,
+            bitvector: Vec::new(),
+            buy_words: BTreeMap::new(),
         }
     }
 

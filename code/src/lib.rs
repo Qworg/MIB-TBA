@@ -71,11 +71,11 @@ pub mod prelude {
     };
     pub use crate::content::{
         AffectDef, AffectLocation, Attribute, DoorReset, ItemAffectFlag, ItemExtraFlag, LevelBonus,
-        NpcBehaviour, Position, ResetMode, SaveEffect, SpecProc, SpellDef, SpellKind, SpellTarget,
-        SpellsFile, SpellsSection, TbaClassDef, TbaClassesFile, TbaClassesSection, TbaItemDef,
-        TbaItemKind, TbaItemsFile, TbaItemsSection, TbaNpcStats, TbaNpcStatsFile,
-        TbaNpcStatsSection, WearSlot, ZoneCommand, ZoneCommandKind, ZoneDef, ZonesFile,
-        ZonesSection, register,
+        NpcBehaviour, Position, ResetMode, SaveEffect, ShopFlag, SpecProc, SpellDef, SpellKind,
+        SpellTarget, SpellsFile, SpellsSection, TbaClassDef, TbaClassesFile, TbaClassesSection,
+        TbaExtraDesc, TbaItemDef, TbaItemKind, TbaItemsFile, TbaItemsSection, TbaNpcStats,
+        TbaNpcStatsFile, TbaNpcStatsSection, TbaSex, WearSlot, ZoneCommand, ZoneCommandKind,
+        ZoneDef, ZoneFlag, ZonesFile, ZonesSection, register,
     };
     pub use crate::content::{ShopDef, ShopHours, ShopTrade, ShopsFile, ShopsSection};
     pub use crate::content::{SocialDef, SocialsFile, SocialsSection};

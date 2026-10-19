@@ -827,6 +827,7 @@ fn zone(app: &mut App, number: u32, name: &str, bot: u32, top: u32) {
             lifespan_mins: 15,
             reset_mode: ResetMode::Always,
             commands: Vec::new(),
+            flags: Vec::new(),
         },
     );
 }

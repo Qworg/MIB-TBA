@@ -16,7 +16,7 @@
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{Location, NpcId, NpcKey, Player, Session, SessionState};
 
-use crate::content::TbaClassDef;
+use crate::content::{TbaClassDef, TbaSex};
 use crate::module::TbaContent;
 use crate::party::TbaParties;
 
@@ -426,6 +426,9 @@ mod tests {
                     attributes: TbaAttributes::mob_default(),
                     saves: TbaSaves::default(),
                     spec_proc: None,
+                    sex: TbaSex::Neutral,
+                    keywords: Vec::new(),
+                    aff_flags: Vec::new(),
                 },
             )]),
             ..TbaContent::default()
@@ -460,6 +463,9 @@ mod tests {
                     attributes: TbaAttributes::mob_default(),
                     saves: TbaSaves::default(),
                     spec_proc: None,
+                    sex: TbaSex::Neutral,
+                    keywords: Vec::new(),
+                    aff_flags: Vec::new(),
                 },
             )]),
             ..TbaContent::default()

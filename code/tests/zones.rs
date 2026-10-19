@@ -75,6 +75,9 @@ fn npc_stats() -> TbaNpcStats {
         attributes: TbaAttributes::mob_default(),
         saves: TbaSaves::default(),
         spec_proc: None,
+        sex: TbaSex::Neutral,
+        keywords: Vec::new(),
+        aff_flags: Vec::new(),
     }
 }
 
@@ -103,6 +106,8 @@ fn sword_def() -> TbaItemDef {
         rent: 0,
         min_level: 0,
         timer: None,
+        action_description: None,
+        extra_descriptions: Vec::new(),
     }
 }
 
@@ -130,6 +135,7 @@ fn content() -> TbaContent {
                         max_in_world: 0,
                     }),
                 ],
+                flags: Vec::new(),
             },
         )]),
         ..TbaContent::default()
@@ -358,6 +364,7 @@ fn flag_content(other_if_flag: bool) -> TbaContent {
                         },
                     },
                 ],
+                flags: Vec::new(),
             },
         )]),
         ..TbaContent::default()

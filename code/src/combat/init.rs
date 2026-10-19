@@ -12,7 +12,7 @@ use mib_core::prelude::*;
 use mib_stdlib::prelude::{CharacterCreated, Location, NpcKey, Room};
 use smol_str::SmolStr;
 
-use crate::content::{Position, TbaClassDef, TbaNpcStats};
+use crate::content::{Position, TbaClassDef, TbaNpcStats, TbaSex};
 use crate::module::TbaContent;
 
 use super::ai::TbaSpawnHome;
@@ -349,6 +349,9 @@ mod tests {
                 ..TbaSaves::default()
             },
             spec_proc: None,
+            sex: TbaSex::Neutral,
+            keywords: Vec::new(),
+            aff_flags: Vec::new(),
         };
         let mut rng = TbaRng::from_seed(1);
         let combatant = npc_combatant_from_stats(&stats, &mut rng);
@@ -384,6 +387,9 @@ mod tests {
             attributes: TbaAttributes::mob_default(),
             saves: TbaSaves::default(),
             spec_proc: None,
+            sex: TbaSex::Neutral,
+            keywords: Vec::new(),
+            aff_flags: Vec::new(),
         };
         let mut rng = TbaRng::from_seed(1);
         let combatant = npc_combatant_from_stats(&stats, &mut rng);

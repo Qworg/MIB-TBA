@@ -194,6 +194,8 @@ pub fn define_item(
             rent: 0,
             min_level: 0,
             timer: None,
+            action_description: None,
+            extra_descriptions: Vec::new(),
         },
     );
 }
@@ -221,6 +223,9 @@ pub fn define_npc_level(app: &mut App, vnum: u32, level: u32) {
                 attributes: TbaAttributes::mob_default(),
                 saves: TbaSaves::default(),
                 spec_proc: None,
+                sex: TbaSex::Neutral,
+                keywords: Vec::new(),
+                aff_flags: Vec::new(),
             },
         );
 }

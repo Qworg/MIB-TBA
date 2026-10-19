@@ -6,6 +6,8 @@ zones:
     top: 99
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -241,6 +243,8 @@ zones:
     top: 199
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: remove_item
@@ -2760,6 +2764,8 @@ zones:
     top: 499
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -3136,6 +3142,8 @@ zones:
     top: 599
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -3717,6 +3725,8 @@ zones:
     top: 699
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -3938,6 +3948,8 @@ zones:
     top: 799
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: remove_item
@@ -4178,6 +4190,8 @@ zones:
     top: 999
     lifespan_mins: 20
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -4339,6 +4353,8 @@ zones:
     top: 1199
     lifespan_mins: 30
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: remove_item
@@ -4871,6 +4887,8 @@ zones:
     top: 1599
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -6198,6 +6216,8 @@ zones:
     top: 1899
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -6874,6 +6894,8 @@ zones:
     top: 1999
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: remove_item
@@ -8005,6 +8027,8 @@ zones:
     top: 2099
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -8565,6 +8589,8 @@ zones:
     top: 2299
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -9311,6 +9337,8 @@ zones:
     top: 2599
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -10971,6 +10999,8 @@ zones:
     top: 2799
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -11865,6 +11895,8 @@ zones:
     top: 2899
     lifespan_mins: 5
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -11935,6 +11967,8 @@ zones:
     top: 3099
     lifespan_mins: 15
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: remove_item
@@ -12712,6 +12746,8 @@ zones:
     top: 3199
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -12969,6 +13005,8 @@ zones:
     top: 3299
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands: []
   33:
     name: Three of Swords
@@ -12976,6 +13014,8 @@ zones:
     top: 3399
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -13440,6 +13480,8 @@ zones:
     top: 3599
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -13657,6 +13699,8 @@ zones:
     top: 3699
     lifespan_mins: 10
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -14102,6 +14146,8 @@ zones:
     top: 3799
     lifespan_mins: 15
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -14461,6 +14507,8 @@ zones:
     top: 3899
     lifespan_mins: 15
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -14517,6 +14565,8 @@ zones:
     top: 3999
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -19146,6 +19196,8 @@ zones:
     top: 4099
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -19486,6 +19538,8 @@ zones:
     top: 4299
     lifespan_mins: 5
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -19647,6 +19701,8 @@ zones:
     top: 4399
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -20114,6 +20170,8 @@ zones:
     top: 4499
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -20256,6 +20314,8 @@ zones:
     top: 4599
     lifespan_mins: 20
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -20523,6 +20583,8 @@ zones:
     top: 4699
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -20832,6 +20894,8 @@ zones:
     top: 5099
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -21136,6 +21200,8 @@ zones:
     top: 5199
     lifespan_mins: 30
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -21652,6 +21718,8 @@ zones:
     top: 5299
     lifespan_mins: 15
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -22098,6 +22166,8 @@ zones:
     top: 5399
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -22620,6 +22690,8 @@ zones:
     top: 5499
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -24455,6 +24527,8 @@ zones:
     top: 5699
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -24557,6 +24631,8 @@ zones:
     top: 5799
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -24690,6 +24766,8 @@ zones:
     top: 6099
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -25254,6 +25332,8 @@ zones:
     top: 6199
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -25520,6 +25600,8 @@ zones:
     top: 6299
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -25851,6 +25933,8 @@ zones:
     top: 6399
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -26064,6 +26148,8 @@ zones:
     top: 6499
     lifespan_mins: 20
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -26407,6 +26493,8 @@ zones:
     top: 6599
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -26998,6 +27086,8 @@ zones:
     top: 7099
     lifespan_mins: 15
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -27075,6 +27165,8 @@ zones:
     top: 7199
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -27162,6 +27254,8 @@ zones:
     top: 7299
     lifespan_mins: 25
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: true
       type: drop_item
@@ -27425,6 +27519,8 @@ zones:
     top: 7399
     lifespan_mins: 25
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -27537,6 +27633,8 @@ zones:
     top: 7499
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -27872,6 +27970,8 @@ zones:
     top: 7599
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -28395,6 +28495,8 @@ zones:
     top: 7899
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -28546,6 +28648,8 @@ zones:
     top: 7999
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -28792,6 +28896,8 @@ zones:
     top: 8399
     lifespan_mins: 30
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -29069,6 +29175,8 @@ zones:
     top: 8699
     lifespan_mins: 10
     reset_mode: never
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -29374,6 +29482,8 @@ zones:
     top: 9099
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -29475,6 +29585,8 @@ zones:
     top: 9699
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -29686,6 +29798,8 @@ zones:
     top: 10099
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -30005,6 +30119,8 @@ zones:
     top: 10199
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -30182,6 +30298,8 @@ zones:
     top: 10399
     lifespan_mins: 5
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -30361,6 +30479,8 @@ zones:
     top: 10499
     lifespan_mins: 5
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -30646,6 +30766,8 @@ zones:
     top: 10699
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -31527,6 +31649,8 @@ zones:
     top: 10799
     lifespan_mins: 30
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -32227,6 +32351,8 @@ zones:
     top: 11599
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -32732,6 +32858,8 @@ zones:
     top: 11799
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -33134,6 +33262,8 @@ zones:
     top: 11899
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -34138,6 +34268,8 @@ zones:
     top: 12099
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -35427,6 +35559,8 @@ zones:
     top: 12599
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -35923,6 +36057,8 @@ zones:
     top: 13099
     lifespan_mins: 240
     reset_mode: never
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: remove_item
@@ -36083,6 +36219,8 @@ zones:
     top: 14099
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -36551,6 +36689,8 @@ zones:
     top: 15099
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -37220,6 +37360,8 @@ zones:
     top: 16999
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: remove_item
@@ -37688,6 +37830,8 @@ zones:
     top: 17599
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -37915,6 +38059,8 @@ zones:
     top: 18699
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -38190,6 +38336,8 @@ zones:
     top: 18799
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -38331,6 +38479,8 @@ zones:
     top: 20099
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -38615,6 +38765,8 @@ zones:
     top: 20199
     lifespan_mins: 60
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -38839,6 +38991,8 @@ zones:
     top: 21199
     lifespan_mins: 30
     reset_mode: when_desert
+    flags:
+    - no_astral
     commands:
     - if_flag: false
       type: door_state
@@ -38933,6 +39087,8 @@ zones:
     top: 22099
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -39043,6 +39199,8 @@ zones:
     top: 23299
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -39220,6 +39378,8 @@ zones:
     top: 23399
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -39494,6 +39654,8 @@ zones:
     top: 23499
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -39838,6 +40000,8 @@ zones:
     top: 23599
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -40038,6 +40202,8 @@ zones:
     top: 23699
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -41491,6 +41657,8 @@ zones:
     top: 23799
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -41827,6 +41995,8 @@ zones:
     top: 23899
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -42131,6 +42301,8 @@ zones:
     top: 23999
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -42797,6 +42969,8 @@ zones:
     top: 24099
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -43734,6 +43908,8 @@ zones:
     top: 24199
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -44225,6 +44401,8 @@ zones:
     top: 24299
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -44800,6 +44978,8 @@ zones:
     top: 24399
     lifespan_mins: 15
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -45090,6 +45270,8 @@ zones:
     top: 24499
     lifespan_mins: 5
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -45185,6 +45367,8 @@ zones:
     top: 24599
     lifespan_mins: 15
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -46124,6 +46308,8 @@ zones:
     top: 24799
     lifespan_mins: 24
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -47043,6 +47229,8 @@ zones:
     top: 24899
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -47470,6 +47658,8 @@ zones:
     top: 24999
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -47559,6 +47749,8 @@ zones:
     top: 25099
     lifespan_mins: 12
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -47959,6 +48151,8 @@ zones:
     top: 25199
     lifespan_mins: 15
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -48426,6 +48620,8 @@ zones:
     top: 25299
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -48653,6 +48849,8 @@ zones:
     top: 25399
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -49195,6 +49393,8 @@ zones:
     top: 25499
     lifespan_mins: 25
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -49697,6 +49897,8 @@ zones:
     top: 25599
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -49944,6 +50146,8 @@ zones:
     top: 25699
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -50678,6 +50882,8 @@ zones:
     top: 25799
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -51912,6 +52118,8 @@ zones:
     top: 25899
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -52019,6 +52227,8 @@ zones:
     top: 25999
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -52231,6 +52441,8 @@ zones:
     top: 26099
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -52363,6 +52575,8 @@ zones:
     top: 26199
     lifespan_mins: 20
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -52860,6 +53074,8 @@ zones:
     top: 26299
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -53172,6 +53388,8 @@ zones:
     top: 26399
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -53413,6 +53631,8 @@ zones:
     top: 26499
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -53680,6 +53900,8 @@ zones:
     top: 26599
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -53907,6 +54129,8 @@ zones:
     top: 26699
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -54229,6 +54453,8 @@ zones:
     top: 26799
     lifespan_mins: 30
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: remove_item
@@ -54777,6 +55003,8 @@ zones:
     top: 26999
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -56004,6 +56232,8 @@ zones:
     top: 27099
     lifespan_mins: 25
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -56283,6 +56513,8 @@ zones:
     top: 27199
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -58302,6 +58534,8 @@ zones:
     top: 27399
     lifespan_mins: 30
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -58733,6 +58967,8 @@ zones:
     top: 27499
     lifespan_mins: 15
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -59611,6 +59847,8 @@ zones:
     top: 27599
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: remove_item
@@ -61432,6 +61670,8 @@ zones:
     top: 27799
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: remove_item
@@ -62476,6 +62716,8 @@ zones:
     top: 27899
     lifespan_mins: 15
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -62598,6 +62840,8 @@ zones:
     top: 27999
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -63186,6 +63430,8 @@ zones:
     top: 28099
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -63308,6 +63554,8 @@ zones:
     top: 28199
     lifespan_mins: 15
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -63875,6 +64123,8 @@ zones:
     top: 28299
     lifespan_mins: 15
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -64057,6 +64307,8 @@ zones:
     top: 28399
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -64632,6 +64884,8 @@ zones:
     top: 28499
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -65370,6 +65624,8 @@ zones:
     top: 28699
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -66343,6 +66599,8 @@ zones:
     top: 28799
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -69219,6 +69477,8 @@ zones:
     top: 28899
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -69705,6 +69965,8 @@ zones:
     top: 28999
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -70179,6 +70441,8 @@ zones:
     top: 29099
     lifespan_mins: 25
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: drop_item
@@ -70546,6 +70810,8 @@ zones:
     top: 29199
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -70969,6 +71235,8 @@ zones:
     top: 29299
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -72090,6 +72358,8 @@ zones:
     top: 29499
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -72435,6 +72705,8 @@ zones:
     top: 29599
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -72597,6 +72869,8 @@ zones:
     top: 29699
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -72866,6 +73140,8 @@ zones:
     top: 29899
     lifespan_mins: 10
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -73206,6 +73482,8 @@ zones:
     top: 29999
     lifespan_mins: 28
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -73577,6 +73855,8 @@ zones:
     top: 30099
     lifespan_mins: 23
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -74081,6 +74361,8 @@ zones:
     top: 30199
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -75956,6 +76238,8 @@ zones:
     top: 30499
     lifespan_mins: 30
     reset_mode: when_desert
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -76191,6 +76475,8 @@ zones:
     top: 30599
     lifespan_mins: 20
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -76573,6 +76859,8 @@ zones:
     top: 30699
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -76930,6 +77218,8 @@ zones:
     top: 30799
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -77359,6 +77649,8 @@ zones:
     top: 30899
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -77919,6 +78211,8 @@ zones:
     top: 30999
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -78637,6 +78931,8 @@ zones:
     top: 31099
     lifespan_mins: 30
     reset_mode: never
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -79059,6 +79355,8 @@ zones:
     top: 31199
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -79273,6 +79571,8 @@ zones:
     top: 31299
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -79441,6 +79741,8 @@ zones:
     top: 31399
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -80028,6 +80330,8 @@ zones:
     top: 31499
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: remove_item
@@ -80594,6 +80898,8 @@ zones:
     top: 31599
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -81561,6 +81867,8 @@ zones:
     top: 31699
     lifespan_mins: 10
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -82002,6 +82310,8 @@ zones:
     top: 31799
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -82293,6 +82603,8 @@ zones:
     top: 31899
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -82770,6 +83082,8 @@ zones:
     top: 31999
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -83472,6 +83786,8 @@ zones:
     top: 32299
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: remove_item
@@ -84128,6 +84444,8 @@ zones:
     top: 32399
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -84763,6 +85081,8 @@ zones:
     top: 32499
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -85352,6 +85672,8 @@ zones:
     top: 32599
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -86029,6 +86351,8 @@ zones:
     top: 32699
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: place_mob
@@ -88762,6 +89086,8 @@ zones:
     top: 34599
     lifespan_mins: 15
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state
@@ -89801,6 +90127,8 @@ zones:
     top: 55599
     lifespan_mins: 30
     reset_mode: always
+    flags:
+    - grid
     commands:
     - if_flag: false
       type: door_state

@@ -9,7 +9,7 @@
 - zone commands: 18513
 - deferred: 0
 - dangling: 15
-- unmapped: 15697
+- unmapped: 3094
 - global permanent drops: 11
 - DG triggers emitted: 1461
 - DG trigger owners: 1295 (1705 links)
@@ -20,24 +20,16 @@
 |---|---:|
 | `affect_location` | 40 |
 | `exit_description_only` | 108 |
-| `item_action_description` | 38 |
 | `item_affect_flag` | 6 |
-| `item_extra_descriptions` | 2497 |
-| `mob_aff` | 2069 |
 | `mob_espec` | 954 |
-| `mob_sex` | 3705 |
-| `npc_keywords` | 3705 |
 | `quest_condition` | 3 |
 | `quest_gold_reward` | 1 |
 | `quest_text` | 3 |
 | `room_flag` | 1726 |
-| `shop_bitvector` | 311 |
-| `shop_broke_temper` | 67 |
-| `shop_buy_word` | 53 |
+| `shop_buy_word` | 6 |
 | `shop_profit_buy` | 1 |
 | `shop_record` | 238 |
 | `trigger_attach_type_mismatch` | 8 |
-| `zone_flag` | 164 |
 
 ## Dangling references by reason
 

@@ -165,6 +165,24 @@ pub enum NpcBehaviour {
     NoKill,
 }
 
+/// Circle's `GET_SEX`: 0 neutral, 1 male, 2 female (`structs.h`).
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TbaSex {
+    /// Circle's "it" (`SEX_NEUTRAL`).
+    #[default]
+    Neutral,
+    Male,
+    Female,
+}
+
+impl TbaSex {
+    /// The absent value, so a neutral reference serialises to nothing.
+    pub fn is_neutral(&self) -> bool {
+        *self == Self::Neutral
+    }
+}
+
 /// A mobile's hard-coded special procedure.
 ///
 /// `MOB_SPEC` only marks that something *may* be assigned; the actual
@@ -330,12 +348,42 @@ pub struct ZoneDef {
     pub lifespan_mins: u32,
     #[serde(default)]
     pub reset_mode: ResetMode,
+    /// The source `ZONE_*` flags. The engine acts on none of them; they are
+    /// preserved so a future system (or a builder's audit) can read them.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub flags: Vec<ZoneFlag>,
     #[serde(default)]
     pub commands: Vec<ZoneCommand>,
 }
 
 fn default_lifespan_mins() -> u32 {
     15
+}
+
+/// Circle's `ZONE_*` flags (`structs.h`), in bit order.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ZoneFlag {
+    Closed,
+    NoImmort,
+    Quest,
+    Grid,
+    NoBuild,
+    NoAstral,
+    Worldmap,
+}
+
+/// Circle's `SHOP_*` feature bits (`SHOP_NUMITEMS` .. `SHOP_NOCOMPLAIN`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ShopFlag {
+    NumItems,
+    Fix,
+    Cash,
+    Broke,
+    Notell,
+    NoTradeWith,
+    NoComplain,
 }
 
 /// `tba.zones` — keyed by zone vnum.
@@ -473,6 +521,18 @@ pub struct TbaNpcStats {
     /// `MOB_SPEC`; see [`SpecProc`].
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec_proc: Option<SpecProc>,
+    /// The source `GET_SEX`.
+    #[serde(default, skip_serializing_if = "TbaSex::is_neutral")]
+    pub sex: TbaSex,
+    /// The source `.mob` keyword list (`ch->player.name`), which is what a
+    /// player types to address the mobile.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub keywords: Vec<String>,
+    /// Circle's `AFF_FLAGS` bits on the mobile. Circle uses one `AFF_*`
+    /// vocabulary for characters and objects, so this shares
+    /// [`ItemAffectFlag`].
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub aff_flags: Vec<ItemAffectFlag>,
 }
 
 /// `tba.npc_stats` — keyed by the `stdlib.npcs` id it describes.
@@ -507,7 +567,9 @@ impl PackSection for TbaNpcStatsSection {
 // ---------------------------------------------------------------------------
 
 /// The 24 CircleMUD item types (`ITEM_*`).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+///
+/// `Ord` is derived so the type can key the shop buy-word map deterministically.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum TbaItemKind {
     Undefined,
@@ -627,6 +689,22 @@ pub struct TbaItemDef {
     pub min_level: u32,
     #[serde(default)]
     pub timer: Option<u32>,
+    /// Circle's `action_description` (what `look <item>` shows for a readable
+    /// or writable object).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action_description: Option<String>,
+    /// The source `E` extra descriptions (`ex_description`).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub extra_descriptions: Vec<TbaExtraDesc>,
+}
+
+/// One `E` extra description on an item or room prototype.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct TbaExtraDesc {
+    /// The keyword list a player types to reach this description.
+    pub keywords: Vec<String>,
+    pub description: String,
 }
 
 /// `tba.items` — keyed by the `stdlib.items` id it describes.
@@ -1173,6 +1251,21 @@ pub struct ShopDef {
     /// Circle's seven shop messages, when the source carries them.
     #[serde(default)]
     pub messages: Vec<String>,
+    /// Circle's `broke_temper` (`SHOP_BROKE_TEMPER`): the keeper-temper
+    /// message index.
+    #[serde(default, skip_serializing_if = "is_zero_u32")]
+    pub broke_temper: u32,
+    /// Circle's `SHOP_*` feature bits.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub bitvector: Vec<ShopFlag>,
+    /// Per-type buy keywords (`SHOP_BUYWORD`), keyed by the item kind they
+    /// apply to. A keeper that buys by name rather than by type uses these.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub buy_words: BTreeMap<TbaItemKind, String>,
+}
+
+fn is_zero_u32(value: &u32) -> bool {
+    *value == 0
 }
 
 /// `tba.shops` — keyed by the shopkeeper's `stdlib.npcs` id.
@@ -1507,6 +1600,9 @@ mod tests {
             attributes: TbaAttributes::mob_default(),
             saves: TbaSaves::default(),
             spec_proc: None,
+            sex: TbaSex::Neutral,
+            keywords: Vec::new(),
+            aff_flags: Vec::new(),
         };
         let yaml = serde_yaml::to_string(&base).expect("stats serialise");
         assert!(!yaml.contains("spec_proc"), "an unassigned mob omits it");
@@ -1602,6 +1698,9 @@ mod tests {
             trade_with: Vec::new(),
             hours: ShopHours::default(),
             messages: Vec::new(),
+            broke_temper: 0,
+            bitvector: Vec::new(),
+            buy_words: BTreeMap::new(),
         }
     }
 

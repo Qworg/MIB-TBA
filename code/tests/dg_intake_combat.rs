@@ -888,6 +888,7 @@ fn zone(bot: u32, top: u32, lifespan_mins: u32) -> ZoneDef {
             room: RoomId::from(format!("tba.{bot}")),
             max_in_world: 0,
         })],
+        flags: Vec::new(),
     }
 }
 

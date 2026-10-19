@@ -57,6 +57,9 @@ fn stats(level: u32, behaviour: Vec<NpcBehaviour>) -> TbaNpcStats {
         attributes: TbaAttributes::mob_default(),
         saves: TbaSaves::default(),
         spec_proc: None,
+        sex: TbaSex::Neutral,
+        keywords: Vec::new(),
+        aff_flags: Vec::new(),
     }
 }
 
@@ -76,6 +79,8 @@ fn dagger() -> TbaItemDef {
         rent: 0,
         min_level: 0,
         timer: None,
+        action_description: None,
+        extra_descriptions: Vec::new(),
     }
 }
 
