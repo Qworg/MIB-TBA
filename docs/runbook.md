@@ -191,7 +191,7 @@ human-readable **`reports/drop-report.summary.md`** beside it (the same run
 writes both). Both are deterministic and diffable: every vector is sorted, and
 the summary groups the surviving drops by reason. The report's totals are now
 189 zones / 12,700 rooms / 3,705 NPCs / 4,765 source items / 18,513 zone
-commands, with 0 deferred, 15 dangling and 15,742 unmapped records. The trigger
+commands, with 0 deferred, 15 dangling and 15,697 unmapped records. The trigger
 corpus is analysed in place with `dg_vm::analyze` (`trigger_coverage`): lines by
 class, the control and statement histograms, `wait` forms, script commands, the
 structural errors and the mob-command coverage ("Supported words: 42;
@@ -232,6 +232,7 @@ must replace the converted files and preserve the hand-authored ones.
 | `stdlib.areas.yaml` | `tba.classes.yaml` |
 | `stdlib.rooms.<zone>.yaml` (one shard per zone) | `tba.spells.yaml` |
 | `stdlib.npcs.yaml` | `stdlib.verbs.yaml` |
+| `stdlib.boards.yaml` | |
 | `stdlib.items.yaml` | `stdlib.credits.yaml` |
 | `stdlib.quests.yaml` | |
 | `stdlib.help.yaml` | |
@@ -266,6 +267,14 @@ reason the item count is one higher than the source object count.
 | `zone_reset_system` | `FixedUpdate` | Ages zones; runs the `M/O/G/E/P/D/R` interpreter when `lifespan_mins` elapses. `when_desert` checks player occupancy by room `num` in `[bot, top]`. |
 | `tick_item_timers`, `apply_night_darkness` | `FixedUpdate` (after `maintain_room_occupants`) | The shared `TbaObjectClock` ages item timers and advances the MUD calendar (75 real s/hour, 35-day months, 17-month years). `apply_night_darkness` mirrors Circle's `room_is_dark` onto authored `outdoor` rooms' runtime `RoomState.flags[Dark]`; authored `dark` rooms are never touched. The clock is runtime-only (a restart begins at year 0/day 0/hour 0). |
 | `auto_engage_system`, `npc_combatant_system`, `helper_system`, `pursuit_system` | `FixedUpdate` (after `maintain_room_occupants`) | Room-local aggro; alignment ±350 gating; Memory/Sentinel/StayZone/Helper. A player the observer cannot perceive through the engine `Concealment`/`Perception` seam (fed by the pack's `TbaHidden`/`TbaSneaking` sync; see §8) is skipped (`CAN_SEE`-style stealth). |
+| `handle_mail_commands`, `ensure_mailboxes`, `seed_player_mail` | `Update`, `BridgeSet::Game` (after `route_commands`) | The postmaster's `check`/`receive`/`mail <name>` over the stdlib `Mailbox`; `compose_mail_input` consumes the subject/body lines in `PreRoute` before the DG gate. `mail`/`check`/`receive` are declared in `stdlib.verbs`. |
+| `handle_board_commands`, `intercept_board_look`, `compose_board_input` | `Update`, `BridgeSet::Game` / `CommandSet::PreRoute` | Circle's bulletin boards over stdlib `BoardPosts`: `look/examine`/`read`/`write`/`remove`, with the post body composed before the DG gate. `stdlib.boards.yaml` maps the seven Circle board vnums. |
+| `handle_bank_commands`, `ensure_bank_account` | `Update`, `BridgeSet::Game` | The bank/ATM `balance`/`deposit`/`withdraw` over `TbaGold` + `TbaBank`; the bank is an item in the nine Circle bank vnums. |
+| `petshop_system` | `Update`, `BridgeSet::Game` | The pet-shop `list`/`buy` over the stdlib `Followers` primitive; stock is the NPCs in the room after the seven Circle pet-shop rooms, priced `level * 300`. |
+| `handle_practice_commands`, `practice_cast_gate` | `Update`, `BridgeSet::Game` / `CommandSet::PreRoute` | The guildmaster `practice` command: Circle's learned/min/max class tables, the persisted `TbaPractice` percentages, level-up practice grants, and the `GET_SKILL == 0` spell refusal. |
+| `handle_rent_commands`, `restore_rented_items` | `Update`, `BridgeSet::Game` | The receptionist/cryogenicist `offer`/`rent`: Circle's `MIN_RENT_COST + sum(item.rent)` formula and 35-item cap, then `storage::park_player_items`; `restore_player_items` returns the `rent`/`cryo` records on login. |
+| `attach_spec_procs`, `spec_proc_system` | `FixedUpdate` (after `npc_combatant_system`) | The C mobile special procedures named by `tba.npc_stats.spec_proc`. The castle staff (banzaii, rescue, cleaning, the guard inspection, the gambler/trainer emotes) and the mayor's and King's scheduled paths run here; the command-driven guild/postmaster/receptionist procedures attach their own systems in later phases. |
+| `intercept_block_way` | `Update`, `CommandSet::PreRoute` (after `DgIntake::PreCommit`) | The castle `block_way` guards: Tim/Tom at the King's bedroom and Dick/David at the treasury refuse `east` for a player in their room. The line is claimed like any other pre-route refusal. |
 | `resolve_rounds`, `tick_buffs` | `TbaRound` (every 3 s on the frame clock) | Combat rounds. Deliberately **not** on `tick_hz`, so combat never forces the engine tick rate. |
 | `handle_combat_commands`, `handle_skill_commands`, `handle_equipment_commands`, `handle_cast_command`, `handle_shop_commands`, `handle_social_commands`, `handle_time_command`, `handle_party_commands`, `recompute_equipment_affects`, `sync_wielded_weapon` | `Update`, `BridgeSet::Game`, after `route_commands` | Genre commands. `cast`/`list`/`buy`/`sell`/`value`, `social <name>`/`socials`, `time`, `group`/`gtell`(`;`)/`follow`/`unfollow`, and the issue #25 skills `backstab`/`kick`/`bash`/`rescue`/`assist`/`consider`/`sneak`/`hide`/`pick_lock` have no fixed `Command` variant and are parsed from `PlayerInput::RawLine`, declared in `stdlib.verbs.yaml` so the stdlib router claims them. `social` resolves `$n`/`$N`/`$e`/`$E`/`$m`/`$M`/`$s`/`$S` (and `$t`/`$p`/case switches) against the actor/target and broadcasts the room and victim lines. `mib_tba::skills` gates each ability on `tba.classes` `granted_skills` + `skill_levels`, `sneak`/`hide` set the runtime-only `TbaSneaking`/`TbaHidden` (synced into the engine `Concealment`), `pick_lock` writes the room's runtime `RoomState` door state, and `find_target_in_room` resolves a target only when the engine `visible_to`/`perceive` predicate admits it for the actor. |
 | `intercept_who` | `Update`, `CommandSet::PreRoute` (before `route_commands`) | The pack's only remaining visibility surface. `handle_who` is global and lists every player, so this marks `who` handled and reproduces the stdlib line with the engine `perceive` predicate applied (`Concealment` on the listed player, `Perception` on the asker). `look`/`Scene`/GMCP are filtered by the engine seam, not here. |
@@ -414,10 +423,18 @@ These are recorded, not silent:
   - `kick`/`bash` deduct `SKILL_MOVE_COST` (10) movement and refuse at zero.
     This tbaMUD revision's `do_kick`/`do_bash` no longer contains the `GET_MOVE`
     check; the pack reinstates the classic Circle cost.
-- **`MOB_SPEC` special procedures** are a non-goal (#31); the flag is a named
-  `mob_flag` drop in the report. It is only a legacy marker — the behaviour is
-  assigned in C (`spec_assign.c`/`castle.c`), not carried by the world file.
-  NPC e-specs (`mob_espec`) are now mapped onto `tba.npc_stats.attributes` and
+- **Mail, boards and rent** now use the MIB stdlib services from PR #25. The
+  postmaster, board objects and receptionist own only the Circle command
+  surface and policy; the stores and escrow are stdlib.
+- **`MOB_SPEC` special procedures** are no longer a non-goal: the converter
+  emits the real assignment as `tba.npc_stats.spec_proc` (78 mobs), transcribed
+  from `spec_assign.c`/`castle.c`, and the flag itself is no longer a drop.
+  Eight flagged mobs have no procedure at all. The ambient procedures (banzaii,
+  rescue, cleaning, the guard/gambler/trainer emotes, the mayor and King
+  schedules and the `block_way` guards) run in `mib_tba::spec`. The
+  guild/postmaster/receptionist procedures still need the practice, mail and
+  rent subsystems; they are the remaining #31 work.
+  NPC e-specs (`mob_espec`) are mapped onto `tba.npc_stats.attributes` and
   `.saves`; only `BareHandAttack` (display-only) and `StrAdd` (exceptional
   strength) remain named `mob_espec` drops.
 - The converter's drop report lists every unmapped source flag and field, with

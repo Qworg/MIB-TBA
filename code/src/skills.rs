@@ -98,6 +98,7 @@ use crate::content::{NpcBehaviour, Position, TbaClassDef, TbaItemKind};
 use crate::dg::intake::commands::{DgClaimed, is_claimed};
 use crate::module::TbaContent;
 use crate::party::TbaFollowing;
+use crate::practice::TbaPractice;
 
 /// Circle's refusal for `backstab`/`rescue`/`sneak`/`hide` (`do_*`).
 const MSG_UNKNOWN_LONG: &str = "You have no idea how to do that.";
@@ -419,6 +420,13 @@ pub struct SkillQueries<'w, 's> {
     pub rooms: Query<'w, 's, (&'static Room, &'static RoomState)>,
     pub wielded: Query<'w, 's, &'static WieldedWeapon>,
     pub purses: Query<'w, 's, &'static crate::dg::chardata::TbaNpcPurse>,
+    pub practice: Query<'w, 's, &'static TbaPractice>,
+}
+
+/// A skill's `GET_SKILL`; a character with no practice record keeps the old
+/// fully-learned behaviour.
+fn percent_for(practice: Option<&TbaPractice>, skill: &str) -> i32 {
+    practice.map_or(SKILL_LEARNED, |practice| practice.percent(skill))
 }
 
 /// `BridgeSet::Game`: translate the issue #25 skill verbs into effects.
@@ -553,7 +561,9 @@ pub fn handle_skill_commands(
 
                 let percent = rng.range(1, 101);
                 let victim_name = entity_name(victim, &queries.players, &queries.npcs);
-                if victim_awake && percent > SKILL_LEARNED {
+                if victim_awake
+                    && percent > percent_for(queries.practice.get(session).ok(), "backstab")
+                {
                     output.write(text(
                         session,
                         format!("Your backstab misses {victim_name}."),
@@ -678,7 +688,7 @@ pub fn handle_skill_commands(
                 // `percent = ((10 - AC/10) * 2) + rand_number(1, 101)`.
                 let percent = ((10 - victim_ac / 10) * 2) + rng.range(1, 101);
                 let victim_name = entity_name(victim, &queries.players, &queries.npcs);
-                let damage = if percent > SKILL_LEARNED {
+                let damage = if percent > percent_for(queries.practice.get(session).ok(), "kick") {
                     0
                 } else {
                     (level / 2) as i32
@@ -790,7 +800,7 @@ pub fn handle_skill_commands(
                     npc_behaviour_contains(victim, NpcBehaviour::NoBash, content, &queries.keys);
                 let percent = if nobash { 101 } else { rng.range(1, 101) };
                 let victim_name = entity_name(victim, &queries.players, &queries.npcs);
-                if percent > SKILL_LEARNED {
+                if percent > percent_for(queries.practice.get(session).ok(), "bash") {
                     // A miss drops the attacker; the mob is untouched.
                     if let Ok(mut actor) = combatants.get_mut(session) {
                         actor.position = Position::Sitting;
@@ -901,7 +911,10 @@ pub fn handle_skill_commands(
                     );
                     continue;
                 };
-                if !skill_succeeds(&mut rng, SKILL_LEARNED) {
+                if !skill_succeeds(
+                    &mut rng,
+                    percent_for(queries.practice.get(session).ok(), "rescue"),
+                ) {
                     deny(&mut output, session, "You fail the rescue!");
                     continue;
                 }
@@ -1087,7 +1100,10 @@ pub fn handle_skill_commands(
                     session,
                     "Okay, you'll try to move silently for a while.",
                 ));
-                if skill_succeeds(&mut rng, SKILL_LEARNED) {
+                if skill_succeeds(
+                    &mut rng,
+                    percent_for(queries.practice.get(session).ok(), "sneak"),
+                ) {
                     commands.entity(session).insert(TbaSneaking);
                 }
             }
@@ -1107,7 +1123,10 @@ pub fn handle_skill_commands(
                 // Circle clears an existing hide, then re-rolls.
                 commands.entity(session).remove::<TbaHidden>();
                 output.write(text(session, "You attempt to hide yourself."));
-                if skill_succeeds(&mut rng, SKILL_LEARNED) {
+                if skill_succeeds(
+                    &mut rng,
+                    percent_for(queries.practice.get(session).ok(), "hide"),
+                ) {
                     commands.entity(session).insert(TbaHidden);
                 }
             }
@@ -1191,7 +1210,10 @@ pub fn handle_skill_commands(
                 // rand_number(1, 101)`, `skill_lvl = GET_SKILL(ch,
                 // SKILL_PICK_LOCK)` (the DEX bonus is not modelled), success
                 // on `percent <= skill_lvl`.
-                if !skill_succeeds(&mut rng, SKILL_LEARNED) {
+                if !skill_succeeds(
+                    &mut rng,
+                    percent_for(queries.practice.get(session).ok(), "pick_lock"),
+                ) {
                     deny(&mut output, session, "You failed to pick the lock.");
                     continue;
                 }

@@ -165,6 +165,51 @@ pub enum NpcBehaviour {
     NoKill,
 }
 
+/// A mobile's hard-coded special procedure.
+///
+/// `MOB_SPEC` only marks that something *may* be assigned; the actual
+/// function pointer lives in the C tables (`spec_assign.c::assign_mobiles`,
+/// `castle.c::assign_kings_castle`). The converter transcribes those tables
+/// into this enum so a mob's behaviour is data, not a flag guess. Not every
+/// `MOB_SPEC`-flagged mob has one, and most assigned mobs do not carry the
+/// flag.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SpecProc {
+    /// `SPECIAL(guild)`: the `practice` command (`spec_procs.c:147`).
+    Guild,
+    /// `SPECIAL(mayor)`: the Midgaard mayor's scheduled walk (`spec_procs.c:223`).
+    Mayor,
+    /// `SPECIAL(postmaster)`: send/check/receive mail (`mail.c:390`).
+    Postmaster,
+    /// `SPECIAL(receptionist)`: rent storage (`objsave.c:1197`).
+    Receptionist,
+    /// `SPECIAL(cryogenicist)`: free cryo storage (`objsave.c:1202`).
+    Cryogenicist,
+    /// `SPECIAL(CastleGuard)`: banzaii the staff's attackers (`castle.c:648`).
+    CastleGuard,
+    /// `SPECIAL(king_welmar)`: the King's schedule, spells and banzaii
+    /// (`castle.c:366`).
+    KingWelmar,
+    /// `SPECIAL(peter)`: the captain inspects the guard (`castle.c:669`).
+    Peter,
+    /// `SPECIAL(training_master)`: sparring and the warrior practice gate
+    /// (`castle.c:483`).
+    TrainingMaster,
+    /// `SPECIAL(James)`: the butler picks up trash and complains (`castle.c:611`).
+    James,
+    /// `SPECIAL(cleaning)`: the cleaning woman picks up trash (`castle.c:642`).
+    Cleaning,
+    /// `SPECIAL(tim)`: the King's twin (`castle.c:573`).
+    Tim,
+    /// `SPECIAL(tom)`: the King's twin (`castle.c:568`).
+    Tom,
+    /// `SPECIAL(DicknDavid)`: the treasury guards (`castle.c:657`).
+    DicknDavid,
+    /// `SPECIAL(jerry)`: the castle gambler (`castle.c:733`).
+    Jerry,
+}
+
 // ---------------------------------------------------------------------------
 // tba.zones — the stateful zone reset program (TBA-E07)
 // ---------------------------------------------------------------------------
@@ -422,6 +467,12 @@ pub struct TbaNpcStats {
     /// way a player's [`TbaSaves`](crate::combat::TbaSaves) are.
     #[serde(default, skip_serializing_if = "TbaSaves::is_default")]
     pub saves: TbaSaves,
+    /// The hard-coded C procedure assigned to this mob, if any.
+    ///
+    /// This is transcribed from `spec_assign.c`/`castle.c`, not derived from
+    /// `MOB_SPEC`; see [`SpecProc`].
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec_proc: Option<SpecProc>,
 }
 
 /// `tba.npc_stats` — keyed by the `stdlib.npcs` id it describes.
@@ -1436,6 +1487,38 @@ mod tests {
             min_level: BTreeMap::new(),
             unsupported: None,
         }
+    }
+
+    #[test]
+    fn spec_proc_serialises_as_snake_case_and_is_absent_when_unassigned() {
+        let base = TbaNpcStats {
+            hp: Dice::constant(1),
+            level: 1,
+            hitroll: 0,
+            damroll: 0,
+            armor_class: 100,
+            thaco: 20,
+            alignment: 0,
+            gold: 0,
+            experience: 0,
+            default_position: Position::Standing,
+            behaviour: Vec::new(),
+            damage: None,
+            attributes: TbaAttributes::mob_default(),
+            saves: TbaSaves::default(),
+            spec_proc: None,
+        };
+        let yaml = serde_yaml::to_string(&base).expect("stats serialise");
+        assert!(!yaml.contains("spec_proc"), "an unassigned mob omits it");
+
+        let assigned = TbaNpcStats {
+            spec_proc: Some(SpecProc::KingWelmar),
+            ..base
+        };
+        let yaml = serde_yaml::to_string(&assigned).expect("assigned stats serialise");
+        assert!(yaml.contains("spec_proc: king_welmar"), "{yaml}");
+        let decoded: TbaNpcStats = serde_yaml::from_str(&yaml).expect("stats round-trip");
+        assert_eq!(decoded.spec_proc, Some(SpecProc::KingWelmar));
     }
 
     #[test]

@@ -27,17 +27,24 @@
 //! interpreter, room-local aggro and Circle combat round attach to
 //! [`TbaPlugin`] in later phases.
 
+pub mod bank;
+pub mod boards;
 pub mod clock;
 pub mod combat;
 pub mod content;
 pub mod dg;
 pub mod equipment;
 pub mod items;
+pub mod mail;
 pub mod module;
 pub mod party;
+pub mod petshop;
+pub mod practice;
+pub mod rent;
 pub mod shops;
 pub mod skills;
 pub mod socials;
+pub mod spec;
 pub mod spells;
 pub mod stealth;
 pub mod triggers;
@@ -64,7 +71,7 @@ pub mod prelude {
     };
     pub use crate::content::{
         AffectDef, AffectLocation, Attribute, DoorReset, ItemAffectFlag, ItemExtraFlag, LevelBonus,
-        NpcBehaviour, Position, ResetMode, SaveEffect, SpellDef, SpellKind, SpellTarget,
+        NpcBehaviour, Position, ResetMode, SaveEffect, SpecProc, SpellDef, SpellKind, SpellTarget,
         SpellsFile, SpellsSection, TbaClassDef, TbaClassesFile, TbaClassesSection, TbaItemDef,
         TbaItemKind, TbaItemsFile, TbaItemsSection, TbaNpcStats, TbaNpcStatsFile,
         TbaNpcStatsSection, WearSlot, ZoneCommand, ZoneCommandKind, ZoneDef, ZonesFile,
@@ -96,6 +103,7 @@ pub mod prelude {
         SocialCommand, SocialNames, gate_reason, handle_social_commands, parse_social_line,
         substitute,
     };
+    pub use crate::spec::{TbaSpecProc, TbaSpecState};
     pub use crate::spells::{
         ActiveBuff, DEFAULT_BUFF_ROUNDS, TbaBuffs, handle_cast_command, mana_cost, tick_buffs,
     };

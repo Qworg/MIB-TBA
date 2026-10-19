@@ -8,6 +8,11 @@
 #   commands; the fixed parser stops at the movement/combat grammar.
 # - `social <name> [target] [body part]` and `socials` — CircleMUD social
 #   emotes; the open-ended social name cannot be a fixed `Command` variant.
+# - `mail <name>`, `check`, `receive` — Circle's postmaster commands
+#   (`mib_tba::mail`, issue #31).
+# - `read <n> <board>`, `write <header>` — Circle's bulletin-board commands
+#   (`mib_tba::boards`, issue #31); `look <board>` is intercepted in PreRoute.
+# - `offer`, `rent` — the receptionist/cryogenicist (`mib_tba::rent`, issue #31).
 # - `time` — the in-world clock report (`mib_tba::clock`).
 # - `group`, `gtell` (and `;`), `follow`, `unfollow` — the party system
 #   (`mib_tba::party`).
@@ -44,6 +49,39 @@ verbs:
     effects: []
   socials:
     description: List the social emotes available to you.
+    effects: []
+  mail:
+    description: Send mail at a postmaster.
+    effects: []
+  check:
+    description: Ask a postmaster whether mail is waiting.
+    effects: []
+  read:
+    description: Read a numbered message on a bulletin board.
+    effects: []
+  write:
+    description: Write a message on a bulletin board.
+    effects: []
+  offer:
+    description: Ask a receptionist what storage would cost.
+    effects: []
+  rent:
+    description: Store your belongings with a receptionist.
+    effects: []
+  balance:
+    description: Ask a bank for your balance.
+    effects: []
+  deposit:
+    description: Deposit gold at a bank.
+    effects: []
+  withdraw:
+    description: Withdraw gold from a bank.
+    effects: []
+  practice:
+    description: Spend a practice session at a guildmaster.
+    effects: []
+  receive:
+    description: Receive mail from a postmaster.
     effects: []
   time:
     description: Report the in-world time.
