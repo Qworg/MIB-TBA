@@ -13,6 +13,13 @@ env:
   CARGO_TERM_COLOR: always
   TBAMUD_SOURCE: ${{ github.workspace }}/tbamud
 
+# The default token only reads this repository and the public tbaMUD checkout.
+# The private engine is fetched with `MIB_DEPLOY_KEY`, a read-only deploy key
+# scoped to Qworg/MIB alone, so CI never holds a credential that can write to
+# other repositories.
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -22,14 +29,31 @@ jobs:
         with:
           path: MIB-TBA
 
+      # Fail loudly rather than with a confusing 404 when the credential is
+      # absent (for example on a fork PR, where repository secrets are not
+      # exposed). Only whether the secret is set is materialised into the
+      # environment, never its value.
+      - name: Require the engine deploy key
+        env:
+          HAS_DEPLOY_KEY: ${{ secrets.MIB_DEPLOY_KEY != '' }}
+        run: |
+          if [ "$HAS_DEPLOY_KEY" != "true" ]; then
+            echo "::error::MIB_DEPLOY_KEY is not set. Qworg/MIB is private,"
+            echo "so CI cannot check out the engine without it. Add a read-only"
+            echo "deploy key for Qworg/MIB as the MIB_DEPLOY_KEY secret."
+            exit 1
+          fi
+
       - name: Checkout the MIB engine (sibling path dependency)
         uses: actions/checkout@v4
         with:
           repository: Qworg/MIB
           path: MIB
-          # A PAT is only needed if the engine is private; the default token
-          # suffices for a public repository.
-          token: ${{ secrets.MIB_CHECKOUT_TOKEN || github.token }}
+          # Read-only deploy key, scoped to Qworg/MIB. `persist-credentials:
+          # false` keeps the key out of MIB/.git/config, so a later build step
+          # cannot read it.
+          ssh-key: ${{ secrets.MIB_DEPLOY_KEY }}
+          persist-credentials: false
 
       - name: Checkout tbaMUD (converter source)
         uses: actions/checkout@v4
