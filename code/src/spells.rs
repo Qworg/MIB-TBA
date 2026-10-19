@@ -945,7 +945,6 @@ fn apply_spell_to_target(
             }
         }
         SpellKind::Charm => {
-            let caster_hears = caster_hears;
             commands.queue(move |world: &mut World| {
                 if crate::transport::refuses_charm(world, target) {
                     if caster_hears {
@@ -975,7 +974,6 @@ fn apply_spell_to_target(
         // as an exclusive pass because moving a character touches `Location`,
         // the follower anchors and the engine's online registry together.
         SpellKind::Recall => {
-            let caster_hears = caster_hears;
             commands.queue(move |world: &mut World| {
                 let Some(destination) = crate::transport::recall_room(world) else {
                     if caster_hears {
@@ -1026,7 +1024,6 @@ fn apply_spell_to_target(
         }
         SpellKind::Summon => {
             let destination = room;
-            let caster_hears = caster_hears;
             commands.queue(move |world: &mut World| {
                 if crate::transport::refuses_summon(world, target) {
                     if caster_hears {

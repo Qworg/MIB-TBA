@@ -503,8 +503,14 @@ fn tba_spell_catalog_is_the_circle_catalog() {
             }
         }
     }
-    assert_eq!(flagged, 26, "the re-scoped Circle routines");
-    assert_eq!(implemented, 28, "damage/heal/buff/debuff/detect spells");
+    // #39 is converting the `Utility` set to real kinds; these counts move as
+    // each group lands. Seven spells landed in the transport, charm and party
+    // groups.
+    assert_eq!(flagged, 19, "Circle routines still unimplemented (#39)");
+    assert_eq!(
+        implemented, 35,
+        "modeled kinds: damage/heal/buff/debuff/detect/transport/charm"
+    );
     assert_eq!(implemented + flagged, TBA_SPELLS);
 
     // Every `granted_skills` name that is a spell must resolve in the catalog;
