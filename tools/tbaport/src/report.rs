@@ -405,7 +405,8 @@ pub fn split_mud_commands(
     for (word, count) in mud_commands {
         out.lines += count;
         let known = supported.iter().any(|name| {
-            name.len() >= word.len() && name.is_char_boundary(word.len())
+            name.len() >= word.len()
+                && name.is_char_boundary(word.len())
                 && name[..word.len()].eq_ignore_ascii_case(word)
         });
         let side = if known {
