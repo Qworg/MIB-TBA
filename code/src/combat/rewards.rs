@@ -16,7 +16,7 @@
 use mib_core::prelude::*;
 use mib_stdlib::prelude::{Location, NpcId, NpcKey, Player, Session, SessionState};
 
-use crate::content::{TbaClassDef, TbaSex};
+use crate::content::TbaClassDef;
 use crate::module::TbaContent;
 use crate::party::TbaParties;
 
@@ -342,6 +342,7 @@ mod tests {
 
     use super::*;
     use crate::combat::{TbaAttributes, TbaSaves};
+    use crate::content::TbaSex;
     use mib_core::prelude::Dice;
     use smol_str::SmolStr;
 

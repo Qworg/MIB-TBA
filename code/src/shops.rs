@@ -18,8 +18,6 @@
 //! player sells, rounded to the nearest coin. The item's `TbaItemDef` supplies
 //! the cost and the `kind` the shop checks against its `buy_kinds` bitmask.
 
-use std::collections::BTreeMap;
-
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{
@@ -589,6 +587,8 @@ pub fn handle_shop_commands(
 #[cfg(test)]
 mod tests {
     #![allow(clippy::expect_used, clippy::unwrap_used)]
+
+    use std::collections::BTreeMap;
 
     use super::*;
 

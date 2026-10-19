@@ -87,7 +87,7 @@ fn time_command_uses_midnight_and_the_calendar() {
     // Day index 1*35 + 1 = day 2 of month 1, year 3 of Circle's calendar.
     let mut app = test_app(TimeOfDay {
         hour: 0,
-        day_index: 3 * 35 * 17 + 1 * 35 + 1,
+        day_index: 3 * 35 * 17 + 36,
         ..TimeOfDay::default()
     });
     let room = app.world_mut().spawn_empty().id();

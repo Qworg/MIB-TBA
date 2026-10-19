@@ -172,17 +172,6 @@ const APPLY_NAMES: [&str; 25] = [
     "SAVING_SPELL",
 ];
 
-/// Zone flag names (`constants.c:92`).
-const ZONE_FLAG_NAMES: [&str; 7] = [
-    "CLOSED",
-    "NO_IMMORT",
-    "QUEST",
-    "GRID",
-    "NOBUILD",
-    "!ASTRAL",
-    "WORLDMAP",
-];
-
 /// Options for one conversion run.
 #[derive(Debug, Clone)]
 pub struct ConvertOptions {

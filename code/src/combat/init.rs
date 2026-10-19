@@ -12,7 +12,7 @@ use mib_core::prelude::*;
 use mib_stdlib::prelude::{CharacterCreated, Location, NpcKey, Room};
 use smol_str::SmolStr;
 
-use crate::content::{Position, TbaClassDef, TbaNpcStats, TbaSex};
+use crate::content::{Position, TbaClassDef, TbaNpcStats};
 use crate::module::TbaContent;
 
 use super::ai::TbaSpawnHome;
@@ -265,7 +265,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::content::Attribute;
+    use crate::content::{Attribute, TbaSex};
 
     fn class(name: &str, hp: Dice) -> TbaClassDef {
         let mut def = default_class();
