@@ -47,8 +47,8 @@ use super::{DgLog, DgVm, ids, mobcmd};
 use crate::combat::{TbaCombatant, TbaProgress, TbaRng};
 use crate::content::{Position, TbaItemKind, WearSlot};
 use crate::equipment::TbaEquipment;
-use crate::items::TbaObjectClock;
 use crate::module::TbaContent;
+use mib_stdlib::prelude::TimeOfDay;
 
 /// The host the VM runs against: the ECS world, borrowed for one dispatch.
 pub struct EcsHost<'w> {
@@ -347,15 +347,18 @@ impl BaseHost for EcsHost<'_> {
     }
 
     fn mud_time(&self) -> MudTime {
-        let Some(clock) = self.world.get_resource::<TbaObjectClock>() else {
+        let Some(clock) = self.world.get_resource::<TimeOfDay>() else {
             return MudTime::default();
         };
+        // Circle's `time_info` fields are 0-based and derived from the engine
+        // clock's day index.
+        let (day, month, year) = crate::clock::circle_calendar(clock);
         let to_i32 = |value: u32| i32::try_from(value).unwrap_or(i32::MAX);
         MudTime {
-            hours: to_i32(clock.hour_of_day),
-            day: to_i32(clock.day),
-            month: to_i32(clock.month),
-            year: to_i32(clock.year),
+            hours: i32::from(clock.hour),
+            day: to_i32(day),
+            month: to_i32(month),
+            year: to_i32(year),
         }
     }
 

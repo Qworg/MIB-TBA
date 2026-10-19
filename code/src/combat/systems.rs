@@ -318,6 +318,8 @@ mod tests {
             rent: 0,
             min_level: 0,
             timer: None,
+            action_description: None,
+            extra_descriptions: Vec::new(),
         }
     }
 

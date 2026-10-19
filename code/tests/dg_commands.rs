@@ -88,6 +88,9 @@ fn world() -> App {
                 attributes: TbaAttributes::mob_default(),
                 saves: TbaSaves::default(),
                 spec_proc: None,
+                sex: TbaSex::Neutral,
+                keywords: Vec::new(),
+                aff_flags: Vec::new(),
             },
         );
     app
@@ -238,6 +241,7 @@ fn zones_and_room_ranges() {
                 lifespan_mins: 15,
                 reset_mode: ResetMode::Always,
                 commands: Vec::new(),
+                flags: Vec::new(),
             },
         );
     }

@@ -296,6 +296,8 @@ mod tests {
                 rent: 10,
                 min_level: 0,
                 timer: None,
+                action_description: None,
+                extra_descriptions: Vec::new(),
             },
         );
         world.insert_resource(content);

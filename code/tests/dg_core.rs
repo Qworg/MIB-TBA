@@ -617,11 +617,10 @@ fn rand_number_stays_in_range_and_swaps_reversed_bounds() {
 fn mud_time_and_pulse_come_from_the_clocks() {
     let mut app = app();
     {
-        let mut clock = app.world_mut().resource_mut::<TbaObjectClock>();
-        clock.hour_of_day = 13;
-        clock.day = 20;
-        clock.month = 5;
-        clock.year = 42;
+        // Circle day 20 of month 5 in year 42.
+        let mut clock = app.world_mut().resource_mut::<TimeOfDay>();
+        clock.hour = 13;
+        clock.day_index = 42 * 35 * 17 + 5 * 35 + 20;
     }
     app.world_mut().resource_mut::<DgPulse>().pulse = 1234;
     run(&mut app, |host| {
@@ -1138,7 +1137,7 @@ fn time_triggers_fire_when_the_mud_hour_changes() {
     let late = npc(&mut app, temple, 2, "late");
     let [e, l] = [early, late].map(|x| uid(&mut app, x));
 
-    app.world_mut().resource_mut::<TbaObjectClock>().hour_of_day = 5;
+    app.world_mut().resource_mut::<TimeOfDay>().hour = 5;
     tick_pulses(&mut app, 1);
     assert_eq!(
         global(&mut app, e, "fired"),
@@ -1146,7 +1145,7 @@ fn time_triggers_fire_when_the_mud_hour_changes() {
         "the first tick only notes the hour"
     );
 
-    app.world_mut().resource_mut::<TbaObjectClock>().hour_of_day = 6;
+    app.world_mut().resource_mut::<TimeOfDay>().hour = 6;
     tick_pulses(&mut app, 1);
     assert_eq!(global(&mut app, e, "fired").as_deref(), Some("1"));
     assert_eq!(global(&mut app, l, "fired"), None, "its narg is 7");
@@ -1161,7 +1160,7 @@ fn time_triggers_fire_when_the_mud_hour_changes() {
         "the hour did not change"
     );
 
-    app.world_mut().resource_mut::<TbaObjectClock>().hour_of_day = 7;
+    app.world_mut().resource_mut::<TimeOfDay>().hour = 7;
     tick_pulses(&mut app, 1);
     assert_eq!(global(&mut app, l, "fired").as_deref(), Some("1"));
 }

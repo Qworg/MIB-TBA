@@ -21,8 +21,8 @@ use mib_tba::combat::{
 };
 use mib_tba::content::{
     AffectDef, AffectLocation, DoorReset, ItemAffectFlag, ItemExtraFlag, NpcBehaviour, Position,
-    ResetMode, ShopDef, ShopHours, ShopTrade, SocialDef, TbaItemDef, TbaItemKind, TbaNpcStats,
-    WearSlot, ZoneCommand, ZoneCommandKind, ZoneDef,
+    ResetMode, ShopDef, ShopFlag, ShopHours, ShopTrade, SocialDef, TbaExtraDesc, TbaItemDef,
+    TbaItemKind, TbaNpcStats, TbaSex, WearSlot, ZoneCommand, ZoneCommandKind, ZoneDef, ZoneFlag,
 };
 use mib_tba::triggers::content::{TriggerDef, TriggerId, TriggersFile};
 
@@ -50,6 +50,12 @@ use crate::source::{
     tokens::Source,
     zone::{RawZone, parse_zone},
 };
+
+/// The single `stdlib.weather` zone every converted area belongs to (D-42).
+///
+/// tbaMUD has no weather zones; the whole world is one temperate continent, so
+/// the pack authors a matching zone in `content/stdlib.weather.yaml`.
+const TBA_WEATHER_ZONE: &str = "temperate";
 
 /// Direction words, in the order of `dirs[]` in `constants.c:35`.
 const DIRS: [&str; 10] = [
@@ -164,17 +170,6 @@ const APPLY_NAMES: [&str; 25] = [
     "SAVING_PETRI",
     "SAVING_BREATH",
     "SAVING_SPELL",
-];
-
-/// Zone flag names (`constants.c:92`).
-const ZONE_FLAG_NAMES: [&str; 7] = [
-    "CLOSED",
-    "NO_IMMORT",
-    "QUEST",
-    "GRID",
-    "NOBUILD",
-    "!ASTRAL",
-    "WORLDMAP",
 ];
 
 /// Options for one conversion run.
@@ -357,7 +352,9 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
             ids::area_id(source.number),
             AreaDef {
                 name: source.zone.name.clone(),
-                weather_zone: None,
+                // The converted world is one temperate continent; the pack
+                // authors a matching `stdlib.weather.yaml` zone (D-42).
+                weather_zone: Some(mib_stdlib::content::WeatherZoneId::from(TBA_WEATHER_ZONE)),
             },
         );
 
@@ -737,6 +734,8 @@ fn insert_gold_prototype(bundle: &mut OutputBundle) {
             rent: 0,
             min_level: 0,
             timer: None,
+            action_description: None,
+            extra_descriptions: Vec::new(),
         });
 }
 
@@ -1045,6 +1044,78 @@ fn map_sector(sector: i32, object: &str, zr: &mut ZoneReport) -> Sector {
     }
 }
 
+/// Circle's `ZONE_*` bits (`ZONE_FLAG_NAMES` order).
+fn map_zone_flags(flags: u64) -> Vec<ZoneFlag> {
+    use crate::source::tokens::bit;
+    let mut out = Vec::new();
+    for (index, flag) in [
+        ZoneFlag::Closed,
+        ZoneFlag::NoImmort,
+        ZoneFlag::Quest,
+        ZoneFlag::Grid,
+        ZoneFlag::NoBuild,
+        ZoneFlag::NoAstral,
+        ZoneFlag::Worldmap,
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        if bit(flags, index as u32) {
+            out.push(flag);
+        }
+    }
+    out
+}
+
+/// Circle's `SHOP_*` feature bits, in `SHOP_*` order.
+fn map_shop_bitvector(bits: i64) -> Vec<ShopFlag> {
+    let mut out = Vec::new();
+    for (index, flag) in [
+        ShopFlag::NumItems,
+        ShopFlag::Fix,
+        ShopFlag::Cash,
+        ShopFlag::Broke,
+        ShopFlag::Notell,
+        ShopFlag::NoTradeWith,
+        ShopFlag::NoComplain,
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        if bits & (1_i64 << index) != 0 {
+            out.push(flag);
+        }
+    }
+    out
+}
+
+/// `SHOP_BUYWORD`: a per-type buy keyword. An entry with no word buys by type
+/// alone and is not recorded.
+fn map_shop_buy_words(
+    raw: &RawShop,
+    label: &str,
+    zr: &mut ZoneReport,
+) -> BTreeMap<TbaItemKind, String> {
+    let mut out = BTreeMap::new();
+    for entry in &raw.buy_types {
+        let word = entry.word.trim();
+        if word.is_empty() {
+            continue;
+        }
+        let kind = map_item_kind(entry.kind, label, zr);
+        if out.insert(kind, word.to_owned()).is_some() {
+            push_unmapped(
+                zr,
+                label,
+                "shop_buy_word",
+                word,
+                "duplicate buy word for one item type; the last wins",
+            );
+        }
+    }
+    out
+}
+
 // ---------------------------------------------------------------------------
 // NPCs
 // ---------------------------------------------------------------------------
@@ -1122,32 +1193,30 @@ fn map_npc(raw: &RawMob, zr: &mut ZoneReport) -> (NpcDef, TbaNpcStats) {
     // marker, so it is not a drop by itself; `MOB_ISNPC` (3) and
     // `MOB_NOTDEADYET` (19) are loader bookkeeping the loader sets itself.
 
-    for (index, name) in AFF_FLAG_NAMES.iter().enumerate() {
-        if bit(raw.aff_flags[0], index as u32) {
-            push_unmapped(
-                zr,
-                &object,
-                "mob_aff",
-                name,
-                "permanent drop: TbaNpcStats has no affect-flag field",
-            );
+    // Circle uses one `AFF_*` vocabulary for characters and objects, so the
+    // mobile's bits reuse the item affect enum.
+    let aff_flags = map_item_affect_flags(raw.aff_flags[0], &object, zr);
+    let sex = match raw.sex {
+        1 => TbaSex::Male,
+        2 => TbaSex::Female,
+        other => {
+            if other != 0 {
+                push_unmapped(
+                    zr,
+                    &object,
+                    "mob_sex",
+                    &other.to_string(),
+                    "out-of-range sex; treated as neutral",
+                );
+            }
+            TbaSex::Neutral
         }
-    }
-
-    push_unmapped(
-        zr,
-        &object,
-        "mob_sex",
-        &raw.sex.to_string(),
-        "permanent drop: TbaNpcStats has no sex field",
-    );
-    push_unmapped(
-        zr,
-        &object,
-        "npc_keywords",
-        &raw.name,
-        "permanent drop: stdlib.npcs has no keyword list",
-    );
+    };
+    let keywords = raw
+        .name
+        .split_whitespace()
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
 
     // MOB_AWARE (bit 4) is already mapped above.
 
@@ -1176,6 +1245,9 @@ fn map_npc(raw: &RawMob, zr: &mut ZoneReport) -> (NpcDef, TbaNpcStats) {
         attributes: especs.attributes,
         saves: especs.saves,
         spec_proc: spec_assign::spec_proc_for(raw.vnum),
+        sex,
+        keywords,
+        aff_flags,
     };
 
     (npc, stats)
@@ -1306,26 +1378,22 @@ fn map_item(raw: &RawObj, zr: &mut ZoneReport) -> (ItemDef, TbaItemDef) {
         .map(str::to_owned)
         .collect::<Vec<_>>();
 
-    // Extra flags, affect flags and the keyword list now have `tba.items`
-    // fields. The action description and the `E` blocks still have no target.
-    if !raw.action_description.trim().is_empty() {
-        push_unmapped(
-            zr,
-            &object,
-            "item_action_description",
-            &raw.action_description,
-            "permanent drop: stdlib.items has no action description",
-        );
-    }
-    if !raw.extra_descriptions.is_empty() {
-        push_unmapped(
-            zr,
-            &object,
-            "item_extra_descriptions",
-            &raw.extra_descriptions.len().to_string(),
-            "permanent drop: stdlib.items has no extra-description field",
-        );
-    }
+    // The action description and the `E` extra descriptions have `tba.items`
+    // fields too, so every `.obj` field now has a home.
+    let action_description = (!raw.action_description.trim().is_empty())
+        .then(|| raw.action_description.trim().to_owned());
+    let extra_descriptions = raw
+        .extra_descriptions
+        .iter()
+        .map(|extra| TbaExtraDesc {
+            keywords: extra
+                .keywords
+                .split_whitespace()
+                .map(str::to_owned)
+                .collect(),
+            description: extra.description.clone(),
+        })
+        .collect::<Vec<_>>();
 
     let cost = raw.cost.max(0) as u32;
     let item = ItemDef {
@@ -1363,6 +1431,8 @@ fn map_item(raw: &RawObj, zr: &mut ZoneReport) -> (ItemDef, TbaItemDef) {
         } else {
             None
         },
+        action_description,
+        extra_descriptions,
     };
 
     (item, tba)
@@ -1804,23 +1874,14 @@ fn map_zone(
         }
     }
 
-    for (index, name) in ZONE_FLAG_NAMES.iter().enumerate() {
-        if crate::source::tokens::bit(raw.zone_flags[0], index as u32) {
-            push_unmapped(
-                zr,
-                &format!("zone {}", raw.number),
-                "zone_flag",
-                name,
-                "permanent drop: ZoneDef has no zone-flags field",
-            );
-        }
-    }
+    let flags = map_zone_flags(raw.zone_flags[0]);
 
     ZoneDef {
         name: raw.name.clone(),
         bot: raw.bot.max(0) as u32,
         top: raw.top.max(0) as u32,
         lifespan_mins: raw.lifespan,
+        flags,
         reset_mode: map_reset_mode(raw.reset_mode, &format!("zone {}", raw.number), zr),
         commands,
     }
@@ -1972,33 +2033,9 @@ fn map_shops(
             .collect();
         let trade_with = map_shop_trade_with(raw.trade_with, &label, zr);
 
-        for word in raw.buy_words() {
-            push_unmapped(
-                zr,
-                &label,
-                "shop_buy_word",
-                word,
-                "permanent drop: tba.shops has no per-type buy keyword",
-            );
-        }
-        if raw.broke_temper != 0 {
-            push_unmapped(
-                zr,
-                &label,
-                "shop_broke_temper",
-                &raw.broke_temper.to_string(),
-                "permanent drop: no keeper-temper reaction is modelled",
-            );
-        }
-        if raw.bitvector != 0 {
-            push_unmapped(
-                zr,
-                &label,
-                "shop_bitvector",
-                &raw.bitvector.to_string(),
-                "permanent drop: SHOP_* bitvector has no target field",
-            );
-        }
+        let buy_words = map_shop_buy_words(raw, &label, zr);
+        let bitvector = map_shop_bitvector(raw.bitvector);
+        let broke_temper = raw.broke_temper.max(0) as u32;
         if raw.record != raw.keeper {
             push_unmapped(
                 zr,
@@ -2015,6 +2052,9 @@ fn map_shops(
                 buy_multiplier: raw.profit_buy,
                 sell_multiplier: raw.profit_sell,
                 buy_kinds,
+                buy_words,
+                bitvector,
+                broke_temper,
                 produce,
                 rooms,
                 trade_with,

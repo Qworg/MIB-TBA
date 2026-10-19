@@ -44,6 +44,8 @@ fn tba_item(kind: TbaItemKind, cost: u32) -> TbaItemDef {
         rent: 0,
         min_level: 0,
         timer: None,
+        action_description: None,
+        extra_descriptions: Vec::new(),
     }
 }
 
@@ -65,6 +67,9 @@ fn content() -> TbaContent {
             trade_with: Vec::new(),
             hours: ShopHours::default(),
             messages: Vec::new(),
+            broke_temper: 0,
+            bitvector: Vec::new(),
+            buy_words: BTreeMap::new(),
         },
     )]);
     TbaContent {
@@ -392,10 +397,9 @@ fn closed_shop_refuses_trade_and_names_the_close() {
             close2: 0,
         };
     }
-    app.insert_resource(TbaObjectClock {
-        accumulator: 0.0,
-        hour_of_day: 20,
-        ..TbaObjectClock::default()
+    app.insert_resource(TimeOfDay {
+        hour: 20,
+        ..TimeOfDay::default()
     });
 
     command(&mut app, player, "buy a long sword");

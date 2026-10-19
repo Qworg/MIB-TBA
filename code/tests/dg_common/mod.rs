@@ -21,12 +21,13 @@ use mib_tba::prelude::*;
 use mib_tba::triggers::content::TriggerDef;
 
 /// An app with the DG runtime (resources and pulse system, no intake), the
-/// pack's clock and RNG, and a 10 Hz fixed clock that only moves when a test
-/// advances it.
+/// engine's world clock (D-42), the pack's hour ticker and RNG, and a 10 Hz
+/// fixed clock that only moves when a test advances it.
 pub fn app() -> App {
     let mut app = App::new();
     app.init_resource::<TbaRng>();
-    app.init_resource::<TbaObjectClock>();
+    app.init_resource::<TimeOfDay>();
+    app.insert_resource(TbaHourTicker::at(&TimeOfDay::default()));
     app.init_resource::<TbaContent>();
     app.insert_resource(Time::<Fixed>::from_hz(10.0));
     app.add_message::<OutputEvent>();
@@ -193,6 +194,8 @@ pub fn define_item(
             rent: 0,
             min_level: 0,
             timer: None,
+            action_description: None,
+            extra_descriptions: Vec::new(),
         },
     );
 }
@@ -220,6 +223,9 @@ pub fn define_npc_level(app: &mut App, vnum: u32, level: u32) {
                 attributes: TbaAttributes::mob_default(),
                 saves: TbaSaves::default(),
                 spec_proc: None,
+                sex: TbaSex::Neutral,
+                keywords: Vec::new(),
+                aff_flags: Vec::new(),
             },
         );
 }

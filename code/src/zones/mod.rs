@@ -419,6 +419,7 @@ mod tests {
                 lifespan_mins: 15,
                 reset_mode: ResetMode::Always,
                 commands: Vec::new(),
+                flags: Vec::new(),
             },
         );
         zones.insert(
@@ -430,6 +431,7 @@ mod tests {
                 lifespan_mins: 10,
                 reset_mode: ResetMode::Never,
                 commands: Vec::new(),
+                flags: Vec::new(),
             },
         );
         let tracker = ZoneTracker::from_zones(&zones);

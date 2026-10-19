@@ -888,6 +888,7 @@ fn zone(bot: u32, top: u32, lifespan_mins: u32) -> ZoneDef {
             room: RoomId::from(format!("tba.{bot}")),
             max_in_world: 0,
         })],
+        flags: Vec::new(),
     }
 }
 
@@ -967,9 +968,13 @@ fn timer_app() -> App {
     app
 }
 
-/// Advance the clock one MUD hour.
+/// Advance the world clock one MUD hour.
+///
+/// Object timers are aged from the shared world clock (D-42), not from the
+/// frame cadence, so the test moves the clock itself.
 fn next_hour(app: &mut App) {
-    tick(app, Duration::from_secs(75));
+    app.world_mut().resource_mut::<TimeOfDay>().world_epoch_secs += WORLD_SECONDS_PER_HOUR;
+    tick(app, Duration::from_millis(1));
 }
 
 #[test]

@@ -20,6 +20,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_101:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -49,6 +52,12 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      armor: fur
+      worn: fur
   tba_npc_102:
     buy_multiplier: 1.3
     sell_multiplier: 0.7
@@ -81,6 +90,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_103:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -113,6 +125,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_10400:
     buy_multiplier: 1.0
     sell_multiplier: 0.75
@@ -141,6 +156,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_10401:
     buy_multiplier: 3.0
     sell_multiplier: 0.25
@@ -170,6 +187,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_10402:
     buy_multiplier: 3.2
     sell_multiplier: 0.75
@@ -203,6 +222,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_10409:
     buy_multiplier: 2.5
     sell_multiplier: 1.0
@@ -232,6 +253,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_106:
     buy_multiplier: 1.3
     sell_multiplier: 0.6
@@ -260,6 +283,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_10614:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -285,6 +311,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_10617:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -306,6 +335,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_10632:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -329,6 +361,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_10634:
     buy_multiplier: 1.5
     sell_multiplier: 0.6
@@ -355,6 +390,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_10638:
     buy_multiplier: 1.5
     sell_multiplier: 0.3
@@ -405,6 +443,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_107:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -437,6 +478,12 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      armor: leather
+      worn: leather
   tba_npc_10700:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -476,6 +523,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_10702:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -511,6 +561,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_108:
     buy_multiplier: 1.5
     sell_multiplier: 0.9
@@ -543,6 +596,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_109:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -573,6 +629,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_111:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -605,6 +664,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that'
+    bitvector:
+    - fix
+    - cash
   tba_npc_11704:
     buy_multiplier: 1.0
     sell_multiplier: 0.0
@@ -688,6 +750,8 @@ shops:
     - '%s You do not have sufficient funds!'
     - '%s It will be %d coins. Thank you for your patronage.'
     - '%s I can give you %d coins for your item.'
+    bitvector:
+    - cash
   tba_npc_11824:
     buy_multiplier: 1.0
     sell_multiplier: 1.0
@@ -758,6 +822,9 @@ shops:
     - '%s NO CREDIT!'
     - '%s Here you go.  That will be %d coins.  Don''t get hurt!'
     - '%s You''ll get %d for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_12012:
     buy_multiplier: 1.2
     sell_multiplier: 0.6
@@ -781,6 +848,10 @@ shops:
     - '%s No cash, no goods!'
     - '%s Here you go.  That''ll be... %d coins.'
     - '%s Thank-you very much.  Here are your %d coins as payment.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_12016:
     buy_multiplier: 1.6
     sell_multiplier: 0.3
@@ -807,6 +878,10 @@ shops:
     - '%s No cash, no goods!'
     - '%s Here you go.  That''ll be... %d coins.'
     - '%s Thank-you very much.  Here are your %d coins as payment.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_1203:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -830,6 +905,9 @@ shops:
     - '%s 1212323534'
     - '%s sdfsdfsd'
     - '%s %d 4353rewrterdfbcv fghfghrt'
+    bitvector:
+    - num_items
+    - fix
   tba_npc_12034:
     buy_multiplier: 1.85
     sell_multiplier: 0.5
@@ -861,6 +939,10 @@ shops:
     - '%s Sorry, but you can''t afford that.'
     - '%s Here you go.  That will cost you %d.'
     - '%s I will give you %d coins for that.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_12036:
     buy_multiplier: 1.1
     sell_multiplier: 0.8
@@ -889,6 +971,10 @@ shops:
     - '%s NO CREDIT!  We don''t even take the Renaissance Express card!'
     - '%s That will be %d coins.  Enjoy!'
     - '%s You''ll get %d coins for that.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_12037:
     buy_multiplier: 1.75
     sell_multiplier: 0.6
@@ -916,6 +1002,10 @@ shops:
     - '%s No cash, no goods!'
     - '%s Here you go.  That''ll be... %d coins.'
     - '%s Thank-you very much.  Here are your %d coins as payment.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_1204:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -939,6 +1029,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    buy_words:
+      light: torch & MAGIC
+      armor: HUM | GLOW | MAGIC
   tba_npc_124:
     buy_multiplier: 1.3
     sell_multiplier: 0.7
@@ -967,6 +1060,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_12505:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -991,6 +1087,10 @@ shops:
     - '%s You need money idiot.'
     - '%s That''s %d, thank you.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_12562:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -1015,6 +1115,9 @@ shops:
     - '%s Go make some money first.'
     - '%s Lets see, that''s %d coins.'
     - '%s That''ll be %d coins for ya, good deal eh?'
+    bitvector:
+    - num_items
+    - fix
   tba_npc_12566:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -1039,6 +1142,10 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_12569:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -1062,6 +1169,10 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_1303:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -1089,6 +1200,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_140:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -1119,6 +1233,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_14011:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -1146,6 +1263,9 @@ shops:
     - '%s No credit!'
     - '%s %d up front...no financing.'
     - '%s I need that here''s %d'
+    bitvector:
+    - fix
+    - cash
   tba_npc_14012:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -1172,6 +1292,9 @@ shops:
     - '%s Sorry, I need gold not dreams, and you only have dreams.'
     - '%s Enjoy. Did you know water is one of the 4 elements?'
     - '%s Here''s %d. Nice doing business with you.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_14013:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -1201,6 +1324,9 @@ shops:
     - '%s Prices aren''t up for discussion.'
     - '%s Here ya go.'
     - '%s Hmm...Here''s %d for it.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_14014:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -1228,6 +1354,10 @@ shops:
     - '%s What''a ya thinking, I can gives the stuff away???'
     - '%s Tanks, anything else I can getcha?'
     - '%s Not bad I can use dis.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_14015:
     buy_multiplier: 1.2
     sell_multiplier: 0.9
@@ -1259,6 +1389,9 @@ shops:
     - '%s Sure how bout I give you  the shop too. Go get a job.'
     - '%s Thanks. Anything else I can get ya?'
     - '%s %d up front. Take it or leave it.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_14016:
     buy_multiplier: 1.2
     sell_multiplier: 0.85
@@ -1286,6 +1419,9 @@ shops:
     - '%s I aint given dis stuff away, go beg''n somewhere else.'
     - '%s Tanks I''m gona hit ya for %d we don''t have a tab here.'
     - '%s I''ll give ya %d for it, take it or leave it.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_14017:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -1316,6 +1452,9 @@ shops:
     - '%s You must donate more than that to gain such a blessing.'
     - '%s Take this and live a blessed life my child.'
     - '%s For such an object I can give you %d.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_147:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -1348,6 +1487,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_15019:
     buy_multiplier: 1.2
     sell_multiplier: 0.3
@@ -1378,6 +1520,10 @@ shops:
     - '%s But you can not afford that item.'
     - '%s It will cost you %d coins.'
     - '%s Here, you shall have %d coins for it.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_15022:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -1401,6 +1547,9 @@ shops:
     - '%s Si vous n''avez d''argent, vous ne pouvez p''acheter!'
     - '%s Ca coute %d piece d''or, s''il vous plait.'
     - '%s %d piece d''or.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_158:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -1437,6 +1586,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_1619:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -1476,6 +1628,12 @@ shops:
     - '%s Sorry, I don''t stock that item.'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
+    buy_words:
+      weapon: lifecutter
+      armor: silver
+      other: silver
   tba_npc_17500:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -1510,6 +1668,9 @@ shops:
     - '%s Unfortunately, you have not enough money.'
     - '%s You may have it. My price is %d coins.'
     - '%s Thankyou! Here is %d coins for your trouble.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_182:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -1539,6 +1700,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_184:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -1592,6 +1755,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_185:
     buy_multiplier: 2.5
     sell_multiplier: 0.5
@@ -1616,6 +1782,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_186:
     buy_multiplier: 2.5
     sell_multiplier: 0.5
@@ -1642,6 +1811,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_187:
     buy_multiplier: 1.4
     sell_multiplier: 0.6
@@ -1670,6 +1842,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_188:
     buy_multiplier: 1.3
     sell_multiplier: 0.9
@@ -1701,6 +1876,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_20007:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -1735,6 +1913,13 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      armor: fur
+      worn: fur
+      other: fur
   tba_npc_20105:
     buy_multiplier: 1.0
     sell_multiplier: 0.2
@@ -1762,6 +1947,10 @@ shops:
     - '%s You must have forgotten to bring enough money with you.'
     - '%s That will cost you %d coins.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    buy_words:
+      treasure: cushion
   tba_npc_23200:
     buy_multiplier: 1.5
     sell_multiplier: 0.75
@@ -1788,6 +1977,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_23201:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -1815,6 +2007,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_23202:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -1840,6 +2035,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_23203:
     buy_multiplier: 1.7
     sell_multiplier: 0.7
@@ -1868,6 +2066,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_23207:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -1893,6 +2094,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_23400:
     buy_multiplier: 3.0
     sell_multiplier: 0.8
@@ -1924,6 +2128,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_23410:
     buy_multiplier: 4.0
     sell_multiplier: 0.5
@@ -1954,6 +2161,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_23601:
     buy_multiplier: 1.6
     sell_multiplier: 0.8
@@ -1976,6 +2186,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_23602:
     buy_multiplier: 2.3
     sell_multiplier: 0.9
@@ -1998,6 +2211,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_23603:
     buy_multiplier: 3.7
     sell_multiplier: 0.8
@@ -2019,6 +2235,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_23609:
     buy_multiplier: 4.0
     sell_multiplier: 0.7
@@ -2042,6 +2261,11 @@ shops:
     - '%s Leave - before I slap you out of here.'
     - '%s That''ll be %d coins, thanks.'
     - '%s If you give me that, I''ll give you %d coins.'
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      treasure: '[^foil & gold|titanium|iron] & METAL'
   tba_npc_23610:
     buy_multiplier: 4.0
     sell_multiplier: 0.8
@@ -2065,6 +2289,10 @@ shops:
     - '%s A WHAT ? I DIDN''T QUITE GET THAT...'
     - '%s GIVE ME %d COINS AND ITS YOURS.'
     - '%s I''LL TAKE THAT - HERE''S %d COINS FOR YOU.'
+    bitvector:
+    - fix
+    buy_words:
+      treasure: '[gold|titanium|iron] & METAL'
   tba_npc_23611:
     buy_multiplier: 2.6
     sell_multiplier: 0.97
@@ -2091,6 +2319,11 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    buy_words:
+      treasure: gold & foil
+      other: stone | headstone
   tba_npc_23918:
     buy_multiplier: 1.5
     sell_multiplier: 0.6
@@ -2129,6 +2362,8 @@ shops:
     - '%s You are too poor, would you like some of my money?'
     - '%s That''ll be %d coins, would you like me to wrap that up for you?'
     - '%s I''ll give you %d coins for that and one of my best smiles.'
+    bitvector:
+    - cash
   tba_npc_24027:
     buy_multiplier: 9.0
     sell_multiplier: 0.5
@@ -2161,6 +2396,13 @@ shops:
     - '%s You seeing things boy?'
     - '%s That''s %d, now go away'
     - '%s Here''s %d, now go home!'
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      weapon: hatchet
+      armor: brass
+      container: purse
   tba_npc_24028:
     buy_multiplier: 5.0
     sell_multiplier: 0.5
@@ -2195,6 +2437,14 @@ shops:
     - '%s How do you plan on paying for that?'
     - '%s That''s %d!'
     - '%s Here''s %d coins!'
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      light: lantern
+      armor: cape
+      container: purse
+      food: fish
   tba_npc_24029:
     buy_multiplier: 20.0
     sell_multiplier: 0.2
@@ -2247,6 +2497,10 @@ shops:
     - '%s You don''t have the money, stranger.'
     - '%s That will cost you %d coins. Enjoy your drink.'
     - '%s I don''t want to buy anything from you.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_24205:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -2271,6 +2525,10 @@ shops:
     - '%s You can''t afford that!'
     - '%s Fine, that''ll be %d gold pieces.'
     - '%s Bug, please report (%d).'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_24206:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -2299,6 +2557,10 @@ shops:
     - '%s You can''t afford that!'
     - '%s Fine, that''ll be %d gold pieces.'
     - '%s Bug, please report (%d).'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_24207:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -2331,6 +2593,9 @@ shops:
     - '%s You can''t afford that!'
     - '%s Fine, that''ll be %d gold pieces.'
     - '%s Bug, please report (%d).'
+    bitvector:
+    - fix
+    - cash
   tba_npc_24211:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -2355,6 +2620,9 @@ shops:
     - '%s You can''t afford that!'
     - '%s Fine, that''ll be %d gold pieces.'
     - '%s Bug, please report (%d).'
+    bitvector:
+    - fix
+    - cash
   tba_npc_24213:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -2385,6 +2653,9 @@ shops:
     - '%s You can''t afford that!'
     - '%s Fine, that''ll be %d gold pieces.'
     - '%s Bug, please report (%d).'
+    bitvector:
+    - fix
+    - cash
   tba_npc_24305:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -2411,6 +2682,9 @@ shops:
     - '%s Sorry, but you can''t afford it!'
     - '%s That shall be %d dollars.'
     - '%s Used food? No thanks!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_24306:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -2436,6 +2710,9 @@ shops:
     - '%s Sorry, but you can''t afford it!'
     - '%s That''ll be %d bucks dude.'
     - '%s I don''t buy stuff!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_24308:
     buy_multiplier: 2.0
     sell_multiplier: 0.4
@@ -2459,6 +2736,9 @@ shops:
     - '%s Hey man, get some more cash!'
     - '%s That''ll be %d bucks dude.'
     - '%s I don''t buy stuff!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_24804:
     buy_multiplier: 1.3
     sell_multiplier: 0.4
@@ -2492,6 +2772,10 @@ shops:
     - '%s Get some money if you wanna buy something...'
     - '%s Ok, I''ll charge you %d coins for it.'
     - '%s Here you are, I''ll give you %d coins for it.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_24805:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -2525,6 +2809,9 @@ shops:
     - '%s Get some money if you like to buy something...'
     - '%s Ok, that''ll be %d coins, please.'
     - '%s Here you are, I''ll give you %d coins for it.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_24806:
     buy_multiplier: 1.05
     sell_multiplier: 0.15
@@ -2557,6 +2844,9 @@ shops:
     - '%s Get lost punk! You don''t have that much money.'
     - '%s That''ll be %d coins!'
     - '%s I''ll give you about %d coins for it.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_24807:
     buy_multiplier: 1.5
     sell_multiplier: 0.4
@@ -2589,6 +2879,9 @@ shops:
     - '%s You seem to have been robbed if you thought you had that kind of money? '
     - '%s That''ll be %d coins, please...'
     - '%s I''ll give you about %d coins for it, here you go...'
+    bitvector:
+    - fix
+    - cash
   tba_npc_24808:
     buy_multiplier: 2.0
     sell_multiplier: 0.9
@@ -2619,6 +2912,9 @@ shops:
     - '%s Are you drunk or what ??? - NO CREDIT!'
     - '%s That''ll be - say %d coins.'
     - '%s I''ll give you about %d coins for it, here you go...'
+    bitvector:
+    - fix
+    - cash
   tba_npc_24901:
     buy_multiplier: 1.0
     sell_multiplier: 1.0
@@ -2684,6 +2980,9 @@ shops:
     - '%s Bah, come back when you can pay!'
     - '%s That''ll be %d coins -- thank you.'
     - '%s I''ll give ya %d coins for that!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_2506:
     buy_multiplier: 2.5
     sell_multiplier: 0.3
@@ -2715,6 +3014,9 @@ shops:
     - '%s You can''t afford it!'
     - '%s You''re getting a bargain for that at only %d!'
     - '%s I guess I could give ya %d for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_25114:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -2742,6 +3044,9 @@ shops:
     - '%s You don''t have the money, moron!'
     - '%s That''ll be %d coins, human.'
     - '%s We''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - cash
   tba_npc_25610:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -2768,6 +3073,9 @@ shops:
     - '%s You can''t buy that!'
     - '%s Ok, %d coins please!'
     - '%s Ok, %d coins please!'
+    broke_temper: 2
+    bitvector:
+    - fix
   tba_npc_25612:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -2792,6 +3100,10 @@ shops:
     - '%s But you haven''t the money!'
     - '%s Ok, %d gold please.'
     - '%s Ok, %d gold please.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25700:
     buy_multiplier: 1.15
     sell_multiplier: 0.15
@@ -2820,6 +3132,10 @@ shops:
     - '%s You don''t got the green!'
     - '%s That''ll be %d coins, please.'
     - '%s You''ll get %d coins for it!'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25701:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -2845,6 +3161,10 @@ shops:
     - '%s Oh, bugger off, NO CREDIT!'
     - '%s That''ll be - say %d coins.'
     - '%s Here, you can have %d coins for that.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25702:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -2873,6 +3193,10 @@ shops:
     - '%s If you have no money, you''ll have to go!'
     - '%s That''ll be %d coins.'
     - '%s Here, you can have %d coins for that.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25703:
     buy_multiplier: 1.1
     sell_multiplier: 0.5
@@ -2900,6 +3224,10 @@ shops:
     - '%s If you have no money, you''ll have to go!'
     - '%s That''ll be %d coins.'
     - '%s Here, you can have %d coins for that.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25704:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -2927,6 +3255,10 @@ shops:
     - '%s Sorry, but here, no money means no armor!'
     - '%s That will be %d coins, please.  Thank you.'
     - '%s Here, you can have %d coins for that.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25706:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -2953,6 +3285,10 @@ shops:
     - '%s You can''t afford it!'
     - '%s That''ll be %d coins, please.'
     - '%s You''ll get %d coins for it!'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25707:
     buy_multiplier: 1.3
     sell_multiplier: 0.4
@@ -2977,6 +3313,10 @@ shops:
     - '%s sorry, but NO CREDIT!'
     - '%s That costs just %d coins.'
     - '%s Here, you can have %d coins for that.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25709:
     buy_multiplier: 2.0
     sell_multiplier: 0.8
@@ -3001,6 +3341,10 @@ shops:
     - '%s Sorry, but here, no money means no goods!'
     - '%s That will be %d coins, please.  Thank you.'
     - '%s Here, you can have %d coins for that.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25713:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -3025,6 +3369,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
   tba_npc_25716:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -3051,6 +3397,10 @@ shops:
     - '%s You can''t afford that, but maybe for a favor...'
     - '%s Thank you SO much, lovey, DO come again.'
     - '%s Come back anytime!'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25724:
     buy_multiplier: 1.5
     sell_multiplier: 0.4
@@ -3078,6 +3428,12 @@ shops:
     - '%s You can''t afford it!'
     - '%s That''ll be %d coins, please.'
     - '%s You''ll get %d coins for it!'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      scroll: scroll
   tba_npc_25729:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -3105,6 +3461,10 @@ shops:
     - '%s Nope.'
     - '%s Nope.'
     - '%s Nope.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25740:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -3130,6 +3490,10 @@ shops:
     - '%s No flow!  Hit the road!'
     - '%s That''ll be %d coins, buddy.'
     - '%s Here, you can have %d coins for that.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25742:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -3156,6 +3520,10 @@ shops:
     - '%s Are you drunk or what?? - NO CREDIT!'
     - '%s That''ll be - say %d coins.'
     - '%s Here, you can have %d coins for that.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25743:
     buy_multiplier: 1.7
     sell_multiplier: 0.5
@@ -3181,6 +3549,10 @@ shops:
     - '%s If you have no money, you''ll have to go!'
     - '%s That''ll be %d coins.'
     - '%s Here, you can have %d coins for that.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25744:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -3207,6 +3579,10 @@ shops:
     - '%s If you have no money, you''ll have to go!'
     - '%s That''ll be %d coins.'
     - '%s Here, you can have %d coins for that.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25746:
     buy_multiplier: 1.2
     sell_multiplier: 0.9
@@ -3231,6 +3607,10 @@ shops:
     - '%s This drink is too expensive for you.'
     - '%s Here is your drink, I''ll take %d gold coins.'
     - '%s What a fine deal, you get %d gold coins.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25790:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -3256,6 +3636,10 @@ shops:
     - '%s You can''t afford that.'
     - '%s Thank you.'
     - '%s Thanks.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_25799:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -3280,6 +3664,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_26116:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -3311,6 +3697,11 @@ shops:
     - '%s You can''t afford it, you damn lush!'
     - '%s That''ll cost you %d coins, please.'
     - '%s You''ll get %d coins for that.'
+    broke_temper: 1
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_2703:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -3376,6 +3767,9 @@ shops:
     - '%s You need to save a little more for that.'
     - '%s You can have that for %d coins.'
     - '%s I can afford %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27120:
     buy_multiplier: 1.2
     sell_multiplier: 0.4
@@ -3404,6 +3798,10 @@ shops:
     - '%s You can''t afford my hearty drink and meals!'
     - '%s A solid %d coins down on the bar, friend.'
     - '%s I don''t buy.'
+    broke_temper: 2
+    bitvector:
+    - num_items
+    - cash
   tba_npc_27121:
     buy_multiplier: 1.2
     sell_multiplier: 0.2
@@ -3434,6 +3832,11 @@ shops:
     - '%s You beggar! You can''t afford that.'
     - '%s Here ye go, pal. That''ll be %d coins.'
     - '%s I don''t buy.'
+    broke_temper: 2
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_27123:
     buy_multiplier: 1.2
     sell_multiplier: 0.2
@@ -3456,6 +3859,10 @@ shops:
     - '%s Go buy something you can afford.'
     - '%s That comes to %d coins. Now get lost! Heheh.'
     - '%s I don''t buy.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_27126:
     buy_multiplier: 3.0
     sell_multiplier: 0.5
@@ -3485,6 +3892,10 @@ shops:
     - '%s You have not the gold to buy this.'
     - '%s That will be %d coins.'
     - '%s You''ll have %d coins for it.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_27127:
     buy_multiplier: 1.2
     sell_multiplier: 0.2
@@ -3511,6 +3922,10 @@ shops:
     - '%s You''ll need more gold than that!'
     - '%s Good choice, my pretty! %d coins please.'
     - '%s Ahh! Just the thing I needed. Have %d coins.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_27128:
     buy_multiplier: 1.2
     sell_multiplier: 0.2
@@ -3535,6 +3950,9 @@ shops:
     - '%s You haven''t enough gold for it.'
     - '%s That''ll be %d coins.'
     - '%s I''m not interested.'
+    broke_temper: 2
+    bitvector:
+    - fix
   tba_npc_27130:
     buy_multiplier: 1.2
     sell_multiplier: 0.1
@@ -3561,6 +3979,10 @@ shops:
     - '%s You can''t afford to purchase this!'
     - '%s %d coins, thank you.'
     - '%s You''ll have %d coins for that.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_27131:
     buy_multiplier: 1.2
     sell_multiplier: 0.5
@@ -3584,6 +4006,10 @@ shops:
     - '%s You cannot afford this.'
     - '%s The bill is %d coins.'
     - '%s I don''t buy.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_27132:
     buy_multiplier: 1.2
     sell_multiplier: 0.2
@@ -3611,6 +4037,10 @@ shops:
     - '%s That seems to be out of your price range.'
     - '%s That comes to %d coins. Enjoy.'
     - '%s I''ll give you %d coins for that.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_27133:
     buy_multiplier: 1.2
     sell_multiplier: 0.2
@@ -3637,6 +4067,10 @@ shops:
     - '%s You haven''t the means to pay for this.'
     - '%s A fine selection for %d coins.'
     - '%s Here you are, %d coins. Now be off.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_27134:
     buy_multiplier: 1.2
     sell_multiplier: 0.2
@@ -3668,6 +4102,10 @@ shops:
     - '%s I don''t accept down payments. Come back with more gold!'
     - '%s That comes to %d coins.'
     - '%s I''ll give you %d coins for that.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_27148:
     buy_multiplier: 1.2
     sell_multiplier: 0.2
@@ -3693,6 +4131,10 @@ shops:
     - '%s You''re too stinking poor to afford it.'
     - '%s That''ll be %d coins and your firstborn child please!'
     - '%s I don''t buy.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_27401:
     buy_multiplier: 1.25
     sell_multiplier: 1.0
@@ -3721,6 +4163,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    buy_words:
+      drink_container: Liquid Containers
+      food: Food
   tba_npc_27402:
     buy_multiplier: 1.0
     sell_multiplier: 1.0
@@ -3750,6 +4195,12 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      weapon: Weapons
+      armor: Armor
   tba_npc_27403:
     buy_multiplier: 1.0
     sell_multiplier: 1.0
@@ -3786,6 +4237,13 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      weapon: Weapon
+      armor: Armor
+      worn: Worn
   tba_npc_27405:
     buy_multiplier: 1.0
     sell_multiplier: 1.0
@@ -3813,6 +4271,15 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      scroll: Scroll
+      wand: Wand
+      staff: Staff
+      treasure: Treasure
+      potion: Potion
   tba_npc_27407:
     buy_multiplier: 1.0
     sell_multiplier: 1.0
@@ -3850,6 +4317,15 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      light: light
+      container: Container
+      drink_container: Liquid Container
+      food: Food
+      boat: Boatr
   tba_npc_27408:
     buy_multiplier: 1.0
     sell_multiplier: 1.0
@@ -3875,6 +4351,11 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      food: Food
   tba_npc_27409:
     buy_multiplier: 1.0
     sell_multiplier: 1.0
@@ -3907,6 +4388,12 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    buy_words:
+      scroll: Scroll
+      wand: wand
+      staff: staff
+      potion: potion
+      pen: pen
   tba_npc_27430:
     buy_multiplier: 2.25
     sell_multiplier: 1.0
@@ -3959,6 +4446,9 @@ shops:
     - '%s Sorry, you can''t afford that, but you can afford a copy of ''Goethe: the poet''s early years'' (autographed version).'
     - '%s That will cost you %d coins.  And with that fine purchase you recieve a free copy of ''Goethe: Mere Genius or God.'''
     - '%s Money is but transient ether.  I will buy it for %d coins.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27501:
     buy_multiplier: 1.2
     sell_multiplier: 0.05
@@ -3984,6 +4474,9 @@ shops:
     - '%s I do not mean to be rude, but you cannot afford that item.'
     - '%s Kind sir, that will be %d coins and thank you for your patronage.'
     - '%s Oh, thank you for the opportunity to buy from you.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27502:
     buy_multiplier: 1.05
     sell_multiplier: 0.15
@@ -4014,6 +4507,9 @@ shops:
     - '%s Come back after you get a job to earn some money to buy that!'
     - '%s That will be %d coins.'
     - '%s Thank you for helping enlarge my collection, here are %d coins.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27510:
     buy_multiplier: 2.0
     sell_multiplier: 0.01
@@ -4038,6 +4534,9 @@ shops:
     - '%s Sorry, but only Mr. Peterson''s allowed to run up a tab anymore.'
     - '%s That will be %d coins.'
     - '%s Here are %d coins, wait until Sam hears about what I bought.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27558:
     buy_multiplier: 2.0
     sell_multiplier: 0.1
@@ -4072,6 +4571,9 @@ shops:
     - '%s Look, I''ve got better things to do than talking to dead beats!'
     - '%s That will be %d coins, thank you and come again!'
     - '%s Here is your %d coins for your item.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27562:
     buy_multiplier: 2.0
     sell_multiplier: 0.01
@@ -4096,6 +4598,9 @@ shops:
     - '%s If you want that, you''d better come back with some money.'
     - '%s That will be %d coins.'
     - '%s Here are %d coins.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27563:
     buy_multiplier: 2.0
     sell_multiplier: 0.1
@@ -4127,6 +4632,9 @@ shops:
     - '%s Get out of here, you no good bum, come back when you get some money!'
     - '%s Pssst, I''ll let you have it for %d coins.'
     - '%s You got yourself a deal.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27564:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -4156,6 +4664,9 @@ shops:
     - '%s Ouy dlouhs peek retteb kcart to ruoy yenom esuac'' ruoy ekorb!'
     - '%s Taht lliw eb %d snioc.'
     - '%s S''taht elbissopmi esuac'' I t''nod yub gnihtyna.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27576:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -4180,6 +4691,9 @@ shops:
     - '%s Har!  No free rides here!  Come back when you have more money!'
     - '%s That''ll be %d coins, matie.  Happy sailing.'
     - '%s I''ll give you %d coins for that fine craft.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27577:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -4216,6 +4730,9 @@ shops:
     - '%s You can''t afford it!'
     - '%s That''ll be %d coins, please.'
     - '%s You''ll get %d coins for it!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27579:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -4241,6 +4758,9 @@ shops:
     - '%s Friend, you don''t seem to have enough money for that.'
     - '%s That''ll be %d coins.'
     - '%s Here, you can have %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27718:
     buy_multiplier: 1.0
     sell_multiplier: 1.0
@@ -4319,6 +4839,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - cash
   tba_npc_27720:
     buy_multiplier: 1.0
     sell_multiplier: 1.0
@@ -4344,6 +4867,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - cash
   tba_npc_27733:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -4389,6 +4915,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_27734:
     buy_multiplier: 1.0
     sell_multiplier: 1.0
@@ -4420,6 +4948,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_27943:
     buy_multiplier: 1.75
     sell_multiplier: 0.55
@@ -4448,6 +4978,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27971:
     buy_multiplier: 3.5
     sell_multiplier: 0.5
@@ -4476,6 +5009,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_27998:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -4504,6 +5040,12 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      armor: chain
+      worn: pearl
   tba_npc_2802:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -4529,6 +5071,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_28104:
     buy_multiplier: 1.15
     sell_multiplier: 0.8
@@ -4555,6 +5099,10 @@ shops:
     - '%s Mmm, you need some more gold to buy this, fellow.'
     - '%s Okay, %d gold coins.  Thanks.'
     - '%s Okay, I''ll give you %d gold coins for it.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_28700:
     buy_multiplier: 1.15
     sell_multiplier: 0.15
@@ -4581,6 +5129,11 @@ shops:
     - '%s You can''t afford it!'
     - '%s That''ll be %d coins, please.'
     - '%s Tell Pippin! I ain''t supposed to buy!'
+    broke_temper: 1
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_28703:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -4614,6 +5167,11 @@ shops:
     - '%s You need to pay for that, my friend.'
     - '%s All right. That''ll be %d coins.'
     - '%s Fine. Here are %d crowns.'
+    broke_temper: 1
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_28704:
     buy_multiplier: 1.5
     sell_multiplier: 0.4
@@ -4641,6 +5199,11 @@ shops:
     - '%s You can''t afford it!'
     - '%s That''ll be %d coins, please.'
     - '%s Oops...a bug! I don''t buy.'
+    broke_temper: 1
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_28705:
     buy_multiplier: 3.5
     sell_multiplier: 0.1
@@ -4685,6 +5248,11 @@ shops:
     - '%s Sorry, but NO CREDIT!'
     - '%s Gimme %d coins!'
     - '%s I''ll give you a whole %d coins for that.'
+    broke_temper: 1
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_28706:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -4713,6 +5281,10 @@ shops:
     - '%s Alas, you are too poor to buy that.'
     - '%s That''ll be %d coins, please.'
     - '%s Here. I pay you %d coins. Is that enough?'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_28707:
     buy_multiplier: 1.2
     sell_multiplier: 0.9
@@ -4742,6 +5314,10 @@ shops:
     - '%s This fine armor is too costly for you.'
     - '%s Wear it in good health! That will be %d coins.'
     - '%s Here, you can have %d coins for that.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_28708:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -4766,6 +5342,11 @@ shops:
     - '%s Sorry, but here, no money means no goods!'
     - '%s %d coins, please.  Don''t talk with your mouth full.'
     - '%s Here, you can have %d coins for that.'
+    broke_temper: 2
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_28709:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -4797,6 +5378,11 @@ shops:
     - '%s I''m sorry, but you can''t afford that.'
     - '%s That''ll be %d crowns.'
     - '%s Here are %d crowns. Thank you very much.'
+    broke_temper: 2
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_28914:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -4821,6 +5407,10 @@ shops:
     - '%s No tabs, friend.  Sorry.'
     - '%s That''s %d gold.'
     - '%s We don''t *buy* drinks...we sell ''em!'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_28915:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -4845,6 +5435,10 @@ shops:
     - '%s I don''t give ''em away free, you know!'
     - '%s That''s %d gold.'
     - '%s We don''t *buy* drinks...we sell ''em!'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_28919:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -4871,6 +5465,10 @@ shops:
     - '%s Perhaps you should go visit the bank first...'
     - '%s That''s just %d coins, cash in advance.'
     - '%s I''ll take that for %d coins, thank you!'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_28920:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -4895,6 +5493,10 @@ shops:
     - '%s I don''t give ''em away free, you know!'
     - '%s That''s %d gold.'
     - '%s We don''t *buy* drinks...we sell ''em!'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_28921:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -4919,6 +5521,10 @@ shops:
     - '%s I don''t give ''em away free, you know!'
     - '%s That''s %d gold.'
     - '%s We don''t *buy* drinks...we sell ''em!'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_29006:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -4943,6 +5549,10 @@ shops:
     - '%s If I gave you credit, Cookie Monster would ruin me.'
     - '%s That will be %d coins.  I sincerely hope you enjoy it.'
     - '%s I''m sorry, I don''t purchase goods.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_29203:
     buy_multiplier: 1.2
     sell_multiplier: 0.5
@@ -4969,6 +5579,10 @@ shops:
     - '%s You don''t have enough money!'
     - '%s That will run you %d coins.'
     - '%s I don''t buy.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_29205:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -4993,6 +5607,10 @@ shops:
     - '%s No bar tabs.  Pay in advance, bub.'
     - '%s That''s %d gold.'
     - '%s I don''t buy.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_29211:
     buy_multiplier: 1.2
     sell_multiplier: 0.5
@@ -5021,6 +5639,10 @@ shops:
     - '%s Perhaps later, when you''ve more cash, honey.'
     - '%s That''s %d coins, love.'
     - '%s Here''s %d coins, friend.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_29215:
     buy_multiplier: 1.3
     sell_multiplier: 0.8
@@ -5047,6 +5669,10 @@ shops:
     - '%s If you come back with more money, I may consider selling it.'
     - '%s That''s %d coins...can I wrap it up for you?'
     - '%s I don''t buy.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_29224:
     buy_multiplier: 1.4
     sell_multiplier: 0.8
@@ -5077,6 +5703,10 @@ shops:
     - '%s Why not come back with more money?'
     - '%s That''s %d coins.'
     - '%s Here''s %d coins.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_29252:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -5103,6 +5733,8 @@ shops:
     - '%s You don''t have enough money...sorry.'
     - '%s That costs %d coins.'
     - '%s I don''t buy.'
+    bitvector:
+    - num_items
   tba_npc_29254:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -5127,6 +5759,10 @@ shops:
     - '%s No bar tabs.  Pay in advance, bub.'
     - '%s That''s %d gold.'
     - '%s I don''t buy.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_29402:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -5152,6 +5788,11 @@ shops:
     - '%s You can''t afford this.  I''m sorry.'
     - '%s That will cost you %d gold coins.'
     - '%s I don''t buy used leather.  Try a pawnshop.'
+    broke_temper: 1
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_29403:
     buy_multiplier: 1.3
     sell_multiplier: 0.7
@@ -5177,6 +5818,10 @@ shops:
     - '%s We don''t have a layaway plan, sorry.'
     - '%s That will run %d gold coins.'
     - '%s How about %d gold coins?'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_29404:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -5201,6 +5846,10 @@ shops:
     - '%s Gold coinz!  I ownly take gold coins!'
     - '%s That costses you %d golds.'
     - '%s I sells meats.  I no buyz meats.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_29408:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -5225,6 +5874,10 @@ shops:
     - '%s Get some cash, you flaming newbie!'
     - '%s Gimme %d gold first!'
     - '%s I only buy from the distributor, dwick!'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_29409:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -5250,6 +5903,10 @@ shops:
     - '%s You can''t buy that.'
     - '%s That''s %d gold.'
     - '%s Here''s %d gold.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_29604:
     buy_multiplier: 1.5
     sell_multiplier: 0.1
@@ -5274,6 +5931,9 @@ shops:
     - '%s Please insert *BEEP* additional coins.'
     - '%s *WHIRR* *KACHUNK* %d coins.  Have a nice *BEEP* day.'
     - '%s *WHIRR* *KACHUNK* %d coins.  Have a nice *BEEP* day.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3000:
     buy_multiplier: 1.15
     sell_multiplier: 0.15
@@ -5305,6 +5965,9 @@ shops:
     - '%s You can''t afford it!'
     - '%s That''ll be %d coins, please.'
     - '%s You''ll get %d coins for it!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3001:
     buy_multiplier: 1.4
     sell_multiplier: 0.9
@@ -5329,6 +5992,9 @@ shops:
     - '%s If you have no money, you''ll have to go!'
     - '%s That''ll be %d coins.'
     - '%s Oops - %d a minor bug - please report!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3002:
     buy_multiplier: 1.5
     sell_multiplier: 0.4
@@ -5358,6 +6024,9 @@ shops:
     - '%s You can''t afford it!'
     - '%s That''ll be %d coins, please.'
     - '%s You''ll get %d coins for it!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3003:
     buy_multiplier: 1.3
     sell_multiplier: 0.4
@@ -5386,6 +6055,9 @@ shops:
     - '%s sorry, but NO CREDIT!'
     - '%s That costs just %d coins.'
     - '%s Here, you can have %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3004:
     buy_multiplier: 1.2
     sell_multiplier: 0.5
@@ -5423,6 +6095,9 @@ shops:
     - '%s You can''t afford it!'
     - '%s That''ll be %d coins, please.'
     - '%s You''ll get %d coins for it!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3006:
     buy_multiplier: 1.2
     sell_multiplier: 0.9
@@ -5447,6 +6122,9 @@ shops:
     - '%s This ship is too expensive for you.'
     - '%s Here is your ship, I''ll take %d gold coins.'
     - '%s What a fine deal, you get %d gold coins.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3007:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -5469,6 +6147,10 @@ shops:
     - '%s Sorry, but here, no money means no goods!'
     - '%s That will be %d coins, please.  Thank you.'
     - '%s Here, you can have %d coins for that.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_3009:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -5493,6 +6175,9 @@ shops:
     - '%s Sorry, but here, no money means no water!'
     - '%s That will be %d coins, please.  Thank you.'
     - '%s Here, you can have %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3011:
     buy_multiplier: 1.2
     sell_multiplier: 0.9
@@ -5515,6 +6200,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_30118:
     buy_multiplier: 3.0
     sell_multiplier: 0.1
@@ -5539,6 +6227,11 @@ shops:
     - '%s Please insert additional coins.'
     - '%s That comes to about %d coins.  Have a awesome day, Eh?'
     - '%s That also comes to %d coins.  Have a cool day, Eh?'
+    broke_temper: 1
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_30139:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -5565,6 +6258,9 @@ shops:
     - '%s You don''t have enough money!  Come back later.'
     - '%s That will run you %d coins.  Here you are.'
     - '%s I don''t buy.'
+    bitvector:
+    - num_items
+    - cash
   tba_npc_30140:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -5588,6 +6284,10 @@ shops:
     - '%s Perhaps later, when you''ve got enough money, my friend.'
     - '%s That''s %d coins.'
     - '%s Here''s %d coins.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_30141:
     buy_multiplier: 6.3
     sell_multiplier: 0.8
@@ -5612,6 +6312,10 @@ shops:
     - '%s If you come back with more money, I may consider selling it...to you.'
     - '%s That''s %d coins...can I wrap it up for you?'
     - '%s Here''s %d for that.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_30142:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -5636,6 +6340,10 @@ shops:
     - '%s No bar tabs.  Pay in advance, bub.'
     - '%s That''s %d gold.'
     - '%s I don''t buy.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_3040:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -5662,6 +6370,9 @@ shops:
     - '%s Are you drunk or what?? - NO CREDIT!'
     - '%s That''ll be - say %d coins.'
     - '%s Here, you can have %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3042:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -5688,6 +6399,9 @@ shops:
     - '%s If you have no money, you''ll have to go!'
     - '%s That''ll be %d coins.'
     - '%s Here, you can have %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3043:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -5714,6 +6428,9 @@ shops:
     - '%s If you have no money, you''ll have to go!'
     - '%s That''ll be %d coins.'
     - '%s Here, you can have %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3044:
     buy_multiplier: 1.7
     sell_multiplier: 0.8
@@ -5740,6 +6457,9 @@ shops:
     - '%s If you have no money, you''ll have to go!'
     - '%s That''ll be %d coins.'
     - '%s Here, you can have %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3045:
     buy_multiplier: 1.5
     sell_multiplier: 0.75
@@ -5767,6 +6487,9 @@ shops:
     - '%s If you have no money, you''ll have to go!'
     - '%s That''ll be %d coins.'
     - '%s Here, you can have %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3046:
     buy_multiplier: 1.3
     sell_multiplier: 0.7
@@ -5790,6 +6513,9 @@ shops:
     - '%s Oh, bugger off, NO CREDIT!'
     - '%s That''ll be - say %d coins.'
     - '%s Here, you can have %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_30828:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -5812,6 +6538,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_30829:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -5835,6 +6564,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_30831:
     buy_multiplier: 1.5
     sell_multiplier: 0.9
@@ -5858,6 +6590,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_30832:
     buy_multiplier: 1.5
     sell_multiplier: 0.9
@@ -5881,6 +6616,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_30833:
     buy_multiplier: 1.5
     sell_multiplier: 0.9
@@ -5907,6 +6645,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_30837:
     buy_multiplier: 1.5
     sell_multiplier: 0.9
@@ -5932,6 +6673,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3100:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -5956,6 +6700,9 @@ shops:
     - '%s You can''t afford such a fine drink, try the Grubby Inn.'
     - '%s Fine, that''ll be %d gold pieces.'
     - '%s Bug, please report (%d).'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31506:
     buy_multiplier: 1.5
     sell_multiplier: 0.0
@@ -5981,6 +6728,12 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
+    buy_words:
+      drink_container: ale
+      food: steak
   tba_npc_31509:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6009,6 +6762,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31511:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -6035,6 +6791,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31512:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -6061,6 +6820,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31513:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6086,6 +6848,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31515:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6113,6 +6878,10 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_31516:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -6139,6 +6908,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31517:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -6162,6 +6934,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31518:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -6186,6 +6961,10 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_31519:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -6210,6 +6989,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31520:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -6233,6 +7015,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31521:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -6257,6 +7042,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31522:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6281,6 +7069,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31523:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6306,6 +7096,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31524:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6330,6 +7122,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31525:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6354,6 +7148,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31526:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6379,6 +7175,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31528:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6402,6 +7200,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31529:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6426,6 +7226,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31530:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6449,6 +7251,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31531:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6472,6 +7276,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31532:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6495,6 +7301,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31533:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6519,6 +7327,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31534:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6544,6 +7354,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31535:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6568,6 +7380,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31536:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6589,6 +7403,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31537:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6610,6 +7426,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31538:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6633,6 +7451,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31539:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6655,6 +7475,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31540:
     buy_multiplier: 1.34
     sell_multiplier: 0.8
@@ -6679,6 +7501,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31542:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -6704,6 +7528,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31544:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -6728,6 +7555,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31545:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -6754,6 +7584,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31546:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -6779,6 +7612,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31547:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -6801,6 +7637,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31548:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -6826,6 +7665,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31612:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6852,6 +7694,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - cash
   tba_npc_31614:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6879,6 +7724,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31615:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6907,6 +7755,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31616:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6934,6 +7784,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - cash
   tba_npc_31617:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6960,6 +7813,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31618:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -6982,6 +7837,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31623:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7006,6 +7863,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31624:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7033,6 +7892,8 @@ shops:
     - '%s You are too ppor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31625:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7061,6 +7922,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31626:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7088,6 +7952,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31627:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7115,6 +7982,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - cash
   tba_npc_31628:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7142,6 +8012,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - cash
   tba_npc_31629:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7169,6 +8042,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31631:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7196,6 +8071,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31632:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7223,6 +8101,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31633:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7249,6 +8130,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_31634:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7275,6 +8159,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - cash
   tba_npc_31701:
     buy_multiplier: 1.28
     sell_multiplier: 0.8
@@ -7298,6 +8185,10 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - num_items
+    - fix
+    - cash
   tba_npc_31717:
     buy_multiplier: 1.8
     sell_multiplier: 0.8
@@ -7323,6 +8214,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_31720:
     buy_multiplier: 1.67
     sell_multiplier: 0.8
@@ -7349,6 +8242,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_32504:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -7373,6 +8268,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_32505:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -7394,6 +8292,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_32506:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -7416,6 +8317,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_32512:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7440,6 +8344,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_32515:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7463,6 +8370,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_32546:
     buy_multiplier: 1.5
     sell_multiplier: 0.5
@@ -7487,6 +8397,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_32547:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7512,6 +8425,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_32548:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7536,6 +8452,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_32551:
     buy_multiplier: 1.5
     sell_multiplier: 0.8
@@ -7558,6 +8477,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3301:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -7583,6 +8505,10 @@ shops:
     - '%s But you haven''t the money!'
     - '%s Ok, %d gold please.'
     - '%s Ok, %d gold please.'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_3304:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -7609,6 +8535,10 @@ shops:
     - '%s You can''t buy that!'
     - '%s Ok, %d coins please!'
     - '%s Ok, %d coins please!'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_3314:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -7633,6 +8563,10 @@ shops:
     - '%s I don''t give ''em away free, you know!'
     - '%s That''s %d gold.'
     - '%s We don''t *buy* drinks... we sell ''em!'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_3917:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -7756,6 +8690,9 @@ shops:
     - '%s You ain''t got dat sort o'' money?  You think me be stupid?'
     - '%s Gimme %d moneys!'
     - '%s I give you %d moneys for dat.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3955:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -7787,6 +8724,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3956:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -7816,6 +8756,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3971:
     buy_multiplier: 2.0
     sell_multiplier: 0.0
@@ -7839,6 +8782,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_3973:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -7866,6 +8812,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_4309:
     buy_multiplier: 1.5
     sell_multiplier: 0.9
@@ -7891,6 +8840,9 @@ shops:
     - '%s Come back later, when you have enough money!'
     - '%s Thank you have a nice day.'
     - '%s Thank you have a nice day.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_4310:
     buy_multiplier: 1.5
     sell_multiplier: 0.9
@@ -7915,6 +8867,9 @@ shops:
     - '%s Not enough money there.'
     - '%s Thank you, come again.'
     - '%s Thank you, come again.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_4311:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -7939,6 +8894,9 @@ shops:
     - '%s You don''t have enough money for that.'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_449:
     buy_multiplier: 1.4
     sell_multiplier: 0.8
@@ -7964,6 +8922,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_453:
     buy_multiplier: 1.3
     sell_multiplier: 0.5
@@ -7988,6 +8949,8 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_481:
     buy_multiplier: 1.12
     sell_multiplier: 0.6
@@ -8015,6 +8978,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_5405:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -8040,6 +9006,10 @@ shops:
     - '%s I don''t give ''em away free, you know!'
     - '%s That''s %d gold.'
     - '%s I don''t *buy* drinks... we sell ''em!'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_5410:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -8067,6 +9037,9 @@ shops:
     - '%s If you have no money, you''ll have to go!'
     - '%s That''ll be %d coins.'
     - '%s Here, you can have %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_5411:
     buy_multiplier: 1.5
     sell_multiplier: 0.4
@@ -8099,6 +9072,9 @@ shops:
     - '%s You can''t afford it!'
     - '%s That''ll be %d coins, please.'
     - '%s You''ll get %d coins for it!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_5413:
     buy_multiplier: 1.05
     sell_multiplier: 0.15
@@ -8130,6 +9106,9 @@ shops:
     - '%s You can''t afford it!'
     - '%s That''ll be %d coins, please.'
     - '%s You''ll get %d coins for it!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_5414:
     buy_multiplier: 1.3
     sell_multiplier: 0.9
@@ -8156,6 +9135,9 @@ shops:
     - '%s If you come back with more money, I may consider selling it.'
     - '%s That''s %d coins... can I wrap it up for you?'
     - '%s I don''t buy.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_5415:
     buy_multiplier: 1.1
     sell_multiplier: 0.9
@@ -8181,6 +9163,9 @@ shops:
     - '%s That costs money.  Something you don''t have... sorry.'
     - '%s That costs %d coins.'
     - '%s Here are %d coins, thank you for your business.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_5416:
     buy_multiplier: 1.3
     sell_multiplier: 0.5
@@ -8212,6 +9197,10 @@ shops:
     - '%s You can''t afford it!'
     - '%s That''ll be %d coins, please.'
     - '%s You''ll get %d coins for it!'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_5417:
     buy_multiplier: 1.3
     sell_multiplier: 0.4
@@ -8246,6 +9235,9 @@ shops:
     - '%s Sorry, but NO CREDIT'
     - '%s That just costs %d coins.'
     - '%s Here is %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_5418:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -8270,6 +9262,9 @@ shops:
     - '%s No money.  Off with ya then!'
     - '%s That will be %d gold.'
     - '%s Here is %d gold for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_5433:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -8346,6 +9341,10 @@ shops:
     - '%s Perhaps you should go visit the bank first...'
     - '%s That''s just %d coins, cash in advance.'
     - '%s I''ll take that for %d coins, thank you!'
+    broke_temper: 2
+    bitvector:
+    - fix
+    - cash
   tba_npc_5465:
     buy_multiplier: 1.2
     sell_multiplier: 0.9
@@ -8370,6 +9369,9 @@ shops:
     - '%s This ship is too expensive for you.'
     - '%s Here is your ship, I''ll take %d gold coins.'
     - '%s What a fine deal, you get %d gold coins.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_5466:
     buy_multiplier: 1.2
     sell_multiplier: 0.5
@@ -8396,6 +9398,9 @@ shops:
     - '%s Bah, come back when you can pay!'
     - '%s That''ll be %d coins -- thank you.'
     - '%s I''ll give ya %d coins for that!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_5479:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -8423,6 +9428,9 @@ shops:
     - '%s Perhaps later, when you''ve more cash, honey.'
     - '%s That''s %d coins, love.'
     - '%s Here''s %d coins, friend.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_5480:
     buy_multiplier: 1.8
     sell_multiplier: 0.5
@@ -8453,6 +9461,9 @@ shops:
     - '%s No money.  I killed my mother for less.'
     - '%s That will be %d gold.'
     - '%s Here is %d gold for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_5483:
     buy_multiplier: 1.3
     sell_multiplier: 0.7
@@ -8477,6 +9488,9 @@ shops:
     - '%s Are you drunk or what ?? - NO CREDIT!'
     - '%s That''ll be - say %d coins.'
     - '%s Here, you can have %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_5484:
     buy_multiplier: 1.1
     sell_multiplier: 0.5
@@ -8511,6 +9525,9 @@ shops:
     - '%s Bah, come back when you can pay!'
     - '%s That''ll be %d coins -- thank you.'
     - '%s I''ll give ya %d coins for that!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_55568:
     buy_multiplier: 1.0
     sell_multiplier: 1.0
@@ -8607,6 +9624,9 @@ shops:
     - '%s You''re too feckin'' poor!'
     - '%s That''ll be %d coins, now feck off!'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_634:
     buy_multiplier: 1.25
     sell_multiplier: 0.75
@@ -8635,6 +9655,8 @@ shops:
     - '%s This is not a homeless shelter, you''ve got to pay.'
     - '%s Let me see, with my 25 percent tip, that comes to %d coins please.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_635:
     buy_multiplier: 2.0
     sell_multiplier: 0.2
@@ -8671,6 +9693,8 @@ shops:
     - '%s This is not a homeless shelter, you''ve got to pay.'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - cash
   tba_npc_6503:
     buy_multiplier: 1.9
     sell_multiplier: 0.3
@@ -8699,6 +9723,10 @@ shops:
     - '%s You can''t afford it, and don''t ask a God for the money!'
     - '%s That''ll cost you %d coins, please.'
     - '%s You''ll get %d coins for that.'
+    broke_temper: 1
+    bitvector:
+    - fix
+    - cash
   tba_npc_6504:
     buy_multiplier: 1.9
     sell_multiplier: 0.2
@@ -8730,6 +9758,9 @@ shops:
     - '%s You can''t afford that!'
     - '%s That''ll be %d coins, please.'
     - '%s You''ll get %d coins for that!'
+    bitvector:
+    - fix
+    - cash
   tba_npc_7522:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -8757,6 +9788,9 @@ shops:
     - '%s You can''t afford my drinks! Get out!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_7588:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -8783,6 +9817,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_7589:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -8810,6 +9847,9 @@ shops:
     - '%s Sorry, no charity.'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_7590:
     buy_multiplier: 1.2
     sell_multiplier: 0.8
@@ -8838,6 +9878,9 @@ shops:
     - '%s You are too poor! Get out of here you bum!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_7802:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -8865,6 +9908,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_7803:
     buy_multiplier: 2.0
     sell_multiplier: 0.5
@@ -8890,6 +9936,9 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_9603:
     buy_multiplier: 1.2
     sell_multiplier: 0.7
@@ -8915,6 +9964,9 @@ shops:
     - '%s What are you trying to pull! You can''t pay for that!'
     - '%s Really? Ok! That''s...%d coins.'
     - '%s Against my better judgement, I''ll pay %d coins.'
+    bitvector:
+    - fix
+    - cash
   tba_npc_97:
     buy_multiplier: 1.0
     sell_multiplier: 1.0
@@ -8962,3 +10014,6 @@ shops:
     - '%s You are too poor!'
     - '%s That''ll be %d coins, thanks.'
     - '%s I''ll give you %d coins for that.'
+    bitvector:
+    - fix
+    - cash

@@ -342,6 +342,7 @@ mod tests {
 
     use super::*;
     use crate::combat::{TbaAttributes, TbaSaves};
+    use crate::content::TbaSex;
     use mib_core::prelude::Dice;
     use smol_str::SmolStr;
 
@@ -426,6 +427,9 @@ mod tests {
                     attributes: TbaAttributes::mob_default(),
                     saves: TbaSaves::default(),
                     spec_proc: None,
+                    sex: TbaSex::Neutral,
+                    keywords: Vec::new(),
+                    aff_flags: Vec::new(),
                 },
             )]),
             ..TbaContent::default()
@@ -460,6 +464,9 @@ mod tests {
                     attributes: TbaAttributes::mob_default(),
                     saves: TbaSaves::default(),
                     spec_proc: None,
+                    sex: TbaSex::Neutral,
+                    keywords: Vec::new(),
+                    aff_flags: Vec::new(),
                 },
             )]),
             ..TbaContent::default()

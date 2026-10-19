@@ -75,6 +75,9 @@ fn npc_stats() -> TbaNpcStats {
         attributes: TbaAttributes::mob_default(),
         saves: TbaSaves::default(),
         spec_proc: None,
+        sex: TbaSex::Neutral,
+        keywords: Vec::new(),
+        aff_flags: Vec::new(),
     }
 }
 
@@ -103,6 +106,8 @@ fn sword_def() -> TbaItemDef {
         rent: 0,
         min_level: 0,
         timer: None,
+        action_description: None,
+        extra_descriptions: Vec::new(),
     }
 }
 
@@ -130,6 +135,7 @@ fn content() -> TbaContent {
                         max_in_world: 0,
                     }),
                 ],
+                flags: Vec::new(),
             },
         )]),
         ..TbaContent::default()
@@ -147,7 +153,7 @@ fn test_app(dir: &Path) -> App {
     app.insert_resource(loaded_content(dir));
     app.insert_resource(Time::<Fixed>::from_hz(10.0));
     app.insert_resource(TbaRng::from_seed(7));
-    app.init_resource::<TbaObjectClock>();
+    app.init_resource::<TbaHourTicker>();
 
     // A single empty entity stands in for the room; only `RoomIndex` matters
     // to `spawn_npc_from_content`.
@@ -358,6 +364,7 @@ fn flag_content(other_if_flag: bool) -> TbaContent {
                         },
                     },
                 ],
+                flags: Vec::new(),
             },
         )]),
         ..TbaContent::default()
@@ -371,7 +378,7 @@ fn flag_app(dir: &Path, other_if_flag: bool) -> App {
     app.insert_resource(loaded_content(dir));
     app.insert_resource(Time::<Fixed>::from_hz(10.0));
     app.insert_resource(TbaRng::from_seed(7));
-    app.init_resource::<TbaObjectClock>();
+    app.init_resource::<TbaHourTicker>();
     let room = app.world_mut().spawn_empty().id();
     app.insert_resource(RoomIndex {
         map: HashMap::from([(RoomId::from("test_room"), room)]),

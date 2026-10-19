@@ -70,6 +70,9 @@ fn stats(behaviour: Vec<NpcBehaviour>) -> TbaNpcStats {
         attributes: TbaAttributes::mob_default(),
         saves: TbaSaves::default(),
         spec_proc: None,
+        sex: TbaSex::Neutral,
+        keywords: Vec::new(),
+        aff_flags: Vec::new(),
     }
 }
 

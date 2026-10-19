@@ -1,10 +1,9 @@
 //! Issue #19 integration tests for the in-world MUD clock and its `time`
 //! command.
 //!
-//! The clock model itself (advance/wrap/`is_night`) is unit-tested beside
-//! `TbaObjectClock` in `items.rs`; these tests drive the raw-line
-//! `handle_time_command` system against a small app and assert Circle's exact
-//! `do_time` rendering.
+//! The clock itself is the engine's D-42 `TimeOfDay`; the pack only renders it.
+//! These tests drive the raw-line `handle_time_command` system against a small
+//! app and assert Circle's exact `do_time` rendering.
 //!
 //! Tests may unwrap/expect — a panic here is a test failure, not a fault.
 
@@ -14,7 +13,7 @@ use mib_core::prelude::*;
 use mib_stdlib::prelude::*;
 use mib_tba::prelude::*;
 
-fn test_app(clock: TbaObjectClock) -> App {
+fn test_app(clock: TimeOfDay) -> App {
     let mut app = App::new();
     app.insert_resource(clock);
     app.add_message::<OutputEvent>();
@@ -64,9 +63,9 @@ fn drain_text(app: &mut App) -> Vec<String> {
 
 #[test]
 fn time_command_reports_the_in_world_clock() {
-    let mut app = test_app(TbaObjectClock {
-        hour_of_day: 14,
-        ..TbaObjectClock::default()
+    let mut app = test_app(TimeOfDay {
+        hour: 14,
+        ..TimeOfDay::default()
     });
     let room = app.world_mut().spawn_empty().id();
     let player = spawn_player(&mut app, room);
@@ -85,12 +84,11 @@ fn time_command_reports_the_in_world_clock() {
 
 #[test]
 fn time_command_uses_midnight_and_the_calendar() {
-    let mut app = test_app(TbaObjectClock {
-        hour_of_day: 0,
-        day: 1,
-        month: 1,
-        year: 3,
-        ..TbaObjectClock::default()
+    // Day index 1*35 + 1 = day 2 of month 1, year 3 of Circle's calendar.
+    let mut app = test_app(TimeOfDay {
+        hour: 0,
+        day_index: 3 * 35 * 17 + 36,
+        ..TimeOfDay::default()
     });
     let room = app.world_mut().spawn_empty().id();
     let player = spawn_player(&mut app, room);
@@ -109,7 +107,7 @@ fn time_command_uses_midnight_and_the_calendar() {
 
 #[test]
 fn non_time_lines_are_ignored() {
-    let mut app = test_app(TbaObjectClock::default());
+    let mut app = test_app(TimeOfDay::default());
     let room = app.world_mut().spawn_empty().id();
     let player = spawn_player(&mut app, room);
 

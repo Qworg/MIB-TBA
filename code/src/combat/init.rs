@@ -265,7 +265,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::content::Attribute;
+    use crate::content::{Attribute, TbaSex};
 
     fn class(name: &str, hp: Dice) -> TbaClassDef {
         let mut def = default_class();
@@ -349,6 +349,9 @@ mod tests {
                 ..TbaSaves::default()
             },
             spec_proc: None,
+            sex: TbaSex::Neutral,
+            keywords: Vec::new(),
+            aff_flags: Vec::new(),
         };
         let mut rng = TbaRng::from_seed(1);
         let combatant = npc_combatant_from_stats(&stats, &mut rng);
@@ -384,6 +387,9 @@ mod tests {
             attributes: TbaAttributes::mob_default(),
             saves: TbaSaves::default(),
             spec_proc: None,
+            sex: TbaSex::Neutral,
+            keywords: Vec::new(),
+            aff_flags: Vec::new(),
         };
         let mut rng = TbaRng::from_seed(1);
         let combatant = npc_combatant_from_stats(&stats, &mut rng);

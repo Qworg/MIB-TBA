@@ -32,7 +32,7 @@
 
 use dg_vm::types::trig::OTRIG_TIMER;
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{Item, SaveRegistry};
+use mib_stdlib::prelude::{Item, SaveRegistry, TimeOfDay};
 use serde::{Deserialize, Serialize};
 
 use crate::dg::script::{DgScript, DgScriptInit};
@@ -63,80 +63,53 @@ pub struct ExpiredItemTimers {
     pub items: Vec<Entity>,
 }
 
-/// Frame-time accumulator that converts the fixed tick into whole MUD hours.
+/// Whole-MUD-hour edge detector for object timers, derived from the engine's
+/// D-42 world clock.
 ///
-/// A resource rather than a plain per-tick counter so a long frame (or a test)
-/// can bank fractional time; [`due_hours`](Self::due_hours) reports how many
-/// whole hours have elapsed and keeps the remainder.
-///
-/// The clock is also the game's **in-world calendar** (issue #19): the same
-/// resource that ages object timers carries the Circle `time_info` fields, so
-/// there is exactly one MUD clock, not a timer clock plus a calendar clock.
-/// The cadence is Circle's: 75 real seconds per MUD hour (`SECS_PER_MUD_HOUR`,
-/// `tbamud/src/utils.h:193`), 24 hours per day, 35 days per month and 17 months
-/// per year (`mud_time_passed`, `tbamud/src/utils.c:505`).
-///
-/// Persistence: the clock is **runtime-only**. Circle writes the elapsed MUD
-/// seconds to a `time` file on every boot/shutdown (`save_mud_time`,
-/// `tbamud/src/db.c:880`); MIB has no generic resource-persistence slot for a
-/// global clock, and item timers persist per item, not as a world time. A
-/// restart therefore begins a fresh year 0, day 0, hour 0. Persisting it is a
-/// named follow-up, not a silent omission.
-#[derive(Resource, Debug, Default, Clone, PartialEq)]
-pub struct TbaObjectClock {
-    /// Seconds accumulated since the last whole MUD hour.
-    pub accumulator: f32,
-    /// Circle's `time_info.hours` (0..=23).
-    pub hour_of_day: u32,
-    /// Circle's `time_info.day`, 0..=34 (35-day months).
-    pub day: u32,
-    /// Circle's `time_info.month`, 0..=16 (17-month years).
-    pub month: u32,
-    /// Circle's `time_info.year`, unbounded.
-    pub year: u32,
+/// The pack no longer keeps a clock of its own: [`TimeOfDay`] (wall-anchored,
+/// from `content/stdlib.time.yaml`) is the single authority for world time, and
+/// this resource only remembers the last sample so an item timer can be aged by
+/// the number of whole MUD hours that elapsed between two ticks.
+#[derive(Resource, Debug, Default)]
+pub struct TbaHourTicker {
+    last_epoch_secs: Option<f64>,
 }
 
-impl TbaObjectClock {
-    /// Add `delta` seconds and report how many whole MUD hours are now due,
-    /// consuming them from the accumulator. A non-finite or negative delta is
-    /// ignored (a bare test app can present a zero clock without panicking).
-    pub fn due_hours(&mut self, delta: f32) -> u32 {
-        if !delta.is_finite() || delta < 0.0 {
-            return 0;
+impl TbaHourTicker {
+    /// A ticker whose first sample is `time`, so the next tick measures from
+    /// here rather than treating the first tick as "no previous instant".
+    ///
+    /// Used where the clock is already established (a test app, a restored
+    /// world); production lets the first fixed tick prime it.
+    pub fn at(time: &TimeOfDay) -> Self {
+        Self {
+            last_epoch_secs: Some(time.world_epoch_secs),
         }
-        self.accumulator += delta;
-        let hours = (self.accumulator / MUD_HOUR_SECONDS).floor();
-        if hours < 1.0 {
-            return 0;
-        }
-        self.accumulator -= hours * MUD_HOUR_SECONDS;
-        // `hours` is bounded by the delta the caller feeds; a huge delta is
-        // clamped rather than saturating the timer arithmetic below.
-        hours.min(u32::MAX as f32) as u32
     }
 
-    /// Advance the calendar by `hours` whole MUD hours, carrying into days,
-    /// months and years exactly as Circle's `mud_time_passed` does for
-    /// continuous time. A huge `hours` value is carried correctly rather than
-    /// wrapping the hour without touching the day.
-    pub fn advance(&mut self, hours: u32) {
-        let hour_total = self.hour_of_day + hours;
-        self.hour_of_day = hour_total % 24;
-        let day_total = self.day + hour_total / 24;
-        self.day = day_total % 35;
-        let month_total = self.month + day_total / 35;
-        self.month = month_total % 17;
-        self.year += month_total / 17;
-    }
-
-    /// Circle's night predicate: `SUN_DARK` is set for hours `<= 4` and `>= 22`
-    /// (`reset_time`/`weather_and_time`, `tbamud/src/db.c:847`,
-    /// `tbamud/src/weather.c:44`). Hours 5 and 21 are the dawn/dusk `SUN_RISE`
-    /// and `SUN_SET` transitions and do **not** count as night.
-    pub fn is_night(&self) -> bool {
-        self.hour_of_day <= 4 || self.hour_of_day >= 22
+    /// Whole MUD hours since the previous sample, consuming the sample.
+    ///
+    /// `time` is the engine clock; one MUD hour is 3600 world seconds whatever
+    /// the content's real-time rate is. The first sample reports zero (there is
+    /// no previous instant to measure from).
+    pub fn due_hours(&mut self, time: &TimeOfDay) -> u32 {
+        let now = time.world_epoch_secs;
+        let previous = self.last_epoch_secs.replace(now);
+        let Some(previous) = previous else {
+            return 0;
+        };
+        let elapsed = now - previous;
+        if !elapsed.is_finite() || elapsed < 0.0 {
+            return 0;
+        }
+        (elapsed / WORLD_SECONDS_PER_HOUR) as u32
     }
 }
+
+/// World seconds in one MUD hour (`SECS_PER_MUD_DAY / 24`, `tbamud/src/utils.h:196`).
+/// World time advances at `seconds_per_real_second`, so this is independent of
+/// the content's real-time rate.
+pub const WORLD_SECONDS_PER_HOUR: f64 = 3600.0;
 
 /// `FixedUpdate`: attach a [`TbaItemTimer`] to every newly spawned item whose
 /// prototype declares a `timer`.
@@ -176,11 +149,11 @@ pub fn attach_item_timers(
 /// not combat time: `point_update` fires on the MUD-hour pulse, not on the
 /// 3-second combat round, so [`TbaRound`](crate::combat::TbaRound) would decay
 /// items ~25× too fast. The engine's fixed tick is the closest analogue to
-/// Circle's heartbeat, and the [`TbaObjectClock`] accumulator folds it into
-/// whole hours.
+/// Circle's heartbeat, and [`TbaHourTicker`] folds it into whole hours from the
+/// shared world clock.
 pub fn tick_item_timers(
-    time: Res<Time<Fixed>>,
-    mut clock: ResMut<TbaObjectClock>,
+    clock: Option<Res<TimeOfDay>>,
+    mut ticker: ResMut<TbaHourTicker>,
     mut timers: Query<(
         Entity,
         &mut TbaItemTimer,
@@ -190,13 +163,11 @@ pub fn tick_item_timers(
     mut expired: Option<ResMut<ExpiredItemTimers>>,
     mut commands: Commands,
 ) {
-    let hours = clock.due_hours(time.delta_secs());
+    let empty = TimeOfDay::default();
+    let hours = ticker.due_hours(clock.as_deref().unwrap_or(&empty));
     if hours == 0 {
         return;
     }
-    // Advance the whole MUD calendar alongside the object timers, so shop
-    // opening hours and the day/night predicate share the timer clock.
-    clock.advance(hours);
     for (entity, mut timer, script, initialised) in &mut timers {
         // A spent timer stays at zero, which is no timer (`point_update` ages
         // only a positive `GET_OBJ_TIMER`): it neither fires nor decays again.
@@ -251,6 +222,8 @@ mod tests {
             rent: 0,
             min_level: 0,
             timer,
+            action_description: None,
+            extra_descriptions: Vec::new(),
         }
     }
 
@@ -274,62 +247,37 @@ mod tests {
     }
 
     #[test]
-    fn clock_banks_whole_mud_hours() {
-        let mut clock = TbaObjectClock::default();
-        assert_eq!(clock.due_hours(MUD_HOUR_SECONDS - 1.0), 0);
-        assert_eq!(clock.due_hours(1.0), 1, "the hour fires exactly once");
-        assert_eq!(clock.accumulator, 0.0);
-        // A long frame banks multiple hours and keeps the remainder.
-        assert_eq!(clock.due_hours(MUD_HOUR_SECONDS * 3.0 + 0.5), 3);
-        assert!(clock.accumulator > 0.0 && clock.accumulator < MUD_HOUR_SECONDS);
-        // A bad delta is ignored.
-        assert_eq!(clock.due_hours(f32::NAN), 0);
-        assert_eq!(clock.due_hours(-1.0), 0);
+    fn the_hour_ticker_reports_whole_mud_hours_from_the_world_clock() {
+        let mut ticker = TbaHourTicker::default();
+        let mut time = TimeOfDay {
+            world_epoch_secs: 10_000.0,
+            ..TimeOfDay::default()
+        };
+        // The first sample has no previous instant to measure from.
+        assert_eq!(ticker.due_hours(&time), 0);
+        // Part of an hour is not an hour.
+        time.world_epoch_secs += WORLD_SECONDS_PER_HOUR - 1.0;
+        assert_eq!(ticker.due_hours(&time), 0);
+        // A full hour measured from the previous sample fires exactly once.
+        time.world_epoch_secs += WORLD_SECONDS_PER_HOUR;
+        assert_eq!(ticker.due_hours(&time), 1, "the hour fires exactly once");
+        // A long gap reports every whole hour it crossed.
+        time.world_epoch_secs += WORLD_SECONDS_PER_HOUR * 3.0 + 0.5;
+        assert_eq!(ticker.due_hours(&time), 3);
     }
 
     #[test]
-    fn clock_advances_hours_days_months_and_years() {
-        let mut clock = TbaObjectClock::default();
-        clock.advance(5);
-        assert_eq!((clock.hour_of_day, clock.day), (5, 0));
-        // 24 hours is one day.
-        clock.advance(24);
-        assert_eq!((clock.hour_of_day, clock.day), (5, 1));
-        // 35 days is one month.
-        clock.advance(24 * 35);
-        assert_eq!((clock.day, clock.month), (1, 1));
-        // 17 months is one year.
-        clock.advance(24 * 35 * 17);
-        assert_eq!((clock.day, clock.month, clock.year), (1, 1, 1));
-        // The calendar wraps exactly like Circle's `mud_time_passed`.
-        let mut full = TbaObjectClock::default();
-        full.advance(24 * 35 * 17);
-        assert_eq!(
-            (full.hour_of_day, full.day, full.month, full.year),
-            (0, 0, 0, 1)
-        );
-        // A jump larger than a year carries through every field.
-        let mut jump = TbaObjectClock::default();
-        jump.advance(24 * 35 * 17 * 2 + 24 * 35 * 3 + 24 * 4 + 7);
-        assert_eq!(
-            (jump.hour_of_day, jump.day, jump.month, jump.year),
-            (7, 4, 3, 2)
-        );
-    }
-
-    #[test]
-    fn is_night_matches_circles_sun_dark_window() {
-        let mut clock = TbaObjectClock::default();
-        for hour in 0..24 {
-            clock.hour_of_day = hour;
-            let expected = hour <= 4 || hour >= 22;
-            assert_eq!(clock.is_night(), expected, "hour {hour}");
-        }
-        // The dawn/dusk transition hours are not night.
-        clock.hour_of_day = 5;
-        assert!(!clock.is_night());
-        clock.hour_of_day = 21;
-        assert!(!clock.is_night());
+    fn a_backwards_or_non_finite_clock_reports_no_hours() {
+        let mut ticker = TbaHourTicker::default();
+        let mut time = TimeOfDay {
+            world_epoch_secs: 10_000.0,
+            ..TimeOfDay::default()
+        };
+        assert_eq!(ticker.due_hours(&time), 0);
+        time.world_epoch_secs = 5_000.0;
+        assert_eq!(ticker.due_hours(&time), 0, "time never runs backwards");
+        time.world_epoch_secs = f64::NAN;
+        assert_eq!(ticker.due_hours(&time), 0, "a bad clock ages nothing");
     }
 
     #[test]
@@ -385,14 +333,24 @@ mod tests {
     fn tick_decrements_and_despawns_at_zero() {
         let mut app = App::new();
         app.insert_resource(Time::<Fixed>::from_hz(1.0));
-        app.init_resource::<TbaObjectClock>();
+        app.init_resource::<TbaHourTicker>();
+        app.insert_resource(TimeOfDay {
+            world_epoch_secs: 0.0,
+            ..TimeOfDay::default()
+        });
         app.add_systems(Update, tick_item_timers);
         let durable = app.world_mut().spawn(TbaItemTimer { remaining: 3 }).id();
         let dying = app.world_mut().spawn(TbaItemTimer { remaining: 1 }).id();
 
-        // Bank exactly one hour's worth; `app.update()` may present a zero
-        // fixed delta in a bare test app, so the clock is pre-charged.
-        app.world_mut().resource_mut::<TbaObjectClock>().accumulator = MUD_HOUR_SECONDS;
+        // The first tick only primes the hour ticker (there is no previous
+        // sample to measure from), so the clock is stepped after it.
+        app.update();
+        assert_eq!(
+            app.world().get::<TbaItemTimer>(durable),
+            Some(&TbaItemTimer { remaining: 3 }),
+            "the priming tick ages nothing"
+        );
+        app.world_mut().resource_mut::<TimeOfDay>().world_epoch_secs += WORLD_SECONDS_PER_HOUR;
         app.update();
         assert_eq!(
             app.world().get::<TbaItemTimer>(durable),

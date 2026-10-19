@@ -1,9 +1,10 @@
 //! The in-world MUD clock (issue #19): the `time` command and the day/night
 //! room-darkness bridge.
 //!
-//! The clock itself is [`TbaObjectClock`](crate::items::TbaObjectClock) in
-//! `items.rs` — the same resource that ages object timers, advanced once per
-//! whole MUD hour on the fixed world tick. This module only reads it:
+//! The clock itself is the engine's D-42 world clock
+//! ([`TimeOfDay`](mib_stdlib::prelude::TimeOfDay), derived from the
+//! wall-anchored `WorldClock` and authored in `content/stdlib.time.yaml` at
+//! Circle's 75-real-seconds-per-MUD-hour cadence). This module only reads it:
 //!
 //! * [`handle_time_command`] answers the Circle `time` command from the clock,
 //!   reproducing `do_time` (`tbamud/src/act.informative.c:1078`).
@@ -13,12 +14,16 @@
 //!   authored tags already include `Dark`, so a permanently dark room stays
 //!   dark at noon.
 //!
-//! ## Deferrals
+//! ## Weather
 //!
-//! * **Weather** (pressure/sky/sunlight phases) is out of scope: it is a
-//!   separate `weather_info` simulation with its own cadence, and this module
-//!   records it as a named deferral rather than shipping a stub. Only the
-//!   binary day/night predicate is modelled, which is what darkness needs.
+//! Weather is the engine's D-42 per-zone simulation (`content/stdlib.weather.yaml`
+//! plus `weather_zone` on each area); the `weather` verb and the outdoor
+//! ambient line are projected by the stdlib, so the pack adds nothing here.
+//! Circle's pressure/sky/temperature model is not reproduced digit-for-digit —
+//! it is a weighted state per zone instead (recorded in `docs/runbook.md` §8).
+//!
+//! ## Known limit
+//!
 //! * The stdlib `look` darkness check reads [`Room::tags`] directly rather than
 //!   [`Room::effective_flags`](mib_stdlib::prelude::Room::effective_flags), so
 //!   the night override is the persisted runtime authority but is not yet
@@ -29,17 +34,16 @@
 //! ## Persistence
 //!
 //! The **room override** persists (`RoomState` is a `DocKind::RoomState`
-//! document). The **clock** does not: it is runtime-only, so a restart begins
-//! at year 0, day 0, hour 0 (see [`TbaObjectClock`](crate::items::TbaObjectClock)
-//! docs).
+//! document). The **clock** needs no persistence: it is a pure function of wall
+//! time, so a restart resumes at the correct in-world instant instead of
+//! resetting (this replaces the pack's former runtime-only clock).
 
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
-use mib_stdlib::prelude::{Room, RoomState, RoomTag, Session, SessionState};
+use mib_stdlib::prelude::{DayPhase, Room, RoomState, RoomTag, Session, SessionState, TimeOfDay};
 
 use crate::combat::commands::text;
 use crate::dg::intake::commands::{DgClaimed, is_claimed};
-use crate::items::TbaObjectClock;
 
 /// Circle's `weekdays` (`tbamud/src/constants.c:827`), indexed by
 /// `((35 * month) + day) % 7`.
@@ -89,23 +93,36 @@ pub fn ordinal_suffix(day: u32) -> &'static str {
 }
 
 /// Render the two-line Circle time report for `clock`.
-pub fn time_report(clock: &TbaObjectClock) -> String {
-    let hour = clock.hour_of_day;
+pub fn time_report(time: &TimeOfDay) -> String {
+    let hour = u32::from(time.hour);
     let hour12 = if hour.is_multiple_of(12) {
         12
     } else {
         hour % 12
     };
     let meridiem = if hour >= 12 { "pm" } else { "am" };
-    let day = clock.day + 1;
-    let weekday = WEEKDAYS[((35 * clock.month + day) % 7) as usize];
-    let month = MONTH_NAMES[(clock.month % 17) as usize];
+    let (day0, month, year) = circle_calendar(time);
+    let day = day0 + 1;
+    let weekday = WEEKDAYS[((35 * month + day) % 7) as usize];
+    let month_name = MONTH_NAMES[(month % 17) as usize];
     format!(
         "It is {hour12} o'clock {meridiem}, on {weekday}.\n\
-         The {day}{} Day of the {month}, Year {}.",
+         The {day}{} Day of the {month_name}, Year {year}.",
         ordinal_suffix(day),
-        clock.year
     )
+}
+
+/// Circle's `time_info` from the engine clock's day index: 35-day months and 17
+/// months per year.
+///
+/// All three are **0-based**, exactly as Circle stores them; `do_time` prints
+/// `day + 1`. The engine clock (D-42) is the single authority for world time,
+/// so these are derived rather than kept in a second clock.
+pub fn circle_calendar(time: &TimeOfDay) -> (u32, u32, u32) {
+    let days = time.day_index;
+    let month = (days / 35) % 17;
+    let year = days / (35 * 17);
+    (days % 35, month, year)
 }
 
 /// `Update` in `BridgeSet::Game`: answer a raw `time` line from the clock.
@@ -113,10 +130,10 @@ pub fn handle_time_command(
     mut reader: MessageReader<CommandReceived>,
     claimed: Option<Res<DgClaimed>>,
     sessions: Query<&Session>,
-    clock: Option<Res<TbaObjectClock>>,
+    clock: Option<Res<TimeOfDay>>,
     mut output: MessageWriter<OutputEvent>,
 ) {
-    let empty = TbaObjectClock::default();
+    let empty = TimeOfDay::default();
     let clock = clock.as_deref().unwrap_or(&empty);
     for msg in reader.read() {
         let session = msg.session;
@@ -166,13 +183,16 @@ fn is_time_line(line: &str) -> bool {
 /// The write is skipped when the value already matches, so an unchanged night
 /// does not dirty every room's save document every tick.
 pub fn apply_night_darkness(
-    clock: Option<Res<TbaObjectClock>>,
+    clock: Option<Res<TimeOfDay>>,
     mut rooms: Query<(&Room, &mut RoomState)>,
 ) {
     let Some(clock) = clock else {
         return;
     };
-    let night = clock.is_night();
+    // Circle's `SUN_DARK` window is hours 22..=4, which is exactly the engine
+    // clock's `Night` phase for the phase hours this world authors
+    // (`docs`/`content/stdlib.time.yaml`: dawn 5, day 6, dusk 21, night 22).
+    let night = clock.phase == DayPhase::Night;
     for (room, mut state) in &mut rooms {
         if room.tags.contains(&RoomTag::Dark) || !room.tags.contains(&RoomTag::Outdoor) {
             continue;
@@ -235,12 +255,10 @@ mod tests {
 
     #[test]
     fn time_report_renders_circles_two_lines() {
-        let clock = TbaObjectClock {
-            hour_of_day: 14,
-            day: 0,
-            month: 0,
-            year: 0,
-            ..TbaObjectClock::default()
+        let clock = TimeOfDay {
+            hour: 14,
+            day_index: 0,
+            ..TimeOfDay::default()
         };
         let report = time_report(&clock);
         assert!(report.contains("It is 2 o'clock pm"), "{report}");
@@ -250,9 +268,9 @@ mod tests {
             "{report}"
         );
 
-        let midnight = TbaObjectClock {
-            hour_of_day: 0,
-            ..TbaObjectClock::default()
+        let midnight = TimeOfDay {
+            hour: 0,
+            ..TimeOfDay::default()
         };
         assert!(
             time_report(&midnight).contains("It is 12 o'clock am"),
@@ -264,9 +282,10 @@ mod tests {
     #[test]
     fn night_darkness_only_touches_outdoor_rooms() {
         let mut app = App::new();
-        app.insert_resource(TbaObjectClock {
-            hour_of_day: 23,
-            ..TbaObjectClock::default()
+        app.insert_resource(TimeOfDay {
+            hour: 23,
+            phase: DayPhase::Night,
+            ..TimeOfDay::default()
         });
         app.add_systems(Update, apply_night_darkness);
         let outdoor = app.world_mut().spawn(room(&[RoomTag::Outdoor])).id();
@@ -313,7 +332,7 @@ mod tests {
         );
 
         // Day clears the override (rather than storing an explicit `false`).
-        app.world_mut().resource_mut::<TbaObjectClock>().hour_of_day = 12;
+        app.world_mut().resource_mut::<TimeOfDay>().phase = DayPhase::Day;
         app.update();
         assert!(
             app.world()
