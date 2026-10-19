@@ -296,7 +296,7 @@ Counts describe the emitted scripts (colour codes stripped), so they can differ 
 
 ### Mob commands for the game (2668 lines)
 
-Supported words: 42; unsupported words: 94 (top 15 below).
+Supported words: 55; unsupported words: 81 (top 15 below).
 
 | unsupported word | count |
 |---|---:|
@@ -309,12 +309,12 @@ Supported words: 42; unsupported words: 94 (top 15 below).
 | `sigh` | 6 |
 | `growl` | 5 |
 | `kiss` | 5 |
-| `s` | 5 |
 | `wink` | 5 |
 | `chuckle` | 4 |
 | `clap` | 4 |
 | `damage` | 4 |
-| `fol` | 4 |
+| `grin` | 4 |
+| `mumble` | 4 |
 
 ### Substitution fields (5545 references)
 

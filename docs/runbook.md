@@ -191,11 +191,13 @@ human-readable **`reports/drop-report.summary.md`** beside it (the same run
 writes both). Both are deterministic and diffable: every vector is sorted, and
 the summary groups the surviving drops by reason. The report's totals are now
 189 zones / 12,700 rooms / 3,705 NPCs / 4,765 source items / 18,513 zone
-commands, with 0 deferred, 15 dangling and 15,697 unmapped records. The trigger
+commands, with 0 deferred, 15 dangling and 3,094 unmapped records. The trigger
 corpus is analysed in place with `dg_vm::analyze` (`trigger_coverage`): lines by
 class, the control and statement histograms, `wait` forms, script commands, the
-structural errors and the mob-command coverage ("Supported words: 42;
-unsupported words: 94"). `docs/05-converter.md` §8 is the narrative disposition
+structural errors and the mob-command coverage ("Supported words: 55;
+unsupported words: 81"; a word counts as supported when it is a prefix of a
+command name, which is how the NPC interpreter resolves abbreviations).
+`docs/05-converter.md` §8 is the narrative disposition
 table.
 
 CLI:
@@ -376,8 +378,8 @@ These are recorded, not silent:
   broadcasts): the engine derives a weighted state per `(zone, slot, season)`
   with a fixed seed instead, so weather is deterministic and restart-stable but
   not identical to the C's sequence.
-- **Mail and the friends list** are MIB engine features (D-06/D-07), separate
-  from the Circle group model, and are deferred (#33).
+- **Mail, boards and rent** are built on the MIB stdlib services (#37). The
+  **friends list** is not: it is MIB D-07 and is tracked in #38.
 - The stdlib `look` darkness check reads `Room::tags` rather than
   `Room::effective_flags`, so a night-written `RoomState.flags[Dark]` override
   persists and is the runtime authority but is not yet what `look` consults.
@@ -426,9 +428,12 @@ These are recorded, not silent:
     and not observer-aware, so `mib_tba::visibility::intercept_who` runs in
     `CommandSet::PreRoute`, marks `who` handled, and reproduces the stdlib line
     with the engine `perceive` predicate applied (see §6).
-  - MIB has no `practice` system (#32), so a granted skill is treated as fully
-    learned (`SKILL_LEARNED` = 100); Circle's DEX `dex_app_skill` bonus is not
-    modelled, so `pick_lock` uses 100 as the skill level.
+  - **Practice is modelled** (#32): `mib_tba::practice` keeps a persisted
+    `TbaPractice` (a practices counter plus a percentage per spell/skill) and
+    the skill/spell checks read it. A character with **no** `TbaPractice`
+    component (a scripted NPC, a bare test fixture) still reads as fully
+    learned ([`SKILL_LEARNED`]). Circle's DEX `dex_app_skill` bonus is still not
+    modelled, so `pick_lock`'s roll has no DEX term.
   - `kick`/`bash` deduct `SKILL_MOVE_COST` (10) movement and refuse at zero.
     This tbaMUD revision's `do_kick`/`do_bash` no longer contains the `GET_MOVE`
     check; the pack reinstates the classic Circle cost.

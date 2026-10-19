@@ -290,13 +290,13 @@ dangling destination and is recorded as `dangling_exit` instead.
 | `—` | `thaco = 20` (monsters use a flat 20; see `fight.c:829`) |
 | `MOB_NOCHARM`/`NO_SUMMON`/`NOSLEEP`/`NOBASH`/`NOBLIND`/`NOKILL` | `TbaNpcStats::behaviour` (`NpcBehaviour::No*`) |
 | `MOB_SPEC` | `spec_proc` — the procedure assigned in `spec_assign.c`/`castle.c` (78 mobs); the flag itself is only a marker and is not a drop |
-| `AFF_*` on the mob | **permanent drop** (`mob_aff`): no affect-flag field |
+| `AFF_*` on the mob | `TbaNpcStats::aff_flags` (`ItemAffectFlag`) |
 | e-spec `Str`/`Int`/`Wis`/`Dex`/`Con`/`Cha` | `attributes` (`TbaAttributes`); the mob baseline is 11, not the player-side 13 (`db.c:1682`) |
 | e-spec `SavingPara`/`SavingRod`/`SavingPetri`/`SavingBreath`/`SavingSpell` | `saves` (`TbaSaves`): `apply_saving_throw[]` modifiers on the warrior base table |
 | e-spec `BareHandAttack` | **permanent drop** (`mob_espec`): display-only attack message type; damage comes from the `damage` dice |
 | e-spec `StrAdd` | **permanent drop** (`mob_espec`): exceptional strength (`str_add`) is not modelled |
-| sex | **permanent drop** (`mob_sex`): `TbaNpcStats` has no sex field |
-| keyword list | **permanent drop** (`npc_keywords`): `stdlib.npcs` has no keyword list |
+| sex | `TbaNpcStats::sex` (`TbaSex`) |
+| keyword list | `TbaNpcStats::keywords` |
 | `T` lines | the NPC's entry in `tba.triggers.attachments` (source order) |
 
 `MOB_ISNPC` and `MOB_NOTDEADYET` are loader bookkeeping and are not reported.
@@ -327,8 +327,8 @@ The per-class minimum levels live in `tba.classes.skill_levels`.
 | keyword list | `TbaItemDef::keywords` |
 | `ITEM_*` extra flags | `TbaItemDef::extra_flags` (`ItemExtraFlag`) |
 | `AFF_*` affect-flags | `TbaItemDef::affect_flags` (`ItemAffectFlag`); the `DONTUSE`/`UNUSED`/`FREE` placeholder bits are **permanent drops** |
-| action description | **permanent drop** (`item_action_description`): `stdlib.items` has no action description |
-| `E` extra descriptions | **permanent drop** (`item_extra_descriptions`): `stdlib.items` has no extra-description field |
+| action description | `TbaItemDef::action_description` |
+| `E` extra descriptions | `TbaItemDef::extra_descriptions` (`TbaExtraDesc`) |
 | `T` lines | the item's entry in `tba.triggers.attachments` (source order) |
 | `APPLY_CLASS/LEVEL/AGE/CHAR_WEIGHT/CHAR_HEIGHT/GOLD/EXP` | **permanent drop** (`affect_location`): no `AffectLocation` variant, and no runtime consumer |
 
@@ -539,7 +539,7 @@ before writing, so the report is deterministic. Schema `3`:
     "zones": 189, "rooms": 12700, "npcs": 3705, "items": 4765,
     "zone_commands": 18513, "deferred": 0,
     "dangling": 15, "unmapped": 15697, "global_drops": 11,
-    "unmapped_by_kind": { "room_flag": 1726, "mob_sex": 3705, ... },
+    "unmapped_by_kind": { "room_flag": 1726, "mob_espec": 954, ... },
     "dangling_by_kind": { "dangling_door_key": 3, ... }
   },
   "zones": [
@@ -596,10 +596,9 @@ Finding kinds:
   `dangling_item_stats_key`.
   A dangling reference is **not** in the emitted YAML; the report is the only
   record of it.
-- `unmapped.kind`: `room_flag`, `mob_flag`, `mob_aff`, `mob_espec`,
-  `mob_sex`, `npc_keywords`, `position`, `sector`, `exit_direction`,
-  `exit_description_only`, `item_affect_flag`, `item_action_description`,
-  `item_extra_descriptions`, `item_type`, `affect_location`, `zone_flag`,
+- `unmapped.kind`: `room_flag`, `mob_espec`, `shop_record`, `shop_buy_word`,
+  `shop_profit_buy`, `exit_description_only`, `position`, `sector`,
+  `exit_direction`, `item_affect_flag`, `item_type`, `affect_location`,
   `zone_command_dropped`, `reset_mode`, `shop_buy_word`, `shop_broke_temper`,
   `shop_bitvector`, `shop_record`, `shop_profit_buy`, `quest_objective`,
   `quest_gold_reward`, `quest_text`, `quest_flag`, `quest_link`,
@@ -757,33 +756,34 @@ and `reports/drop-report.summary.md` groups the surviving drops by reason.
   `TbaAttackDice`). **NPC e-specs** are mapped: the six prime attributes and
   five saving throws land in `tba.npc_stats.attributes`/`.saves`
   (`interpret_espec`; #31). `BareHandAttack` and `StrAdd` have no field and are
-  named (`mob_espec`). **NPC affect-flags, sex and keyword lists** have no field
-  and are named (`mob_aff`, `mob_sex`, `npc_keywords`).
+  named (`mob_espec`). **NPC sex, keyword list and `AFF_*` flags** are modelled
+  in `tba.npc_stats` (`sex`, `keywords`, `aff_flags`).
 - **`MOB_SPEC` special procedures** are no longer inferred from the flag: the
   converter transcribes `spec_assign.c`/`castle.c` into `spec_proc` (78 mobs)
-  and the ambient procedures (casting, cleaning, the mayor and King schedules,
-  the `block_way` guards) run in `mib_tba::spec`. The guild/postmaster/
-  receptionist procedures still need the practice, mail and rent subsystems;
-  they are the remaining #31 work. Eight flagged mobs have no procedure at all.
-  NPC e-specs (`mob_espec`) are mapped onto `tba.npc_stats.attributes` and
-  `.saves`; only `BareHandAttack` (display-only) and `StrAdd` (exceptional
-  strength) remain named `mob_espec` drops.
+  and **every** assigned procedure now runs — the ambient ones (casting,
+  cleaning, the mayor and King schedules, the `block_way` guards) in
+  `mib_tba::spec`, and the command-driven ones (guild practice, postmaster
+  mail, receptionist/cryogenicist rent) in their own modules (#31, #37). Eight
+  flagged mobs have no procedure at all. Only `BareHandAttack` (display-only)
+  and `StrAdd` (exceptional strength) remain named `mob_espec` drops.
 - **Combat skills** `backstab`, `kick`, `bash`, `rescue`, `assist`, `consider`
   are class rules with no world-content field, so they stay in the
   `global_drops` list (`combat_skill`) — but they are **implemented** as pack
   gameplay in `mib_tba::skills` (issue #25), and the reason string says so. See
   `docs/runbook.md` §6/§8 for the commands and their remaining limits.
-- **Item action descriptions and object `E` descriptions** (`stdlib.items` has
-  no field). The keyword list and `ITEM_*`/`AFF_*` flags are now modelled.
+- **Item action descriptions and object `E` descriptions** are modelled in
+  `tba.items` (`action_description`, `extra_descriptions`), as are the keyword
+  list and the `ITEM_*`/`AFF_*` flags.
 - **`APPLY_CLASS/LEVEL/AGE/CHAR_WEIGHT/CHAR_HEIGHT/GOLD/EXP`** have no
   `AffectLocation` variant (`affect_location`).
-- **Zone flags** (`CLOSED`, `NO_IMMORT`, `QUEST`, `GRID`, …) have no `ZoneDef`
-  field (`zone_flag`).
-- **Shops**: the keeper temper (`broke_temper`), the `SHOP_*` bitvector, the
-  per-type buy word and a differing `#vnum` are named drops; the keeper `-1`,
-  duplicate keeper, missing produce/room and a non-positive `profit_buy` drop
-  the shop (`dangling` / `shop_profit_buy`). Opening hours, room restrictions
-  and `trade_with` are now modelled and enforced.
+- **Zone flags** (`CLOSED`, `NO_IMMORT`, `QUEST`, `GRID`, …) are preserved in
+  `tba.zones` (`flags`); no engine system acts on them yet.
+- **Shops**: the keeper temper (`broke_temper`), the `SHOP_*` bitvector
+  (`bitvector`) and the per-type buy words (`buy_words`) are modelled. A
+  differing `#vnum` is informational (the keeper vnum is the key); the keeper
+  `-1`, a duplicate keeper, missing produce/room and a non-positive
+  `profit_buy` still drop the shop (`dangling` / `shop_profit_buy`). Opening
+  hours, room restrictions and `trade_with` are modelled and enforced.
 - **Quests** now convert (issue #16). The objective types with a
   `QuestStepDef` are mapped; `MOB_FIND`/`MOB_SAVE`/`OBJ_RETURN`/`ROOM_CLEAR`
   and the gold reward, the extra text (`desc`/`done`/`quit`), the repeatable

@@ -390,9 +390,13 @@ pub struct MudCommandCoverage {
 }
 
 /// Split mud-command words (first word -> lines) into those in `supported`
-/// and the rest. A word is supported when it equals an entry ASCII
-/// case-insensitively; the mob command interpreter's abbreviations are the
-/// caller's to expand into the list.
+/// and the rest.
+///
+/// A word is supported when it is a **prefix** of a supported command name,
+/// ASCII case-insensitively, because that is exactly how the NPC command
+/// interpreter resolves it (`cmd.name.starts_with(word)`): `n` reaches
+/// `north` and `i` reaches `inventory`. Matching on equality alone reported
+/// every abbreviation as unsupported.
 pub fn split_mud_commands(
     mud_commands: &BTreeMap<String, usize>,
     supported: &[&str],
@@ -400,7 +404,10 @@ pub fn split_mud_commands(
     let mut out = MudCommandCoverage::default();
     for (word, count) in mud_commands {
         out.lines += count;
-        let known = supported.iter().any(|name| name.eq_ignore_ascii_case(word));
+        let known = supported.iter().any(|name| {
+            name.len() >= word.len() && name.is_char_boundary(word.len())
+                && name[..word.len()].eq_ignore_ascii_case(word)
+        });
         let side = if known {
             &mut out.supported
         } else {
@@ -955,6 +962,16 @@ mod tests {
         assert_eq!(split.lines, 8);
         assert_eq!(split.supported, counts(&[("say", 5), ("Smile", 2)]));
         assert_eq!(split.unsupported, counts(&[("zap", 1)]));
+    }
+
+    #[test]
+    fn an_abbreviation_is_supported_by_the_command_it_reaches() {
+        // The interpreter resolves a typed word as a prefix of a command name,
+        // so `n` reaches `north` and `i` reaches `inventory`.
+        let words = counts(&[("n", 3), ("i", 1), ("zz", 2)]);
+        let split = split_mud_commands(&words, &["north", "inventory"]);
+        assert_eq!(split.supported, counts(&[("n", 3), ("i", 1)]));
+        assert_eq!(split.unsupported, counts(&[("zz", 2)]));
     }
 
     #[test]
