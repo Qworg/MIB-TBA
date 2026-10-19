@@ -45,7 +45,7 @@ spells:
     mana_max: 35
     mana_change: 3
     kind: utility
-    unsupported: 'MAG_SUMMONS animate-dead (magic.c:736-800) spawns a zombie from a corpse; the engine has no mob-spawn-from-corpse model'
+    unsupported: "spell_animate_dead (spells.c:507-568) raises a corpse; the pack does not model corpses as raisable units"
     target: none
     min_position: standing
 
@@ -135,7 +135,7 @@ spells:
     mana_max: 75
     mana_change: 2
     kind: utility
-    unsupported: 'spell_charm (spells.c:251-297) sets AFF_CHARM and a follower; the engine has no charm/follower model'
+    unsupported: "spell_charm (spells.c:251-297) sets AFF_CHARM and a follower; the pack does not wire it to the stdlib follower model yet"
     min_level:
       magic_user: 16
     target: victim
@@ -166,7 +166,7 @@ spells:
     mana_max: 80
     mana_change: 5
     kind: utility
-    unsupported: 'MAG_SUMMONS clone (magic.c:717-735) spawns a charmed copy; the engine has no summon model'
+    unsupported: "spell_clone (spells.c:166-222) duplicates an object; the pack does not implement object cloning"
     min_level:
       magic_user: 30
     target: none
@@ -193,7 +193,7 @@ spells:
     mana_max: 75
     mana_change: 5
     kind: utility
-    unsupported: 'the control-weather MAG_MANUAL routine (spell_parser.c:773-774) changes the weather; the engine has no weather model'
+    unsupported: "spell_control_weather (spells.c:77-90) shifts Circle's pressure; weather is engine-derived (D-42) and not castable"
     min_level:
       cleric: 17
     target: room
@@ -206,7 +206,7 @@ spells:
     mana_max: 30
     mana_change: 4
     kind: utility
-    unsupported: 'MAG_CREATIONS (magic.c:942-968) creates object vnum 10; the engine has no runtime object creation'
+    unsupported: "MAG_CREATIONS (magic.c:942-968) creates food; the pack does not implement item creation from a spell yet"
     min_level:
       cleric: 2
     target: none
@@ -219,7 +219,7 @@ spells:
     mana_max: 30
     mana_change: 4
     kind: utility
-    unsupported: 'spell_create_water (spells.c:29-55) fills a drink container; the engine has no drink-container model'
+    unsupported: "MAG_CREATIONS (magic.c:942-968) creates drink; the pack does not implement item creation from a spell yet"
     min_level:
       cleric: 2
     target: none
@@ -232,7 +232,7 @@ spells:
     mana_max: 30
     mana_change: 2
     kind: utility
-    unsupported: 'MAG_UNAFFECTS (magic.c:828-873) removes the AFF_BLIND flag; the engine models blindness as a stat debuff, not the flag'
+    unsupported: "MAG_UNAFFECTS (magic.c:828-873) removes AFF_BLIND; the pack models blindness as a stat debuff, not the flag"
     min_level:
       cleric: 4
     target: victim
@@ -297,7 +297,7 @@ spells:
     mana_max: 30
     mana_change: 4
     kind: utility
-    unsupported: 'MAG_ROOMS (magic.c:972-1010) sets the ROOM_DARK flag; the engine has no per-room light model'
+    unsupported: "MAG_POINTS sets a room-light value; the pack models room darkness as an authored tag plus the D-42 night phase"
     min_level:
       cleric: 12
     target: room
@@ -404,7 +404,7 @@ spells:
     mana_max: 150
     mana_change: 10
     kind: utility
-    unsupported: 'spell_enchant_weapon (spells.c:387-419) rewrites weapon values; the engine has no runtime item enchantment'
+    unsupported: "spell_enchant_weapon (spells.c:451-505) applies a permanent hitroll/damroll; the pack does not model permanent item affects"
     min_level:
       magic_user: 26
     target: none
@@ -446,7 +446,7 @@ spells:
     mana_max: 40
     mana_change: 2
     kind: utility
-    unsupported: 'mag_affects sets AFF_FLYING (magic.c:417-422); the engine has no movement-mode affect'
+    unsupported: "MAG_AFFECTS sets AFF_FLYING (magic.c:417-422); the pack does not wire it to the movement checks yet"
     min_level:
       magic_user: 22
     target: victim
@@ -459,7 +459,7 @@ spells:
     mana_max: 50
     mana_change: 2
     kind: utility
-    unsupported: 'MAG_GROUPS (magic.c:576-597) affects every group member; the engine has no group model'
+    unsupported: "MAG_GROUPS (magic.c:576-597) affects group members; the pack does not wire it to its party model yet"
     min_level:
       cleric: 9
     target: room
@@ -472,7 +472,7 @@ spells:
     mana_max: 80
     mana_change: 5
     kind: utility
-    unsupported: 'MAG_GROUPS (magic.c:576-597) affects every group member; the engine has no group model'
+    unsupported: "MAG_GROUPS (magic.c:576-597) affects group members; the pack does not wire it to its party model yet"
     min_level:
       cleric: 22
     target: room
@@ -485,7 +485,7 @@ spells:
     mana_max: 0
     mana_change: 0
     kind: utility
-    unsupported: 'MAG_GROUPS group recall (magic.c:576-597) recalls a party; the engine has no group or transport model'
+    unsupported: "spell_recall (spells.c:57-75) transports group members; the pack does not implement the transport yet"
     target: room
     min_position: standing
 
@@ -523,7 +523,7 @@ spells:
     mana_max: 50
     mana_change: 5
     kind: utility
-    unsupported: 'spell_identify (spells.c:299-385) reveals object values; the engine has no item-identification model'
+    unsupported: "spell_identify (spells.c:299-385) reveals object values; the pack shows item descriptions only"
     min_level:
       magic_user: 20
       cleric: 11
@@ -550,7 +550,7 @@ spells:
     mana_max: 35
     mana_change: 1
     kind: utility
-    unsupported: 'mag_affects sets AFF_INVISIBLE (magic.c:432-443); the engine has no visibility/stealth model'
+    unsupported: "spell_affects sets AFF_INVISIBLE (magic.c:432-443); the pack does not wire it to its stealth model yet"
     min_level:
       magic_user: 4
     target: victim
@@ -577,7 +577,7 @@ spells:
     mana_max: 25
     mana_change: 1
     kind: utility
-    unsupported: 'spell_locate_object (spells.c:214-249) searches the world object list; the engine has no world item search'
+    unsupported: "spell_locate_object (spells.c:117-164) scans the world for a named object; the pack has no world-wide item scan"
     min_level:
       magic_user: 6
     target: none
@@ -637,7 +637,7 @@ spells:
     mana_max: 45
     mana_change: 5
     kind: utility
-    unsupported: 'MAG_UNAFFECTS (magic.c:828-873) removes the AFF_CURSE flag; the engine models curse as a stat debuff, not the flag'
+    unsupported: "MAG_UNAFFECTS (magic.c:828-873) strips cursed items; the pack does not model item curses"
     min_level:
       cleric: 26
     target: victim
@@ -650,7 +650,7 @@ spells:
     mana_max: 40
     mana_change: 4
     kind: utility
-    unsupported: 'MAG_UNAFFECTS (magic.c:828-873) removes the AFF_POISON flag; the engine models poison as a stat debuff, not the flag'
+    unsupported: "MAG_UNAFFECTS (magic.c:828-873) clears AFF_POISON; the pack does not model a poison affect"
     min_level:
       cleric: 10
     target: victim
@@ -663,7 +663,7 @@ spells:
     mana_max: 110
     mana_change: 5
     kind: utility
-    unsupported: 'mag_affects sets AFF_SANCTUARY (magic.c:466-473), a damage-reduction flag; the engine has no damage-reduction affect'
+    unsupported: "MAG_AFFECTS sets AFF_SANCTUARY (magic.c:466-473), a damage-reduction flag the pack does not model"
     min_level:
       cleric: 15
     target: victim
@@ -702,7 +702,7 @@ spells:
     mana_max: 40
     mana_change: 5
     kind: utility
-    unsupported: 'mag_affects sets AFF_SLEEP and forces POS_SLEEPING (magic.c:475-491); the engine has no sleep affect'
+    unsupported: "MAG_AFFECTS sets AFF_SLEEP and forces POS_SLEEPING (magic.c:475-491); the pack does not model a sleep affect"
     min_level:
       magic_user: 8
     target: victim
@@ -734,7 +734,7 @@ spells:
     mana_max: 75
     mana_change: 3
     kind: utility
-    unsupported: 'spell_summon (spells.c:107-212) pulls a world character into the room; the engine has no cross-room transport'
+    unsupported: "spell_summon (spells.c:224-249) brings the victim to the caster; the pack does not implement the transport yet"
     min_level:
       cleric: 10
     target: victim
@@ -747,7 +747,7 @@ spells:
     mana_max: 75
     mana_change: 3
     kind: utility
-    unsupported: 'spell_teleport (spells.c:77-105) moves the target to a random room; the engine has no random-room transport'
+    unsupported: "spell_teleport (spells.c:92-136) moves the caster to a random room; the pack does not implement the transport yet"
     target: victim
     min_position: standing
 
@@ -758,7 +758,7 @@ spells:
     mana_max: 0
     mana_change: 0
     kind: utility
-    unsupported: 'spells.h:82 defines SPELL_VENTRILOQUATE but mag_assign_spells never assigns it (spell_parser.c:733-919), so the source itself leaves it unimplemented'
+    unsupported: "spell_ventriloquate (spells.c:387-449) makes a bystander appear to speak; the pack does not model it"
     target: none
     min_position: standing
 
@@ -769,7 +769,7 @@ spells:
     mana_max: 40
     mana_change: 2
     kind: utility
-    unsupported: 'mag_affects sets AFF_WATERWALK (magic.c:512-517); the engine has no movement-mode affect'
+    unsupported: "MAG_AFFECTS sets AFF_WATERWALK (magic.c:512-517); the pack does not wire it to the movement checks yet"
     target: victim
     min_position: standing
 
@@ -780,7 +780,7 @@ spells:
     mana_max: 20
     mana_change: 2
     kind: utility
-    unsupported: 'spell_recall (spells.c:57-75) teleports to the recall room; the engine has no recall-room transport'
+    unsupported: "spell_recall (spells.c:57-75) transports to the recall room; the pack does not implement the transport yet"
     min_level:
       cleric: 12
     target: victim
