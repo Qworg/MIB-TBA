@@ -30,8 +30,8 @@ use crate::combat::commands::{broadcast, deny, text};
 use crate::combat::model::{EVIL_ALIGNMENT, GOOD_ALIGNMENT, TbaAlignment, TbaProgress};
 use crate::content::{ShopDef, ShopTrade};
 use crate::dg::intake::commands::{DgClaimed, is_claimed};
-use crate::items::TbaObjectClock;
 use crate::module::TbaContent;
+use mib_stdlib::prelude::TimeOfDay;
 
 /// Circle's closed-shop replies (`shop.h:144-146`), selected the way
 /// `is_open` (`shop.c:140`) selects them.
@@ -476,7 +476,7 @@ pub fn handle_shop_commands(
     rooms: Query<&Room>,
     content: Option<Res<TbaContent>>,
     loaded: Option<Res<LoadedContent>>,
-    clock: Option<Res<TbaObjectClock>>,
+    clock: Option<Res<TimeOfDay>>,
     mut purses: Query<&mut TbaGold>,
     items: Query<(Entity, &Item, &CarriedBy)>,
     mut commands: Commands,
@@ -485,7 +485,7 @@ pub fn handle_shop_commands(
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
     let loaded = loaded.as_deref();
-    let hour = clock.map_or(0, |clock| clock.hour_of_day);
+    let hour = clock.map_or(0, |clock| u32::from(clock.hour));
 
     for msg in reader.read() {
         let session = msg.session;

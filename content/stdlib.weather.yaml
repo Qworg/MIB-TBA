@@ -1,0 +1,36 @@
+# Per-zone weather (D-42). The engine derives a state per (zone, slot, season)
+# with a fixed-seed hash, so a restart replays the same weather.
+#
+# The whole TBA world is one temperate continent, so every area maps to the
+# `temperate` zone (see `weather_zone` in `stdlib.areas.yaml`). Circle's richer
+# `weather_info` (pressure, sky, temperature) is not reproduced digit-for-digit;
+# it is a weighted state per zone, recorded in `docs/runbook.md` §8.
+weather:
+  states:
+    clear:
+      description: The sky is clear.
+    cloudy:
+      description: Grey clouds gather overhead.
+    rain:
+      description: Rain falls steadily.
+    storm:
+      description: Thunder rolls overhead.
+    fog:
+      description: A damp fog hangs in the air.
+  zones:
+    temperate:
+      # Weather is constant within a slot; six four-hour slots per day.
+      slots_per_day: 6
+      weights:
+        clear: 5
+        cloudy: 4
+        rain: 3
+        storm: 1
+        fog: 1
+      weights_by_season:
+        winter:
+          clear: 3
+          cloudy: 4
+          rain: 2
+          storm: 1
+          fog: 2

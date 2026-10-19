@@ -18,7 +18,7 @@ use mib_core::prelude::*;
 use super::chardata::TbaDgAffects;
 use super::host::EcsHost;
 use super::with_host;
-use crate::items::TbaObjectClock;
+use mib_stdlib::prelude::TimeOfDay;
 
 /// Real time per pulse.
 const PULSE: Duration = Duration::from_millis(100);
@@ -121,8 +121,8 @@ pub fn dg_pulse_system(world: &mut World) {
         (before, advanced, clock.pulse)
     };
     let hour = world
-        .get_resource::<TbaObjectClock>()
-        .map(|clock| clock.hour_of_day);
+        .get_resource::<TimeOfDay>()
+        .map(|clock| u32::from(clock.hour));
     let hour_changed = hour.is_some_and(|hour| {
         world
             .get_resource_or_insert_with(DgPulse::default)

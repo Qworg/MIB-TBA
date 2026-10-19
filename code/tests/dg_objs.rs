@@ -238,13 +238,13 @@ fn a_script_timer_counts_down_by_mud_hours_and_the_item_decays() {
         Some(4)
     );
 
-    // One MUD hour is 75 seconds.
-    tick(&mut app, Duration::from_secs(75));
+    // Object timers are aged from the shared world clock (D-42): one MUD hour.
+    advance_hours(&mut app, 1);
     run(&mut app, |host| assert_eq!(host.obj_timer(id), 3));
 
     // limits.c:469-473: at zero the C runs the item's Timer trigger; this
     // item has none, so the pack's decay takes it (`tick_item_timers`).
-    tick(&mut app, Duration::from_secs(75 * 10));
+    advance_hours(&mut app, 9);
     assert!(
         app.world().get_entity(entity).is_err(),
         "a timed item without a timer trigger decays"
@@ -263,7 +263,7 @@ fn a_restored_item_timer_reads_its_saved_value() {
         .entity_mut(entity)
         .insert(TbaItemTimer { remaining: 7 });
     run(&mut app, |host| assert_eq!(host.obj_timer(id), 7));
-    tick(&mut app, Duration::from_secs(75 * 30));
+    advance_hours(&mut app, 30);
     assert!(
         app.world().get_entity(entity).is_err(),
         "a restored timer ages out"
@@ -282,8 +282,18 @@ fn a_restored_item_timer_is_not_clobbered_by_the_prototype() {
     app.world_mut()
         .entity_mut(entity)
         .insert(TbaItemTimer { remaining: 3 });
-    tick(&mut app, Duration::from_secs(75));
+    advance_hours(&mut app, 1);
     run(&mut app, |host| assert_eq!(host.obj_timer(id), 2));
+}
+
+/// Advance the shared world clock (D-42) by `hours` MUD hours and run the tick.
+///
+/// `tick_item_timers` ages object timers from `TimeOfDay`, not from the frame
+/// cadence, so a test moves the clock itself.
+fn advance_hours(app: &mut App, hours: u32) {
+    app.world_mut().resource_mut::<TimeOfDay>().world_epoch_secs +=
+        WORLD_SECONDS_PER_HOUR * f64::from(hours);
+    tick(app, Duration::from_millis(1));
 }
 
 #[test]

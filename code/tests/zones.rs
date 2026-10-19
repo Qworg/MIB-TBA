@@ -147,7 +147,7 @@ fn test_app(dir: &Path) -> App {
     app.insert_resource(loaded_content(dir));
     app.insert_resource(Time::<Fixed>::from_hz(10.0));
     app.insert_resource(TbaRng::from_seed(7));
-    app.init_resource::<TbaObjectClock>();
+    app.init_resource::<TbaHourTicker>();
 
     // A single empty entity stands in for the room; only `RoomIndex` matters
     // to `spawn_npc_from_content`.
@@ -371,7 +371,7 @@ fn flag_app(dir: &Path, other_if_flag: bool) -> App {
     app.insert_resource(loaded_content(dir));
     app.insert_resource(Time::<Fixed>::from_hz(10.0));
     app.insert_resource(TbaRng::from_seed(7));
-    app.init_resource::<TbaObjectClock>();
+    app.init_resource::<TbaHourTicker>();
     let room = app.world_mut().spawn_empty().id();
     app.insert_resource(RoomIndex {
         map: HashMap::from([(RoomId::from("test_room"), room)]),

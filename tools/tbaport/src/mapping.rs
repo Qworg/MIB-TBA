@@ -51,6 +51,12 @@ use crate::source::{
     zone::{RawZone, parse_zone},
 };
 
+/// The single `stdlib.weather` zone every converted area belongs to (D-42).
+///
+/// tbaMUD has no weather zones; the whole world is one temperate continent, so
+/// the pack authors a matching zone in `content/stdlib.weather.yaml`.
+const TBA_WEATHER_ZONE: &str = "temperate";
+
 /// Direction words, in the order of `dirs[]` in `constants.c:35`.
 const DIRS: [&str; 10] = [
     "north",
@@ -357,7 +363,9 @@ pub fn convert(options: &ConvertOptions) -> Result<Conversion> {
             ids::area_id(source.number),
             AreaDef {
                 name: source.zone.name.clone(),
-                weather_zone: None,
+                // The converted world is one temperate continent; the pack
+                // authors a matching `stdlib.weather.yaml` zone (D-42).
+                weather_zone: Some(mib_stdlib::content::WeatherZoneId::from(TBA_WEATHER_ZONE)),
             },
         );
 

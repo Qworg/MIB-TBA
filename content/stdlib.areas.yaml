@@ -2,568 +2,568 @@
 areas:
   tba_0:
     name: The Builder Academy Zone
-    weather_zone: null
+    weather_zone: temperate
   tba_1:
     name: Sanctus
-    weather_zone: null
+    weather_zone: temperate
   tba_100:
     name: Northern Highway
-    weather_zone: null
+    weather_zone: temperate
   tba_101:
     name: South Road
-    weather_zone: null
+    weather_zone: temperate
   tba_103:
     name: DBZ World
-    weather_zone: null
+    weather_zone: temperate
   tba_104:
     name: Land of Orchan
-    weather_zone: null
+    weather_zone: temperate
   tba_106:
     name: Elcardo
-    weather_zone: null
+    weather_zone: temperate
   tba_107:
     name: Realms of Iuel
-    weather_zone: null
+    weather_zone: temperate
   tba_11:
     name: Frozen Castle
-    weather_zone: null
+    weather_zone: temperate
   tba_115:
     name: Monestary Omega
-    weather_zone: null
+    weather_zone: temperate
   tba_117:
     name: Los Torres
-    weather_zone: null
+    weather_zone: temperate
   tba_118:
     name: The Dollhouse
-    weather_zone: null
+    weather_zone: temperate
   tba_12:
     name: God Complex Merged with 343
-    weather_zone: null
+    weather_zone: temperate
   tba_120:
     name: Rome
-    weather_zone: null
+    weather_zone: temperate
   tba_125:
     name: Hannah
-    weather_zone: null
+    weather_zone: temperate
   tba_13:
     name: TBA Examples
-    weather_zone: null
+    weather_zone: temperate
   tba_130:
     name: Mist Maze
-    weather_zone: null
+    weather_zone: temperate
   tba_14:
     name: TBA Examples II
-    weather_zone: null
+    weather_zone: temperate
   tba_140:
     name: Wyvern City
-    weather_zone: null
+    weather_zone: temperate
   tba_15:
     name: Straight Path
-    weather_zone: null
+    weather_zone: temperate
   tba_150:
     name: King Welmar's Castle
-    weather_zone: null
+    weather_zone: temperate
   tba_16:
     name: Camelot II
-    weather_zone: null
+    weather_zone: temperate
   tba_169:
     name: Gibberling Caves
-    weather_zone: null
+    weather_zone: temperate
   tba_17:
     name: Camelot III
-    weather_zone: null
+    weather_zone: temperate
   tba_175:
     name: Cardinal Wizards
-    weather_zone: null
+    weather_zone: temperate
   tba_18:
     name: Nuclear Wasteland
-    weather_zone: null
+    weather_zone: temperate
   tba_186:
     name: Newbie Zone
-    weather_zone: null
+    weather_zone: temperate
   tba_187:
     name: Circus
-    weather_zone: null
+    weather_zone: temperate
   tba_19:
     name: Spider Swamp
-    weather_zone: null
+    weather_zone: temperate
   tba_2:
     name: Sanctus II
-    weather_zone: null
+    weather_zone: temperate
   tba_20:
     name: Arena
-    weather_zone: null
+    weather_zone: temperate
   tba_200:
     name: Western Highway
-    weather_zone: null
+    weather_zone: temperate
   tba_201:
     name: Sapphire Islands
-    weather_zone: null
+    weather_zone: temperate
   tba_211:
     name: Tarot
-    weather_zone: null
+    weather_zone: temperate
   tba_22:
     name: Tower of the Undead
-    weather_zone: null
+    weather_zone: temperate
   tba_220:
     name: The Enchanted Kitchen
-    weather_zone: null
+    weather_zone: temperate
   tba_232:
     name: Terringham
-    weather_zone: null
+    weather_zone: temperate
   tba_233:
     name: Dragon Plains
-    weather_zone: null
+    weather_zone: temperate
   tba_234:
     name: Newbie School
-    weather_zone: null
+    weather_zone: temperate
   tba_235:
     name: Dwarven Mines
-    weather_zone: null
+    weather_zone: temperate
   tba_236:
     name: Aldin
-    weather_zone: null
+    weather_zone: temperate
   tba_237:
     name: Dwarven Trade Route
-    weather_zone: null
+    weather_zone: temperate
   tba_238:
     name: Crystal Castle
-    weather_zone: null
+    weather_zone: temperate
   tba_239:
     name: South Pass
-    weather_zone: null
+    weather_zone: temperate
   tba_240:
     name: Dun Maura
-    weather_zone: null
+    weather_zone: temperate
   tba_241:
     name: Starship Enterprise
-    weather_zone: null
+    weather_zone: temperate
   tba_242:
     name: New Southern Midgaard
-    weather_zone: null
+    weather_zone: temperate
   tba_243:
     name: Snowy Valley
-    weather_zone: null
+    weather_zone: temperate
   tba_244:
     name: Cooland Prison
-    weather_zone: null
+    weather_zone: temperate
   tba_245:
     name: The Nether
-    weather_zone: null
+    weather_zone: temperate
   tba_246:
     name: The Nether II
-    weather_zone: null
+    weather_zone: temperate
   tba_247:
     name: Graveyard
-    weather_zone: null
+    weather_zone: temperate
   tba_248:
     name: Elven Woods
-    weather_zone: null
+    weather_zone: temperate
   tba_249:
     name: Jedi Clan House
-    weather_zone: null
+    weather_zone: temperate
   tba_25:
     name: High Tower of Magic
-    weather_zone: null
+    weather_zone: temperate
   tba_250:
     name: DragonSpyre
-    weather_zone: null
+    weather_zone: temperate
   tba_251:
     name: Ape Village
-    weather_zone: null
+    weather_zone: temperate
   tba_252:
     name: Castle of the Vampyre
-    weather_zone: null
+    weather_zone: temperate
   tba_253:
     name: Windmill
-    weather_zone: null
+    weather_zone: temperate
   tba_254:
     name: Mordecai's Village
-    weather_zone: null
+    weather_zone: temperate
   tba_255:
     name: Shipwreck
-    weather_zone: null
+    weather_zone: temperate
   tba_256:
     name: Lord's Keep
-    weather_zone: null
+    weather_zone: temperate
   tba_257:
     name: Jareth Main City
-    weather_zone: null
+    weather_zone: temperate
   tba_258:
     name: Light Forest
-    weather_zone: null
+    weather_zone: temperate
   tba_259:
     name: Haunted Mansion
-    weather_zone: null
+    weather_zone: temperate
   tba_26:
     name: High Tower of Magic II
-    weather_zone: null
+    weather_zone: temperate
   tba_260:
     name: Grasslands
-    weather_zone: null
+    weather_zone: temperate
   tba_261:
     name: Inna & Igor's Castle
-    weather_zone: null
+    weather_zone: temperate
   tba_262:
     name: Forest Trails
-    weather_zone: null
+    weather_zone: temperate
   tba_263:
     name: Farmlands
-    weather_zone: null
+    weather_zone: temperate
   tba_264:
     name: Banshide
-    weather_zone: null
+    weather_zone: temperate
   tba_265:
     name: Beach & Lighthouse
-    weather_zone: null
+    weather_zone: temperate
   tba_266:
     name: Realm of Lord Ankou
-    weather_zone: null
+    weather_zone: temperate
   tba_267:
     name: Vice Island
-    weather_zone: null
+    weather_zone: temperate
   tba_268:
     name: Vice Island II
-    weather_zone: null
+    weather_zone: temperate
   tba_269:
     name: Southern Desert
-    weather_zone: null
+    weather_zone: temperate
   tba_27:
     name: Memlin Caverns
-    weather_zone: null
+    weather_zone: temperate
   tba_270:
     name: Wasteland
-    weather_zone: null
+    weather_zone: temperate
   tba_271:
     name: Sundhaven
-    weather_zone: null
+    weather_zone: temperate
   tba_272:
     name: Sundhaven II
-    weather_zone: null
+    weather_zone: temperate
   tba_273:
     name: Space Station Alpha
-    weather_zone: null
+    weather_zone: temperate
   tba_274:
     name: 'Adria: Saint Brigid'
-    weather_zone: null
+    weather_zone: temperate
   tba_275:
     name: New Sparta
-    weather_zone: null
+    weather_zone: temperate
   tba_276:
     name: New Sparta II
-    weather_zone: null
+    weather_zone: temperate
   tba_277:
     name: Shire
-    weather_zone: null
+    weather_zone: temperate
   tba_278:
     name: Oceania
-    weather_zone: null
+    weather_zone: temperate
   tba_279:
     name: Notre Dame
-    weather_zone: null
+    weather_zone: temperate
   tba_28:
     name: Mudschool
-    weather_zone: null
+    weather_zone: temperate
   tba_280:
     name: Living Motherboard
-    weather_zone: null
+    weather_zone: temperate
   tba_281:
     name: Forest of Khanjar
-    weather_zone: null
+    weather_zone: temperate
   tba_282:
     name: Infernal Pit of Kerjim
-    weather_zone: null
+    weather_zone: temperate
   tba_283:
     name: Haunted House
-    weather_zone: null
+    weather_zone: temperate
   tba_284:
     name: Ghenna
-    weather_zone: null
+    weather_zone: temperate
   tba_285:
     name: Descent to Hell II
-    weather_zone: null
+    weather_zone: temperate
   tba_286:
     name: Descent to Hell
-    weather_zone: null
+    weather_zone: temperate
   tba_287:
     name: Ofingia and the Goblin Town
-    weather_zone: null
+    weather_zone: temperate
   tba_288:
     name: Galaxy
-    weather_zone: null
+    weather_zone: temperate
   tba_289:
     name: Werith's Wayhouse
-    weather_zone: null
+    weather_zone: temperate
   tba_290:
     name: Lizard Lair Safari
-    weather_zone: null
+    weather_zone: temperate
   tba_291:
     name: Black Forest
-    weather_zone: null
+    weather_zone: temperate
   tba_292:
     name: Kerofk
-    weather_zone: null
+    weather_zone: temperate
   tba_293:
     name: Kerofk II
-    weather_zone: null
+    weather_zone: temperate
   tba_294:
     name: Trade Road
-    weather_zone: null
+    weather_zone: temperate
   tba_295:
     name: Jungle
-    weather_zone: null
+    weather_zone: temperate
   tba_296:
     name: Froboz Fun Factory
-    weather_zone: null
+    weather_zone: temperate
   tba_298:
     name: Castle of Desire
-    weather_zone: null
+    weather_zone: temperate
   tba_299:
     name: Abandoned Cathedral
-    weather_zone: null
+    weather_zone: temperate
   tba_3:
     name: Sanctus III
-    weather_zone: null
+    weather_zone: temperate
   tba_30:
     name: Northern Midgaard
-    weather_zone: null
+    weather_zone: temperate
   tba_300:
     name: Ancalador
-    weather_zone: null
+    weather_zone: temperate
   tba_301:
     name: Campus
-    weather_zone: null
+    weather_zone: temperate
   tba_302:
     name: Campus II
-    weather_zone: null
+    weather_zone: temperate
   tba_303:
     name: Campus III
-    weather_zone: null
+    weather_zone: temperate
   tba_304:
     name: Temple of the Bull
-    weather_zone: null
+    weather_zone: temperate
   tba_305:
     name: Chessboard
-    weather_zone: null
+    weather_zone: temperate
   tba_306:
     name: Newbie Tree
-    weather_zone: null
+    weather_zone: temperate
   tba_307:
     name: Castle
-    weather_zone: null
+    weather_zone: temperate
   tba_308:
     name: Baron Cailveh
-    weather_zone: null
+    weather_zone: temperate
   tba_309:
     name: Keep of Baron Westlawn
-    weather_zone: null
+    weather_zone: temperate
   tba_31:
     name: Southern Midgaard
-    weather_zone: null
+    weather_zone: temperate
   tba_310:
     name: Graye Area
-    weather_zone: null
+    weather_zone: temperate
   tba_311:
     name: The Dragon's Teeth
-    weather_zone: null
+    weather_zone: temperate
   tba_312:
     name: Leper Island
-    weather_zone: null
+    weather_zone: temperate
   tba_313:
     name: Farmlands of Ofingia
-    weather_zone: null
+    weather_zone: temperate
   tba_314:
     name: X'Raantra's Altar of Sacrifice
-    weather_zone: null
+    weather_zone: temperate
   tba_315:
     name: McGintey Business District
-    weather_zone: null
+    weather_zone: temperate
   tba_316:
     name: McGintey Guild Area
-    weather_zone: null
+    weather_zone: temperate
   tba_317:
     name: Wharf
-    weather_zone: null
+    weather_zone: temperate
   tba_318:
     name: Dock Area
-    weather_zone: null
+    weather_zone: temperate
   tba_319:
     name: Yllythad Sea
-    weather_zone: null
+    weather_zone: temperate
   tba_32:
     name: Midgaard
-    weather_zone: null
+    weather_zone: temperate
   tba_320:
     name: Yllythad Sea II
-    weather_zone: null
+    weather_zone: temperate
   tba_321:
     name: Yllythad Sea III
-    weather_zone: null
+    weather_zone: temperate
   tba_322:
     name: McGintey Bay
-    weather_zone: null
+    weather_zone: temperate
   tba_323:
     name: Caverns of the Pale Man
-    weather_zone: null
+    weather_zone: temperate
   tba_324:
     name: Army Encampment
-    weather_zone: null
+    weather_zone: temperate
   tba_325:
     name: Revelry
-    weather_zone: null
+    weather_zone: temperate
   tba_326:
     name: Army Perimeter
-    weather_zone: null
+    weather_zone: temperate
   tba_33:
     name: Three of Swords
-    weather_zone: null
+    weather_zone: temperate
   tba_343:
     name: God Complex
-    weather_zone: null
+    weather_zone: temperate
   tba_345:
     name: Asylum for the Insane
-    weather_zone: null
+    weather_zone: temperate
   tba_346:
     name: God Hall Ext 346 for God Hall Cmplx
-    weather_zone: null
+    weather_zone: temperate
   tba_35:
     name: Miden'Nir
-    weather_zone: null
+    weather_zone: temperate
   tba_36:
     name: Chessboard of Midgaard
-    weather_zone: null
+    weather_zone: temperate
   tba_37:
     name: Capital Sewer System
-    weather_zone: null
+    weather_zone: temperate
   tba_38:
     name: Capital Sewer System II
-    weather_zone: null
+    weather_zone: temperate
   tba_39:
     name: Haven
-    weather_zone: null
+    weather_zone: temperate
   tba_4:
     name: Rename
-    weather_zone: null
+    weather_zone: temperate
   tba_40:
     name: Mines of Moria
-    weather_zone: null
+    weather_zone: temperate
   tba_41:
     name: Mines of Moria
-    weather_zone: null
+    weather_zone: temperate
   tba_42:
     name: Dragon Chasm
-    weather_zone: null
+    weather_zone: temperate
   tba_43:
     name: Arctic Zone
-    weather_zone: null
+    weather_zone: temperate
   tba_44:
     name: Orc Camp
-    weather_zone: null
+    weather_zone: temperate
   tba_45:
     name: Woodland Monastery
-    weather_zone: null
+    weather_zone: temperate
   tba_46:
     name: Ant Hill
-    weather_zone: null
+    weather_zone: temperate
   tba_5:
     name: Newbie Farm
-    weather_zone: null
+    weather_zone: temperate
   tba_50:
     name: Great Eastern Desert
-    weather_zone: null
+    weather_zone: temperate
   tba_51:
     name: Drow City
-    weather_zone: null
+    weather_zone: temperate
   tba_52:
     name: City of Thalos
-    weather_zone: null
+    weather_zone: temperate
   tba_53:
     name: Great Pyramid
-    weather_zone: null
+    weather_zone: temperate
   tba_54:
     name: New Thalos
-    weather_zone: null
+    weather_zone: temperate
   tba_55:
     name: New Thalos II
-    weather_zone: null
+    weather_zone: temperate
   tba_555:
     name: Ultima
-    weather_zone: null
+    weather_zone: temperate
   tba_556:
     name: Ultima II
-    weather_zone: null
+    weather_zone: temperate
   tba_56:
     name: New Thalos Wilderness
-    weather_zone: null
+    weather_zone: temperate
   tba_57:
     name: Zodiac
-    weather_zone: null
+    weather_zone: temperate
   tba_6:
     name: Sea of Souls
-    weather_zone: null
+    weather_zone: temperate
   tba_60:
     name: Haon-Dor, Light Forest
-    weather_zone: null
+    weather_zone: temperate
   tba_61:
     name: Haon-Dor, Light Forest II
-    weather_zone: null
+    weather_zone: temperate
   tba_62:
     name: Orc Enclave
-    weather_zone: null
+    weather_zone: temperate
   tba_63:
     name: Arachnos
-    weather_zone: null
+    weather_zone: temperate
   tba_64:
     name: Rand's Tower
-    weather_zone: null
+    weather_zone: temperate
   tba_65:
     name: Dwarven Kingdom
-    weather_zone: null
+    weather_zone: temperate
   tba_653:
     name: Apartment
-    weather_zone: null
+    weather_zone: temperate
   tba_654:
     name: Subdivision
-    weather_zone: null
+    weather_zone: temperate
   tba_7:
     name: Camelot
-    weather_zone: null
+    weather_zone: temperate
   tba_70:
     name: Sewer, First Level
-    weather_zone: null
+    weather_zone: temperate
   tba_71:
     name: Second Sewer
-    weather_zone: null
+    weather_zone: temperate
   tba_72:
     name: Sewer Maze
-    weather_zone: null
+    weather_zone: temperate
   tba_73:
     name: Tunnels in the Sewer
-    weather_zone: null
+    weather_zone: temperate
   tba_74:
     name: Newbie Graveyard
-    weather_zone: null
+    weather_zone: temperate
   tba_75:
     name: Zamba
-    weather_zone: null
+    weather_zone: temperate
   tba_78:
     name: Gideon
-    weather_zone: null
+    weather_zone: temperate
   tba_79:
     name: Redferne's Residence
-    weather_zone: null
+    weather_zone: temperate
   tba_83:
     name: Glumgold's Sea
-    weather_zone: null
+    weather_zone: temperate
   tba_86:
     name: Duke Kalithorn's Keep
-    weather_zone: null
+    weather_zone: temperate
   tba_9:
     name: River Island of Minos
-    weather_zone: null
+    weather_zone: temperate
   tba_90:
     name: Oasis
-    weather_zone: null
+    weather_zone: temperate
   tba_96:
     name: Domiae
-    weather_zone: null
+    weather_zone: temperate

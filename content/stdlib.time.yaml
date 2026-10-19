@@ -1,0 +1,30 @@
+# The world clock (D-42). The engine owns the clock and the calendar; this file
+# sets the cadence and the phase boundaries to Circle's.
+#
+# Cadence: Circle advances one MUD hour every 75 real seconds
+# (`SECS_PER_MUD_HOUR`, tbamud/src/utils.h:193), so a MUD day is 1800 real
+# seconds (30 minutes). A world day is 86400 world seconds, therefore
+# `seconds_per_real_second = 86400 / 1800 = 48`.
+#
+# Anchoring: world time is a pure function of wall time, so a restart resumes at
+# the correct in-world instant rather than resetting. The anchor is a fixed
+# content constant (2024-01-01T00:00:00Z at world epoch 0), never the boot time.
+time:
+  seconds_per_real_second: 48.0
+  anchor_epoch_secs: 0
+  anchor_wall_secs: 1704067200
+  # Circle's sunlight transitions (`another_hour`, tbamud/src/weather.c:45-62):
+  #   hour 5  SUN_RISE (dawn)
+  #   hour 6  SUN_LIGHT (day)
+  #   hour 21 SUN_SET  (dusk)
+  #   hour 22 SUN_DARK (night)
+  # These reproduce `room_is_dark`'s window (hours 22..=4 are night).
+  dawn_hour: 5
+  day_hour: 6
+  dusk_hour: 21
+  night_hour: 22
+  # tbaMUD has months but no seasonal cycle for weather or descriptions.
+  season_length_days: 0
+  starting_season: spring
+  # Circle shows its sky messages to outdoor rooms only.
+  indoor_ambient: false

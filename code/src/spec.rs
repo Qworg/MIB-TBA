@@ -27,8 +27,8 @@ use crate::dg::mobcmd::world::{
     awake, fighting, obj_to_char, position, set_fighting, set_position, stop_fighting,
 };
 use crate::dg::mobcmd::{DoorCmd, add_follower};
-use crate::items::TbaObjectClock;
 use crate::module::TbaContent;
+use mib_stdlib::prelude::TimeOfDay;
 
 /// The procedure assigned to an NPC, mirrored from its prototype.
 #[derive(Component, Debug, Clone, Copy, PartialEq, Eq)]
@@ -654,8 +654,8 @@ pub fn spec_proc_system(world: &mut World) {
         return;
     }
     let hour = world
-        .get_resource::<TbaObjectClock>()
-        .map_or(0, |clock| clock.hour_of_day);
+        .get_resource::<TimeOfDay>()
+        .map_or(0, |clock| u32::from(clock.hour));
     let mut rng = std::mem::take(&mut world.get_resource_or_insert_with(TbaSpecRng::default).0);
     let mut casts = Vec::new();
     crate::dg::with_host(world, |host| {
@@ -734,7 +734,7 @@ mod integration_tests {
     fn a_castle_guard_banzaiis_a_staff_attacker() {
         let mut world = World::new();
         world.insert_resource(TbaContent::default());
-        world.insert_resource(TbaObjectClock::default());
+        world.insert_resource(TimeOfDay::default());
         world.insert_resource(TbaSpecRng::default());
         world.insert_resource(crate::combat::TbaRng::from_seed(7));
 

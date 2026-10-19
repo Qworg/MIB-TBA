@@ -35,7 +35,7 @@ use crate::content::{
 use crate::dg::script::DgProtos;
 use crate::dg::vars::TbaTriggerVars;
 use crate::equipment::TbaEquipmentSave;
-use crate::items::TbaObjectClock;
+use crate::items::TbaHourTicker;
 use crate::party::TbaParties;
 use crate::triggers::content::{TriggerDef, TriggerId, TriggersSection};
 use crate::triggers::quests::trigger_quest_bridge_system;
@@ -178,7 +178,11 @@ impl Plugin for TbaPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<TbaRng>();
         app.init_resource::<TbaRoundClock>();
-        app.init_resource::<TbaObjectClock>();
+        app.init_resource::<TbaHourTicker>();
+        // The engine's D-42 clock normally arrives with `StdlibPlugin` and is
+        // seeded from `stdlib.time`; init it so a bare `TbaPlugin` composition
+        // (tests) has one. `init_resource` never overwrites the seeded one.
+        app.init_resource::<mib_stdlib::prelude::TimeOfDay>();
         app.init_resource::<TbaParties>();
         app.init_resource::<crate::spec::TbaSpecRng>();
         app.init_resource::<crate::mail::MailCompose>();

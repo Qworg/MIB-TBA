@@ -87,7 +87,8 @@ pub mod prelude {
         sync_wielded_weapon,
     };
     pub use crate::items::{
-        MUD_HOUR_SECONDS, TbaItemTimer, TbaObjectClock, attach_item_timers, tick_item_timers,
+        MUD_HOUR_SECONDS, TbaHourTicker, TbaItemTimer, WORLD_SECONDS_PER_HOUR, attach_item_timers,
+        tick_item_timers,
     };
     pub use crate::module::{MODULE_NAME, TbaContent, TbaModule, TbaPlugin};
     pub use crate::party::{

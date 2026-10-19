@@ -232,8 +232,10 @@ must replace the converted files and preserve the hand-authored ones.
 | `stdlib.areas.yaml` | `tba.classes.yaml` |
 | `stdlib.rooms.<zone>.yaml` (one shard per zone) | `tba.spells.yaml` |
 | `stdlib.npcs.yaml` | `stdlib.verbs.yaml` |
-| `stdlib.boards.yaml` | |
 | `stdlib.items.yaml` | `stdlib.credits.yaml` |
+| | `stdlib.boards.yaml` |
+| | `stdlib.time.yaml` |
+| | `stdlib.weather.yaml` |
 | `stdlib.quests.yaml` | |
 | `stdlib.help.yaml` | |
 | `tba.zones.yaml` | |
@@ -265,7 +267,7 @@ reason the item count is one higher than the source object count.
 | System | Schedule | Notes |
 |---|---|---|
 | `zone_reset_system` | `FixedUpdate` | Ages zones; runs the `M/O/G/E/P/D/R` interpreter when `lifespan_mins` elapses. `when_desert` checks player occupancy by room `num` in `[bot, top]`. |
-| `tick_item_timers`, `apply_night_darkness` | `FixedUpdate` (after `maintain_room_occupants`) | The shared `TbaObjectClock` ages item timers and advances the MUD calendar (75 real s/hour, 35-day months, 17-month years). `apply_night_darkness` mirrors Circle's `room_is_dark` onto authored `outdoor` rooms' runtime `RoomState.flags[Dark]`; authored `dark` rooms are never touched. The clock is runtime-only (a restart begins at year 0/day 0/hour 0). |
+| `tick_item_timers`, `apply_night_darkness` | `FixedUpdate` (after `maintain_room_occupants`) | Both read the engine's D-42 world clock (`TimeOfDay`), which `StdlibPlugin` derives from the wall-anchored `WorldClock` at the cadence `content/stdlib.time.yaml` authors (Circle's 75 real s per MUD hour, so `seconds_per_real_second: 48`). `TbaHourTicker` turns the clock into whole MUD hours for item decay; `apply_night_darkness` mirrors Circle's `room_is_dark` onto authored `outdoor` rooms' runtime `RoomState.flags[Dark]` using the `Night` phase (hours 22..=4), and never touches an authored `dark` room. The clock is a pure function of wall time, so a restart resumes at the correct in-world instant. |
 | `auto_engage_system`, `npc_combatant_system`, `helper_system`, `pursuit_system` | `FixedUpdate` (after `maintain_room_occupants`) | Room-local aggro; alignment ±350 gating; Memory/Sentinel/StayZone/Helper. A player the observer cannot perceive through the engine `Concealment`/`Perception` seam (fed by the pack's `TbaHidden`/`TbaSneaking` sync; see §8) is skipped (`CAN_SEE`-style stealth). |
 | `handle_mail_commands`, `ensure_mailboxes`, `seed_player_mail` | `Update`, `BridgeSet::Game` (after `route_commands`) | The postmaster's `check`/`receive`/`mail <name>` over the stdlib `Mailbox`; `compose_mail_input` consumes the subject/body lines in `PreRoute` before the DG gate. `mail`/`check`/`receive` are declared in `stdlib.verbs`. |
 | `handle_board_commands`, `intercept_board_look`, `compose_board_input` | `Update`, `BridgeSet::Game` / `CommandSet::PreRoute` | Circle's bulletin boards over stdlib `BoardPosts`: `look/examine`/`read`/`write`/`remove`, with the post body composed before the DG gate. `stdlib.boards.yaml` maps the seven Circle board vnums. |
@@ -363,10 +365,17 @@ These are recorded, not silent:
   `CHAR_WEIGHT`/`CHAR_HEIGHT`/`GOLD`/`EXP` locations have no `AffectLocation`
   variant and are permanent `affect_location` drops.
 - **Multi-room pursuit** is a single adjacent step, not a pathfinder.
-- **Weather** (pressure, sky, the `SUN_RISE`/`SUN_SET` phases) is deferred (#30);
-  only the binary day/night predicate that `apply_night_darkness` needs is
-  modelled. The clock itself is runtime-only (Circle persists MUD time to a
-  `time` file; MIB has no generic resource-persistence slot for it).
+- **Weather and the world clock** are the engine's D-42 systems, wired here via
+  `content/stdlib.time.yaml` (Circle's 75 s/MUD-hour cadence and its
+  `SUN_RISE`/`SUN_LIGHT`/`SUN_SET`/`SUN_DARK` boundaries at hours 6-21-22 and 5)
+  and `content/stdlib.weather.yaml` (one `temperate` zone that every converted
+  area maps to). `time` stays a pack verb because Circle's `do_time` wording is
+  exact; `weather` and the outdoor ambient line are projected by the stdlib.
+  What is *not* reproduced digit-for-digit is Circle's `weather_info` model
+  (hourly pressure/sky/temperature drift and the "The night has begun."-style
+  broadcasts): the engine derives a weighted state per `(zone, slot, season)`
+  with a fixed seed instead, so weather is deterministic and restart-stable but
+  not identical to the C's sequence.
 - **Mail and the friends list** are MIB engine features (D-06/D-07), separate
   from the Circle group model, and are deferred (#33).
 - The stdlib `look` darkness check reads `Room::tags` rather than

@@ -392,10 +392,9 @@ fn closed_shop_refuses_trade_and_names_the_close() {
             close2: 0,
         };
     }
-    app.insert_resource(TbaObjectClock {
-        accumulator: 0.0,
-        hour_of_day: 20,
-        ..TbaObjectClock::default()
+    app.insert_resource(TimeOfDay {
+        hour: 20,
+        ..TimeOfDay::default()
     });
 
     command(&mut app, player, "buy a long sword");
