@@ -58,6 +58,9 @@ fn mage() -> TbaClassDef {
             "group_recall",
             "teleport",
             "summon",
+            "charm",
+            "group_heal",
+            "group_armor",
         ]
         .into_iter()
         .map(SmolStr::new)
@@ -268,6 +271,36 @@ fn content() -> TbaContent {
                 // `TAR_CHAR_WORLD`: the victim need not share the caster's room.
                 target: SpellTarget::World,
                 ..base("summon", 5)
+            },
+        ),
+        (
+            SmolStr::new("charm"),
+            SpellDef {
+                kind: SpellKind::Charm,
+                save: SaveEffect::Negate,
+                ..base("charm", 5)
+            },
+        ),
+        (
+            SmolStr::new("group_heal"),
+            SpellDef {
+                kind: SpellKind::Heal,
+                target: SpellTarget::Party,
+                dice: Some(Dice::new(3, 8, 4)),
+                ..base("group heal", 5)
+            },
+        ),
+        (
+            SmolStr::new("group_armor"),
+            SpellDef {
+                kind: SpellKind::Buff,
+                target: SpellTarget::Party,
+                affect: Some(AffectDef {
+                    location: AffectLocation::ArmorClass,
+                    modifier: -10,
+                }),
+                duration: 12,
+                ..base("group armor", 5)
             },
         ),
     ]);
@@ -1247,4 +1280,141 @@ fn group_recall_takes_the_party_and_leaves_everyone_else() {
         Some(far),
         "a bystander is not in the party and stays"
     );
+}
+
+// ---------------------------------------------------------------------------
+// Charm and party spells (#39)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn charm_makes_the_victim_a_follower() {
+    let mut app = test_app();
+    let here = tagged_room(&mut app, 3001, &[RoomTag::StartRoom]);
+    let mage = spawn_player(&mut app, here, "Mage", "mage", 100);
+    let victim = app
+        .world_mut()
+        .spawn((
+            Npc {
+                name: "a stray dog".to_owned(),
+                persona: String::new(),
+            },
+            NpcKey(NpcId::from("stray")),
+            Location { room: here },
+        ))
+        .id();
+
+    cast(&mut app, mage, "cast 'charm' dog");
+    run_game(&mut app);
+
+    assert!(
+        app.world().get::<FollowerOwner>(victim).is_some(),
+        "a charmed mob is owned by the caster"
+    );
+    assert!(
+        app.world()
+            .get::<FollowerState>(victim)
+            .is_some_and(|state| state.following),
+        "and it follows"
+    );
+}
+
+#[test]
+fn a_mob_that_refuses_charm_is_not_claimed() {
+    let mut app = test_app();
+    {
+        let mut content = app.world_mut().resource_mut::<TbaContent>();
+        content.npc_stats.insert(
+            NpcId::from("proud"),
+            TbaNpcStats {
+                hp: Dice::constant(10),
+                level: 1,
+                hitroll: 0,
+                damroll: 0,
+                armor_class: 100,
+                thaco: 20,
+                alignment: 0,
+                gold: 0,
+                experience: 0,
+                default_position: Position::Standing,
+                behaviour: vec![NpcBehaviour::NoCharm],
+                damage: None,
+                attributes: TbaAttributes::mob_default(),
+                saves: TbaSaves::default(),
+                spec_proc: None,
+                sex: TbaSex::Neutral,
+                keywords: Vec::new(),
+                aff_flags: Vec::new(),
+            },
+        );
+    }
+    let here = tagged_room(&mut app, 3001, &[RoomTag::StartRoom]);
+    let mage = spawn_player(&mut app, here, "Mage", "mage", 100);
+    let proud = app
+        .world_mut()
+        .spawn((
+            Npc {
+                name: "a proud lord".to_owned(),
+                persona: String::new(),
+            },
+            NpcKey(NpcId::from("proud")),
+            Location { room: here },
+        ))
+        .id();
+
+    cast(&mut app, mage, "cast 'charm' lord");
+    run_game(&mut app);
+
+    assert!(
+        app.world().get::<FollowerOwner>(proud).is_none(),
+        "MOB_NOCHARM refuses the claim"
+    );
+}
+
+/// A party of two plus a bystander, all in one room.
+fn party_fixture() -> (App, Entity, Entity, Entity) {
+    let mut app = test_app();
+    let here = tagged_room(&mut app, 3001, &[RoomTag::StartRoom]);
+    let mage = spawn_player(&mut app, here, "Mage", "mage", 100);
+    let friend = spawn_player(&mut app, here, "Friend", "mage", 100);
+    let stranger = spawn_player(&mut app, here, "Stranger", "mage", 100);
+    let mut parties = TbaParties::default();
+    assert!(parties.create(mage));
+    assert!(parties.add_member(mage, friend));
+    app.insert_resource(parties);
+    (app, mage, friend, stranger)
+}
+
+#[test]
+fn group_heal_mends_the_party_and_leaves_bystanders_alone() {
+    let (mut app, mage, friend, stranger) = party_fixture();
+    for entity in [mage, friend, stranger] {
+        let mut combatant = app.world_mut().get_mut::<TbaCombatant>(entity).unwrap();
+        combatant.hp = 1;
+    }
+
+    cast(&mut app, mage, "cast 'group heal'");
+    run_game(&mut app);
+
+    let healed = |app: &App, entity: Entity| {
+        app.world()
+            .get::<TbaCombatant>(entity)
+            .map(|c| c.hp)
+            .unwrap_or(0)
+    };
+    assert!(healed(&app, mage) > 1, "the caster is party");
+    assert!(healed(&app, friend) > 1, "the party member is healed");
+    assert_eq!(healed(&app, stranger), 1, "a bystander is untouched");
+}
+
+#[test]
+fn group_armor_buffs_the_party_and_leaves_bystanders_alone() {
+    let (mut app, mage, friend, stranger) = party_fixture();
+
+    cast(&mut app, mage, "cast 'group armor'");
+    run_game(&mut app);
+
+    let buffed = |app: &App, entity: Entity| app.world().get::<TbaBuffs>(entity).is_some();
+    assert!(buffed(&app, mage), "the caster is buffed");
+    assert!(buffed(&app, friend), "the party member is buffed");
+    assert!(!buffed(&app, stranger), "a bystander is not");
 }

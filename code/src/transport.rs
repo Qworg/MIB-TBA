@@ -44,15 +44,25 @@ pub fn all_rooms(world: &mut World) -> Vec<Entity> {
     rooms.into_iter().map(|(_, entity)| entity).collect()
 }
 
-/// Whether `victim` refuses `summon` (`MOB_NOSUMMON`, `spell_summon`).
-pub fn refuses_summon(world: &World, victim: Entity) -> bool {
+/// Whether `victim` carries the `MOB_*` flag that refuses `flag`.
+fn has_mob_flag(world: &World, victim: Entity, flag: NpcBehaviour) -> bool {
     let Some(key) = world.get::<mib_stdlib::prelude::NpcKey>(victim) else {
         return false;
     };
     world
         .get_resource::<TbaContent>()
         .and_then(|content| content.npc_stats.get(&key.0))
-        .is_some_and(|stats| stats.behaviour.contains(&NpcBehaviour::NoSummon))
+        .is_some_and(|stats| stats.behaviour.contains(&flag))
+}
+
+/// Whether `victim` refuses `summon` (`MOB_NOSUMMON`, `spell_summon`).
+pub fn refuses_summon(world: &World, victim: Entity) -> bool {
+    has_mob_flag(world, victim, NpcBehaviour::NoSummon)
+}
+
+/// Whether `victim` refuses `charm` (`MOB_NOCHARM`, `spell_charm`).
+pub fn refuses_charm(world: &World, victim: Entity) -> bool {
+    has_mob_flag(world, victim, NpcBehaviour::NoCharm)
 }
 
 /// `char_to_room`: move `ch` into `room`, keeping every derived record in step.

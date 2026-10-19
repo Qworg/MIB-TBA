@@ -899,6 +899,9 @@ pub enum SpellKind {
     /// Bring the victim to the caster (`spell_summon`, `spells.c:224-249`).
     /// A victim flagged `MOB_NOSUMMON` is refused.
     Summon,
+    /// Make the victim a follower (`spell_charm`, `spells.c:251-297`). A
+    /// victim flagged `MOB_NOCHARM` is refused.
+    Charm,
     /// A spell whose Circle routine is not modelled yet. It is castable (mana
     /// is spent) and reports its [`SpellDef::unsupported`] reason rather than
     /// inventing an effect.
@@ -1138,7 +1141,11 @@ fn spell_issues(spell_id: &SmolStr, spell: &SpellDef) -> Vec<(String, String)> {
                 ));
             }
         }
-        SpellKind::Detect | SpellKind::Recall | SpellKind::Teleport | SpellKind::Summon => {}
+        SpellKind::Detect
+        | SpellKind::Recall
+        | SpellKind::Teleport
+        | SpellKind::Summon
+        | SpellKind::Charm => {}
         SpellKind::Utility => {
             if spell
                 .unsupported

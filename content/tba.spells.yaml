@@ -134,8 +134,8 @@ spells:
     mana_min: 50
     mana_max: 75
     mana_change: 2
-    kind: utility
-    unsupported: "spell_charm (spells.c:251-297) sets AFF_CHARM and a follower; the pack does not wire it to the stdlib follower model yet"
+    kind: charm
+    save: negate
     min_level:
       magic_user: 16
     target: victim
@@ -458,11 +458,12 @@ spells:
     mana_min: 30
     mana_max: 50
     mana_change: 2
-    kind: utility
-    unsupported: "MAG_GROUPS (magic.c:576-597) affects group members; the pack does not wire it to its party model yet"
+    kind: buff
+    affect: { location: armor_class, modifier: -10 }
+    duration: 12
     min_level:
       cleric: 9
-    target: room
+    target: party
     min_position: standing
 
   # src/spell_parser.c:839-840, MAG_GROUPS.
@@ -471,11 +472,11 @@ spells:
     mana_min: 60
     mana_max: 80
     mana_change: 5
-    kind: utility
-    unsupported: "MAG_GROUPS (magic.c:576-597) affects group members; the pack does not wire it to its party model yet"
+    kind: heal
+    dice: 3d8+4
     min_level:
       cleric: 22
-    target: room
+    target: party
     min_position: standing
 
   # spells.h (no spello entry).

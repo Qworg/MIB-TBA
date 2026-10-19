@@ -944,6 +944,33 @@ fn apply_spell_to_target(
                 );
             }
         }
+        SpellKind::Charm => {
+            let caster_hears = caster_hears;
+            commands.queue(move |world: &mut World| {
+                if crate::transport::refuses_charm(world, target) {
+                    if caster_hears {
+                        crate::dg::out::send_to_char(
+                            world,
+                            session,
+                            "The victim resists your charm.",
+                        );
+                    }
+                    return;
+                }
+                let Some((account, name)) = world
+                    .get::<Player>(session)
+                    .map(|player| (player.account_id, player.name.clone()))
+                else {
+                    return;
+                };
+                if mib_stdlib::prelude::claim_follower(world, target, account, &name) {
+                    mib_stdlib::prelude::set_following(world, target, true);
+                    if caster_hears {
+                        crate::dg::out::send_to_char(world, session, "The victim now follows you.");
+                    }
+                }
+            });
+        }
         // Circle's transports move a character and then show the room. They run
         // as an exclusive pass because moving a character touches `Location`,
         // the follower anchors and the engine's online registry together.
