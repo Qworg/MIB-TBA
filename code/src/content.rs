@@ -890,6 +890,15 @@ pub enum SpellKind {
     Debuff,
     /// A divination: emits the message the data supports; no combat effect.
     Detect,
+    /// Transport the targets to the world's recall room (`spell_recall`,
+    /// `spells.c:57-75`). The room is the `start_room`-tagged one.
+    Recall,
+    /// Transport the targets to a random room (`spell_teleport`,
+    /// `spells.c:92-136`).
+    Teleport,
+    /// Bring the victim to the caster (`spell_summon`, `spells.c:224-249`).
+    /// A victim flagged `MOB_NOSUMMON` is refused.
+    Summon,
     /// A spell whose Circle routine is not modelled yet. It is castable (mana
     /// is spent) and reports its [`SpellDef::unsupported`] reason rather than
     /// inventing an effect.
@@ -966,6 +975,12 @@ pub enum SpellTarget {
     Victim,
     /// The caster's room (`TAR_IGNORE` area spells such as `earthquake`).
     Room,
+    /// The caster and its party members present in the caster's room
+    /// (`MAG_GROUPS`, `magic.c:576-597`). A caster in no party is the party.
+    Party,
+    /// A character anywhere in the world (`TAR_CHAR_WORLD`), resolved by name
+    /// out of the caster's room. `summon` is the spell that needs it.
+    World,
     /// No character target (`TAR_IGNORE`, or object-only target bits).
     None,
 }
@@ -1123,7 +1138,7 @@ fn spell_issues(spell_id: &SmolStr, spell: &SpellDef) -> Vec<(String, String)> {
                 ));
             }
         }
-        SpellKind::Detect => {}
+        SpellKind::Detect | SpellKind::Recall | SpellKind::Teleport | SpellKind::Summon => {}
         SpellKind::Utility => {
             if spell
                 .unsupported

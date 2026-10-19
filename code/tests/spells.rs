@@ -54,6 +54,10 @@ fn mage() -> TbaClassDef {
             "scaling",
             "hex",
             "fizzle",
+            "word_of_recall",
+            "group_recall",
+            "teleport",
+            "summon",
         ]
         .into_iter()
         .map(SmolStr::new)
@@ -233,6 +237,38 @@ fn content() -> TbaContent {
         (
             SmolStr::new("fizzle"),
             utility("fizzle", 5, "the fizzle routine is not modelled"),
+        ),
+        // Transport spells (#39).
+        (
+            SmolStr::new("word_of_recall"),
+            SpellDef {
+                kind: SpellKind::Recall,
+                ..base("word of recall", 5)
+            },
+        ),
+        (
+            SmolStr::new("group_recall"),
+            SpellDef {
+                kind: SpellKind::Recall,
+                target: SpellTarget::Party,
+                ..base("group recall", 5)
+            },
+        ),
+        (
+            SmolStr::new("teleport"),
+            SpellDef {
+                kind: SpellKind::Teleport,
+                ..base("teleport", 5)
+            },
+        ),
+        (
+            SmolStr::new("summon"),
+            SpellDef {
+                kind: SpellKind::Summon,
+                // `TAR_CHAR_WORLD`: the victim need not share the caster's room.
+                target: SpellTarget::World,
+                ..base("summon", 5)
+            },
         ),
     ]);
     let classes = BTreeMap::from([
@@ -1043,4 +1079,172 @@ fn mag_savingthrow_honours_the_roll_and_the_modifier() {
         &saves,
         SaveType::Spell
     ));
+}
+
+// ---------------------------------------------------------------------------
+// Transport spells (#39)
+// ---------------------------------------------------------------------------
+
+/// A room with a vnum and tags, so `recall` can find the `start_room`.
+fn tagged_room(app: &mut App, num: u32, tags: &[RoomTag]) -> Entity {
+    app.world_mut()
+        .spawn(Room {
+            key: format!("tba.{num}").into(),
+            name: format!("Room {num}"),
+            description: FormattedText::plain("A room."),
+            num,
+            area: "tba_0".into(),
+            coord: (0, 0, 0),
+            tags: tags.iter().copied().collect(),
+            media: Vec::new(),
+            sector: mib_stdlib::content::Sector::Inside,
+            extra_descriptions: Vec::new(),
+            outdoor: false,
+            weather_zone: None,
+            ambient: None,
+            ambient_stamp: None,
+            ambient_phases: Default::default(),
+            ambient_weather: Default::default(),
+            time: None,
+            weather_state: None,
+        })
+        .id()
+}
+
+fn room_of(app: &App, entity: Entity) -> Option<Entity> {
+    app.world().get::<Location>(entity).map(|l| l.room)
+}
+
+#[test]
+fn word_of_recall_returns_the_caster_to_the_start_room() {
+    let mut app = test_app();
+    let start = tagged_room(&mut app, 3001, &[RoomTag::StartRoom]);
+    let far = tagged_room(&mut app, 3100, &[]);
+    let mage = spawn_player(&mut app, far, "Mage", "mage", 100);
+
+    cast(&mut app, mage, "cast 'word of recall'");
+    run_game(&mut app);
+
+    assert_eq!(
+        room_of(&app, mage),
+        Some(start),
+        "recalled to the start room"
+    );
+}
+
+#[test]
+fn teleport_moves_the_caster_somewhere_else() {
+    let mut app = test_app();
+    let here = tagged_room(&mut app, 3001, &[RoomTag::StartRoom]);
+    for num in 3002..3006 {
+        tagged_room(&mut app, num, &[]);
+    }
+    let mage = spawn_player(&mut app, here, "Mage", "mage", 100);
+
+    cast(&mut app, mage, "cast 'teleport'");
+    run_game(&mut app);
+
+    let landed = room_of(&app, mage).expect("still in the world");
+    assert_ne!(landed, here, "teleport leaves the room it was cast in");
+}
+
+#[test]
+fn summon_brings_the_victim_to_the_caster() {
+    let mut app = test_app();
+    let here = tagged_room(&mut app, 3001, &[RoomTag::StartRoom]);
+    let there = tagged_room(&mut app, 3100, &[]);
+    let mage = spawn_player(&mut app, here, "Mage", "mage", 100);
+    let victim = app
+        .world_mut()
+        .spawn((
+            Npc {
+                name: "a guard".to_owned(),
+                persona: String::new(),
+            },
+            NpcKey(NpcId::from("guard")),
+            Location { room: there },
+        ))
+        .id();
+
+    cast(&mut app, mage, "cast 'summon' guard");
+    run_game(&mut app);
+
+    assert_eq!(room_of(&app, victim), Some(here), "summoned to the caster");
+}
+
+#[test]
+fn a_mob_that_refuses_summon_stays_put() {
+    let mut app = test_app();
+    {
+        let mut content = app.world_mut().resource_mut::<TbaContent>();
+        content.npc_stats.insert(
+            NpcId::from("warded"),
+            TbaNpcStats {
+                hp: Dice::constant(10),
+                level: 1,
+                hitroll: 0,
+                damroll: 0,
+                armor_class: 100,
+                thaco: 20,
+                alignment: 0,
+                gold: 0,
+                experience: 0,
+                default_position: Position::Standing,
+                behaviour: vec![NpcBehaviour::NoSummon],
+                damage: None,
+                attributes: TbaAttributes::mob_default(),
+                saves: TbaSaves::default(),
+                spec_proc: None,
+                sex: TbaSex::Neutral,
+                keywords: Vec::new(),
+                aff_flags: Vec::new(),
+            },
+        );
+    }
+    let here = tagged_room(&mut app, 3001, &[RoomTag::StartRoom]);
+    let there = tagged_room(&mut app, 3100, &[]);
+    let mage = spawn_player(&mut app, here, "Mage", "mage", 100);
+    let warded = app
+        .world_mut()
+        .spawn((
+            Npc {
+                name: "a warded one".to_owned(),
+                persona: String::new(),
+            },
+            NpcKey(NpcId::from("warded")),
+            Location { room: there },
+        ))
+        .id();
+
+    cast(&mut app, mage, "cast 'summon' warded");
+    run_game(&mut app);
+
+    assert_eq!(room_of(&app, warded), Some(there), "refused the summons");
+}
+
+#[test]
+fn group_recall_takes_the_party_and_leaves_everyone_else() {
+    let mut app = test_app();
+    let start = tagged_room(&mut app, 3001, &[RoomTag::StartRoom]);
+    let far = tagged_room(&mut app, 3100, &[]);
+    let mage = spawn_player(&mut app, far, "Mage", "mage", 100);
+    let friend = spawn_player(&mut app, far, "Friend", "mage", 100);
+    let stranger = spawn_player(&mut app, far, "Stranger", "mage", 100);
+    {
+        let mut parties = TbaParties::default();
+        assert!(parties.create(mage));
+        assert!(parties.add_member(mage, friend));
+        app.insert_resource(parties);
+    }
+
+    cast(&mut app, mage, "cast 'group recall'");
+    run_game(&mut app);
+
+    assert_eq!(room_of(&app, mage), Some(start), "the caster is recalled");
+    assert_eq!(room_of(&app, friend), Some(start), "so is the party member");
+    assert_eq!(
+        room_of(&app, stranger),
+        Some(far),
+        "a bystander is not in the party and stays"
+    );
 }

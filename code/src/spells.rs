@@ -386,6 +386,7 @@ pub(crate) fn plan_cast<'a>(
     players: &Query<(Entity, &Player, &Location)>,
     npcs: &Query<(Entity, &Npc, &Location)>,
     hidden: &StealthView<'_, '_>,
+    parties: Option<&crate::party::TbaParties>,
 ) -> CastOutcome<'a> {
     let Some(parsed) = parse_cast_line(line) else {
         return CastOutcome::NotCast;
@@ -467,6 +468,47 @@ pub(crate) fn plan_cast<'a>(
             }
             in_room
         }
+        // `MAG_GROUPS`: the caster plus its party members standing here. A
+        // caster in no party is a party of one.
+        SpellTarget::Party => {
+            let mut members = vec![session];
+            if let (Some(parties), Some(here)) = (parties, room)
+                && let Some(list) = parties.members_of(session)
+            {
+                for member in list {
+                    if member != session
+                        && players
+                            .get(member)
+                            .is_ok_and(|(_, _, location)| location.room == here)
+                    {
+                        members.push(member);
+                    }
+                }
+            }
+            members
+        }
+        // `TAR_CHAR_WORLD`: a character anywhere, found by name.
+        SpellTarget::World => {
+            let Some(name) = target_arg.as_deref() else {
+                return CastOutcome::Denied("Upon whom should the spell be cast?".to_owned());
+            };
+            let needle = name.to_lowercase();
+            let found = players
+                .iter()
+                .find(|(_, player, _)| player.name.to_lowercase().contains(&needle))
+                .map(|(entity, _, _)| entity)
+                .or_else(|| {
+                    npcs.iter()
+                        .find(|(_, npc, _)| npc.name.to_lowercase().contains(&needle))
+                        .map(|(entity, _, _)| entity)
+                });
+            match found {
+                Some(target) => vec![target],
+                None => {
+                    return CastOutcome::Denied(format!("You don't see {name} anywhere."));
+                }
+            }
+        }
         SpellTarget::Victim => match target_arg.as_deref() {
             Some(name) => {
                 if let Some(target) = find_target_in_room(session, name, players, npcs, hidden) {
@@ -503,6 +545,15 @@ pub(crate) fn plan_cast<'a>(
     })
 }
 
+/// The auxiliary reads `handle_cast_command` consults, bundled so the system
+/// stays inside the engine's system-parameter limit (16).
+#[derive(bevy::ecs::system::SystemParam)]
+pub struct CastContext<'w, 's> {
+    pub claimed: Option<Res<'w, crate::dg::intake::commands::DgClaimed>>,
+    pub purses: Query<'w, 's, &'static crate::dg::chardata::TbaNpcPurse>,
+    pub parties: Option<Res<'w, crate::party::TbaParties>>,
+}
+
 /// `BridgeSet::Game`: translate `cast '<spell>' [target]` into a spell effect.
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn handle_cast_command(
@@ -524,15 +575,14 @@ pub fn handle_cast_command(
     ),
     mut commands: Commands,
     mut output: MessageWriter<OutputEvent>,
-    claimed: Option<Res<crate::dg::intake::commands::DgClaimed>>,
-    purses: Query<&crate::dg::chardata::TbaNpcPurse>,
+    context: CastContext<'_, '_>,
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
 
     for msg in reader.read() {
         // A trigger that claimed or refused the command has already taken it.
-        if crate::dg::intake::commands::is_claimed(claimed.as_deref(), msg.id) {
+        if crate::dg::intake::commands::is_claimed(context.claimed.as_deref(), msg.id) {
             continue;
         }
         let session = msg.session;
@@ -555,6 +605,7 @@ pub fn handle_cast_command(
             &players,
             &npcs,
             &hidden,
+            context.parties.as_deref(),
         ) {
             CastOutcome::NotCast => continue,
             CastOutcome::Denied(message) => {
@@ -614,7 +665,7 @@ pub fn handle_cast_command(
                 &npcs,
                 &progress,
                 &keys,
-                &purses,
+                &context.purses,
                 &mut combatants,
                 &mut buffs,
                 &mut rng,
@@ -893,6 +944,86 @@ fn apply_spell_to_target(
                 );
             }
         }
+        // Circle's transports move a character and then show the room. They run
+        // as an exclusive pass because moving a character touches `Location`,
+        // the follower anchors and the engine's online registry together.
+        SpellKind::Recall => {
+            let caster_hears = caster_hears;
+            commands.queue(move |world: &mut World| {
+                let Some(destination) = crate::transport::recall_room(world) else {
+                    if caster_hears {
+                        crate::dg::out::send_to_char(
+                            world,
+                            session,
+                            "The recall point is not set in this world.",
+                        );
+                    }
+                    return;
+                };
+                if crate::transport::warp(world, target, destination) {
+                    if target == session && caster_hears {
+                        crate::dg::out::send_to_char(
+                            world,
+                            session,
+                            "You feel a wrenching sensation in your gut, and you are home.",
+                        );
+                    } else {
+                        crate::dg::out::send_to_char(
+                            world,
+                            target,
+                            "You feel a wrenching sensation in your gut, and you are home.",
+                        );
+                    }
+                }
+            });
+        }
+        SpellKind::Teleport => {
+            // Circle picks a random room; the roll is taken here so the effect
+            // stays reproducible from the seeded `TbaRng`.
+            let roll = rng.next_u64();
+            commands.queue(move |world: &mut World| {
+                let rooms = crate::transport::all_rooms(world);
+                if rooms.is_empty() {
+                    return;
+                }
+                let pick = (roll % rooms.len() as u64) as usize;
+                let destination = rooms[pick];
+                if crate::transport::warp(world, target, destination) {
+                    crate::dg::out::send_to_char(
+                        world,
+                        target,
+                        "Your body begins to tingle, and the world dissolves around you.",
+                    );
+                }
+            });
+        }
+        SpellKind::Summon => {
+            let destination = room;
+            let caster_hears = caster_hears;
+            commands.queue(move |world: &mut World| {
+                if crate::transport::refuses_summon(world, target) {
+                    if caster_hears {
+                        crate::dg::out::send_to_char(
+                            world,
+                            session,
+                            "The victim resists your summons.",
+                        );
+                    }
+                    return;
+                }
+                let Some(destination) = destination else {
+                    return;
+                };
+                if crate::transport::warp(world, target, destination) {
+                    crate::dg::out::send_to_char(
+                        world,
+                        target,
+                        "You are summoned by a magical force.",
+                    );
+                    crate::dg::out::send_to_char(world, session, "The victim appears before you.");
+                }
+            });
+        }
         SpellKind::Utility => {
             // Issue #7: an unmodelled Circle routine is explicit, never
             // a silent no-op. The mana was already spent above.
@@ -1034,6 +1165,10 @@ pub fn cast_spell_at_level(
         let targets: Vec<Entity> = match spell.target {
             SpellTarget::Caster => vec![victim.unwrap_or(caster)],
             SpellTarget::Victim => victim.into_iter().collect(),
+            // A script's cast has no party context, so a party spell resolves
+            // to the explicit victim, or the caster.
+            SpellTarget::Party => vec![victim.unwrap_or(caster)],
+            SpellTarget::World => victim.into_iter().collect(),
             SpellTarget::None => Vec::new(),
             SpellTarget::Room => {
                 let mut in_room: Vec<Entity> = players

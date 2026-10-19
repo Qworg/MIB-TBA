@@ -282,6 +282,8 @@ pub fn cast_gate(world: &mut World, mut state: Local<Option<SystemState<GatePara
                 &players,
                 &npcs,
                 &hidden,
+                // A script's cast has no party context.
+                None,
             ) else {
                 continue;
             };

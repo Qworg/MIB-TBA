@@ -484,9 +484,8 @@ spells:
     mana_min: 0
     mana_max: 0
     mana_change: 0
-    kind: utility
-    unsupported: "spell_recall (spells.c:57-75) transports group members; the pack does not implement the transport yet"
-    target: room
+    kind: recall
+    target: party
     min_position: standing
 
   # src/spell_parser.c:842-843, MAG_DAMAGE, magic.c:270-273.
@@ -733,11 +732,10 @@ spells:
     mana_min: 50
     mana_max: 75
     mana_change: 3
-    kind: utility
-    unsupported: "spell_summon (spells.c:224-249) brings the victim to the caster; the pack does not implement the transport yet"
+    kind: summon
     min_level:
       cleric: 10
-    target: victim
+    target: world
     min_position: standing
 
   # src/spell_parser.c:900-901, MAG_MANUAL.
@@ -746,8 +744,7 @@ spells:
     mana_min: 50
     mana_max: 75
     mana_change: 3
-    kind: utility
-    unsupported: "spell_teleport (spells.c:92-136) moves the caster to a random room; the pack does not implement the transport yet"
+    kind: teleport
     target: victim
     min_position: standing
 
@@ -779,8 +776,7 @@ spells:
     mana_min: 10
     mana_max: 20
     mana_change: 2
-    kind: utility
-    unsupported: "spell_recall (spells.c:57-75) transports to the recall room; the pack does not implement the transport yet"
+    kind: recall
     min_level:
       cleric: 12
     target: victim

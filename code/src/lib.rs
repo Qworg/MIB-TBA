@@ -47,6 +47,7 @@ pub mod socials;
 pub mod spec;
 pub mod spells;
 pub mod stealth;
+pub mod transport;
 pub mod triggers;
 pub mod visibility;
 pub mod zones;
