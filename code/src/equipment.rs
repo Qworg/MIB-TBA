@@ -50,6 +50,7 @@ use crate::combat::{
 use crate::content::{AffectDef, AffectLocation, TbaItemDef, TbaItemKind, WearSlot};
 use crate::module::TbaContent;
 use crate::spells::TbaBuffs;
+use crate::views::ItemView;
 
 /// The runtime worn state: each occupied Circle wear position and the item
 /// entity sitting in it.
@@ -429,9 +430,7 @@ pub fn handle_equipment_commands(
     mut reader: MessageReader<CommandReceived>,
     sessions: Query<&Session>,
     content: Option<Res<TbaContent>>,
-    items: CarriedQuery<'_, '_>,
-    prototypes: Query<&Item>,
-    save_ids: Query<&SaveId>,
+    items: ItemView<'_, '_>,
     mut equipment: Query<Option<&mut TbaEquipment>>,
     mut saves: Query<Option<&mut TbaEquipmentSave>>,
     mut commands: Commands,
@@ -441,6 +440,14 @@ pub fn handle_equipment_commands(
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
+
+    // The view is this system's own access; the helpers below keep taking the
+    // individual queries they need.
+    let ItemView {
+        carried: items,
+        prototypes,
+        save_ids,
+    } = &items;
 
     for msg in reader.read() {
         let vetoed = vetoes.as_mut().is_some_and(|vetoes| vetoes.take(msg));
@@ -468,8 +475,8 @@ pub fn handle_equipment_commands(
                 session,
                 &item,
                 &content.items,
-                &items,
-                &save_ids,
+                items,
+                save_ids,
                 &mut equipment,
                 &mut saves,
                 &mut commands,
@@ -478,15 +485,15 @@ pub fn handle_equipment_commands(
             Command::Unequip { slot } => unequip(
                 session,
                 &slot,
-                &prototypes,
-                &save_ids,
+                prototypes,
+                save_ids,
                 &mut equipment,
                 &mut saves,
                 &mut commands,
                 &mut output,
             ),
             Command::Equipment => {
-                equipment_listing(session, &prototypes, &mut equipment, &mut output)
+                equipment_listing(session, prototypes, &mut equipment, &mut output)
             }
             _ => {}
         }

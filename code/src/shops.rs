@@ -22,7 +22,7 @@ use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{
     CarriedBy, Item, ItemDef, ItemId, ItemsSection, LoadedContent, Location, NpcKey, Player, Room,
-    Session, SessionState, spawn_item_carried_by_entity,
+    SessionState, spawn_item_carried_by_entity,
 };
 
 use crate::combat::TbaGold;
@@ -31,6 +31,7 @@ use crate::combat::model::{EVIL_ALIGNMENT, GOOD_ALIGNMENT, TbaAlignment, TbaProg
 use crate::content::{ShopDef, ShopTrade};
 use crate::dg::intake::commands::{DgClaimed, is_claimed};
 use crate::module::TbaContent;
+use crate::views::ActorView;
 use mib_stdlib::prelude::TimeOfDay;
 
 /// Circle's closed-shop replies (`shop.h:144-146`), selected the way
@@ -468,10 +469,8 @@ fn shop_sell(
 pub fn handle_shop_commands(
     mut reader: MessageReader<CommandReceived>,
     claimed: Option<Res<DgClaimed>>,
-    sessions: Query<&Session>,
-    players: Query<(Entity, &Player, &Location)>,
+    actors: ActorView<'_, '_>,
     alignments: Query<&TbaAlignment>,
-    progress: Query<&TbaProgress>,
     npcs: Query<(Entity, &NpcKey, &Location)>,
     rooms: Query<&Room>,
     content: Option<Res<TbaContent>>,
@@ -486,6 +485,13 @@ pub fn handle_shop_commands(
     let content = content.as_deref().unwrap_or(&empty);
     let loaded = loaded.as_deref();
     let hour = clock.map_or(0, |clock| u32::from(clock.hour));
+    // The view is this system's own access; the helpers below keep taking the
+    // individual queries they need.
+    let ActorView {
+        sessions,
+        players,
+        progress,
+    } = &actors;
 
     for msg in reader.read() {
         let session = msg.session;
@@ -505,7 +511,7 @@ pub fn handle_shop_commands(
         let Some(command) = parse_shop_line(line) else {
             continue;
         };
-        let Some(room) = player_room(&players, session) else {
+        let Some(room) = player_room(players, session) else {
             continue;
         };
 
@@ -548,7 +554,7 @@ pub fn handle_shop_commands(
             alignments.get(session).ok(),
             progress.get(session).ok(),
         ) {
-            let actor = actor_name(&players, session);
+            let actor = actor_name(players, session);
             deny(&mut output, session, format!("{actor} {reason}"));
             continue;
         }
@@ -564,7 +570,7 @@ pub fn handle_shop_commands(
                 content,
                 loaded,
                 &needle,
-                &players,
+                players,
                 &mut purses,
                 &mut commands,
                 &mut output,
@@ -575,7 +581,7 @@ pub fn handle_shop_commands(
                 content,
                 &items,
                 &needle,
-                &players,
+                players,
                 &mut purses,
                 &mut commands,
                 &mut output,

@@ -17,12 +17,13 @@ use bevy::ecs::system::SystemParam;
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{
-    Concealment, Exits, Location, Npc, OnlinePlayers, Perception, Player, Session, SessionState,
+    Concealment, Exits, Location, Npc, OnlinePlayers, Perception, Player, SessionState,
     VisibilityPolicy, visible_to,
 };
 
 use crate::content::Position;
 use crate::dg::intake::commands::{DgClaimed, is_claimed};
+use crate::views::ActorView;
 
 use super::ai::TbaAttackerMemory;
 use super::model::{TbaCombatant, TbaHidden};
@@ -162,8 +163,7 @@ pub(crate) fn broadcast(
 pub fn handle_combat_commands(
     mut reader: MessageReader<CommandReceived>,
     claimed: Option<Res<DgClaimed>>,
-    sessions: Query<&Session>,
-    players: Query<(Entity, &Player, &Location)>,
+    actors: ActorView<'_, '_>,
     npcs: Query<(Entity, &Npc, &Location)>,
     hidden: StealthView<'_, '_>,
     mut combatants: Query<&mut TbaCombatant>,
@@ -174,6 +174,14 @@ pub fn handle_combat_commands(
     mut commands: Commands,
     mut output: MessageWriter<OutputEvent>,
 ) {
+    // The view is this system's own access; the helpers below keep taking the
+    // individual queries they need.
+    let ActorView {
+        sessions,
+        players,
+        progress: _,
+    } = &actors;
+
     for msg in reader.read() {
         let session = msg.session;
         let playing = sessions
@@ -197,7 +205,7 @@ pub fn handle_combat_commands(
         match command {
             Command::Attack { target } => {
                 let Some(target_entity) =
-                    find_target_in_room(session, &target, &players, &npcs, &hidden)
+                    find_target_in_room(session, &target, players, &npcs, &hidden)
                 else {
                     deny(
                         &mut output,
@@ -225,12 +233,12 @@ pub fn handle_combat_commands(
                 if let Ok(mut memory) = memories.get_mut(target_entity) {
                     memory.0.insert(session);
                 }
-                let actor_name = entity_name(session, &players, &npcs);
-                let target_name = entity_name(target_entity, &players, &npcs);
+                let actor_name = entity_name(session, players, &npcs);
+                let target_name = entity_name(target_entity, players, &npcs);
                 output.write(text(session, format!("You attack {target_name}!")));
                 if let Ok((_, _, location)) = players.get(session) {
                     broadcast(
-                        &players,
+                        players,
                         location.room,
                         session,
                         &mut output,
@@ -280,7 +288,7 @@ pub fn handle_combat_commands(
                     record.room = destination;
                 }
                 output.write(text(session, "You flee!"));
-                broadcast(&players, room, session, &mut output, "Your opponent flees!");
+                broadcast(players, room, session, &mut output, "Your opponent flees!");
                 write_prompt(&mut output, session);
             }
             _ => {}

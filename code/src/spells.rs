@@ -48,6 +48,7 @@ use crate::combat::{
 };
 use crate::content::{AffectDef, Position, SaveEffect, SpellDef, SpellKind, SpellTarget};
 use crate::module::TbaContent;
+use crate::views::{ActorView, NpcView};
 
 /// Combat rounds a cast buff lasts when the spell carries no source pulse
 /// count.
@@ -558,16 +559,13 @@ pub struct CastContext<'w, 's> {
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn handle_cast_command(
     mut reader: MessageReader<CommandReceived>,
-    sessions: Query<&Session>,
-    players: Query<(Entity, &Player, &Location)>,
-    npcs: Query<(Entity, &Npc, &Location)>,
+    actors: ActorView<'_, '_>,
+    npcs: NpcView<'_, '_>,
     hidden: StealthView<'_, '_>,
     content: Option<Res<TbaContent>>,
     mut combatants: Query<&mut TbaCombatant>,
-    progress: Query<&TbaProgress>,
     mut buffs: Query<&mut TbaBuffs>,
     mut rng: ResMut<TbaRng>,
-    keys: Query<&NpcKey>,
     (mut defeated, mut npc_defeated, mut damage_events): (
         MessageWriter<PlayerDefeated>,
         MessageWriter<NpcDefeated>,
@@ -577,6 +575,15 @@ pub fn handle_cast_command(
     mut output: MessageWriter<OutputEvent>,
     context: CastContext<'_, '_>,
 ) {
+    // The views are this system's own access. The free functions below keep
+    // taking the individual queries they need, so the view is unpacked into the
+    // same names the body already used.
+    let ActorView {
+        sessions,
+        players,
+        progress,
+    } = &actors;
+    let NpcView { npcs, keys } = &npcs;
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
 
@@ -600,10 +607,10 @@ pub fn handle_cast_command(
             session,
             line,
             content,
-            &progress,
+            progress,
             &combatants,
-            &players,
-            &npcs,
+            players,
+            npcs,
             &hidden,
             context.parties.as_deref(),
         ) {
@@ -635,11 +642,11 @@ pub fn handle_cast_command(
         if is_hostile(spell) {
             commands.entity(session).remove::<TbaHidden>();
         }
-        let actor_name = entity_name(session, &players, &npcs);
+        let actor_name = entity_name(session, players, npcs);
         output.write(text(session, format!("You cast {spell_name}.")));
         if let Some(room) = room {
             broadcast(
-                &players,
+                players,
                 room,
                 session,
                 &mut output,
@@ -661,10 +668,10 @@ pub fn handle_cast_command(
         for target in &targets {
             apply_spell_to_target(
                 &cast,
-                &players,
-                &npcs,
-                &progress,
-                &keys,
+                players,
+                npcs,
+                progress,
+                keys,
                 &context.purses,
                 &mut combatants,
                 &mut buffs,

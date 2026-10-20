@@ -22,7 +22,7 @@
 
 use bevy::ecs::system::SystemParam;
 use bevy::prelude::*;
-use mib_stdlib::prelude::{Location, Npc, NpcKey, Player, Session};
+use mib_stdlib::prelude::{CarriedBy, Item, Location, Npc, NpcKey, Player, SaveId, Session};
 
 use crate::combat::TbaProgress;
 
@@ -54,4 +54,20 @@ pub struct NpcView<'w, 's> {
     pub npcs: Query<'w, 's, (Entity, &'static Npc, &'static Location)>,
     /// The prototype an NPC was instantiated from.
     pub keys: Query<'w, 's, &'static NpcKey>,
+}
+
+/// The items in play: the ones a character carries, the prototypes they come
+/// from, and their durable ids.
+///
+/// The equipment handler reads all three to resolve a worn item, find its
+/// prototype and locate its saved document; the social and shop handlers read
+/// the carried set.
+#[derive(SystemParam)]
+pub struct ItemView<'w, 's> {
+    /// The carried item entity, its prototype and its holder.
+    pub carried: Query<'w, 's, (Entity, &'static Item, &'static CarriedBy)>,
+    /// The item prototypes, keyed by the content id.
+    pub prototypes: Query<'w, 's, &'static Item>,
+    /// The durable id of each persistent entity.
+    pub save_ids: Query<'w, 's, &'static SaveId>,
 }

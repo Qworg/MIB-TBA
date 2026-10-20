@@ -25,13 +25,14 @@
 
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
-use mib_stdlib::prelude::{CarriedBy, Item, Location, Npc, Player, Session, SessionState};
+use mib_stdlib::prelude::{CarriedBy, Item, Location, Npc, Player, SessionState};
 
 use crate::combat::commands::text;
 use crate::combat::{TbaCombatant, TbaProgress};
 use crate::content::Position;
 use crate::dg::intake::commands::{DgClaimed, is_claimed};
 use crate::module::TbaContent;
+use crate::views::ActorView;
 
 /// Circle's exact refusal for an unknown social (`do_action`, `act.social.c`).
 const MSG_UNSUPPORTED: &str = "That action is not supported.";
@@ -543,11 +544,9 @@ fn list_socials(
 pub fn handle_social_commands(
     mut reader: MessageReader<CommandReceived>,
     claimed: Option<Res<DgClaimed>>,
-    sessions: Query<&Session>,
-    players: Query<(Entity, &Player, &Location)>,
+    actors: ActorView<'_, '_>,
     npcs: Query<(Entity, &Npc, &Location)>,
     combatants: Query<&TbaCombatant>,
-    progress: Query<&TbaProgress>,
     carried: Query<(Entity, &Item, &CarriedBy)>,
     ground: Query<(Entity, &Item, &Location)>,
     content: Option<Res<TbaContent>>,
@@ -555,6 +554,14 @@ pub fn handle_social_commands(
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
+
+    // The view is this system's own access; the helpers below keep taking the
+    // individual queries they need.
+    let ActorView {
+        sessions,
+        players,
+        progress,
+    } = &actors;
 
     for msg in reader.read() {
         let session = msg.session;
@@ -582,10 +589,10 @@ pub fn handle_social_commands(
                 &target,
                 &part,
                 &content.socials,
-                &players,
+                players,
                 &npcs,
                 &combatants,
-                &progress,
+                progress,
                 &carried,
                 &ground,
                 &mut output,
