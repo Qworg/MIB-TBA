@@ -470,33 +470,26 @@ pub fn handle_equipment_commands(
             },
         };
 
-        match command {
-            Command::Equip { item } => equip(
-                session,
-                &item,
-                &content.items,
-                items,
-                save_ids,
-                &mut equipment,
-                &mut saves,
-                &mut commands,
-                &mut output,
-            ),
-            Command::Unequip { slot } => unequip(
-                session,
-                &slot,
-                prototypes,
-                save_ids,
-                &mut equipment,
-                &mut saves,
-                &mut commands,
-                &mut output,
-            ),
-            Command::Equipment => {
-                equipment_listing(session, prototypes, &mut equipment, &mut output)
-            }
-            _ => {}
-        }
+        // The plan settles the change; the act carries it out.
+        let Some(plan) = plan_equipment(
+            session,
+            &command,
+            &content.items,
+            items,
+            prototypes,
+            save_ids,
+            &equipment,
+        ) else {
+            continue;
+        };
+        apply_equipment_plan(
+            session,
+            &plan,
+            &mut equipment,
+            &mut saves,
+            &mut commands,
+            &mut output,
+        );
     }
 }
 
@@ -583,132 +576,117 @@ fn persisted_from_runtime(
 }
 
 #[allow(clippy::too_many_arguments)]
-fn equip(
+/// An equipment change the plan resolved.
+///
+/// The plan decides *what* changes: the item, the slot, and the two worn maps
+/// that result. The act writes them and says the line.
+enum EquipmentPlan {
+    /// A refusal, with the line to say.
+    Refused(String),
+    /// `equip <item>`: the slot it went to and the updated worn maps.
+    Equip {
+        name: String,
+        slot: WearSlot,
+        slots: HashMap<WearSlot, Entity>,
+        worn: BTreeMap<WearSlot, String>,
+    },
+    /// `unequip <slot>`: the removed item's name and the updated worn maps.
+    Unequip {
+        name: String,
+        slots: HashMap<WearSlot, Entity>,
+        worn: BTreeMap<WearSlot, String>,
+    },
+    /// `equipment`: the worn list, resolved.
+    Listing { body: String },
+}
+
+/// Resolve an equipment command into the change it would make.
+fn plan_equipment(
     session: Entity,
-    item_name: &str,
+    command: &Command,
     items_defs: &BTreeMap<ItemId, TbaItemDef>,
     items: &CarriedQuery<'_, '_>,
+    prototypes: &Query<&Item>,
     save_ids: &Query<&SaveId>,
-    equipment: &mut Query<Option<&mut TbaEquipment>>,
-    saves: &mut Query<Option<&mut TbaEquipmentSave>>,
-    commands: &mut Commands,
-    output: &mut MessageWriter<OutputEvent>,
-) {
-    let Some(entity) = find_carried(session, item_name, items) else {
-        deny(output, session, "You aren't carrying that.");
-        return;
-    };
-    let Ok((_, prototype, _)) = items.get(entity) else {
-        return;
-    };
-    let name = prototype.name.clone();
-    let def_id = prototype.def_id.clone();
-    let Some(def) = items_defs.get(&def_id) else {
-        deny(output, session, format!("You can't equip {name}."));
-        return;
-    };
-
-    let mut slots = equipment
+    equipment: &Query<Option<&mut TbaEquipment>>,
+) -> Option<EquipmentPlan> {
+    let current = equipment
         .get(session)
         .ok()
         .flatten()
         .map(|current| current.slots.clone())
         .unwrap_or_default();
-    if slots.values().any(|worn_entity| *worn_entity == entity) {
-        notice(output, session, format!("You are already wearing {name}."));
-        return;
-    }
-    let Some(slot) = choose_slot(def, &slots) else {
-        if def.slots.is_empty() {
-            deny(output, session, format!("You can't equip {name}."));
-        } else {
-            let occupied: Vec<String> = def
-                .slots
-                .iter()
-                .map(|slot| slot.display_name().to_owned())
-                .collect();
-            deny(
-                output,
-                session,
-                format!(
+
+    match command {
+        Command::Equip { item } => {
+            let Some(entity) = find_carried(session, item, items) else {
+                return Some(EquipmentPlan::Refused(
+                    "You aren't carrying that.".to_owned(),
+                ));
+            };
+            let Ok((_, prototype, _)) = items.get(entity) else {
+                return None;
+            };
+            let name = prototype.name.clone();
+            let def_id = prototype.def_id.clone();
+            let Some(def) = items_defs.get(&def_id) else {
+                return Some(EquipmentPlan::Refused(format!("You can't equip {name}.")));
+            };
+            if current.values().any(|worn_entity| *worn_entity == entity) {
+                return Some(EquipmentPlan::Refused(format!(
+                    "You are already wearing {name}."
+                )));
+            }
+            let Some(slot) = choose_slot(def, &current) else {
+                if def.slots.is_empty() {
+                    return Some(EquipmentPlan::Refused(format!("You can't equip {name}.")));
+                }
+                let occupied: Vec<String> = def
+                    .slots
+                    .iter()
+                    .map(|slot| slot.display_name().to_owned())
+                    .collect();
+                return Some(EquipmentPlan::Refused(format!(
                     "You have no free slot for {name} ({}).",
                     occupied.join(", ")
-                ),
-            );
+                )));
+            };
+            let mut slots = current;
+            slots.insert(slot, entity);
+            // The runtime map is authoritative; rebuilding the save from it keeps
+            // the two in lockstep.
+            let worn = persisted_from_runtime(&slots, save_ids);
+            Some(EquipmentPlan::Equip {
+                name,
+                slot,
+                slots,
+                worn,
+            })
         }
-        return;
-    };
-
-    slots.insert(slot, entity);
-    let worn = persisted_from_runtime(&slots, save_ids);
-    write_equipment(session, slots, worn, equipment, saves, commands);
-    notice(
-        output,
-        session,
-        format!("You equip {name} ({}).", slot.display_name()),
-    );
-}
-
-#[allow(clippy::too_many_arguments)]
-fn unequip(
-    session: Entity,
-    slot_word: &str,
-    prototypes: &Query<&Item>,
-    save_ids: &Query<&SaveId>,
-    equipment: &mut Query<Option<&mut TbaEquipment>>,
-    saves: &mut Query<Option<&mut TbaEquipmentSave>>,
-    commands: &mut Commands,
-    output: &mut MessageWriter<OutputEvent>,
-) {
-    let Some(slot) = WearSlot::parse(slot_word) else {
-        deny(
-            output,
-            session,
-            format!("There's no such slot as {slot_word}."),
-        );
-        return;
-    };
-    let mut slots = equipment
-        .get(session)
-        .ok()
-        .flatten()
-        .map(|current| current.slots.clone())
-        .unwrap_or_default();
-    let Some(entity) = slots.remove(&slot) else {
-        deny(
-            output,
-            session,
-            format!(
-                "You aren't wearing anything on your {}.",
-                slot.display_name()
-            ),
-        );
-        return;
-    };
-    let name = prototypes
-        .get(entity)
-        .map(|prototype| prototype.name.clone())
-        .unwrap_or_else(|_| "something".to_owned());
-    // The runtime map is authoritative; rebuilding the save from it keeps the
-    // two in lockstep and drops any stale entry for the removed slot.
-    let worn = persisted_from_runtime(&slots, save_ids);
-    write_equipment(session, slots, worn, equipment, saves, commands);
-    notice(output, session, format!("You remove {name}."));
-}
-
-fn equipment_listing(
-    session: Entity,
-    prototypes: &Query<&Item>,
-    equipment: &mut Query<Option<&mut TbaEquipment>>,
-    output: &mut MessageWriter<OutputEvent>,
-) {
-    let mut worn_items: Vec<(WearSlot, String)> = equipment
-        .get(session)
-        .ok()
-        .flatten()
-        .map(|current| {
-            current
-                .slots
+        Command::Unequip { slot } => {
+            let Some(slot) = WearSlot::parse(slot) else {
+                return Some(EquipmentPlan::Refused(format!(
+                    "There's no such slot as {slot}."
+                )));
+            };
+            let mut slots = current;
+            let Some(entity) = slots.remove(&slot) else {
+                return Some(EquipmentPlan::Refused(format!(
+                    "You aren't wearing anything on your {}.",
+                    slot.display_name()
+                )));
+            };
+            let name = prototypes
+                .get(entity)
+                .map(|prototype| prototype.name.clone())
+                .unwrap_or_else(|_| "something".to_owned());
+            // The runtime map is authoritative; rebuilding the save from it keeps
+            // the two in lockstep and drops any stale entry for the removed slot.
+            let worn = persisted_from_runtime(&slots, save_ids);
+            Some(EquipmentPlan::Unequip { name, slots, worn })
+        }
+        Command::Equipment => {
+            let mut worn_items: Vec<(WearSlot, String)> = current
                 .iter()
                 .filter_map(|(slot, entity)| {
                     prototypes
@@ -716,20 +694,70 @@ fn equipment_listing(
                         .ok()
                         .map(|prototype| (*slot, prototype.name.clone()))
                 })
-                .collect()
-        })
-        .unwrap_or_default();
-    worn_items.sort_by_key(|(slot, _)| *slot);
-    let body = if worn_items.is_empty() {
-        "You are wearing nothing.".to_owned()
-    } else {
-        let parts: Vec<String> = worn_items
-            .iter()
-            .map(|(slot, name)| format!("{}: {name}", slot.display_name()))
-            .collect();
-        format!("You are wearing: {}.", parts.join(", "))
-    };
-    notice(output, session, body);
+                .collect();
+            worn_items.sort_by_key(|(slot, _)| *slot);
+            let body = if worn_items.is_empty() {
+                "You are wearing nothing.".to_owned()
+            } else {
+                let parts: Vec<String> = worn_items
+                    .iter()
+                    .map(|(slot, name)| format!("{}: {name}", slot.display_name()))
+                    .collect();
+                format!("You are wearing: {}.", parts.join(", "))
+            };
+            Some(EquipmentPlan::Listing { body })
+        }
+        _ => None,
+    }
+}
+
+/// Carry out a resolved equipment change.
+fn apply_equipment_plan(
+    session: Entity,
+    plan: &EquipmentPlan,
+    equipment: &mut Query<Option<&mut TbaEquipment>>,
+    saves: &mut Query<Option<&mut TbaEquipmentSave>>,
+    commands: &mut Commands,
+    output: &mut MessageWriter<OutputEvent>,
+) {
+    match plan {
+        EquipmentPlan::Refused(line) => deny(output, session, line.clone()),
+        EquipmentPlan::Equip {
+            name,
+            slot,
+            slots,
+            worn,
+            ..
+        } => {
+            write_equipment(
+                session,
+                slots.clone(),
+                worn.clone(),
+                equipment,
+                saves,
+                commands,
+            );
+            notice(
+                output,
+                session,
+                format!("You equip {name} ({}).", slot.display_name()),
+            );
+        }
+        EquipmentPlan::Unequip {
+            name, slots, worn, ..
+        } => {
+            write_equipment(
+                session,
+                slots.clone(),
+                worn.clone(),
+                equipment,
+                saves,
+                commands,
+            );
+            notice(output, session, format!("You remove {name}."));
+        }
+        EquipmentPlan::Listing { body } => notice(output, session, body.clone()),
+    }
 }
 
 // -- systems ----------------------------------------------------------------
