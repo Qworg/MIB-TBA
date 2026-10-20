@@ -1120,7 +1120,8 @@ fn mag_savingthrow_honours_the_roll_and_the_modifier() {
 
 /// A room with a vnum and tags, so `recall` can find the `start_room`.
 fn tagged_room(app: &mut App, num: u32, tags: &[RoomTag]) -> Entity {
-    app.world_mut()
+    let entity = app
+        .world_mut()
         .spawn(Room {
             key: format!("tba.{num}").into(),
             name: format!("Room {num}"),
@@ -1141,7 +1142,19 @@ fn tagged_room(app: &mut App, num: u32, tags: &[RoomTag]) -> Entity {
             time: None,
             weather_state: None,
         })
-        .id()
+        .id();
+    // Mirror the engine's boot-time `RoomIndex`, which is where the recall
+    // point comes from.
+    let mut index = app
+        .world_mut()
+        .get_resource_or_insert_with(RoomIndex::default);
+    index
+        .map
+        .insert(RoomId(format!("tba.{num}").into()), entity);
+    if tags.contains(&RoomTag::StartRoom) && index.start.is_none() {
+        index.start = Some(entity);
+    }
+    entity
 }
 
 fn room_of(app: &App, entity: Entity) -> Option<Entity> {
