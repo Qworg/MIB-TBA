@@ -61,6 +61,9 @@ fn mage() -> TbaClassDef {
             "charm",
             "group_heal",
             "group_armor",
+            "invisibility",
+            "blindness",
+            "cure_blind",
         ]
         .into_iter()
         .map(SmolStr::new)
@@ -97,6 +100,7 @@ fn base(name: &str, mana: u32) -> SpellDef {
         dice: None,
         level_bonus: LevelBonus::default(),
         affect: None,
+        cures: None,
         duration: DEFAULT_BUFF_ROUNDS,
         duration_bonus: LevelBonus::default(),
         target: SpellTarget::Victim,
@@ -241,6 +245,36 @@ fn content() -> TbaContent {
             SmolStr::new("fizzle"),
             utility("fizzle", 5, "the fizzle routine is not modelled"),
         ),
+        // `invisibility` grants a veil, not a stat.
+        (
+            SmolStr::new("invisibility"),
+            SpellDef {
+                kind: SpellKind::Invisibility,
+                duration: 4,
+                ..base("invisibility", 5)
+            },
+        ),
+        // A debuff and the cure that removes it.
+        (
+            SmolStr::new("blindness"),
+            SpellDef {
+                kind: SpellKind::Debuff,
+                affect: Some(AffectDef {
+                    location: AffectLocation::Hitroll,
+                    modifier: -4,
+                }),
+                duration: 3,
+                ..base("blindness", 5)
+            },
+        ),
+        (
+            SmolStr::new("cure_blind"),
+            SpellDef {
+                kind: SpellKind::Cure,
+                cures: Some(SmolStr::new("blindness")),
+                ..base("cure blind", 5)
+            },
+        ),
         // Transport spells (#39).
         (
             SmolStr::new("word_of_recall"),
@@ -337,7 +371,7 @@ fn test_app() -> App {
             .chain(),
     );
     app.init_schedule(TbaRound);
-    app.add_systems(TbaRound, (tick_buffs, tick_true_sight));
+    app.add_systems(TbaRound, (tick_buffs, tick_true_sight, tick_invisible));
     app
 }
 
@@ -833,6 +867,7 @@ fn active_buffs_round_trip_through_serde() {
                 modifier: -1,
             },
             rounds_left: 3,
+            source: None,
         }],
     };
     let json = serde_json::to_string(&store).expect("serialise buffs");
@@ -1509,4 +1544,76 @@ fn group_armor_buffs_the_party_and_leaves_bystanders_alone() {
     assert!(buffed(&app, mage), "the caster is buffed");
     assert!(buffed(&app, friend), "the party member is buffed");
     assert!(!buffed(&app, stranger), "a bystander is not");
+}
+
+// ---------------------------------------------------------------------------
+// Invisibility and cures (#39)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn invisibility_grants_a_veil_that_expires() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+
+    cast(&mut app, player, "cast 'invisibility'");
+    run_game(&mut app);
+
+    let veil = app
+        .world()
+        .get::<TbaInvisible>(player)
+        .expect("the veil is granted");
+    assert_eq!(
+        veil.rounds_left, 4,
+        "the countdown starts at the spell's duration"
+    );
+
+    for _ in 0..3 {
+        run_round(&mut app);
+        run_game(&mut app);
+        assert!(
+            app.world().get::<TbaInvisible>(player).is_some(),
+            "the veil holds until its last round"
+        );
+    }
+    run_round(&mut app);
+    run_game(&mut app);
+    assert!(
+        app.world().get::<TbaInvisible>(player).is_none(),
+        "the veil drops when it runs out"
+    );
+}
+
+#[test]
+fn a_cure_removes_the_affect_the_named_spell_granted() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+
+    // `blindness` is a hostile debuff, so it needs a victim.
+    let goblin = spawn_npc(&mut app, room, "goblin", 100);
+    cast(&mut app, player, "cast 'blindness' goblin");
+    run_game(&mut app);
+    let buffs = app
+        .world()
+        .get::<TbaBuffs>(goblin)
+        .expect("the debuff landed");
+    assert_eq!(buffs.buffs.len(), 1, "one debuff recorded");
+    assert_eq!(
+        buffs.buffs[0].source.as_deref(),
+        Some("blindness"),
+        "the buff records the spell that granted it"
+    );
+
+    cast(&mut app, player, "cast 'cure blind' goblin");
+    run_game(&mut app);
+
+    let buffs = app
+        .world()
+        .get::<TbaBuffs>(goblin)
+        .expect("the store remains");
+    assert!(
+        buffs.buffs.is_empty(),
+        "the cure removed the blindness buff"
+    );
 }

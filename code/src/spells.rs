@@ -66,6 +66,13 @@ pub const DEFAULT_BUFF_ROUNDS: u32 = crate::content::DEFAULT_SPELL_DURATION;
 pub struct ActiveBuff {
     pub affect: AffectDef,
     pub rounds_left: u32,
+    /// The spell that granted this buff, when one did.
+    ///
+    /// Circle's `MAG_UNAFFECTS` removes a *named* affect (`AFF_BLIND`,
+    /// `AFF_POISON`, `AFF_CURSE`). The pack's affects are numeric
+    /// (location, modifier) pairs, so without this a cure could not tell
+    /// blindness from any other hitroll debuff.
+    pub source: Option<SmolStr>,
 }
 
 /// Bit of [`ActiveBuff::rounds_left`] that marks a pinned buff: one a script
@@ -86,6 +93,7 @@ impl ActiveBuff {
         Self {
             affect,
             rounds_left: flags | rounds.clamp(1, PINNED_FOREVER),
+            source: None,
         }
     }
 
@@ -364,6 +372,25 @@ fn resolve_target(
     }
 }
 
+/// Remove the buff a named spell granted, if it is present.
+///
+/// Circle's `MAG_UNAFFECTS` (`magic.c:828-873`) removes a named affect. The
+/// pack's affects are numeric, so the buff records the spell that granted it
+/// and the cure matches on that.
+fn remove_affect(target: Entity, source: &str, buffs: &mut Query<&mut TbaBuffs>) -> bool {
+    let Ok(mut store) = buffs.get_mut(target) else {
+        return false;
+    };
+    let before = store.buffs.len();
+    store.buffs.retain(|buff| {
+        !buff
+            .source
+            .as_ref()
+            .is_some_and(|granted| granted.eq_ignore_ascii_case(source))
+    });
+    before != store.buffs.len()
+}
+
 /// The pulse count an affect is installed for: the spell's static
 /// [`SpellDef::duration`] plus its per-level [`SpellDef::duration_bonus`], at
 /// least one round so a level-1 caster never installs an inert affect.
@@ -380,12 +407,14 @@ fn add_buff(
     target: Entity,
     affect: AffectDef,
     rounds: u32,
+    source: Option<SmolStr>,
     buffs: &mut Query<&mut TbaBuffs>,
     commands: &mut Commands,
 ) {
     let entry = ActiveBuff {
         affect,
         rounds_left: rounds,
+        source,
     };
     match buffs.get_mut(target) {
         Ok(mut store) => {
@@ -963,7 +992,14 @@ fn apply_spell_to_target(
                 return;
             };
             let rounds = affect_rounds(spell, caster_level);
-            add_buff(target, affect.clone(), rounds, buffs, commands);
+            add_buff(
+                target,
+                affect.clone(),
+                rounds,
+                Some(spell_id.clone()),
+                buffs,
+                commands,
+            );
             if spell.kind == SpellKind::Debuff {
                 if target != session {
                     tell_caster(
@@ -1010,6 +1046,23 @@ fn apply_spell_to_target(
                     commands,
                 );
             }
+        }
+        SpellKind::Cure => {
+            // `MAG_UNAFFECTS` (`magic.c:828-873`): remove the affect the named
+            // spell granted.
+            let Some(cured) = spell.cures.clone() else {
+                return;
+            };
+            let removed = remove_affect(target, &cured, buffs);
+            if removed {
+                output.write(text(target, format!("You feel the {cured} leave you.")));
+            }
+        }
+        SpellKind::Invisibility => {
+            // `AFF_INVISIBLE` (`magic.c:432-443`): a veil, not a stat, so it
+            // is its own transient component rather than an `AffectLocation`.
+            crate::stealth::grant_invisible(target, affect_rounds(spell, caster_level), commands);
+            output.write(text(target, "You feel a veil settle over you."));
         }
         SpellKind::Charm => {
             commands.queue(move |world: &mut World| {
@@ -1143,7 +1196,14 @@ fn apply_spell_to_target(
         } else {
             affect_rounds(spell, caster_level)
         };
-        add_buff(target, affect.clone(), rounds, buffs, commands);
+        add_buff(
+            target,
+            affect.clone(),
+            rounds,
+            Some(spell_id.clone()),
+            buffs,
+            commands,
+        );
     }
 
     if lethal {

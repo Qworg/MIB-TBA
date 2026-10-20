@@ -231,8 +231,8 @@ spells:
     mana_min: 5
     mana_max: 30
     mana_change: 2
-    kind: utility
-    unsupported: "MAG_UNAFFECTS (magic.c:828-873) removes AFF_BLIND; the pack models blindness as a stat debuff, not the flag"
+    kind: cure
+    cures: blindness
     min_level:
       cleric: 4
     target: victim
@@ -549,8 +549,7 @@ spells:
     mana_min: 25
     mana_max: 35
     mana_change: 1
-    kind: utility
-    unsupported: "spell_affects sets AFF_INVISIBLE (magic.c:432-443); the pack does not wire it to its stealth model yet"
+    kind: invisibility
     min_level:
       magic_user: 4
     target: victim
@@ -636,8 +635,8 @@ spells:
     mana_min: 25
     mana_max: 45
     mana_change: 5
-    kind: utility
-    unsupported: "MAG_UNAFFECTS (magic.c:828-873) strips cursed items; the pack does not model item curses"
+    kind: cure
+    cures: curse
     min_level:
       cleric: 26
     target: victim
@@ -649,8 +648,8 @@ spells:
     mana_min: 8
     mana_max: 40
     mana_change: 4
-    kind: utility
-    unsupported: "MAG_UNAFFECTS (magic.c:828-873) clears AFF_POISON; the pack does not model a poison affect"
+    kind: cure
+    cures: poison
     min_level:
       cleric: 10
     target: victim

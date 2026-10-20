@@ -397,6 +397,7 @@ impl Plugin for TbaPlugin {
             (
                 crate::spells::tick_buffs,
                 crate::stealth::tick_true_sight,
+                crate::stealth::tick_invisible,
                 crate::combat::resolve_rounds,
             )
                 .chain(),

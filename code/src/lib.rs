@@ -111,8 +111,8 @@ pub mod prelude {
         ActiveBuff, DEFAULT_BUFF_ROUNDS, TbaBuffs, handle_cast_command, mana_cost, tick_buffs,
     };
     pub use crate::stealth::{
-        TRUE_SIGHT_DETECT, TbaTrueSight, grant_true_sight, stealth_for, sync_concealment,
-        sync_perception, tick_true_sight,
+        TRUE_SIGHT_DETECT, TbaInvisible, TbaTrueSight, grant_invisible, grant_true_sight,
+        stealth_for, sync_concealment, sync_perception, tick_invisible, tick_true_sight,
     };
     pub use crate::triggers::content::{
         AttachTarget, TriggerDef, TriggerId, TriggersFile, TriggersSection,

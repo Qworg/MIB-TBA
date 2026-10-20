@@ -902,6 +902,12 @@ pub enum SpellKind {
     /// Make the victim a follower (`spell_charm`, `spells.c:251-297`). A
     /// victim flagged `MOB_NOCHARM` is refused.
     Charm,
+    /// Remove an affect a named spell granted (`MAG_UNAFFECTS`,
+    /// `magic.c:828-873`). The spell it removes is [`SpellDef::cures`].
+    Cure,
+    /// Grant Circle's `AFF_INVISIBLE` (`magic.c:432-443`): the target cannot
+    /// be seen until the veil drops.
+    Invisibility,
     /// A spell whose Circle routine is not modelled yet. It is castable (mana
     /// is spent) and reports its [`SpellDef::unsupported`] reason rather than
     /// inventing an effect.
@@ -1015,6 +1021,13 @@ fn default_spell_duration() -> u32 {
 pub struct SpellDef {
     /// Display name, for example `magic missile`.
     pub name: String,
+    /// The spell whose affect this one removes, for a [`SpellKind::Cure`].
+    ///
+    /// Circle's `MAG_UNAFFECTS` removes a named affect (`AFF_BLIND`,
+    /// `AFF_POISON`, `AFF_CURSE`); the pack's affects are numeric, so the buff
+    /// records the spell that granted it and the cure matches on that.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cures: Option<SmolStr>,
     /// The settled floor of the mana cost, Circle's `mana_min`.
     pub mana_min: u32,
     /// The cost at the level the class first learns the spell, Circle's
@@ -1145,7 +1158,16 @@ fn spell_issues(spell_id: &SmolStr, spell: &SpellDef) -> Vec<(String, String)> {
         | SpellKind::Recall
         | SpellKind::Teleport
         | SpellKind::Summon
-        | SpellKind::Charm => {}
+        | SpellKind::Charm
+        | SpellKind::Invisibility => {}
+        SpellKind::Cure => {
+            if spell.cures.is_none() {
+                issues.push((
+                    format!("spells.{spell_id}.cures"),
+                    "a cure must name the spell whose affect it removes".to_owned(),
+                ));
+            }
+        }
         SpellKind::Utility => {
             if spell
                 .unsupported
@@ -1600,6 +1622,7 @@ mod tests {
             min_position: Position::Standing,
             save: SaveEffect::None,
             min_level: BTreeMap::new(),
+            cures: None,
             unsupported: None,
         }
     }
