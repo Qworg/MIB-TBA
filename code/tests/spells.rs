@@ -627,6 +627,85 @@ fn damage_spell_lowers_target_hp_and_deducts_mana() {
     );
 }
 
+/// An NPC with a prototype, so the plan can resolve its class and level.
+fn spawn_prototyped_npc(
+    app: &mut App,
+    room: Entity,
+    id: &str,
+    prototype: &str,
+    level: u32,
+    hp: i32,
+) -> Entity {
+    let mut combatant = fallback_combatant();
+    combatant.hp = hp;
+    combatant.max_hp = hp;
+    {
+        let mut content = app.world_mut().resource_mut::<TbaContent>();
+        content.npc_stats.insert(
+            NpcId::from(prototype),
+            TbaNpcStats {
+                hp: Dice::constant(hp.max(1)),
+                level,
+                hitroll: 0,
+                damroll: 0,
+                armor_class: 100,
+                thaco: 20,
+                alignment: 0,
+                gold: 0,
+                experience: 0,
+                default_position: Position::Standing,
+                behaviour: Vec::new(),
+                damage: None,
+                attributes: TbaAttributes::mob_default(),
+                saves: TbaSaves::default(),
+                spec_proc: None,
+                sex: TbaSex::Neutral,
+                keywords: Vec::new(),
+                aff_flags: Vec::new(),
+            },
+        );
+    }
+    app.world_mut()
+        .spawn((
+            Npc {
+                name: id.to_owned(),
+                persona: String::new(),
+            },
+            NpcKey(NpcId::from(prototype)),
+            Location { room },
+            combatant,
+        ))
+        .id()
+}
+
+#[test]
+fn the_save_uses_the_victims_level_not_the_casters() {
+    // The plan resolves the *victim's* save profile, so two victims of the
+    // same prototype family but different levels save differently under the
+    // same seed. A level-1 victim has the worst save (90, which no roll
+    // beats); a level-30 victim has the best (0, which every roll loses to).
+    let damage_for = |level: u32| {
+        let mut app = test_app();
+        let room = spawn_room(&mut app);
+        let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+        let goblin = spawn_prototyped_npc(&mut app, room, "goblin", "tba_npc_goblin", level, 100);
+        {
+            let mut content = app.world_mut().resource_mut::<TbaContent>();
+            let spell = content.spells.get_mut("magic_missile").unwrap();
+            spell.dice = Some(Dice::constant(10));
+            spell.save = SaveEffect::Half;
+        }
+
+        cast(&mut app, player, "cast 'magic missile' goblin");
+        run_game(&mut app);
+
+        100 - combatant_of(&app, goblin).hp
+    };
+
+    assert_eq!(damage_for(1), 10, "a level-1 victim cannot save");
+    assert_eq!(damage_for(30), 5, "a level-30 victim saves and halves");
+}
+
 #[test]
 fn lethal_damage_spell_despawns_an_npc() {
     let mut app = test_app();

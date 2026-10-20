@@ -44,7 +44,8 @@ use crate::combat::commands::{
 };
 use crate::combat::rewards::{NpcDefeated, TbaDamage, alignment_for, npc_reward};
 use crate::combat::{
-    SaveType, TbaCombatant, TbaHidden, TbaProgress, TbaRng, default_class, mag_savingthrow,
+    SaveType, TbaCombatant, TbaHidden, TbaProgress, TbaRng, TbaSaves, default_class,
+    mag_savingthrow,
 };
 use crate::content::{AffectDef, Position, SaveEffect, SpellDef, SpellKind, SpellTarget};
 use crate::module::TbaContent;
@@ -311,6 +312,58 @@ fn victim_class_level(
     (SmolStr::new("warrior"), 1)
 }
 
+/// A target resolved by the plan, with everything the apply phase needs.
+///
+/// The plan decides *who* is affected and *what* is true about them; the
+/// apply phase then needs no queries to decide anything, only plain values.
+/// That is the whole point of the split: an effect is a function of the
+/// plan, not of the world it happens to land in.
+#[derive(Debug, Clone)]
+pub(crate) struct ResolvedTarget {
+    /// The victim's entity.
+    pub entity: Entity,
+    /// The victim's display name, as the room sees it.
+    pub name: String,
+    /// Whether the victim is a player (the C tells a player "you resist").
+    pub is_player: bool,
+    /// Whether the victim is an NPC, which is what the kill reward pays.
+    pub is_npc: bool,
+    /// The victim's class, for the save's base throw.
+    pub class: SmolStr,
+    /// The victim's level, for the save's base throw.
+    pub level: u32,
+    /// The victim's `apply_saving_throw[]` modifiers, for the save.
+    pub saves: TbaSaves,
+    /// The prototype an NPC victim was instantiated from, for the kill reward.
+    pub key: Option<NpcId>,
+}
+
+/// Resolve one target: its name, whether it is a player, and its save profile.
+fn resolve_target(
+    entity: Entity,
+    content: &TbaContent,
+    players: &Query<(Entity, &Player, &Location)>,
+    npcs: &Query<(Entity, &Npc, &Location)>,
+    progress: &Query<&TbaProgress>,
+    keys: &Query<&NpcKey>,
+    combatants: &Query<&mut TbaCombatant>,
+) -> ResolvedTarget {
+    let (class, level) = victim_class_level(entity, content, progress, keys);
+    ResolvedTarget {
+        entity,
+        name: entity_name(entity, players, npcs),
+        is_player: players.get(entity).is_ok(),
+        is_npc: npcs.get(entity).is_ok(),
+        class,
+        level,
+        saves: combatants
+            .get(entity)
+            .map(|combatant| combatant.saves)
+            .unwrap_or_default(),
+        key: keys.get(entity).ok().map(|key| key.0.clone()),
+    }
+}
+
 /// The pulse count an affect is installed for: the spell's static
 /// [`SpellDef::duration`] plus its per-level [`SpellDef::duration_bonus`], at
 /// least one round so a level-1 caster never installs an inert affect.
@@ -359,8 +412,8 @@ pub(crate) struct CastPlan<'a> {
     /// The mana the cast costs.
     pub cost: u32,
     pub room: Option<Entity>,
-    /// The targets, in the order the effects apply.
-    pub targets: Vec<Entity>,
+    /// The targets, in the order the effects apply, already resolved.
+    pub targets: Vec<ResolvedTarget>,
 }
 
 /// What [`plan_cast`] made of a line.
@@ -382,13 +435,18 @@ pub(crate) fn plan_cast<'a>(
     session: Entity,
     line: &str,
     content: &'a TbaContent,
-    progress: &Query<&TbaProgress>,
     combatants: &Query<&mut TbaCombatant>,
-    players: &Query<(Entity, &Player, &Location)>,
-    npcs: &Query<(Entity, &Npc, &Location)>,
+    actors: &ActorView<'_, '_>,
+    npcs: &NpcView<'_, '_>,
     hidden: &StealthView<'_, '_>,
     parties: Option<&crate::party::TbaParties>,
 ) -> CastOutcome<'a> {
+    let ActorView {
+        sessions: _,
+        players,
+        progress,
+    } = actors;
+    let NpcView { npcs, keys } = npcs;
     let Some(parsed) = parse_cast_line(line) else {
         return CastOutcome::NotCast;
     };
@@ -536,6 +594,13 @@ pub(crate) fn plan_cast<'a>(
         },
     };
 
+    // Resolve the targets here, so the apply phase decides nothing: it reads
+    // the plan's plain values.
+    let targets: Vec<ResolvedTarget> = targets
+        .into_iter()
+        .map(|entity| resolve_target(entity, content, players, npcs, progress, keys, combatants))
+        .collect();
+
     CastOutcome::Plan(CastPlan {
         spell_id,
         spell,
@@ -581,9 +646,14 @@ pub fn handle_cast_command(
     let ActorView {
         sessions,
         players,
-        progress,
+        progress: _,
     } = &actors;
-    let NpcView { npcs, keys } = &npcs;
+    // The view keeps its own name; the inner query is unpacked under another
+    // one so `plan_cast` can still be handed the view.
+    let NpcView {
+        npcs: npc_query,
+        keys: _,
+    } = &npcs;
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
 
@@ -607,10 +677,9 @@ pub fn handle_cast_command(
             session,
             line,
             content,
-            progress,
             &combatants,
-            players,
-            npcs,
+            &actors,
+            &npcs,
             &hidden,
             context.parties.as_deref(),
         ) {
@@ -642,7 +711,7 @@ pub fn handle_cast_command(
         if is_hostile(spell) {
             commands.entity(session).remove::<TbaHidden>();
         }
-        let actor_name = entity_name(session, players, npcs);
+        let actor_name = entity_name(session, players, npc_query);
         output.write(text(session, format!("You cast {spell_name}.")));
         if let Some(room) = room {
             broadcast(
@@ -668,10 +737,8 @@ pub fn handle_cast_command(
         for target in &targets {
             apply_spell_to_target(
                 &cast,
+                target,
                 players,
-                npcs,
-                progress,
-                keys,
                 &context.purses,
                 &mut combatants,
                 &mut buffs,
@@ -681,7 +748,6 @@ pub fn handle_cast_command(
                 &mut defeated,
                 &mut npc_defeated,
                 &mut damage_events,
-                *target,
             );
         }
 
@@ -725,10 +791,8 @@ fn tell_caster(
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 fn apply_spell_to_target(
     cast: &Cast<'_>,
+    resolved: &ResolvedTarget,
     players: &Query<(Entity, &Player, &Location)>,
-    npcs: &Query<(Entity, &Npc, &Location)>,
-    progress: &Query<&TbaProgress>,
-    keys: &Query<&NpcKey>,
     purses: &Query<&crate::dg::chardata::TbaNpcPurse>,
     combatants: &mut Query<&mut TbaCombatant>,
     buffs: &mut Query<&mut TbaBuffs>,
@@ -738,7 +802,6 @@ fn apply_spell_to_target(
     defeated: &mut MessageWriter<PlayerDefeated>,
     npc_defeated: &mut MessageWriter<NpcDefeated>,
     damage_events: &mut MessageWriter<TbaDamage>,
-    target: Entity,
 ) {
     let Cast {
         content,
@@ -752,7 +815,9 @@ fn apply_spell_to_target(
         defer_despawn,
     } = *cast;
     let spell_name = spell.name.clone();
-    let target_name = entity_name(target, players, npcs);
+    // The plan decided everything about the victim; the apply phase reads it.
+    let target = resolved.entity;
+    let target_name = resolved.name.as_str();
     let mut lethal = false;
 
     // Circle rolls the saving throw, then halves or negates. A `cast`
@@ -762,21 +827,16 @@ fn apply_spell_to_target(
     let saved = if spell.save == SaveEffect::None {
         false
     } else {
-        let (victim_class, victim_level) = victim_class_level(target, content, progress, keys);
-        let victim_saves = combatants
-            .get(target)
-            .map(|combatant| combatant.saves)
-            .unwrap_or_default();
         mag_savingthrow(
             rng,
-            &victim_class,
-            victim_level,
-            &victim_saves,
+            &resolved.class,
+            resolved.level,
+            &resolved.saves,
             SaveType::Spell,
         )
     };
     if saved && spell.save == SaveEffect::Negate {
-        if players.get(target).is_ok() {
+        if resolved.is_player {
             output.write(text(target, format!("You resist the {spell_name}.")));
         }
         if target != session {
@@ -830,7 +890,7 @@ fn apply_spell_to_target(
                 }
             }
             if saved && spell.save == SaveEffect::Half {
-                if players.get(target).is_ok() {
+                if resolved.is_player {
                     output.write(text(target, format!("You resist the {spell_name}.")));
                 }
                 tell_caster(
@@ -913,7 +973,7 @@ fn apply_spell_to_target(
                         format!("{target_name} is afflicted by {spell_name}."),
                     );
                 }
-                if players.get(target).is_ok() {
+                if resolved.is_player {
                     output.write(text(target, format!("You are afflicted by {spell_name}.")));
                 }
             } else if target == session {
@@ -923,7 +983,7 @@ fn apply_spell_to_target(
                     session,
                     format!("You feel the {spell_name} settle."),
                 );
-            } else if players.get(target).is_ok() {
+            } else if resolved.is_player {
                 output.write(text(
                     target,
                     format!("{actor_name} blesses you with {spell_name}."),
@@ -1087,13 +1147,16 @@ fn apply_spell_to_target(
     }
 
     if lethal {
-        if players.get(target).is_ok() {
+        if resolved.is_player {
             defeated.write(PlayerDefeated { player: target });
-        } else if npcs.get(target).is_ok() {
-            let key = keys.get(target).ok();
+        } else if resolved.is_npc {
+            let key = resolved.key.as_ref().map(|id| NpcKey(id.clone()));
             let purse = purses.get(target).ok();
-            let (experience, gold) = npc_reward(content, key, purse);
-            let alignment = key.map(|key| alignment_for(content, key)).unwrap_or(0);
+            let (experience, gold) = npc_reward(content, key.as_ref(), purse);
+            let alignment = key
+                .as_ref()
+                .map(|key| alignment_for(content, key))
+                .unwrap_or(0);
             npc_defeated.write(NpcDefeated {
                 victim: target,
                 killer: session,
@@ -1217,6 +1280,22 @@ pub fn cast_spell_at_level(
             }
         };
         let actor_name = entity_name(caster, &players, &npcs);
+        // Resolve the targets the same way the player's plan does, so the
+        // apply phase reads plain values either way.
+        let targets: Vec<ResolvedTarget> = targets
+            .into_iter()
+            .map(|entity| {
+                resolve_target(
+                    entity,
+                    content,
+                    &players,
+                    &npcs,
+                    &progress,
+                    &keys,
+                    &combatants,
+                )
+            })
+            .collect();
         let cast = Cast {
             content,
             caster,
@@ -1228,7 +1307,7 @@ pub fn cast_spell_at_level(
             caster_hears: sessions.get(caster).is_ok(),
             defer_despawn: true,
         };
-        for target in targets {
+        for target in &targets {
             // A hostile cast is an attack: it breaks stealth, as Circle's
             // `damage()` -> `appear()` does (`tbamud/src/fight.c:70-84`).
             if hostile {
@@ -1236,10 +1315,8 @@ pub fn cast_spell_at_level(
             }
             apply_spell_to_target(
                 &cast,
+                target,
                 &players,
-                &npcs,
-                &progress,
-                &keys,
                 &purses,
                 &mut combatants,
                 &mut buffs,
@@ -1249,7 +1326,6 @@ pub fn cast_spell_at_level(
                 &mut defeated,
                 &mut npc_defeated,
                 &mut damage_events,
-                target,
             );
         }
         true
