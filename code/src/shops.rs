@@ -21,8 +21,8 @@
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{
-    CarriedBy, Item, ItemDef, ItemId, ItemsSection, LoadedContent, Location, NpcKey, Player, Room,
-    SessionState, spawn_item_carried_by_entity,
+    CarriedBy, Item, ItemDef, ItemId, ItemsSection, LoadedContent, Location, NpcId, NpcKey, Player,
+    Room, SessionState, spawn_item_carried_by_entity,
 };
 
 use crate::combat::TbaGold;
@@ -229,235 +229,362 @@ fn player_room(players: &Query<(Entity, &Player, &Location)>, session: Entity) -
 
 // -- command handlers -------------------------------------------------------
 
-/// `list`: the shop's stock with the keeper's buy price.
-fn shop_list(
-    session: Entity,
-    shop: &ShopDef,
-    content: &TbaContent,
-    loaded: Option<&LoadedContent>,
-    output: &mut MessageWriter<OutputEvent>,
-) {
-    let mut lines = Vec::new();
-    for id in &shop.produce {
-        let Some(def) = item_def(loaded, id) else {
-            continue;
-        };
-        let cost = content.items.get(id).map(|item| item.cost).unwrap_or(0);
-        let price = shop_price(cost, shop.buy_multiplier);
-        lines.push(format!("{} for {price} coins", def.name));
-    }
-    let body = if lines.is_empty() {
-        "You see nothing for sale.".to_owned()
-    } else {
-        format!("You can buy:\n{}", lines.join("\n"))
-    };
-    output.write(text(session, body));
-    write_prompt(output, session);
+/// A shop interaction the plan resolved.
+///
+/// The plan answers *what* would happen — which shop, which item, at what
+/// price, or which refusal to say — and the act carries it out. The plan is a
+/// plain value: it names no query, so the act needs none to decide anything.
+#[derive(Debug, Clone)]
+enum ShopPlan {
+    /// A refusal, with the line the player sees and whether it is an error
+    /// (Circle's `send_to_char` versus the pack's `deny`).
+    Refused { line: String, error: bool },
+    /// `list`: the keeper's stock and its buy prices.
+    List { stock: Vec<(String, u32)> },
+    /// `buy <item>`: the prototype, its definition and the price.
+    Buy {
+        shop: NpcId,
+        item: ItemId,
+        def: ItemDef,
+        price: u32,
+    },
+    /// `sell <item>`: the carried item, its name and the price.
+    Sell {
+        shop: NpcId,
+        entity: Entity,
+        name: String,
+        price: u32,
+    },
+    /// `value <item>`: the carried item's name and what it is worth.
+    Value { name: String, price: u32 },
 }
 
-/// `value`: what the shop would pay for a carried item.
-fn shop_value(
-    session: Entity,
-    shop: &ShopDef,
-    content: &TbaContent,
-    items: &Query<(Entity, &Item, &CarriedBy)>,
-    needle: &str,
-    output: &mut MessageWriter<OutputEvent>,
-) {
-    if needle.trim().is_empty() {
-        deny(output, session, "Value what?");
-        return;
-    }
-    let Some((_, def_id, name)) = find_carried(session, needle, items) else {
-        deny(output, session, "You don't have that.");
-        return;
-    };
-    let Some(tba) = content.items.get(&def_id) else {
-        deny(output, session, "The shopkeeper isn't interested in that.");
-        return;
-    };
-    if !shop.buy_kinds.contains(&tba.kind) {
-        deny(
-            output,
-            session,
-            format!("The shopkeeper doesn't buy {name}."),
-        );
-        return;
-    }
-    let price = shop_price(tba.cost, shop.sell_multiplier);
-    output.write(text(
-        session,
-        format!("The shopkeeper will give you {price} coins for {name}."),
-    ));
-    write_prompt(output, session);
-}
-
-/// `buy`: purchase one of the shop's `produce`, carried by the buyer.
+/// Resolve a shop command into the interaction it would perform.
+///
+/// Everything the command *decides* — the shop, whether it trades here and
+/// now, the item, the price, and any refusal — is settled here. The act
+/// receives a plain value.
 #[allow(clippy::too_many_arguments)]
-fn shop_buy(
+fn plan_shop(
     session: Entity,
-    shop: &ShopDef,
+    command: &ShopCommand,
     content: &TbaContent,
     loaded: Option<&LoadedContent>,
-    needle: &str,
+    hour: u32,
     players: &Query<(Entity, &Player, &Location)>,
-    purses: &mut Query<&mut TbaGold>,
-    commands: &mut Commands,
-    output: &mut MessageWriter<OutputEvent>,
-) {
-    if needle.trim().is_empty() {
-        deny(output, session, "Buy what?");
-        return;
-    }
-    let actor = actor_name(players, session);
-    let Some((item_id, def)) = shop.produce.iter().find_map(|id| {
-        let def = item_def(loaded, id)?;
-        name_matches(needle, &def.name).then(|| (id.clone(), def))
-    }) else {
-        deny(
-            output,
-            session,
-            shop_says(shop, 0, &actor, 0, "They don't sell that."),
-        );
-        return;
-    };
-    let cost = content
-        .items
-        .get(&item_id)
-        .map(|item| item.cost)
-        .unwrap_or(0);
-    let price = shop_price(cost, shop.buy_multiplier);
+    progress: &Query<&TbaProgress>,
+    alignments: &Query<&TbaAlignment>,
+    npcs: &Query<(Entity, &NpcKey, &Location)>,
+    rooms: &Query<&Room>,
+    items: &Query<(Entity, &Item, &CarriedBy)>,
+) -> Option<ShopPlan> {
+    let room = player_room(players, session)?;
 
-    let Ok(mut gold) = purses.get_mut(session) else {
-        deny(output, session, "You have no purse.");
-        return;
-    };
-    if gold.0 < price {
-        deny(
-            output,
-            session,
-            shop_says(shop, 4, &actor, price, "You can't afford it!"),
-        );
-        return;
-    }
-    gold.0 -= price;
-
-    // The spawn needs the world (the stdlib item core), so it is queued rather
-    // than built by hand: the prototype, its save id and its placement all come
-    // from the one seam every other spawn uses.
-    let holder = session;
-    let spawn_id = item_id.clone();
-    let spawn_def = def.clone();
-    commands.queue(move |world: &mut World| {
-        spawn_item_carried_by_entity(world, holder, &spawn_id, &spawn_def);
+    // The shop is wherever its keeper stands, matched by the `NpcKey` the
+    // zone reset installed.
+    let shop = npcs.iter().find_map(|(_, key, location)| {
+        (location.room == room)
+            .then(|| content.shops.get(&key.0).map(|def| (key.0.clone(), def)))
+            .flatten()
     });
+    let Some((shop_id, shop)) = shop else {
+        return Some(ShopPlan::Refused {
+            line: "There is no shop here.".to_owned(),
+            error: true,
+        });
+    };
 
-    let name = def.name.clone();
-    output.write(text(
-        session,
-        shop_says(
-            shop,
-            5,
-            &actor,
-            price,
-            &format!("You buy {name} for {price} coins."),
-        ),
-    ));
-    if let Some(room) = player_room(players, session) {
-        broadcast(
-            players,
-            room,
-            session,
-            output,
-            &format!("{actor} buys {name}."),
-        );
+    // `SHOP_ROOM`: an empty list means the keeper trades wherever it is;
+    // otherwise the player must be in one of the listed rooms
+    // (`ok_shop_room`, `shop.c:939`).
+    if !shop.rooms.is_empty()
+        && !rooms.get(room).ok().is_some_and(|room| {
+            shop.rooms
+                .iter()
+                .any(|allowed| allowed.as_ref() == room.key.as_str())
+        })
+    {
+        return Some(ShopPlan::Refused {
+            line: "There is no shop here.".to_owned(),
+            error: true,
+        });
     }
-    write_prompt(output, session);
+
+    // Circle's `is_open`: a closed keeper explains which close sent you away.
+    if let Some(reason) = closed_reason(shop, hour) {
+        return Some(ShopPlan::Refused {
+            line: reason.to_owned(),
+            error: false,
+        });
+    }
+
+    // `SHOP_TRADE_WITH`: refuse before any trade command is evaluated.
+    if let Some(reason) = trade_refused(
+        shop,
+        alignments.get(session).ok(),
+        progress.get(session).ok(),
+    ) {
+        let actor = actor_name(players, session);
+        return Some(ShopPlan::Refused {
+            line: format!("{actor} {reason}"),
+            error: true,
+        });
+    }
+
+    let actor = actor_name(players, session);
+    match command {
+        ShopCommand::List => {
+            let mut stock = Vec::new();
+            for id in &shop.produce {
+                let Some(def) = item_def(loaded, id) else {
+                    continue;
+                };
+                let cost = content.items.get(id).map(|item| item.cost).unwrap_or(0);
+                let price = shop_price(cost, shop.buy_multiplier);
+                stock.push((def.name.clone(), price));
+            }
+            Some(ShopPlan::List { stock })
+        }
+        ShopCommand::Value(needle) => {
+            if needle.trim().is_empty() {
+                return Some(ShopPlan::Refused {
+                    line: "Value what?".to_owned(),
+                    error: true,
+                });
+            }
+            let Some((_entity, def_id, name)) = find_carried(session, needle, items) else {
+                return Some(ShopPlan::Refused {
+                    line: "You don't have that.".to_owned(),
+                    error: true,
+                });
+            };
+            let Some(tba) = content.items.get(&def_id) else {
+                return Some(ShopPlan::Refused {
+                    line: "The shopkeeper isn't interested in that.".to_owned(),
+                    error: true,
+                });
+            };
+            if !shop.buy_kinds.contains(&tba.kind) {
+                return Some(ShopPlan::Refused {
+                    line: format!("The shopkeeper doesn't buy {name}."),
+                    error: true,
+                });
+            }
+            let price = shop_price(tba.cost, shop.sell_multiplier);
+            Some(ShopPlan::Value { name, price })
+        }
+        ShopCommand::Buy(needle) => {
+            if needle.trim().is_empty() {
+                return Some(ShopPlan::Refused {
+                    line: "Buy what?".to_owned(),
+                    error: true,
+                });
+            }
+            let Some((item_id, def)) = shop.produce.iter().find_map(|id| {
+                let def = item_def(loaded, id)?;
+                name_matches(needle, &def.name).then(|| (id.clone(), def))
+            }) else {
+                return Some(ShopPlan::Refused {
+                    line: shop_says(shop, 0, &actor, 0, "They don't sell that."),
+                    error: true,
+                });
+            };
+            let cost = content
+                .items
+                .get(&item_id)
+                .map(|item| item.cost)
+                .unwrap_or(0);
+            let price = shop_price(cost, shop.buy_multiplier);
+            Some(ShopPlan::Buy {
+                shop: shop_id,
+                item: item_id,
+                def,
+                price,
+            })
+        }
+        ShopCommand::Sell(needle) => {
+            if needle.trim().is_empty() {
+                return Some(ShopPlan::Refused {
+                    line: "Sell what?".to_owned(),
+                    error: true,
+                });
+            }
+            let Some((entity, def_id, name)) = find_carried(session, needle, items) else {
+                return Some(ShopPlan::Refused {
+                    line: shop_says(shop, 1, &actor, 0, "You don't have that."),
+                    error: true,
+                });
+            };
+            let Some(tba) = content.items.get(&def_id) else {
+                return Some(ShopPlan::Refused {
+                    line: shop_says(
+                        shop,
+                        2,
+                        &actor,
+                        0,
+                        "The shopkeeper isn't interested in that.",
+                    ),
+                    error: true,
+                });
+            };
+            if !shop.buy_kinds.contains(&tba.kind) {
+                return Some(ShopPlan::Refused {
+                    line: shop_says(
+                        shop,
+                        2,
+                        &actor,
+                        0,
+                        &format!("The shopkeeper doesn't buy {name}."),
+                    ),
+                    error: true,
+                });
+            }
+            let price = shop_price(tba.cost, shop.sell_multiplier);
+            Some(ShopPlan::Sell {
+                shop: shop_id,
+                entity,
+                name,
+                price,
+            })
+        }
+    }
 }
 
-/// `sell`: sell a carried item the shop accepts, for the keeper's sell price.
-#[allow(clippy::too_many_arguments)]
-fn shop_sell(
+/// Carry out a resolved shop interaction.
+fn apply_shop_plan(
     session: Entity,
-    shop: &ShopDef,
+    plan: &ShopPlan,
     content: &TbaContent,
-    items: &Query<(Entity, &Item, &CarriedBy)>,
-    needle: &str,
     players: &Query<(Entity, &Player, &Location)>,
     purses: &mut Query<&mut TbaGold>,
     commands: &mut Commands,
     output: &mut MessageWriter<OutputEvent>,
 ) {
-    if needle.trim().is_empty() {
-        deny(output, session, "Sell what?");
-        return;
-    }
-    let actor = actor_name(players, session);
-    let Some((entity, def_id, name)) = find_carried(session, needle, items) else {
-        deny(
-            output,
-            session,
-            shop_says(shop, 1, &actor, 0, "You don't have that."),
-        );
-        return;
-    };
-    let Some(tba) = content.items.get(&def_id) else {
-        deny(
-            output,
-            session,
-            shop_says(
-                shop,
-                2,
-                &actor,
-                0,
-                "The shopkeeper isn't interested in that.",
-            ),
-        );
-        return;
-    };
-    if !shop.buy_kinds.contains(&tba.kind) {
-        deny(
-            output,
-            session,
-            shop_says(
-                shop,
-                2,
-                &actor,
-                0,
-                &format!("The shopkeeper doesn't buy {name}."),
-            ),
-        );
-        return;
-    }
-    let price = shop_price(tba.cost, shop.sell_multiplier);
-
-    let Ok(mut gold) = purses.get_mut(session) else {
-        deny(output, session, "You have no purse.");
-        return;
-    };
-    gold.0 = gold.0.saturating_add(price);
-    commands.entity(entity).despawn();
-
-    output.write(text(
-        session,
-        shop_says(
+    match plan {
+        ShopPlan::Refused { line, error } => {
+            if *error {
+                deny(output, session, line.clone());
+            } else {
+                output.write(text(session, line.clone()));
+                write_prompt(output, session);
+            }
+        }
+        ShopPlan::List { stock } => {
+            let body = if stock.is_empty() {
+                "You see nothing for sale.".to_owned()
+            } else {
+                let lines: Vec<String> = stock
+                    .iter()
+                    .map(|(name, price)| format!("{name} for {price} coins"))
+                    .collect();
+                format!("You can buy:\n{}", lines.join("\n"))
+            };
+            output.write(text(session, body));
+            write_prompt(output, session);
+        }
+        ShopPlan::Buy {
             shop,
-            6,
-            &actor,
+            item,
+            def,
             price,
-            &format!("You sell {name} for {price} coins."),
-        ),
-    ));
-    if let Some(room) = player_room(players, session) {
-        broadcast(
-            players,
-            room,
-            session,
-            output,
-            &format!("{actor} sells {name}."),
-        );
+        } => {
+            let actor = actor_name(players, session);
+            let Ok(mut gold) = purses.get_mut(session) else {
+                deny(output, session, "You have no purse.");
+                return;
+            };
+            let keeper = content.shops.get(shop);
+            if gold.0 < *price {
+                let line = keeper.map_or_else(
+                    || "You can't afford it!".to_owned(),
+                    |keeper| shop_says(keeper, 4, &actor, *price, "You can't afford it!"),
+                );
+                deny(output, session, line);
+                return;
+            }
+            gold.0 -= *price;
+
+            // The spawn needs the world (the stdlib item core), so it is queued
+            // rather than built by hand: the prototype, its save id and its
+            // placement all come from the one seam every other spawn uses.
+            let holder = session;
+            let spawn_id = item.clone();
+            let spawn_def = def.clone();
+            commands.queue(move |world: &mut World| {
+                spawn_item_carried_by_entity(world, holder, &spawn_id, &spawn_def);
+            });
+
+            let name = def.name.clone();
+            let line = keeper.map_or_else(
+                || format!("You buy {name} for {price} coins."),
+                |keeper| {
+                    shop_says(
+                        keeper,
+                        5,
+                        &actor,
+                        *price,
+                        &format!("You buy {name} for {price} coins."),
+                    )
+                },
+            );
+            output.write(text(session, line));
+            if let Some(room) = player_room(players, session) {
+                broadcast(
+                    players,
+                    room,
+                    session,
+                    output,
+                    &format!("{actor} buys {name}."),
+                );
+            }
+            write_prompt(output, session);
+        }
+        ShopPlan::Sell {
+            shop,
+            entity,
+            name,
+            price,
+        } => {
+            let actor = actor_name(players, session);
+            let Ok(mut gold) = purses.get_mut(session) else {
+                deny(output, session, "You have no purse.");
+                return;
+            };
+            gold.0 = gold.0.saturating_add(*price);
+            commands.entity(*entity).despawn();
+
+            let line = content.shops.get(shop).map_or_else(
+                || format!("You sell {name} for {price} coins."),
+                |keeper| {
+                    shop_says(
+                        keeper,
+                        6,
+                        &actor,
+                        *price,
+                        &format!("You sell {name} for {price} coins."),
+                    )
+                },
+            );
+            output.write(text(session, line));
+            if let Some(room) = player_room(players, session) {
+                broadcast(
+                    players,
+                    room,
+                    session,
+                    output,
+                    &format!("{actor} sells {name}."),
+                );
+            }
+            write_prompt(output, session);
+        }
+        ShopPlan::Value { name, price } => {
+            output.write(text(
+                session,
+                format!("The shopkeeper will give you {price} coins for {name}."),
+            ));
+            write_prompt(output, session);
+        }
     }
-    write_prompt(output, session);
 }
 
 /// `BridgeSet::Game`: translate `list`/`buy`/`sell`/`value` into trade.
@@ -511,218 +638,31 @@ pub fn handle_shop_commands(
         let Some(command) = parse_shop_line(line) else {
             continue;
         };
-        let Some(room) = player_room(players, session) else {
+        // The plan settles every decision: the shop, whether it trades here
+        // and now, the item, the price, and any refusal.
+        let Some(plan) = plan_shop(
+            session,
+            &command,
+            content,
+            loaded,
+            hour,
+            players,
+            progress,
+            &alignments,
+            &npcs,
+            &rooms,
+            &items,
+        ) else {
             continue;
         };
-
-        // The shop is wherever its keeper stands, matched by the `NpcKey` the
-        // zone reset installed.
-        let shop = npcs.iter().find_map(|(_, key, location)| {
-            (location.room == room)
-                .then(|| content.shops.get(&key.0))
-                .flatten()
-        });
-        let Some(shop) = shop else {
-            deny(&mut output, session, "There is no shop here.");
-            continue;
-        };
-
-        // `SHOP_ROOM`: an empty list means the keeper trades wherever it is;
-        // otherwise the player must be in one of the listed rooms
-        // (`ok_shop_room`, `shop.c:939`).
-        if !shop.rooms.is_empty()
-            && !rooms.get(room).ok().is_some_and(|room| {
-                shop.rooms
-                    .iter()
-                    .any(|allowed| allowed.as_ref() == room.key.as_str())
-            })
-        {
-            deny(&mut output, session, "There is no shop here.");
-            continue;
-        }
-
-        // Circle's `is_open`: a closed keeper explains which close sent you away.
-        if let Some(reason) = closed_reason(shop, hour) {
-            output.write(text(session, reason));
-            write_prompt(&mut output, session);
-            continue;
-        }
-
-        // `SHOP_TRADE_WITH`: refuse before any trade command is evaluated.
-        if let Some(reason) = trade_refused(
-            shop,
-            alignments.get(session).ok(),
-            progress.get(session).ok(),
-        ) {
-            let actor = actor_name(players, session);
-            deny(&mut output, session, format!("{actor} {reason}"));
-            continue;
-        }
-
-        match command {
-            ShopCommand::List => shop_list(session, shop, content, loaded, &mut output),
-            ShopCommand::Value(needle) => {
-                shop_value(session, shop, content, &items, &needle, &mut output);
-            }
-            ShopCommand::Buy(needle) => shop_buy(
-                session,
-                shop,
-                content,
-                loaded,
-                &needle,
-                players,
-                &mut purses,
-                &mut commands,
-                &mut output,
-            ),
-            ShopCommand::Sell(needle) => shop_sell(
-                session,
-                shop,
-                content,
-                &items,
-                &needle,
-                players,
-                &mut purses,
-                &mut commands,
-                &mut output,
-            ),
-        }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    #![allow(clippy::expect_used, clippy::unwrap_used)]
-
-    use std::collections::BTreeMap;
-
-    use super::*;
-
-    #[test]
-    fn parses_each_shop_verb_and_keeps_the_full_argument() {
-        assert_eq!(parse_shop_line("list"), Some(ShopCommand::List));
-        assert_eq!(
-            parse_shop_line("BUY a long sword"),
-            Some(ShopCommand::Buy("a long sword".to_owned()))
+        apply_shop_plan(
+            session,
+            &plan,
+            content,
+            players,
+            &mut purses,
+            &mut commands,
+            &mut output,
         );
-        assert_eq!(
-            parse_shop_line("sell dagger"),
-            Some(ShopCommand::Sell("dagger".to_owned()))
-        );
-        assert_eq!(
-            parse_shop_line("  value  brass key  "),
-            Some(ShopCommand::Value("brass key".to_owned()))
-        );
-        assert_eq!(
-            parse_shop_line("buy"),
-            Some(ShopCommand::Buy(String::new()))
-        );
-        assert_eq!(parse_shop_line("attack goblin"), None);
-        assert_eq!(parse_shop_line("listing"), None);
-    }
-
-    #[test]
-    fn prices_round_to_the_nearest_coin() {
-        // Circle's 50-cost item at profit_buy 1.15 is 57.5 -> 58.
-        assert_eq!(shop_price(50, 1.15), 58);
-        // profit_sell 0.5 of 50 is 25.
-        assert_eq!(shop_price(50, 0.5), 25);
-        // Rounding is half-up, and zero/nonsense multipliers are safe.
-        assert_eq!(shop_price(3, 0.5), 2);
-        assert_eq!(shop_price(100, 0.0), 0);
-        assert_eq!(shop_price(100, f32::NAN), 0);
-        assert_eq!(shop_price(100, -1.0), 0);
-    }
-
-    fn shop() -> ShopDef {
-        ShopDef {
-            buy_multiplier: 1.0,
-            sell_multiplier: 1.0,
-            buy_kinds: Vec::new(),
-            produce: Vec::new(),
-            rooms: Vec::new(),
-            trade_with: Vec::new(),
-            hours: crate::content::ShopHours::default(),
-            messages: Vec::new(),
-            broke_temper: 0,
-            bitvector: Vec::new(),
-            buy_words: BTreeMap::new(),
-        }
-    }
-
-    #[test]
-    fn shop_messages_substitute_name_and_coins() {
-        let message = shop_message("%s That'll be %d coins, please.", "Aria", 58);
-        assert_eq!(message, "Aria That'll be 58 coins, please.");
-        // Literal percent and unknown conversions survive.
-        assert_eq!(shop_message("100%% of %s", "Aria", 0), "100% of Aria");
-        assert_eq!(shop_message("a %q b", "Aria", 0), "a %q b");
-
-        // A missing message falls back; a present one is used.
-        let mut shop = shop();
-        assert_eq!(shop_says(&shop, 5, "Aria", 10, "fallback"), "fallback");
-        shop.messages = vec![String::new(); 7];
-        shop.messages[5] = "%s pays %d.".to_owned();
-        assert_eq!(shop_says(&shop, 5, "Aria", 10, "fallback"), "Aria pays 10.");
-        assert_eq!(shop_says(&shop, 6, "Aria", 10, "fallback"), "fallback");
-    }
-
-    #[test]
-    fn closed_reason_matches_circles_is_open() {
-        use crate::content::ShopHours;
-
-        // Default = always open.
-        let mut shop = shop();
-        assert_eq!(closed_reason(&shop, 0), None);
-        assert_eq!(closed_reason(&shop, 23), None);
-
-        // Before opening.
-        shop.hours = ShopHours {
-            open1: 9,
-            close1: 17,
-            open2: 0,
-            close2: 0,
-        };
-        assert_eq!(closed_reason(&shop, 8), Some(MSG_NOT_OPEN_YET));
-        assert_eq!(closed_reason(&shop, 9), None);
-        assert_eq!(closed_reason(&shop, 17), None);
-        assert_eq!(closed_reason(&shop, 18), Some(MSG_CLOSED_FOR_DAY));
-
-        // Two shifts: the gap reports "not reopened yet".
-        shop.hours = ShopHours {
-            open1: 8,
-            close1: 12,
-            open2: 14,
-            close2: 20,
-        };
-        assert_eq!(closed_reason(&shop, 13), Some(MSG_NOT_REOPEN_YET));
-        assert_eq!(closed_reason(&shop, 14), None);
-        assert_eq!(closed_reason(&shop, 21), Some(MSG_CLOSED_FOR_DAY));
-    }
-
-    #[test]
-    fn trade_refused_checks_alignment_then_class() {
-        use crate::combat::model::{TbaAlignment, TbaProgress};
-
-        let mut shop = shop();
-        // No restrictions: everyone is served.
-        assert_eq!(trade_refused(&shop, None, None), None);
-
-        shop.trade_with = vec![ShopTrade::Good];
-        let good = TbaAlignment(400);
-        assert_eq!(
-            trade_refused(&shop, Some(&good), None),
-            Some(MSG_NO_SELL_ALIGN)
-        );
-        assert_eq!(trade_refused(&shop, Some(&TbaAlignment(0)), None), None);
-
-        shop.trade_with = vec![ShopTrade::Warrior];
-        let warrior = TbaProgress::new("warrior");
-        assert_eq!(
-            trade_refused(&shop, None, Some(&warrior)),
-            Some(MSG_NO_SELL_CLASS)
-        );
-        let mage = TbaProgress::new("magic_user");
-        assert_eq!(trade_refused(&shop, None, Some(&mage)), None);
     }
 }
