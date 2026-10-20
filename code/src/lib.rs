@@ -49,6 +49,7 @@ pub mod spells;
 pub mod stealth;
 pub mod transport;
 pub mod triggers;
+pub mod views;
 pub mod visibility;
 pub mod zones;
 
