@@ -24,9 +24,9 @@ use mib_stdlib::prelude::{
     RoomId, RoomIndex, StdlibModule, StdlibPlugin,
 };
 use mib_tba::prelude::{
-    SaveEffect, ShopDef, ShopsSection, SocialDef, SocialsSection, SpellKind, SpellTarget,
-    SpellsSection, TbaClassesSection, TbaContent, TbaItemsSection, TbaModule, TbaNpcStatsSection,
-    TbaPlugin, TriggersSection, ZonesSection,
+    SaveEffect, ShopDef, ShopsSection, SocialsSection, SpellKind, SpellTarget, SpellsSection,
+    TbaClassesSection, TbaContent, TbaItemsSection, TbaModule, TbaNpcStatsSection, TbaPlugin,
+    TbaSocialDef, TriggersSection, ZonesSection,
 };
 
 /// Exact counts from the full tbaMUD conversion now in `content/` (Phase 10).
@@ -182,7 +182,7 @@ fn tba_pack_loads_and_validates_with_the_expected_sections() {
     assert!(guildguard.script.contains("%direction%"));
     // Issue #17: a spot-check that the new-format sets survive, including
     // Circle's `$`-codes and the `#`-as-None mapping.
-    let smile: &SocialDef = tba
+    let smile: &TbaSocialDef = tba
         .section::<SocialsSection>()
         .expect("socials")
         .socials
