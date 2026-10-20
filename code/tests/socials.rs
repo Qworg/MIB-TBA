@@ -14,8 +14,8 @@ use mib_core::prelude::*;
 use mib_stdlib::prelude::*;
 use mib_tba::prelude::*;
 
-fn social() -> mib_tba::content::SocialDef {
-    mib_tba::content::SocialDef {
+fn social() -> mib_tba::content::TbaSocialDef {
+    mib_tba::content::TbaSocialDef {
         sort_as: "wave".into(),
         hide: false,
         min_char_position: 5,

@@ -1393,7 +1393,7 @@ fn shop_issues(
 /// keeper id.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct SocialDef {
+pub struct TbaSocialDef {
     /// Circle's `sort_as`: the command-list sort key (usually the same word).
     #[serde(default)]
     pub sort_as: SmolStr,
@@ -1453,7 +1453,7 @@ pub struct SocialDef {
     pub others_obj_found: Option<String>,
 }
 
-impl SocialDef {
+impl TbaSocialDef {
     /// True when the social carries no message at all (an inert entry). The
     /// validator rejects these rather than shipping a command that does
     /// nothing.
@@ -1487,7 +1487,7 @@ impl SocialDef {
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct SocialsFile {
-    pub socials: BTreeMap<SmolStr, SocialDef>,
+    pub socials: BTreeMap<SmolStr, TbaSocialDef>,
 }
 
 /// `tba.socials`.

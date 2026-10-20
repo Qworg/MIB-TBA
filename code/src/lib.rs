@@ -80,7 +80,7 @@ pub mod prelude {
         ZoneDef, ZoneFlag, ZonesFile, ZonesSection, register,
     };
     pub use crate::content::{ShopDef, ShopHours, ShopTrade, ShopsFile, ShopsSection};
-    pub use crate::content::{SocialDef, SocialsFile, SocialsSection};
+    pub use crate::content::{SocialsFile, SocialsSection, TbaSocialDef};
     pub use crate::dg::vars::TbaTriggerVars;
     pub use crate::equipment::{
         TbaEquipment, TbaEquipmentSave, choose_slot, handle_equipment_commands,
