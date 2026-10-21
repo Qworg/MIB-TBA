@@ -197,6 +197,13 @@ pub fn command_words(input: &PlayerInput) -> Option<(String, String)> {
         Command::Block { name } => ("block", name.clone()),
         Command::Unblock { name } => ("unblock", name.clone()),
         Command::Friends => ("friends", String::new()),
+        // The mail commands (MIB D-06). `mail` carries a sub-command, so the
+        // word is the sub-command's own.
+        Command::Mail { sub } => ("mail", format!("{sub:?}").to_lowercase()),
+        Command::MailRead { index } => ("mail read", index.to_string()),
+        Command::MailDelete { index } => ("mail delete", index.to_string()),
+        Command::MailSend { to, subject, body } => ("mail send", format!("{to} {subject} {body}")),
+        Command::MailCompose { to, subject } => ("mail compose", format!("{to} {subject}")),
         Command::PartyInvite { target } => ("ginvite", target.clone()),
         Command::PartyAccept => ("gaccept", String::new()),
         Command::PartyDecline => ("gdecline", String::new()),
@@ -244,6 +251,12 @@ pub fn command_words(input: &PlayerInput) -> Option<(String, String)> {
         Command::Help { topic } => ("help", optional(topic)),
         Command::Credits => ("credits", String::new()),
         Command::Custom { verb, args } => return Some((verb.to_lowercase(), args.join(" "))),
+        // A command this build does not know is simply not offered to the
+        // triggers. The engine may add commands faster than the pack names
+        // them, and a new variant must not break the build — so this arm is
+        // deliberately kept even while the match above is exhaustive.
+        #[allow(unreachable_patterns)]
+        _ => return None,
     };
     Some((word.to_owned(), args))
 }
