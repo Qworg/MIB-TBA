@@ -182,6 +182,11 @@ rules. They stay in `tba.npc_stats` and `mib_tba::combat`. No stdlib change.
   stdlib `Followers` primitive), and practice/guild (a persisted
   `TbaPractice` counter + per-spell/skill percentages, with the level-up
   practice grant).
+- **Shipped in TBA (spells):** thirteen of the twenty-six unimplemented Circle
+  spells now have real effects (transport, charm, party, invisibility, the
+  cures, `create food`, `identify`). The remaining thirteen need four engine
+  seams, filed as [MIB#36](https://github.com/Qworg/MIB/issues/36); the other
+  nine are pack work.
 
 ## Suggested cross-repo split
 
