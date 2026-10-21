@@ -618,6 +618,7 @@ pub fn handle_shop_commands(
         sessions,
         players,
         progress,
+        carried: _,
     } = &actors;
 
     for msg in reader.read() {

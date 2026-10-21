@@ -504,12 +504,12 @@ fn tba_spell_catalog_is_the_circle_catalog() {
         }
     }
     // #39 is converting the `Utility` set to real kinds; these counts move as
-    // each group lands. Eleven spells landed so far: the transport, charm and
-    // party groups, then invisibility and the cures.
-    assert_eq!(flagged, 15, "Circle routines still unimplemented (#39)");
+    // each group lands. Thirteen spells landed so far: the transport, charm
+    // and party groups, then invisibility, the cures, and the object spells.
+    assert_eq!(flagged, 13, "Circle routines still unimplemented (#39)");
     assert_eq!(
-        implemented, 39,
-        "modeled kinds: damage/heal/buff/debuff/detect/transport/charm/cure/invisibility"
+        implemented, 41,
+        "modeled kinds: damage/heal/buff/debuff/detect/transport/charm/cure/invisibility/create/identify"
     );
     assert_eq!(implemented + flagged, TBA_SPELLS);
 

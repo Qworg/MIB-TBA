@@ -15,6 +15,7 @@
 use std::collections::BTreeMap;
 
 use mib_core::prelude::*;
+use mib_stdlib::content::ItemTag;
 use mib_stdlib::prelude::*;
 use mib_tba::prelude::*;
 use smol_str::SmolStr;
@@ -64,6 +65,8 @@ fn mage() -> TbaClassDef {
             "invisibility",
             "blindness",
             "cure_blind",
+            "create_food",
+            "identify",
         ]
         .into_iter()
         .map(SmolStr::new)
@@ -101,6 +104,7 @@ fn base(name: &str, mana: u32) -> SpellDef {
         level_bonus: LevelBonus::default(),
         affect: None,
         cures: None,
+        creates: None,
         duration: DEFAULT_BUFF_ROUNDS,
         duration_bonus: LevelBonus::default(),
         target: SpellTarget::Victim,
@@ -275,6 +279,25 @@ fn content() -> TbaContent {
                 ..base("cure blind", 5)
             },
         ),
+        // `create food` makes the waybread and gives it to the caster.
+        (
+            SmolStr::new("create_food"),
+            SpellDef {
+                kind: SpellKind::Create,
+                creates: Some(SmolStr::new("tba_item_10")),
+                target: SpellTarget::None,
+                ..base("create food", 5)
+            },
+        ),
+        // `identify` reports an item's hidden values.
+        (
+            SmolStr::new("identify"),
+            SpellDef {
+                kind: SpellKind::Identify,
+                target: SpellTarget::Object,
+                ..base("identify", 5)
+            },
+        ),
         // Transport spells (#39).
         (
             SmolStr::new("word_of_recall"),
@@ -342,18 +365,99 @@ fn content() -> TbaContent {
         (SmolStr::new("mage"), mage()),
         (SmolStr::new("warrior"), warrior()),
     ]);
+    // The item prototypes the object spells read: the waybread `create food`
+    // makes, and a trinket `identify` reports.
+    let items = BTreeMap::from([
+        (
+            ItemId::from("tba_item_10"),
+            TbaItemDef {
+                keywords: vec!["waybread".to_owned(), "bread".to_owned()],
+                extra_flags: Vec::new(),
+                affect_flags: Vec::new(),
+                kind: TbaItemKind::Food,
+                slots: Vec::new(),
+                values: [0; 4],
+                affects: Vec::new(),
+                weight: 1,
+                cost: 50,
+                rent: 0,
+                min_level: 0,
+                timer: None,
+                action_description: None,
+                extra_descriptions: Vec::new(),
+            },
+        ),
+        (
+            ItemId::from("tba_item_trinket"),
+            TbaItemDef {
+                keywords: vec!["trinket".to_owned()],
+                extra_flags: Vec::new(),
+                affect_flags: Vec::new(),
+                kind: TbaItemKind::Other,
+                slots: Vec::new(),
+                values: [0; 4],
+                affects: Vec::new(),
+                weight: 1,
+                cost: 7,
+                rent: 0,
+                min_level: 0,
+                timer: None,
+                action_description: None,
+                extra_descriptions: Vec::new(),
+            },
+        ),
+    ]);
     TbaContent {
         classes,
         spells,
+        items,
         ..TbaContent::default()
     }
 }
 
 /// The cast system wired like `TbaPlugin`: the affect recompute follows so a
 /// buff is visible in the frame it lands, and buffs tick on `TbaRound`.
+/// A one-pack `LoadedContent` carrying the `stdlib.items` prototype the
+/// creation spell makes.
+fn loaded() -> LoadedContent {
+    use mib_content::prelude::{PackAsset, PackManifest, PackSection};
+    use std::path::PathBuf;
+    let items = BTreeMap::from([(
+        ItemId::from("tba_item_10"),
+        ItemDef {
+            name: "a waybread".to_owned(),
+            description: "Some waybread has been put here.".to_owned(),
+            value: Some(50),
+            container: None,
+            tags: vec![ItemTag::Food],
+        },
+    )]);
+    let sections: BTreeMap<&'static str, Box<dyn std::any::Any + Send + Sync>> =
+        BTreeMap::from([(
+            ItemsSection::ID,
+            Box::new(ItemsFile { items }) as Box<dyn std::any::Any + Send + Sync>,
+        )]);
+    LoadedContent(vec![PackAsset {
+        manifest: PackManifest {
+            id: "spell-test".into(),
+            version: "1".to_owned(),
+            title: "spell test".to_owned(),
+            game: None,
+            depends_on: Vec::new(),
+            content_root: "content".to_owned(),
+            requires_mib: None,
+            code: None,
+        },
+        sections,
+        section_files: BTreeMap::new(),
+        root: PathBuf::from("/spell-test"),
+    }])
+}
+
 fn test_app() -> App {
     let mut app = App::new();
     app.insert_resource(content());
+    app.insert_resource(loaded());
     app.insert_resource(TbaRng::from_seed(0xC0FFEE));
     app.init_resource::<VisibilityPolicy>();
     app.add_message::<OutputEvent>();
@@ -1615,5 +1719,55 @@ fn a_cure_removes_the_affect_the_named_spell_granted() {
     assert!(
         buffs.buffs.is_empty(),
         "the cure removed the blindness buff"
+    );
+}
+
+#[test]
+fn create_food_makes_the_waybread_and_gives_it_to_the_caster() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+
+    cast(&mut app, player, "cast 'create food'");
+    run_game(&mut app);
+
+    let carried = app.world().get::<TbaBuffs>(player).is_none();
+    assert!(carried, "the creation leaves no buff behind");
+    let waybread = {
+        let mut query = app.world_mut().query::<(Entity, &Item, &CarriedBy)>();
+        query
+            .iter(app.world())
+            .find(|(_, item, carried)| item.def_id.as_ref() == "tba_item_10" && carried.0 == player)
+            .map(|(entity, _, _)| entity)
+    };
+    assert!(waybread.is_some(), "the waybread is in the caster's hands");
+}
+
+#[test]
+fn identify_reports_the_items_values() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+    // A carried trinket the caster can identify.
+    app.world_mut().spawn((
+        Item {
+            def_id: ItemId::from("tba_item_trinket"),
+            name: "a silver trinket".to_owned(),
+            description: "A trinket.".to_owned(),
+            value: Some(7),
+            tags: Vec::new(),
+        },
+        CarriedBy(player),
+    ));
+
+    cast(&mut app, player, "cast 'identify' trinket");
+    run_game(&mut app);
+
+    let messages = drain_text(&mut app);
+    assert!(
+        messages
+            .iter()
+            .any(|line| line.contains("trinket") && line.contains("coins")),
+        "{messages:?}"
     );
 }

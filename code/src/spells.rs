@@ -34,7 +34,8 @@
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{
-    Location, Npc, NpcId, NpcKey, Player, PlayerDefeated, Session, SessionState,
+    CarriedBy, Item, ItemDef, ItemId, ItemsSection, LoadedContent, Location, NpcId, NpcKey, Player,
+    PlayerDefeated, SessionState, spawn_item_carried_by_entity,
 };
 use serde::{Deserialize, Serialize};
 use smol_str::SmolStr;
@@ -320,6 +321,28 @@ fn victim_class_level(
     (SmolStr::new("warrior"), 1)
 }
 
+/// The stdlib item prototype for `id`, if any pack defines it.
+fn stdlib_item_def(loaded: Option<&LoadedContent>, id: &ItemId) -> Option<ItemDef> {
+    let loaded = loaded?;
+    for pack in loaded.0.iter().rev() {
+        if let Some(section) = pack.section::<ItemsSection>()
+            && let Some(def) = section.items.get(id)
+        {
+            return Some(def.clone());
+        }
+    }
+    None
+}
+
+/// The carried items a script's cast resolves an object target against.
+///
+/// The script path's `SystemState` tuple is already at the engine's 16-element
+/// limit, so this one query travels as a bundle.
+#[derive(bevy::ecs::system::SystemParam)]
+pub struct CarriedItems<'w, 's> {
+    pub carried: Query<'w, 's, (Entity, &'static Item, &'static CarriedBy)>,
+}
+
 /// A target resolved by the plan, with everything the apply phase needs.
 ///
 /// The plan decides *who* is affected and *what* is true about them; the
@@ -344,31 +367,37 @@ pub(crate) struct ResolvedTarget {
     pub saves: TbaSaves,
     /// The prototype an NPC victim was instantiated from, for the kill reward.
     pub key: Option<NpcId>,
+    /// The prototype of an item target, for the object spells.
+    pub item_def_id: Option<ItemId>,
 }
 
 /// Resolve one target: its name, whether it is a player, and its save profile.
 fn resolve_target(
     entity: Entity,
     content: &TbaContent,
-    players: &Query<(Entity, &Player, &Location)>,
-    npcs: &Query<(Entity, &Npc, &Location)>,
-    progress: &Query<&TbaProgress>,
-    keys: &Query<&NpcKey>,
+    actors: &ActorView<'_, '_>,
+    npcs: &NpcView<'_, '_>,
     combatants: &Query<&mut TbaCombatant>,
 ) -> ResolvedTarget {
-    let (class, level) = victim_class_level(entity, content, progress, keys);
+    let (class, level) = victim_class_level(entity, content, &actors.progress, &npcs.keys);
+    let item_def_id = actors
+        .carried
+        .get(entity)
+        .ok()
+        .map(|(_, item, _)| item.def_id.clone());
     ResolvedTarget {
         entity,
-        name: entity_name(entity, players, npcs),
-        is_player: players.get(entity).is_ok(),
-        is_npc: npcs.get(entity).is_ok(),
+        name: entity_name(entity, &actors.players, &npcs.npcs),
+        is_player: actors.players.get(entity).is_ok(),
+        is_npc: npcs.npcs.get(entity).is_ok(),
         class,
         level,
         saves: combatants
             .get(entity)
             .map(|combatant| combatant.saves)
             .unwrap_or_default(),
-        key: keys.get(entity).ok().map(|key| key.0.clone()),
+        key: npcs.keys.get(entity).ok().map(|key| key.0.clone()),
+        item_def_id,
     }
 }
 
@@ -474,8 +503,14 @@ pub(crate) fn plan_cast<'a>(
         sessions: _,
         players,
         progress,
+        carried: _,
     } = actors;
-    let NpcView { npcs, keys } = npcs;
+    // The view keeps its own name (the plan hands it on); the inner query is
+    // unpacked under another one.
+    let NpcView {
+        npcs: npc_query,
+        keys: _,
+    } = npcs;
     let Some(parsed) = parse_cast_line(line) else {
         return CastOutcome::NotCast;
     };
@@ -547,7 +582,8 @@ pub(crate) fn plan_cast<'a>(
                 .map(|(entity, _, _)| entity)
                 .collect();
             in_room.extend(
-                npcs.iter()
+                npc_query
+                    .iter()
                     .filter(|(_, _, location)| Some(location.room) == room)
                     .map(|(entity, _, _)| entity),
             );
@@ -575,6 +611,26 @@ pub(crate) fn plan_cast<'a>(
             }
             members
         }
+        // `TAR_OBJ_INV`: a carried item, found by name.
+        SpellTarget::Object => {
+            let Some(name) = target_arg.as_deref() else {
+                return CastOutcome::Denied("On what should the spell be cast?".to_owned());
+            };
+            let needle = name.to_lowercase();
+            let found = actors
+                .carried
+                .iter()
+                .find(|(_, item, carried)| {
+                    carried.0 == session && item.name.to_lowercase().contains(&needle)
+                })
+                .map(|(entity, _, _)| entity);
+            match found {
+                Some(target) => vec![target],
+                None => {
+                    return CastOutcome::Denied(format!("You don't have {name}."));
+                }
+            }
+        }
         // `TAR_CHAR_WORLD`: a character anywhere, found by name.
         SpellTarget::World => {
             let Some(name) = target_arg.as_deref() else {
@@ -586,7 +642,8 @@ pub(crate) fn plan_cast<'a>(
                 .find(|(_, player, _)| player.name.to_lowercase().contains(&needle))
                 .map(|(entity, _, _)| entity)
                 .or_else(|| {
-                    npcs.iter()
+                    npc_query
+                        .iter()
                         .find(|(_, npc, _)| npc.name.to_lowercase().contains(&needle))
                         .map(|(entity, _, _)| entity)
                 });
@@ -599,7 +656,8 @@ pub(crate) fn plan_cast<'a>(
         }
         SpellTarget::Victim => match target_arg.as_deref() {
             Some(name) => {
-                if let Some(target) = find_target_in_room(session, name, players, npcs, hidden) {
+                if let Some(target) = find_target_in_room(session, name, players, npc_query, hidden)
+                {
                     vec![target]
                 } else {
                     let own_name = players
@@ -627,7 +685,7 @@ pub(crate) fn plan_cast<'a>(
     // the plan's plain values.
     let targets: Vec<ResolvedTarget> = targets
         .into_iter()
-        .map(|entity| resolve_target(entity, content, players, npcs, progress, keys, combatants))
+        .map(|entity| resolve_target(entity, content, actors, npcs, combatants))
         .collect();
 
     CastOutcome::Plan(CastPlan {
@@ -657,6 +715,7 @@ pub fn handle_cast_command(
     npcs: NpcView<'_, '_>,
     hidden: StealthView<'_, '_>,
     content: Option<Res<TbaContent>>,
+    loaded: Option<Res<LoadedContent>>,
     mut combatants: Query<&mut TbaCombatant>,
     mut buffs: Query<&mut TbaBuffs>,
     mut rng: ResMut<TbaRng>,
@@ -676,6 +735,7 @@ pub fn handle_cast_command(
         sessions,
         players,
         progress: _,
+        carried: _,
     } = &actors;
     // The view keeps its own name; the inner query is unpacked under another
     // one so `plan_cast` can still be handed the view.
@@ -754,6 +814,7 @@ pub fn handle_cast_command(
 
         let cast = Cast {
             content,
+            loaded: loaded.as_deref(),
             caster: session,
             caster_level,
             spell_id: &spell_id,
@@ -762,6 +823,24 @@ pub fn handle_cast_command(
             actor_name: &actor_name,
             caster_hears: true,
             defer_despawn: false,
+        };
+        // A `TAR_IGNORE` spell has no target and acts on the caster
+        // (`create food` makes the item in the caster's hands).
+        let caster_target = ResolvedTarget {
+            entity: session,
+            name: actor_name.clone(),
+            is_player: true,
+            is_npc: false,
+            class: SmolStr::new("warrior"),
+            level: 1,
+            saves: TbaSaves::default(),
+            key: None,
+            item_def_id: None,
+        };
+        let targets: Vec<&ResolvedTarget> = if targets.is_empty() {
+            vec![&caster_target]
+        } else {
+            targets.iter().collect()
         };
         for target in &targets {
             apply_spell_to_target(
@@ -787,6 +866,8 @@ pub fn handle_cast_command(
 /// The cast being resolved: what is cast, by whom and from where.
 struct Cast<'a> {
     content: &'a TbaContent,
+    /// The stdlib content, for the item a creation spell makes.
+    loaded: Option<&'a LoadedContent>,
     caster: Entity,
     caster_level: u32,
     spell_id: &'a SmolStr,
@@ -834,6 +915,7 @@ fn apply_spell_to_target(
 ) {
     let Cast {
         content,
+        loaded,
         caster: session,
         caster_level,
         spell_id,
@@ -1064,6 +1146,48 @@ fn apply_spell_to_target(
             crate::stealth::grant_invisible(target, affect_rounds(spell, caster_level), commands);
             output.write(text(target, "You feel a veil settle over you."));
         }
+        SpellKind::Create => {
+            // `MAG_CREATIONS` (`magic.c:942-968`): make the item and give it
+            // to the caster.
+            let Some(item_id) = spell.creates.clone() else {
+                return;
+            };
+            let item_id = ItemId::from(item_id.as_str().to_owned());
+            let Some(def) = stdlib_item_def(loaded, &item_id) else {
+                return;
+            };
+            let holder = session;
+            let spawn_id = item_id.clone();
+            let spawn_def = def.clone();
+            commands.queue(move |world: &mut World| {
+                spawn_item_carried_by_entity(world, holder, &spawn_id, &spawn_def);
+            });
+            output.write(text(session, format!("You create {}.", def.name)));
+        }
+        SpellKind::Identify => {
+            // `spell_identify` (`spells.c:299-385`): report the item's
+            // hidden values.
+            let Some(def_id) = resolved.item_def_id.clone() else {
+                return;
+            };
+            let Some(def) = content.items.get(&def_id) else {
+                return;
+            };
+            let name = def
+                .keywords
+                .first()
+                .map(|keyword| keyword.as_str())
+                .unwrap_or("it");
+            tell_caster(
+                output,
+                caster_hears,
+                session,
+                format!(
+                    "{name}: {} coins, a {:?} weighing {}.",
+                    def.cost, def.kind, def.weight
+                ),
+            );
+        }
         SpellKind::Charm => {
             commands.queue(move |world: &mut World| {
                 if crate::transport::refuses_charm(world, target) {
@@ -1255,18 +1379,14 @@ pub fn cast_spell_at_level(
 ) -> bool {
     use bevy::ecs::system::SystemState;
 
-    type Players<'w, 's> = Query<'w, 's, (Entity, &'static Player, &'static Location)>;
-    type Npcs<'w, 's> = Query<'w, 's, (Entity, &'static Npc, &'static Location)>;
     type Params<'w, 's> = (
-        Players<'w, 's>,
-        Npcs<'w, 's>,
-        Query<'w, 's, &'static TbaProgress>,
-        Query<'w, 's, &'static NpcKey>,
+        ActorView<'w, 's>,
+        NpcView<'w, 's>,
         Query<'w, 's, &'static mut TbaCombatant>,
         Query<'w, 's, &'static mut TbaBuffs>,
         Query<'w, 's, &'static Location>,
-        Query<'w, 's, &'static Session>,
         Option<Res<'w, TbaContent>>,
+        Option<Res<'w, LoadedContent>>,
         ResMut<'w, TbaRng>,
         Commands<'w, 's>,
         MessageWriter<'w, OutputEvent>,
@@ -1284,15 +1404,13 @@ pub fn cast_spell_at_level(
     let mut state: SystemState<Params<'_, '_>> = SystemState::new(world);
     let found = {
         let Ok((
-            players,
-            npcs,
-            progress,
-            keys,
+            actors,
+            npc_view,
             mut combatants,
             mut buffs,
             locations,
-            sessions,
             content,
+            loaded,
             mut rng,
             mut commands,
             mut output,
@@ -1306,6 +1424,14 @@ pub fn cast_spell_at_level(
         };
         let empty = TbaContent::default();
         let content = content.as_deref().unwrap_or(&empty);
+        // The views are unpacked into the names the body already used.
+        let ActorView {
+            sessions,
+            players,
+            progress: _,
+            carried: _,
+        } = &actors;
+        let NpcView { npcs, keys: _ } = &npc_view;
         let wanted = normalize(spell_id);
         let Some((spell_id, spell)) = content
             .spells
@@ -1323,6 +1449,8 @@ pub fn cast_spell_at_level(
             // to the explicit victim, or the caster.
             SpellTarget::Party => vec![victim.unwrap_or(caster)],
             SpellTarget::World => victim.into_iter().collect(),
+            // A script's cast names the object explicitly.
+            SpellTarget::Object => victim.into_iter().collect(),
             SpellTarget::None => Vec::new(),
             SpellTarget::Room => {
                 let mut in_room: Vec<Entity> = players
@@ -1339,25 +1467,16 @@ pub fn cast_spell_at_level(
                 in_room
             }
         };
-        let actor_name = entity_name(caster, &players, &npcs);
+        let actor_name = entity_name(caster, players, npcs);
         // Resolve the targets the same way the player's plan does, so the
         // apply phase reads plain values either way.
         let targets: Vec<ResolvedTarget> = targets
             .into_iter()
-            .map(|entity| {
-                resolve_target(
-                    entity,
-                    content,
-                    &players,
-                    &npcs,
-                    &progress,
-                    &keys,
-                    &combatants,
-                )
-            })
+            .map(|entity| resolve_target(entity, content, &actors, &npc_view, &combatants))
             .collect();
         let cast = Cast {
             content,
+            loaded: loaded.as_deref(),
             caster,
             caster_level: level.max(1),
             spell_id,
@@ -1376,7 +1495,7 @@ pub fn cast_spell_at_level(
             apply_spell_to_target(
                 &cast,
                 target,
-                &players,
+                players,
                 &purses,
                 &mut combatants,
                 &mut buffs,

@@ -180,6 +180,7 @@ pub fn handle_combat_commands(
         sessions,
         players,
         progress: _,
+        carried: _,
     } = &actors;
 
     for msg in reader.read() {

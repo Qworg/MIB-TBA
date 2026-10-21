@@ -205,8 +205,8 @@ spells:
     mana_min: 5
     mana_max: 30
     mana_change: 4
-    kind: utility
-    unsupported: "MAG_CREATIONS (magic.c:942-968) creates food; the pack does not implement item creation from a spell yet"
+    kind: create
+    creates: tba_item_10
     min_level:
       cleric: 2
     target: none
@@ -522,12 +522,11 @@ spells:
     mana_min: 25
     mana_max: 50
     mana_change: 5
-    kind: utility
-    unsupported: "spell_identify (spells.c:299-385) reveals object values; the pack shows item descriptions only"
+    kind: identify
     min_level:
       magic_user: 20
       cleric: 11
-    target: none
+    target: object
     min_position: standing
 
   # src/spell_parser.c:848-849, MAG_AFFECTS, magic.c:424-430.

@@ -590,6 +590,7 @@ pub fn handle_social_commands(
         sessions,
         players,
         progress,
+        carried: _,
     } = &actors;
 
     for msg in reader.read() {

@@ -40,6 +40,8 @@ pub struct ActorView<'w, 's> {
     pub players: Query<'w, 's, (Entity, &'static Player, &'static Location)>,
     /// The character's class and level.
     pub progress: Query<'w, 's, &'static TbaProgress>,
+    /// The items the character carries.
+    pub carried: Query<'w, 's, (Entity, &'static Item, &'static CarriedBy)>,
 }
 
 /// The non-player characters in a room: their identity, their room and their
