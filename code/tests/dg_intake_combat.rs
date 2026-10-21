@@ -527,6 +527,8 @@ fn spell(name: &str, mana: u32, target: SpellTarget) -> SpellDef {
         min_position: Position::Standing,
         save: SaveEffect::None,
         min_level: BTreeMap::new(),
+        cures: None,
+        creates: None,
         unsupported: None,
     }
 }

@@ -21,8 +21,8 @@ use mib_tba::combat::{
 };
 use mib_tba::content::{
     AffectDef, AffectLocation, DoorReset, ItemAffectFlag, ItemExtraFlag, NpcBehaviour, Position,
-    ResetMode, ShopDef, ShopFlag, ShopHours, ShopTrade, SocialDef, TbaExtraDesc, TbaItemDef,
-    TbaItemKind, TbaNpcStats, TbaSex, WearSlot, ZoneCommand, ZoneCommandKind, ZoneDef, ZoneFlag,
+    ResetMode, ShopDef, ShopFlag, ShopHours, ShopTrade, TbaExtraDesc, TbaItemDef, TbaItemKind,
+    TbaNpcStats, TbaSex, TbaSocialDef, WearSlot, ZoneCommand, ZoneCommandKind, ZoneDef, ZoneFlag,
 };
 use mib_tba::triggers::content::{TriggerDef, TriggerId, TriggersFile};
 
@@ -2362,9 +2362,9 @@ fn collect_unsupported_codes(message: &str, out: &mut BTreeSet<char>) {
     }
 }
 
-fn map_social(raw: &RawSocial) -> SocialDef {
+fn map_social(raw: &RawSocial) -> TbaSocialDef {
     let message = |index: usize| raw.messages.get(index).cloned().flatten();
-    SocialDef {
+    TbaSocialDef {
         sort_as: SmolStr::new(raw.sort_as.clone()),
         hide: raw.hide != 0,
         min_char_position: raw.min_char_position,

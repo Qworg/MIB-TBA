@@ -28,8 +28,8 @@ use crate::combat::{
     NpcDefeated, TbaAlignment, TbaCombatant, TbaGold, TbaProgress, TbaRng, TbaRound, TbaRoundClock,
 };
 use crate::content::{
-    ShopDef, ShopsSection, SocialDef, SocialsSection, SpellDef, SpellsSection, TbaClassDef,
-    TbaClassesSection, TbaItemDef, TbaItemsSection, TbaNpcStats, TbaNpcStatsSection, ZoneDef,
+    ShopDef, ShopsSection, SocialsSection, SpellDef, SpellsSection, TbaClassDef, TbaClassesSection,
+    TbaItemDef, TbaItemsSection, TbaNpcStats, TbaNpcStatsSection, TbaSocialDef, ZoneDef,
     ZonesSection,
 };
 use crate::dg::script::DgProtos;
@@ -78,7 +78,7 @@ pub struct TbaContent {
     /// `tba.shops` — keyed by the shopkeeper `stdlib.npcs` id (TBA-E17).
     pub shops: BTreeMap<NpcId, ShopDef>,
     /// `tba.socials` — keyed by the social word (issue #17).
-    pub socials: BTreeMap<SmolStr, SocialDef>,
+    pub socials: BTreeMap<SmolStr, TbaSocialDef>,
     /// `tba.triggers` — keyed by [`TriggerId`] (issue #15).
     pub triggers: BTreeMap<TriggerId, TriggerDef>,
     /// `tba.triggers.attachments` — each owner's ordered trigger list, keyed
@@ -397,6 +397,7 @@ impl Plugin for TbaPlugin {
             (
                 crate::spells::tick_buffs,
                 crate::stealth::tick_true_sight,
+                crate::stealth::tick_invisible,
                 crate::combat::resolve_rounds,
             )
                 .chain(),

@@ -408,6 +408,8 @@ fn deal_damage(
 /// within Bevy's 16-parameter tuple limit.
 #[derive(SystemParam)]
 pub struct SkillQueries<'w, 's> {
+    /// Whether a session is in the game.
+    pub sessions: Query<'w, 's, &'static Session>,
     pub players: Query<'w, 's, (Entity, &'static Player, &'static Location)>,
     pub npcs: Query<'w, 's, (Entity, &'static Npc, &'static Location)>,
     pub content: Option<Res<'w, TbaContent>>,
@@ -434,7 +436,6 @@ fn percent_for(practice: Option<&TbaPractice>, skill: &str) -> i32 {
 pub fn handle_skill_commands(
     mut reader: MessageReader<CommandReceived>,
     claimed: Option<Res<DgClaimed>>,
-    sessions: Query<&Session>,
     mut combatants: Query<&mut TbaCombatant>,
     mut memories: Query<&mut TbaAttackerMemory>,
     queries: SkillQueries,
@@ -447,6 +448,7 @@ pub fn handle_skill_commands(
 ) {
     let empty = TbaContent::default();
     let content = queries.content.as_deref().unwrap_or(&empty);
+    let sessions = &queries.sessions;
 
     for msg in reader.read() {
         let session = msg.session;

@@ -359,7 +359,7 @@ fn before_door(world: &mut World, mover: Entity, subcmd: i32, target: Option<&st
 }
 
 /// The room's name, description and exits, as a player sees it on looking.
-fn describe_room(world: &World, room: Entity) -> String {
+pub(crate) fn describe_room(world: &World, room: Entity) -> String {
     let Some(data) = world.get::<Room>(room) else {
         return String::new();
     };

@@ -56,6 +56,18 @@ pub struct TbaTrueSight {
     pub rounds_left: u32,
 }
 
+/// The pack's private invisibility grant, ticked on the combat round clock
+/// and mirrored into the engine [`Concealment`] by [`sync_concealment`].
+///
+/// Circle's `AFF_INVISIBLE` is a flag rather than a stat, so it does not live
+/// in the numeric `AffectLocation` vocabulary; it is its own transient
+/// component, exactly like [`TbaTrueSight`].
+#[derive(Component, Debug, Clone, Copy, PartialEq, Eq)]
+pub struct TbaInvisible {
+    /// Combat rounds left before the veil drops.
+    pub rounds_left: u32,
+}
+
 /// The `stealth` a `TbaHidden`/`TbaSneaking` player syncs into [`Concealment`].
 ///
 /// `hide`/`sneak` are binary in Circle, so the opposed axis is anchored to the
@@ -86,17 +98,21 @@ pub fn sync_concealment(
             Entity,
             Has<TbaHidden>,
             Has<TbaSneaking>,
+            Has<TbaInvisible>,
             Option<&TbaProgress>,
             Option<&Concealment>,
         ),
         With<Player>,
     >,
 ) {
-    for (entity, hidden, sneaking, progress, current) in &players {
-        if hidden || sneaking {
+    for (entity, hidden, sneaking, invisible, progress, current) in &players {
+        if hidden || sneaking || invisible {
             let desired = Concealment {
                 hidden: true,
-                invisible: false,
+                // A spell-granted veil is `AFF_INVISIBLE`; the hide and sneak
+                // skills are `AFF_HIDE`/`AFF_SNEAK`, which hide rather than
+                // make the character invisible.
+                invisible,
                 stealth: stealth_for(progress),
             };
             if current != Some(&desired) {
@@ -153,6 +169,26 @@ pub fn tick_true_sight(mut commands: Commands, mut sighted: Query<(Entity, &mut 
             commands.entity(entity).remove::<TbaTrueSight>();
         }
     }
+}
+
+/// `TbaRound`: age [`TbaInvisible`] by one round, dropping the expired veil.
+///
+/// [`sync_concealment`] then drops the engine's `invisible` flag in the same
+/// frame's `Update`, so the veil expires cleanly without a second removal path.
+pub fn tick_invisible(mut commands: Commands, mut veiled: Query<(Entity, &mut TbaInvisible)>) {
+    for (entity, mut invisible) in &mut veiled {
+        invisible.rounds_left = invisible.rounds_left.saturating_sub(1);
+        if invisible.rounds_left == 0 {
+            commands.entity(entity).remove::<TbaInvisible>();
+        }
+    }
+}
+
+/// Grant (or refresh) invisibility on `target` for `rounds` combat rounds.
+pub fn grant_invisible(target: Entity, rounds: u32, commands: &mut Commands) {
+    commands.entity(target).insert(TbaInvisible {
+        rounds_left: rounds.max(1),
+    });
 }
 
 /// Grant (or refresh) true sight on `target` for `rounds` combat rounds.

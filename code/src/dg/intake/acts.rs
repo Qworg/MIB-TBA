@@ -21,7 +21,7 @@ use mib_core::prelude::*;
 use mib_stdlib::prelude::{CarriedBy, Item, Location, Npc, Player};
 
 use crate::combat::{TbaCombatant, TbaProgress};
-use crate::content::{Position, SocialDef};
+use crate::content::{Position, TbaSocialDef};
 use crate::dg::host::EcsHost;
 use crate::dg::with_host;
 use crate::module::TbaContent;
@@ -51,7 +51,7 @@ struct Target {
 
 /// The lines one social shows, ready to offer.
 struct Lines {
-    social: SocialDef,
+    social: TbaSocialDef,
     actor: Entity,
     room: Entity,
     target: Option<Target>,

@@ -25,13 +25,14 @@
 
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
-use mib_stdlib::prelude::{CarriedBy, Item, Location, Npc, Player, Session, SessionState};
+use mib_stdlib::prelude::{CarriedBy, Item, Location, Npc, Player, SessionState};
 
 use crate::combat::commands::text;
 use crate::combat::{TbaCombatant, TbaProgress};
 use crate::content::Position;
 use crate::dg::intake::commands::{DgClaimed, is_claimed};
 use crate::module::TbaContent;
+use crate::views::ActorView;
 
 /// Circle's exact refusal for an unknown social (`do_action`, `act.social.c`).
 const MSG_UNSUPPORTED: &str = "That action is not supported.";
@@ -176,7 +177,7 @@ fn uppercase_last_word(text: &mut String) {
 /// table gate (`minimum_position`/`minimum_level`, set from the social in
 /// `create_command_list`) plus the victim gate in `do_action`.
 pub fn gate_reason(
-    social: &crate::content::SocialDef,
+    social: &crate::content::TbaSocialDef,
     actor_position: Position,
     actor_level: u32,
     victim_position: Option<Position>,
@@ -338,33 +339,65 @@ fn broadcast_except(
 /// One social activation: resolve the target, apply the gates, and render the
 /// actor/room/victim lines.
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
-fn run_social(
+/// A social the plan resolved: the message pair to say and the names to
+/// substitute into it.
+///
+/// The plan decides *what* is said — which pair, with which names — and the
+/// act only says it. That keeps the branch order (no argument, the auto pair,
+/// not found, the body-part refusal, the found pairs) in one place.
+struct SocialPlan {
+    /// The line for the actor, if any.
+    char_line: Option<String>,
+    /// The line for the room, if any.
+    others_line: Option<String>,
+    /// The actor's name.
+    actor: String,
+    /// The target's name, when the social named one.
+    target: Option<String>,
+    /// The object name, when the target resolved through the item fallback.
+    object: Option<String>,
+    /// The body part, when the social named one.
+    body: Option<String>,
+    /// The line for the victim, if any.
+    victim_line: Option<String>,
+    /// The room to broadcast to.
+    room: Entity,
+    /// The victim to leave out of the broadcast.
+    victim: Option<Entity>,
+}
+
+/// What a social command resolved to.
+enum SocialOutcome {
+    /// A refusal, with the line to say.
+    Refused(String),
+    /// The social to perform.
+    Perform(SocialPlan),
+}
+
+/// Resolve a social command into the message pair it would say.
+#[allow(clippy::too_many_arguments)]
+fn plan_social(
     session: Entity,
     name: &str,
     target_needle: &str,
     part: &str,
-    socials: &std::collections::BTreeMap<smol_str::SmolStr, crate::content::SocialDef>,
+    socials: &std::collections::BTreeMap<smol_str::SmolStr, crate::content::TbaSocialDef>,
     players: &Query<(Entity, &Player, &Location)>,
     npcs: &Query<(Entity, &Npc, &Location)>,
     combatants: &Query<&TbaCombatant>,
     progress: &Query<&TbaProgress>,
     carried: &Query<(Entity, &Item, &CarriedBy)>,
     ground: &Query<(Entity, &Item, &Location)>,
-    output: &mut MessageWriter<OutputEvent>,
-) {
+) -> Option<SocialOutcome> {
     let Some(social) = socials.get(name).or_else(|| {
         socials
             .iter()
             .find(|(key, _)| key.eq_ignore_ascii_case(name))
             .map(|(_, s)| s)
     }) else {
-        output.write(text(session, MSG_UNSUPPORTED.to_owned()));
-        write_prompt(output, session);
-        return;
+        return Some(SocialOutcome::Refused(MSG_UNSUPPORTED.to_owned()));
     };
-    let Some(room) = actor_room(players, session) else {
-        return;
-    };
+    let room = actor_room(players, session)?;
     let actor = actor_name(players, session);
 
     let target = find_target(target_needle, session, room, players, npcs, carried, ground);
@@ -375,141 +408,138 @@ fn run_social(
         level_of(progress, session),
         victim_position,
     ) {
-        output.write(text(session, reason.to_owned()));
-        write_prompt(output, session);
-        return;
+        return Some(SocialOutcome::Refused(reason.to_owned()));
     }
+
+    let body = (!part.is_empty()).then(|| part.to_owned());
 
     // No argument: the no-arg pair.
     if target_needle.trim().is_empty() {
-        let names = SocialNames {
-            actor: &actor,
-            ..SocialNames::default()
-        };
-        if let Some(line) = social.char_no_arg.as_deref() {
-            output.write(text(session, substitute(line, &names)));
-        }
-        if let Some(line) = social.others_no_arg.as_deref() {
-            broadcast_except(
-                players,
-                room,
-                session,
-                None,
-                output,
-                &substitute(line, &names),
-            );
-        }
-        write_prompt(output, session);
-        return;
+        return Some(SocialOutcome::Perform(SocialPlan {
+            char_line: social.char_no_arg.clone(),
+            others_line: social.others_no_arg.clone(),
+            actor,
+            target: None,
+            object: None,
+            body: None,
+            victim_line: None,
+            room,
+            victim: None,
+        }));
     }
 
     // The target is the actor: the auto pair.
     if let Some(target) = &target
         && target.entity == session
     {
-        let names = SocialNames {
-            actor: &actor,
-            target: Some(&actor),
-            body: (!part.is_empty()).then_some(part),
-            ..SocialNames::default()
-        };
-        let char_line = social.char_auto.as_deref().unwrap_or(MSG_DEFAULT_AUTO);
-        output.write(text(session, substitute(char_line, &names)));
-        if let Some(line) = social.others_auto.as_deref() {
-            broadcast_except(
-                players,
-                room,
-                session,
-                None,
-                output,
-                &substitute(line, &names),
-            );
-        }
-        write_prompt(output, session);
-        return;
+        return Some(SocialOutcome::Perform(SocialPlan {
+            char_line: Some(
+                social
+                    .char_auto
+                    .clone()
+                    .unwrap_or_else(|| MSG_DEFAULT_AUTO.to_owned()),
+            ),
+            others_line: social.others_auto.clone(),
+            actor: actor.clone(),
+            target: Some(actor),
+            object: None,
+            body,
+            victim_line: None,
+            room,
+            victim: None,
+        }));
     }
 
     let Some(target) = target else {
-        let names = SocialNames {
-            actor: &actor,
-            ..SocialNames::default()
-        };
-        let line = social.not_found.as_deref().unwrap_or(MSG_DEFAULT_NOT_FOUND);
-        output.write(text(session, substitute(line, &names)));
-        write_prompt(output, session);
-        return;
+        return Some(SocialOutcome::Perform(SocialPlan {
+            char_line: Some(
+                social
+                    .not_found
+                    .clone()
+                    .unwrap_or_else(|| MSG_DEFAULT_NOT_FOUND.to_owned()),
+            ),
+            others_line: None,
+            actor,
+            target: None,
+            object: None,
+            body: None,
+            victim_line: None,
+            room,
+            victim: None,
+        }));
     };
 
     // A body part needs the body strings; Circle refuses otherwise.
     if !part.is_empty() && social.char_body_found.is_none() {
-        output.write(text(session, MSG_NO_BODY_PART.to_owned()));
-        write_prompt(output, session);
-        return;
+        return Some(SocialOutcome::Refused(MSG_NO_BODY_PART.to_owned()));
     }
 
     // An object target only has the obj strings; a char/object target always
     // has the plain found strings in the source data.
-    let names = SocialNames {
-        actor: &actor,
-        target: Some(&target.name),
-        object: Some(&target.name),
-        body: (!part.is_empty()).then_some(part),
-    };
     let victim = target.is_player.then_some(target.entity);
-    if !part.is_empty() {
-        if let Some(line) = social.char_body_found.as_deref() {
-            output.write(text(session, substitute(line, &names)));
-        }
-        if let Some(line) = social.others_body_found.as_deref() {
-            broadcast_except(
-                players,
-                room,
-                session,
-                victim,
-                output,
-                &substitute(line, &names),
-            );
-        }
-        if let Some(entity) = victim
-            && let Some(line) = social.vict_body_found.as_deref()
-        {
-            output.write(text(entity, substitute(line, &names)));
-        }
+    let (char_line, others_line, victim_line) = if !part.is_empty() {
+        (
+            social.char_body_found.clone(),
+            social.others_body_found.clone(),
+            social.vict_body_found.clone(),
+        )
     } else if !target.is_item {
-        if let Some(line) = social.char_found.as_deref() {
-            output.write(text(session, substitute(line, &names)));
-        } else {
-            output.write(text(session, MSG_DEFAULT_AUTO.to_owned()));
-        }
-        if let Some(line) = social.others_found.as_deref() {
-            broadcast_except(
-                players,
-                room,
-                session,
-                victim,
-                output,
-                &substitute(line, &names),
-            );
-        }
-        if let Some(entity) = victim
-            && let Some(line) = social.vict_found.as_deref()
-        {
-            output.write(text(entity, substitute(line, &names)));
-        }
+        (
+            social
+                .char_found
+                .clone()
+                .or_else(|| Some(MSG_DEFAULT_AUTO.to_owned())),
+            social.others_found.clone(),
+            social.vict_found.clone(),
+        )
     } else {
-        if let Some(line) = social.char_obj_found.as_deref() {
-            output.write(text(session, substitute(line, &names)));
-        }
-        if let Some(line) = social.others_obj_found.as_deref() {
-            broadcast_except(
-                players,
-                room,
-                session,
-                None,
-                output,
-                &substitute(line, &names),
-            );
-        }
+        (
+            social.char_obj_found.clone(),
+            social.others_obj_found.clone(),
+            None,
+        )
+    };
+    Some(SocialOutcome::Perform(SocialPlan {
+        char_line,
+        others_line,
+        victim_line,
+        actor,
+        target: Some(target.name.clone()),
+        object: Some(target.name.clone()),
+        body,
+        room,
+        victim,
+    }))
+}
+
+/// Say a resolved social.
+fn apply_social_plan(
+    session: Entity,
+    plan: &SocialPlan,
+    players: &Query<(Entity, &Player, &Location)>,
+    output: &mut MessageWriter<OutputEvent>,
+) {
+    let names = SocialNames {
+        actor: &plan.actor,
+        target: plan.target.as_deref(),
+        object: plan.object.as_deref(),
+        body: plan.body.as_deref(),
+    };
+    if let Some(line) = &plan.char_line {
+        output.write(text(session, substitute(line, &names)));
+    }
+    if let Some(line) = &plan.others_line {
+        broadcast_except(
+            players,
+            plan.room,
+            session,
+            plan.victim,
+            output,
+            &substitute(line, &names),
+        );
+    }
+    if let (Some(entity), Some(line)) = (plan.victim, &plan.victim_line) {
+        output.write(text(entity, substitute(line, &names)));
     }
     write_prompt(output, session);
 }
@@ -517,7 +547,7 @@ fn run_social(
 /// The `socials` listing: every social name, sorted.
 fn list_socials(
     session: Entity,
-    socials: &std::collections::BTreeMap<smol_str::SmolStr, crate::content::SocialDef>,
+    socials: &std::collections::BTreeMap<smol_str::SmolStr, crate::content::TbaSocialDef>,
     output: &mut MessageWriter<OutputEvent>,
 ) {
     if socials.is_empty() {
@@ -543,11 +573,9 @@ fn list_socials(
 pub fn handle_social_commands(
     mut reader: MessageReader<CommandReceived>,
     claimed: Option<Res<DgClaimed>>,
-    sessions: Query<&Session>,
-    players: Query<(Entity, &Player, &Location)>,
+    actors: ActorView<'_, '_>,
     npcs: Query<(Entity, &Npc, &Location)>,
     combatants: Query<&TbaCombatant>,
-    progress: Query<&TbaProgress>,
     carried: Query<(Entity, &Item, &CarriedBy)>,
     ground: Query<(Entity, &Item, &Location)>,
     content: Option<Res<TbaContent>>,
@@ -555,6 +583,15 @@ pub fn handle_social_commands(
 ) {
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
+
+    // The view is this system's own access; the helpers below keep taking the
+    // individual queries they need.
+    let ActorView {
+        sessions,
+        players,
+        progress,
+        carried: _,
+    } = &actors;
 
     for msg in reader.read() {
         let session = msg.session;
@@ -576,20 +613,33 @@ pub fn handle_social_commands(
         };
         match command {
             SocialCommand::List => list_socials(session, &content.socials, &mut output),
-            SocialCommand::Act { name, target, part } => run_social(
-                session,
-                &name,
-                &target,
-                &part,
-                &content.socials,
-                &players,
-                &npcs,
-                &combatants,
-                &progress,
-                &carried,
-                &ground,
-                &mut output,
-            ),
+            SocialCommand::Act { name, target, part } => {
+                // The plan decides which message pair to say; the act says it.
+                let Some(outcome) = plan_social(
+                    session,
+                    &name,
+                    &target,
+                    &part,
+                    &content.socials,
+                    players,
+                    &npcs,
+                    &combatants,
+                    progress,
+                    &carried,
+                    &ground,
+                ) else {
+                    continue;
+                };
+                match outcome {
+                    SocialOutcome::Refused(line) => {
+                        output.write(text(session, line));
+                        write_prompt(&mut output, session);
+                    }
+                    SocialOutcome::Perform(plan) => {
+                        apply_social_plan(session, &plan, players, &mut output);
+                    }
+                }
+            }
         }
     }
 }
@@ -600,8 +650,8 @@ mod tests {
 
     use super::*;
 
-    fn social() -> crate::content::SocialDef {
-        crate::content::SocialDef {
+    fn social() -> crate::content::TbaSocialDef {
+        crate::content::TbaSocialDef {
             sort_as: smol_str::SmolStr::new("wave"),
             hide: false,
             min_char_position: 5,

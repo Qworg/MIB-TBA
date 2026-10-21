@@ -358,10 +358,19 @@ These are recorded, not silent:
   `social <name> [target] [body part]` and `socials`. MIB models no sex, so the
   `$e`/`$m`/`$s` pronouns render as neutral singular *they/them/their*, and the
   source's stray `$i` code is a named global drop.
-- **26 of 54 spells** are `Utility`: they cost mana and report the catalog's
-  `unsupported` reason ("You cast <spell>, but <reason>."); their Circle
-  routines are not modelled. Buffs take their duration from the spell's
-  source `duration` and persist across a restart (`TbaBuffs`).
+- **19 of 54 spells** are still `Utility`: they cost mana and report the
+  catalog's `unsupported` reason ("You cast <spell>, but <reason>."). Buffs
+  take their duration from the spell's source `duration` and persist across a
+  restart (`TbaBuffs`).
+- **Seven spells gained real effects in #39.** `word of recall`, `group
+  recall`, `teleport` and `summon` run through `mib_tba::transport::warp` (the
+  one move path: it stops a fight, moves `Location`, re-anchors followers,
+  updates the online registry and shows the room); `recall` lands on the
+  `start_room`-tagged room and `summon` respects `MOB_NOSUMMON`. `charm`
+  claims the victim through the stdlib follower primitive and respects
+  `MOB_NOCHARM`. `group heal` and `group armor` are ordinary `Heal`/`Buff`
+  spells scoped to `SpellTarget::Party` (`MAG_GROUPS`). The other 19 are
+  tracked in #39, grouped by the machinery each needs.
 - **Affect locations**: the six attributes and the five saves are applied to
   `TbaCombatant` from worn items and buffs. The `APPLY_CLASS`/`LEVEL`/`AGE`/
   `CHAR_WEIGHT`/`CHAR_HEIGHT`/`GOLD`/`EXP` locations have no `AffectLocation`

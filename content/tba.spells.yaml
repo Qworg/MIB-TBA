@@ -134,8 +134,8 @@ spells:
     mana_min: 50
     mana_max: 75
     mana_change: 2
-    kind: utility
-    unsupported: "spell_charm (spells.c:251-297) sets AFF_CHARM and a follower; the pack does not wire it to the stdlib follower model yet"
+    kind: charm
+    save: negate
     min_level:
       magic_user: 16
     target: victim
@@ -205,8 +205,8 @@ spells:
     mana_min: 5
     mana_max: 30
     mana_change: 4
-    kind: utility
-    unsupported: "MAG_CREATIONS (magic.c:942-968) creates food; the pack does not implement item creation from a spell yet"
+    kind: create
+    creates: tba_item_10
     min_level:
       cleric: 2
     target: none
@@ -231,8 +231,8 @@ spells:
     mana_min: 5
     mana_max: 30
     mana_change: 2
-    kind: utility
-    unsupported: "MAG_UNAFFECTS (magic.c:828-873) removes AFF_BLIND; the pack models blindness as a stat debuff, not the flag"
+    kind: cure
+    cures: blindness
     min_level:
       cleric: 4
     target: victim
@@ -458,11 +458,12 @@ spells:
     mana_min: 30
     mana_max: 50
     mana_change: 2
-    kind: utility
-    unsupported: "MAG_GROUPS (magic.c:576-597) affects group members; the pack does not wire it to its party model yet"
+    kind: buff
+    affect: { location: armor_class, modifier: -10 }
+    duration: 12
     min_level:
       cleric: 9
-    target: room
+    target: party
     min_position: standing
 
   # src/spell_parser.c:839-840, MAG_GROUPS.
@@ -471,11 +472,11 @@ spells:
     mana_min: 60
     mana_max: 80
     mana_change: 5
-    kind: utility
-    unsupported: "MAG_GROUPS (magic.c:576-597) affects group members; the pack does not wire it to its party model yet"
+    kind: heal
+    dice: 3d8+4
     min_level:
       cleric: 22
-    target: room
+    target: party
     min_position: standing
 
   # spells.h (no spello entry).
@@ -484,9 +485,8 @@ spells:
     mana_min: 0
     mana_max: 0
     mana_change: 0
-    kind: utility
-    unsupported: "spell_recall (spells.c:57-75) transports group members; the pack does not implement the transport yet"
-    target: room
+    kind: recall
+    target: party
     min_position: standing
 
   # src/spell_parser.c:842-843, MAG_DAMAGE, magic.c:270-273.
@@ -522,12 +522,11 @@ spells:
     mana_min: 25
     mana_max: 50
     mana_change: 5
-    kind: utility
-    unsupported: "spell_identify (spells.c:299-385) reveals object values; the pack shows item descriptions only"
+    kind: identify
     min_level:
       magic_user: 20
       cleric: 11
-    target: none
+    target: object
     min_position: standing
 
   # src/spell_parser.c:848-849, MAG_AFFECTS, magic.c:424-430.
@@ -549,8 +548,7 @@ spells:
     mana_min: 25
     mana_max: 35
     mana_change: 1
-    kind: utility
-    unsupported: "spell_affects sets AFF_INVISIBLE (magic.c:432-443); the pack does not wire it to its stealth model yet"
+    kind: invisibility
     min_level:
       magic_user: 4
     target: victim
@@ -636,8 +634,8 @@ spells:
     mana_min: 25
     mana_max: 45
     mana_change: 5
-    kind: utility
-    unsupported: "MAG_UNAFFECTS (magic.c:828-873) strips cursed items; the pack does not model item curses"
+    kind: cure
+    cures: curse
     min_level:
       cleric: 26
     target: victim
@@ -649,8 +647,8 @@ spells:
     mana_min: 8
     mana_max: 40
     mana_change: 4
-    kind: utility
-    unsupported: "MAG_UNAFFECTS (magic.c:828-873) clears AFF_POISON; the pack does not model a poison affect"
+    kind: cure
+    cures: poison
     min_level:
       cleric: 10
     target: victim
@@ -733,11 +731,10 @@ spells:
     mana_min: 50
     mana_max: 75
     mana_change: 3
-    kind: utility
-    unsupported: "spell_summon (spells.c:224-249) brings the victim to the caster; the pack does not implement the transport yet"
+    kind: summon
     min_level:
       cleric: 10
-    target: victim
+    target: world
     min_position: standing
 
   # src/spell_parser.c:900-901, MAG_MANUAL.
@@ -746,8 +743,7 @@ spells:
     mana_min: 50
     mana_max: 75
     mana_change: 3
-    kind: utility
-    unsupported: "spell_teleport (spells.c:92-136) moves the caster to a random room; the pack does not implement the transport yet"
+    kind: teleport
     target: victim
     min_position: standing
 
@@ -779,8 +775,7 @@ spells:
     mana_min: 10
     mana_max: 20
     mana_change: 2
-    kind: utility
-    unsupported: "spell_recall (spells.c:57-75) transports to the recall room; the pack does not implement the transport yet"
+    kind: recall
     min_level:
       cleric: 12
     target: victim
