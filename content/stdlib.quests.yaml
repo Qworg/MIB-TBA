@@ -14,3 +14,8 @@ quests:
       xp: 0
       items: []
     origin: authored
+    requires:
+      quests: []
+      flags: []
+      not_flags: []
+    on_complete: []

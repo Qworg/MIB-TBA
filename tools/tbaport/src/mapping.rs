@@ -13,8 +13,8 @@ use dg_vm::types::AttachType;
 use mib_content::prelude::SmolStr;
 use mib_stdlib::content::{
     AreaDef, ContainerDef, DoorDef, ExitDef, ExtraDescDef, ItemDef, ItemId, ItemTag,
-    NpcBehaviorFlags, NpcDef, NpcId, QuestDef, QuestId, QuestOrigin, QuestStepDef, RewardSpec,
-    RoomDef, RoomId, RoomTag, Sector,
+    NpcBehaviorFlags, NpcDef, NpcId, QuestDef, QuestId, QuestOrigin, QuestRequirements,
+    QuestStepDef, RewardSpec, RoomDef, RoomId, RoomTag, Sector,
 };
 use mib_tba::combat::{
     GOLD_ITEM_DESCRIPTION, GOLD_ITEM_ID, GOLD_ITEM_NAME, TbaAttributes, TbaSaves,
@@ -2240,30 +2240,35 @@ fn map_quest(
             steps: vec![step],
             reward,
             origin: QuestOrigin::Authored,
+            requires: map_quest_requirements(raw),
+            on_complete: Vec::new(),
         },
     ))
 }
 
-/// Record the quest fields the MIB schema has no home for.
-fn record_quest_conditions(raw: &RawQuest, label: &str, zr: &mut ZoneReport) {
-    if raw.flags & 1 != 0 {
-        push_unmapped(
-            zr,
-            label,
-            "quest_flag",
-            "REPEATABLE",
-            "QuestDef has no repeatable flag",
-        );
-    }
-    for (name, value) in [
-        ("prereq", raw.prereq),
-        ("prev_quest", raw.prev_quest),
-        ("next_quest", raw.next_quest),
-    ] {
-        if value >= 0 {
-            push_unmapped(zr, label, "quest_link", name, &value.to_string());
+/// The quest's chain edges and flags, as the D-14 schema records them.
+///
+/// `prereq`, `prev_quest` and `next_quest` name the quests that must already
+/// be complete; the repeatable bit is a quest flag. These were named drops
+/// before the engine grew `QuestRequirements`.
+fn map_quest_requirements(raw: &RawQuest) -> QuestRequirements {
+    let mut requires = QuestRequirements::default();
+    for vnum in [raw.prereq, raw.prev_quest, raw.next_quest] {
+        if vnum >= 0 {
+            let quest = ids::quest_id(vnum);
+            if !requires.quests.contains(&quest) {
+                requires.quests.push(quest);
+            }
         }
     }
+    if raw.flags & 1 != 0 {
+        requires.flags.push(SmolStr::new("repeatable"));
+    }
+    requires
+}
+
+/// Record the quest fields the MIB schema has no home for.
+fn record_quest_conditions(raw: &RawQuest, label: &str, zr: &mut ZoneReport) {
     let conditions = [
         ("points", raw.values[0]),
         ("penalty", raw.values[1]),
