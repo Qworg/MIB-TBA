@@ -49,6 +49,7 @@ pub mod spells;
 pub mod stealth;
 pub mod transport;
 pub mod triggers;
+pub mod views;
 pub mod visibility;
 pub mod zones;
 
@@ -79,7 +80,7 @@ pub mod prelude {
         ZoneDef, ZoneFlag, ZonesFile, ZonesSection, register,
     };
     pub use crate::content::{ShopDef, ShopHours, ShopTrade, ShopsFile, ShopsSection};
-    pub use crate::content::{SocialDef, SocialsFile, SocialsSection};
+    pub use crate::content::{SocialsFile, SocialsSection, TbaSocialDef};
     pub use crate::dg::vars::TbaTriggerVars;
     pub use crate::equipment::{
         TbaEquipment, TbaEquipmentSave, choose_slot, handle_equipment_commands,
@@ -110,8 +111,8 @@ pub mod prelude {
         ActiveBuff, DEFAULT_BUFF_ROUNDS, TbaBuffs, handle_cast_command, mana_cost, tick_buffs,
     };
     pub use crate::stealth::{
-        TRUE_SIGHT_DETECT, TbaTrueSight, grant_true_sight, stealth_for, sync_concealment,
-        sync_perception, tick_true_sight,
+        TRUE_SIGHT_DETECT, TbaInvisible, TbaTrueSight, grant_invisible, grant_true_sight,
+        stealth_for, sync_concealment, sync_perception, tick_invisible, tick_true_sight,
     };
     pub use crate::triggers::content::{
         AttachTarget, TriggerDef, TriggerId, TriggersFile, TriggersSection,

@@ -15,6 +15,7 @@
 use std::collections::BTreeMap;
 
 use mib_core::prelude::*;
+use mib_stdlib::content::ItemTag;
 use mib_stdlib::prelude::*;
 use mib_tba::prelude::*;
 use smol_str::SmolStr;
@@ -61,6 +62,11 @@ fn mage() -> TbaClassDef {
             "charm",
             "group_heal",
             "group_armor",
+            "invisibility",
+            "blindness",
+            "cure_blind",
+            "create_food",
+            "identify",
         ]
         .into_iter()
         .map(SmolStr::new)
@@ -97,6 +103,8 @@ fn base(name: &str, mana: u32) -> SpellDef {
         dice: None,
         level_bonus: LevelBonus::default(),
         affect: None,
+        cures: None,
+        creates: None,
         duration: DEFAULT_BUFF_ROUNDS,
         duration_bonus: LevelBonus::default(),
         target: SpellTarget::Victim,
@@ -241,6 +249,55 @@ fn content() -> TbaContent {
             SmolStr::new("fizzle"),
             utility("fizzle", 5, "the fizzle routine is not modelled"),
         ),
+        // `invisibility` grants a veil, not a stat.
+        (
+            SmolStr::new("invisibility"),
+            SpellDef {
+                kind: SpellKind::Invisibility,
+                duration: 4,
+                ..base("invisibility", 5)
+            },
+        ),
+        // A debuff and the cure that removes it.
+        (
+            SmolStr::new("blindness"),
+            SpellDef {
+                kind: SpellKind::Debuff,
+                affect: Some(AffectDef {
+                    location: AffectLocation::Hitroll,
+                    modifier: -4,
+                }),
+                duration: 3,
+                ..base("blindness", 5)
+            },
+        ),
+        (
+            SmolStr::new("cure_blind"),
+            SpellDef {
+                kind: SpellKind::Cure,
+                cures: Some(SmolStr::new("blindness")),
+                ..base("cure blind", 5)
+            },
+        ),
+        // `create food` makes the waybread and gives it to the caster.
+        (
+            SmolStr::new("create_food"),
+            SpellDef {
+                kind: SpellKind::Create,
+                creates: Some(SmolStr::new("tba_item_10")),
+                target: SpellTarget::None,
+                ..base("create food", 5)
+            },
+        ),
+        // `identify` reports an item's hidden values.
+        (
+            SmolStr::new("identify"),
+            SpellDef {
+                kind: SpellKind::Identify,
+                target: SpellTarget::Object,
+                ..base("identify", 5)
+            },
+        ),
         // Transport spells (#39).
         (
             SmolStr::new("word_of_recall"),
@@ -308,18 +365,99 @@ fn content() -> TbaContent {
         (SmolStr::new("mage"), mage()),
         (SmolStr::new("warrior"), warrior()),
     ]);
+    // The item prototypes the object spells read: the waybread `create food`
+    // makes, and a trinket `identify` reports.
+    let items = BTreeMap::from([
+        (
+            ItemId::from("tba_item_10"),
+            TbaItemDef {
+                keywords: vec!["waybread".to_owned(), "bread".to_owned()],
+                extra_flags: Vec::new(),
+                affect_flags: Vec::new(),
+                kind: TbaItemKind::Food,
+                slots: Vec::new(),
+                values: [0; 4],
+                affects: Vec::new(),
+                weight: 1,
+                cost: 50,
+                rent: 0,
+                min_level: 0,
+                timer: None,
+                action_description: None,
+                extra_descriptions: Vec::new(),
+            },
+        ),
+        (
+            ItemId::from("tba_item_trinket"),
+            TbaItemDef {
+                keywords: vec!["trinket".to_owned()],
+                extra_flags: Vec::new(),
+                affect_flags: Vec::new(),
+                kind: TbaItemKind::Other,
+                slots: Vec::new(),
+                values: [0; 4],
+                affects: Vec::new(),
+                weight: 1,
+                cost: 7,
+                rent: 0,
+                min_level: 0,
+                timer: None,
+                action_description: None,
+                extra_descriptions: Vec::new(),
+            },
+        ),
+    ]);
     TbaContent {
         classes,
         spells,
+        items,
         ..TbaContent::default()
     }
 }
 
 /// The cast system wired like `TbaPlugin`: the affect recompute follows so a
 /// buff is visible in the frame it lands, and buffs tick on `TbaRound`.
+/// A one-pack `LoadedContent` carrying the `stdlib.items` prototype the
+/// creation spell makes.
+fn loaded() -> LoadedContent {
+    use mib_content::prelude::{PackAsset, PackManifest, PackSection};
+    use std::path::PathBuf;
+    let items = BTreeMap::from([(
+        ItemId::from("tba_item_10"),
+        ItemDef {
+            name: "a waybread".to_owned(),
+            description: "Some waybread has been put here.".to_owned(),
+            value: Some(50),
+            container: None,
+            tags: vec![ItemTag::Food],
+        },
+    )]);
+    let sections: BTreeMap<&'static str, Box<dyn std::any::Any + Send + Sync>> =
+        BTreeMap::from([(
+            ItemsSection::ID,
+            Box::new(ItemsFile { items }) as Box<dyn std::any::Any + Send + Sync>,
+        )]);
+    LoadedContent(vec![PackAsset {
+        manifest: PackManifest {
+            id: "spell-test".into(),
+            version: "1".to_owned(),
+            title: "spell test".to_owned(),
+            game: None,
+            depends_on: Vec::new(),
+            content_root: "content".to_owned(),
+            requires_mib: None,
+            code: None,
+        },
+        sections,
+        section_files: BTreeMap::new(),
+        root: PathBuf::from("/spell-test"),
+    }])
+}
+
 fn test_app() -> App {
     let mut app = App::new();
     app.insert_resource(content());
+    app.insert_resource(loaded());
     app.insert_resource(TbaRng::from_seed(0xC0FFEE));
     app.init_resource::<VisibilityPolicy>();
     app.add_message::<OutputEvent>();
@@ -337,7 +475,7 @@ fn test_app() -> App {
             .chain(),
     );
     app.init_schedule(TbaRound);
-    app.add_systems(TbaRound, (tick_buffs, tick_true_sight));
+    app.add_systems(TbaRound, (tick_buffs, tick_true_sight, tick_invisible));
     app
 }
 
@@ -627,6 +765,85 @@ fn damage_spell_lowers_target_hp_and_deducts_mana() {
     );
 }
 
+/// An NPC with a prototype, so the plan can resolve its class and level.
+fn spawn_prototyped_npc(
+    app: &mut App,
+    room: Entity,
+    id: &str,
+    prototype: &str,
+    level: u32,
+    hp: i32,
+) -> Entity {
+    let mut combatant = fallback_combatant();
+    combatant.hp = hp;
+    combatant.max_hp = hp;
+    {
+        let mut content = app.world_mut().resource_mut::<TbaContent>();
+        content.npc_stats.insert(
+            NpcId::from(prototype),
+            TbaNpcStats {
+                hp: Dice::constant(hp.max(1)),
+                level,
+                hitroll: 0,
+                damroll: 0,
+                armor_class: 100,
+                thaco: 20,
+                alignment: 0,
+                gold: 0,
+                experience: 0,
+                default_position: Position::Standing,
+                behaviour: Vec::new(),
+                damage: None,
+                attributes: TbaAttributes::mob_default(),
+                saves: TbaSaves::default(),
+                spec_proc: None,
+                sex: TbaSex::Neutral,
+                keywords: Vec::new(),
+                aff_flags: Vec::new(),
+            },
+        );
+    }
+    app.world_mut()
+        .spawn((
+            Npc {
+                name: id.to_owned(),
+                persona: String::new(),
+            },
+            NpcKey(NpcId::from(prototype)),
+            Location { room },
+            combatant,
+        ))
+        .id()
+}
+
+#[test]
+fn the_save_uses_the_victims_level_not_the_casters() {
+    // The plan resolves the *victim's* save profile, so two victims of the
+    // same prototype family but different levels save differently under the
+    // same seed. A level-1 victim has the worst save (90, which no roll
+    // beats); a level-30 victim has the best (0, which every roll loses to).
+    let damage_for = |level: u32| {
+        let mut app = test_app();
+        let room = spawn_room(&mut app);
+        let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+        let goblin = spawn_prototyped_npc(&mut app, room, "goblin", "tba_npc_goblin", level, 100);
+        {
+            let mut content = app.world_mut().resource_mut::<TbaContent>();
+            let spell = content.spells.get_mut("magic_missile").unwrap();
+            spell.dice = Some(Dice::constant(10));
+            spell.save = SaveEffect::Half;
+        }
+
+        cast(&mut app, player, "cast 'magic missile' goblin");
+        run_game(&mut app);
+
+        100 - combatant_of(&app, goblin).hp
+    };
+
+    assert_eq!(damage_for(1), 10, "a level-1 victim cannot save");
+    assert_eq!(damage_for(30), 5, "a level-30 victim saves and halves");
+}
+
 #[test]
 fn lethal_damage_spell_despawns_an_npc() {
     let mut app = test_app();
@@ -754,6 +971,7 @@ fn active_buffs_round_trip_through_serde() {
                 modifier: -1,
             },
             rounds_left: 3,
+            source: None,
         }],
     };
     let json = serde_json::to_string(&store).expect("serialise buffs");
@@ -1120,7 +1338,8 @@ fn mag_savingthrow_honours_the_roll_and_the_modifier() {
 
 /// A room with a vnum and tags, so `recall` can find the `start_room`.
 fn tagged_room(app: &mut App, num: u32, tags: &[RoomTag]) -> Entity {
-    app.world_mut()
+    let entity = app
+        .world_mut()
         .spawn(Room {
             key: format!("tba.{num}").into(),
             name: format!("Room {num}"),
@@ -1141,7 +1360,19 @@ fn tagged_room(app: &mut App, num: u32, tags: &[RoomTag]) -> Entity {
             time: None,
             weather_state: None,
         })
-        .id()
+        .id();
+    // Mirror the engine's boot-time `RoomIndex`, which is where the recall
+    // point comes from.
+    let mut index = app
+        .world_mut()
+        .get_resource_or_insert_with(RoomIndex::default);
+    index
+        .map
+        .insert(RoomId(format!("tba.{num}").into()), entity);
+    if tags.contains(&RoomTag::StartRoom) && index.start.is_none() {
+        index.start = Some(entity);
+    }
+    entity
 }
 
 fn room_of(app: &App, entity: Entity) -> Option<Entity> {
@@ -1417,4 +1648,126 @@ fn group_armor_buffs_the_party_and_leaves_bystanders_alone() {
     assert!(buffed(&app, mage), "the caster is buffed");
     assert!(buffed(&app, friend), "the party member is buffed");
     assert!(!buffed(&app, stranger), "a bystander is not");
+}
+
+// ---------------------------------------------------------------------------
+// Invisibility and cures (#39)
+// ---------------------------------------------------------------------------
+
+#[test]
+fn invisibility_grants_a_veil_that_expires() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+
+    cast(&mut app, player, "cast 'invisibility'");
+    run_game(&mut app);
+
+    let veil = app
+        .world()
+        .get::<TbaInvisible>(player)
+        .expect("the veil is granted");
+    assert_eq!(
+        veil.rounds_left, 4,
+        "the countdown starts at the spell's duration"
+    );
+
+    for _ in 0..3 {
+        run_round(&mut app);
+        run_game(&mut app);
+        assert!(
+            app.world().get::<TbaInvisible>(player).is_some(),
+            "the veil holds until its last round"
+        );
+    }
+    run_round(&mut app);
+    run_game(&mut app);
+    assert!(
+        app.world().get::<TbaInvisible>(player).is_none(),
+        "the veil drops when it runs out"
+    );
+}
+
+#[test]
+fn a_cure_removes_the_affect_the_named_spell_granted() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+
+    // `blindness` is a hostile debuff, so it needs a victim.
+    let goblin = spawn_npc(&mut app, room, "goblin", 100);
+    cast(&mut app, player, "cast 'blindness' goblin");
+    run_game(&mut app);
+    let buffs = app
+        .world()
+        .get::<TbaBuffs>(goblin)
+        .expect("the debuff landed");
+    assert_eq!(buffs.buffs.len(), 1, "one debuff recorded");
+    assert_eq!(
+        buffs.buffs[0].source.as_deref(),
+        Some("blindness"),
+        "the buff records the spell that granted it"
+    );
+
+    cast(&mut app, player, "cast 'cure blind' goblin");
+    run_game(&mut app);
+
+    let buffs = app
+        .world()
+        .get::<TbaBuffs>(goblin)
+        .expect("the store remains");
+    assert!(
+        buffs.buffs.is_empty(),
+        "the cure removed the blindness buff"
+    );
+}
+
+#[test]
+fn create_food_makes_the_waybread_and_gives_it_to_the_caster() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+
+    cast(&mut app, player, "cast 'create food'");
+    run_game(&mut app);
+
+    let carried = app.world().get::<TbaBuffs>(player).is_none();
+    assert!(carried, "the creation leaves no buff behind");
+    let waybread = {
+        let mut query = app.world_mut().query::<(Entity, &Item, &CarriedBy)>();
+        query
+            .iter(app.world())
+            .find(|(_, item, carried)| item.def_id.as_ref() == "tba_item_10" && carried.0 == player)
+            .map(|(entity, _, _)| entity)
+    };
+    assert!(waybread.is_some(), "the waybread is in the caster's hands");
+}
+
+#[test]
+fn identify_reports_the_items_values() {
+    let mut app = test_app();
+    let room = spawn_room(&mut app);
+    let player = spawn_player(&mut app, room, "Merlin", "mage", 50);
+    // A carried trinket the caster can identify.
+    app.world_mut().spawn((
+        Item {
+            def_id: ItemId::from("tba_item_trinket"),
+            name: "a silver trinket".to_owned(),
+            description: "A trinket.".to_owned(),
+            value: Some(7),
+            tags: Vec::new(),
+        },
+        CarriedBy(player),
+    ));
+
+    cast(&mut app, player, "cast 'identify' trinket");
+    run_game(&mut app);
+
+    let messages = drain_text(&mut app);
+    assert!(
+        messages
+            .iter()
+            .any(|line| line.contains("trinket") && line.contains("coins")),
+        "{messages:?}"
+    );
 }

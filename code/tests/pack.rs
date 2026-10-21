@@ -24,9 +24,9 @@ use mib_stdlib::prelude::{
     RoomId, RoomIndex, StdlibModule, StdlibPlugin,
 };
 use mib_tba::prelude::{
-    SaveEffect, ShopDef, ShopsSection, SocialDef, SocialsSection, SpellKind, SpellTarget,
-    SpellsSection, TbaClassesSection, TbaContent, TbaItemsSection, TbaModule, TbaNpcStatsSection,
-    TbaPlugin, TriggersSection, ZonesSection,
+    SaveEffect, ShopDef, ShopsSection, SocialsSection, SpellKind, SpellTarget, SpellsSection,
+    TbaClassesSection, TbaContent, TbaItemsSection, TbaModule, TbaNpcStatsSection, TbaPlugin,
+    TbaSocialDef, TriggersSection, ZonesSection,
 };
 
 /// Exact counts from the full tbaMUD conversion now in `content/` (Phase 10).
@@ -182,7 +182,7 @@ fn tba_pack_loads_and_validates_with_the_expected_sections() {
     assert!(guildguard.script.contains("%direction%"));
     // Issue #17: a spot-check that the new-format sets survive, including
     // Circle's `$`-codes and the `#`-as-None mapping.
-    let smile: &SocialDef = tba
+    let smile: &TbaSocialDef = tba
         .section::<SocialsSection>()
         .expect("socials")
         .socials
@@ -504,12 +504,12 @@ fn tba_spell_catalog_is_the_circle_catalog() {
         }
     }
     // #39 is converting the `Utility` set to real kinds; these counts move as
-    // each group lands. Seven spells landed in the transport, charm and party
-    // groups.
-    assert_eq!(flagged, 19, "Circle routines still unimplemented (#39)");
+    // each group lands. Thirteen spells landed so far: the transport, charm
+    // and party groups, then invisibility, the cures, and the object spells.
+    assert_eq!(flagged, 13, "Circle routines still unimplemented (#39)");
     assert_eq!(
-        implemented, 35,
-        "modeled kinds: damage/heal/buff/debuff/detect/transport/charm"
+        implemented, 41,
+        "modeled kinds: damage/heal/buff/debuff/detect/transport/charm/cure/invisibility/create/identify"
     );
     assert_eq!(implemented + flagged, TBA_SPELLS);
 

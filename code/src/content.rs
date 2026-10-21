@@ -902,6 +902,17 @@ pub enum SpellKind {
     /// Make the victim a follower (`spell_charm`, `spells.c:251-297`). A
     /// victim flagged `MOB_NOCHARM` is refused.
     Charm,
+    /// Remove an affect a named spell granted (`MAG_UNAFFECTS`,
+    /// `magic.c:828-873`). The spell it removes is [`SpellDef::cures`].
+    Cure,
+    /// Grant Circle's `AFF_INVISIBLE` (`magic.c:432-443`): the target cannot
+    /// be seen until the veil drops.
+    Invisibility,
+    /// Create an item and give it to the caster (`MAG_CREATIONS`,
+    /// `magic.c:942-968`). The item is [`SpellDef::creates`].
+    Create,
+    /// Report an item's hidden values (`spell_identify`, `spells.c:299-385`).
+    Identify,
     /// A spell whose Circle routine is not modelled yet. It is castable (mana
     /// is spent) and reports its [`SpellDef::unsupported`] reason rather than
     /// inventing an effect.
@@ -984,6 +995,9 @@ pub enum SpellTarget {
     /// A character anywhere in the world (`TAR_CHAR_WORLD`), resolved by name
     /// out of the caster's room. `summon` is the spell that needs it.
     World,
+    /// A carried item (`TAR_OBJ_INV`), resolved by name among the caster's
+    /// belongings. `identify` and `create water` act on an object.
+    Object,
     /// No character target (`TAR_IGNORE`, or object-only target bits).
     None,
 }
@@ -1015,6 +1029,16 @@ fn default_spell_duration() -> u32 {
 pub struct SpellDef {
     /// Display name, for example `magic missile`.
     pub name: String,
+    /// The spell whose affect this one removes, for a [`SpellKind::Cure`].
+    ///
+    /// Circle's `MAG_UNAFFECTS` removes a named affect (`AFF_BLIND`,
+    /// `AFF_POISON`, `AFF_CURSE`); the pack's affects are numeric, so the buff
+    /// records the spell that granted it and the cure matches on that.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cures: Option<SmolStr>,
+    /// The item a [`SpellKind::Create`] spell creates, by content id.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub creates: Option<SmolStr>,
     /// The settled floor of the mana cost, Circle's `mana_min`.
     pub mana_min: u32,
     /// The cost at the level the class first learns the spell, Circle's
@@ -1145,7 +1169,25 @@ fn spell_issues(spell_id: &SmolStr, spell: &SpellDef) -> Vec<(String, String)> {
         | SpellKind::Recall
         | SpellKind::Teleport
         | SpellKind::Summon
-        | SpellKind::Charm => {}
+        | SpellKind::Charm
+        | SpellKind::Identify
+        | SpellKind::Invisibility => {}
+        SpellKind::Create => {
+            if spell.creates.is_none() {
+                issues.push((
+                    format!("spells.{spell_id}.creates"),
+                    "a creation spell must name the item it creates".to_owned(),
+                ));
+            }
+        }
+        SpellKind::Cure => {
+            if spell.cures.is_none() {
+                issues.push((
+                    format!("spells.{spell_id}.cures"),
+                    "a cure must name the spell whose affect it removes".to_owned(),
+                ));
+            }
+        }
         SpellKind::Utility => {
             if spell
                 .unsupported
@@ -1393,7 +1435,7 @@ fn shop_issues(
 /// keeper id.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct SocialDef {
+pub struct TbaSocialDef {
     /// Circle's `sort_as`: the command-list sort key (usually the same word).
     #[serde(default)]
     pub sort_as: SmolStr,
@@ -1453,7 +1495,7 @@ pub struct SocialDef {
     pub others_obj_found: Option<String>,
 }
 
-impl SocialDef {
+impl TbaSocialDef {
     /// True when the social carries no message at all (an inert entry). The
     /// validator rejects these rather than shipping a command that does
     /// nothing.
@@ -1487,7 +1529,7 @@ impl SocialDef {
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct SocialsFile {
-    pub socials: BTreeMap<SmolStr, SocialDef>,
+    pub socials: BTreeMap<SmolStr, TbaSocialDef>,
 }
 
 /// `tba.socials`.
@@ -1600,6 +1642,8 @@ mod tests {
             min_position: Position::Standing,
             save: SaveEffect::None,
             min_level: BTreeMap::new(),
+            cures: None,
+            creates: None,
             unsupported: None,
         }
     }

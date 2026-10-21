@@ -34,7 +34,8 @@
 use mib_core::prelude::*;
 use mib_stdlib::dialogue::write_prompt;
 use mib_stdlib::prelude::{
-    Location, Npc, NpcId, NpcKey, Player, PlayerDefeated, Session, SessionState,
+    CarriedBy, Item, ItemDef, ItemId, ItemsSection, LoadedContent, Location, NpcId, NpcKey, Player,
+    PlayerDefeated, SessionState, spawn_item_carried_by_entity,
 };
 use serde::{Deserialize, Serialize};
 use smol_str::SmolStr;
@@ -44,10 +45,12 @@ use crate::combat::commands::{
 };
 use crate::combat::rewards::{NpcDefeated, TbaDamage, alignment_for, npc_reward};
 use crate::combat::{
-    SaveType, TbaCombatant, TbaHidden, TbaProgress, TbaRng, default_class, mag_savingthrow,
+    SaveType, TbaCombatant, TbaHidden, TbaProgress, TbaRng, TbaSaves, default_class,
+    mag_savingthrow,
 };
 use crate::content::{AffectDef, Position, SaveEffect, SpellDef, SpellKind, SpellTarget};
 use crate::module::TbaContent;
+use crate::views::{ActorView, NpcView};
 
 /// Combat rounds a cast buff lasts when the spell carries no source pulse
 /// count.
@@ -64,6 +67,13 @@ pub const DEFAULT_BUFF_ROUNDS: u32 = crate::content::DEFAULT_SPELL_DURATION;
 pub struct ActiveBuff {
     pub affect: AffectDef,
     pub rounds_left: u32,
+    /// The spell that granted this buff, when one did.
+    ///
+    /// Circle's `MAG_UNAFFECTS` removes a *named* affect (`AFF_BLIND`,
+    /// `AFF_POISON`, `AFF_CURSE`). The pack's affects are numeric
+    /// (location, modifier) pairs, so without this a cure could not tell
+    /// blindness from any other hitroll debuff.
+    pub source: Option<SmolStr>,
 }
 
 /// Bit of [`ActiveBuff::rounds_left`] that marks a pinned buff: one a script
@@ -84,6 +94,7 @@ impl ActiveBuff {
         Self {
             affect,
             rounds_left: flags | rounds.clamp(1, PINNED_FOREVER),
+            source: None,
         }
     }
 
@@ -310,6 +321,105 @@ fn victim_class_level(
     (SmolStr::new("warrior"), 1)
 }
 
+/// The stdlib item prototype for `id`, if any pack defines it.
+fn stdlib_item_def(loaded: Option<&LoadedContent>, id: &ItemId) -> Option<ItemDef> {
+    let loaded = loaded?;
+    for pack in loaded.0.iter().rev() {
+        if let Some(section) = pack.section::<ItemsSection>()
+            && let Some(def) = section.items.get(id)
+        {
+            return Some(def.clone());
+        }
+    }
+    None
+}
+
+/// The carried items a script's cast resolves an object target against.
+///
+/// The script path's `SystemState` tuple is already at the engine's 16-element
+/// limit, so this one query travels as a bundle.
+#[derive(bevy::ecs::system::SystemParam)]
+pub struct CarriedItems<'w, 's> {
+    pub carried: Query<'w, 's, (Entity, &'static Item, &'static CarriedBy)>,
+}
+
+/// A target resolved by the plan, with everything the apply phase needs.
+///
+/// The plan decides *who* is affected and *what* is true about them; the
+/// apply phase then needs no queries to decide anything, only plain values.
+/// That is the whole point of the split: an effect is a function of the
+/// plan, not of the world it happens to land in.
+#[derive(Debug, Clone)]
+pub(crate) struct ResolvedTarget {
+    /// The victim's entity.
+    pub entity: Entity,
+    /// The victim's display name, as the room sees it.
+    pub name: String,
+    /// Whether the victim is a player (the C tells a player "you resist").
+    pub is_player: bool,
+    /// Whether the victim is an NPC, which is what the kill reward pays.
+    pub is_npc: bool,
+    /// The victim's class, for the save's base throw.
+    pub class: SmolStr,
+    /// The victim's level, for the save's base throw.
+    pub level: u32,
+    /// The victim's `apply_saving_throw[]` modifiers, for the save.
+    pub saves: TbaSaves,
+    /// The prototype an NPC victim was instantiated from, for the kill reward.
+    pub key: Option<NpcId>,
+    /// The prototype of an item target, for the object spells.
+    pub item_def_id: Option<ItemId>,
+}
+
+/// Resolve one target: its name, whether it is a player, and its save profile.
+fn resolve_target(
+    entity: Entity,
+    content: &TbaContent,
+    actors: &ActorView<'_, '_>,
+    npcs: &NpcView<'_, '_>,
+    combatants: &Query<&mut TbaCombatant>,
+) -> ResolvedTarget {
+    let (class, level) = victim_class_level(entity, content, &actors.progress, &npcs.keys);
+    let item_def_id = actors
+        .carried
+        .get(entity)
+        .ok()
+        .map(|(_, item, _)| item.def_id.clone());
+    ResolvedTarget {
+        entity,
+        name: entity_name(entity, &actors.players, &npcs.npcs),
+        is_player: actors.players.get(entity).is_ok(),
+        is_npc: npcs.npcs.get(entity).is_ok(),
+        class,
+        level,
+        saves: combatants
+            .get(entity)
+            .map(|combatant| combatant.saves)
+            .unwrap_or_default(),
+        key: npcs.keys.get(entity).ok().map(|key| key.0.clone()),
+        item_def_id,
+    }
+}
+
+/// Remove the buff a named spell granted, if it is present.
+///
+/// Circle's `MAG_UNAFFECTS` (`magic.c:828-873`) removes a named affect. The
+/// pack's affects are numeric, so the buff records the spell that granted it
+/// and the cure matches on that.
+fn remove_affect(target: Entity, source: &str, buffs: &mut Query<&mut TbaBuffs>) -> bool {
+    let Ok(mut store) = buffs.get_mut(target) else {
+        return false;
+    };
+    let before = store.buffs.len();
+    store.buffs.retain(|buff| {
+        !buff
+            .source
+            .as_ref()
+            .is_some_and(|granted| granted.eq_ignore_ascii_case(source))
+    });
+    before != store.buffs.len()
+}
+
 /// The pulse count an affect is installed for: the spell's static
 /// [`SpellDef::duration`] plus its per-level [`SpellDef::duration_bonus`], at
 /// least one round so a level-1 caster never installs an inert affect.
@@ -326,12 +436,14 @@ fn add_buff(
     target: Entity,
     affect: AffectDef,
     rounds: u32,
+    source: Option<SmolStr>,
     buffs: &mut Query<&mut TbaBuffs>,
     commands: &mut Commands,
 ) {
     let entry = ActiveBuff {
         affect,
         rounds_left: rounds,
+        source,
     };
     match buffs.get_mut(target) {
         Ok(mut store) => {
@@ -358,8 +470,8 @@ pub(crate) struct CastPlan<'a> {
     /// The mana the cast costs.
     pub cost: u32,
     pub room: Option<Entity>,
-    /// The targets, in the order the effects apply.
-    pub targets: Vec<Entity>,
+    /// The targets, in the order the effects apply, already resolved.
+    pub targets: Vec<ResolvedTarget>,
 }
 
 /// What [`plan_cast`] made of a line.
@@ -381,13 +493,24 @@ pub(crate) fn plan_cast<'a>(
     session: Entity,
     line: &str,
     content: &'a TbaContent,
-    progress: &Query<&TbaProgress>,
     combatants: &Query<&mut TbaCombatant>,
-    players: &Query<(Entity, &Player, &Location)>,
-    npcs: &Query<(Entity, &Npc, &Location)>,
+    actors: &ActorView<'_, '_>,
+    npcs: &NpcView<'_, '_>,
     hidden: &StealthView<'_, '_>,
     parties: Option<&crate::party::TbaParties>,
 ) -> CastOutcome<'a> {
+    let ActorView {
+        sessions: _,
+        players,
+        progress,
+        carried: _,
+    } = actors;
+    // The view keeps its own name (the plan hands it on); the inner query is
+    // unpacked under another one.
+    let NpcView {
+        npcs: npc_query,
+        keys: _,
+    } = npcs;
     let Some(parsed) = parse_cast_line(line) else {
         return CastOutcome::NotCast;
     };
@@ -459,7 +582,8 @@ pub(crate) fn plan_cast<'a>(
                 .map(|(entity, _, _)| entity)
                 .collect();
             in_room.extend(
-                npcs.iter()
+                npc_query
+                    .iter()
                     .filter(|(_, _, location)| Some(location.room) == room)
                     .map(|(entity, _, _)| entity),
             );
@@ -487,6 +611,26 @@ pub(crate) fn plan_cast<'a>(
             }
             members
         }
+        // `TAR_OBJ_INV`: a carried item, found by name.
+        SpellTarget::Object => {
+            let Some(name) = target_arg.as_deref() else {
+                return CastOutcome::Denied("On what should the spell be cast?".to_owned());
+            };
+            let needle = name.to_lowercase();
+            let found = actors
+                .carried
+                .iter()
+                .find(|(_, item, carried)| {
+                    carried.0 == session && item.name.to_lowercase().contains(&needle)
+                })
+                .map(|(entity, _, _)| entity);
+            match found {
+                Some(target) => vec![target],
+                None => {
+                    return CastOutcome::Denied(format!("You don't have {name}."));
+                }
+            }
+        }
         // `TAR_CHAR_WORLD`: a character anywhere, found by name.
         SpellTarget::World => {
             let Some(name) = target_arg.as_deref() else {
@@ -498,7 +642,8 @@ pub(crate) fn plan_cast<'a>(
                 .find(|(_, player, _)| player.name.to_lowercase().contains(&needle))
                 .map(|(entity, _, _)| entity)
                 .or_else(|| {
-                    npcs.iter()
+                    npc_query
+                        .iter()
                         .find(|(_, npc, _)| npc.name.to_lowercase().contains(&needle))
                         .map(|(entity, _, _)| entity)
                 });
@@ -511,7 +656,8 @@ pub(crate) fn plan_cast<'a>(
         }
         SpellTarget::Victim => match target_arg.as_deref() {
             Some(name) => {
-                if let Some(target) = find_target_in_room(session, name, players, npcs, hidden) {
+                if let Some(target) = find_target_in_room(session, name, players, npc_query, hidden)
+                {
                     vec![target]
                 } else {
                     let own_name = players
@@ -534,6 +680,13 @@ pub(crate) fn plan_cast<'a>(
             None => vec![session],
         },
     };
+
+    // Resolve the targets here, so the apply phase decides nothing: it reads
+    // the plan's plain values.
+    let targets: Vec<ResolvedTarget> = targets
+        .into_iter()
+        .map(|entity| resolve_target(entity, content, actors, npcs, combatants))
+        .collect();
 
     CastOutcome::Plan(CastPlan {
         spell_id,
@@ -558,16 +711,14 @@ pub struct CastContext<'w, 's> {
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 pub fn handle_cast_command(
     mut reader: MessageReader<CommandReceived>,
-    sessions: Query<&Session>,
-    players: Query<(Entity, &Player, &Location)>,
-    npcs: Query<(Entity, &Npc, &Location)>,
+    actors: ActorView<'_, '_>,
+    npcs: NpcView<'_, '_>,
     hidden: StealthView<'_, '_>,
     content: Option<Res<TbaContent>>,
+    loaded: Option<Res<LoadedContent>>,
     mut combatants: Query<&mut TbaCombatant>,
-    progress: Query<&TbaProgress>,
     mut buffs: Query<&mut TbaBuffs>,
     mut rng: ResMut<TbaRng>,
-    keys: Query<&NpcKey>,
     (mut defeated, mut npc_defeated, mut damage_events): (
         MessageWriter<PlayerDefeated>,
         MessageWriter<NpcDefeated>,
@@ -577,6 +728,21 @@ pub fn handle_cast_command(
     mut output: MessageWriter<OutputEvent>,
     context: CastContext<'_, '_>,
 ) {
+    // The views are this system's own access. The free functions below keep
+    // taking the individual queries they need, so the view is unpacked into the
+    // same names the body already used.
+    let ActorView {
+        sessions,
+        players,
+        progress: _,
+        carried: _,
+    } = &actors;
+    // The view keeps its own name; the inner query is unpacked under another
+    // one so `plan_cast` can still be handed the view.
+    let NpcView {
+        npcs: npc_query,
+        keys: _,
+    } = &npcs;
     let empty = TbaContent::default();
     let content = content.as_deref().unwrap_or(&empty);
 
@@ -600,9 +766,8 @@ pub fn handle_cast_command(
             session,
             line,
             content,
-            &progress,
             &combatants,
-            &players,
+            &actors,
             &npcs,
             &hidden,
             context.parties.as_deref(),
@@ -635,11 +800,11 @@ pub fn handle_cast_command(
         if is_hostile(spell) {
             commands.entity(session).remove::<TbaHidden>();
         }
-        let actor_name = entity_name(session, &players, &npcs);
+        let actor_name = entity_name(session, players, npc_query);
         output.write(text(session, format!("You cast {spell_name}.")));
         if let Some(room) = room {
             broadcast(
-                &players,
+                players,
                 room,
                 session,
                 &mut output,
@@ -649,6 +814,7 @@ pub fn handle_cast_command(
 
         let cast = Cast {
             content,
+            loaded: loaded.as_deref(),
             caster: session,
             caster_level,
             spell_id: &spell_id,
@@ -658,13 +824,29 @@ pub fn handle_cast_command(
             caster_hears: true,
             defer_despawn: false,
         };
+        // A `TAR_IGNORE` spell has no target and acts on the caster
+        // (`create food` makes the item in the caster's hands).
+        let caster_target = ResolvedTarget {
+            entity: session,
+            name: actor_name.clone(),
+            is_player: true,
+            is_npc: false,
+            class: SmolStr::new("warrior"),
+            level: 1,
+            saves: TbaSaves::default(),
+            key: None,
+            item_def_id: None,
+        };
+        let targets: Vec<&ResolvedTarget> = if targets.is_empty() {
+            vec![&caster_target]
+        } else {
+            targets.iter().collect()
+        };
         for target in &targets {
             apply_spell_to_target(
                 &cast,
-                &players,
-                &npcs,
-                &progress,
-                &keys,
+                target,
+                players,
                 &context.purses,
                 &mut combatants,
                 &mut buffs,
@@ -674,7 +856,6 @@ pub fn handle_cast_command(
                 &mut defeated,
                 &mut npc_defeated,
                 &mut damage_events,
-                *target,
             );
         }
 
@@ -685,6 +866,8 @@ pub fn handle_cast_command(
 /// The cast being resolved: what is cast, by whom and from where.
 struct Cast<'a> {
     content: &'a TbaContent,
+    /// The stdlib content, for the item a creation spell makes.
+    loaded: Option<&'a LoadedContent>,
     caster: Entity,
     caster_level: u32,
     spell_id: &'a SmolStr,
@@ -718,10 +901,8 @@ fn tell_caster(
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
 fn apply_spell_to_target(
     cast: &Cast<'_>,
+    resolved: &ResolvedTarget,
     players: &Query<(Entity, &Player, &Location)>,
-    npcs: &Query<(Entity, &Npc, &Location)>,
-    progress: &Query<&TbaProgress>,
-    keys: &Query<&NpcKey>,
     purses: &Query<&crate::dg::chardata::TbaNpcPurse>,
     combatants: &mut Query<&mut TbaCombatant>,
     buffs: &mut Query<&mut TbaBuffs>,
@@ -731,10 +912,10 @@ fn apply_spell_to_target(
     defeated: &mut MessageWriter<PlayerDefeated>,
     npc_defeated: &mut MessageWriter<NpcDefeated>,
     damage_events: &mut MessageWriter<TbaDamage>,
-    target: Entity,
 ) {
     let Cast {
         content,
+        loaded,
         caster: session,
         caster_level,
         spell_id,
@@ -745,7 +926,9 @@ fn apply_spell_to_target(
         defer_despawn,
     } = *cast;
     let spell_name = spell.name.clone();
-    let target_name = entity_name(target, players, npcs);
+    // The plan decided everything about the victim; the apply phase reads it.
+    let target = resolved.entity;
+    let target_name = resolved.name.as_str();
     let mut lethal = false;
 
     // Circle rolls the saving throw, then halves or negates. A `cast`
@@ -755,21 +938,16 @@ fn apply_spell_to_target(
     let saved = if spell.save == SaveEffect::None {
         false
     } else {
-        let (victim_class, victim_level) = victim_class_level(target, content, progress, keys);
-        let victim_saves = combatants
-            .get(target)
-            .map(|combatant| combatant.saves)
-            .unwrap_or_default();
         mag_savingthrow(
             rng,
-            &victim_class,
-            victim_level,
-            &victim_saves,
+            &resolved.class,
+            resolved.level,
+            &resolved.saves,
             SaveType::Spell,
         )
     };
     if saved && spell.save == SaveEffect::Negate {
-        if players.get(target).is_ok() {
+        if resolved.is_player {
             output.write(text(target, format!("You resist the {spell_name}.")));
         }
         if target != session {
@@ -823,7 +1001,7 @@ fn apply_spell_to_target(
                 }
             }
             if saved && spell.save == SaveEffect::Half {
-                if players.get(target).is_ok() {
+                if resolved.is_player {
                     output.write(text(target, format!("You resist the {spell_name}.")));
                 }
                 tell_caster(
@@ -896,7 +1074,14 @@ fn apply_spell_to_target(
                 return;
             };
             let rounds = affect_rounds(spell, caster_level);
-            add_buff(target, affect.clone(), rounds, buffs, commands);
+            add_buff(
+                target,
+                affect.clone(),
+                rounds,
+                Some(spell_id.clone()),
+                buffs,
+                commands,
+            );
             if spell.kind == SpellKind::Debuff {
                 if target != session {
                     tell_caster(
@@ -906,7 +1091,7 @@ fn apply_spell_to_target(
                         format!("{target_name} is afflicted by {spell_name}."),
                     );
                 }
-                if players.get(target).is_ok() {
+                if resolved.is_player {
                     output.write(text(target, format!("You are afflicted by {spell_name}.")));
                 }
             } else if target == session {
@@ -916,7 +1101,7 @@ fn apply_spell_to_target(
                     session,
                     format!("You feel the {spell_name} settle."),
                 );
-            } else if players.get(target).is_ok() {
+            } else if resolved.is_player {
                 output.write(text(
                     target,
                     format!("{actor_name} blesses you with {spell_name}."),
@@ -943,6 +1128,65 @@ fn apply_spell_to_target(
                     commands,
                 );
             }
+        }
+        SpellKind::Cure => {
+            // `MAG_UNAFFECTS` (`magic.c:828-873`): remove the affect the named
+            // spell granted.
+            let Some(cured) = spell.cures.clone() else {
+                return;
+            };
+            let removed = remove_affect(target, &cured, buffs);
+            if removed {
+                output.write(text(target, format!("You feel the {cured} leave you.")));
+            }
+        }
+        SpellKind::Invisibility => {
+            // `AFF_INVISIBLE` (`magic.c:432-443`): a veil, not a stat, so it
+            // is its own transient component rather than an `AffectLocation`.
+            crate::stealth::grant_invisible(target, affect_rounds(spell, caster_level), commands);
+            output.write(text(target, "You feel a veil settle over you."));
+        }
+        SpellKind::Create => {
+            // `MAG_CREATIONS` (`magic.c:942-968`): make the item and give it
+            // to the caster.
+            let Some(item_id) = spell.creates.clone() else {
+                return;
+            };
+            let item_id = ItemId::from(item_id.as_str().to_owned());
+            let Some(def) = stdlib_item_def(loaded, &item_id) else {
+                return;
+            };
+            let holder = session;
+            let spawn_id = item_id.clone();
+            let spawn_def = def.clone();
+            commands.queue(move |world: &mut World| {
+                spawn_item_carried_by_entity(world, holder, &spawn_id, &spawn_def);
+            });
+            output.write(text(session, format!("You create {}.", def.name)));
+        }
+        SpellKind::Identify => {
+            // `spell_identify` (`spells.c:299-385`): report the item's
+            // hidden values.
+            let Some(def_id) = resolved.item_def_id.clone() else {
+                return;
+            };
+            let Some(def) = content.items.get(&def_id) else {
+                return;
+            };
+            let name = def
+                .keywords
+                .first()
+                .map(|keyword| keyword.as_str())
+                .unwrap_or("it");
+            tell_caster(
+                output,
+                caster_hears,
+                session,
+                format!(
+                    "{name}: {} coins, a {:?} weighing {}.",
+                    def.cost, def.kind, def.weight
+                ),
+            );
         }
         SpellKind::Charm => {
             commands.queue(move |world: &mut World| {
@@ -1076,17 +1320,27 @@ fn apply_spell_to_target(
         } else {
             affect_rounds(spell, caster_level)
         };
-        add_buff(target, affect.clone(), rounds, buffs, commands);
+        add_buff(
+            target,
+            affect.clone(),
+            rounds,
+            Some(spell_id.clone()),
+            buffs,
+            commands,
+        );
     }
 
     if lethal {
-        if players.get(target).is_ok() {
+        if resolved.is_player {
             defeated.write(PlayerDefeated { player: target });
-        } else if npcs.get(target).is_ok() {
-            let key = keys.get(target).ok();
+        } else if resolved.is_npc {
+            let key = resolved.key.as_ref().map(|id| NpcKey(id.clone()));
             let purse = purses.get(target).ok();
-            let (experience, gold) = npc_reward(content, key, purse);
-            let alignment = key.map(|key| alignment_for(content, key)).unwrap_or(0);
+            let (experience, gold) = npc_reward(content, key.as_ref(), purse);
+            let alignment = key
+                .as_ref()
+                .map(|key| alignment_for(content, key))
+                .unwrap_or(0);
             npc_defeated.write(NpcDefeated {
                 victim: target,
                 killer: session,
@@ -1125,18 +1379,14 @@ pub fn cast_spell_at_level(
 ) -> bool {
     use bevy::ecs::system::SystemState;
 
-    type Players<'w, 's> = Query<'w, 's, (Entity, &'static Player, &'static Location)>;
-    type Npcs<'w, 's> = Query<'w, 's, (Entity, &'static Npc, &'static Location)>;
     type Params<'w, 's> = (
-        Players<'w, 's>,
-        Npcs<'w, 's>,
-        Query<'w, 's, &'static TbaProgress>,
-        Query<'w, 's, &'static NpcKey>,
+        ActorView<'w, 's>,
+        NpcView<'w, 's>,
         Query<'w, 's, &'static mut TbaCombatant>,
         Query<'w, 's, &'static mut TbaBuffs>,
         Query<'w, 's, &'static Location>,
-        Query<'w, 's, &'static Session>,
         Option<Res<'w, TbaContent>>,
+        Option<Res<'w, LoadedContent>>,
         ResMut<'w, TbaRng>,
         Commands<'w, 's>,
         MessageWriter<'w, OutputEvent>,
@@ -1154,15 +1404,13 @@ pub fn cast_spell_at_level(
     let mut state: SystemState<Params<'_, '_>> = SystemState::new(world);
     let found = {
         let Ok((
-            players,
-            npcs,
-            progress,
-            keys,
+            actors,
+            npc_view,
             mut combatants,
             mut buffs,
             locations,
-            sessions,
             content,
+            loaded,
             mut rng,
             mut commands,
             mut output,
@@ -1176,6 +1424,14 @@ pub fn cast_spell_at_level(
         };
         let empty = TbaContent::default();
         let content = content.as_deref().unwrap_or(&empty);
+        // The views are unpacked into the names the body already used.
+        let ActorView {
+            sessions,
+            players,
+            progress: _,
+            carried: _,
+        } = &actors;
+        let NpcView { npcs, keys: _ } = &npc_view;
         let wanted = normalize(spell_id);
         let Some((spell_id, spell)) = content
             .spells
@@ -1193,6 +1449,8 @@ pub fn cast_spell_at_level(
             // to the explicit victim, or the caster.
             SpellTarget::Party => vec![victim.unwrap_or(caster)],
             SpellTarget::World => victim.into_iter().collect(),
+            // A script's cast names the object explicitly.
+            SpellTarget::Object => victim.into_iter().collect(),
             SpellTarget::None => Vec::new(),
             SpellTarget::Room => {
                 let mut in_room: Vec<Entity> = players
@@ -1209,9 +1467,16 @@ pub fn cast_spell_at_level(
                 in_room
             }
         };
-        let actor_name = entity_name(caster, &players, &npcs);
+        let actor_name = entity_name(caster, players, npcs);
+        // Resolve the targets the same way the player's plan does, so the
+        // apply phase reads plain values either way.
+        let targets: Vec<ResolvedTarget> = targets
+            .into_iter()
+            .map(|entity| resolve_target(entity, content, &actors, &npc_view, &combatants))
+            .collect();
         let cast = Cast {
             content,
+            loaded: loaded.as_deref(),
             caster,
             caster_level: level.max(1),
             spell_id,
@@ -1221,7 +1486,7 @@ pub fn cast_spell_at_level(
             caster_hears: sessions.get(caster).is_ok(),
             defer_despawn: true,
         };
-        for target in targets {
+        for target in &targets {
             // A hostile cast is an attack: it breaks stealth, as Circle's
             // `damage()` -> `appear()` does (`tbamud/src/fight.c:70-84`).
             if hostile {
@@ -1229,10 +1494,8 @@ pub fn cast_spell_at_level(
             }
             apply_spell_to_target(
                 &cast,
-                &players,
-                &npcs,
-                &progress,
-                &keys,
+                target,
+                players,
                 &purses,
                 &mut combatants,
                 &mut buffs,
@@ -1242,7 +1505,6 @@ pub fn cast_spell_at_level(
                 &mut defeated,
                 &mut npc_defeated,
                 &mut damage_events,
-                target,
             );
         }
         true

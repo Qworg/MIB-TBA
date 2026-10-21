@@ -568,8 +568,8 @@ fn a_staged_forced_command_is_offered_to_the_gate_before_the_router() {
     );
 }
 
-fn wave() -> SocialDef {
-    SocialDef {
+fn wave() -> TbaSocialDef {
+    TbaSocialDef {
         sort_as: "wave".into(),
         hide: false,
         min_char_position: 5,

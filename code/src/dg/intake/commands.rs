@@ -186,6 +186,31 @@ pub fn command_words(input: &PlayerInput) -> Option<(String, String)> {
         Command::Move { direction } => (direction.as_str(), String::new()),
         Command::Look { target } => ("look", optional(target)),
         Command::Say { text } => ("say", text.clone()),
+        Command::Emote { text } => ("emote", text.clone()),
+        // The friends list (MIB D-07) and the party commands (D-05) are engine
+        // features; the pack offers them to its `command` triggers under the
+        // names the engine uses.
+        Command::Friend { name } => ("friend", name.clone()),
+        Command::Unfriend { name } => ("unfriend", name.clone()),
+        Command::FriendAccept { name } => ("friendaccept", name.clone()),
+        Command::FriendDecline { name } => ("frienddecline", name.clone()),
+        Command::Block { name } => ("block", name.clone()),
+        Command::Unblock { name } => ("unblock", name.clone()),
+        Command::Friends => ("friends", String::new()),
+        // The mail commands (MIB D-06). `mail` carries a sub-command, so the
+        // word is the sub-command's own.
+        Command::Mail { sub } => ("mail", format!("{sub:?}").to_lowercase()),
+        Command::MailRead { index } => ("mail read", index.to_string()),
+        Command::MailDelete { index } => ("mail delete", index.to_string()),
+        Command::MailSend { to, subject, body } => ("mail send", format!("{to} {subject} {body}")),
+        Command::MailCompose { to, subject } => ("mail compose", format!("{to} {subject}")),
+        Command::PartyInvite { target } => ("ginvite", target.clone()),
+        Command::PartyAccept => ("gaccept", String::new()),
+        Command::PartyDecline => ("gdecline", String::new()),
+        Command::PartyLeave => ("gleave", String::new()),
+        Command::PartyKick { target } => ("gkick", target.clone()),
+        Command::PartyRoster => ("party", String::new()),
+        Command::PartySay { text } => ("gsay", text.clone()),
         Command::Get { item, from } => (
             "get",
             match from {
@@ -226,6 +251,12 @@ pub fn command_words(input: &PlayerInput) -> Option<(String, String)> {
         Command::Help { topic } => ("help", optional(topic)),
         Command::Credits => ("credits", String::new()),
         Command::Custom { verb, args } => return Some((verb.to_lowercase(), args.join(" "))),
+        // A command this build does not know is simply not offered to the
+        // triggers. The engine may add commands faster than the pack names
+        // them, and a new variant must not break the build — so this arm is
+        // deliberately kept even while the match above is exhaustive.
+        #[allow(unreachable_patterns)]
+        _ => return None,
     };
     Some((word.to_owned(), args))
 }

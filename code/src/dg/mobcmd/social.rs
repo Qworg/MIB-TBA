@@ -9,7 +9,7 @@ use dg_vm::lookup::get_char_room_vis;
 
 use super::act::{ActObj, ActVict, Flags, To, act_full};
 use super::world::{self, position_number, to_char};
-use crate::content::SocialDef;
+use crate::content::TbaSocialDef;
 use crate::dg::host::EcsHost;
 use crate::module::TbaContent;
 
@@ -17,8 +17,8 @@ use crate::module::TbaContent;
 /// the word is a prefix of and whose level the character reaches. This is
 /// the C's second search over `complete_cmd_info`, where the socials sit in
 /// `sort_as` order.
-pub fn find_social(content: &TbaContent, word: &str, level: i32) -> Option<SocialDef> {
-    let mut matches: Vec<(&str, &SocialDef)> = content
+pub fn find_social(content: &TbaContent, word: &str, level: i32) -> Option<TbaSocialDef> {
+    let mut matches: Vec<(&str, &TbaSocialDef)> = content
         .socials
         .iter()
         .filter(|(name, def)| name.starts_with(word) && level >= def.min_level_char)
@@ -37,7 +37,7 @@ pub fn find_social(content: &TbaContent, word: &str, level: i32) -> Option<Socia
 }
 
 /// `do_action`.
-pub fn do_action(host: &mut EcsHost<'_>, ch: Uid, action: &SocialDef, argument: &str) {
+pub fn do_action(host: &mut EcsHost<'_>, ch: Uid, action: &TbaSocialDef, argument: &str) {
     let hide = action.hide;
     if argument.is_empty() {
         if let Some(line) = &action.char_no_arg {

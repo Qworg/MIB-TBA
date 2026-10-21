@@ -8,7 +8,7 @@
 //! online registry, and shows a playing player the new room.
 
 use bevy::prelude::*;
-use mib_stdlib::prelude::{Location, Npc, OnlinePlayers, Player, Room, RoomTag};
+use mib_stdlib::prelude::{Location, Npc, OnlinePlayers, Player, Room, RoomIndex};
 
 use crate::combat::TbaCombatant;
 use crate::content::NpcBehaviour;
@@ -23,14 +23,12 @@ use crate::party::TbaFollowing;
 /// Circle keeps a `CONFIG_MORTAL_START` vnum; the pack tags the room instead,
 /// so `--start-room` at conversion time decides where a recall lands.
 pub fn recall_room(world: &mut World) -> Option<Entity> {
-    let mut query = world.query_filtered::<(Entity, &Room), With<Room>>();
-    let mut best: Option<(u32, Entity)> = None;
-    for (entity, room) in query.iter(world) {
-        if room.tags.contains(&RoomTag::StartRoom) && best.is_none_or(|(num, _)| room.num < num) {
-            best = Some((room.num, entity));
-        }
-    }
-    best.map(|(_, entity)| entity)
+    // The stdlib's `RoomIndex` already carries the start room, populated from
+    // the `start_room` tag at boot (`mib_stdlib::world`), so the engine's own
+    // canonical start wins rather than a second scan of every room.
+    world
+        .get_resource::<RoomIndex>()
+        .and_then(|index| index.start)
 }
 
 /// Every room a `teleport` may land in, in a stable order.

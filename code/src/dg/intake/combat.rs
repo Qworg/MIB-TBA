@@ -59,17 +59,18 @@ use dg_vm::dispatch::{
 };
 use dg_vm::{BaseHost, Uid};
 use mib_core::prelude::*;
-use mib_stdlib::prelude::{Location, Npc, Player, Session, SessionState};
+use mib_stdlib::prelude::{Npc, SessionState};
 
 use super::DgIntake;
+use crate::combat::TbaCombatant;
 use crate::combat::commands::{StealthView, broadcast, text};
-use crate::combat::{TbaCombatant, TbaProgress};
 use crate::content::Position;
 use crate::dg::host::EcsHost;
 use crate::dg::script::DgDead;
 use crate::dg::with_host;
 use crate::module::TbaContent;
 use crate::spells::{CastOutcome, plan_cast};
+use crate::views::{ActorView, NpcView};
 
 #[path = "combat/spell_numbers.rs"]
 mod spell_numbers;
@@ -206,13 +207,11 @@ impl RefusedCasts {
 type GateParams = (
     MessageReader<'static, 'static, CommandReceived>,
     Option<Res<'static, HandledCommands>>,
-    Query<'static, 'static, &'static Session>,
-    Query<'static, 'static, (Entity, &'static Player, &'static Location)>,
-    Query<'static, 'static, (Entity, &'static Npc, &'static Location)>,
+    ActorView<'static, 'static>,
+    NpcView<'static, 'static>,
     StealthView<'static, 'static>,
     Option<Res<'static, TbaContent>>,
     Query<'static, 'static, &'static mut TbaCombatant>,
-    Query<'static, 'static, &'static TbaProgress>,
     MessageWriter<'static, OutputEvent>,
 );
 
@@ -236,18 +235,8 @@ pub fn cast_gate(world: &mut World, mut state: Local<Option<SystemState<GatePara
     let mut pending: Vec<PendingCast> = Vec::new();
     let mut taken: Vec<CommandId> = Vec::new();
     {
-        let Ok((
-            mut reader,
-            handled,
-            sessions,
-            players,
-            npcs,
-            hidden,
-            content,
-            combatants,
-            progress,
-            _,
-        )) = state.get_mut(world)
+        let Ok((mut reader, handled, actors, npcs, hidden, content, combatants, _)) =
+            state.get_mut(world)
         else {
             tracing::warn!(target: "dg", "cast triggers disabled: the cast gate's queries conflict");
             return;
@@ -264,7 +253,8 @@ pub fn cast_gate(world: &mut World, mut state: Local<Option<SystemState<GatePara
                 taken.push(msg.id);
                 continue;
             }
-            let playing = sessions
+            let playing = actors
+                .sessions
                 .get(msg.session)
                 .is_ok_and(|session| session.state == SessionState::Playing);
             let PlayerInput::RawLine(line) = &msg.input else {
@@ -277,9 +267,8 @@ pub fn cast_gate(world: &mut World, mut state: Local<Option<SystemState<GatePara
                 msg.session,
                 line.as_str(),
                 content,
-                &progress,
                 &combatants,
-                &players,
+                &actors,
                 &npcs,
                 &hidden,
                 // A script's cast has no party context.
@@ -297,7 +286,9 @@ pub fn cast_gate(world: &mut World, mut state: Local<Option<SystemState<GatePara
             pending.push(PendingCast {
                 id: msg.id,
                 caster: msg.session,
-                victim: single.then(|| plan.targets.first().copied()).flatten(),
+                victim: single
+                    .then(|| plan.targets.first().map(|target| target.entity))
+                    .flatten(),
                 spellnum,
                 spell_name: plan.spell.name.clone(),
                 cost: i32::try_from(plan.cost).unwrap_or(i32::MAX),
@@ -362,19 +353,24 @@ pub fn cast_gate(world: &mut World, mut state: Local<Option<SystemState<GatePara
             handled.mark_handled(cast.id);
         }
     }
-    let Ok((_, _, _, players, npcs, _, _, _, _, mut output)) = state.get_mut(world) else {
+    let Ok((_, _, actors, npcs, _, _, _, mut output)) = state.get_mut(world) else {
         return;
     };
     for cast in &refused {
         output.write(text(cast.caster, format!("You cast {}.", cast.spell_name)));
         if let Some(room) = cast.room {
-            let name = players
+            let name = actors
+                .players
                 .get(cast.caster)
                 .map(|(_, player, _)| player.name.clone())
-                .or_else(|_| npcs.get(cast.caster).map(|(_, npc, _)| npc.name.clone()))
+                .or_else(|_| {
+                    npcs.npcs
+                        .get(cast.caster)
+                        .map(|(_, npc, _)| npc.name.clone())
+                })
                 .unwrap_or_else(|_| "someone".to_owned());
             broadcast(
-                &players,
+                &actors.players,
                 room,
                 cast.caster,
                 &mut output,

@@ -15,7 +15,9 @@ use bevy::prelude::*;
 use dg_vm::{Uid, WorldHost};
 use mib_core::prelude::CommandReceived;
 use mib_protocol::command::{Command, ExitKey, PlayerInput, parse_line};
-use mib_stdlib::prelude::{Item, Location, Npc, NpcKey, Player, Room};
+use mib_stdlib::prelude::{
+    GroundItem, Item, Location, Npc, NpcId, NpcIndex, NpcKey, Player, Room, RoomOccupants,
+};
 
 use crate::combat::TbaRng;
 use crate::content::{Position, SpecProc, TbaItemKind};
@@ -62,28 +64,120 @@ fn member_of_royal_guard(vnum: i32) -> bool {
     matches!(vnum, 15003 | 15006 | 15008..=15011 | 15024..=15025)
 }
 
-/// `find_npc_by_name` (`castle.c:178`): an NPC in the actor's room whose
-/// short description starts with `name`, compared case-insensitively.
-fn find_npc_by_name(host: &EcsHost<'_>, actor: Uid, name: &str) -> Option<Uid> {
-    let room = host.in_room(actor)?;
-    host.room_people(room).into_iter().find(|candidate| {
-        if !host.is_npc(*candidate) {
-            return false;
-        }
-        host.entity(*candidate)
-            .and_then(|entity| host.world.get::<Npc>(entity))
-            .is_some_and(|npc| {
-                npc.name.len() >= name.len() && npc.name[..name.len()].eq_ignore_ascii_case(name)
-            })
-    })
+/// The castle NPCs a procedure looks for, by vnum.
+///
+/// Circle's `find_npc_by_name` (`castle.c:178`) matched a short-description
+/// prefix, because the C had no index. The pack knows which prototype each
+/// castellan is (`castle.c:105-129`), so the lookup is by prototype instead:
+/// it is exact, and it costs one index probe rather than a scan of the room's
+/// occupants.
+const CASTLE_KING: i32 = 15001;
+const CASTLE_BRIAN: i32 = 15004;
+const CASTLE_MICK: i32 = 15005;
+const CASTLE_TIM: i32 = 15020;
+const CASTLE_TOM: i32 = 15021;
+const CASTLE_MICHAEL: i32 = 15027;
+
+/// The NPC with prototype `vnum` standing in the actor's room.
+///
+/// The stdlib's `NpcIndex` maps a prototype id to its live entities, so this
+/// is an index probe filtered by room rather than a scan of every NPC.
+fn find_castle_npc(host: &EcsHost<'_>, actor: Uid, vnum: i32) -> Option<Uid> {
+    // `in_room` answers a DG id; the index and the `Location` component speak
+    // entities, so convert once here.
+    let room = host.entity(host.in_room(actor)?)?;
+    let id = NpcId::from(format!("tba_npc_{vnum}"));
+    let index = host.world.get_resource::<NpcIndex>()?;
+    let candidates = index.map.get(&id)?;
+    candidates
+        .iter()
+        .copied()
+        .find(|entity| {
+            host.world
+                .get::<Location>(*entity)
+                .is_some_and(|location| location.room == room)
+        })
+        .and_then(|entity| host.uid(entity))
+}
+
+/// The characters standing in `room`, from the stdlib's occupancy index.
+///
+/// [`EcsHost::room_people`] scans **every** player and **every** NPC in the
+/// world and then sorts the result; the procedures only need the room's
+/// occupants. The stdlib's [`RoomOccupants`] index already has them, and it is
+/// maintained on the fixed tick — which is when the procedures run, after
+/// `maintain_room_occupants` — so it is current here.
+///
+/// The order is the pack's placement order (newest first, by [`DgOrder`]),
+/// the same order `room_people` produces, so a procedure that picks among
+/// the occupants still picks the same one.
+fn room_characters(host: &EcsHost<'_>, room: Entity) -> Vec<Uid> {
+    let Some(occupants) = host.world.get_resource::<RoomOccupants>() else {
+        // No index (a bare test app): fall back to the scan, so the result is
+        // the same either way.
+        return host.room_people(host.uid(room).unwrap_or(0));
+    };
+    let mut present: Vec<(u64, Entity)> = occupants
+        .occupants(room)
+        .iter()
+        .copied()
+        .filter(|entity| {
+            host.world.get::<Player>(*entity).is_some() || host.world.get::<Npc>(*entity).is_some()
+        })
+        .map(|entity| {
+            let stamp = host
+                .world
+                .get::<crate::dg::ids::DgOrder>(entity)
+                .map_or(0, |order| order.0);
+            (stamp, entity)
+        })
+        .collect();
+    present.sort_unstable();
+    present.reverse();
+    present
+        .into_iter()
+        .filter_map(|(_, entity)| host.uid(entity))
+        .collect()
+}
+
+/// The ground items lying in `room`, from the stdlib's occupancy index.
+///
+/// [`EcsHost::room_contents`] scans every ground item in the world; the
+/// index already knows the room's occupants, and ground items carry a
+/// `Location` like everyone else. The order is the pack's placement order
+/// (oldest first), the same order `room_contents` produces.
+fn room_ground_items(host: &EcsHost<'_>, room: Entity) -> Vec<Uid> {
+    let Some(occupants) = host.world.get_resource::<RoomOccupants>() else {
+        return host.room_contents(host.uid(room).unwrap_or(0));
+    };
+    let mut lying: Vec<(u64, Entity)> = occupants
+        .occupants(room)
+        .iter()
+        .copied()
+        .filter(|entity| {
+            host.world.get::<GroundItem>(*entity).is_some()
+                && host.world.get::<Item>(*entity).is_some()
+        })
+        .map(|entity| {
+            let stamp = host
+                .world
+                .get::<crate::dg::ids::DgOrder>(entity)
+                .map_or(0, |order| order.0);
+            (stamp, entity)
+        })
+        .collect();
+    lying.sort_unstable();
+    lying
+        .into_iter()
+        .filter_map(|(_, entity)| host.uid(entity))
+        .collect()
 }
 
 /// `get_victim` (`castle.c:213`): a player fighting castle staff, chosen with
 /// Circle's "give them a chance" empty slot.
 fn get_victim(host: &EcsHost<'_>, ch: Uid, rng: &mut TbaRng) -> Option<Uid> {
-    let room = host.in_room(ch)?;
-    let victims: Vec<Uid> = host
-        .room_people(room)
+    let room = host.entity(host.in_room(ch)?)?;
+    let victims: Vec<Uid> = room_characters(host, room)
         .into_iter()
         .filter(|candidate| {
             fighting(host, *candidate).is_some_and(|target| member_of_staff(host.vnum(target)))
@@ -125,11 +219,13 @@ fn banzaii(host: &mut EcsHost<'_>, ch: Uid, rng: &mut TbaRng) -> bool {
 /// `do_npc_rescue` (`castle.c:285`): the twin pulls the King's attacker onto
 /// itself.
 fn npc_rescue(host: &mut EcsHost<'_>, hero: Uid, victim: Uid) -> bool {
-    let Some(room) = host.in_room(hero) else {
+    let Some(room_uid) = host.in_room(hero) else {
         return false;
     };
-    let Some(bad_guy) = host
-        .room_people(room)
+    let Some(room) = host.entity(room_uid) else {
+        return false;
+    };
+    let Some(bad_guy) = room_characters(host, room)
         .into_iter()
         .find(|candidate| fighting(host, *candidate) == Some(victim))
     else {
@@ -189,11 +285,13 @@ fn castle_cleaner(host: &mut EcsHost<'_>, ch: Uid, gripe: bool) -> bool {
     if !awake(host, ch) || position(host, ch) == Position::Fighting {
         return false;
     }
-    let Some(room) = host.in_room(ch) else {
+    let Some(room_uid) = host.in_room(ch) else {
         return false;
     };
-    let Some(trash) = host
-        .room_contents(room)
+    let Some(room) = host.entity(room_uid) else {
+        return false;
+    };
+    let Some(trash) = room_ground_items(host, room)
         .into_iter()
         .find(|item| is_trash(host, *item))
     else {
@@ -509,10 +607,13 @@ fn run_proc(
             if rng.range(0, 3) != 0 {
                 return;
             }
-            let Some(room) = host.in_room(ch) else {
+            let Some(room_uid) = host.in_room(ch) else {
                 return;
             };
-            let Some(guard) = host.room_people(room).into_iter().find(|candidate| {
+            let Some(room) = host.entity(room_uid) else {
+                return;
+            };
+            let Some(guard) = room_characters(host, room).into_iter().find(|candidate| {
                 fighting(host, *candidate).is_none() && member_of_royal_guard(host.vnum(*candidate))
             }) else {
                 return;
@@ -540,14 +641,18 @@ fn run_proc(
             if !awake(host, ch) {
                 return;
             }
-            if let Some(king) = find_npc_by_name(host, ch, "King Welmar") {
+            if let Some(king) = find_castle_npc(host, ch, CASTLE_KING) {
                 add_follower(host, ch, king);
                 if fighting(host, king).is_some() {
                     npc_rescue(host, ch, king);
                 }
             }
-            let twin_name = if proc == SpecProc::Tim { "Tom" } else { "Tim" };
-            if let Some(twin) = find_npc_by_name(host, ch, twin_name)
+            let twin_vnum = if proc == SpecProc::Tim {
+                CASTLE_TOM
+            } else {
+                CASTLE_TIM
+            };
+            if let Some(twin) = find_castle_npc(host, ch, twin_vnum)
                 && fighting(host, twin).is_some()
                 && position(host, ch) > Position::Sleeping
             {
@@ -572,7 +677,7 @@ fn run_proc(
             if rng.range(0, 2) != 0 {
                 return;
             }
-            let Some(michael) = find_npc_by_name(host, ch, "Michael") else {
+            let Some(michael) = find_castle_npc(host, ch, CASTLE_MICHAEL) else {
                 return;
             };
             const LINES: [&str; 6] = [
@@ -596,12 +701,18 @@ fn run_proc(
             {
                 return;
             }
-            let Some(pupil) = find_npc_by_name(host, ch, "Brian") else {
+            // The C finds both pupils and picks between them
+            // (`castle.c:498-508`).
+            let Some(brian) = find_castle_npc(host, ch, CASTLE_BRIAN) else {
                 return;
             };
-            if fighting(host, pupil).is_some() {
+            let Some(mick) = find_castle_npc(host, ch, CASTLE_MICK) else {
+                return;
+            };
+            if fighting(host, brian).is_some() || fighting(host, mick).is_some() {
                 return;
             }
+            let pupil = if rng.range(0, 1) == 0 { brian } else { mick };
             const LINES: [&str; 2] = [
                 "$n hits $N on $s head with a powerful blow.",
                 "$n shows $s pupils an advanced technique.",
@@ -816,6 +927,132 @@ mod integration_tests {
         );
         assert_eq!(guard_state.position, Position::Fighting);
         assert!(world.get_entity(attacker).is_ok());
+    }
+
+    /// A room with the stdlib's occupancy index in it, so the indexed path is
+    /// the one under test.
+    fn indexed_room(world: &mut World, num: u32) -> Entity {
+        world
+            .spawn((
+                Room {
+                    key: format!("tba.{num}").into(),
+                    name: "The Castle".to_owned(),
+                    description: FormattedText::plain("A castle."),
+                    num,
+                    area: "tba_150".into(),
+                    coord: (0, 0, 0),
+                    tags: Default::default(),
+                    media: Vec::new(),
+                    sector: mib_stdlib::content::Sector::Inside,
+                    extra_descriptions: Vec::new(),
+                    outdoor: false,
+                    weather_zone: None,
+                    ambient: None,
+                    ambient_stamp: None,
+                    ambient_phases: Default::default(),
+                    ambient_weather: Default::default(),
+                    time: None,
+                    weather_state: None,
+                },
+                RoomState::default(),
+            ))
+            .id()
+    }
+
+    #[test]
+    fn the_indexed_room_read_sees_the_same_occupants_as_the_scan() {
+        let mut world = World::new();
+        world.insert_resource(RoomOccupants::default());
+        let room = indexed_room(&mut world, 15000);
+        let guard = world
+            .spawn((
+                Npc {
+                    name: "Gwydion".to_owned(),
+                    persona: String::new(),
+                },
+                NpcKey(NpcId::from("tba_npc_15003")),
+                Location { room },
+                combatant(Position::Standing, None),
+            ))
+            .id();
+        let other = world
+            .spawn((
+                Npc {
+                    name: "a ruffian".to_owned(),
+                    persona: String::new(),
+                },
+                NpcKey(NpcId::from("tba_npc_99998")),
+                Location { room },
+                combatant(Position::Standing, None),
+            ))
+            .id();
+        // Populate the index the way the stdlib's `maintain_room_occupants` does.
+        let locations = [(guard, Location { room }), (other, Location { room })];
+        let mut occupants = world
+            .get_resource_mut::<RoomOccupants>()
+            .expect("the occupancy index");
+        occupants.rebuild(
+            locations
+                .iter()
+                .map(|(entity, location)| (*entity, location)),
+        );
+
+        crate::dg::with_host(&mut world, |host| {
+            let ch = host.uid(guard).expect("guard id");
+            let room = host
+                .entity(host.in_room(ch).expect("guard room"))
+                .expect("room");
+            let indexed = room_characters(host, room);
+            let scanned: Vec<Entity> = host
+                .room_people(host.uid(room).expect("room uid"))
+                .into_iter()
+                .filter_map(|uid| host.entity(uid))
+                .collect();
+            assert_eq!(indexed.len(), 2, "both occupants: {indexed:?}");
+            assert_eq!(
+                indexed.len(),
+                scanned.len(),
+                "the index and the scan agree on how many are here"
+            );
+        });
+    }
+
+    #[test]
+    fn a_castellan_is_found_by_prototype_through_the_npc_index() {
+        let mut world = World::new();
+        let mut index = NpcIndex::default();
+        let room = indexed_room(&mut world, 15000);
+        let michael = world
+            .spawn((
+                Npc {
+                    name: "Michael".to_owned(),
+                    persona: String::new(),
+                },
+                NpcKey(NpcId::from("tba_npc_15027")),
+                Location { room },
+                combatant(Position::Standing, None),
+            ))
+            .id();
+        index
+            .map
+            .entry(NpcId::from("tba_npc_15027"))
+            .or_default()
+            .push(michael);
+        world.insert_resource(index);
+
+        crate::dg::with_host(&mut world, |host| {
+            let ch = host.uid(michael).expect("michael id");
+            assert_eq!(
+                find_castle_npc(host, ch, CASTLE_MICHAEL),
+                Some(ch),
+                "Michael is found by his prototype"
+            );
+            assert_eq!(
+                find_castle_npc(host, ch, CASTLE_KING),
+                None,
+                "the King is not in this room"
+            );
+        });
     }
 }
 

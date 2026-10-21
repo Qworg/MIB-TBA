@@ -175,10 +175,10 @@ fn social(
     char_found: Option<&str>,
     others_found: Option<&str>,
     vict_found: Option<&str>,
-) -> (SmolStr, SocialDef) {
+) -> (SmolStr, TbaSocialDef) {
     (
         SmolStr::new(name),
-        SocialDef {
+        TbaSocialDef {
             sort_as: SmolStr::new(name),
             hide: false,
             min_char_position: 5,
@@ -201,7 +201,7 @@ fn social(
     )
 }
 
-fn install_socials(app: &mut App, socials: Vec<(SmolStr, SocialDef)>) {
+fn install_socials(app: &mut App, socials: Vec<(SmolStr, TbaSocialDef)>) {
     app.world_mut().resource_mut::<TbaContent>().socials = socials.into_iter().collect();
 }
 
@@ -2055,7 +2055,7 @@ fn following_oneself_stops_following_and_loops_are_refused() {
 
 // -- socials -------------------------------------------------------------------
 
-fn standard_socials() -> Vec<(SmolStr, SocialDef)> {
+fn standard_socials() -> Vec<(SmolStr, TbaSocialDef)> {
     let mut hug = social(
         "hug",
         Some("You hug everyone."),
